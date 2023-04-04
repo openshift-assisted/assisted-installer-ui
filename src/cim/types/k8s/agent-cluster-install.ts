@@ -56,8 +56,10 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
       machineNetwork?: {
         cidr: string;
       }[];
+      userManagedNetworking?: boolean;
     };
     holdInstallation?: boolean;
+    platformType: string;
   };
   status?: {
     apiVIP?: string;

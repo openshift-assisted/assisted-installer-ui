@@ -39,6 +39,12 @@ export interface ApiVipConnectivityResponse {
    */
   ignition?: string;
 }
+export type ArchitectureSupportLevelId =
+  | 'X86_64_ARCHITECTURE'
+  | 'ARM64_ARCHITECTURE'
+  | 'PPC64LE_ARCHITECTURE'
+  | 'S390X_ARCHITECTURE'
+  | 'MULTIARCH_RELEASE_IMAGE';
 export interface BindHostParams {
   clusterId: string; // uuid
 }
@@ -105,7 +111,7 @@ export interface Cluster {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The virtual IP used to reach the OpenShift cluster's API.
+   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
    */
   apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
   /**
@@ -292,7 +298,7 @@ export interface Cluster {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: string;
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   /**
    * Explicit ignition endpoint overrides the default ignition endpoint.
    */
@@ -424,7 +430,7 @@ export interface ClusterCreateParams {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: string;
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   /**
    * Installation disks encryption mode and host roles to be applied.
    */
@@ -896,6 +902,9 @@ export interface Event {
   props?: string;
 }
 export type EventList = Event[];
+/**
+ * (DEPRECATED) List of features attached to openshift version
+ */
 export interface FeatureSupportLevel {
   /**
    * Version of the OpenShift cluster.
@@ -903,9 +912,9 @@ export interface FeatureSupportLevel {
   openshiftVersion?: string;
   features?: {
     /**
-     * The ID of the feature
+     * (DEPRECATED) The ID of the feature
      */
-    featureId?:
+    featureId:
       | 'ADDITIONAL_NTP_SOURCE'
       | 'REQUESTED_HOSTNAME'
       | 'PROXY'
@@ -923,14 +932,46 @@ export interface FeatureSupportLevel {
       | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
       | 'ARM64_ARCHITECTURE'
       | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
+      | 'PPC64LE_ARCHITECTURE'
+      | 'S390X_ARCHITECTURE'
       | 'SINGLE_NODE_EXPANSION'
       | 'LVM'
       | 'DUAL_STACK_NETWORKING'
       | 'MULTIARCH_RELEASE_IMAGE'
-      | 'NUTANIX_INTEGRATION';
-    supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
+      | 'NUTANIX_INTEGRATION'
+      | 'DUAL_STACK_VIPS'
+      | 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE';
+    supportLevel: SupportLevel;
   }[];
 }
+export type FeatureSupportLevelId =
+  | 'ADDITIONAL_NTP_SOURCE'
+  | 'REQUESTED_HOSTNAME'
+  | 'PROXY'
+  | 'SNO'
+  | 'DAY2_HOSTS'
+  | 'VIP_AUTO_ALLOC'
+  | 'DISK_SELECTION'
+  | 'OVN_NETWORK_TYPE'
+  | 'SDN_NETWORK_TYPE'
+  | 'SCHEDULABLE_MASTERS'
+  | 'AUTO_ASSIGN_ROLE'
+  | 'CUSTOM_MANIFEST'
+  | 'DISK_ENCRYPTION'
+  | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
+  | 'SINGLE_NODE_EXPANSION'
+  | 'LVM'
+  | 'ODF'
+  | 'CNV'
+  | 'DUAL_STACK_NETWORKING'
+  | 'NUTANIX_INTEGRATION'
+  | 'VSPHERE_INTEGRATION'
+  | 'DUAL_STACK_VIPS'
+  | 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE'
+  | 'CLUSTER_MANAGED_NETWORKING';
+/**
+ * (DEPRECATED) List of objects that containing a list of feature-support level and attached to openshift-version
+ */
 export type FeatureSupportLevels = FeatureSupportLevel[];
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
@@ -1572,7 +1613,7 @@ export interface InfraEnv {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: string;
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this
    * infra-env will trust the certificates in this bundle. Clusters formed
@@ -1616,7 +1657,7 @@ export interface InfraEnvCreateParams {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: string;
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this
    * infra-env will trust the certificates in this bundle. Clusters formed
@@ -2054,13 +2095,15 @@ export type OperatorStatus = 'failed' | 'progressing' | 'available';
 export type OperatorType = 'builtin' | 'olm';
 export interface OsImage {
   /**
-   * Version of the OpenShift cluster.
+   * Version of the operating system image
+   * example:
+   * 4.12
    */
   openshiftVersion: string;
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture: string;
+  cpuArchitecture: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x';
   /**
    * The base OS image used for the discovery iso.
    */
@@ -2134,7 +2177,7 @@ export interface ReleaseImage {
   /**
    * (DEPRECATED) The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture: string;
+  cpuArchitecture: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   /**
    * List of CPU architectures provided by the image.
    */
@@ -2240,6 +2283,13 @@ export interface Steps {
 }
 export type StepsReply = StepReply[];
 export type Subnet = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+export type SupportLevel = 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
+/**
+ * Map of feature ID or CPU architecture alongside their support level
+ */
+export interface SupportLevels {
+  [name: string]: SupportLevel;
+}
 export interface SystemVendor {
   serialNumber?: string;
   productName?: string;
@@ -2436,6 +2486,13 @@ export interface V2Events {
 export interface V2InfraEnvs {
   clusterId?: string;
   owner?: string;
+}
+export interface V2SupportLevelsArchitectures {
+  openshiftVersion: string;
+}
+export interface V2SupportLevelsFeatures {
+  openshiftVersion: string;
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 }
 export interface VersionedHostRequirements {
   /**

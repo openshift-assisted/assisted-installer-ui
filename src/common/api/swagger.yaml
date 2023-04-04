@@ -3416,6 +3416,101 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/support-levels/features:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      operationId: GetSupportedFeatures
+      description: Retrieves the features support levels for each OpenShift version.
+      parameters:
+        - in: query
+          name: openshift_version
+          type: string
+          description: Version of the OpenShift cluster.
+          required: true
+        - in: query
+          name: cpu_architecture
+          description: The CPU architecture of the image (x86_64/arm64/etc).
+          type: string
+          # TODO: remove arm64 when AI moves to using aarch64
+          enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
+          default: x86_64
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: object
+            properties:
+              features:
+                description: Keys will be one of features-support-level-id enum.
+                $ref: '#/definitions/support-levels'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/support-levels/architectures:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      operationId: GetSupportedArchitectures
+      description: Retrieves the architecture support-levels for each OpenShift version.
+      parameters:
+        - in: query
+          name: openshift_version
+          type: string
+          description: Version of the OpenShift cluster.
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: object
+            properties:
+              architectures:
+                description: Keys will be one of architecture-support-level-id enum.
+                $ref: '#/definitions/support-levels'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
   /v2/feature-support-levels:
     get:
       tags:
@@ -3423,7 +3518,9 @@ paths:
       security:
         - userAuth: [admin, read-only-admin, user]
       operationId: v2ListFeatureSupportLevels
-      description: Retrieves the support levels for features for each OpenShift version.
+      description:
+        (DEPRECATED) Retrieves the support levels for features for each OpenShift version.
+      deprecated: true
       responses:
         '200':
           description: Success.
@@ -3447,7 +3544,7 @@ paths:
       tags:
         - installer
       description:
-        Import an AI cluster using minimal data assosiated with existing OCP cluster, in order to
+        Import an AI cluster using minimal data associated with existing OCP cluster, in order to
         allow adding day2 hosts to that cluster
       operationId: v2ImportCluster
       parameters:
@@ -3590,26 +3687,30 @@ definitions:
 
   feature-support-levels:
     type: array
+    description:
+      (DEPRECATED) List of objects that containing a list of feature-support level and attached to
+      openshift-version
     items:
       $ref: '#/definitions/feature-support-level'
 
   feature-support-level:
     type: object
+    description: (DEPRECATED) List of features attached to openshift version
     properties:
       openshift_version:
         type: string
         description: Version of the OpenShift cluster.
       features:
         type: array
-        required:
-          - feature_id
-          - support_level
         items:
           type: object
+          required:
+            - feature_id
+            - support_level
           properties:
             feature_id:
               type: string
-              description: The ID of the feature
+              description: (DEPRECATED) The ID of the feature
               enum:
                 - 'ADDITIONAL_NTP_SOURCE'
                 - 'REQUESTED_HOSTNAME'
@@ -3628,14 +3729,62 @@ definitions:
                 - 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
                 - 'ARM64_ARCHITECTURE'
                 - 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
+                - 'PPC64LE_ARCHITECTURE'
+                - 'S390X_ARCHITECTURE'
                 - 'SINGLE_NODE_EXPANSION'
                 - 'LVM'
                 - 'DUAL_STACK_NETWORKING'
                 - 'MULTIARCH_RELEASE_IMAGE'
                 - 'NUTANIX_INTEGRATION'
             support_level:
-              type: string
-              enum: [supported, unsupported, tech-preview, dev-preview]
+              $ref: '#/definitions/support-level'
+
+  support-levels:
+    type: object
+    description: Map of feature ID or CPU architecture alongside their support level
+    additionalProperties:
+      $ref: '#/definitions/support-level'
+
+  support-level:
+    type: string
+    enum: [supported, unsupported, tech-preview, dev-preview]
+
+  feature-support-level-id:
+    type: string
+    enum:
+      - 'ADDITIONAL_NTP_SOURCE'
+      - 'REQUESTED_HOSTNAME'
+      - 'PROXY'
+      - 'SNO'
+      - 'DAY2_HOSTS'
+      - 'VIP_AUTO_ALLOC'
+      - 'DISK_SELECTION'
+      - 'OVN_NETWORK_TYPE'
+      - 'SDN_NETWORK_TYPE'
+      - 'SCHEDULABLE_MASTERS'
+      - 'AUTO_ASSIGN_ROLE'
+      - 'CUSTOM_MANIFEST'
+      - 'DISK_ENCRYPTION'
+      - 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
+      - 'SINGLE_NODE_EXPANSION'
+      - 'LVM'
+      - 'ODF'
+      - 'CNV'
+      - 'DUAL_STACK_NETWORKING'
+      - 'NUTANIX_INTEGRATION'
+      - 'VSPHERE_INTEGRATION'
+      - 'DUAL_STACK_VIPS'
+      - 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE'
+      - 'CLUSTER_MANAGED_NETWORKING'
+
+  architecture-support-level-id:
+    type: string
+    enum:
+      - 'X86_64_ARCHITECTURE'
+      - 'ARM64_ARCHITECTURE'
+      - 'PPC64LE_ARCHITECTURE'
+      - 'S390X_ARCHITECTURE'
+      - 'MULTIARCH_RELEASE_IMAGE'
 
   preflight-hardware-requirements:
     type: object
@@ -4390,13 +4539,14 @@ definitions:
           $ref: '#/definitions/machine_network'
         x-nullable: true
       platform:
-        type: object
         $ref: '#/definitions/platform'
         x-nullable: true
       cpu_architecture:
         type: string
         x-nullable: false
         default: 'x86_64'
+        # TODO: remove arm64 when AI moves to using aarch64
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: The CPU architecture of the image (x86_64/arm64/etc).
       disk_encryption:
         type: object
@@ -4952,7 +5102,10 @@ definitions:
       cpu_architecture:
         type: string
         x-nullable: false
-        default: 'x86_64'
+        default:
+          'x86_64'
+          # TODO: remove arm64 when AI moves to using aarch64
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: The CPU architecture of the image (x86_64/arm64/etc).
       ignition_endpoint:
         type: object
@@ -6367,10 +6520,14 @@ definitions:
     properties:
       openshift_version:
         type: string
-        description: Version of the OpenShift cluster.
+        description: Version of the operating system image
+        example: '4.12'
       cpu_architecture:
         type: string
-        default: 'x86_64'
+        default:
+          'x86_64'
+          # TODO: remove arm64 when AI moves to using aarch64
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x']
         description: The CPU architecture of the image (x86_64/arm64/etc).
         x-go-custom-tag: gorm:"default:'x86_64'"
       url:
@@ -6398,7 +6555,10 @@ definitions:
         description: Version of the OpenShift cluster.
       cpu_architecture:
         type: string
-        default: 'x86_64'
+        default:
+          'x86_64'
+          # TODO: remove arm64 when AI moves to using aarch64
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: (DEPRECATED) The CPU architecture of the image (x86_64/arm64/etc).
         x-go-custom-tag: gorm:"default:'x86_64'"
       cpu_architectures:
@@ -6571,7 +6731,10 @@ definitions:
       cpu_architecture:
         type: string
         x-nullable: false
-        default: 'x86_64'
+        default:
+          'x86_64'
+          # TODO: remove arm64 when AI moves to using aarch64
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: The CPU architecture of the image (x86_64/arm64/etc).
       additional_trust_bundle:
         type: string
@@ -6658,7 +6821,10 @@ definitions:
       cpu_architecture:
         type: string
         x-nullable: false
-        default: 'x86_64'
+        default:
+          'x86_64'
+          # TODO: remove arm64 when AI moves to using aarch64
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: The CPU architecture of the image (x86_64/arm64/etc).
       additional_trust_bundle:
         type: string

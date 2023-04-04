@@ -3,38 +3,46 @@ import { useStateSafely } from '../../../common/hooks';
 import {
   AddHostsContextProvider,
   Cluster,
+  CpuArchitecture,
   ErrorState,
   LoadingState,
   POLLING_INTERVAL,
+  useFeature,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
 import Day2ClusterService, { getApiVipDnsName } from '../../services/Day2ClusterService';
 import { handleApiError } from '../../api';
 import { isApiError } from '../../api/types';
-import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
+import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import useInfraEnv from '../../hooks/useInfraEnv';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
-  extraInfo,
   isVisible,
 }: HostsClusterDetailTabProps) => {
   const [error, setError] = React.useState<ReactNode>();
-  const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
+  const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
-
+  const cpuArchitectures = useSupportLevelsAPI('architectures', ocmCluster.openshift_version);
+  const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
-    setDay2Cluster(undefined);
+    setDay2Cluster(null);
   }, [setDay2Cluster]);
 
+  const { infraEnv } = useInfraEnv(
+    ocmCluster.id ? ocmCluster.id : '',
+    CpuArchitecture.USE_DAY1_ARCHITECTURE,
+  );
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
       // the tab is not visible, stop polling
-      setDay2Cluster(undefined);
+      setDay2Cluster(null);
     }
     const day1ClusterHostCount = ocmCluster?.metrics?.nodes?.total || 0;
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
@@ -52,10 +60,7 @@ export const HostsClusterDetailTabContent = ({
       );
     }
 
-    if (isVisible && day2Cluster === undefined && pullSecret) {
-      // ensure exclusive run
-      setDay2Cluster(null);
-
+    if (isVisible && !day2Cluster && pullSecret) {
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
@@ -101,11 +106,14 @@ export const HostsClusterDetailTabContent = ({
             ocmCluster,
             pullSecret,
             normalizedVersion,
-            extraInfo,
+            cpuArchitectures,
+            canSelectCpuArch,
           );
-          setDay2Cluster(
-            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster, extraInfo),
+          const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
+            day2Cluster,
+            ocmCluster,
           );
+          setDay2Cluster(aiCluster ?? null);
         } catch (e) {
           handleApiError(e);
           if (isApiError(e)) {
@@ -132,13 +140,14 @@ export const HostsClusterDetailTabContent = ({
     }
   }, [
     ocmCluster,
-    extraInfo,
     pullSecret,
     day2Cluster,
     setDay2Cluster,
     isVisible,
     normalizeClusterVersion,
     handleClickTryAgainLink,
+    cpuArchitectures,
+    canSelectCpuArch,
   ]);
 
   const resetCluster = React.useCallback(async () => {
@@ -147,13 +156,11 @@ export const HostsClusterDetailTabContent = ({
     }
     try {
       const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
-      setDay2Cluster(
-        Day2ClusterService.completeAiClusterWithOcmCluster(
-          updatedDay2Cluster,
-          ocmCluster,
-          extraInfo,
-        ),
+      const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
+        updatedDay2Cluster,
+        ocmCluster,
       );
+      setDay2Cluster(aiCluster ?? null);
     } catch (e) {
       handleApiError(e);
       setError(
@@ -168,7 +175,7 @@ export const HostsClusterDetailTabContent = ({
         </>,
       );
     }
-  }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, extraInfo, setDay2Cluster]);
+  }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
@@ -201,9 +208,14 @@ export const HostsClusterDetailTabContent = ({
       ocpConsoleUrl={ocmCluster?.console?.url}
       canEdit={ocmCluster.canEdit}
     >
-      <FeatureSupportLevelProvider loadingUi={<LoadingState />} cluster={day2Cluster}>
+      <NewFeatureSupportLevelProvider
+        loadingUi={<LoadingState />}
+        cluster={day2Cluster}
+        cpuArchitecture={infraEnv?.cpuArchitecture}
+        openshiftVersion={day2Cluster.openshiftVersion}
+      >
         <AddHosts />
-      </FeatureSupportLevelProvider>
+      </NewFeatureSupportLevelProvider>
     </AddHostsContextProvider>
   );
 };

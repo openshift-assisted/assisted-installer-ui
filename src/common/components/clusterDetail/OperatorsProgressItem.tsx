@@ -13,7 +13,7 @@ import {
 import { pluralize } from 'humanize-plus';
 import { TFunction } from 'i18next';
 import { Cluster, MonitoredOperator, MonitoredOperatorsList, OperatorStatus } from '../../api';
-import { operatorLabels, OperatorName } from '../../config';
+import { operatorLabelsCim, OperatorName } from '../../config';
 import ClusterProgressItem from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
@@ -95,7 +95,7 @@ const OperatorsPopover = ({ operators, openshiftVersion, children }: OperatorsPo
               status = 'installed';
             }
             const name =
-              operatorLabels(t, openshiftVersion, featureSupportLevel)[
+              operatorLabelsCim(t, openshiftVersion, featureSupportLevel)[
                 operator.name as OperatorName
               ] || operator.name;
             return (

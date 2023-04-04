@@ -120,9 +120,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   ]);
   return (
     <Grid hasGutter>
-      {!hideManagedNetworking && (
-        <ManagedNetworkingControlGroup disabled={!!cluster.openshiftVersion} />
-      )}
+      {!hideManagedNetworking && <ManagedNetworkingControlGroup />}
 
       {isUserManagedNetworking && (
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />

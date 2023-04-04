@@ -14,6 +14,8 @@ import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';
 import { AddHostDropdownProps } from './types';
 import './AddHostDropdown.css';
 
+type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
+
 const AddHostDropdown = ({
   infraEnv,
   agentClusterInstall,
@@ -24,9 +26,7 @@ const AddHostDropdown = ({
   onCreateBmcByYaml,
   isBMPlatform,
 }: AddHostDropdownProps) => {
-  const [addModalType, setAddModalType] = React.useState<'iso' | 'bmc' | 'yaml' | undefined>(
-    undefined,
-  );
+  const [addModalType, setAddModalType] = React.useState<ModalType>(undefined);
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
   const { t } = useTranslation();
   return (
@@ -49,6 +49,16 @@ const AddHostDropdown = ({
             description={t('ai:Discover hosts by booting a discovery image')}
           >
             {t('ai:With Discovery ISO')}
+          </DropdownItem>,
+          <DropdownItem
+            key="ipxe"
+            onClick={() => {
+              setIsKebabOpen(false);
+              setAddModalType('ipxe');
+            }}
+            description={t('ai:Use when you have an iPXE server that has already been set up.')}
+          >
+            {t('ai:With iPXE')}
           </DropdownItem>,
           <DropdownSeparator key="separator" />,
           <DropdownGroup
@@ -114,6 +124,17 @@ const AddHostDropdown = ({
           onClose={() => setAddModalType(undefined)}
           onSaveISOParams={onSaveISOParams}
           docVersion={docVersion}
+        />
+      )}
+      {addModalType === 'ipxe' && (
+        <AddHostModal
+          infraEnv={infraEnv}
+          agentClusterInstall={agentClusterInstall}
+          isOpen
+          onClose={() => setAddModalType(undefined)}
+          onSaveISOParams={onSaveISOParams}
+          docVersion={docVersion}
+          isIPXE
         />
       )}
       {addModalType === 'bmc' && (
