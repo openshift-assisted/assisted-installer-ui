@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Disk, Host, Interface, stringToJSON } from '../../api';
+import { Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
@@ -19,22 +19,13 @@ import { getHostRowHardwareInfo } from './hardwareInfo';
 import { getHardwareTypeText, getInventory } from './utils';
 import { ValidationInfoActionProps } from './HostValidationGroups';
 import NtpValidationStatus from './NtpValidationStatus';
-import { OnDiskRoleType } from './DiskRole';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import StorageDetail from '../storage/StorageDetail';
 import SectionTitle from '../ui/SectionTitle';
 
 type HostDetailProps = {
   host: Host;
-  canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
-  updateDiskSkipFormatting?: (
-    shouldFormatDisk: boolean,
-    hostId: Host['id'],
-    diskId: Disk['id'],
-  ) => Promise<unknown>;
 };
 
 type SectionColumnProps = {
@@ -109,11 +100,8 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
 
 export const HostDetail = ({
   host,
-  canEditDisks,
-  onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
-  updateDiskSkipFormatting,
 }: HostDetailProps) => {
   const { t } = useTranslation();
   const { id, validationsInfo: hostValidationsInfo } = host;
@@ -204,12 +192,6 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      <StorageDetail
-        host={host}
-        onDiskRole={onDiskRole}
-        canEditDisks={canEditDisks}
-        updateDiskSkipFormatting={updateDiskSkipFormatting}
-      />
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}

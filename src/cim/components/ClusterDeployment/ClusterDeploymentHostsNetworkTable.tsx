@@ -35,24 +35,10 @@ type ExpandComponentProps = {
 };
 
 const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => {
-  const { onSetInstallationDiskId, agents } =
-    React.useContext<ExpandComponentContextType>(ExpandComponentContext);
-
   return (
     <HostDetail
       host={obj}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      canEditDisks={() => true}
-      onDiskRole={
-        onSetInstallationDiskId
-          ? async (hostID, diskID, role) => {
-              const agent = agents.find((a) => a.metadata?.uid === obj.id);
-              if (agent && diskID && role === 'install') {
-                await onSetInstallationDiskId?.(agent, diskID);
-              }
-            }
-          : undefined
-      }
     />
   );
 };
