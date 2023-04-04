@@ -25,6 +25,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
   validate,
   idPostfix,
   supportLevel,
+  isDisabled,
   ...props
 }) => {
   const {
@@ -34,6 +35,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
+  const prevIsDisabled = React.useRef(isDisabled);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
   const { t } = useTranslation();
   const { value } = meta;
@@ -55,6 +57,13 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
     prevVersionRef.current = openshiftVersion;
   }, [openshiftVersion, onChanged, featureSupportLevelContext]);
 
+  React.useEffect(() => {
+    if (prevIsDisabled.current !== isDisabled) {
+      onChanged(false);
+    }
+    prevIsDisabled.current = isDisabled;
+  }, [isDisabled, setValue, onChanged]);
+
   if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
     return (
       <FormGroup isInline fieldId={fieldId}>
@@ -75,7 +84,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
                 {t('ai:SNO enables you to install OpenShift using only one host.')}
               </HelperText>
             }
-            isChecked={value === 'None'}
+            isChecked={!isDisabled && value === 'None'}
             onChange={onChanged}
             className="with-tooltip"
           />
