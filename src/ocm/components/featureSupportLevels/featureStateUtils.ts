@@ -3,6 +3,7 @@ import {
   Cluster,
   CpuArchitecture,
   FeatureId,
+  isFeatureNotUnsupportedNotUnavailable,
   isSNO,
   OpenshiftVersionOptionType,
   OperatorsValues,
@@ -179,6 +180,6 @@ export const isFeatureSupported = (
   if (featureId === 'ARM64_ARCHITECTURE') {
     return isArmSupported(versionName, versionOptions);
   } else {
-    return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
+    return isFeatureNotUnsupportedNotUnavailable(supportLevel);
   }
 };

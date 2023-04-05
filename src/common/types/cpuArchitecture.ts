@@ -81,6 +81,8 @@ export const getDisabledReasonForCpuArch = (
   }
 };
 
-export const isFeatureNotUnsupportedNotUnavailable = (supportLevel: SupportLevel): boolean => {
+export const isFeatureNotUnsupportedNotUnavailable = (
+  supportLevel: SupportLevel | undefined,
+): boolean => {
   return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };

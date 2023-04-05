@@ -12,6 +12,7 @@ import {
   FeatureSupportLevels,
   FeatureSupportLevelsMap,
   getDefaultCpuArchitecture,
+  isFeatureNotUnsupportedNotUnavailable,
   SupportLevel,
 } from '../../../common';
 import { handleApiError } from '../../api';
@@ -79,9 +80,7 @@ export const getFeatureSupported = (
     featureSupportLevelsMap,
   );
   return (
-    versionSupportLevels &&
-    versionSupportLevels[featureId] !== 'unsupported' &&
-    versionSupportLevels[featureId] !== 'unavailable'
+    versionSupportLevels && isFeatureNotUnsupportedNotUnavailable(versionSupportLevels[featureId])
   );
 };
 
