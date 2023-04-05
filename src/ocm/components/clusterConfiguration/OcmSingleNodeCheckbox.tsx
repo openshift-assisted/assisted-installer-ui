@@ -34,6 +34,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
+  const prevIsDisabled = React.useRef(props.isDisabled);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
   const { t } = useTranslation();
   const { value } = meta;
@@ -54,6 +55,13 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
     }
     prevVersionRef.current = openshiftVersion;
   }, [openshiftVersion, onChanged, featureSupportLevelContext]);
+
+  React.useEffect(() => {
+    if (prevIsDisabled.current !== props.isDisabled) {
+      onChanged(false);
+    }
+    prevIsDisabled.current = props.isDisabled;
+  }, [props.isDisabled, setValue, onChanged]);
 
   if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
     return (
