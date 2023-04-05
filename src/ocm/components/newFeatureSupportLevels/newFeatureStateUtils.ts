@@ -156,5 +156,5 @@ export const getNewFeatureDisabledReason = (
 };
 
 export const isFeatureSupported = (supportLevel: SupportLevel | undefined) => {
-  return supportLevel !== 'unsupported';
+  return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };

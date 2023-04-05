@@ -179,6 +179,6 @@ export const isFeatureSupported = (
   if (featureId === 'ARM64_ARCHITECTURE') {
     return isArmSupported(versionName, versionOptions);
   } else {
-    return supportLevel !== 'unsupported';
+    return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
   }
 };
