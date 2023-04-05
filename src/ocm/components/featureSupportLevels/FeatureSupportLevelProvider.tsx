@@ -78,7 +78,11 @@ export const getFeatureSupported = (
     openshiftVersion,
     featureSupportLevelsMap,
   );
-  return versionSupportLevels && versionSupportLevels[featureId] !== 'unsupported';
+  return (
+    versionSupportLevels &&
+    versionSupportLevels[featureId] !== 'unsupported' &&
+    versionSupportLevels[featureId] !== 'unavailable'
+  );
 };
 
 export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = ({

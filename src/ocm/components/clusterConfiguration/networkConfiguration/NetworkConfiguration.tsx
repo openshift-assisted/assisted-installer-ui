@@ -261,7 +261,8 @@ const NetworkConfiguration = ({
 
       {!isUserManagedNetworking &&
         !!clusterFeatureSupportLevels &&
-        clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
+        (clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' ||
+          clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unavailable') &&
         vmsAlert}
 
       {(isSNOCluster || !isUserManagedNetworking) && (
