@@ -53,7 +53,7 @@ export const getSupportedCpuArchitectures = (
       ArchitectureSupportLevelId,
       SupportLevel,
     ][]) {
-      if (supportLevel !== 'unsupported' && supportLevel !== 'unavailable') {
+      if (isFeatureNotUnsupportedNotUnavailable(supportLevel)) {
         if (
           (architectureId === 'S390X_ARCHITECTURE' || architectureId === 'PPC64LE_ARCHITECTURE') &&
           canSelectCpuArch
@@ -79,4 +79,10 @@ export const getDisabledReasonForCpuArch = (
   } else {
     return `${cpuArchLabel} is not supported in this OpenShift version`;
   }
+};
+
+export const isFeatureNotUnsupportedNotUnavailable = (
+  supportLevel: SupportLevel | undefined,
+): boolean => {
+  return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };

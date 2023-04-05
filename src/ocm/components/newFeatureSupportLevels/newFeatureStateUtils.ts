@@ -154,7 +154,3 @@ export const getNewFeatureDisabledReason = (
     }
   }
 };
-
-export const isFeatureSupported = (supportLevel: SupportLevel | undefined) => {
-  return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
-};
