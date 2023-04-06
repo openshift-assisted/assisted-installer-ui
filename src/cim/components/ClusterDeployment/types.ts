@@ -53,7 +53,6 @@ export type ClusterDeploymentDetailsProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   usedClusterNames: string[];
-  pullSecret?: string;
   infraEnv?: InfraEnvK8sResource;
 };
 
