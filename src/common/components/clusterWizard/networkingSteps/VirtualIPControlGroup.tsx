@@ -81,13 +81,13 @@ export const VirtualIPControlGroup = ({
     values.vipDhcpAllocation,
   );
   const apiVipHelperText = t(
-    'ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSufix}}',
+    'ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
     {
       vipHelperSuffix: vipHelperSuffix,
     },
   );
   const ingressVipHelperText = t(
-    'ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSufix}}',
+    'ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
     {
       vipHelperSuffix: vipHelperSuffix,
     },
