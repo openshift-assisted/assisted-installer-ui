@@ -33,6 +33,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   onChangeBMHHostname,
   onApproveAgent,
   onDeleteHost,
+  onFormSaveError,
   ...rest
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
