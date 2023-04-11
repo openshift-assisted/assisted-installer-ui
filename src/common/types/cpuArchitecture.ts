@@ -46,6 +46,7 @@ export const getAllCpuArchitectures = (): SupportedCpuArchitecture[] => [
 export const getSupportedCpuArchitectures = (
   canSelectCpuArch: boolean,
   cpuArchitectures: Record<ArchitectureSupportLevelId, SupportLevel> | null,
+  isFeatureSupportedAndAvailable: (supportLevel: SupportLevel | undefined) => boolean,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
   if (cpuArchitectures) {
@@ -53,7 +54,7 @@ export const getSupportedCpuArchitectures = (
       ArchitectureSupportLevelId,
       SupportLevel,
     ][]) {
-      if (supportLevel !== 'unsupported') {
+      if (isFeatureSupportedAndAvailable(supportLevel)) {
         if (
           (architectureId === 'S390X_ARCHITECTURE' || architectureId === 'PPC64LE_ARCHITECTURE') &&
           canSelectCpuArch

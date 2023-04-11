@@ -9,7 +9,10 @@ import {
   SupportLevels,
 } from '../../../common';
 import { useOpenshiftVersions } from '../../hooks';
-import { getNewFeatureDisabledReason, isFeatureSupported } from './newFeatureStateUtils';
+import {
+  getNewFeatureDisabledReason,
+  isFeatureSupportedAndAvailable,
+} from './newFeatureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import {
   NewFeatureSupportLevelContextProvider,
@@ -28,7 +31,7 @@ export type NewSupportLevelProviderProps = PropsWithChildren<{
 }>;
 
 export const getFeatureSupported = (featureSupportLevels: SupportLevels, featureId: FeatureId) => {
-  return featureSupportLevels && featureSupportLevels[featureId] !== 'unsupported';
+  return featureSupportLevels && isFeatureSupportedAndAvailable(featureSupportLevels[featureId]);
 };
 
 export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderProps> = ({
@@ -88,7 +91,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   const isFeatureSupportedCallback = React.useCallback(
     (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
       const supportLevel = getFeatureSupportLevel(featureId, supportLevelDataNew);
-      return isFeatureSupported(supportLevel);
+      return isFeatureSupportedAndAvailable(supportLevel);
     },
     [getFeatureSupportLevel],
   );
