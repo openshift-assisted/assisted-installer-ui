@@ -8,6 +8,7 @@ import {
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
+import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -179,6 +180,6 @@ export const isFeatureSupported = (
   if (featureId === 'ARM64_ARCHITECTURE') {
     return isArmSupported(versionName, versionOptions);
   } else {
-    return supportLevel !== 'unsupported';
+    return isFeatureSupportedAndAvailable(supportLevel);
   }
 };

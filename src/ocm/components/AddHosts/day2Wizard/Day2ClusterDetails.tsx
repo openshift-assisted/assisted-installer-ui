@@ -23,6 +23,7 @@ import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
 import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
+import { isFeatureSupportedAndAvailable } from '../../newFeatureSupportLevels/newFeatureStateUtils';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -64,6 +65,7 @@ const Day2ClusterDetails = () => {
       getSupportedCpuArchitectures(
         canSelectCpuArch,
         cpuArchitectureSupportLevelIdToSupportLevelMap,
+        isFeatureSupportedAndAvailable,
       ),
     [canSelectCpuArch, cpuArchitectureSupportLevelIdToSupportLevelMap],
   );
