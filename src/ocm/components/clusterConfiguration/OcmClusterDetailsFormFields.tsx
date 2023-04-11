@@ -34,6 +34,7 @@ import CpuArchitectureDropdown, {
 } from './CpuArchitectureDropdown';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -97,6 +98,7 @@ export const OcmClusterDetailsFormFields = ({
       getSupportedCpuArchitectures(
         isMultiArchSupported,
         cpuArchitectureSupportLevelIdToSupportLevelMap,
+        isFeatureSupportedAndAvailable,
       ),
     [cpuArchitectureSupportLevelIdToSupportLevelMap, isMultiArchSupported],
   );
