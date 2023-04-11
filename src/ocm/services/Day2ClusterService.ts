@@ -11,6 +11,7 @@ import {
 } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
+import { isFeatureSupportedAndAvailable } from '../components/newFeatureSupportLevels/newFeatureStateUtils';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
@@ -68,6 +69,7 @@ const Day2ClusterService = {
       ? getSupportedCpuArchitectures(
           canSelectCpuArch ? canSelectCpuArch : false,
           supportedCpuArchitectures,
+          isFeatureSupportedAndAvailable,
         )
       : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 
