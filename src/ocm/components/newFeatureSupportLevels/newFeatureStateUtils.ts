@@ -7,6 +7,10 @@ import {
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
+import {
+  architectureData,
+  CpuArchitectureItem,
+} from '../clusterConfiguration/CpuArchitectureDropdown';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -91,8 +95,15 @@ const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfigura
   if (!activeFeatureConfiguration) {
     return undefined;
   }
-  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
-    return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
+  if (activeFeatureConfiguration.underlyingCpuArchitecture) {
+    const cpuArchitectureLabel = (
+      architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
+    ).label;
+    return `${CNV_OPERATOR_LABEL} is not available when ${
+      cpuArchitectureLabel
+        ? cpuArchitectureLabel
+        : activeFeatureConfiguration.underlyingCpuArchitecture
+    } CPU architecture is selected.`;
   }
   return undefined;
 };
