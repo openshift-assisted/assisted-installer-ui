@@ -45,7 +45,7 @@
   "ai:Add host using Baseboard Management Controller (BMC)": "Add host using Baseboard Management Controller (BMC)",
   "ai:Add hosts": "Add hosts",
   "ai:Add hosts by uploading YAML (BMC)": "Add hosts by uploading YAML (BMC)",
-  "ai:Add hosts with {cpuArchitecture} architecture to an <4> infrastructure environment</4>": "Add hosts with {cpuArchitecture} architecture to an <4> infrastructure environment</4>",
+  "ai:Add hosts with {{cpuArchitecture}} architecture to an <4>infrastructure environment</4>": "Add hosts with {{cpuArchitecture}} architecture to an <4>infrastructure environment</4>",
   "ai:Add label": "Add label",
   "ai:Add more": "Add more",
   "ai:Add Nodepool": "Add Nodepool",
