@@ -42,6 +42,7 @@ export type CimConfigurationModalProps = {
   docDisconnectedUrl: string;
   docConfigUrl: string;
   docConfigAwsUrl: string;
+  ingressControllersUrl?: string;
 
   createResource: CreateResourceFuncType;
   getResource: GetResourceFuncType;
