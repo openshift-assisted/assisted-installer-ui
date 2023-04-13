@@ -29,7 +29,9 @@ const disabledTabResult = (tooltipMessage: string) => ({
 });
 
 export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) => {
-  const isHiddenTab = cluster.state !== 'ready' || cluster.product?.id !== 'OCP-AssistedInstall';
+  const isHiddenTab =
+    (cluster.state !== 'ready' && cluster.state !== 'installed') ||
+    cluster.product?.id !== 'OCP-AssistedInstall';
   if (isHiddenTab) {
     return hiddenTabResult;
   }
