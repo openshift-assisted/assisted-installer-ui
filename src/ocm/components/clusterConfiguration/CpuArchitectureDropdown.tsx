@@ -10,10 +10,7 @@ import {
   getFieldId,
   SupportedCpuArchitecture,
 } from '../../../common';
-import {
-  NewFeatureSupportLevelData,
-  useNewFeatureSupportLevel,
-} from '../../../common/components/newFeatureSupportLevels';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 export type CpuArchitectureItem = {
   description: string;
@@ -45,16 +42,6 @@ export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureI
 
 const INPUT_NAME = 'cpuArchitecture';
 const fieldId = getFieldId(INPUT_NAME, 'input');
-
-const getInvalidCombinationReason = (
-  featureSupportLevels: NewFeatureSupportLevelData,
-  cpuArchitecture: SupportedCpuArchitecture,
-) => {
-  const { featureSupportLevelId } = architectureData[cpuArchitecture];
-  return featureSupportLevels && featureSupportLevelId
-    ? featureSupportLevels.getFeatureDisabledReason(featureSupportLevelId)
-    : undefined;
-};
 
 type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
@@ -106,15 +93,9 @@ const CpuArchitectureDropdown = ({
 
   React.useEffect(() => {
     if (prevVersionRef.current !== openshiftVersion) {
-      const invalidCombinationReason = getInvalidCombinationReason(
-        featureSupportLevels,
-        selectedCpuArchitecture,
-      );
-      if (invalidCombinationReason) {
-        setValue(getDefaultCpuArchitecture());
-        setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
-        setOpen(false);
-      }
+      setValue(getDefaultCpuArchitecture());
+      setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
+      setOpen(false);
     }
     prevVersionRef.current = openshiftVersion;
   }, [featureSupportLevels, openshiftVersion, selectedCpuArchitecture, setValue, setOpen]);
