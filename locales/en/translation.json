@@ -282,7 +282,7 @@
   "ai:Failed to add host": "Failed to add host",
   "ai:Failed to add host by YAML": "Failed to add host by YAML",
   "ai:Failed to add hosts to the cluster": "Failed to add hosts to the cluster",
-  "ai:Failed to configure provisioning.": "Failed to configure provisioning.",
+  "ai:Failed to configure provisioning to enable registering hosts via BMC.": "Failed to configure provisioning to enable registering hosts via BMC.",
   "ai:Failed to create AgentServiceConfig": "Failed to create AgentServiceConfig",
   "ai:Failed to create IngressController": "Failed to create IngressController",
   "ai:Failed to delete host": "Failed to delete host",
