@@ -7,10 +7,14 @@ import {
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
+<<<<<<< HEAD
 import {
   architectureData,
   CpuArchitectureItem,
 } from '../clusterConfiguration/CpuArchitectureDropdown';
+=======
+import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
+>>>>>>> f1c2d7ff (CNV will be disabled for P/Z clusters)
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
