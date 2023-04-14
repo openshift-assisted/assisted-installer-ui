@@ -57,6 +57,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
         cidr: string;
       }[];
       userManagedNetworking?: boolean;
+      networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
     };
     holdInstallation?: boolean;
     platformType: string;

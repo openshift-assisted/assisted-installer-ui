@@ -23,8 +23,8 @@ const NoAgentsAlert = ({ cpuArchitecture }: { cpuArchitecture: CpuArchitecture }
       <List component={ListComponent.ol}>
         <ListItem>
           <Trans t={t} cpuArchitecture={cpuArchitecture}>
-            ai:Add hosts with {cpuArchitecture} architecture to an{' '}
-            <Link to="/multicloud/infrastructure/environments"> infrastructure environment</Link>
+            ai:Add hosts with {{ cpuArchitecture }} architecture to an{' '}
+            <Link to="/multicloud/infrastructure/environments">infrastructure environment</Link>
           </Trans>
         </ListItem>
         <ListItem>

@@ -20,7 +20,7 @@ import {
   getAgentSelectorFieldsFromAnnotations,
   getClusterDeploymentCpuArchitecture,
 } from '../helpers/clusterDeployment';
-import { ScaleUpFormValues } from '../ClusterDeployment/types';
+import { AgentTableActions, ScaleUpFormValues } from '../ClusterDeployment/types';
 import EditAgentModal from './EditAgentModal';
 import { getAgentsHostsNames } from '../ClusterDeployment/helpers';
 import { getErrorMessage } from '../../../common/utils';
@@ -57,6 +57,7 @@ type ScaleUpModalProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agents: AgentK8sResource[];
   onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
+  onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
 };
 
 const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
@@ -66,6 +67,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   clusterDeployment,
   agents,
   onChangeHostname,
+  onSetInstallationDiskId,
 }) => {
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
   const [error, setError] = React.useState<string | undefined>();
@@ -132,7 +134,11 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                 <ModalBoxBody>
                   <Stack hasGutter>
                     <StackItem>
-                      <ScaleUpForm agents={agents} onEditHost={setEditAgent} />
+                      <ScaleUpForm
+                        agents={agents}
+                        onEditHost={setEditAgent}
+                        onSetInstallationDiskId={onSetInstallationDiskId}
+                      />
                     </StackItem>
                     {error && (
                       <StackItem>

@@ -4,22 +4,13 @@ import { useFormikContext } from 'formik';
 import { InputField } from '../../components/ui';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
-import { NetworkTypeControlGroup } from '../clusterWizard/networkingSteps/NetworkTypeControlGroup';
-import { useFeature } from '../../features';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type AdvancedNetworkFieldsProps = {
-  isSDNSelectable: boolean;
   isClusterCIDRIPv6: boolean;
 };
 
-const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({
-  isSDNSelectable,
-  isClusterCIDRIPv6,
-}) => {
-  const isNetworkTypeSelectionEnabled = useFeature(
-    'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
-  );
+const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isClusterCIDRIPv6 }) => {
   const { setFieldValue, values } = useFormikContext<NetworkConfigurationValues>();
   const clusterNetworkCidrPrefix = parseInt((values.clusterNetworkCidr || '').split('/')[1]) || 1;
   const { t } = useTranslation();
@@ -65,9 +56,6 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({
         )}
         isRequired
       />
-      {isNetworkTypeSelectionEnabled && (
-        <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
-      )}
     </Grid>
   );
 };
