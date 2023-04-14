@@ -1,8 +1,8 @@
 import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
 import { CheckboxField } from '../ui';
-import { SupportLevel } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { SupportLevel } from '../../api/types';
 
 type SNODisclaimerProps = {
   snoSupportLevel: SupportLevel;

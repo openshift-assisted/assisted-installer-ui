@@ -47,6 +47,8 @@ export const getAgentClusterInstall = ({
       name: values.name,
       namespace,
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     spec: {
       holdInstallation: true,
       clusterDeploymentRef: clusterDeploymentName

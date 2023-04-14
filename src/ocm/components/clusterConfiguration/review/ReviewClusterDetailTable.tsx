@@ -1,16 +1,12 @@
 import React from 'react';
 import { Table, TableBody, TableVariant } from '@patternfly/react-table';
-import {
-  Cluster,
-  genericTableRowKey,
-  getDefaultCpuArchitecture,
-  useFeatureSupportLevel,
-} from '../../../../common';
+import { Cluster, genericTableRowKey, getDefaultCpuArchitecture } from '../../../../common';
 import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
 import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
-  const { activeFeatureConfiguration } = useFeatureSupportLevel();
+  const { activeFeatureConfiguration } = useNewFeatureSupportLevel();
 
   const rows = React.useMemo(() => {
     const cpuArchitecture =

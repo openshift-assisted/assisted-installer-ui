@@ -84,14 +84,14 @@ const DownloadIpxeScript = ({
         >
           {t('ai:Download script file')}
         </Button>
-        <Button variant={ButtonVariant.secondary} onClick={onReset} data-testid="close-ipxe-btn">
-          {t('ai:Back')}
-        </Button>
         {onReset && (
-          <Button variant={ButtonVariant.link} onClick={onClose} data-testid="edit-ipxe-btn">
-            {t('ai:Cancel')}
+          <Button variant={ButtonVariant.secondary} onClick={onReset} data-testid="close-ipxe-btn">
+            {t('ai:Back')}
           </Button>
         )}
+        <Button variant={ButtonVariant.link} onClick={onClose} data-testid="edit-ipxe-btn">
+          {t('ai:Cancel')}
+        </Button>
       </ModalBoxFooter>
     </>
   );
