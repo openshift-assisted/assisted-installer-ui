@@ -95,17 +95,14 @@ const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfigura
   if (!activeFeatureConfiguration) {
     return undefined;
   }
-  if (activeFeatureConfiguration.underlyingCpuArchitecture) {
-    const cpuArchitectureLabel = (
-      architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
-    ).label;
-    return `${CNV_OPERATOR_LABEL} is not available when ${
-      cpuArchitectureLabel
-        ? cpuArchitectureLabel
-        : activeFeatureConfiguration.underlyingCpuArchitecture
-    } CPU architecture is selected.`;
-  }
-  return undefined;
+  const cpuArchitectureLabel = (
+    architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
+  ).label;
+  return `${CNV_OPERATOR_LABEL} is not available when ${
+    cpuArchitectureLabel
+      ? cpuArchitectureLabel
+      : activeFeatureConfiguration.underlyingCpuArchitecture
+  } CPU architecture is selected.`;
 };
 
 const getLvmDisabledReason = (
