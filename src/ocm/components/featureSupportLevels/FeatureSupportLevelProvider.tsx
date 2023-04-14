@@ -20,6 +20,7 @@ import { captureException } from '../../sentry';
 import { useOpenshiftVersions } from '../../hooks';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
+import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
 
 export type SupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -78,7 +79,7 @@ export const getFeatureSupported = (
     openshiftVersion,
     featureSupportLevelsMap,
   );
-  return versionSupportLevels && versionSupportLevels[featureId] !== 'unsupported';
+  return versionSupportLevels && isFeatureSupportedAndAvailable(versionSupportLevels[featureId]);
 };
 
 export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = ({
