@@ -18,7 +18,7 @@ export const NetworkTypeControlGroup = ({
 }: NetworkTypeControlGroupProps) => {
   const { t } = useTranslation();
   return (
-    <FormGroup isInline fieldId={GROUP_NAME} label="Network type">
+    <FormGroup isInline fieldId={GROUP_NAME} label={t('ai:Network type')}>
       <Split>
         <SplitItem>
           <Tooltip
@@ -38,9 +38,9 @@ export const NetworkTypeControlGroup = ({
         </SplitItem>
         <SplitItem>
           <PopoverIcon
-            bodyContent={
-              "The next generation networking type, select this when you're using new features and telco features"
-            }
+            bodyContent={t(
+              "ai:The next generation networking type, select this when you're using new features and telco features",
+            )}
             buttonStyle={{ top: '-4px' }}
           />
         </SplitItem>
@@ -64,7 +64,7 @@ export const NetworkTypeControlGroup = ({
         </SplitItem>
         <SplitItem>
           <PopoverIcon
-            bodyContent={'The classic bullet-proof networking type'}
+            bodyContent={t('ai:The classic bullet-proof networking type')}
             buttonStyle={{ top: '-4px' }}
           />
         </SplitItem>
