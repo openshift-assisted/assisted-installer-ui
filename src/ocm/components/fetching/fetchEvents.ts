@@ -8,8 +8,8 @@ export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
   onError,
 ) => {
   try {
-    const { data } = await EventsAPI.list(props);
-    onSuccess(data);
+    const response = await EventsAPI.list(props);
+    onSuccess(response);
   } catch (error) {
     handleApiError(error, () => {
       onError('Failed to load events');

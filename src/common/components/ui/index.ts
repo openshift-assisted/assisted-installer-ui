@@ -19,7 +19,6 @@ export { default as ExternalLink } from './ExternalLink';
 export { default as PrismCode } from './PrismCode';
 export { default as GridGap } from './GridGap';
 export { default as EventsList } from './EventsList';
-export { default as ClusterEventsList } from './ClusterEventsList';
 export { default as ClusterEventsToolbar } from './ClusterEventsToolbar';
 export { default as ModalProgress } from './ModalProgress';
 export { default as ConfirmationModal } from './ConfirmationModal';
