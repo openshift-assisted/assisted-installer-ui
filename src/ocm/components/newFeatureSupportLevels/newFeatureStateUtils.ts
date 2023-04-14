@@ -91,18 +91,25 @@ const getOdfDisabledReason = (
   return undefined;
 };
 
-const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfiguration) => {
+const getCnvDisabledReason = (
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  isSupported: boolean,
+) => {
   if (!activeFeatureConfiguration) {
     return undefined;
   }
-  const cpuArchitectureLabel = (
-    architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
-  ).label;
-  return `${CNV_OPERATOR_LABEL} is not available when ${
-    cpuArchitectureLabel
-      ? cpuArchitectureLabel
-      : activeFeatureConfiguration.underlyingCpuArchitecture
-  } CPU architecture is selected.`;
+  if (!isSupported) {
+    const cpuArchitectureLabel = (
+      architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
+    ).label;
+    return `${CNV_OPERATOR_LABEL} is not available when ${
+      cpuArchitectureLabel
+        ? cpuArchitectureLabel
+        : activeFeatureConfiguration.underlyingCpuArchitecture
+    } CPU architecture is selected.`;
+  } else {
+    return undefined;
+  }
 };
 
 const getLvmDisabledReason = (
@@ -143,7 +150,7 @@ export const getNewFeatureDisabledReason = (
       return getArmDisabledReason(cluster);
     }
     case 'CNV': {
-      return getCnvDisabledReason(activeFeatureConfiguration);
+      return getCnvDisabledReason(activeFeatureConfiguration, isSupported);
     }
     case 'LVM': {
       return getLvmDisabledReason(activeFeatureConfiguration, isSupported);
