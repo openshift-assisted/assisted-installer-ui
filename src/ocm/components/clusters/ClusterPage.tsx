@@ -22,7 +22,6 @@ import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
 import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { routeBasePath } from '../../config';
-import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
@@ -32,6 +31,7 @@ import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
+import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
 
 type MatchParams = {
   clusterId: string;
@@ -161,7 +161,12 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
               loadingUI={<ClusterLoading />}
               errorUI={<ClusterUiError />}
             >
-              <FeatureSupportLevelProvider loadingUi={<ClusterLoading />} cluster={cluster}>
+              <NewFeatureSupportLevelProvider
+                loadingUi={<ClusterLoading />}
+                cluster={cluster}
+                cpuArchitecture={infraEnv.cpuArchitecture}
+                openshiftVersion={cluster.openshiftVersion}
+              >
                 {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
                 <RebootNodeZeroModal cluster={cluster} />
                 */}
@@ -171,7 +176,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
                 <CancelInstallationModal />
                 <ResetClusterModal />
                 <DiscoveryImageModal />
-              </FeatureSupportLevelProvider>
+              </NewFeatureSupportLevelProvider>
             </ClusterDefaultConfigurationProvider>
           </ModalDialogsContextProvider>
         </SentryErrorMonitorContextProvider>

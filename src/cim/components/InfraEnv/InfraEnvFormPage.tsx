@@ -108,12 +108,24 @@ const initialValues: EnvironmentStepFormValues = {
 
 type InfraEnvFormProps = {
   onValuesChanged?: (values: EnvironmentStepFormValues) => void;
+  pullSecret?: string;
+  sshPublicKey?: string;
 };
 
-const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
-  const { values } = useFormikContext<EnvironmentStepFormValues>();
+const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
+  onValuesChanged,
+  children,
+  pullSecret,
+  sshPublicKey,
+}) => {
+  const { values, setFieldValue } = useFormikContext<EnvironmentStepFormValues>();
   const { t } = useTranslation();
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
+  React.useEffect(() => {
+    setFieldValue('pullSecret', pullSecret);
+    setFieldValue('sshPublicKey', sshPublicKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pullSecret, sshPublicKey]);
   return (
     <Stack hasGutter>
       <StackItem>
@@ -220,6 +232,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
             )}
           />
           <LabelField label={t('ai:Labels')} name="labels" />
+          {children}
           <PullSecretField isOcm={false} />
           <UploadSSH />
           <ProxyFields />
@@ -259,6 +272,8 @@ type InfraEnvFormPageProps = InfraEnvFormProps & {
   onFinish?: (values: EnvironmentStepFormValues) => void;
   onClose?: VoidFunction;
   formRef: React.Ref<FormikProps<EnvironmentStepFormValues>>;
+  pullSecret?: string;
+  sshPublicKey?: string;
 };
 
 export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
@@ -266,8 +281,9 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
   onSubmit,
   onClose,
   onFinish,
-  onValuesChanged,
   formRef,
+  children,
+  ...rest
 }) => {
   const [error, setError] = React.useState<string | undefined>();
   const { t } = useTranslation();
@@ -297,12 +313,12 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   </Title>
                 </GridItem>
                 <GridItem>
-                  <InfraEnvForm onValuesChanged={onValuesChanged} />
+                  <InfraEnvForm {...rest}>{children}</InfraEnvForm>
                 </GridItem>
               </Grid>
             ) : (
               <div className="infra-env__form">
-                <InfraEnvForm onValuesChanged={onValuesChanged} />
+                <InfraEnvForm {...rest}>{children}</InfraEnvForm>
               </div>
             )}
           </StackItem>

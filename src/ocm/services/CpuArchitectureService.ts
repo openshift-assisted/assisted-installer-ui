@@ -3,9 +3,12 @@ import {
   CpuArchitecture,
   OcmCpuArchitecture,
   getDefaultCpuArchitecture,
+  SupportedCpuArchitecture,
 } from '../../common';
 
-const mapOcmArchToCpuArchitecture = (ocmArch: OcmCpuArchitecture | string): CpuArchitecture => {
+const mapOcmArchToCpuArchitecture = (
+  ocmArch: OcmCpuArchitecture | string,
+): Exclude<CpuArchitecture, CpuArchitecture.USE_DAY1_ARCHITECTURE> | undefined => {
   switch (ocmArch) {
     case OcmCpuArchitecture.x86:
       return CpuArchitecture.x86;
@@ -18,7 +21,7 @@ const mapOcmArchToCpuArchitecture = (ocmArch: OcmCpuArchitecture | string): CpuA
     case OcmCpuArchitecture.MULTI:
       return getDefaultCpuArchitecture();
     default:
-      throw new Error(`Unknown OCM CPU architecture: ${ocmArch}`);
+      return undefined;
   }
 };
 
@@ -30,7 +33,7 @@ const mapOcmArchToCpuArchitecture = (ocmArch: OcmCpuArchitecture | string): CpuA
  */
 const mapClusterCpuArchToInfraEnvCpuArch = (
   clusterCpuArchitecture: Cluster['cpuArchitecture'] | OcmCpuArchitecture,
-): CpuArchitecture => {
+): SupportedCpuArchitecture => {
   switch (clusterCpuArchitecture) {
     case CpuArchitecture.ARM:
     case OcmCpuArchitecture.ARM:

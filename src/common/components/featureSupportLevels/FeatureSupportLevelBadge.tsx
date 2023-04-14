@@ -1,5 +1,6 @@
 import React from 'react';
-import { FeatureId, SupportLevel, isPreviewSupportLevel } from '../../types';
+import { SupportLevel } from '../../api/types';
+import { FeatureId, isPreviewSupportLevel } from '../../types';
 import { TechnologyPreview, DeveloperPreview } from '../ui/PreviewBadge';
 import { useFeatureSupportLevel } from './FeatureSupportLevelContext';
 
@@ -13,10 +14,12 @@ const FeatureSupportLevelBadge: React.FC<SupportLevelBadgeProps> = ({
   openshiftVersion,
 }) => {
   const featureSupportLevelData = useFeatureSupportLevel();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const supportLevel: SupportLevel | undefined = React.useMemo(() => {
     if (!openshiftVersion) {
       return undefined;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return featureSupportLevelData.getFeatureSupportLevel(openshiftVersion, featureId);
   }, [openshiftVersion, featureId, featureSupportLevelData]);
   if (!isPreviewSupportLevel(supportLevel)) {

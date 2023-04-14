@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { OcmSwitchField } from '../../ui/OcmFormFields';
-import { Cluster, PopoverIcon, useFeatureSupportLevel } from '../../../../common';
+import { Cluster, PopoverIcon } from '../../../../common';
 import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
 import PlatformIntegrationVsphere from './PlatformIntegrationVsphere';
 import { SplitItem, Text } from '@patternfly/react-core';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 type KeyType = Record<SupportedPlatformIntegrationType, string>;
 
@@ -27,21 +28,12 @@ const messages: KeyType = {
   nutanix: nutanixPlatformMessage,
 };
 
-const PlatformIntegration = ({
-  clusterId,
-  openshiftVersion,
-}: {
-  clusterId: Cluster['id'];
-  openshiftVersion: Cluster['openshiftVersion'];
-}) => {
+const PlatformIntegration = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
 
-  const featureSupportLevels = useFeatureSupportLevel();
-  const isNutanixFeatureSupported = featureSupportLevels.isFeatureSupported(
-    openshiftVersion || '',
-    'NUTANIX_INTEGRATION',
-  );
+  const featureSupportLevels = useNewFeatureSupportLevel();
+  const isNutanixFeatureSupported = featureSupportLevels.isFeatureSupported('NUTANIX_INTEGRATION');
 
   return (
     <>

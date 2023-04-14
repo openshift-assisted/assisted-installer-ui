@@ -12,13 +12,15 @@ import {
   operatorLabels,
   useAlerts,
   OperatorName,
-  FeatureSupportLevelData,
-  useFeatureSupportLevel,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ocmClient } from '../../api';
+import {
+  NewFeatureSupportLevelData,
+  useNewFeatureSupportLevel,
+} from '../../../common/components/newFeatureSupportLevels';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;
@@ -34,11 +36,11 @@ type InstallationProgressWarningProps = {
 const getFailedOperatorsNames = (
   failedOperators: MonitoredOperator[],
   openshiftVersion: Cluster['openshiftVersion'],
-  featureSupportLevel: FeatureSupportLevelData,
+  featureSupportLevel: NewFeatureSupportLevelData,
   t: TFunction,
 ): string => {
   let failedOperatorsNames = '';
-  const translatedOperatorLabels = operatorLabels(t, openshiftVersion, featureSupportLevel);
+  const translatedOperatorLabels = operatorLabels(t, featureSupportLevel);
   for (let i = 0; i < failedOperators.length; i++) {
     const operatorName = (failedOperators[i].name as OperatorName) || '';
     const operatorLabel: string = (operatorName && translatedOperatorLabels[operatorName]) || '';
@@ -93,7 +95,7 @@ export const HostInstallationWarning = ({
 }: InstallationProgressWarningProps) => {
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
-  const featureSupportLevel = useFeatureSupportLevel();
+  const featureSupportLevel = useNewFeatureSupportLevel();
 
   return (
     <>

@@ -9,7 +9,6 @@ import {
   ManagedDomain,
   OpenshiftVersionOptionType,
   PullSecret,
-  SNOControlGroup,
   ocmClusterNameValidationMessages,
   uniqueOcmClusterNameValidationMessages,
   CLUSTER_NAME_MAX_LENGTH,
@@ -33,7 +32,9 @@ import CpuArchitectureDropdown, {
   architectureData,
   CpuArchitectureItem,
 } from './CpuArchitectureDropdown';
-import useArchitectureSupportLevels from '../../hooks/useArchitecturesSupportLevels';
+import OcmSNOControlGroup from './OcmSNOControlGroup';
+import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -83,16 +84,28 @@ export const OcmClusterDetailsFormFields = ({
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
-  const cpuArchitectureSupportLevelIdToSupportLevelMap =
-    useArchitectureSupportLevels(openshiftVersion);
+  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
+    'architectures',
+    openshiftVersion,
+  );
+  const featureSupportLevelData = useSupportLevelsAPI(
+    'features',
+    values.openshiftVersion,
+    values.cpuArchitecture,
+  );
   const cpuArchitectures = React.useMemo(
     () =>
       getSupportedCpuArchitectures(
         isMultiArchSupported,
         cpuArchitectureSupportLevelIdToSupportLevelMap,
+        isFeatureSupportedAndAvailable,
       ),
     [cpuArchitectureSupportLevelIdToSupportLevelMap, isMultiArchSupported],
   );
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const cpuArchitecture = (architectureData[values.cpuArchitecture] as CpuArchitectureItem).label;
 
   return (
     <Form id="wizard-cluster-details__form">
@@ -152,7 +165,7 @@ export const OcmClusterDetailsFormFields = ({
       )}
       {clusterExists ? (
         <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
-          {(architectureData[values.cpuArchitecture] as CpuArchitectureItem).label}
+          {cpuArchitecture}
         </StaticTextField>
       ) : (
         <CpuArchitectureDropdown
@@ -160,7 +173,10 @@ export const OcmClusterDetailsFormFields = ({
           cpuArchitectures={cpuArchitectures}
         />
       )}
-      <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
+      <OcmSNOControlGroup
+        highAvailabilityMode={highAvailabilityMode}
+        featureSupportLevelData={featureSupportLevelData ?? undefined}
+      />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 

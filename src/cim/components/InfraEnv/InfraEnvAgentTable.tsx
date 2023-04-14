@@ -59,6 +59,7 @@ const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters 
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
+  agentMachines,
   getClusterDeploymentLink,
   bareMetalHosts,
   infraEnv,
@@ -134,7 +135,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           onApprove: onApprove,
           t,
         }),
-        clusterColumn(agents, getClusterDeploymentLink, t),
+        clusterColumn(agents, agentMachines, getClusterDeploymentLink, t),
         discoveredAtColumn,
         cpuCoresColumn,
         memoryColumn,
@@ -143,6 +144,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     [
       hosts,
       agents,
+      agentMachines,
       onEditHost,
       onApprove,
       getClusterDeploymentLink,

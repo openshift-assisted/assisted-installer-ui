@@ -4,21 +4,15 @@ import {
   CpuArchitecture,
   FeatureId,
   isSNO,
-  OpenshiftVersionOptionType,
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
-import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
 
-const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
-  const versionOption = versionOptions.find((option) => option.value === versionName);
-  return !!versionOption?.cpuArchitectures?.includes(CpuArchitecture.ARM);
-};
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
 export const getCnvIncompatibleWithLvmReason = (
@@ -62,18 +56,10 @@ const getSNODisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return '';
 };
 
-const getArmDisabledReason = (
-  cluster: Cluster | undefined,
-  versionName: string,
-  versionOptions: OpenshiftVersionOptionType[],
-) => {
+const getArmDisabledReason = (cluster: Cluster | undefined) => {
   if (cluster) {
     return clusterExistsReason;
-  }
-  if (!isArmSupported(versionName, versionOptions)) {
-    return 'arm64 is not supported in this OpenShift version';
-  }
-  return undefined;
+  } else return 'arm64 is not supported in this OpenShift version';
 };
 
 const getOdfDisabledReason = (
@@ -135,12 +121,10 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
   return undefined;
 };
 
-export const getFeatureDisabledReason = (
+export const getNewFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration,
-  versionName: string,
-  versionOptions: OpenshiftVersionOptionType[],
   isSupported: boolean,
 ): string | undefined => {
   switch (featureId) {
@@ -148,7 +132,7 @@ export const getFeatureDisabledReason = (
       return getSNODisabledReason(cluster, isSupported);
     }
     case 'ARM64_ARCHITECTURE': {
-      return getArmDisabledReason(cluster, versionName, versionOptions);
+      return getArmDisabledReason(cluster);
     }
     case 'CNV': {
       return getCnvDisabledReason(activeFeatureConfiguration);
@@ -171,15 +155,6 @@ export const getFeatureDisabledReason = (
   }
 };
 
-export const isFeatureSupported = (
-  versionName: string,
-  featureId: FeatureId,
-  supportLevel: SupportLevel | undefined,
-  versionOptions: OpenshiftVersionOptionType[],
-) => {
-  if (featureId === 'ARM64_ARCHITECTURE') {
-    return isArmSupported(versionName, versionOptions);
-  } else {
-    return isFeatureSupportedAndAvailable(supportLevel);
-  }
+export const isFeatureSupportedAndAvailable = (supportLevel: SupportLevel | undefined): boolean => {
+  return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };

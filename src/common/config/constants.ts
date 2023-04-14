@@ -4,6 +4,7 @@ import { ValidationsInfo, HostRole } from '../types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
+import { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
@@ -308,13 +309,28 @@ export const ExposedOperatorNames = [
 export type OperatorName = typeof OperatorNames[number];
 export type ExposedOperatorName = typeof ExposedOperatorNames[number];
 
-export const operatorLabels = (
+export const operatorLabelsCim = (
   t: TFunction,
   openshiftVersion: Cluster['openshiftVersion'],
   featureSupportLevel: FeatureSupportLevelData,
 ): { [key in ExposedOperatorName]: string } => {
   const useLVMS =
     featureSupportLevel.getFeatureSupportLevel(openshiftVersion || '', 'LVM') === 'supported';
+
+  return {
+    [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
+    [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
+    [OPERATOR_NAME_LVM]: useLVMS
+      ? t('ai:Logical Volume Manager Storage')
+      : t('ai:Logical Volume Manager'),
+  };
+};
+
+export const operatorLabels = (
+  t: TFunction,
+  featureSupportLevel: NewFeatureSupportLevelData,
+): { [key in ExposedOperatorName]: string } => {
+  const useLVMS = featureSupportLevel.getFeatureSupportLevel('LVM') === 'supported';
 
   return {
     [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),

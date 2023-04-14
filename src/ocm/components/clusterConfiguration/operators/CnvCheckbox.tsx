@@ -8,11 +8,11 @@ import {
   getFieldId,
   OperatorsValues,
   PopoverIcon,
-  useFeatureSupportLevel,
 } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
 import { getCnvIncompatibleWithLvmReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 
@@ -48,24 +48,21 @@ const CnvHelperText = () => {
   );
 };
 
-const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
+const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
-  const featureSupportLevel = useFeatureSupportLevel();
+  const featureSupportLevel = useNewFeatureSupportLevel();
   const { values } = useFormikContext<OperatorsValues>();
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
-    let reason = undefined;
-    if (openshiftVersion) {
-      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'CNV');
-      if (!reason) {
-        const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
-        reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
-      }
+    let reason = featureSupportLevel.getFeatureDisabledReason('CNV');
+    if (!reason) {
+      const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
+      reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
     }
     setDisabledReason(reason);
-  }, [values, openshiftVersion, featureSupportLevel]);
+  }, [values, featureSupportLevel]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
