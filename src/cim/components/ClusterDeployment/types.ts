@@ -61,6 +61,9 @@ export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
 export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
   enableProxy: boolean;
   editProxy: boolean;
+  httpProxy?: string;
+  httpsProxy?: string;
+  noProxy?: string;
 };
 export type ClusterDeploymentHostsSelectionValues = {
   autoSelectHosts: boolean;
