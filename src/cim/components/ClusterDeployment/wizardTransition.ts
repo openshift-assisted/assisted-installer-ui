@@ -95,7 +95,7 @@ export const allClusterWizardSoftValidationIds =
   getAllClusterWizardSoftValidationIds(wizardStepsValidationsMap);
 
 const canNextFromClusterDeploymentWizardStep = (
-  agentClusterInstall: AgentClusterInstallK8sResource,
+  agentClusterInstall: AgentClusterInstallK8sResource | undefined,
   agents: AgentK8sResource[],
   wizardStepId: ClusterDeploymentWizardStepsType,
 ) => {
@@ -127,7 +127,7 @@ export const canNextFromHostSelectionStep = (
 ) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'hosts-selection');
 
 export const canNextFromHostDiscoveryStep = (
-  agentClusterInstall: AgentClusterInstallK8sResource,
+  agentClusterInstall: AgentClusterInstallK8sResource | undefined,
   agents: AgentK8sResource[],
 ) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'hosts-discovery');
 

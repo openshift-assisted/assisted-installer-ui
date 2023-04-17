@@ -220,6 +220,7 @@ export type ClusterDeploymentHostsDiscoveryProps = AddHostDropdownProps & {
   bareMetalHosts: BareMetalHostK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   infraNMStates: NMStateK8sResource[];
+  onFormSaveError?: EditAgentModalProps['onFormSaveError'];
 
   onSaveAgent: EditAgentModalProps['onSave'];
   onEditRole: ClusterDeploymentHostDiscoveryTableProps['onEditRole'];

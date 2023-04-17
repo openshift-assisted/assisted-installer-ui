@@ -10,7 +10,7 @@ type NodePoolAgentsFormProps = {
   labelName: string;
   countName: string;
   maxAgents: number;
-  isEdit: boolean;
+  isEdit?: boolean;
 };
 
 const NodePoolAgentsForm = ({
