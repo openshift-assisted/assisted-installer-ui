@@ -1,6 +1,7 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
+import { getErrorMessage } from '../../../../common/utils';
 
 import {
   AgentServiceConfigK8sResource,
@@ -205,7 +206,7 @@ const patchProvisioningConfiguration = async ({
   setError: SetErrorFuncType;
   patchResource: PatchResourceFuncType;
   getResource: GetResourceFuncType;
-}): Promise<boolean> => {
+}) => {
   try {
     const provisioning = (await getResource({
       kind: 'Provisioning',
@@ -224,13 +225,13 @@ const patchProvisioningConfiguration = async ({
     ];
 
     await patchResource(convertOCPtoCIMResourceHeader(provisioning), patches);
-    return true;
   } catch (e) {
     console.error('Failed to patch provisioning-configuration: ', e);
     setError({
-      title: t('ai:Failed to configure provisioning.'),
+      title: t('ai:Failed to configure provisioning to enable registering hosts via BMC.'),
+      message: getErrorMessage(e),
+      variant: AlertVariant.warning,
     });
-    return false;
   }
 };
 
@@ -291,6 +292,7 @@ const createAgentServiceConfig = async ({
     console.error('Failed to create AgentServiceConfig: ', e);
     setError({
       title: t('ai:Failed to create AgentServiceConfig'),
+      message: getErrorMessage(e),
     });
     return false;
   }
@@ -384,9 +386,7 @@ export const onEnableCIM = async ({
   configureLoadBalancer: boolean;
 }) => {
   if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
-    if (!(await patchProvisioningConfiguration({ t, setError, patchResource, getResource }))) {
-      return false;
-    }
+    await patchProvisioningConfiguration({ t, setError, patchResource, getResource });
   }
 
   if (agentServiceConfig) {

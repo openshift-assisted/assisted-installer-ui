@@ -7,6 +7,10 @@ import {
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
+import {
+  architectureData,
+  CpuArchitectureItem,
+} from '../clusterConfiguration/CpuArchitectureDropdown';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -87,14 +91,25 @@ const getOdfDisabledReason = (
   return undefined;
 };
 
-const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfiguration) => {
+const getCnvDisabledReason = (
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  isSupported: boolean,
+) => {
   if (!activeFeatureConfiguration) {
     return undefined;
   }
-  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
-    return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
+  if (!isSupported) {
+    const cpuArchitectureLabel = (
+      architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
+    ).label;
+    return `${CNV_OPERATOR_LABEL} is not available when ${
+      cpuArchitectureLabel
+        ? cpuArchitectureLabel
+        : activeFeatureConfiguration.underlyingCpuArchitecture
+    } CPU architecture is selected.`;
+  } else {
+    return undefined;
   }
-  return undefined;
 };
 
 const getLvmDisabledReason = (
@@ -135,7 +150,7 @@ export const getNewFeatureDisabledReason = (
       return getArmDisabledReason(cluster);
     }
     case 'CNV': {
-      return getCnvDisabledReason(activeFeatureConfiguration);
+      return getCnvDisabledReason(activeFeatureConfiguration, isSupported);
     }
     case 'LVM': {
       return getLvmDisabledReason(activeFeatureConfiguration, isSupported);
@@ -155,6 +170,6 @@ export const getNewFeatureDisabledReason = (
   }
 };
 
-export const isFeatureSupported = (supportLevel: SupportLevel | undefined) => {
-  return supportLevel !== 'unsupported';
+export const isFeatureSupportedAndAvailable = (supportLevel: SupportLevel | undefined): boolean => {
+  return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };

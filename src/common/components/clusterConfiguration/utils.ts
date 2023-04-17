@@ -164,15 +164,10 @@ export const clusterNetworksEqual = (array1: ClusterNetwork[], array2: ClusterNe
     ),
   );
 
-export const isAdvNetworkConf = (
-  cluster: Cluster,
-  defaultNetworkSettings: ClusterDefaultConfig,
-  defaultNetworkType: string,
-) =>
+export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
   selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
   selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
-  selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
-  (Boolean(cluster.networkType) && cluster.networkType !== defaultNetworkType);
+  selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr;
 
 export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6 = false) => {
   return !(isSNO || isIPv6);

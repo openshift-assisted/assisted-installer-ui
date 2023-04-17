@@ -2283,7 +2283,12 @@ export interface Steps {
 }
 export type StepsReply = StepReply[];
 export type Subnet = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
-export type SupportLevel = 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
+export type SupportLevel =
+  | 'supported'
+  | 'unsupported'
+  | 'tech-preview'
+  | 'dev-preview'
+  | 'unavailable';
 /**
  * Map of feature ID or CPU architecture alongside their support level
  */

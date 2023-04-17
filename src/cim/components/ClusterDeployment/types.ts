@@ -53,7 +53,6 @@ export type ClusterDeploymentDetailsProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   usedClusterNames: string[];
-  pullSecret?: string;
   infraEnv?: InfraEnvK8sResource;
 };
 
@@ -61,6 +60,9 @@ export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
 export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
   enableProxy: boolean;
   editProxy: boolean;
+  httpProxy?: string;
+  httpsProxy?: string;
+  noProxy?: string;
 };
 export type ClusterDeploymentHostsSelectionValues = {
   autoSelectHosts: boolean;

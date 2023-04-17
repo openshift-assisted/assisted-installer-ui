@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldValidator, useField } from 'formik';
+import { FieldValidator, useField, useFormikContext } from 'formik';
 
 type Props = {
   name: string;
@@ -24,13 +24,14 @@ export const useFieldErrorMsg = ({ name, inputError, validate }: Props): string 
     name,
     validate,
   });
+  const { submitCount } = useFormikContext();
   const [hadValue, setHadValue] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (field.value) {
       setHadValue(!!field.value);
     }
   }, [field.value, setHadValue]);
-  const showError = !!field.value || (!field.value && hadValue);
+  const showError = !!field.value || (!field.value && hadValue) || submitCount > 0;
   const errorMessage = adaptErrorInvalidFormat((showError ? error : '') || inputError);
   return errorMessage;
 };
