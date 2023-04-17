@@ -10,10 +10,6 @@ import {
   getFieldId,
   SupportedCpuArchitecture,
 } from '../../../common';
-import {
-  NewFeatureSupportLevelData,
-  useNewFeatureSupportLevel,
-} from '../../../common/components/newFeatureSupportLevels';
 
 export type CpuArchitectureItem = {
   description: string;
@@ -46,14 +42,12 @@ export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureI
 const INPUT_NAME = 'cpuArchitecture';
 const fieldId = getFieldId(INPUT_NAME, 'input');
 
-const getInvalidCombinationReason = (
-  featureSupportLevels: NewFeatureSupportLevelData,
+const isCpuArchitectureSupported = (
+  cpuArchitectures: SupportedCpuArchitecture[],
   cpuArchitecture: SupportedCpuArchitecture,
-) => {
-  const { featureSupportLevelId } = architectureData[cpuArchitecture];
-  return featureSupportLevels && featureSupportLevelId
-    ? featureSupportLevels.getFeatureDisabledReason(featureSupportLevelId)
-    : undefined;
+): boolean => {
+  const cpuArchFound = cpuArchitectures.find((cpuArch) => cpuArch === cpuArchitecture);
+  return cpuArchFound !== undefined;
 };
 
 type CpuArchitectureDropdownProps = {
@@ -73,7 +67,6 @@ const CpuArchitectureDropdown = ({
   const [isOpen, setOpen] = React.useState(false);
 
   const prevVersionRef = React.useRef(openshiftVersion);
-  const featureSupportLevels = useNewFeatureSupportLevel();
   const [currentCpuArch, setCurrentCpuArch] = React.useState<string>(
     day1CpuArchitecture ? architectureData[day1CpuArchitecture].label : CpuArchitecture.x86,
   );
@@ -105,19 +98,29 @@ const CpuArchitectureDropdown = ({
   );
 
   React.useEffect(() => {
-    if (prevVersionRef.current !== openshiftVersion) {
-      const invalidCombinationReason = getInvalidCombinationReason(
-        featureSupportLevels,
-        selectedCpuArchitecture,
-      );
-      if (invalidCombinationReason) {
-        setValue(getDefaultCpuArchitecture());
-        setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
-        setOpen(false);
-      }
+    const isSelectedCpuArchitectureSupported = isCpuArchitectureSupported(
+      cpuArchitectures,
+      selectedCpuArchitecture,
+    );
+    if (
+      !isSelectedCpuArchitectureSupported &&
+      selectedCpuArchitecture !== getDefaultCpuArchitecture()
+    ) {
+      setValue(getDefaultCpuArchitecture());
+      setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
+      setOpen(false);
     }
-    prevVersionRef.current = openshiftVersion;
-  }, [featureSupportLevels, openshiftVersion, selectedCpuArchitecture, setValue, setOpen]);
+    if (prevVersionRef.current !== openshiftVersion) {
+      prevVersionRef.current = openshiftVersion;
+    }
+  }, [
+    openshiftVersion,
+    setValue,
+    setOpen,
+    cpuArchitectures,
+    setCurrentCpuArch,
+    selectedCpuArchitecture,
+  ]);
 
   const toggle = React.useMemo(
     () => (
