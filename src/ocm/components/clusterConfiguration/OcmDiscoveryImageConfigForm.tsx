@@ -22,6 +22,7 @@ import {
   DiscoveryImageType,
   ProxyFieldsType,
   StatusErrorType,
+  SupportedCpuArchitecture,
   TrustedCertificateFieldsType,
 } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
@@ -66,6 +67,7 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   isIpxeSelected?: boolean;
   enableCertificate?: boolean;
   trustBundle?: InfraEnv['additionalTrustBundle'];
+  selectedCpuArchitecture?: SupportedCpuArchitecture;
 };
 
 export const OcmDiscoveryImageConfigForm = ({
@@ -79,6 +81,7 @@ export const OcmDiscoveryImageConfigForm = ({
   isIpxeSelected,
   enableCertificate,
   trustBundle,
+  selectedCpuArchitecture,
 }: OcmDiscoveryImageConfigFormProps) => {
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -144,6 +147,7 @@ export const OcmDiscoveryImageConfigForm = ({
                           : discoveryImageTypes['full-iso']
                       }
                       onChange={updateDiscoveryButtonAndAlertText}
+                      selectedCpuArchitecture={selectedCpuArchitecture}
                     />
                     <UploadSSH
                       labelText={t(
