@@ -11,6 +11,7 @@ import {
   OcmDiscoveryImageConfigForm,
   OcmDiscoveryImageFormValues,
 } from './OcmDiscoveryImageConfigForm';
+import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectureService';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -96,6 +97,11 @@ const DiscoveryImageForm = ({
       enableCertificate={infraEnv.additionalTrustBundle !== undefined}
       trustBundle={infraEnv.additionalTrustBundle}
       isIpxeSelected={isIpxeSelected}
+      selectedCpuArchitecture={
+        cpuArchitecture === CpuArchitecture.USE_DAY1_ARCHITECTURE
+          ? mapClusterCpuArchToInfraEnvCpuArch(infraEnv.cpuArchitecture)
+          : mapClusterCpuArchToInfraEnvCpuArch(cpuArchitecture)
+      }
     />
   );
 };
