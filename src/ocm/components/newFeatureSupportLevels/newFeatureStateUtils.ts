@@ -7,7 +7,6 @@ import {
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
-
 import {
   architectureData,
   CpuArchitectureItem,
