@@ -49,38 +49,26 @@ export const getSupportedCpuArchitectures = (
   day1CpuArchitecture?: SupportedCpuArchitecture,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (day1CpuArchitecture) {
-    if (day1CpuArchitecture === CpuArchitecture.ppc64le && canSelectCpuArch) {
-      newSupportedCpuArchs.push(CpuArchitecture.ppc64le);
-    } else if (canSelectCpuArch) {
-      cpuArchitectures.forEach((cpuArch) => {
-        if (
-          cpuArch !== CpuArchitecture.MULTI &&
-          cpuArch !== CpuArchitecture.USE_DAY1_ARCHITECTURE &&
-          cpuArch !== CpuArchitecture.ppc64le
-        ) {
-          newSupportedCpuArchs.push(cpuArch);
-        }
-      });
-    }
+  //Power/Z clusters can be only homogeneous clusters
+  if (day1CpuArchitecture === CpuArchitecture.ppc64le && canSelectCpuArch) {
+    newSupportedCpuArchs.push(CpuArchitecture.ppc64le);
   } else {
-    if (cpuArchitectures) {
-      cpuArchitectures.forEach((cpuArch) => {
-        if (
-          (cpuArch === CpuArchitecture.ppc64le || cpuArch === CpuArchitecture.s390x) &&
-          canSelectCpuArch
-        ) {
-          newSupportedCpuArchs.push(cpuArch);
-        } else if (
-          cpuArch !== CpuArchitecture.MULTI &&
-          cpuArch !== CpuArchitecture.USE_DAY1_ARCHITECTURE
-        ) {
-          newSupportedCpuArchs.push(cpuArch);
-        }
-      });
-    }
+    cpuArchitectures.forEach((cpuArch) => {
+      if (
+        day1CpuArchitecture !== CpuArchitecture.ppc64le &&
+        (cpuArch === CpuArchitecture.ppc64le || cpuArch === CpuArchitecture.s390x) &&
+        canSelectCpuArch
+      ) {
+        newSupportedCpuArchs.push(cpuArch);
+      } else if (
+        day1CpuArchitecture !== CpuArchitecture.ppc64le &&
+        cpuArch !== CpuArchitecture.MULTI &&
+        cpuArch !== CpuArchitecture.USE_DAY1_ARCHITECTURE
+      ) {
+        newSupportedCpuArchs.push(cpuArch);
+      }
+    });
   }
-
   return newSupportedCpuArchs;
 };
 
