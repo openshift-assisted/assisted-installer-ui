@@ -58,11 +58,16 @@ const Day2ClusterDetails = () => {
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
-  const cpuArchitectures = React.useMemo(
-    () => getSupportedCpuArchitectures(canSelectCpuArch, cpuArchitecturesByVersionImage),
-    [canSelectCpuArch, cpuArchitecturesByVersionImage],
-  );
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
+  const cpuArchitectures = React.useMemo(
+    () =>
+      getSupportedCpuArchitectures(
+        canSelectCpuArch,
+        cpuArchitecturesByVersionImage,
+        day1CpuArchitecture,
+      ),
+    [canSelectCpuArch, cpuArchitecturesByVersionImage, day1CpuArchitecture],
+  );
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
