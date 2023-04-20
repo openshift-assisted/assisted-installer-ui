@@ -69,12 +69,6 @@ export const DiscoveryImageTypeDropdown = ({
       key="discovery-image-ipxe"
       id="discovery-image-ipxe"
       description={'Use when you have an iPXE server that has already been set up.'}
-      tooltip={
-        imageTypeIsDisabled ? (
-          <p>{'This provisioning type is not supported when using s390x architecture'}</p>
-        ) : undefined
-      }
-      isAriaDisabled={!!imageTypeIsDisabled}
     >
       {discoveryImageTypes['discovery-image-ipxe']}
     </DropdownItem>,
