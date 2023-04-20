@@ -9,7 +9,10 @@ import {
   SupportedCpuArchitecture,
 } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
-import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
+import {
+  mapOcmArchToCpuArchitecture,
+  mapClusterCpuArchToInfraEnvCpuArch,
+} from './CpuArchitectureService';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
@@ -67,6 +70,7 @@ const Day2ClusterService = {
       ? getSupportedCpuArchitectures(
           canSelectCpuArch ? canSelectCpuArch : false,
           cpuArchitecturesByVersionImage,
+          mapClusterCpuArchToInfraEnvCpuArch(ocmCluster.cpu_architecture),
         )
       : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 
