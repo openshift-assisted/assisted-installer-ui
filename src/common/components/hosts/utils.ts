@@ -130,13 +130,19 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
     'pending-for-input',
   ].includes(hostStatus);
 
-export const getHostRole = (host: Host, t: TFunction, schedulableMasters?: boolean): string => {
+export const getHostRole = (
+  host: Host,
+  t: TFunction,
+  clusterKind: Cluster['kind'],
+  schedulableMasters?: boolean,
+): string => {
   let roleLabel = `${
     hostRoles(t).find((role) => role.value === host.role)?.label || hostRoles(t)[0].label
   }`;
 
   if (schedulableMasters && host.role === 'master') {
-    roleLabel = t('ai:Control plane node, Worker');
+    roleLabel =
+      clusterKind === 'Cluster' ? t('ai:Control plane node, Worker') : t('ai:Control plane node');
   }
   return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };

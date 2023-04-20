@@ -89,6 +89,7 @@ export const hostnameColumn = (
 
 export const roleColumn = (
   t: TFunction,
+  clusterKind: Cluster['kind'],
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
@@ -107,7 +108,7 @@ export const roleColumn = (
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
       const isRoleEditable = canEditRole?.(host);
-      const hostRole = getHostRole(host, t, schedulableMasters);
+      const hostRole = getHostRole(host, t, clusterKind, schedulableMasters);
       return {
         title: (
           <RoleCell
