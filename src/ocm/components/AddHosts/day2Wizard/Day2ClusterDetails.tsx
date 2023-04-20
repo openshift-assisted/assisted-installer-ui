@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Alert, Grid, GridItem, TextContent, Text } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
@@ -9,6 +9,7 @@ import {
   ErrorState,
   getSupportedCpuArchitectures,
   LoadingState,
+  PrismCode,
   SupportedCpuArchitecture,
   useFeature,
 } from '../../../../common';
@@ -127,6 +128,22 @@ const Day2ClusterDetails = () => {
               <Grid hasGutter>
                 <GridItem>
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
+                </GridItem>
+                <GridItem span={12} xl={10}>
+                  <Alert isInline variant="info" title={'Multiple CPU architectures'}>
+                    <>
+                      <TextContent>
+                        <Text component="p">
+                          Your cluster might be scaled up using nodes with different CPU
+                          architectures. Use the following command-line snippet to discover if the
+                          current version of your cluster supports this feature.
+                        </Text>
+                        <PrismCode code={`$ oc adm release info -o json | jq .metadata.metadata`} />
+                        <Text component="p">The feature is supported if you see this output:</Text>
+                        <PrismCode code={`{"release.openshift.io/architecture": "multi"}`} />
+                      </TextContent>
+                    </>
+                  </Alert>
                 </GridItem>
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
                   <CpuArchitectureDropdown
