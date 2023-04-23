@@ -6,11 +6,9 @@ import {
   isSNO,
   OperatorsValues,
   SupportLevel,
+  SupportedCpuArchitecture,
 } from '../../../common';
-import {
-  architectureData,
-  CpuArchitectureItem,
-} from '../clusterConfiguration/CpuArchitectureDropdown';
+import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -99,9 +97,10 @@ const getCnvDisabledReason = (
     return undefined;
   }
   if (!isSupported) {
-    const cpuArchitectureLabel = (
-      architectureData[activeFeatureConfiguration.underlyingCpuArchitecture] as CpuArchitectureItem
-    ).label;
+    const cpuArchitectureLabel =
+      architectureData[
+        activeFeatureConfiguration.underlyingCpuArchitecture as SupportedCpuArchitecture
+      ].label;
     return `${CNV_OPERATOR_LABEL} is not available when ${
       cpuArchitectureLabel
         ? cpuArchitectureLabel
