@@ -92,11 +92,7 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ onValuesChanged }) => {
         name="isAdvanced"
         label={t('ai:Use advanced networking')}
         className="ai-advanced-fields"
-        body={
-          values.isAdvanced && (
-            <AdvancedNetworkFields isSDNSelectable={false} isClusterCIDRIPv6={isClusterCIDRIPv6} />
-          )
-        }
+        body={values.isAdvanced && <AdvancedNetworkFields isClusterCIDRIPv6={isClusterCIDRIPv6} />}
         helperText={t('ai:Configure advanced networking properties (e.g. CIDR ranges).')}
       />
       <ProxyFields />
