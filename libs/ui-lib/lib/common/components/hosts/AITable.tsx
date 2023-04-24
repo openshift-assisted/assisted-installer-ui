@@ -75,6 +75,7 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
           data-testid={testId}
           actionResolver={actionResolver ? tableActionResolver : undefined}
           variant={variant}
+          actionsMenuAppendTo={() => document.body}
           {...newProps}
         >
           <TableHeader />
