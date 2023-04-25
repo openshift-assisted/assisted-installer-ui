@@ -745,7 +745,7 @@
   "ai:Use lowercase alphanumeric characters or hyphen (-)": "Use lowercase alphanumeric characters or hyphen (-)",
   "ai:Use lowercase alphanumeric characters, dot (.) or hyphen (-)": "Use lowercase alphanumeric characters, dot (.) or hyphen (-)",
   "ai:Use the same host discovery SSH key": "Use the same host discovery SSH key",
-  "ai:Use when you have an iPXE server that has already been set up.": "Use when you have an iPXE server that has already been set up.",
+  "ai:Use when you have an iPXE server that has already been set up": "Use when you have an iPXE server that has already been set up",
   "ai:useAlerts must be used within AlertsContextProvider": "useAlerts must be used within AlertsContextProvider",
   "ai:Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.": "Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.",
   "ai:useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.": "useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.",
