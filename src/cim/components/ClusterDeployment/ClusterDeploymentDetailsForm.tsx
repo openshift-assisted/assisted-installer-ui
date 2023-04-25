@@ -13,7 +13,6 @@ type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
-  pullSecret?: string;
   extensionAfter?: ClusterDetailsFormFieldsProps['extensionAfter'];
 };
 
@@ -21,7 +20,6 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   agentClusterInstall,
   clusterDeployment,
   clusterImages,
-  pullSecret,
   extensionAfter,
 }) => {
   const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
@@ -46,7 +44,6 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           versions={ocpVersions}
           isEditFlow={isEditFlow}
           forceOpenshiftVersion={forceOpenshiftVersion}
-          defaultPullSecret={pullSecret}
           extensionAfter={extensionAfter}
         />
       </StackItem>

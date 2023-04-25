@@ -34,6 +34,7 @@ import CpuArchitectureDropdown, {
 } from './CpuArchitectureDropdown';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { useOpenshiftVersions } from '../../hooks';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -83,22 +84,17 @@ export const OcmClusterDetailsFormFields = ({
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
-  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
-    'architectures',
-    openshiftVersion,
-  );
+  const { getCpuArchitectures } = useOpenshiftVersions();
+  const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
+
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
     values.cpuArchitecture,
   );
   const cpuArchitectures = React.useMemo(
-    () =>
-      getSupportedCpuArchitectures(
-        isMultiArchSupported,
-        cpuArchitectureSupportLevelIdToSupportLevelMap,
-      ),
-    [cpuArchitectureSupportLevelIdToSupportLevelMap, isMultiArchSupported],
+    () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),
+    [cpuArchitecturesByVersionImage, isMultiArchSupported],
   );
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

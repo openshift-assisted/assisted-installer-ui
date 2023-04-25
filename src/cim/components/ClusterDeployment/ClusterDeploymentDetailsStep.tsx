@@ -35,8 +35,6 @@ type UseDetailsFormikArgs = {
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
-  defaultBaseDomain?: string;
-  pullSecret?: string;
   infraEnv?: InfraEnvK8sResource;
 };
 
@@ -46,8 +44,6 @@ export const useDetailsFormik = ({
   agents,
   clusterImages,
   usedClusterNames,
-  defaultBaseDomain,
-  pullSecret,
   infraEnv,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
   const { t } = useTranslation();
@@ -71,22 +67,22 @@ export const useDetailsFormik = ({
         managedDomains: [], // not supported
         cluster,
         ocpVersions,
-        baseDomain: defaultBaseDomain,
-        pullSecret,
       }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
+
+  const isEdit = !!clusterDeployment || !!agentClusterInstall;
   const validationSchema = React.useMemo(
     () =>
       getClusterDetailsValidationSchema({
         usedClusterNames,
         featureSupportLevels,
-        pullSecretSet: true,
+        pullSecretSet: isEdit,
         ocpVersions,
         validateUniqueName: true,
         t,
       }),
-    [usedClusterNames, ocpVersions, featureSupportLevels, t],
+    [usedClusterNames, ocpVersions, featureSupportLevels, isEdit, t],
   );
 
   return [initialValues, validationSchema];
@@ -100,7 +96,6 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   usedClusterNames,
   onSaveDetails,
   onClose,
-  pullSecret,
   isPreviewOpen,
   infraEnv,
 }) => {
@@ -170,7 +165,6 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
                   agentClusterInstall={agentClusterInstall}
                   clusterDeployment={clusterDeployment}
                   clusterImages={clusterImages}
-                  pullSecret={pullSecret}
                 />
               </GridItem>
             </Grid>

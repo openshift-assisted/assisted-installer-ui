@@ -1,4 +1,4 @@
-import { DiscoveryImageFormValues } from '../../../common';
+import { DiscoveryImageFormValues, ProxyFieldsType } from '../../../common';
 import { BMCFormProps } from '../Agent/types';
 import {
   BareMetalHostK8sResource,
@@ -7,6 +7,14 @@ import {
   InfraEnvK8sResource,
 } from '../../types/k8s';
 import { SecretK8sResource } from '../../types/fromOCP';
+
+export type EditProxyModalProps = {
+  onSubmit: (values: ProxyFieldsType, infraEnv: InfraEnvK8sResource) => Promise<unknown>;
+  onClose: VoidFunction;
+  infraEnv: InfraEnvK8sResource;
+  hasAgents: boolean;
+  hasBMHs: boolean;
+};
 
 export type AddHostModalProps = {
   onClose: VoidFunction;

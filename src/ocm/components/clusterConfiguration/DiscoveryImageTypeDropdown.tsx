@@ -8,7 +8,12 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { DiscoveryImageType, getFieldId } from '../../../common';
+import {
+  CpuArchitecture,
+  DiscoveryImageType,
+  SupportedCpuArchitecture,
+  getFieldId,
+} from '../../../common';
 
 export const discoveryImageTypes: Record<DiscoveryImageType, string> = {
   'minimal-iso': 'Minimal image file - Provision with virtual media',
@@ -20,34 +25,44 @@ type DiscoveryImageTypeDropdownProps = {
   name: string;
   defaultValue: string | undefined;
   onChange: (isIpxeSelected: boolean) => void;
+  selectedCpuArchitecture?: SupportedCpuArchitecture;
 };
 
 export const DiscoveryImageTypeDropdown = ({
   name,
   defaultValue,
   onChange,
+  selectedCpuArchitecture,
 }: DiscoveryImageTypeDropdownProps) => {
   const [field, { value }, { setValue }] = useField<DiscoveryImageType>(name);
   const [isOpen, setOpen] = React.useState(false);
   const [current, setCurrent] = React.useState(defaultValue);
   const fieldId = getFieldId(name, 'input');
+  const isMinimalISODisabled =
+    selectedCpuArchitecture && selectedCpuArchitecture === CpuArchitecture.s390x;
   const dropdownItems = [
-    <DropdownItem
-      key="minimal-iso"
-      id="minimal-iso"
-      description={
-        'Use when your storage capacity is limited or being served over a constrained network.'
-      }
-    >
-      {discoveryImageTypes['minimal-iso']}
-    </DropdownItem>,
-    <DropdownSeparator key="separator1" />,
     <DropdownItem
       key="full-iso"
       id="full-iso"
       description={'The generated discovery ISO will contain everything needed to boot.'}
     >
       {discoveryImageTypes['full-iso']}
+    </DropdownItem>,
+    <DropdownSeparator key="separator1" />,
+    <DropdownItem
+      key="minimal-iso"
+      id="minimal-iso"
+      description={
+        'Use when your storage capacity is limited or being served over a constrained network.'
+      }
+      tooltip={
+        isMinimalISODisabled ? (
+          <p>{'This provisioning type is not supported when using s390x architecture'}</p>
+        ) : undefined
+      }
+      isAriaDisabled={!!isMinimalISODisabled}
+    >
+      {discoveryImageTypes['minimal-iso']}
     </DropdownItem>,
     <DropdownSeparator key="separator2" />,
     <DropdownItem
