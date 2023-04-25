@@ -19,7 +19,6 @@ import { SNOControlGroup } from '../../../common';
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
   forceOpenshiftVersion?: string;
-  defaultPullSecret?: string;
   extensionAfter?: { [key: string]: React.ReactElement };
   versions: OpenshiftVersionOptionType[];
 };
@@ -45,7 +44,6 @@ export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string
 export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   isEditFlow,
   versions,
-  defaultPullSecret,
   forceOpenshiftVersion,
   extensionAfter,
 }) => {
@@ -104,7 +102,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
       <ArmCheckbox versions={versions} />
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
-      {!isEditFlow && <PullSecret defaultPullSecret={defaultPullSecret} />}
+      {!isEditFlow && <PullSecret />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
       {/* <DiskEncryptionControlGroup
         values={values}

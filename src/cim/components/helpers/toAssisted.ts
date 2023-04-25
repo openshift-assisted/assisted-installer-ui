@@ -153,6 +153,7 @@ export const getAICluster = ({
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
     validationsInfo: JSON.stringify(agentClusterInstall?.status?.validationsInfo || {}),
     cpuArchitecture: getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv),
+    networkType: agentClusterInstall?.spec?.networking.networkType,
   };
   /*
   aiCluster.agentSelectorMasterLabels =

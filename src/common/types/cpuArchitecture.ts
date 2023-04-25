@@ -1,4 +1,4 @@
-import { ArchitectureSupportLevelId, SupportLevel } from '../api';
+import { ArchitectureSupportLevelId } from '../api';
 
 export type ClusterCpuArchitecture = 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 
@@ -45,25 +45,34 @@ export const getAllCpuArchitectures = (): SupportedCpuArchitecture[] => [
 
 export const getSupportedCpuArchitectures = (
   canSelectCpuArch: boolean,
-  cpuArchitectures: Record<ArchitectureSupportLevelId, SupportLevel> | null,
+  cpuArchitectures: CpuArchitecture[],
+  day1CpuArchitecture?: SupportedCpuArchitecture,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (cpuArchitectures) {
-    for (const [architectureId, supportLevel] of Object.entries(cpuArchitectures) as unknown as [
-      ArchitectureSupportLevelId,
-      SupportLevel,
-    ][]) {
-      if (supportLevel !== 'unsupported') {
-        if (
-          (architectureId === 'S390X_ARCHITECTURE' || architectureId === 'PPC64LE_ARCHITECTURE') &&
-          canSelectCpuArch
-        ) {
-          newSupportedCpuArchs.push(featureIdToCpuArchitecture[architectureId]);
-        } else if (architectureId !== 'MULTIARCH_RELEASE_IMAGE') {
-          newSupportedCpuArchs.push(featureIdToCpuArchitecture[architectureId]);
-        }
+  //Power/Z clusters can be only homogeneous clusters
+  if (
+    (day1CpuArchitecture === CpuArchitecture.ppc64le ||
+      day1CpuArchitecture === CpuArchitecture.s390x) &&
+    canSelectCpuArch
+  ) {
+    newSupportedCpuArchs.push(day1CpuArchitecture);
+  } else {
+    cpuArchitectures.forEach((cpuArch) => {
+      if (
+        day1CpuArchitecture === undefined &&
+        (cpuArch === CpuArchitecture.ppc64le || cpuArch === CpuArchitecture.s390x) &&
+        canSelectCpuArch
+      ) {
+        newSupportedCpuArchs.push(cpuArch);
+      } else if (
+        day1CpuArchitecture !== CpuArchitecture.ppc64le &&
+        day1CpuArchitecture !== CpuArchitecture.s390x &&
+        cpuArch !== CpuArchitecture.MULTI &&
+        cpuArch !== CpuArchitecture.USE_DAY1_ARCHITECTURE
+      ) {
+        newSupportedCpuArchs.push(cpuArch);
       }
-    }
+    });
   }
   return newSupportedCpuArchs;
 };

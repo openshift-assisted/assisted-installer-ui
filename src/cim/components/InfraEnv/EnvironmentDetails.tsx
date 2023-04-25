@@ -8,6 +8,9 @@ import {
   Grid,
   GridItem,
   Spinner,
+  Text,
+  TextContent,
+  TextVariants,
   Title,
   TitleSizes,
 } from '@patternfly/react-core';
@@ -22,29 +25,49 @@ import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPul
 import EditSSHKeyModal, { EditSSHKeyModalProps } from '../modals/EditSSHKeyModal';
 import EditNtpSourcesModal, { EditNtpSourcesModalProps } from '../modals/EditNtpSourcesModal';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { EditProxyModalProps } from '../modals/types';
+import { EditProxyModal } from '../modals';
 
 type EditItemProps = {
   title: string;
   onEdit: VoidFunction;
   isLoading?: boolean;
   isWarning?: boolean;
+  noIcon?: boolean;
 };
 
-const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning }) => {
+const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning, noIcon }) => {
   let icon = <CheckCircleIcon color={okColor.value} />;
   if (isLoading) {
     icon = <Spinner isSVG size="md" />;
   } else if (isWarning) {
     icon = <ExclamationTriangleIcon color={warningColor.value} />;
   }
-  return (
-    <div>
-      {icon}
-      &nbsp;{title}&nbsp;
+  const btn = (
+    <>
+      {title}&nbsp;
       <Button variant="plain" onClick={onEdit}>
         <PencilAltIcon />
       </Button>
+    </>
+  );
+  return noIcon ? (
+    btn
+  ) : (
+    <div>
+      {icon}
+      &nbsp;
+      {btn}
     </div>
+  );
+};
+
+const NotConfigured = () => {
+  const { t } = useTranslation();
+  return (
+    <TextContent>
+      <Text component={TextVariants.small}>{t('ai:Not configured')}</Text>
+    </TextContent>
   );
 };
 
@@ -54,6 +77,7 @@ type EnvironmentDetailsProps = {
   onEditPullSecret: EditPullSecretModalProps['onSubmit'];
   onEditSSHKey: EditSSHKeyModalProps['onSubmit'];
   onEditNtpSources: EditNtpSourcesModalProps['onSubmit'];
+  onEditProxy: EditProxyModalProps['onSubmit'];
   hasAgents: boolean;
   hasBMHs: boolean;
 };
@@ -66,6 +90,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
   onEditNtpSources,
   hasAgents,
   hasBMHs,
+  onEditProxy,
 }) => {
   const [editPullSecret, setEditPullSecret] = React.useState(false);
   const [editSSHKey, setEditSSHKey] = React.useState(false);
@@ -73,6 +98,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
   const [pullSecret, setPullSecret] = React.useState<SecretK8sResource>();
   const [pullSecretError, setPullSecretError] = React.useState<string>();
   const [pullSecretLoading, setPullSecretLoading] = React.useState(true);
+  const [editProxy, setEditProxy] = React.useState(false);
 
   const namespace = infraEnv.metadata?.namespace ?? '';
   const pullSecretName = infraEnv.spec?.pullSecretRef?.name ?? '';
@@ -96,6 +122,11 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
     };
     void fetch();
   }, [namespace, pullSecretName, fetchSecret, editPullSecret, t]);
+
+  const hasProxy =
+    infraEnv.spec?.proxy?.httpProxy ||
+    infraEnv.spec?.proxy?.httpsProxy ||
+    infraEnv.spec?.proxy?.noProxy;
   return (
     <>
       <Grid hasGutter>
@@ -150,30 +181,31 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         </GridItem>
         <GridItem span={6}>
           <DescriptionList>
-            {infraEnv.spec?.proxy?.httpProxy && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>{t('ai:HTTP Proxy URL')}</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {infraEnv.spec.proxy.httpProxy}
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            {infraEnv.spec?.proxy?.httpsProxy && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>{t('ai:HTTPS Proxy URL')}</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {infraEnv.spec.proxy.httpsProxy}
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            {infraEnv.spec?.proxy?.noProxy && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>{t('ai:No proxy domains')}</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {infraEnv.spec.proxy.noProxy}
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
+            <DescriptionListGroup>
+              <DescriptionListTerm>
+                <EditItem noIcon title={t('ai:Proxy settings')} onEdit={() => setEditProxy(true)} />
+              </DescriptionListTerm>
+              {!hasProxy ? (
+                <NotConfigured />
+              ) : (
+                <>
+                  <DescriptionListTerm>{t('ai:HTTP Proxy URL')}</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {infraEnv.spec?.proxy?.httpProxy || <NotConfigured />}
+                  </DescriptionListDescription>
+                  <DescriptionListTerm>{t('ai:HTTPS Proxy URL')}</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {infraEnv.spec?.proxy?.httpsProxy || <NotConfigured />}
+                  </DescriptionListDescription>
+                  <DescriptionListTerm>{t('ai:No proxy domains')}</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {infraEnv.spec?.proxy?.noProxy
+                      ?.split(',')
+                      .map((k) => <LabelValue key={k} value={`${k}`} />) || <NotConfigured />}
+                  </DescriptionListDescription>
+                </>
+              )}
+            </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>{t('ai:Secret and keys')}</DescriptionListTerm>
               <DescriptionListDescription>
@@ -221,6 +253,15 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         infraEnv={infraEnv}
         onSubmit={onEditNtpSources}
       />
+      {editProxy && (
+        <EditProxyModal
+          onClose={() => setEditProxy(false)}
+          infraEnv={infraEnv}
+          onSubmit={onEditProxy}
+          hasAgents={hasAgents}
+          hasBMHs={hasBMHs}
+        />
+      )}
     </>
   );
 };
