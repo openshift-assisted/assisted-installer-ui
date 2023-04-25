@@ -33,6 +33,7 @@ export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
       hideNTPStatus
       onDiskRole={onDiskRole}
       canEditDisks={canEditDisks}
+      updateDiskSkipFormatting={updateDiskSkipFormatting}
     />
   );
 }

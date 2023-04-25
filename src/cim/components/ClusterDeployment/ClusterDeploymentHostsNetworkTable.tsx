@@ -37,6 +37,7 @@ type ExpandComponentProps = {
 const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => {
   const { onSetInstallationDiskId, agents } =
     React.useContext<ExpandComponentContextType>(ExpandComponentContext);
+
   return (
     <HostDetail
       host={obj}
