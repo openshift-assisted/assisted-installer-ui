@@ -99,7 +99,9 @@ const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePo
           <DescriptionList isHorizontal>
             <DescriptionListGroup>
               <DescriptionListTerm>{t('ai:OpenShift version')}</DescriptionListTerm>
-              <DescriptionListDescription>{ocpVersion}</DescriptionListDescription>
+              <DescriptionListDescription>
+                {ocpVersion || hostedCluster.spec.release.image}
+              </DescriptionListDescription>
             </DescriptionListGroup>
           </DescriptionList>
         </GridItem>
