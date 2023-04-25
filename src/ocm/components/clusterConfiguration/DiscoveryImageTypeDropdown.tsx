@@ -38,7 +38,7 @@ export const DiscoveryImageTypeDropdown = ({
   const [isOpen, setOpen] = React.useState(false);
   const [current, setCurrent] = React.useState(defaultValue);
   const fieldId = getFieldId(name, 'input');
-  const imageTypeIsDisabled =
+  const isMinimalISODisabled =
     selectedCpuArchitecture && selectedCpuArchitecture === CpuArchitecture.s390x;
   const dropdownItems = [
     <DropdownItem
@@ -56,11 +56,11 @@ export const DiscoveryImageTypeDropdown = ({
         'Use when your storage capacity is limited or being served over a constrained network.'
       }
       tooltip={
-        imageTypeIsDisabled ? (
+        isMinimalISODisabled ? (
           <p>{'This provisioning type is not supported when using s390x architecture'}</p>
         ) : undefined
       }
-      isAriaDisabled={!!imageTypeIsDisabled}
+      isAriaDisabled={!!isMinimalISODisabled}
     >
       {discoveryImageTypes['minimal-iso']}
     </DropdownItem>,
@@ -69,12 +69,6 @@ export const DiscoveryImageTypeDropdown = ({
       key="discovery-image-ipxe"
       id="discovery-image-ipxe"
       description={'Use when you have an iPXE server that has already been set up.'}
-      tooltip={
-        imageTypeIsDisabled ? (
-          <p>{'This provisioning type is not supported when using s390x architecture'}</p>
-        ) : undefined
-      }
-      isAriaDisabled={!!imageTypeIsDisabled}
     >
       {discoveryImageTypes['discovery-image-ipxe']}
     </DropdownItem>,

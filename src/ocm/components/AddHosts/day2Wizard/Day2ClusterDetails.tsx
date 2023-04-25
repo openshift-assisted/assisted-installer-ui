@@ -22,8 +22,7 @@ import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
-import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
-import { isFeatureSupportedAndAvailable } from '../../newFeatureSupportLevels/newFeatureStateUtils';
+import { useOpenshiftVersions } from '../../../hooks';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -55,21 +54,20 @@ const Day2ClusterDetails = () => {
     Day2ClusterDetailValues | Error | null
   >();
   const [isSubmitting, setSubmitting] = React.useState(false);
-  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
-    'architectures',
-    day2Cluster.openshiftVersion,
-  );
+
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
+  const { getCpuArchitectures } = useOpenshiftVersions();
+  const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   const cpuArchitectures = React.useMemo(
     () =>
       getSupportedCpuArchitectures(
         canSelectCpuArch,
-        cpuArchitectureSupportLevelIdToSupportLevelMap,
-        isFeatureSupportedAndAvailable,
+        cpuArchitecturesByVersionImage,
+        day1CpuArchitecture,
       ),
-    [canSelectCpuArch, cpuArchitectureSupportLevelIdToSupportLevelMap],
+    [canSelectCpuArch, cpuArchitecturesByVersionImage, day1CpuArchitecture],
   );
-  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
