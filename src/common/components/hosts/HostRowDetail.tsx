@@ -21,9 +21,13 @@ import { ValidationInfoActionProps } from './HostValidationGroups';
 import NtpValidationStatus from './NtpValidationStatus';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import SectionTitle from '../ui/SectionTitle';
+import { OnDiskRoleType } from './DiskRole';
+import StorageDetail from '../storage/StorageDetail';
 
 type HostDetailProps = {
   host: Host;
+  canEditDisks?: (host: Host) => boolean;
+  onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
 };
@@ -100,6 +104,8 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
 
 export const HostDetail = ({
   host,
+  canEditDisks,
+  onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
 }: HostDetailProps) => {
@@ -192,6 +198,9 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
+      {onDiskRole && canEditDisks && (
+        <StorageDetail host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+      )}
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}
