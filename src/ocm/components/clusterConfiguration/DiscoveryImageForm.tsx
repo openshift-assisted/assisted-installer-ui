@@ -50,7 +50,31 @@ const DiscoveryImageForm = ({
   ) => {
     if (cluster.id && infraEnv?.id) {
       if (formValues['imageType'] === 'discovery-image-ipxe') {
-        await onSuccessIpxe();
+        try {
+          const { updatedCluster } = await DiscoveryImageFormService.update(
+            cluster.id,
+            cluster.tags,
+            infraEnv.id,
+            formValues,
+            undefined,
+            true,
+          );
+          await onSuccessIpxe();
+          dispatch(updateCluster(updatedCluster));
+        } catch (error) {
+          handleApiError(error, () => {
+            formikActions.setStatus({
+              error: {
+                title: 'Failed to create ipxe scripts',
+                message: getApiErrorMessage(error),
+              },
+            });
+          });
+          if (isUnknownServerError(error as Error)) {
+            dispatch(setServerUpdateError());
+            onCancel();
+          }
+        }
       } else {
         try {
           const { updatedCluster } = await DiscoveryImageFormService.update(
