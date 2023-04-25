@@ -12,15 +12,13 @@ import { handleApiError, ocmClient } from '../../api';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',
-  async () => {
+  async (value, { rejectWithValue }) => {
     try {
       const { data } = await ClustersAPI.list();
       const isOcm = !!ocmClient;
       return data.filter((cluster) => (isOcm ? cluster.kind === 'Cluster' : true));
     } catch (e) {
-      handleApiError(e, () => {
-        void Promise.reject('Failed to fetch clusters.');
-      });
+      return handleApiError(e, () => rejectWithValue(value));
     }
   },
 );
