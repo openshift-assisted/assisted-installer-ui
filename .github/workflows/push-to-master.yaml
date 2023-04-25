@@ -1,0 +1,89 @@
+name: Push to master or release branches
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
+env:
+  QUAY_ORG: ${{ vars.QUAY_ORG }}
+  QUAY_REPO: assisted-installer-ui
+
+jobs:
+  preflight-check:
+    # Prevents running the workflow when a brand-new tag points to the same commit as the master branch
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check if a tag points to the same commit as the master branch
+        id: check
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]] && [[ "${GITHUB_SHA}" == "$(git rev-parse origin/master)" ]]; then
+            skip=true
+          else
+            skip=false
+          fi
+          echo "skip=${skip}" >> $GITHUB_OUTPUT
+          echo "skip=${skip}"
+
+  publish-assisted-ui:
+    needs: preflight-check
+    if: needs.preflight-check.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate AIUI_APP_VERSION
+        run: |
+          AIUI_APP_VERSION=latest
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            AIUI_APP_VERSION=${GITHUB_REF_NAME}
+          fi
+          echo "AIUI_APP_VERSION=${AIUI_APP_VERSION}" >> $GITHUB_ENV
+          echo "AIUI_APP_VERSION=${AIUI_APP_VERSION}"
+
+      - name: Generate tags
+        id: generate-tags
+        run: |
+          tags=( ${GITHUB_SHA:0:8} latest )
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            tags+=( ${GITHUB_REF_NAME} )
+          fi
+          echo "tags=${tags[@]}" >> $GITHUB_OUTPUT
+          echo "tags=${tags[@]}"
+
+      - name: Build
+        id: build
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.QUAY_REPO }}
+          tags: ${{ steps.generate-tags.outputs.tags }}
+          labels: |
+            org.openshift-assisted.github.repository=${{ github.repository }}
+            org.openshift-assisted.github.actor=${{ github.actor }}
+            org.openshift-assisted.github.run_id=${{ github.run_id }}
+            org.openshift-assisted.github.sha=${{ github.sha }}
+            org.openshift-assisted.github.ref_name=${{ github.ref_name }}
+          build-args: |
+            AIUI_APP_VERSION=${{ env.AIUI_APP_VERSION }}
+            AIUI_APP_GIT_SHA=${{ github.sha }}
+            AIUI_APP_IMAGE_REPO=${{ env.QUAY_ORG }}/${{ env.QUAY_REPO }}
+          containerfiles: podman/assisted-ui.Containerfile
+          context: .
+
+      - name: Push to Quay.io
+        id: push
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ steps.build.outputs.image }}
+          tags: ${{ steps.build.outputs.tags }}
+          registry: ${{ env.QUAY_ORG }}
+          username: ${{ secrets.QUAY_OPENSHIFT_ASSISTED_ROBOT_USERNAME }}
+          password: ${{ secrets.QUAY_OPENSHIFT_ASSISTED_ROBOT_PASSWORD }}
