@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@openshift-assisted/locales": "workspace:*",
-    "@openshift-assisted/ui-lib": "workspace:*",
+    "@openshift-assisted/locales": "workspace:libs/locales",
+    "@openshift-assisted/ui-lib": "workspace:libs/ui-lib",
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
     "@patternfly/patternfly": "^4.222.4",
     "@patternfly/react-code-editor": "^4.82.113",
@@ -29,7 +29,7 @@
     "yup": "^0.28.3"
   },
   "devDependencies": {
-    "@openshift-assisted/eslint-config-assisted-ui": "workspace:^",
+    "@openshift-assisted/eslint-config-assisted-ui": "workspace:libs/eslint-config-assisted-ui",
     "@tsconfig/vite-react": "^1.0.1",
     "@types/react": "<17.0.30",
     "@types/react-dom": "<17.0.30",
