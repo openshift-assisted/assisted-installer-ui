@@ -11,7 +11,6 @@ type SimpleDropdownProps = {
   setValue: (value?: string) => void;
   isDisabled: boolean;
   idPrefix?: string;
-  position?: DropdownProps['position'];
   menuAppendTo?: DropdownProps['menuAppendTo'];
 };
 
@@ -22,7 +21,6 @@ export const SimpleDropdown = ({
   setValue,
   isDisabled,
   idPrefix,
-  position,
   menuAppendTo,
 }: SimpleDropdownProps) => {
   const [isOpen, setOpen] = React.useState(false);
@@ -63,7 +61,6 @@ export const SimpleDropdown = ({
       isOpen={isOpen}
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
-      position={position}
       menuAppendTo={menuAppendTo}
     />
   );
