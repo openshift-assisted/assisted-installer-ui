@@ -3,7 +3,6 @@ import { hostRoles } from '../../config/constants';
 import { Host, HostUpdateParams } from '../../api';
 import { SimpleDropdown } from '../ui';
 import { useStateSafely } from '../../hooks';
-import { DropdownProps } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type RoleDropdownProps = {
@@ -11,10 +10,9 @@ type RoleDropdownProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole: (role: HostUpdateParams['hostRole']) => Promise<any>;
   current: string;
-  position?: DropdownProps['position'];
 };
 
-const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, position }) => {
+const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current }) => {
   const [isDisabled, setDisabled] = useStateSafely(false);
   const setRole = async (role?: string) => {
     setDisabled(true);
@@ -34,7 +32,6 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, 
       setValue={setRole}
       isDisabled={isDisabled}
       idPrefix={`role-${host.requestedHostname || ''}`}
-      position={position}
       menuAppendTo={() => document.body}
     />
   );
