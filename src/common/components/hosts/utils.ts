@@ -99,6 +99,10 @@ export const getHostStatus = (
   return hostStatus;
 };
 
+export const canOpenConsole = (clusterStatus: Cluster['status']) => {
+  return ['finalizing', 'installed'].includes(clusterStatus);
+};
+
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>

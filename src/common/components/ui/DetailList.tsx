@@ -11,6 +11,7 @@ import {
 import { WithTestID } from '../../types';
 
 import './DetailList.css';
+import { RenderIf } from './RenderIf';
 
 export type DetailListProps = {
   children: ReactChild | (ReactChild | undefined)[];
@@ -24,7 +25,7 @@ export type DetailItemList = {
 }[];
 
 export type DetailItemProps = {
-  title: string | ReactNode;
+  title?: string | ReactNode;
   value?: DetailItemList | React.ReactNode;
   idPrefix?: string;
   isHidden?: boolean;
@@ -58,13 +59,15 @@ export const DetailItem: React.FC<DetailItemProps & WithTestID> = ({
 }) =>
   isHidden ? null : (
     <>
-      <TextListItem
-        component={TextListItemVariants.dt}
-        id={idPrefix ? `${idPrefix}-title` : undefined}
-        data-testid={testId ? `${testId}-title` : undefined}
-      >
-        {title}
-      </TextListItem>
+      <RenderIf condition={title !== undefined}>
+        <TextListItem
+          component={TextListItemVariants.dt}
+          id={idPrefix ? `${idPrefix}-title` : undefined}
+          data-testid={testId ? `${testId}-title` : undefined}
+        >
+          {title}
+        </TextListItem>
+      </RenderIf>
       <TextListItem
         component={TextListItemVariants.dd}
         id={idPrefix ? `${idPrefix}-value` : undefined}
