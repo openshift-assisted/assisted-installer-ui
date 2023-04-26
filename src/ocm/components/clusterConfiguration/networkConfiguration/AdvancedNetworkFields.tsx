@@ -9,7 +9,12 @@ import {
   Stack,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import { DUAL_STACK, PREFIX_MAX_RESTRICTION, NetworkConfigurationValues } from '../../../../common';
+import {
+  DUAL_STACK,
+  PREFIX_MAX_RESTRICTION,
+  NetworkConfigurationValues,
+  PopoverIcon,
+} from '../../../../common';
 import { OcmInputField } from '../../ui/OcmFormFields';
 
 const getNetworkLabelSuffix = (index: number, isDualStack: boolean) => {
@@ -23,7 +28,7 @@ const IPv6PrefixHelperText =
   'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 116, then each node is assigned a /116 subnet out of the given cidr (clusterNetworkCIDR), which allows for 4,094 (2^(128 - 116) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
 
 const clusterCidrHelperText =
-  'IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.';
+  'The block must not overlap with existing physical networks. To access the Pods from an external network, configure load balancers and routers to manage the traffic.';
 
 const serviceCidrHelperText =
   'The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
@@ -64,7 +69,14 @@ const AdvancedNetworkFields = () => {
                   <StackItem className={'network-field-group pf-u-pb-md'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.cidr`}
-                      label={`Cluster network CIDR${networkSuffix}`}
+                      label={
+                        <>
+                          <span>{`Cluster network CIDR${networkSuffix} `}</span>
+                          <PopoverIcon
+                            bodyContent={'IP address blocks from which Pod IPs are allocated.'}
+                          />
+                        </>
+                      }
                       helperText={clusterCidrHelperText}
                       isRequired
                       labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
