@@ -24,6 +24,7 @@ const ClusterDeploymentCredentials = ({
 }: ClusterDeploymentCredentialsProps) => {
   const [credentials, setCredentials] = React.useState<Credentials | undefined>();
   const [isError, setIsError] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
 
@@ -33,25 +34,35 @@ const ClusterDeploymentCredentials = ({
   const { t } = useTranslation();
   React.useEffect(() => {
     const fetchCredentials = async () => {
-      if (adminPasswordSecretRefName && namespace) {
-        try {
+      setIsError(false);
+      try {
+        if (adminPasswordSecretRefName && namespace) {
           const secret = await fetchSecret(adminPasswordSecretRefName, namespace);
           setCredentials({
             username: atob(secret?.data?.username || ''),
             password: atob(secret?.data?.password || ''),
             consoleUrl,
           });
-        } catch (e) {
-          setIsError(true);
-          console.error(t('ai:Failed to fetch adminPasswordSecret secret.'), e);
         }
+      } catch (e) {
+        setIsError(true);
+        console.error(t('ai:Failed to fetch adminPasswordSecret secret.'), e);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     void fetchCredentials();
   }, [adminPasswordSecretRefName, namespace, fetchSecret, consoleUrl, t]);
 
-  return <ClusterCredentials cluster={cluster} credentials={credentials} error={isError} />;
+  return (
+    <ClusterCredentials
+      cluster={cluster}
+      credentials={credentials}
+      error={isError}
+      notAvailable={!credentials && !isLoading}
+    />
+  );
 };
 
 export default ClusterDeploymentCredentials;

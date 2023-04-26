@@ -14,6 +14,7 @@ type ClusterCredentialsProps = {
   credentials?: Credentials;
   idPrefix?: string;
   credentialsError?: string;
+  notAvailable?: boolean;
 };
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
@@ -23,6 +24,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   retry,
   idPrefix = 'cluster-creds',
   credentialsError = '',
+  notAvailable = false,
 }) => {
   let credentialsBody: JSX.Element;
   const { t } = useTranslation();
@@ -43,6 +45,10 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
         <ErrorState title={t('ai:Failed to fetch cluster credentials.')} fetchData={retry} />
       );
     }
+  } else if (notAvailable) {
+    credentialsBody = (
+      <Alert variant="info" isInline title={t('ai:Admin credentials are not available.')} />
+    );
   } else if (!credentials) {
     credentialsBody = <LoadingState />;
   } else if (!credentials.username && !credentials.consoleUrl) {

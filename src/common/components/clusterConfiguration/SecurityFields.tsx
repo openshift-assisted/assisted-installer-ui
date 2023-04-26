@@ -62,7 +62,6 @@ const SecurityFields = ({
       <FormGroup
         fieldId={fieldId}
         label={t('ai:Host SSH Public Key for troubleshooting after installation')}
-        helperTextInvalid={errorMsg}
         validated={touched && errorMsg ? 'error' : 'default'}
       >
         <RenderIf condition={Boolean(imageSshKey)}>
