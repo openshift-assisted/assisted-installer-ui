@@ -56,7 +56,7 @@ const AddHostDropdown = ({
               setIsKebabOpen(false);
               setAddModalType('ipxe');
             }}
-            description={t('ai:Use when you have an iPXE server that has already been set up.')}
+            description={t('ai:Use when you have an iPXE server that has already been set up')}
           >
             {t('ai:With iPXE')}
           </DropdownItem>,

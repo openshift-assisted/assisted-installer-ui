@@ -100,6 +100,7 @@ export type ClusterDeploymentDetailsNetworkingProps = Pick<
   onClose: () => void;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   isPreviewOpen: boolean;
+  docVersion: string;
 };
 
 export type AgentSelectorChangeProps = {
