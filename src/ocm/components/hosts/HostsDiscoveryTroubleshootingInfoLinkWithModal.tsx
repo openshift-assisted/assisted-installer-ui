@@ -15,7 +15,7 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
   return (
     <InfoLinkWithModal
       linkText={`${pluralize(+isSingleNode, 'Host')} not showing up?`}
-      modalTitle={'Troubleshooting Host Discovery Issues'}
+      modalTitle={'Hosts not showing up troubleshooter'}
       modalVariant={'large'}
       isInline={isInline}
       linkId="link-host-troubleshooting"

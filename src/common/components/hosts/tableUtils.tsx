@@ -14,10 +14,15 @@ import HostsCount from './HostsCount';
 import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
-import { areOnlySoftValidationsFailing, getHostname, getHostRole, getInventory } from './utils';
+import {
+  areOnlySoftValidationsFailing,
+  getHostname,
+  getHostRole,
+  getHostStatus,
+  getInventory,
+} from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
-import { DropdownProps } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
@@ -86,7 +91,7 @@ export const roleColumn = (
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
-  position?: DropdownProps['position'],
+  clusterKind?: Cluster['kind'],
 ): TableRow<Host> => {
   return {
     header: {
@@ -101,16 +106,10 @@ export const roleColumn = (
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
       const isRoleEditable = canEditRole?.(host);
-      const hostRole = getHostRole(host, t, schedulableMasters);
+      const hostRole = getHostRole(host, t, schedulableMasters, clusterKind);
       return {
         title: (
-          <RoleCell
-            host={host}
-            readonly={!isRoleEditable}
-            role={hostRole}
-            onEditRole={editRole}
-            position={position}
-          />
+          <RoleCell host={host} readonly={!isRoleEditable} role={hostRole} onEditRole={editRole} />
         ),
         props: { 'data-testid': 'host-role' },
         sortableValue: hostRole,
@@ -121,6 +120,7 @@ export const roleColumn = (
 
 export const statusColumn = (
   t: TFunction,
+  clusterStatus: Cluster['status'],
   AdditionalNTPSourcesDialogToggleComponent?: React.FC,
   onEditHostname?: HostsTableActions['onEditHost'],
   UpdateDay2ApiVipDialogToggleComponent?: React.FC,
@@ -141,11 +141,14 @@ export const statusColumn = (
         ['known', 'known-unbound'].includes(host.status)
           ? 'Some validations failed'
           : undefined;
+
+      const actualHostStatus = getHostStatus(host.status, clusterStatus);
+
       return {
         title: (
           <HostStatus
             host={host}
-            status={{ ...hostStatus[host.status], sublabel }}
+            status={{ ...hostStatus[actualHostStatus], sublabel }}
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}

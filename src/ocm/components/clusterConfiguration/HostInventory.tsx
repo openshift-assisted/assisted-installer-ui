@@ -27,7 +27,7 @@ import { selectCurrentClusterPermissionsState } from '../../selectors';
 import PlatformIntegration from './platformIntegration/PlatformIntegration';
 
 const schedulableMastersTooltip =
-  'This toggle will be "On" and not editable when less than 5 hosts were discovered';
+  'Workloads must be run on control plane nodes when less than 5 hosts are discovered';
 
 const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isPlatformIntegrationFeatureEnabled = useFeature(
