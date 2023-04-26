@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, FormSelect, FormSelectOption } from '@patternfly/react-core';
+import { FormGroup, FormSelect, FormSelectOption, Stack, StackItem } from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SelectFieldProps } from './types';
 import HelperText from './HelperText';
@@ -25,36 +25,47 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
   const hText = getHelperText ? getHelperText(field.value) : helperText;
+  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
+
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={
-        typeof hText === 'string' ? hText : <HelperText fieldId={fieldId}>{hText}</HelperText>
-      }
-      helperTextInvalid={errorMessage}
-      validated={isValid ? 'default' : 'error'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-    >
-      <FormSelect
-        {...field}
-        {...props}
-        id={fieldId}
-        validated={isValid ? 'default' : 'error'}
-        isRequired={isRequired}
-        aria-describedby={`${fieldId}-helper`}
-        onChange={(value, event) => {
-          //customHandleChange enables calling formik change handler explicitly, useful for example to have the previous value
-          callFormikOnChange && field.onChange(event);
-          onChange && onChange(event);
-        }}
-      >
-        {options.map((option, index) => (
-          <FormSelectOption key={option.id || index} {...option} />
-        ))}
-      </FormSelect>
-    </FormGroup>
+    <Stack>
+      <StackItem>
+        <FormGroup
+          fieldId={fieldId}
+          label={label}
+          helperText={fieldHelperText}
+          helperTextInvalid={fieldHelperText}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          labelIcon={labelIcon}
+        >
+          <FormSelect
+            {...field}
+            {...props}
+            id={fieldId}
+            validated={isValid ? 'default' : 'error'}
+            isRequired={isRequired}
+            aria-describedby={`${fieldId}-helper`}
+            onChange={(value, event) => {
+              //customHandleChange enables calling formik change handler explicitly, useful for example to have the previous value
+              callFormikOnChange && field.onChange(event);
+              onChange && onChange(event);
+            }}
+          >
+            {options.map((option, index) => (
+              <FormSelectOption key={option.id || index} {...option} />
+            ))}
+          </FormSelect>
+        </FormGroup>
+      </StackItem>
+      <StackItem>
+        {errorMessage && (
+          <HelperText fieldId={fieldId} isError>
+            {errorMessage}
+          </HelperText>
+        )}
+      </StackItem>
+    </Stack>
   );
 };
 

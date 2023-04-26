@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, FileUpload } from '@patternfly/react-core';
+import { FormGroup, FileUpload, Stack, StackItem } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
@@ -37,63 +37,63 @@ const UploadField: React.FC<UploadFieldProps> = ({
   };
   const errorMessage = getErrorMessage();
 
+  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
+
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={
-        typeof helperText === 'string' ? (
-          helperText
-        ) : (
-          <HelperText fieldId={fieldId}>{helperText}</HelperText>
-        )
-      }
-      helperTextInvalid={
-        typeof errorMessage === 'string' ? (
-          errorMessage
-        ) : (
+    <Stack>
+      <StackItem>
+        <FormGroup
+          fieldId={fieldId}
+          label={label}
+          helperText={fieldHelperText}
+          helperTextInvalid={fieldHelperText}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          labelIcon={labelIcon}
+        >
+          {children}
+          <FileUpload
+            filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
+            browseButtonText={t('ai:Browse...')}
+            clearButtonText={t('ai:Clear')}
+            id={field.name}
+            style={{ resize: 'vertical' }}
+            validated={isValid ? 'default' : 'error'}
+            isRequired={isRequired}
+            aria-describedby={`${fieldId}-helper`}
+            type="text"
+            value={field.value}
+            filename={filename}
+            onChange={(value, filename) => {
+              setFilename(filename);
+              helpers.setTouched(true);
+              helpers.setValue(value);
+            }}
+            onBlur={(e) => {
+              field.onBlur(e);
+              onBlur && onBlur(e);
+            }}
+            onReadStarted={() => setIsFileUploading(true)}
+            onReadFinished={() => setIsFileUploading(false)}
+            isLoading={isFileUploading}
+            disabled={isDisabled}
+            dropzoneProps={{
+              ...dropzoneProps,
+              onDropRejected:
+                dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers),
+            }}
+            allowEditingUploadedText={allowEdittingUploadedText}
+          />
+        </FormGroup>
+      </StackItem>
+      <StackItem>
+        {errorMessage && (
           <HelperText fieldId={fieldId} isError>
             {errorMessage}
           </HelperText>
-        )
-      }
-      validated={isValid ? 'default' : 'error'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-    >
-      {children}
-      <FileUpload
-        filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
-        browseButtonText={t('ai:Browse...')}
-        clearButtonText={t('ai:Clear')}
-        id={field.name}
-        style={{ resize: 'vertical' }}
-        validated={isValid ? 'default' : 'error'}
-        isRequired={isRequired}
-        aria-describedby={`${fieldId}-helper`}
-        type="text"
-        value={field.value}
-        filename={filename}
-        onChange={(value, filename) => {
-          setFilename(filename);
-          helpers.setTouched(true);
-          helpers.setValue(value);
-        }}
-        onBlur={(e) => {
-          field.onBlur(e);
-          onBlur && onBlur(e);
-        }}
-        onReadStarted={() => setIsFileUploading(true)}
-        onReadFinished={() => setIsFileUploading(false)}
-        isLoading={isFileUploading}
-        disabled={isDisabled}
-        dropzoneProps={{
-          ...dropzoneProps,
-          onDropRejected: dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers),
-        }}
-        allowEditingUploadedText={allowEdittingUploadedText}
-      />
-    </FormGroup>
+        )}
+      </StackItem>
+    </Stack>
   );
 };
 
