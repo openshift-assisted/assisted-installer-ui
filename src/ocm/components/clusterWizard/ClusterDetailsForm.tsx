@@ -27,6 +27,7 @@ import {
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { useClusterWizardContext } from './ClusterWizardContext';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 type ClusterDetailsFormProps = {
@@ -38,10 +39,14 @@ type ClusterDetailsFormProps = {
   usedClusterNames: string[];
   navigation: React.ReactNode;
   moveNext: () => void;
-  handleClusterCreate: (params: ClusterCreateParams) => Promise<void>;
+  handleClusterCreate: (params: ClusterCreateParams, addCustomManifests: boolean) => Promise<void>;
   handleClusterUpdate: (
     clusterId: Cluster['id'],
     params: ClusterDetailsUpdateParams,
+  ) => Promise<void>;
+  handleCustomManifestsChange: (
+    clusterId: Cluster['id'],
+    addCustomManifests: boolean,
   ) => Promise<void>;
 };
 
@@ -56,9 +61,10 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     moveNext,
     handleClusterUpdate,
     handleClusterCreate,
+    handleCustomManifestsChange,
     navigation,
   } = props;
-
+  const clusterWizardContext = useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const featureSupportLevels = useNewFeatureSupportLevel();
@@ -67,12 +73,19 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       if (cluster) {
         const params = ClusterDetailsService.getClusterUpdateParams(values);
         await handleClusterUpdate(cluster.id, params);
+        await handleCustomManifestsChange(cluster.id, clusterWizardContext.addCustomManifests);
       } else {
         const params = ClusterDetailsService.getClusterCreateParams(values);
-        await handleClusterCreate(params);
+        await handleClusterCreate(params, clusterWizardContext.addCustomManifests);
       }
     },
-    [cluster, handleClusterCreate, handleClusterUpdate],
+    [
+      cluster,
+      handleClusterCreate,
+      handleClusterUpdate,
+      handleCustomManifestsChange,
+      clusterWizardContext.addCustomManifests,
+    ],
   );
 
   const handleOnNext = (
@@ -137,6 +150,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                   managedDomains={managedDomains}
                   clusterExists={!!cluster}
                   clusterCpuArchitecture={cluster?.cpuArchitecture as CpuArchitecture}
+                  clusterId={cluster?.id}
                 />
               </GridItem>
             </Grid>

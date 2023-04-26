@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, HelperTextItem } from '@patternfly/react-core';
+import { FormGroup, HelperTextItem, Stack, StackItem } from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
@@ -19,6 +19,7 @@ const CodeField = ({
   name,
   description,
   isDisabled,
+  downloadFileName,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -51,41 +52,47 @@ const CodeField = ({
   }, [monacoEditor]);
 
   const isValid = !errorMessage;
+  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
+
   return (
-    <>
-      <FormGroup
-        fieldId={fieldId}
-        label={label}
-        helperText={
-          typeof helperText === 'string' ? (
-            helperText
-          ) : (
-            <HelperText fieldId={fieldId}>{helperText}</HelperText>
-          )
-        }
-        helperTextInvalid={errorMessage}
-        validated={isValid ? 'default' : 'error'}
-        isRequired={isRequired}
-        labelIcon={labelIcon}
-      >
-        {description && (
-          <HelperText fieldId={fieldId}>
-            <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+    <Stack>
+      <StackItem>
+        <FormGroup
+          fieldId={fieldId}
+          label={label}
+          helperText={fieldHelperText}
+          helperTextInvalid={fieldHelperText}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          labelIcon={labelIcon}
+        >
+          {description && (
+            <HelperText fieldId={fieldId}>
+              <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+            </HelperText>
+          )}
+          <CodeEditor
+            code={field.value as string}
+            isUploadEnabled={!isDisabled}
+            isDownloadEnabled
+            isCopyEnabled
+            isLanguageLabelVisible
+            height="400px"
+            language={language}
+            onEditorDidMount={(editor) => setMonacoEditor(editor)}
+            downloadFileName={downloadFileName}
+          />
+        </FormGroup>
+      </StackItem>
+      <StackItem>
+        {errorMessage && (
+          <HelperText fieldId={fieldId} isError>
+            {errorMessage}
           </HelperText>
         )}
-        <CodeEditor
-          code={field.value as string}
-          isUploadEnabled={!isDisabled}
-          isDownloadEnabled
-          isCopyEnabled
-          isLanguageLabelVisible
-          height="400px"
-          language={language}
-          onEditorDidMount={(editor) => setMonacoEditor(editor)}
-        />
-      </FormGroup>
-    </>
-  );
+      </StackItem>
+    </Stack>
+);
 };
 
 export default CodeField;

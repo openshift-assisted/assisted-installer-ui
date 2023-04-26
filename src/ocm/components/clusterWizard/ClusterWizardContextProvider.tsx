@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import { useLocation } from 'react-router-dom';
-import isEqual from 'lodash/isEqual';
 import ClusterWizardContext, { ClusterWizardContextType } from './ClusterWizardContext';
 import {
   ClusterWizardFlowStateType,
@@ -19,62 +18,104 @@ import {
   useFeature,
 } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
+import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
 
-const getWizardStepIds = ({
-  staticIpView,
-  isSingleClusterFeatureEnabled,
-}: {
-  staticIpView?: StaticIpView;
-  isSingleClusterFeatureEnabled: boolean;
-}): ClusterWizardStepsType[] => {
-  let stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
-
-  if (staticIpView === StaticIpView.YAML) {
-    stepIds.splice(1, 0, 'static-ip-yaml-view');
-  } else if (staticIpView === StaticIpView.FORM) {
-    stepIds.splice(1, 0, ...staticIpFormViewSubSteps);
+const addStepToClusterWizard = (
+  wizardStepIds: ClusterWizardStepsType[],
+  addAfterStep: ClusterWizardStepsType,
+  itemsToAdd: ClusterWizardStepsType[],
+) => {
+  const stepsIds = [...wizardStepIds];
+  const referencePosition = stepsIds.findIndex((step) => step === addAfterStep);
+  const found = wizardStepIds.filter((step) => step === itemsToAdd[0]);
+  if (referencePosition !== -1 && found.length === 0) {
+    stepsIds.splice(referencePosition + 1, 0, ...itemsToAdd);
   }
-
-  if (isSingleClusterFeatureEnabled) {
-    // tentatively removed, proper waiting on support by backend
-    stepIds = stepIds.filter((id) => id !== 'operators');
-  }
-
-  return stepIds;
+  return stepsIds;
 };
 
-const ClusterWizardContextProvider: React.FC<
-  PropsWithChildren<{
-    cluster?: Cluster;
-    infraEnv?: InfraEnv;
-    permissions?: AssistedInstallerOCMPermissionTypesListType;
-  }>
-> = ({ children, cluster, infraEnv, permissions }) => {
+const removeStepFromClusterWizard = (
+  wizardStepIds: ClusterWizardStepsType[],
+  itemToRemove: ClusterWizardStepsType,
+  numberItemsToRemove: number,
+) => {
+  const stepsIds = [...wizardStepIds];
+  const position = stepsIds.findIndex((step) => step === itemToRemove);
+  if (position !== -1) {
+    stepsIds.splice(position, numberItemsToRemove);
+  }
+  return stepsIds;
+};
+
+const getWizardStepIds = (
+  wizardStepIds: ClusterWizardStepsType[] | undefined,
+  staticIpView?: StaticIpView | 'dhcp-selected',
+  addCustomManifests?: boolean,
+  isSingleClusterFeatureEnabled?: boolean,
+): ClusterWizardStepsType[] => {
+  let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
+  if (staticIpView === StaticIpView.YAML) {
+    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['static-ip-yaml-view']);
+  } else if (staticIpView === StaticIpView.FORM) {
+    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-yaml-view', 1);
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', staticIpFormViewSubSteps);
+  } else if (staticIpView === 'dhcp-selected') {
+    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
+  }
+
+  if (addCustomManifests) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['custom-manifests']);
+  } else {
+    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
+  }
+  if (isSingleClusterFeatureEnabled) {
+    // tentatively removed, proper waiting on support by backend
+    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'operators', 1);
+  }
+
+  return stepsCopy;
+};
+
+const ClusterWizardContextProvider = ({
+  children,
+  cluster,
+  infraEnv,
+  permissions,
+}: PropsWithChildren<{
+  cluster?: Cluster;
+  infraEnv?: InfraEnv;
+  permissions?: AssistedInstallerOCMPermissionTypesListType;
+}>) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
+  const [addCustomManifests, setAddCustomManifests] = React.useState<boolean>(false);
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
+  const { customManifests } = useClusterCustomManifests(cluster?.id || '', false);
   const setClusterPermissions = useSetClusterPermissions();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-    const firstStep = getClusterWizardFirstStep({
+    const firstStep = getClusterWizardFirstStep(
       locationState,
       staticIpInfo,
-      state: cluster?.status,
-      hosts: cluster?.hosts,
+      cluster?.status,
+      cluster?.hosts,
       isSingleClusterFeatureEnabled,
-    });
-    const firstStepIds = getWizardStepIds({
-      staticIpView: staticIpInfo?.view,
+    );
+    const firstStepIds = getWizardStepIds(
+      wizardStepIds,
+      staticIpInfo?.view,
+      customManifests && customManifests.length > 0,
       isSingleClusterFeatureEnabled,
-    });
+    );
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);
     setClusterPermissions(cluster, permissions);
-
+    setAddCustomManifests(customManifests ? customManifests.length > 0 : false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [customManifests]);
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
       return null;
@@ -86,13 +127,13 @@ const ClusterWizardContextProvider: React.FC<
       if (!staticIpInfo) {
         throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
       }
-      const newStepIds = getWizardStepIds({
-        staticIpView: staticIpInfo.view,
+      const newStepIds = getWizardStepIds(
+        wizardStepIds,
+        staticIpInfo.view,
+        addCustomManifests,
         isSingleClusterFeatureEnabled,
-      });
-      if (!isEqual(newStepIds, wizardStepIds)) {
-        setWizardStepIds(newStepIds);
-      }
+      );
+      setWizardStepIds(newStepIds);
     };
 
     const onSetCurrentStepId = (stepId: ClusterWizardStepsType) => {
@@ -102,6 +143,17 @@ const ClusterWizardContextProvider: React.FC<
       setCurrentStepId(stepId);
     };
 
+    const onSetAddCustomManifests = (addCustomManifest: boolean) => {
+      setAddCustomManifests(addCustomManifest);
+      setWizardStepIds(
+        getWizardStepIds(
+          wizardStepIds,
+          undefined,
+          addCustomManifest,
+          isSingleClusterFeatureEnabled,
+        ),
+      );
+    };
     return {
       moveBack(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
@@ -117,29 +169,51 @@ const ClusterWizardContextProvider: React.FC<
         onSetCurrentStepId(wizardStepIds[currentStepIdx + 1]);
       },
       onUpdateStaticIpView(view: StaticIpView): void {
-        setWizardStepIds(getWizardStepIds({ staticIpView: view, isSingleClusterFeatureEnabled }));
         if (view === StaticIpView.YAML) {
           setCurrentStepId('static-ip-yaml-view');
         } else {
           setCurrentStepId('static-ip-network-wide-configurations');
         }
+        setWizardStepIds(
+          getWizardStepIds(wizardStepIds, view, addCustomManifests, isSingleClusterFeatureEnabled),
+        );
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (type === HostsNetworkConfigurationType.STATIC) {
           setWizardStepIds(
-            getWizardStepIds({ staticIpView: StaticIpView.FORM, isSingleClusterFeatureEnabled }),
+            getWizardStepIds(
+              wizardStepIds,
+              StaticIpView.FORM,
+              addCustomManifests,
+              isSingleClusterFeatureEnabled,
+            ),
           );
         } else {
           setWizardStepIds(
-            getWizardStepIds({ staticIpView: undefined, isSingleClusterFeatureEnabled }),
+            getWizardStepIds(
+              wizardStepIds,
+              'dhcp-selected',
+              addCustomManifests,
+              isSingleClusterFeatureEnabled,
+            ),
           );
         }
       },
       wizardStepIds,
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
+      addCustomManifests,
+      setAddCustomManifests: onSetAddCustomManifests,
+      customManifests,
     };
-  }, [wizardStepIds, currentStepId, infraEnv, isSingleClusterFeatureEnabled]);
+  }, [
+    wizardStepIds,
+    currentStepId,
+    infraEnv,
+    addCustomManifests,
+    customManifests,
+    isSingleClusterFeatureEnabled,
+  ]);
   if (!contextValue) {
     return null;
   }
