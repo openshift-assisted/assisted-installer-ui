@@ -57,6 +57,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     | 'ExpandComponent'
     | 'className'
     | 'canSelectAll'
+    | 'variant'
   > & {
     hosts: Host[];
     skipDisabled?: boolean;

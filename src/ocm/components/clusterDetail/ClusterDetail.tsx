@@ -11,46 +11,37 @@ import {
 } from '@patternfly/react-core';
 import {
   ToolbarButton,
-  ToolbarSecondaryGroup,
   Alerts,
-  canDownloadClusterLogs,
-  useAlerts,
   getEnabledHosts,
   selectOlmOperators,
   isSNO,
   useFeature,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
-import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
-import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
-import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
-import ClusterProperties from './ClusterProperties';
+import { getClusterDetailId } from './utils';
 import { routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
-import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { canAbortInstallation } from '../clusters/utils';
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
 import { ClustersAPI } from '../../services/apis';
 import { updateCluster } from '../../reducers/clusters';
 import { handleApiError, ocmClient } from '../../api';
-import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
+import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
+import ClusterSummaryExpandable from './ClusterSummaryExpandable';
+import HostInventoryExpandable from './HostInventoryExpandable';
 
 type ClusterDetailProps = {
   cluster: Cluster;
 };
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
-  const { addAlert } = useAlerts();
-  const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
-  const { credentials, credentialsError } = clusterVarieties;
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const isSNOExpansionAllowed =
     featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION');
@@ -98,15 +89,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             )}
           </GridItem>
           <GridItem span={6}>
+            <ClusterDetailsButtonGroup
+              cluster={cluster}
+              credentials={clusterVarieties.credentials}
+              credentialsError={clusterVarieties.credentialsError}
+            />
             <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
           </GridItem>
-          <GridItem>
-            <TextContent>
-              <Text component="h2">Host Inventory</Text>
-            </TextContent>
-            <ClusterHostsTable cluster={cluster} skipDisabled />
-          </GridItem>
-          <ClusterProperties cluster={cluster} />
+          <HostInventoryExpandable cluster={cluster} />
+          <ClusterSummaryExpandable cluster={cluster} />
         </Grid>
       </StackItem>
       <StackItem>
@@ -114,31 +105,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       </StackItem>
       <StackItem>
         <ClusterToolbar>
-          {canAbortInstallation(cluster) && (
-            <ToolbarButton
-              id={getClusterDetailId('button-cancel-installation')}
-              variant={ButtonVariant.danger}
-              onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
-            >
-              Abort Installation
-            </ToolbarButton>
-          )}
-          {cluster.status === 'error' && (
-            <ToolbarButton
-              id={getClusterDetailId('button-reset-cluster')}
-              onClick={() => resetClusterDialog.open({ cluster })}
-            >
-              Reset Cluster
-            </ToolbarButton>
-          )}
-          {['finalizing', 'installed'].includes(cluster.status) && (
-            <LaunchOpenshiftConsoleButton
-              isDisabled={!credentials || !!credentialsError}
-              cluster={cluster}
-              consoleUrl={credentials?.consoleUrl}
-              id={getClusterDetailId('button-launch-console')}
-            />
-          )}
           {canAddHosts && (
             <ToolbarButton
               variant={ButtonVariant.primary}
@@ -160,17 +126,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               Back to all clusters
             </ToolbarButton>
           )}
-          <ToolbarSecondaryGroup>
-            <ToolbarButton
-              id="cluster-installation-logs-button"
-              variant={ButtonVariant.link}
-              onClick={() => void downloadClusterInstallationLogs(addAlert, cluster.id)}
-              isDisabled={!canDownloadClusterLogs(cluster)}
-            >
-              Download Installation Logs
-            </ToolbarButton>
-            <ViewClusterEventsButton cluster={cluster} onFetchEvents={onFetchEvents} />
-          </ToolbarSecondaryGroup>
         </ClusterToolbar>
       </StackItem>
     </Stack>

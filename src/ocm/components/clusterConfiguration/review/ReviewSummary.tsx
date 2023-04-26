@@ -21,19 +21,14 @@ import {
 } from '.';
 import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
 
-const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM);
 
   return (
-    <ExpandableSection
-      toggleText={'Cluster summary'}
-      className={'summary-expandable'}
-      isIndented
-      isExpanded
-    >
+    <>
       <TableSummaryExpandable title={'Cluster details'}>
         <ReviewClusterDetailTable cluster={cluster} />
       </TableSummaryExpandable>
@@ -67,6 +62,19 @@ const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
       <TableSummaryExpandable title={'Networking'}>
         <ReviewNetworkingTable cluster={cluster} />
       </TableSummaryExpandable>
+    </>
+  );
+};
+
+const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+  return (
+    <ExpandableSection
+      toggleText={'Cluster summary'}
+      className={'summary-expandable'}
+      isIndented
+      isExpanded
+    >
+      <ReviewSummaryContent cluster={cluster} />
     </ExpandableSection>
   );
 };

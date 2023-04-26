@@ -46,7 +46,12 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
           minimizedView={!isCardExpanded}
           totalPercentage={cluster.progress?.totalPercentage || 0}
         />
-        <ClusterDetailsButtonGroup cluster={cluster} />
+        <ClusterDetailsButtonGroup
+          cluster={cluster}
+          credentials={clusterVarieties.credentials}
+          credentialsError={clusterVarieties.credentialsError}
+          showKubeConfig={false}
+        />
       </CardBody>
       <CardExpandableContent>
         <CardBody>
@@ -55,7 +60,6 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
               cluster={cluster}
               clusterVarieties={clusterVarieties}
               showAddHostsInfo={false}
-              showKubeConfig={false}
             />
             <GridItem>
               <ClusterHostsTable cluster={cluster} skipDisabled />
