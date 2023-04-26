@@ -1,5 +1,5 @@
 import React from 'react';
-import { Label } from '@patternfly/react-core';
+import { Button, ButtonVariant, Label } from '@patternfly/react-core';
 import { TableVariant, Table, TableBody, breakWord } from '@patternfly/react-table';
 import {
   InfoCircleIcon,
@@ -16,7 +16,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
   // eslint-disable-next-line
-  rowData?.props?.event.sortableTime + rowData?.props?.event.message;
+  rowData?.props?.event.eventTime + rowData?.props?.event.message;
 
 const getLabelColor = (severity: Event['severity']) => {
   switch (severity) {
@@ -45,33 +45,35 @@ const getLabelIcon = (severity: Event['severity']) => {
 
 export type EventsListProps = {
   events: EventList;
+  resetFilters: () => void;
   className?: string;
 };
 
-const EventsList: React.FC<EventsListProps> = ({ events, className }) => {
+const EventsList = ({ events, className, resetFilters }: EventsListProps) => {
   const { t } = useTranslation();
   if (events.length === 0) {
     return (
       <EmptyState
         icon={SearchIcon}
-        title={t('ai:No events found')}
-        content={t('ai:There are no events found.')}
+        title={t('ai:No matching events')}
+        content={t(
+          'ai:There are no events that match the current filters. Adjust or clear the filters to view events.',
+        )}
+        primaryAction={
+          <Button
+            variant={ButtonVariant.primary}
+            onClick={resetFilters}
+            id="empty-state-cluster-events-clear-filters-button"
+            data-ouia-id="button-clear-events-filter"
+          >
+            {t('ai:Clear filters')}
+          </Button>
+        }
       />
     );
   }
 
-  // Do not memoize result to keep it recomputed since we use "relative" time bellow
-  const sortedEvents = events
-    .map((event) => ({
-      ...event,
-      sortableTime: new Date(event.eventTime).getTime(),
-    }))
-    .sort(
-      // Descending order
-      (a, b) => b.sortableTime - a.sortableTime,
-    );
-
-  const rows = sortedEvents.map((event) => ({
+  const rows = events.map((event) => ({
     cells: [
       {
         title: <strong>{getHumanizedDateTime(event.eventTime)}</strong>,

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Alert, GridItem } from '@patternfly/react-core';
+import { Alert } from '@patternfly/react-core';
 import {
   RenderIf,
-  KubeconfigDownload,
   REDHAT_CONSOLE_OPENSHIFT,
   canDownloadKubeconfig,
   isSNO,
@@ -10,7 +9,6 @@ import {
   SupportedPlatformType,
   Cluster,
 } from '../../../common';
-import { getClusterDetailId } from './utils';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
@@ -22,13 +20,11 @@ import { useNewFeatureSupportLevel } from '../../../common/components/newFeature
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
   showAddHostsInfo: boolean;
-  showKubeConfig: boolean;
 };
 
 const ClusterDetailStatusMessages = ({
   cluster,
   showAddHostsInfo,
-  showKubeConfig,
 }: ClusterDetailStatusMessagesProps) => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
@@ -41,24 +37,12 @@ const ClusterDetailStatusMessages = ({
       (!isSNO(cluster) || featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION')),
   );
 
-  const showKubeConfigDownload =
-    showKubeConfig && dateDifference > 0 && canDownloadKubeconfig(cluster.status);
-
   const platformLink = isClusterPlatformTypeVM(cluster)
     ? integrationPlatformLinks[cluster.platform?.type as SupportedPlatformType]
     : '';
 
   return (
     <>
-      <RenderIf condition={showKubeConfigDownload}>
-        <GridItem>
-          <KubeconfigDownload
-            status={cluster.status}
-            clusterId={cluster.id}
-            id={getClusterDetailId('button-download-kubeconfig')}
-          />
-        </GridItem>
-      </RenderIf>
       <RenderIf
         condition={
           typeof inactiveDeletionHours === 'number' && canDownloadKubeconfig(cluster.status)
