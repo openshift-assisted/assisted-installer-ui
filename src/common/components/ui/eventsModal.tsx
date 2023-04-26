@@ -24,7 +24,7 @@ type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   fallbackEventsURL?: string;
 };
 
-export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
+export const EventsModalButton = ({
   ButtonComponent = ToolbarButton,
   onFetchEvents,
   onClick,
@@ -35,7 +35,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
   title,
   fallbackEventsURL,
   ...props
-}) => {
+}: EventsModalButtonProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const closeModal = () => setIsModalOpen(false);
   const handleClick = onClick || (() => setIsModalOpen(true));
@@ -69,7 +69,7 @@ type EventsModalProps = {
   fallbackEventsURL?: string;
 };
 
-export const EventsModal: React.FC<EventsModalProps> = ({
+export const EventsModal = ({
   onFetchEvents,
   hostId,
   cluster,
@@ -78,7 +78,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
   isOpen,
   title,
   fallbackEventsURL,
-}) => {
+}: EventsModalProps) => {
   const { t } = useTranslation();
   return (
     <Modal
