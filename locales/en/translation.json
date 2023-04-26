@@ -58,6 +58,7 @@
   "ai:Additional certificates": "Additional certificates",
   "ai:Additional NTP Sources": "Additional NTP Sources",
   "ai:Address is the host/ip that the NodePort service is exposed over.": "Address is the host/ip that the NodePort service is exposed over.",
+  "ai:Admin credentials are not available.": "Admin credentials are not available.",
   "ai:Agent compatibility": "Agent compatibility",
   "ai:AgentClusterInstall conditions are missing.": "AgentClusterInstall conditions are missing.",
   "ai:All bootable disks, except for read-only disks, will be formatted during installation. Make sure to back up any sensitive data before proceeding.": "All bootable disks, except for read-only disks, will be formatted during installation. Make sure to back up any sensitive data before proceeding.",
