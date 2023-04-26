@@ -9,6 +9,8 @@ import {
   SelectOptionProps,
   SelectProps,
   SelectVariant,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { MultiSelectFieldProps, MultiSelectOption } from './types';
 import { getFieldId } from './utils';
@@ -90,46 +92,57 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     keys: ['displayName'],
   });
   const { t } = useTranslation();
+  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
+
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={
-        typeof hText === 'string' ? hText : <HelperText fieldId={fieldId}>{hText}</HelperText>
-      }
-      helperTextInvalid={errorMessage}
-      validated={isValid ? 'default' : 'error'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-    >
-      <Select
-        {...field}
-        {...props}
-        id={fieldId}
-        variant={SelectVariant.typeaheadMulti}
-        typeAheadAriaLabel={t('ai:Select a state')}
-        validated={isValid ? 'default' : 'error'}
-        aria-describedby={`${fieldId}-helper`}
-        isCreatable={false}
-        placeholderText={placeholderText}
-        isOpen={isOpen}
-        onToggle={onToggle}
-        onSelect={onSelect}
-        onClear={onClearSelection}
-        selections={selections}
-        onFilter={(e, val) => {
-          if (!val || val === '') {
-            return children;
-          }
-          const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
-          return (
-            React.Children.toArray(children) as React.ReactElement<SelectOptionProps>[]
-          ).filter(({ props }) => results.includes(props.id as string));
-        }}
-      >
-        {children}
-      </Select>
-    </FormGroup>
+    <Stack>
+      <StackItem>
+        <FormGroup
+          fieldId={fieldId}
+          label={label}
+          helperText={fieldHelperText}
+          helperTextInvalid={fieldHelperText}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          labelIcon={labelIcon}
+        >
+          <Select
+            {...field}
+            {...props}
+            id={fieldId}
+            variant={SelectVariant.typeaheadMulti}
+            typeAheadAriaLabel={t('ai:Select a state')}
+            validated={isValid ? 'default' : 'error'}
+            aria-describedby={`${fieldId}-helper`}
+            isCreatable={false}
+            placeholderText={placeholderText}
+            isOpen={isOpen}
+            onToggle={onToggle}
+            onSelect={onSelect}
+            onClear={onClearSelection}
+            selections={selections}
+            onFilter={(e, val) => {
+              if (!val || val === '') {
+                return children;
+              }
+              const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
+              return (
+                React.Children.toArray(children) as React.ReactElement<SelectOptionProps>[]
+              ).filter(({ props }) => results.includes(props.id as string));
+            }}
+          >
+            {children}
+          </Select>
+        </FormGroup>
+      </StackItem>
+      <StackItem>
+        {errorMessage && (
+          <HelperText fieldId={fieldId} isError>
+            {errorMessage}
+          </HelperText>
+        )}
+      </StackItem>
+    </Stack>
   );
 };
 
