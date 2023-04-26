@@ -6,7 +6,6 @@ import {
   ToolbarContent,
   ToolbarFilter,
   ToolbarChip,
-  ToolbarChipGroup,
   Button,
   ButtonVariant,
   InputGroup,
@@ -18,6 +17,7 @@ import {
   SelectProps,
   TextInputProps,
   Badge,
+  TextInputTypes,
 } from '@patternfly/react-core';
 import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
 import { ClusterEventsFiltersType } from '../../types';
@@ -25,23 +25,28 @@ import { Cluster, Event, Host, Inventory, stringToJSON } from '../../api';
 import { EVENT_SEVERITIES } from '../../config';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { isSelectEventChecked } from './utils';
+import { TFunction } from 'i18next';
+
+export type SeverityCountsType = { [severity in Event['severity']]: number };
 
 type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
-  setFilters: React.Dispatch<React.SetStateAction<ClusterEventsFiltersType>>;
+  setFilters: (filters: ClusterEventsFiltersType) => void;
   cluster: Cluster;
+  entityKind: 'cluster' | 'host';
   events: Event[];
+  severityCounts: SeverityCountsType;
+  hostId?: Host['id'];
 };
+
+const CLUSTER_LEVEL = 'cluster-level-action';
+const DELETED_HOSTS = 'deleted-hosts-action';
 
 const Placeholder = ({ text }: { text: string }) => (
   <>
     <FilterIcon /> {text}
   </>
 );
-
-const SELECT_ALL = 'select-all-actions';
-const CLUSTER_LEVEL = 'cluster-level-action';
-const ORPHANS = 'deleted-hosts-action';
 
 const mapHosts = (hosts: Cluster['hosts']) =>
   (hosts || []).map((host) => {
@@ -56,217 +61,218 @@ const mapHosts = (hosts: Cluster['hosts']) =>
     };
   });
 
-export const getInitialClusterEventsFilters = (cluster: Cluster): ClusterEventsFiltersType => ({
-  fulltext: '',
-  hosts: mapHosts(cluster.hosts).map((host) => host.id),
-  severity: [],
-  clusterLevel: true,
-  orphanedHosts: true,
-  selectAll: true,
+export const getInitialClusterEventsFilters = (
+  entityKind: 'cluster' | 'host',
+  hostId?: Host['id'],
+): ClusterEventsFiltersType => ({
+  message: '',
+  hostIds: entityKind === 'host' && hostId ? [hostId] : [],
+  severities: [],
+  clusterLevel: false,
+  deletedHosts: false,
 });
 
-const getEventsCount = (severity: Event['severity'], events: Event[]) =>
-  events.filter((event) => event.severity === severity).length;
+const mapHostsChips = (
+  t: TFunction,
+  filters: ClusterEventsFiltersType,
+  hosts: { id: string; hostname?: string }[],
+): ToolbarChip[] => {
+  const chips = [
+    filters.deletedHosts && { key: DELETED_HOSTS, node: t('ai:Deleted hosts') },
+    filters.clusterLevel && { key: CLUSTER_LEVEL, node: t('ai:Cluster-level events') },
+    ...(hosts || [])
+      .filter((host) => filters.hostIds?.includes(host.id))
+      .map((host): ToolbarChip => ({ key: host.id, node: host.hostname })),
+  ];
+  return chips.filter(Boolean) as ToolbarChip[];
+};
 
-const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
+const ClusterEventsToolbar = ({
   filters,
   setFilters,
   cluster,
-  events,
-}) => {
+  hostId,
+  entityKind,
+  severityCounts,
+}: ClustersListToolbarProps) => {
+  const { t } = useTranslation();
   const [isHostExpanded, setHostExpanded] = React.useState(false);
   const [isSeverityExpanded, setSeverityExpanded] = React.useState(false);
+  const [timer, setTimer] = React.useState<ReturnType<typeof setTimeout>>();
+
+  const [messageValue, setMessageValue] = React.useState(filters.message);
 
   const allHosts = React.useMemo(() => mapHosts(cluster.hosts), [cluster.hosts]);
   const onClearAllFilters: ToolbarProps['clearAllFilters'] = () => {
-    setFilters(getInitialClusterEventsFilters(cluster));
+    setFilters(getInitialClusterEventsFilters(entityKind, hostId));
+    setMessageValue('');
   };
 
   const onSelect = (
-    type: 'hosts' | 'severity',
+    type: 'hostIds' | 'severities',
     isChecked: boolean,
     value: Host['id'] | Event['severity'],
   ) => {
     const setNextSelectedValues = (
-      type: 'hosts' | 'severity',
+      type: 'hostIds' | 'severities',
       isChecked: boolean,
       value: Host['id'] | Event['severity'],
       filters: ClusterEventsFiltersType,
     ) => ({
       ...filters,
       [type]: isChecked
-        ? [...filters[type], value]
-        : filters[type].filter((val: string) => val !== value),
+        ? [...(filters[type] || []), value]
+        : filters[type]?.filter((val: string) => val !== value),
     });
 
-    const setNextSelectAllValue = (
-      totalHostsInCluster: number,
-      filters: ClusterEventsFiltersType,
-    ) => ({
-      ...filters,
-      selectAll:
-        type === 'severity'
-          ? filters.selectAll
-          : filters.hosts.length === totalHostsInCluster &&
-            filters.orphanedHosts &&
-            filters.clusterLevel,
-    });
-
-    let nextFilters = setNextSelectedValues(type, isChecked, value, filters);
-    nextFilters = setNextSelectAllValue(cluster.hosts?.length || 0, nextFilters);
+    const nextFilters = setNextSelectedValues(type, isChecked, value, filters);
 
     setFilters(nextFilters);
   };
 
   const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
-  const onHostSelect: SelectProps['onSelect'] = (event, value) => {
-    const isChecked = isSelectEventChecked(event);
-
+  const onHostSelect = (value: string, isChecked: boolean) => {
     switch (value) {
-      case SELECT_ALL:
-        if (isChecked) {
-          setFilters({
-            ...filters,
-            hosts: mapHosts(cluster.hosts).map((host) => host.id),
-            clusterLevel: true,
-            orphanedHosts: true,
-            selectAll: true,
-          });
-        } else {
-          setFilters({
-            ...filters,
-            clusterLevel: false,
-            orphanedHosts: false,
-            selectAll: false,
-            hosts: [],
-          });
-        }
-        break;
-      case ORPHANS:
+      case DELETED_HOSTS:
         setFilters({
           ...filters,
-          orphanedHosts: isChecked,
-          selectAll:
-            isChecked && filters.clusterLevel && filters.hosts.length === cluster.hosts?.length,
+          deletedHosts: isChecked,
         });
         break;
       case CLUSTER_LEVEL:
         setFilters({
           ...filters,
           clusterLevel: isChecked,
-          selectAll:
-            isChecked && filters.orphanedHosts && filters.hosts.length === cluster.hosts?.length,
         });
         break;
       default:
-        onSelect('hosts', isChecked, value as string);
+        onSelect('hostIds', isChecked, value);
     }
   };
 
   const onSeverityToggle: SelectProps['onToggle'] = () => setSeverityExpanded(!isSeverityExpanded);
-  const onSeveritySelect: SelectProps['onSelect'] = (event, value) => {
-    onSelect('severity', isSelectEventChecked(event), value as string);
+  const onSeveritySelect = (value: string, isChecked: boolean) => {
+    onSelect('severities', isChecked, value);
   };
 
-  const onFulltextChange: TextInputProps['onChange'] = (fulltext) => {
-    setFilters({
-      ...filters,
-      fulltext,
-    });
-  };
+  const onMessageChange: TextInputProps['onChange'] = (message) => {
+    setMessageValue(message);
+    clearTimeout(timer);
 
-  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (
-    type: string | ToolbarChipGroup,
-    chip: ToolbarChip | string,
-  ) => {
-    if (type) {
-      const id = (typeof chip === 'string' ? chip : chip.key) || '';
-      const typeId = (typeof type === 'string' ? type : type.key) || '';
-      setFilters({
-        ...filters,
-        // eslint-disable-next-line
-        [typeId]: filters[typeId].filter((v: string) => v !== id),
-      });
-    } else {
-      onClearAllFilters();
-    }
+    const newTimer = setTimeout(() => {
+      setMessageValue(message);
+      setFilters({ ...filters, message });
+    }, 500);
+
+    setTimer(newTimer);
   };
 
   const onDeleteChipGroup: ToolbarFilterProps['deleteChipGroup'] = (type) => {
-    setFilters({
-      ...filters,
-      [type as string]: [],
-    });
+    if (type === 'Severity') {
+      setFilters({
+        ...filters,
+        severities: [],
+      });
+    } else {
+      setFilters({
+        ...filters,
+        deletedHosts: false,
+        clusterLevel: false,
+        hostIds: [],
+      });
+    }
   };
 
   const getSelections = (): string[] => {
-    let selections = filters.clusterLevel ? [...filters.hosts, CLUSTER_LEVEL] : filters.hosts;
-    selections = filters.orphanedHosts ? [...selections, ORPHANS] : selections;
-    selections = filters.selectAll ? [...selections, SELECT_ALL] : selections;
+    let selections = filters.clusterLevel
+      ? [...(filters.hostIds || []), CLUSTER_LEVEL]
+      : filters.hostIds;
+    selections = filters.deletedHosts ? [...(selections || []), DELETED_HOSTS] : selections;
 
-    return selections;
+    return selections || [];
   };
-  const { t } = useTranslation();
+
+  const sortedHosts = allHosts.sort((a, b) =>
+    a.hostname && b.hostname && a.hostname < b.hostname ? -1 : 1,
+  );
+
   return (
     <Toolbar
       id="clusters-events-toolbar"
       className="pf-m-toggle-group-container"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={onClearAllFilters}
+      numberOfFiltersText={(numberOfFilters) =>
+        t('ai:{{count}} filter applied', { count: numberOfFilters })
+      }
     >
       <ToolbarContent>
-        <ToolbarFilter categoryName="hosts">
-          <Select
-            variant="checkbox"
-            aria-label="hosts"
-            onToggle={onHostToggle}
-            onSelect={onHostSelect}
-            selections={getSelections()}
-            customBadgeText={filters.hosts?.length || 0}
-            isOpen={isHostExpanded}
-            placeholderText={<Placeholder text="Hosts" />}
-            isDisabled={allHosts.length === 0}
+        {entityKind === 'cluster' && (
+          <ToolbarFilter
+            categoryName="Hosts"
+            chips={mapHostsChips(t, filters, sortedHosts)}
+            deleteChip={(_, chip) =>
+              onHostSelect(typeof chip === 'string' ? chip : chip.key, false)
+            }
+            deleteChipGroup={onDeleteChipGroup}
           >
-            {[
-              <SelectOption inputId={`checkbox-${SELECT_ALL}`} key={SELECT_ALL} value={SELECT_ALL}>
-                {t('ai:Select All')}
-              </SelectOption>,
-              <SelectOption
-                inputId={`checkbox-${CLUSTER_LEVEL}`}
-                key={CLUSTER_LEVEL}
-                value={CLUSTER_LEVEL}
-              >
-                {t('ai:Cluster-level events')}
-              </SelectOption>,
-              <SelectOption inputId={`checkbox-${ORPHANS}`} key={ORPHANS} value={ORPHANS}>
-                {t('ai:Deleted hosts')}
-              </SelectOption>,
-              ...allHosts.map((host) => (
-                <SelectOption key={host.id} value={host.id}>
-                  {host.hostname}
-                </SelectOption>
-              )),
-            ]}
-          </Select>
-        </ToolbarFilter>
+            <Select
+              variant="checkbox"
+              aria-label="hosts"
+              onToggle={onHostToggle}
+              onSelect={(e, value) => onHostSelect(value as string, isSelectEventChecked(e))}
+              selections={getSelections()}
+              customBadgeText={mapHostsChips(t, filters, sortedHosts).length}
+              isOpen={isHostExpanded}
+              placeholderText={<Placeholder text="Hosts" />}
+              isDisabled={allHosts.length === 0}
+            >
+              {[
+                <SelectOption
+                  inputId={`checkbox-${CLUSTER_LEVEL}`}
+                  key={CLUSTER_LEVEL}
+                  value={CLUSTER_LEVEL}
+                >
+                  {t('ai:Cluster-level events')}
+                </SelectOption>,
+                <SelectOption
+                  inputId={`checkbox-${DELETED_HOSTS}`}
+                  key={DELETED_HOSTS}
+                  value={DELETED_HOSTS}
+                >
+                  {t('ai:Deleted hosts')}
+                </SelectOption>,
+                ...sortedHosts.map((host) => (
+                  <SelectOption key={host.id} value={host.id}>
+                    {host.hostname}
+                  </SelectOption>
+                )),
+              ]}
+            </Select>
+          </ToolbarFilter>
+        )}
 
         <ToolbarFilter
-          chips={filters.severity.map(
+          chips={filters.severities?.map(
             (severity): ToolbarChip => ({
               key: severity,
               node: capitalize(severity),
             }),
           )}
-          deleteChip={onDeleteChip}
+          deleteChip={(_, chip) =>
+            onSeveritySelect(typeof chip === 'string' ? chip : chip.key, false)
+          }
           deleteChipGroup={onDeleteChipGroup}
-          categoryName="severity"
+          categoryName="Severity"
         >
           <Select
             variant="checkbox"
             aria-label="Severity"
             onToggle={onSeverityToggle}
-            onSelect={onSeveritySelect}
-            selections={filters.severity}
+            onSelect={(event, value) =>
+              onSeveritySelect(value as string, isSelectEventChecked(event))
+            }
+            selections={filters.severities}
             isOpen={isSeverityExpanded}
             placeholderText={<Placeholder text="Severity" />}
           >
@@ -276,7 +282,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
                 key={severity}
                 value={severity}
               >
-                {capitalize(severity)} <Badge isRead>{getEventsCount(severity, events)}</Badge>
+                {capitalize(severity)} <Badge isRead>{severityCounts[severity]}</Badge>
               </SelectOption>
             ))}
           </Select>
@@ -287,10 +293,10 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
             <TextInput
               name="search-text"
               id="search-text"
-              type="search"
+              type={TextInputTypes.search}
               aria-label="text to be searched"
-              onChange={onFulltextChange}
-              value={filters.fulltext}
+              onChange={onMessageChange}
+              value={messageValue}
               placeholder={t('ai:Filter by text')}
             />
             <Button variant={ButtonVariant.control} aria-label="search text button">

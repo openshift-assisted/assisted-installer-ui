@@ -50,7 +50,7 @@ export const APPROVE_NODES_IN_CL_LINK =
 export const getProductBrandingCode = () => 'redhat';
 
 export const POLLING_INTERVAL = 10 * 1000;
-export const EVENTS_POLLING_INTERVAL = 10 * 1000;
+export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
 
 export const hostRoles = (t: TFunction): HostRole[] => [
   {

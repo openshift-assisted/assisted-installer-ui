@@ -2485,7 +2485,15 @@ export interface V2ClusterUpdateParams {
 export interface V2Events {
   clusterId?: string;
   hostId?: string;
+  hostIds?: string /* uuid */[];
   infraEnvId?: string;
+  limit?: number;
+  offset?: number;
+  order?: 'ascending' | 'descending';
+  severities?: ('info' | 'warning' | 'error' | 'critical')[];
+  message?: string;
+  deletedHosts?: boolean;
+  clusterLevel?: boolean;
   categories?: string[];
 }
 export interface V2InfraEnvs {
