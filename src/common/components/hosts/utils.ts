@@ -133,8 +133,8 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
 export const getHostRole = (
   host: Host,
   t: TFunction,
-  clusterKind: Cluster['kind'],
   schedulableMasters?: boolean,
+  clusterKind?: Cluster['kind'],
 ): string => {
   let roleLabel = `${
     hostRoles(t).find((role) => role.value === host.role)?.label || hostRoles(t)[0].label
@@ -142,7 +142,9 @@ export const getHostRole = (
 
   if (schedulableMasters && host.role === 'master') {
     roleLabel =
-      clusterKind === 'Cluster' ? t('ai:Control plane node, Worker') : t('ai:Control plane node');
+      clusterKind === 'AddHostsCluster'
+        ? t('ai:Control plane node')
+        : t('ai:Control plane node, Worker');
   }
   return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };

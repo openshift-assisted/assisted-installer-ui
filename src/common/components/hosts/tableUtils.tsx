@@ -23,7 +23,6 @@ import {
 } from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
-import { DropdownProps } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
@@ -89,11 +88,10 @@ export const hostnameColumn = (
 
 export const roleColumn = (
   t: TFunction,
-  clusterKind: Cluster['kind'],
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
-  position?: DropdownProps['position'],
+  clusterKind?: Cluster['kind'],
 ): TableRow<Host> => {
   return {
     header: {
@@ -108,16 +106,10 @@ export const roleColumn = (
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
       const isRoleEditable = canEditRole?.(host);
-      const hostRole = getHostRole(host, t, clusterKind, schedulableMasters);
+      const hostRole = getHostRole(host, t, schedulableMasters, clusterKind);
       return {
         title: (
-          <RoleCell
-            host={host}
-            readonly={!isRoleEditable}
-            role={hostRole}
-            onEditRole={editRole}
-            position={position}
-          />
+          <RoleCell host={host} readonly={!isRoleEditable} role={hostRole} onEditRole={editRole} />
         ),
         props: { 'data-testid': 'host-role' },
         sortableValue: hostRole,

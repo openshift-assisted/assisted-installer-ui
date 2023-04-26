@@ -64,10 +64,10 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(
         t,
-        cluster.kind,
         actionChecks.canEditRole,
         onEditRole,
         selectSchedulableMasters(cluster),
+        cluster.kind,
       ),
       hardwareStatusColumn({ onEditHostname: onEditHost }),
       discoveredAtColumn,
