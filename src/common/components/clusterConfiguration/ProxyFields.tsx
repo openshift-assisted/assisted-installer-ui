@@ -110,7 +110,7 @@ const ProxyFields: React.FC = () => {
   return (
     <>
       <CheckboxField
-        label={t('ai:Configure cluster-wide proxy settings')}
+        label={t('ai:Show proxy settings')}
         name="enableProxy"
         className="ai-proxy-fields"
         helperText={
