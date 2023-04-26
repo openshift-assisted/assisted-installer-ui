@@ -19,10 +19,10 @@ import { getHostRowHardwareInfo } from './hardwareInfo';
 import { getHardwareTypeText, getInventory } from './utils';
 import { ValidationInfoActionProps } from './HostValidationGroups';
 import NtpValidationStatus from './NtpValidationStatus';
-import { OnDiskRoleType } from './DiskRole';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import StorageDetail from '../storage/StorageDetail';
 import SectionTitle from '../ui/SectionTitle';
+import { OnDiskRoleType } from './DiskRole';
+import StorageDetail from '../storage/StorageDetail';
 
 type HostDetailProps = {
   host: Host;
@@ -204,12 +204,14 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      <StorageDetail
-        host={host}
-        onDiskRole={onDiskRole}
-        canEditDisks={canEditDisks}
-        updateDiskSkipFormatting={updateDiskSkipFormatting}
-      />
+      {onDiskRole && canEditDisks && (
+        <StorageDetail
+          host={host}
+          onDiskRole={onDiskRole}
+          canEditDisks={canEditDisks}
+          updateDiskSkipFormatting={updateDiskSkipFormatting}
+        />
+      )}
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}
