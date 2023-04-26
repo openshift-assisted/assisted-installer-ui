@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, TextArea } from '@patternfly/react-core';
+import { FormGroup, Stack, StackItem, TextArea } from '@patternfly/react-core';
 import { TextAreaFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
@@ -26,47 +26,46 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
     }
     return '';
   };
+
   const errorMessage = getErrorMessage();
   const { isDisabled, ...restProps } = props;
+  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
 
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={
-        typeof helperText === 'string' ? (
-          helperText
-        ) : (
-          <HelperText fieldId={fieldId}>{helperText}</HelperText>
-        )
-      }
-      helperTextInvalid={
-        typeof errorMessage === 'string' ? (
-          errorMessage
-        ) : (
+    <Stack>
+      <StackItem>
+        <FormGroup
+          fieldId={fieldId}
+          label={label}
+          helperText={fieldHelperText}
+          helperTextInvalid={fieldHelperText}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          labelIcon={labelIcon}
+          className={groupClassName}
+        >
+          {children}
+          <TextArea
+            {...field}
+            {...restProps}
+            id={fieldId}
+            style={{ resize: 'vertical' }}
+            validated={isValid ? 'default' : 'error'}
+            isRequired={isRequired}
+            aria-describedby={`${fieldId}-helper`}
+            onChange={(value, event) => field.onChange(event)}
+            disabled={isDisabled}
+          />
+        </FormGroup>
+      </StackItem>
+      <StackItem>
+        {errorMessage && (
           <HelperText fieldId={fieldId} isError>
             {errorMessage}
           </HelperText>
-        )
-      }
-      validated={isValid ? 'default' : 'error'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-      className={groupClassName}
-    >
-      {children}
-      <TextArea
-        {...field}
-        {...restProps}
-        id={fieldId}
-        style={{ resize: 'vertical' }}
-        validated={isValid ? 'default' : 'error'}
-        isRequired={isRequired}
-        aria-describedby={`${fieldId}-helper`}
-        onChange={(value, event) => field.onChange(event)}
-        disabled={isDisabled}
-      />
-    </FormGroup>
+        )}
+      </StackItem>
+    </Stack>
   );
 };
 
