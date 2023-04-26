@@ -89,6 +89,16 @@ export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
 export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
   cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';
 
+export const getHostStatus = (
+  hostStatus: Host['status'],
+  clusterStatus: Cluster['status'],
+): Host['status'] | 'finalizing' => {
+  if (hostStatus === 'installed' && clusterStatus !== 'installed') {
+    return 'finalizing';
+  }
+  return hostStatus;
+};
+
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
