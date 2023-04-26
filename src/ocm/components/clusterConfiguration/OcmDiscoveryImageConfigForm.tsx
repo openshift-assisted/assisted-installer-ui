@@ -83,13 +83,19 @@ export const OcmDiscoveryImageConfigForm = ({
   trustBundle,
   selectedCpuArchitecture,
 }: OcmDiscoveryImageConfigFormProps) => {
+  const imageTypeValue = isIpxeSelected
+    ? 'discovery-image-ipxe'
+    : imageType
+    ? imageType
+    : 'full-iso';
+
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
     httpProxy: httpProxy || '',
     httpsProxy: httpsProxy || '',
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
-    imageType: imageType,
+    imageType: imageTypeValue as ImageType,
     enableCertificate: enableCertificate || false,
     trustBundle: trustBundle || '',
   };
@@ -139,13 +145,7 @@ export const OcmDiscoveryImageConfigForm = ({
                     <AlertFormikError status={status as StatusErrorType} />
                     <DiscoveryImageTypeDropdown
                       name="imageType"
-                      defaultValue={
-                        isIpxeSelected
-                          ? discoveryImageTypes['discovery-image-ipxe']
-                          : imageType
-                          ? discoveryImageTypes[imageType]
-                          : discoveryImageTypes['full-iso']
-                      }
+                      defaultValue={discoveryImageTypes[imageTypeValue]}
                       onChange={updateDiscoveryButtonAndAlertText}
                       selectedCpuArchitecture={selectedCpuArchitecture}
                     />
