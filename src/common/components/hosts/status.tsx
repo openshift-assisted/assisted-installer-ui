@@ -21,7 +21,7 @@ import {
 import { Host } from '../../api';
 import { HostStatus } from './types';
 
-export const hostStatus: HostStatus<Host['status']> = Object.freeze({
+export const hostStatus: HostStatus<Host['status'] | 'finalizing'> = Object.freeze({
   'unbinding-pending-user-action': {
     key: 'unbinding-pending-user-action',
     title: 'Removing from cluster',
@@ -218,6 +218,12 @@ export const hostStatus: HostStatus<Host['status']> = Object.freeze({
     icon: <ExclamationTriangleIcon color={warningColor.value} />,
     details:
       'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
+  },
+  finalizing: {
+    key: 'finalizing',
+    title: 'Finalizing',
+    category: 'Installation related',
+    icon: <InProgressIcon />,
   },
   'added-to-existing-cluster': {
     key: 'added-to-existing-cluster',
