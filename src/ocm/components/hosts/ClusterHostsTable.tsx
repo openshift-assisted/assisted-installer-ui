@@ -57,7 +57,13 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
   const content = React.useMemo(
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
+      roleColumn(
+        t,
+        actionChecks.canEditRole,
+        onEditRole,
+        selectSchedulableMasters(cluster),
+        cluster.kind,
+      ),
       statusColumn(
         t,
         cluster.status,

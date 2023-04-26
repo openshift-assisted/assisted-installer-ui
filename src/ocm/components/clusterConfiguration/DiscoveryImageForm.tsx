@@ -49,31 +49,30 @@ const DiscoveryImageForm = ({
     formikActions: FormikHelpers<OcmDiscoveryImageFormValues>,
   ) => {
     if (cluster.id && infraEnv?.id) {
-      if (formValues['imageType'] === 'discovery-image-ipxe') {
-        await onSuccessIpxe();
-      } else {
-        try {
-          const { updatedCluster } = await DiscoveryImageFormService.update(
-            cluster.id,
-            cluster.tags,
-            infraEnv.id,
-            formValues,
-          );
-          await onSuccess();
-          dispatch(updateCluster(updatedCluster));
-        } catch (error) {
-          handleApiError(error, () => {
-            formikActions.setStatus({
-              error: {
-                title: 'Failed to create discovery image',
-                message: getApiErrorMessage(error),
-              },
-            });
+      const isIPXE = formValues['imageType'] === 'discovery-image-ipxe';
+      try {
+        const { updatedCluster } = await DiscoveryImageFormService.update(
+          cluster.id,
+          cluster.tags,
+          infraEnv.id,
+          formValues,
+          undefined,
+          isIPXE,
+        );
+        isIPXE ? await onSuccessIpxe() : await onSuccess();
+        dispatch(updateCluster(updatedCluster));
+      } catch (error) {
+        handleApiError(error, () => {
+          formikActions.setStatus({
+            error: {
+              title: isIPXE ? 'Failed to create ipxe scripts' : 'Failed to create discovery image',
+              message: getApiErrorMessage(error),
+            },
           });
-          if (isUnknownServerError(error as Error)) {
-            dispatch(setServerUpdateError());
-            onCancel();
-          }
+        });
+        if (isUnknownServerError(error as Error)) {
+          dispatch(setServerUpdateError());
+          onCancel();
         }
       }
     }
