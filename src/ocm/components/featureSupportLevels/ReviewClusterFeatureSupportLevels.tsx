@@ -179,7 +179,13 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
 };
 
 const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
-  <WithErrorBoundary title="Failed to load feature support levels review">
+  <WithErrorBoundary
+    title="Feature support levels not available"
+    content={`OpenShift version ${
+      props.cluster.openshiftVersion || ''
+    } does not currently review feature support levels.`}
+    showReloadAction={false}
+  >
     <SupportLevel {...props} />
   </WithErrorBoundary>
 );

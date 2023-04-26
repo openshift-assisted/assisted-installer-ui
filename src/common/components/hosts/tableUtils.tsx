@@ -14,7 +14,13 @@ import HostsCount from './HostsCount';
 import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
-import { areOnlySoftValidationsFailing, getHostname, getHostRole, getInventory } from './utils';
+import {
+  areOnlySoftValidationsFailing,
+  getHostname,
+  getHostRole,
+  getHostStatus,
+  getInventory,
+} from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
 import { DropdownProps } from '@patternfly/react-core';
@@ -121,6 +127,7 @@ export const roleColumn = (
 
 export const statusColumn = (
   t: TFunction,
+  clusterStatus: Cluster['status'],
   AdditionalNTPSourcesDialogToggleComponent?: React.FC,
   onEditHostname?: HostsTableActions['onEditHost'],
   UpdateDay2ApiVipDialogToggleComponent?: React.FC,
@@ -141,11 +148,14 @@ export const statusColumn = (
         ['known', 'known-unbound'].includes(host.status)
           ? 'Some validations failed'
           : undefined;
+
+      const actualHostStatus = getHostStatus(host.status, clusterStatus);
+
       return {
         title: (
           <HostStatus
             host={host}
-            status={{ ...hostStatus[host.status], sublabel }}
+            status={{ ...hostStatus[actualHostStatus], sublabel }}
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
