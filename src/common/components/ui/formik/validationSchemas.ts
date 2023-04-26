@@ -235,14 +235,15 @@ const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationV
 const vipBroadcastValidationSchema = ({ machineNetworks }: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-no-broadcast',
-    'The IP address cannot be a broadcast address',
+    'The IP address cannot be a network or broadcast address',
     (value: string) => {
-      const vipAddress = getAddress(value);
-      const machineNetwork = getAddress(
-        (machineNetworks?.length && machineNetworks[0].cidr) || '',
-      )?.endAddress();
+      const vipAddress = getAddress(value)?.address;
+      const machineNetwork = getAddress((machineNetworks?.length && machineNetworks[0].cidr) || '');
 
-      return machineNetwork?.address !== vipAddress?.address;
+      const machineNetworkBroadcast = machineNetwork?.endAddress().address;
+      const machineNetworkAddress = machineNetwork?.startAddress().address;
+
+      return vipAddress !== machineNetworkBroadcast && vipAddress !== machineNetworkAddress;
     },
   );
 
