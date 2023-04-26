@@ -88,8 +88,12 @@ const FormatDiskCheckbox = ({
 }: FormatDiskProps) => {
   return (
     <Tooltip
-      hidden={!isInstallationDisk(diskId, installationDiskId)}
-      content={'Installation disks are always being formatted'}
+      hidden={!isFormatDiskDisabled(host, diskId, installationDiskId)}
+      content={
+        isFormatDiskChecked(host, diskId, installationDiskId)
+          ? 'Installation disks are always being formatted'
+          : 'Read-only disks cannot be formatted'
+      }
     >
       <Checkbox
         id={`select-formatted-${host.id}-${index}`}

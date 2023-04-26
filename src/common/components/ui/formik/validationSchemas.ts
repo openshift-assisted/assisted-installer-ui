@@ -34,7 +34,7 @@ const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)$/;
 const DNS_NAME_REGEX_OCM = /^([a-z0-9]+(-[a-z0-9]+)*[.])+[a-z]{2,}$/;
 
 const PROXY_DNS_REGEX =
-  /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
+  /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}\.){1}([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})+$)|(^\*$)/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
@@ -527,29 +527,16 @@ export const httpProxyValidationSchema = (
       }
     });
 
-const isNotEmpty = (value: string) => {
-  if (!value) {
-    return true;
-  }
-  if (value !== '') {
-    return true;
-  }
-  return false;
-};
-
 const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
-  if (!value) {
-    return true;
-  }
   if (value.match(dnsRegex)) {
     return true;
   }
   try {
     ipValidationSchema.validateSync(value);
+    return true;
   } catch (err) {
     return false;
   }
-  return true;
 };
 
 export const noProxyValidationSchema = Yup.string().test(
@@ -561,13 +548,11 @@ export const noProxyValidationSchema = Yup.string().test(
     }
 
     // https://docs.openshift.com/container-platform/4.5/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-configure-proxy_installing-restricted-networks-bare-metal
-    // A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs
-    // to exclude proxying. Preface a domain with . to include all subdomains of that domain.
-    // Use * to bypass proxy for all destinations."
-    const noProxyList = trimCommaSeparatedList(value)
-      .split(',')
-      .map((p) => (p.charAt(0) === '.' ? p.substring(1) : p));
-    return noProxyList.every(isNotEmpty) && noProxyList.every((p) => isIPorDN(p, PROXY_DNS_REGEX));
+    // A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+    // Preface a domain with . to match subdomains only. For example, .y.com matches x.y.com, but not y.com.
+    // Use * to bypass proxy for all destinations.
+    const noProxyList = trimCommaSeparatedList(value).split(',');
+    return noProxyList.every((p) => isIPorDN(p, PROXY_DNS_REGEX));
   },
 );
 
