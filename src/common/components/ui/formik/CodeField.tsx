@@ -92,7 +92,7 @@ const CodeField = ({
         )}
       </StackItem>
     </Stack>
-);
+  );
 };
 
 export default CodeField;
