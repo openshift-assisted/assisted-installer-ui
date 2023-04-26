@@ -81,7 +81,6 @@ const ClusterProgress = ({
           </FlexItem>
           <FlexItem>
             <DetailItem
-              title={t('ai:Status')}
               value={getInstallationStatus(cluster.status, cluster.installCompletedAt, t)}
               idPrefix="cluster-progress-status"
             />

@@ -77,14 +77,12 @@ type ClusterDetailStatusVarietiesProps = {
   cluster: Cluster;
   clusterVarieties: ClusterStatusVarieties;
   showAddHostsInfo?: boolean;
-  showKubeConfig?: boolean;
 };
 
 const ClusterDetailStatusVarieties = ({
   cluster,
   clusterVarieties,
   showAddHostsInfo = true,
-  showKubeConfig = true,
 }: ClusterDetailStatusVarietiesProps) => {
   const { credentials, credentialsError, consoleOperator, fetchCredentials } = clusterVarieties;
 
@@ -103,11 +101,7 @@ const ClusterDetailStatusVarieties = ({
           credentialsError={credentialsError}
         />
       )}
-      <ClusterDetailStatusMessages
-        cluster={cluster}
-        showAddHostsInfo={showAddHostsInfo}
-        showKubeConfig={showKubeConfig}
-      />
+      <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
     </Grid>
   );
 };
