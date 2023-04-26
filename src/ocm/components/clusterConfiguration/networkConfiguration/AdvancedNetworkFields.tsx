@@ -31,7 +31,7 @@ const clusterCidrHelperText =
   'The block must not overlap with existing physical networks. To access the Pods from an external network, configure load balancers and routers to manage the traffic.';
 
 const serviceCidrHelperText =
-  'The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
+  'Enter only 1 IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
 
 const AdvancedNetworkFields = () => {
   const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
@@ -118,7 +118,16 @@ const AdvancedNetworkFields = () => {
               <StackItem key={index} className={'network-field-group pf-u-pb-md'}>
                 <OcmInputField
                   name={`serviceNetworks.${index}.cidr`}
-                  label={`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)}`}
+                  label={
+                    <>
+                      <span>
+                        {`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)} `}
+                      </span>
+                      <PopoverIcon
+                        bodyContent={'The IP address pool used for service IP addresses.'}
+                      />
+                    </>
+                  }
                   helperText={serviceCidrHelperText}
                   isRequired
                   labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
