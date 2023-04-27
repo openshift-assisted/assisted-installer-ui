@@ -3,5 +3,5 @@
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
 * @openshift-assisted/ui-dev
-/src/cim/ @openshift-assisted/ui-dev-cim
-/src/ocm/ @openshift-assisted/ui-dev-ocm
+/libs/ui-lib/cim/ @openshift-assisted/ui-dev-cim
+/libs/ui-lib/ocm/ @openshift-assisted/ui-dev-ocm
