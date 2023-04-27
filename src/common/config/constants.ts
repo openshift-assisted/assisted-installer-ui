@@ -8,8 +8,8 @@ import { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevel
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
-export const OPENSHIFT_NETWORKING_DOCS_LINK =
-  'https://docs.openshift.com/container-platform/4.7/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal';
+export const getOpenShiftNetworkingDocsLink = (ocpVersion = '4.7') =>
+  `https://docs.openshift.com/container-platform/${ocpVersion}/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal`;
 export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const ODF_REQUIREMENTS_LINK =
@@ -50,7 +50,7 @@ export const APPROVE_NODES_IN_CL_LINK =
 export const getProductBrandingCode = () => 'redhat';
 
 export const POLLING_INTERVAL = 10 * 1000;
-export const EVENTS_POLLING_INTERVAL = 10 * 1000;
+export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
 
 export const hostRoles = (t: TFunction): HostRole[] => [
   {

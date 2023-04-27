@@ -35,11 +35,23 @@ type TableMemoProps = {
   sortBy: TableProps['sortBy'];
   onSort: TableProps['onSort'];
   rowWrapper: TableProps['rowWrapper'];
+  variant?: TableProps['variant'];
   // eslint-disable-next-line
   actionResolver?: ActionsResolver<any>;
 };
 const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
-  ({ rows, cells, onCollapse, className, sortBy, onSort, rowWrapper, testId, actionResolver }) => {
+  ({
+    rows,
+    cells,
+    onCollapse,
+    className,
+    sortBy,
+    onSort,
+    rowWrapper,
+    testId,
+    variant,
+    actionResolver,
+  }) => {
     const tableActionResolver = React.useCallback(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (rowData) => actionResolver?.(rowData.obj) as (IAction | ISeparator)[],
@@ -62,6 +74,7 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
           rowWrapper={rowWrapper}
           data-testid={testId}
           actionResolver={actionResolver ? tableActionResolver : undefined}
+          variant={variant}
           {...newProps}
         >
           <TableHeader />
@@ -143,6 +156,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   className?: string;
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
+  variant?: TableProps['variant'];
 };
 // eslint-disable-next-line
 const AITable = <R extends any>({
@@ -164,6 +178,7 @@ const AITable = <R extends any>({
   showPagination,
   perPageOptions,
   canSelectAll,
+  variant,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   React.useEffect(() => {
@@ -317,6 +332,7 @@ const AITable = <R extends any>({
           rowWrapper={HostsTableRowWrapper}
           data-testid={testId}
           actionResolver={actionResolver}
+          variant={variant}
         />
       </SelectionProvider.Provider>
       {showPagination && (

@@ -1,4 +1,3 @@
-import { DropdownProps } from '@patternfly/react-core';
 import React from 'react';
 import { Host, HostUpdateParams } from '../../api';
 import RoleDropdown from './RoleDropdown';
@@ -10,18 +9,11 @@ export type RoleCellProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (role: HostUpdateParams['hostRole']) => Promise<any>;
   displayTooltip?: boolean;
-  position?: DropdownProps['position'];
 };
 
-const RoleCell: React.FC<RoleCellProps> = ({
-  host,
-  role,
-  readonly = false,
-  onEditRole,
-  position,
-}) =>
+const RoleCell: React.FC<RoleCellProps> = ({ host, role, readonly = false, onEditRole }) =>
   !readonly && onEditRole ? (
-    <RoleDropdown host={host} onEditRole={onEditRole} current={role} position={position} />
+    <RoleDropdown host={host} onEditRole={onEditRole} current={role} />
   ) : (
     <span>{role}</span>
   );
