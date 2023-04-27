@@ -1,0 +1,1 @@
+# @openshift-assisted/watch-cmd
