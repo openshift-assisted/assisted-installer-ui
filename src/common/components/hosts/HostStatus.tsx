@@ -31,6 +31,7 @@ import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 import { UnknownIcon } from '@patternfly/react-icons';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { APPROVE_NODES_IN_CL_LINK } from '../../config';
+import { hostStatus } from './status';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -247,7 +248,13 @@ const HostStatus: React.FC<HostStatusProps> = ({
 
   return (
     <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
-      {<FlexItem>{icon || <UnknownIcon />}</FlexItem>}
+      {
+        <FlexItem>
+          {(autoCSR && status.key === 'added-to-existing-cluster'
+            ? hostStatus.installed.icon
+            : icon) || <UnknownIcon />}
+        </FlexItem>
+      }
 
       <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
         {!children && !sublabel && !noPopover ? (
