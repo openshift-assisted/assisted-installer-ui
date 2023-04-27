@@ -2330,6 +2330,28 @@ export interface TangConnectivityResponse {
     }[];
   }[];
 }
+export interface UpdateManifestParams {
+  /**
+   * The folder for the manifest to modify.
+   */
+  folder: 'manifests' | 'openshift';
+  /**
+   * The file name for the manifest to modify.
+   */
+  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  /**
+   * The new folder for the manifest. Manifests can be placed in 'manifests' or 'openshift' directories.
+   */
+  updatedFolder?: 'manifests' | 'openshift';
+  /**
+   * The new file name for the manifest.
+   */
+  updatedFileName?: string; // ^[^/]*\.(yaml|yml|json)$
+  /**
+   * The new base64 encoded manifest content.
+   */
+  updatedContent?: string;
+}
 export interface UpgradeAgentRequest {
   /**
    * Full image reference of the image that the agent should upgrade to, for example
