@@ -8,6 +8,7 @@ import {
   Inventory,
   stringToJSON,
   AlertsContextType,
+  hostStatusOrder,
 } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 import { ClustersService } from '../../services';
@@ -84,3 +85,17 @@ export const getClusterMemoryAmount = (cluster: Cluster): number =>
   getClusterResources(cluster, 'memory.physicalBytes');
 
 export const getClusterDetailId = (suffix: string) => `cluster-detail-${suffix}`;
+
+export const getMostSevereHostStatus = (hosts: Host[]) => {
+  let status: Host['status'] | null = null;
+  let mostSevereStatusIndex = hostStatusOrder.length;
+  for (let i = 0; i < hosts.length; i++) {
+    const host = hosts[i];
+    const hostStatusOrderIndex = hostStatusOrder.indexOf(host.status);
+    if (hostStatusOrderIndex < mostSevereStatusIndex) {
+      mostSevereStatusIndex = hostStatusOrderIndex;
+      status = host.status;
+    }
+  }
+  return status;
+};
