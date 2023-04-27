@@ -1,0 +1,34 @@
+{
+  "author": "Red Hat",
+  "description": "Locales for the Assisted Installer UI library",
+  "devDependencies": {
+    "i18next-parser": "^3.3.0"
+  },
+  "exports": {
+    "./en/translation.json": "./lib/en/translation.json",
+    "./ja/translation.json": "./lib/ja/translation.json",
+    "./ko/translation.json": "./lib/ko/translation.json",
+    "./zh/translation.json": "./lib/zh/translation.json"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "Apache-2.0",
+  "name": "@openshift-assisted/locales",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "libs/locales",
+    "type": "git",
+    "url": "https://github.com/openshift-assisted/assisted-ui-lib"
+  },
+  "scripts": {
+    "watch": "yarn run -T toolbox watch --dir=lib 'yalc push --changed'",
+    "process_new_strings": "scripts/process-new-strings.sh",
+    "format": "yarn run -T toolbox changed 'yarn run -T prettier --check --'",
+    "validate_translation_files": "scripts/validate-translation-files.sh"
+  },
+  "type": "module",
+  "version": "1.0.0-beta"
+}

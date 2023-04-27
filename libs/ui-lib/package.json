@@ -1,0 +1,135 @@
+{
+  "dependencies": {
+    "axios-case-converter": "^0.11.1",
+    "camel-case": "^4.1.2",
+    "cidr-tools": "^4.3.0",
+    "classnames": "^2.3.1",
+    "file-saver": "^2.0.2",
+    "filesize.js": "^2.0.0",
+    "formik": "2.2.6",
+    "fuse.js": "^6.4.6",
+    "human-date": "^1.4.0",
+    "humanize-plus": "^1.8.2",
+    "ip-address": "^7.1.0",
+    "is-cidr": "^4.0.2",
+    "is-in-subnet": "^4",
+    "js-yaml": "^4.1.0",
+    "lodash-es": "^4.17.21",
+    "prism-react-renderer": "^1.1.1",
+    "react-error-boundary": "^3.1.4",
+    "react-measure": "^2.5.2",
+    "swr": "^2",
+    "unique-names-generator": "^4.2.0"
+  },
+  "description": "React component library for the Assisted Installer UI",
+  "devDependencies": {
+    "@openshift-assisted/eslint-config-assisted-ui": "workspace:^",
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/file-saver": "^2.0.1",
+    "@types/human-date": "^1.4.0",
+    "@types/humanize-plus": "^1.8.0",
+    "@types/js-yaml": "^4.0.1",
+    "@types/lodash-es": "^4.17.6",
+    "@types/node": "^18.14.6",
+    "@types/react": "<17.0.30",
+    "@types/react-autosuggest": "^10.1.5",
+    "@types/react-dom": "<17.0.30",
+    "@types/react-measure": "^2.0.8",
+    "@types/react-redux": "^7.1.7",
+    "@types/react-router-dom": "^5.3.0",
+    "@types/react-tagsinput": "^3.19.7",
+    "@types/uuid": "^8.0.0",
+    "@types/yup": "^0.26.9",
+    "sw2dts": "^2.6.3"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "exports": {
+    ".": {
+      "development": "./lib/index.ts",
+      "types": "./@types/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./cim": {
+      "development": "./lib/cim/index.ts",
+      "types": "./@types/cim/index.d.ts",
+      "default": "./build/cim/index.js"
+    },
+    "./ocm": {
+      "development": "./lib/ocm/index.ts",
+      "types": "./@types/ocm/index.d.ts",
+      "default": "./build/ocm/index.js"
+    }
+  },
+  "files": [
+    "build",
+    "lib",
+    "@types"
+  ],
+  "keywords": [
+    "assisted-ui",
+    "assisted-ui-lib",
+    "facet-lib",
+    "library",
+    "openshift",
+    "react"
+  ],
+  "license": "Apache-2.0",
+  "name": "@openshift-assisted/ui-lib",
+  "peerDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "0.0.3",
+    "@patternfly/react-code-editor": "^4.82.113",
+    "@patternfly/react-core": "^4.168.8",
+    "@patternfly/react-icons": "^4.93.3",
+    "@patternfly/react-styles": "^4.92.3",
+    "@patternfly/react-table": "^4.37.8",
+    "@patternfly/react-tokens": "^4.94.3",
+    "@reduxjs/toolkit": "^1.9.1",
+    "@sentry/browser": "^5.9 || ^6",
+    "axios": ">=0.22.0 <1.0.0",
+    "i18next": "^20.4 || ^21",
+    "monaco-editor": "^0.34.1",
+    "react": "^17",
+    "react-dom": "^17",
+    "react-i18next": ">11.7.3",
+    "react-monaco-editor": "^0.51.0",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^5.3.0",
+    "react-tagsinput": "^3.20",
+    "redux": "^4",
+    "uuid": "^8.1",
+    "yup": "^0.28.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "libs/ui-lib",
+    "type": "git",
+    "url": "https://github.com/openshift-assisted/assisted-ui-lib.git"
+  },
+  "scripts": {
+    "build": "yarn run -T tsc --build --verbose && yarn copy:css",
+    "check_circular_deps": "yarn run -T dpdm --warning false --tree false --exit-code circular:1 ./lib/index.ts",
+    "check_types": "yarn run -T tsc --noEmit",
+    "clean": "yarn run -T rimraf build .cache @types",
+    "copy:css": "rsync -Ruv lib/./**/*.css build",
+    "format": "yarn run -T toolbox changed 'yarn run -T prettier --check --'",
+    "lint": "yarn run -T toolbox changed --dir=lib --excludePattern='(css|yaml)$' 'yarn run -T eslint --max-warnings=0'",
+    "update-api": "scripts/update-api.sh lib/common/api/swagger.yaml lib/common/api/types.ts",
+    "watch": "toolbox watch --dir=lib 'yarn build' 'yarn yalc:push'",
+    "yalc:push": "yalc push --changed"
+  },
+  "typesVersions": {
+    "*": {
+      "cim": [
+        "./@types/cim/index.d.ts"
+      ],
+      "ocm": [
+        "./@types/ocm/index.d.ts"
+      ]
+    }
+  },
+  "version": "1.0.0-beta"
+}

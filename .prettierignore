@@ -1,3 +1,4 @@
-vendor/
-build/
-dist/
+apps/*/build
+libs/*/build
+libs/*/.cache
+libs/*/@types

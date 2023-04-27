@@ -1,0 +1,21 @@
+{
+  "name": "@openshift-assisted/eslint-config-assisted-ui",
+  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8"
+  },
+  "scripts": {
+    "format": "yarn run -T prettier --check -- index.js",
+    "lint": "yarn run -T eslint --max-warnings=0 index.js"
+  },
+  "version": "1.0.0"
+}

@@ -1,4 +1,4 @@
-name: Push to Quay.io
+name: Push to master or feature branches
 
 on:
   push:
@@ -16,58 +16,31 @@ jobs:
       GH_REPO_OWNER: openshift-assisted
       QUAY_IO_REGISTRY_OWNER: edge-infrastructure
     steps:
-      - name: Checkout assisted-ui-lib
+      - name: Checkout
         uses: actions/checkout@v3
-        with:
-          path: ./assisted-ui-lib
 
-      - name: Checkout assisted-ui
-        # When pushing to a branch other than 'master', the same branch name must
-        # be defined in assisted-ui for this step to succeed.
-        uses: actions/checkout@v3
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
         with:
-          repository: ${{ env.GH_REPO_OWNER }}/assisted-ui
-          ref: ${{ github.ref_name }}
-          path: ./assisted-ui
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+          node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
-          cache-dependency-path: |
-            ./assisted-ui-lib/yarn.lock
-            ./assisted-ui/yarn.lock
 
       - name: Define additional environment variables
         uses: actions/github-script@v6
         with:
           script: |
             const normalized_branch_name = "${{ github.ref_name }}".replaceAll('/','_').toLowerCase();
-            core.exportVariable('REACT_APP_VERSION', normalized_branch_name);
+            core.exportVariable('AIUI_APP_VERSION', normalized_branch_name);
             const short_sha = `${"${{ github.sha }}".slice(0,8)}`;
-            core.exportVariable('REACT_APP_GIT_SHA', short_sha);
+            core.exportVariable('AIUI_APP_GIT_SHA', short_sha);
             const ui_lib_package_version = `0.0.0+sha.${short_sha}`;
             core.exportVariable('UI_LIB_PACKAGE_VERSION', ui_lib_package_version);
-            core.exportVariable('UI_LIB_PACKAGE_NAME', `openshift-assisted-ui-lib-v${ui_lib_package_version}.tgz`)
 
       - name: Change the package version in assisted-ui-lib to ${{ env.UI_LIB_PACKAGE_VERSION }}
-        working-directory: ./assisted-ui-lib
-        run: |
-          node scripts/edit-package-version.js ./package.json "$UI_LIB_PACKAGE_VERSION"
+        run: node scripts/package-edit-version.js ./package.json "$UI_LIB_PACKAGE_VERSION"
 
-      - name: Install deps, build and pack
-        working-directory: ./assisted-ui-lib
-        run: |
-          yarn install --frozen-lockfile
-          node scripts/esbuild/prod.js
-          yarn pack -f $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME
-
-      - name: Add generated openshift-assisted-ui-lib package to assisted-ui and build it
-        working-directory: ./assisted-ui
-        run: |
-          mv $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME .
-          yarn add file:./$UI_LIB_PACKAGE_NAME
-          yarn build
+      - name: Install dependencies
+        run: yarn install --immutable
 
       - name: Get container image tags
         # Appends the 'latest' tag only if the commit was pushed to 'master'
@@ -75,7 +48,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const tags = ['${{ env.REACT_APP_GIT_SHA }}', '${{ env.REACT_APP_VERSION }}'];
+            const tags = ['${{ env.AIUI_APP_GIT_SHA }}', '${{ env.AIUI_APP_VERSION }}'];
             if ('${{ github.ref_name }}' === 'master')
               core.setOutput('tags', tags.concat('latest', 'latest-${{ github.sha }}').join(' '));
             else
@@ -88,10 +61,10 @@ jobs:
           image: assisted-installer-ui
           tags: ${{ steps.get-tags.outputs.tags }}
           build-args: |
-            REACT_APP_GIT_SHA=${{ env.REACT_APP_GIT_SHA }}
-            REACT_APP_VERSION=${{ env.REACT_APP_VERSION }}
+            AIUI_APP_GIT_SHA=${{ env.AIUI_APP_GIT_SHA }}
+            AIUI_APP_VERSION=${{ env.AIUI_APP_VERSION }}
           containerfiles: ./assisted-ui/hacks/custom.Dockerfile
-          context: ./assisted-ui
+          context: ./apps/assisted-ui
 
       - name: Push the assisted-ui image to Quay.io
         uses: redhat-actions/push-to-registry@v2.7

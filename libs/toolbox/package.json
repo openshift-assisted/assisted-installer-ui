@@ -1,0 +1,36 @@
+{
+  "bin": "./build/main.js",
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "lodash": "^4.17.21",
+    "zx": "^7.2.0"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/node": "^18.14.6"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "files": [
+    "build"
+  ],
+  "type": "module",
+  "name": "@openshift-assisted/toolbox",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "libs/toolbox",
+    "type": "git",
+    "url": "https://github.com/openshift-assisted/toolbox.git"
+  },
+  "scripts": {
+    "build": "yarn run -T tsc --build --verbose",
+    "check_types": "yarn run -T tsc --noEmit",
+    "clean": "yarn run -T rimraf build .cache node_modules",
+    "format": "yarn run -T toolbox changed 'yarn run -T prettier --check --'",
+    "lint": "yarn run -T toolbox changed --dir=lib 'yarn run -T eslint --max-warnings=0'"
+  },
+  "version": "1.0.0-beta"
+}

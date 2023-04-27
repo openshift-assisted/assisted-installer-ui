@@ -1,0 +1,81 @@
+name: Pull request
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - edited
+    branches:
+      - master
+      - releases/*
+      - CIM-*
+
+env:
+  QUAY_ORG: openshift-assisted
+  QUAY_REPO: assisted-installer-ui-repo-images
+  IMAGE_TAG: ${{ format('{0}-{1}', github.actor, github.run_id) }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      container_name:
+        ${{ format('quay.io/{0}/{1}:{2}', env.QUAY_ORG, env.QUAY_REPO, env.IMAGE_TAG) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build the repository image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: assisted-installer-ui
+          tags: ${{ env.IMAGE_TAG }}
+          containerfiles: Dockerfile
+          context: .
+      - name: Push the repository image to quay.io
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/${{ env.QUAY_REPO }}
+          username: ${{ secrets.QUAY_OPENSHIFT_ASSISTED_ROBOT_USERNAME }}
+          password: ${{ secrets.QUAY_OPENSHIFT_ASSISTED_ROBOT_PASSWORD }}
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    container: ${{ needs.setup.outputs.container_name }}
+    steps:
+      - run: podman run --rm repo-image:${{ github.sha }} yarn lint:all
+
+  format:
+    runs-on: ubuntu-latest
+    needs: setup
+    container: ${{ needs.setup.outputs.container_name }}
+    steps:
+      - run: podman run --rm repo-image:${{ github.sha }} yarn format:all
+
+  check_circular_deps:
+    runs-on: ubuntu-latest
+    needs: setup
+    container: ${{ needs.setup.outputs.container_name }}
+    steps:
+      - run: podman run --rm repo-image:${{ github.sha }} yarn check_circular_deps:all
+
+  validate_translation_files:
+    runs-on: ubuntu-latest
+    needs: setup
+    container: ${{ needs.setup.outputs.container_name }}
+    steps:
+      - run: |
+          podman run --rm repo-image:${{ github.sha }} \
+            yarn workspace @openshift-assisted/locales run validate_translation_files
+
+  test:
+    runs-on: ubuntu-latest
+    container: ${{ needs.setup.outputs.container_name }}
+    needs: setup
+    steps:
+      - run: podman run --rm repo-image:${{ github.sha }} yarn test:all

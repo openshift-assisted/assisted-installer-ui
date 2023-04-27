@@ -1,114 +1,83 @@
 module.exports = {
-  root: true,
   env: {
-    es6: true,
     browser: true,
+    es6: true,
     node: true,
   },
-  parserOptions: {
-    // Must be aligned with our esbuild settings ('esnext')
-    // Consumers of this library are in charge of transpiling it to es5
-    ecmaVersion: 'latest',
-  },
-  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+  ignorePatterns: ['apps/*/build', 'libs/*/build', 'libs/*/@types'],
   overrides: [
     {
-      files: ['*.js'],
       env: {
-        es6: true,
-        node: true,
+        browser: false,
+      },
+      extends: ['eslint:recommended', 'prettier'],
+      files: ['scripts/*.cjs', 'apps/*/scripts/*.cjs', 'libs/*/scripts/*.cjs'],
+    },
+    {
+      env: {
+        browser: false,
+      },
+      extends: ['eslint:recommended', 'prettier'],
+      files: ['scripts/*.{js,mjs}', 'apps/*/scripts/*.{js,mjs}', 'libs/*/scripts/*.{js,mjs}'],
+      parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 'latest',
       },
     },
     {
-      files: ['*.ts', '*.tsx'],
-      plugins: ['@typescript-eslint', 'react', 'react-hooks', 'import'],
-      extends: [
-        'plugin:react/recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-      ],
-      parser: '@typescript-eslint/parser',
+      extends: ['@openshift-assisted/eslint-config-assisted-ui'],
+      files: ['libs/ui-lib/lib/**/*.{ts,tsx}'],
       parserOptions: {
-        tsconfigRootDir: __dirname,
-        project: ['./tsconfig.json'],
-        comment: true,
-        ecmaFeatures: {
-          jsx: true,
-        },
-        sourceType: 'module',
-      },
-      settings: {
-        react: {
-          version: 'detect',
-        },
+        tsconfigRootDir: 'libs/ui-lib',
       },
       rules: {
-        eqeqeq: ['error', 'always'],
-        indent: 'off',
-        '@typescript-eslint/naming-convention': [
-          'error',
-          {
-            selector: 'typeLike',
-            format: ['PascalCase'],
-          },
-          // Allowing for React components definitions
-          {
-            selector: 'function',
-            format: ['PascalCase', 'camelCase'],
-          },
-        ],
-        '@typescript-eslint/ban-types': [
-          'error',
-          {
-            types: {
-              '{}': {
-                message: 'Use Record<string, unknown> instead',
-                fixWith: 'Record<string, unknown>',
-              },
-            },
-          },
-        ],
         'no-restricted-imports': [
           'error',
           {
             paths: [
               {
-                name: 'lodash',
-                message: 'Please use lodash/module instead.',
-              },
-              {
                 name: 'react-i18next',
                 importNames: ['useTranslation'],
                 message:
-                  'Please use useTranslation from src/common/hooks/use-translation-wrapper.ts instead',
+                  'Please import useTranslation from lib/common/hooks/use-translation-wrapper.ts instead',
               },
             ],
             patterns: ['**/ocm/**/', '**/cim/**/'],
           },
         ],
-        '@typescript-eslint/no-explicit-any': [
-          'warn',
+      },
+    },
+    {
+      extends: ['@openshift-assisted/eslint-config-assisted-ui', 'plugin:react/jsx-runtime'],
+      files: ['apps/assisted-ui/src/**/*.{ts,tsx}'],
+      parserOptions: {
+        tsconfigRootDir: 'apps/assisted-ui',
+        EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
+      },
+      rules: {
+        'no-restricted-imports': [
+          'error',
           {
-            fixToUnknown: true,
+            paths: [
+              {
+                name: 'react-i18next',
+                importNames: ['useTranslation'],
+                message:
+                  'Import useTranslation from lib/common/hooks/use-translation-wrapper.ts instead',
+              },
+              {
+                name: '@openshift-assisted/ui-lib',
+                message: "Import from '@openshift-assisted/ui-lib/ocm' instead",
+              },
+            ],
           },
         ],
-        '@typescript-eslint/no-misused-promises': 'error',
-        '@typescript-eslint/no-unsafe-call': 'error',
-        '@typescript-eslint/no-unsafe-argument': 'error',
-        '@typescript-eslint/no-unsafe-assignment': 'error',
-        '@typescript-eslint/no-unsafe-member-access': 'warn',
-        '@typescript-eslint/no-unsafe-return': 'error',
-        '@typescript-eslint/no-unused-vars': 'error',
-        '@typescript-eslint/restrict-template-expressions': 'error',
-        'react-hooks/rules-of-hooks': 'error',
-        'react/self-closing-comp': 'error',
-        'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
-        'react-hooks/exhaustive-deps': 'error',
-        'react/prop-types': 'off',
       },
     },
   ],
-  // node_modules and dot-files/folders are always ignored
-  // (src: https://eslint.org/docs/user-guide/configuring/ignoring-code#the-eslintignore-file)
-  ignorePatterns: ['dist/*'],
+  root: true,
+  rules: {
+    eqeqeq: ['error', 'always'],
+    indent: 'off',
+  },
 };
