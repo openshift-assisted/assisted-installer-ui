@@ -16,6 +16,7 @@ import {
   ClustersService,
   ClusterCreateParamsWithStaticNetworking,
 } from '../../services';
+import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -31,6 +32,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
   const pullSecret = usePullSecret();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+  const { customManifests } = useClusterCustomManifests(cluster?.id || '', false);
   React.useEffect(() => {
     errorOCPVersions && addAlert(errorOCPVersions);
   }, [errorOCPVersions, addAlert]);
@@ -46,6 +48,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           params,
         );
         dispatch(updateCluster(updatedCluster));
+
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
       } catch (e) {
         handleApiError(e, () =>
@@ -59,12 +62,30 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     [clearAlerts, addAlert, dispatch, cluster?.tags, clusterWizardContext],
   );
 
+  const handleCustomManifestsChange = React.useCallback(
+    async (clusterId: string, addCustomManifests: boolean) => {
+      //If checkbox is selected, then we need to know if cluster is created or updated
+      const addCustomManifestsNew = customManifests
+        ? customManifests.length === 0
+        : addCustomManifests;
+      if (clusterId && addCustomManifestsNew) {
+        await ClustersService.createDummyManifest(clusterId);
+      }
+      //If checkbox is unselected, we need to remove custom manifests if exists
+      else if (!addCustomManifests && customManifests && customManifests.length > 0) {
+        await ClustersService.removeClusterManifests(customManifests, clusterId);
+      }
+    },
+    [customManifests],
+  );
+
   const handleClusterCreate = React.useCallback(
-    async (params: ClusterCreateParamsWithStaticNetworking) => {
+    async (params: ClusterCreateParamsWithStaticNetworking, addCustomManifests: boolean) => {
       clearAlerts();
       try {
         const cluster = await ClustersService.create(params);
         history.push(`${routeBasePath}/clusters/${cluster.id}`, ClusterWizardFlowStateNew);
+        await handleCustomManifestsChange(cluster.id, addCustomManifests);
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
@@ -74,7 +95,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, addAlert, dispatch, history],
+    [clearAlerts, addAlert, dispatch, history, handleCustomManifestsChange],
   );
 
   if (pullSecret === undefined || !managedDomains || loadingOCPVersions || !usedClusterNames) {
@@ -96,6 +117,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       moveNext={() => clusterWizardContext.moveNext()}
       handleClusterUpdate={handleClusterUpdate}
       handleClusterCreate={handleClusterCreate}
+      handleCustomManifestsChange={handleCustomManifestsChange}
       navigation={navigation}
       infraEnv={infraEnv}
     />

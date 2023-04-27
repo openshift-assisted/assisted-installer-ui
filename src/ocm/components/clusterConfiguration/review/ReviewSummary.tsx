@@ -19,21 +19,18 @@ import {
   ReviewOperatorsTable,
   TableSummaryExpandable,
 } from '.';
+import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
 import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
+import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests';
 
-const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM);
-
+  const { customManifests } = useClusterCustomManifests(cluster.id, false);
   return (
-    <ExpandableSection
-      toggleText={'Cluster summary'}
-      className={'summary-expandable'}
-      isIndented
-      isExpanded
-    >
+    <>
       <TableSummaryExpandable title={'Cluster details'}>
         <ReviewClusterDetailTable cluster={cluster} />
       </TableSummaryExpandable>
@@ -67,6 +64,25 @@ const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
       <TableSummaryExpandable title={'Networking'}>
         <ReviewNetworkingTable cluster={cluster} />
       </TableSummaryExpandable>
+
+      {customManifests && customManifests.length > 0 && (
+        <TableSummaryExpandable title={'Custom manifests'}>
+          <ReviewCustomManifestsTable manifests={customManifests} />
+        </TableSummaryExpandable>
+      )}
+    </>
+  );
+};
+
+const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+  return (
+    <ExpandableSection
+      toggleText={'Cluster summary'}
+      className={'summary-expandable'}
+      isIndented
+      isExpanded
+    >
+      <ReviewSummaryContent cluster={cluster} />
     </ExpandableSection>
   );
 };

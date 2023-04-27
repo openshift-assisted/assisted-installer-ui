@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, ListItem, Text, TextContent } from '@patternfly/react-core';
 import { ExternalLink } from '../../../../common/components/ui';
-import { OPENSHIFT_NETWORKING_DOCS_LINK } from '../../../../common/config/constants';
+import { getOpenShiftNetworkingDocsLink } from '../../../../common/config/constants';
 
 export interface UserManagedNetworkingTextContentProps {
   shouldDisplayLoadBalancersBullet?: boolean;
@@ -14,7 +14,7 @@ export const UserManagedNetworkingTextContent = ({
     <TextContent>
       <Text component={'p'}>
         Please refer to the{' '}
-        <ExternalLink href={OPENSHIFT_NETWORKING_DOCS_LINK}>
+        <ExternalLink href={getOpenShiftNetworkingDocsLink()}>
           OpenShift networking documentation
         </ExternalLink>{' '}
         to configure your cluster's networking, including:{' '}

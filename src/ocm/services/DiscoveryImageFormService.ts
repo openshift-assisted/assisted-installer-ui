@@ -16,6 +16,7 @@ const DiscoveryImageFormService = {
     infraEnvId: InfraEnv['id'],
     formValues: OcmDiscoveryImageFormValues,
     ocmPullSecret?: string,
+    isIpxeImage?: boolean,
   ) {
     const proxyParams: V2ClusterUpdateParams = {
       httpProxy: formValues.httpProxy,
@@ -36,7 +37,7 @@ const DiscoveryImageFormService = {
       pullSecret: ocmPullSecret || undefined,
       staticNetworkConfig: formValues.staticNetworkConfig,
       additionalTrustBundle: formValues.trustBundle,
-      imageType: formValues.imageType as ImageType,
+      imageType: isIpxeImage ? undefined : (formValues.imageType as ImageType),
     };
 
     const { data: updatedCluster } = await ClustersService.update(

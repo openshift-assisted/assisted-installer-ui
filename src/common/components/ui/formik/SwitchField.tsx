@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Switch, Tooltip } from '@patternfly/react-core';
+import { FormGroup, Stack, StackItem, Switch, Tooltip } from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SwitchFieldProps } from './types';
 import HelperText from './HelperText';
@@ -41,25 +41,37 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
       }
     },
   };
+
+  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
+
   return (
-    <FormGroup
-      fieldId={fieldId}
-      helperText={
-        typeof hText === 'string' ? hText : <HelperText fieldId={fieldId}>{hText}</HelperText>
-      }
-      helperTextInvalid={errorMessage}
-      validated={isValid ? 'default' : 'error'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-    >
-      {tooltipProps ? (
-        <Tooltip {...tooltipProps}>
-          <Switch {...switchFields} />
-        </Tooltip>
-      ) : (
-        <Switch {...switchFields} />
-      )}
-    </FormGroup>
+    <Stack>
+      <StackItem>
+        <FormGroup
+          fieldId={fieldId}
+          helperText={fieldHelperText}
+          helperTextInvalid={fieldHelperText}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          labelIcon={labelIcon}
+        >
+          {tooltipProps ? (
+            <Tooltip {...tooltipProps}>
+              <Switch {...switchFields} />
+            </Tooltip>
+          ) : (
+            <Switch {...switchFields} />
+          )}
+        </FormGroup>
+      </StackItem>
+      <StackItem>
+        {errorMessage && (
+          <HelperText fieldId={fieldId} isError>
+            {errorMessage}
+          </HelperText>
+        )}
+      </StackItem>
+    </Stack>
   );
 };
 

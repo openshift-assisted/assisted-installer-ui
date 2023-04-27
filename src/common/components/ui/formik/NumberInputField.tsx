@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, NumberInput, NumberInputProps, Split, SplitItem } from '@patternfly/react-core';
+import {
+  FormGroup,
+  NumberInput,
+  NumberInputProps,
+  Split,
+  SplitItem,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { NumberInputFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
@@ -55,40 +63,47 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
       doChange(isNaN(targetValue) ? 0 : Number(targetValue));
     };
 
+    const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
+
     return (
-      <FormGroup
-        fieldId={fieldId}
-        label={label}
-        helperText={
-          typeof helperText === 'string' ? (
-            helperText
-          ) : (
-            <HelperText fieldId={fieldId}>{helperText}</HelperText>
-          )
-        }
-        helperTextInvalid={errorMessage}
-        validated={isValid ? 'default' : 'error'}
-        isRequired={isRequired}
-        labelIcon={labelIcon}
-      >
-        <Split>
-          <SplitItem isFilled>
-            <NumberInput
-              {...props}
-              value={field.value}
-              onMinus={onMinus}
-              onChange={handleChange}
-              onPlus={onPlus}
-              min={minValue}
-              max={maxValue}
-              ref={ref}
-              id={fieldId}
-              aria-describedby={`${fieldId}-helper`}
-            />
-          </SplitItem>
-          <SplitItem>{children}</SplitItem>
-        </Split>
-      </FormGroup>
+      <Stack>
+        <StackItem>
+          <FormGroup
+            fieldId={fieldId}
+            label={label}
+            helperText={fieldHelperText}
+            helperTextInvalid={fieldHelperText}
+            validated={isValid ? 'default' : 'error'}
+            isRequired={isRequired}
+            labelIcon={labelIcon}
+          >
+            <Split>
+              <SplitItem isFilled>
+                <NumberInput
+                  {...props}
+                  value={field.value}
+                  onMinus={onMinus}
+                  onChange={handleChange}
+                  onPlus={onPlus}
+                  min={minValue}
+                  max={maxValue}
+                  ref={ref}
+                  id={fieldId}
+                  aria-describedby={`${fieldId}-helper`}
+                />
+              </SplitItem>
+              <SplitItem>{children}</SplitItem>
+            </Split>
+          </FormGroup>
+        </StackItem>
+        <StackItem>
+          {errorMessage && (
+            <HelperText fieldId={fieldId} isError>
+              {errorMessage}
+            </HelperText>
+          )}
+        </StackItem>
+      </Stack>
     );
   },
 );
