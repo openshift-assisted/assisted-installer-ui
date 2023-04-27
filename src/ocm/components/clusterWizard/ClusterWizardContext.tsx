@@ -11,6 +11,8 @@ export type ClusterWizardContextType = {
   wizardStepIds: ClusterWizardStepsType[];
   onUpdateStaticIpView(view: StaticIpView): void;
   onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
+  setAddCustomManifests(addCustomManifest: boolean): void;
+  addCustomManifests: boolean;
 };
 
 const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

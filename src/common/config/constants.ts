@@ -352,3 +352,6 @@ export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944'
 
 export const CHANGE_ISO_PASSWORD_FILE_LINK =
   'https://raw.githubusercontent.com/openshift/assisted-service/master/docs/change-iso-password.sh';
+
+export const CUSTOM_MANIFESTS_HELP_LINK =
+  'https://docs.openshift.com/container-platform/4.12/installing/install_config/installing-customizing.html';
