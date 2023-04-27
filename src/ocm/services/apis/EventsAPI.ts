@@ -1,27 +1,42 @@
-import { EventList } from '../../../common';
+import { EventList, V2Events } from '../../../common';
 import { client } from '../../api';
-import { EventsAPIListOptions } from './types';
 
 const EventsAPI = {
   makeBaseURI() {
     return '/v2/events';
   },
 
-  list(options: EventsAPIListOptions) {
-    let queryParams = '?';
+  createParams({
+    clusterId,
+    hostIds,
+    infraEnvId,
+    severities,
+    deletedHosts = true,
+    clusterLevel = true,
+    message,
+    limit = 10,
+    offset = 0,
+  }: V2Events) {
+    let params = '?';
+    params += 'order=descending&';
 
-    queryParams += options.clusterId ? `cluster_id=${options.clusterId}&` : '';
-    queryParams += options.hostId ? `host_id=${options.hostId}&` : '';
-    queryParams += options.infraEnvId ? `infra_env_id=${options.infraEnvId}&` : '';
-    if (options.categories) {
-      queryParams += `categories=`;
-      options.categories.forEach((category) => {
-        queryParams += `${category},`;
-      });
-    }
-    queryParams = queryParams.slice(0, -1);
+    params += clusterId ? `cluster_id=${clusterId}&` : '';
+    params += hostIds?.length ? `host_ids=${hostIds.join(',')}&` : '';
+    params += infraEnvId ? `infra_env_id=${infraEnvId}&` : '';
 
-    return client.get<EventList>(`${EventsAPI.makeBaseURI()}${queryParams}`);
+    params += severities?.length ? `severities=${severities?.join(',')}&` : '';
+    params += deletedHosts ? `deleted_hosts=${deletedHosts.toString()}&` : '';
+    params += clusterLevel ? `cluster_level=${clusterLevel.toString()}&` : '';
+    params += message ? `message=${message}&` : '';
+
+    params += `limit=${limit}&`;
+    params += `offset=${offset}`;
+
+    return params;
+  },
+
+  list(options: V2Events) {
+    return client.get<EventList>(`${EventsAPI.makeBaseURI()}${EventsAPI.createParams(options)}`);
   },
 };
 

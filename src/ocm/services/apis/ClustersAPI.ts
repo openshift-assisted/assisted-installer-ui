@@ -10,10 +10,13 @@ import {
   PlatformType,
   PreflightHardwareRequirements,
   PresignedUrl,
+  ListManifests,
+  CreateManifestParams,
+  UpdateManifestParams,
+  Manifest,
 } from '../../../common/api/types';
 import { AxiosResponse } from 'axios';
 import { ClustersAPIGetPresignedOptions } from './types';
-
 let _getRequestAbortController = new AbortController();
 
 const ClustersAPI = {
@@ -201,6 +204,40 @@ const ClustersAPI = {
   listBySubscriptionIds(subscriptionIds: Cluster['amsSubscriptionId'][]) {
     return client.get<Cluster[]>(
       `${ClustersAPI.makeBaseURI()}?ams_subscription_ids=${subscriptionIds.toString()}`,
+    );
+  },
+
+  getManifests(clusterId: Cluster['id']) {
+    return client.get<ListManifests>(`${ClustersAPI.makeBaseURI(clusterId)}/manifests`);
+  },
+  createCustomManifest(clusterId: Cluster['id'], params: CreateManifestParams) {
+    return client.post<Manifest, AxiosResponse<Manifest>, CreateManifestParams>(
+      `${ClustersAPI.makeBaseURI(clusterId)}/manifests`,
+      params,
+    );
+  },
+  removeCustomManifest(clusterId: Cluster['id'], folderName: string, fileName: string) {
+    return client.delete<void>(
+      `${ClustersAPI.makeBaseURI(clusterId)}/manifests?folder=${folderName}&file_name=${fileName}`,
+    );
+  },
+  getManifestContent(clusterId: Cluster['id'], folderName: string, fileName: string) {
+    return client.get<Blob>(
+      `${ClustersAPI.makeBaseURI(
+        clusterId,
+      )}/manifests/files?folder=${folderName}&file_name=${fileName}`,
+      {
+        responseType: 'blob',
+        headers: {
+          Accept: 'application/octet-stream',
+        },
+      },
+    );
+  },
+  updateCustomManifest(clusterId: Cluster['id'], params: UpdateManifestParams) {
+    return client.patch<Manifest, AxiosResponse<Manifest>, UpdateManifestParams>(
+      `${ClustersAPI.makeBaseURI(clusterId)}/manifests`,
+      params,
     );
   },
 };

@@ -4,10 +4,13 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { ErrorState } from '../ui';
 import { useErrorMonitor } from './ErrorMonitorContext';
 
-const getErrorFallbackComponent = ({ title }: WithErrorBoundaryProps) => {
+const getErrorFallbackComponent = ({
+  title,
+  content = 'There was an internal error',
+  showReloadAction = true,
+}: WithErrorBoundaryProps) => {
   const FallbackComponent = ({ resetErrorBoundary }: FallbackProps) => {
-    const content = 'There was an internal error';
-    const primaryAction = [
+    const primaryAction = showReloadAction ? (
       <Button
         onClick={resetErrorBoundary}
         variant={ButtonVariant.link}
@@ -15,8 +18,8 @@ const getErrorFallbackComponent = ({ title }: WithErrorBoundaryProps) => {
         key="reset-error-boundary"
       >
         try again
-      </Button>,
-    ];
+      </Button>
+    ) : null;
     return <ErrorState {...{ content, primaryAction, title }} />;
   };
   return FallbackComponent;
@@ -24,6 +27,8 @@ const getErrorFallbackComponent = ({ title }: WithErrorBoundaryProps) => {
 
 export type WithErrorBoundaryProps = {
   title?: string;
+  content?: string;
+  showReloadAction?: boolean;
 };
 
 export const WithErrorBoundary = ({

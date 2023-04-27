@@ -2,14 +2,12 @@ import React from 'react';
 import { GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   Cluster,
-  CpuArchitecture,
   DetailItem,
   DetailList,
   DiskEncryption,
   getDefaultCpuArchitecture,
   isDualStack,
   NETWORK_TYPE_SDN,
-  PopoverIcon,
   selectIpv4Cidr,
   selectIpv4HostPrefix,
   selectIpv6Cidr,
@@ -19,20 +17,6 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
-
-const CpuArchTitle = ({ isMultiArchSupported }: { isMultiArchSupported: boolean }) => {
-  let stringCpuArch: string;
-  isMultiArchSupported
-    ? (stringCpuArch =
-        'The original cluster hosts CPU architecture. You can add hosts that are using either x86 or arm64 CPU architecture to this cluster.')
-    : (stringCpuArch = 'The original cluster hosts CPU architecture.');
-  return (
-    <>
-      {'CPU architecture '}
-      <PopoverIcon bodyContent={<p>{stringCpuArch}</p>} />
-    </>
-  );
-};
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -88,12 +72,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
   const activeFeatureConfiguration = featureSupportLevelContext.activeFeatureConfiguration;
   const underlyingCpuArchitecture =
     activeFeatureConfiguration?.underlyingCpuArchitecture || getDefaultCpuArchitecture();
-  const hasMultiCpuArchitecture = cluster.cpuArchitecture === CpuArchitecture.MULTI;
 
-  const isMultiArchSupported = Boolean(
-    hasMultiCpuArchitecture ||
-      featureSupportLevelContext.getFeatureSupportLevel('MULTIARCH_RELEASE_IMAGE') === 'supported',
-  );
   return (
     <>
       {!externalMode && (
@@ -114,7 +93,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           )}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
-            title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
+            title={'CPU architecture '}
             value={underlyingCpuArchitecture}
             testId="cpu-architecture"
           />

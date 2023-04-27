@@ -1,10 +1,21 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 
-const ClusterPollingErrorModal = () => {
+const defaultTitle = 'Unable to fetch the latest data';
+
+const defaultContent =
+  "There was an error fetching the latest data from the API. We'll try again, but if the data does not update in a few minutes, try refreshing the page.";
+
+const ClusterPollingErrorModal = ({
+  title = defaultTitle,
+  content = defaultContent,
+}: {
+  title?: string;
+  content?: string;
+}) => {
   return (
     <Modal
-      title="Unable to fetch the latest data"
+      title={title}
       isOpen
       variant={ModalVariant.small}
       showClose={false}
@@ -19,8 +30,7 @@ const ClusterPollingErrorModal = () => {
         </Button>,
       ]}
     >
-      There was an error fetching the latest data from the API. We'll try again, but if the data
-      does not update in a few minutes, try refreshing the page.
+      {content}
     </Modal>
   );
 };

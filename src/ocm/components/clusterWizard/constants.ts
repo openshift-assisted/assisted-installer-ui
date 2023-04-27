@@ -9,6 +9,7 @@ export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   'static-ip-host-configurations': 'Host specific configurations',
   storage: 'Storage',
   networking: 'Networking',
+  'custom-manifests': 'Custom manifests',
   review: 'Review and create',
 };
 

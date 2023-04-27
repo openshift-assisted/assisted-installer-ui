@@ -131,6 +131,7 @@ export interface DropdownFieldProps extends FieldProps {
 export interface CodeFieldProps extends FieldProps {
   language: CodeEditorProps['language'];
   description?: React.ReactNode;
+  downloadFileName?: string;
 }
 
 type RadioWithoutRef = Omit<RadioProps, 'ref'>;

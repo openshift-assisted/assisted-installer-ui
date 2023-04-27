@@ -10,6 +10,7 @@ import Storage from './Storage';
 import StaticIp from './StaticIp';
 import Operators from './Operators';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import CustomManifestStep from './CustomManifestStep';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -22,6 +23,8 @@ const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
+      case 'custom-manifests':
+        return <CustomManifestStep cluster={cluster} />;
       case 'host-discovery':
         return <HostDiscovery cluster={cluster} />;
       case 'networking':

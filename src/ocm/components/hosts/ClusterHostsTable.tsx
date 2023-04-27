@@ -9,7 +9,6 @@ import {
   roleColumn,
   statusColumn,
   cpuCoresColumn,
-  countColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useHostsTable, HostsTableModals } from './use-hosts-table';
@@ -23,6 +22,7 @@ import {
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
+import { TableVariant } from '@patternfly/react-table';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -57,13 +57,24 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
   const content = React.useMemo(
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
-      statusColumn(t, AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
+      roleColumn(
+        t,
+        actionChecks.canEditRole,
+        onEditRole,
+        selectSchedulableMasters(cluster),
+        cluster.kind,
+      ),
+      statusColumn(
+        t,
+        cluster.status,
+        AdditionalNTPSourcesDialogToggle,
+        onEditHost,
+        UpdateDay2ApiVipDialogToggle,
+      ),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
       disksColumn,
-      countColumn(cluster),
     ],
     [t, onEditHost, actionChecks, onEditRole, cluster],
   );
@@ -84,6 +95,7 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
           ExpandComponent={ExpandComponent}
           content={content}
           actionResolver={actionResolver}
+          variant={TableVariant.compact}
           {...paginationProps}
         >
           <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
