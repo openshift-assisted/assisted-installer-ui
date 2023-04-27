@@ -1,63 +1,125 @@
-# Assisted Installer User Interface Library
+<h1 align="center">
+  The Assisted Installer User Interface
+</h1>
 
-React component library for
-[https://github.com/openshift-assisted/assisted-ui](https://github.com/openshift-assisted/assisted-ui).
-
-Please note, the project's upstream has been renamed and moved from **mareklibra/facet-lib** to
-[https://github.com/openshift-assisted/assisted-ui-lib](https://github.com/openshift-assisted/assisted-ui-lib)
-in December 2020.
-
-[![NPM](https://img.shields.io/npm/v/openshift-assisted-ui-lib.svg)](https://www.npmjs.com/package/openshift-assisted-ui-lib)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+<p align="center">
+  <a href="https://www.npmjs.com/package/openshift-assisted-ui-lib"><img alt='NPM' src='https://img.shields.io/npm/v/openshift-assisted-ui-lib.svg'></a>
+</p>
 
 ## Install
 
 ```bash
-npm install --save openshift-assisted-ui-lib
+npm install --save @openshift-assisted/ui-lib
+```
 
 or
 
-yarn add openshift-assisted-ui-lib
+```
+yarn add @openshift-assisted/ui-lib
 ```
 
 ## Development
 
+### About the repository's folder structure
+
+This is a [monorepo](https://monorepo.tools/), as such, it's composed of many different projects.  
+The principal folders are: `apps` and `libs`.
+
 ### Prerequisites
 
-This project depends on the following package
+1. A Linux distro, like Fedora.
+2. [NodeJS](https://nodejs.org/en) > v14, or any newer LTS version.
+3. This project uses `rsync` in order to synchronize .css files in one if it's build steps.
+4. A back-end API to connect to. Please see instructions in
+   [assisted-test-infra](https://github.com/openshift/assisted-test-infra).
 
-- ```bash
-  sudo dnf install -y inotify-tools
-  ```
-
-### Instructions
-
-You can use the following steps in order to set up your dev environment.
+### Setting up a dev-environment
 
 1. Create a parent directory, e.g. `~/Projects`.
-2. Create your own fork of this repo and `git clone` it.
+2. Create your own fork of this repo and `git clone` it. Then run the following commands from the
+   repository';'s root directory
    - ```bash
      cd ~/Projects
-     git clone https://github.com/openshift-assisted/assisted-ui-lib.git
+     git clone https://github.com/<username>/assisted-installer-ui.git
      ```
-3. Install the project dependencies:
+3. Create a `.env.local` file in `apps/assisted-ui/` and add the Assisted Installer API URL
+   - ```ini
+     AIUI_APP_API_URL=http://<host-ip>:6008
+     ```
+4. Set up the package managers shims and install the project dependencies:
    - ```bash
-     yarn --cwd=./assisted-ui-lib/ install
+     npm i -g corepack
+     corepack enable
+     yarn install
      ```
-4. Fork and clone these projects too, they act as the main app:
-   - [assisted-ui](https://github.com/openshift-assisted/assisted-ui) (a light-weight stand-alone
-     app consuming this project),
-   - [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) (the full OCM app, GitLab
-     access needed).
-5. These scripts start the project in watch mode:
+5. Build the project
    - ```bash
-     # Watches for changes in the `/src` folder and bundles the files into `/dist` folder
-     yarn start
-     # Synchronizes `/dist` with `node_modules/openshift-assisted-ui-lib/` folder in .
-     yarn sync-dist
+        yarn build:all
      ```
-6. This project uses the `assisted-ui` project to ease the development experience outside OCM (aka
-   `uhc-portal`), follow the instructions in those projects in order to access the app's UI.
+6. Start the Assisted Installer UI stand-alone app
+   - ```bash
+     yarn apps/assisted-ui
+     yarn serve
+     ```
+7. Browse to http://localhost:5173/ using a [modern web browser](https://caniuse.com/usage-table).
+
+#### UHC portal workflow
+
+Assisted Installer UI is integrated in
+[uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) (the full OCM app, GitLab access
+needed).
+
+Use this environnement if you want to test the integration of ui-lib in uhc-portal. For development
+purposes prefer the use of assisted-ui application.
+
+1. [Install yalc on your system](https://github.com/wclr/yalc#installation). yalc simulate the yarn
+   publish workflow without publishing our packages to the remote registry.
+
+   - ```bash
+     yalc --version
+     ```
+
+2. In one terminal run ui-lib in watch mode. It will build and publish `@openshift-assisted/ui-lib`
+   packages everytime you make a change.
+
+   - ```bash
+     cd libs/ui-lib
+     yarn watch
+     ```
+
+3. In another terminal, fork and clone
+   [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git):
+
+   - ```bash
+      cd ~/Projects
+      git clone https://gitlab.cee.redhat.com/<username>/uhc-portal.git
+     ```
+
+4. The first time, install npm dependencies and link `@openshift-assisted/ui-lib` and
+   `@openshift-assisted/locales` using yalc. You can skip this after. The watcher on ui-lib will
+   update the packages for you.  
+   Be aware that `yalc` updates the `yarn.lock` file. DO NOT INCLUDE THESE CHANGES INTO VERSION
+   CONTROL.
+
+   - ```bash
+      cd uhc-portal
+      yarn install
+      yalc link @openshift-assisted/ui-lib
+      yalc link @openshift-assisted/locales
+     ```
+
+5. Now you can start uhc-portal. Please follow the
+   [uhc-portal README](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md)
+
+   - ```bash
+      yarn start
+     ```
+
+6. Visit https://ENV.foo.redhat.com:1337/openshift/assisted-installer/clusters/~new
+
+#### CIM workflow
+
+    // TODO...
 
 ## Publish
 
@@ -74,25 +136,12 @@ To publish a new version of the package to
 
 ## Updating the API types
 
-The types used by Assisted Installer UI are defined in `src/common/api/types.ts` and they are
-generated automatically by running `yarn update-api`.
-
-## Troubleshooting
-
-### Increasing the amount of inotify watchers
-
-If you see the following error: `Error: ENOSPC: System limit for number of file watchers reached`,
-you will need to increase the number of inotify watchers.  
-From the terminal run the following commands:
-
-```bash
-$ sudo sh -c "echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf"
-$ sudo sysctl -p
-```
+The types used by Assisted Installer UI are defined in `libs/ui-lib/common/api/types.ts` and they
+are generated automatically by running `yarn workspace @openshift-assisted/ui-lib update-api`.
 
 ## i18n
 
-See [i18n](I18N.md) for information on our internationalization tools and guidelines
+See [i18n](docs/I18N.md) for information on our internationalization tools and guidelines.
 
 ## License
 

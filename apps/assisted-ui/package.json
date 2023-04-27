@@ -28,6 +28,7 @@
     "uuid": "^8.1",
     "yup": "^0.28.3"
   },
+  "description": "A stand-alone web UI for the Assisted Installer",
   "devDependencies": {
     "@openshift-assisted/eslint-config-assisted-ui": "workspace:libs/eslint-config-assisted-ui",
     "@tsconfig/vite-react": "^1.0.1",
