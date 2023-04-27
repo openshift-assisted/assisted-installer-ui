@@ -85,5 +85,5 @@ jobs:
           image: ${{ steps.build.outputs.image }}
           tags: ${{ steps.build.outputs.tags }}
           registry: ${{ env.QUAY_ORG }}
-          username: ${{ secrets.QUAY_OPENSHIFT_ASSISTED_ROBOT_USERNAME }}
-          password: ${{ secrets.QUAY_OPENSHIFT_ASSISTED_ROBOT_PASSWORD }}
+          username: ${{ secrets.QUAY_EDGE_INFRA_ROBOT_USERNAME }}
+          password: ${{ secrets.QUAY_EDGE_INFRA_ROBOT_PASSWORD }}
