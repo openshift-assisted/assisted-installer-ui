@@ -23,7 +23,9 @@ export const getUniqueValidationSchema = <FormValues,>(
         message: 'Unexpected error: Yup test context should contain form values',
       });
     }
+
     const values = uniqueStringArrayExtractor(context.values, this, value);
+
     if (!values) {
       return this.createError({
         message: 'Unexpected error: Failed to get values to test uniqueness',
