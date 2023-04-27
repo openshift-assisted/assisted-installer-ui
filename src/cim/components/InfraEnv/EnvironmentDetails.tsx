@@ -132,13 +132,13 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
       <Grid hasGutter>
         <GridItem span={12}>
           <Title headingLevel="h1" size={TitleSizes.lg}>
-            {t('ai:Environment details')}
+            {t('ai:Infrastructure environment details')}
           </Title>
         </GridItem>
         <GridItem span={6}>
           <DescriptionList>
             <DescriptionListGroup>
-              <DescriptionListTerm>{t('ai:Infrastructure Environment name')}</DescriptionListTerm>
+              <DescriptionListTerm>{t('ai:Name')}</DescriptionListTerm>
               <DescriptionListDescription>{infraEnv.metadata?.name}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
