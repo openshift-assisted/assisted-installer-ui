@@ -1,8 +1,15 @@
 import React from 'react';
-import { Grid, GridItem, TextContent, Text } from '@patternfly/react-core';
+import {
+  Grid,
+  GridItem,
+  TextContent,
+  Text,
+  TextListItem,
+  OrderType,
+  TextList,
+} from '@patternfly/react-core';
 import Measure from 'react-measure';
 import {
-  DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
   FormatDiskWarning,
   HostsNotShowingLink,
@@ -16,6 +23,31 @@ import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import AddHostDropdown from '../InfraEnv/AddHostDropdown';
+
+const DiscoveryInstructions = () => {
+  const { t } = useTranslation();
+  return (
+    <TextContent>
+      <Text component="h3">{t('ai:Adding hosts instructions')}</Text>
+      <TextList component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
+        <TextListItem>{t('ai:Click the Add hosts button.')}</TextListItem>
+        <TextListItem>
+          {t('ai:Configure the SSH key and proxy settings after the modal appears (optional).')}
+        </TextListItem>
+        <TextListItem>
+          {t(
+            "ai:Select how you'd like to add hosts (Discovery ISO, iPXE, or BMC form) and follow the instructions that appear.",
+          )}
+        </TextListItem>
+        <TextListItem>
+          {t(
+            'ai:Booted hosts should appear in the host inventory table. This may take a few minutes.',
+          )}
+        </TextListItem>
+      </TextList>
+    </TextContent>
+  );
+};
 
 const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryProps> = ({
   agentClusterInstall,
@@ -47,7 +79,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
     <Grid hasGutter>
       <GridItem>
         <TextContent>
-          <DiscoveryInstructions showAllInstructions />
+          <DiscoveryInstructions />
         </TextContent>
       </GridItem>
       <AddHostDropdown
