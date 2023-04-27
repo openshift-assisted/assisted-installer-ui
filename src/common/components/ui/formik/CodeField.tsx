@@ -19,6 +19,7 @@ const CodeField = ({
   name,
   description,
   isDisabled,
+  downloadFileName,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -79,6 +80,7 @@ const CodeField = ({
             height="400px"
             language={language}
             onEditorDidMount={(editor) => setMonacoEditor(editor)}
+            downloadFileName={downloadFileName}
           />
         </FormGroup>
       </StackItem>

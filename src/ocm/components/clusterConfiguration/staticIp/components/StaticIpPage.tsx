@@ -29,11 +29,13 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
 
-  const onChangeView = React.useCallback((view: StaticIpView) => {
-    clusterWizardContext.onUpdateStaticIpView(view);
-    setViewChanged(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onChangeView = React.useCallback(
+    (view: StaticIpView) => {
+      clusterWizardContext.onUpdateStaticIpView(view);
+      setViewChanged(true);
+    },
+    [clusterWizardContext],
+  );
 
   const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(() => {
     return getStaticIpInfo(infraEnv);
