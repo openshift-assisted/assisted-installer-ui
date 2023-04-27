@@ -21,7 +21,7 @@
   "repository": {
     "directory": "libs/locales",
     "type": "git",
-    "url": "https://github.com/openshift-assisted/assisted-ui-lib"
+    "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
     "watch": "yarn run -T toolbox watch --dir=lib 'yalc push --changed'",

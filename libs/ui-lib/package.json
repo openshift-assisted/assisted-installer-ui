@@ -107,7 +107,7 @@
   "repository": {
     "directory": "libs/ui-lib",
     "type": "git",
-    "url": "https://github.com/openshift-assisted/assisted-ui-lib.git"
+    "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
     "build": "yarn run -T tsc --build --verbose && yarn copy:css",
