@@ -1,0 +1,72 @@
+name: Release a new version
+
+on:
+  release:
+    types:
+      - published
+
+env:
+  NODE_OPTIONS: '--max-old-space-size=8192'
+
+jobs:
+  publish-to-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check workflow runs in a release branch
+        run: |
+          if [[ "${{ github.event.release.target_commitish }}" != *releases* ]]; then
+            echo "Expecting to be in a release branch, but we are in: ${{ github.event.release.target_commitish }}"
+            exit 1
+          fi
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
+          ref: ${{ github.event.release.target_commitish }}
+          fetch-depth: 0
+
+      - name: Configuring git
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor }}@users.noreply.github.com'
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: ${{ vars.NODEJS_VERSION }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build:all
+
+      - name: Bump workspaces to ${{ github.ref_name }}
+        run: |
+          workspaces=(ui-lib locales)
+          for ws in "${workspaces[@]}"; do
+            yarn workspace @openshift-assisted/${ws} version ${GITHUB_REF_NAME:1}
+            # The above command adds a `stableVersion` field after bumping. Removing it as it's buggy.
+            # See: https://github.com/yarnpkg/berry/issues/4328
+            echo "$(jq 'del(.stableVersion)' libs/${ws}/package.json)" > libs/${ws}/package.json
+          done
+
+      - name: Publish workspaces to NPM
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          yarn config set npmScopes.openshift-assisted.npmAuthToken $NPM_AUTH_TOKEN
+          workspaces=(ui-lib locales)
+          for ws in "${workspaces[@]}"; do
+            yarn workspace @openshift-assisted/${ws} npm publish
+            # Sleep ${{ vars.NPM_PUBLISH_DELAY }} in order to give time for processing the prevously published package.
+            # See: https://github.com/jkilzi/assisted-ui-lib/actions/runs/4797672106/jobs/8534953791#step:9:3218
+            sleep ${{ vars.NPM_PUBLISH_DELAY }}
+          done
+
+      - name: Update the repo
+        run: |
+          git add libs/ui-lib/package.json libs/locales/package.json apps/assisted-ui/package.json
+          git commit -m 'Version ${{ github.ref_name }}'
+          git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
+          git push origin ${{ github.ref_name }} --force
+          git push origin ${{ github.event.release.target_commitish }} --force

@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "esModuleInterop": true,
+    "incremental": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "build",
+    "rootDir": "lib",
+    "target": "ES6",
+    "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
+  },
+  "include": ["lib"]
+}
