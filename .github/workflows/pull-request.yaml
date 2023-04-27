@@ -31,7 +31,7 @@ jobs:
           fi
           echo "skip=${skip}" >> $GITHUB_OUTPUT
           echo "skip=${skip}"
-  Lint:
+  lint:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -41,13 +41,10 @@ jobs:
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build:all
-      - name: Lint
-        run: yarn lint:all
-  Format:
+      - run: yarn install --immutable
+      - run: yarn build:all
+      - run: yarn lint:all
+  format:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -57,13 +54,10 @@ jobs:
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build:all
-      - name: Format
-        run: yarn format:all
-  Circular deps:
+      - run: yarn install --immutable
+      - run: yarn build:all
+      - run: yarn format:all
+  circular-deps:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -73,13 +67,10 @@ jobs:
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build:all
-      - name: Lint
-        run: yarn check_circular_deps:all
-  Translation files:
+      - run: yarn install --immutable
+      - run: yarn build:all
+      - run: yarn check_circular_deps:all
+  translation-files:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -89,13 +80,10 @@ jobs:
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build:all
-      - name: Translation files
-        run: yarn workspace @openshift-assisted/locales run validate_translation_files
-  Test:
+      - run: yarn install --immutable
+      - run: yarn build:all
+      - run: yarn workspace @openshift-assisted/locales run validate_translation_files
+  tests:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -105,9 +93,6 @@ jobs:
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build:all
-      - name: Lint
-        run: yarn test:all
+      - run: yarn install --immutable
+      - run: yarn build:all
+      - run: yarn test:all
