@@ -18,5 +18,5 @@
     "sourceMap": true,
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo",
   },
-  "include": ["lib", "lib/package.json"]
+  "include": ["lib"]
 }

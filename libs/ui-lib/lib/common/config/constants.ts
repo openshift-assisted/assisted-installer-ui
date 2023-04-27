@@ -1,5 +1,4 @@
 import { TFunction } from 'i18next';
-import packageJson from '../../package.json';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
@@ -259,10 +258,7 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
   serviceNetworkCidr: '2003:db8::/112',
 };
 
-export const getAssistedUiLibVersion = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  return packageJson.version;
-};
+export const getAssistedUiLibVersion = () => process.env.AIUI_APP_VERSION || 'latest';
 
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 

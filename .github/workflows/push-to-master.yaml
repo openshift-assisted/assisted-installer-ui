@@ -52,7 +52,7 @@ jobs:
       - name: Generate tags
         id: generate-tags
         run: |
-          tags=( ${GITHUB_SHA:0:8} latest )
+          tags=( latest-${GITHUB_SHA} latest )
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             tags+=( ${GITHUB_REF_NAME} )
           fi
