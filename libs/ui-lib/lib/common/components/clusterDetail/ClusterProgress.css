@@ -1,0 +1,3 @@
+.cluster-progress-bar {
+  margin-top: -2rem; /* Progress.title property is string-only, we need to stack components as a workaround */
+}
