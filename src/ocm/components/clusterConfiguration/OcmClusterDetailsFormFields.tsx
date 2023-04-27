@@ -16,7 +16,6 @@ import {
   useFeature,
   ClusterCreateParams,
   getSupportedCpuArchitectures,
-  CpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -28,13 +27,14 @@ import {
 } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
+import CustomManifestCheckbox from './CustomManifestCheckbox';
 import CpuArchitectureDropdown, {
   architectureData,
   CpuArchitectureItem,
 } from './CpuArchitectureDropdown';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
+import { useOpenshiftVersions } from '../../hooks';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -46,7 +46,8 @@ export type OcmClusterDetailsFormFieldsProps = {
   toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
   clusterExists: boolean;
-  clusterCpuArchitecture?: CpuArchitecture;
+  clusterCpuArchitecture?: string;
+  clusterId?: string;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -70,6 +71,7 @@ export const OcmClusterDetailsFormFields = ({
   isOcm,
   clusterExists,
   clusterCpuArchitecture,
+  clusterId,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -84,23 +86,17 @@ export const OcmClusterDetailsFormFields = ({
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
-  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
-    'architectures',
-    openshiftVersion,
-  );
+  const { getCpuArchitectures } = useOpenshiftVersions();
+  const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
+
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
     values.cpuArchitecture,
   );
   const cpuArchitectures = React.useMemo(
-    () =>
-      getSupportedCpuArchitectures(
-        isMultiArchSupported,
-        cpuArchitectureSupportLevelIdToSupportLevelMap,
-        isFeatureSupportedAndAvailable,
-      ),
-    [cpuArchitectureSupportLevelIdToSupportLevelMap, isMultiArchSupported],
+    () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),
+    [cpuArchitecturesByVersionImage, isMultiArchSupported],
   );
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -179,6 +175,7 @@ export const OcmClusterDetailsFormFields = ({
       />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      <CustomManifestCheckbox clusterId={clusterId || ''} />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download

@@ -1,14 +1,14 @@
-import { Cluster, Event, EventList, Host } from '../api';
+import { AxiosResponse } from 'axios';
+import { Cluster, Event, EventList, V2Events } from '../api';
 
 export type EventsEntityKind = 'cluster' | 'host';
 
 export type ClusterEventsFiltersType = {
-  fulltext: string;
-  hosts: Host['id'][];
-  severity: Event['severity'][];
   clusterLevel: boolean;
-  orphanedHosts: boolean;
-  selectAll: boolean;
+  deletedHosts: boolean;
+  hostIds: V2Events['hostIds'];
+  severities: V2Events['severities'];
+  message: string;
 };
 
 export type EventFetchProps = {
@@ -19,11 +19,8 @@ export type EventFetchProps = {
 export type EventListFetchProps = EventFetchProps & {
   entityKind: EventsEntityKind;
   onFetchEvents: (
-    params: {
-      clusterId: Cluster['id'];
-      hostId?: Host['id'];
-    },
-    onSuccess: (data: EventList) => void,
+    params: V2Events,
+    onSuccess: (data: AxiosResponse<EventList>) => void,
     onError: (message: string) => void,
   ) => Promise<void>;
   className?: string;

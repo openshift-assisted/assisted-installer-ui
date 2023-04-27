@@ -1,17 +1,18 @@
 import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
 import {
-  ArchitectureSupportLevelId,
   Cluster,
   ClusterCpuArchitecture,
+  CpuArchitecture,
   getSupportedCpuArchitectures,
   OcmCpuArchitecture,
   SupportedCpuArchitecture,
-  SupportLevel,
 } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
-import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
-import { isFeatureSupportedAndAvailable } from '../components/newFeatureSupportLevels/newFeatureStateUtils';
+import {
+  mapOcmArchToCpuArchitecture,
+  mapClusterCpuArchToInfraEnvCpuArch,
+} from './CpuArchitectureService';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
@@ -47,7 +48,7 @@ const Day2ClusterService = {
     ocmCluster: OcmClusterType,
     pullSecret: string,
     openshiftVersion: string,
-    supportedCpuArchitectures: Record<ArchitectureSupportLevelId, SupportLevel> | null,
+    cpuArchitecturesByVersionImage: CpuArchitecture[],
     canSelectCpuArch?: boolean,
   ) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
@@ -68,8 +69,8 @@ const Day2ClusterService = {
     const cpuArchitectures = createMultipleInfraEnvs
       ? getSupportedCpuArchitectures(
           canSelectCpuArch ? canSelectCpuArch : false,
-          supportedCpuArchitectures,
-          isFeatureSupportedAndAvailable,
+          cpuArchitecturesByVersionImage,
+          mapClusterCpuArchToInfraEnvCpuArch(ocmCluster.cpu_architecture),
         )
       : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 

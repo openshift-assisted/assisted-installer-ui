@@ -72,11 +72,7 @@ const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
       name="pullSecret"
       label={t('ai:Pull secret')}
       labelIcon={isOcm ? undefined : <PullSecretInfo isOcm={isOcm} />}
-      getErrorText={(error) => (
-        <>
-          {error} <GetPullSecretHelperText isOcm={isOcm} />
-        </>
-      )}
+      getErrorText={(error) => error}
       helperText={<GetPullSecretHelperText isOcm={isOcm} />}
       rows={10}
       isRequired

@@ -89,6 +89,20 @@ export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
 export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
   cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';
 
+export const getHostStatus = (
+  hostStatus: Host['status'],
+  clusterStatus: Cluster['status'],
+): Host['status'] | 'finalizing' => {
+  if (hostStatus === 'installed' && clusterStatus !== 'installed') {
+    return 'finalizing';
+  }
+  return hostStatus;
+};
+
+export const canOpenConsole = (clusterStatus: Cluster['status']) => {
+  return ['finalizing', 'installed'].includes(clusterStatus);
+};
+
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
@@ -120,13 +134,21 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
     'pending-for-input',
   ].includes(hostStatus);
 
-export const getHostRole = (host: Host, t: TFunction, schedulableMasters?: boolean): string => {
+export const getHostRole = (
+  host: Host,
+  t: TFunction,
+  schedulableMasters?: boolean,
+  clusterKind?: Cluster['kind'],
+): string => {
   let roleLabel = `${
     hostRoles(t).find((role) => role.value === host.role)?.label || hostRoles(t)[0].label
   }`;
 
   if (schedulableMasters && host.role === 'master') {
-    roleLabel = t('ai:Control plane node, Worker');
+    roleLabel =
+      clusterKind === 'AddHostsCluster'
+        ? t('ai:Control plane node')
+        : t('ai:Control plane node, Worker');
   }
   return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };

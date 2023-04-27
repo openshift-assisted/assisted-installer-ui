@@ -21,7 +21,7 @@ import {
 import { Host } from '../../api';
 import { HostStatus } from './types';
 
-export const hostStatus: HostStatus<Host['status']> = Object.freeze({
+export const hostStatus: HostStatus<Host['status'] | 'finalizing'> = Object.freeze({
   'unbinding-pending-user-action': {
     key: 'unbinding-pending-user-action',
     title: 'Removing from cluster',
@@ -219,6 +219,12 @@ export const hostStatus: HostStatus<Host['status']> = Object.freeze({
     details:
       'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
   },
+  finalizing: {
+    key: 'finalizing',
+    title: 'Finalizing',
+    category: 'Installation related',
+    icon: <InProgressIcon />,
+  },
   'added-to-existing-cluster': {
     key: 'added-to-existing-cluster',
     title: 'Installed',
@@ -227,3 +233,34 @@ export const hostStatus: HostStatus<Host['status']> = Object.freeze({
     details: 'This host completed its installation successfully.',
   },
 });
+
+export const hostStatusOrder: Host['status'][] = [
+  'error',
+  'cancelled',
+  'disconnected',
+  'disconnected-unbound',
+  'insufficient',
+  'insufficient-unbound',
+  'installing-pending-user-action',
+  'resetting-pending-user-action',
+  'unbinding-pending-user-action',
+  'resetting',
+  'disabled',
+  'disabled-unbound',
+  'pending-for-input',
+  'added-to-existing-cluster',
+  'unbinding',
+  'binding',
+  'known',
+  'known-unbound',
+  'reclaiming',
+  'reclaiming-rebooting',
+  'preparing-failed',
+  'preparing-for-installation',
+  'preparing-successful',
+  'discovering',
+  'discovering-unbound',
+  'installing',
+  'installing-in-progress',
+  'installed',
+];

@@ -26,24 +26,19 @@ export type ClusterWizardStepsType =
   | 'host-discovery'
   | 'storage'
   | 'networking'
-  | 'review';
+  | 'review'
+  | 'custom-manifests';
 
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
-export const getClusterWizardFirstStep = ({
-  locationState,
-  staticIpInfo,
-  state,
-  hosts,
-  isSingleClusterFeatureEnabled,
-}: {
-  locationState: ClusterWizardFlowStateType | undefined;
-  staticIpInfo: StaticIpInfo | undefined;
-  state?: ClusterWizardFlowStateType;
-  hosts?: Host[] | undefined;
-  isSingleClusterFeatureEnabled: boolean;
-}): ClusterWizardStepsType => {
+export const getClusterWizardFirstStep = (
+  locationState: ClusterWizardFlowStateType | undefined,
+  staticIpInfo: StaticIpInfo | undefined,
+  state?: ClusterWizardFlowStateType,
+  hosts?: Host[] | undefined,
+  isSingleClusterFeatureEnabled?: boolean,
+): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
     if (isSingleClusterFeatureEnabled) {
@@ -206,11 +201,14 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
+const customManifestsValidationsMap = buildEmptyValidationsMap();
+
 export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
   'static-ip-yaml-view': staticIpValidationsMap,
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
+  'custom-manifests': customManifestsValidationsMap,
   operators: operatorsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   storage: storageStepValidationsMap,
