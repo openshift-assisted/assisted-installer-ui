@@ -20,15 +20,16 @@
   "publishConfig": {
     "access": "public"
   },
+  "private": true,
   "repository": {
     "directory": "libs/toolbox",
     "type": "git",
-    "url": "https://github.com/openshift-assisted/toolbox.git"
+    "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
     "build": "yarn run -T tsc --build --verbose",
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf build node_modules"
   },
-  "version": "1.0.0-beta"
+  "version": "1.0.0"
 }
