@@ -11,6 +11,9 @@ on:
       - master
       - releases/*
 
+env:
+  NODE_OPTIONS: '--max-old-space-size=8192'
+
 jobs:
   preflight-check:
     # Prevents running the workflow when a PR is marked as draft.
