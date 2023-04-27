@@ -32,6 +32,7 @@ jobs:
           fi
           echo "skip=${skip}" >> $GITHUB_OUTPUT
           echo "skip=${skip}"
+          echo "${{ toJSON(github.event) }}"
 
   publish-assisted-ui:
     needs: preflight-check
