@@ -33,6 +33,7 @@ import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 
 type ClustersProps = RouteComponentProps;
 
@@ -76,12 +77,6 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           <LoadingState />
         </PageSection>
       );
-    case POLLING_ERROR:
-      return (
-        <PageSection variant={PageSectionVariants.light} isFilled>
-          <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
-        </PageSection>
-      );
     case EMPTY:
       return (
         <PageSection variant={PageSectionVariants.light} isFilled>
@@ -103,20 +98,36 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         </PageSection>
       );
     default:
-      return (
-        <>
-          <ClusterBreadcrumbs />
-          <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-              <Text component="h1">Assisted Clusters</Text>
-            </TextContent>
-          </PageSection>
+      if (clusterRows.length === 0 && uiState.current === POLLING_ERROR) {
+        return (
           <PageSection variant={PageSectionVariants.light} isFilled>
-            <Alerts />
-            <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
+            <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
           </PageSection>
-        </>
-      );
+        );
+      } else {
+        return (
+          <>
+            <ClusterBreadcrumbs />
+            <PageSection variant={PageSectionVariants.light}>
+              <TextContent>
+                <Text component="h1">Assisted Clusters</Text>
+              </TextContent>
+            </PageSection>
+            <PageSection variant={PageSectionVariants.light} isFilled>
+              <Alerts />
+              <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
+            </PageSection>
+            {uiState.current === POLLING_ERROR && (
+              <ClusterPollingErrorModal
+                title={'Failed to fetch clusters'}
+                content={
+                  'There was an error retrieving data. Check your connection and try refreshing the page.'
+                }
+              />
+            )}
+          </>
+        );
+      }
   }
 };
 
