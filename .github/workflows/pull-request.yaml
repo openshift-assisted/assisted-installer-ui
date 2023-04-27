@@ -1,0 +1,94 @@
+name: Pull request
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    branches:
+      - master
+      - releases/*
+
+env:
+  QUAY_ORG: quay.io/openshift-assisted
+  QUAY_REPO: assisted-installer-ui-repo
+  IMAGE_TAG: ${{ github.actor }}-${{ github.run_id }}
+
+jobs:
+  Lint:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODEJS_VERSION }}
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build:all
+      - name: Lint
+        run: yarn lint:all
+  Format:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODEJS_VERSION }}
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build:all
+      - name: Format
+        run: yarn format:all
+  Circular deps:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODEJS_VERSION }}
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build:all
+      - name: Lint
+        run: yarn check_circular_deps:all
+  Translation files:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODEJS_VERSION }}
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build:all
+      - name: Translation files
+        run: yarn workspace @openshift-assisted/locales run validate_translation_files
+  Test:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODEJS_VERSION }}
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build:all
+      - name: Lint
+        run: yarn test:all

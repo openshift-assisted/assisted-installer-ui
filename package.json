@@ -1,148 +1,35 @@
 {
-  "name": "openshift-assisted-ui-lib",
-  "version": "0.0.0",
-  "description": "React component library for the Bare Metal Installer",
-  "license": "Apache-2.0",
-  "repository": "openshift-assisted/assisted-ui-lib",
-  "main": "dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./index.css": "./dist/index.css",
-    "./cim": "./dist/cim/index.js",
-    "./ocm": "./dist/ocm/index.js",
-    "./locales/*": "./dist/locales/*"
+  "description": "Assisted Installer UI monorepo",
+  "devDependencies": {
+    "@openshift-assisted/toolbox": "workspace:^",
+    "dpdm": "^3.12.0",
+    "eslint": "^8.36.0",
+    "prettier": "2.8.4",
+    "rimraf": "^4.4.0",
+    "typescript": "4.9.5"
   },
-  "typesVersions": {
-    "*": {
-      "cim": [
-        "./dist/src/cim/index.d.ts"
-      ],
-      "ocm": [
-        "./dist/src/ocm/index.d.ts"
-      ]
-    }
-  },
-  "module": "dist/index.js",
-  "source": "src/index.ts",
-  "types": "dist/src/index.d.ts",
   "engines": {
-    "node": ">=12.16"
+    "node": ">=14"
+  },
+  "license": "Apache-2.0",
+  "name": "assisted-installer-ui",
+  "packageManager": "yarn@3.4.1",
+  "private": true,
+  "resolutions": {
+    "@types/react": "<17.0.30",
+    "@types/react-dom": "<17.0.30"
   },
   "scripts": {
-    "clean": "rimraf dist",
-    "prebuild": "run-s clean test",
-    "build": "node ./scripts/esbuild/prod.js",
-    "start": "yarn clean && node ./scripts/esbuild/dev.js",
-    "sync-dist": "./scripts/sync-dist.sh",
-    "prepare": "install-peers",
-    "test": "run-s test:circular lint format:check",
-    "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
-    "lint": "eslint . --max-warnings=0 --color",
-    "lint:fix": "yarn run lint --fix",
-    "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
-    "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
-    "update-api": "./scripts/update-api.sh ./src/common/api/swagger.yaml ./src/common/api/types.ts",
-    "i18n": "./scripts/i18n.sh"
+    "build:all": "yarn workspaces foreach -v --topological-dev run build",
+    "check_circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
+    "check_types:all": "yarn workspaces foreach -vp run check_types",
+    "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
+    "format:all": "yarn prettier --cache --cache-strategy=content --check .",
+    "lint:all": "yarn eslint --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
+    "test:all": "echo WIP"
   },
-  "peerDependencies": {
-    "@patternfly/react-code-editor": "^4.47.2",
-    "@patternfly/react-core": "^4.206.2",
-    "@patternfly/react-icons": "^4.57.2",
-    "@patternfly/react-styles": "^4.56.2",
-    "@patternfly/react-table": "^4.75.2",
-    "@patternfly/react-tokens": "^4.58.2",
-    "@reduxjs/toolkit": "^1.5",
-    "@sentry/browser": "^5.9 || ^6.0",
-    "axios": ">=0.23.0 <1.0.0",
-    "i18next": "^20.4.0 || ^21.0",
-    "i18next-browser-languagedetector": "^6.1.2",
-    "i18next-parser": "^3.3.0",
-    "lodash": "^4.17.15",
-    "react": "^16.14.0 || ^17.0",
-    "react-dom": "^16.13.1 || ^17.0",
-    "react-i18next": "^11.11.4",
-    "react-monaco-editor": "^0.43.0",
-    "react-redux": "^7.2.0",
-    "react-router-dom": "^5.1.2",
-    "react-tagsinput": "3.19.x",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "reselect": "^4.0.0",
-    "swr": ">=0.5.6 <2",
-    "uuid": "^8.1.0",
-    "yup": "^0.28.3"
-  },
-  "dependencies": {
-    "axios-case-converter": "^0.11.1",
-    "cidr-tools": "^4.3.0",
-    "classnames": "^2.3.1",
-    "eslint-plugin-import": "^2.26.0",
-    "file-saver": "^2.0.2",
-    "filesize.js": "^2.0.0",
-    "formik": "2.2.6",
-    "fuse.js": "^6.4.6",
-    "human-date": "^1.4.0",
-    "humanize-plus": "^1.8.2",
-    "ip-address": "^7.1.0",
-    "is-cidr": "^4.0.2",
-    "is-in-subnet": "^3.1.0",
-    "js-yaml": "^4.1.0",
-    "prism-react-renderer": "^1.1.1",
-    "react-error-boundary": "^3.1.4",
-    "react-measure": "^2.5.2",
-    "unique-names-generator": "^4.2.0"
-  },
-  "devDependencies": {
-    "@openshift-console/dynamic-plugin-sdk": "0.0.3",
-    "@types/classnames": "^2.3.1",
-    "@types/file-saver": "^2.0.1",
-    "@types/human-date": "^1.4.0",
-    "@types/humanize-plus": "^1.8.0",
-    "@types/js-yaml": "^4.0.1",
-    "@types/lodash": "^4.14.121",
-    "@types/node": "^17.0.31",
-    "@types/react": "^17.0.0",
-    "@types/react-autosuggest": "^10.1.5",
-    "@types/react-dom": "^18.0.3",
-    "@types/react-measure": "^2.0.8",
-    "@types/react-redux": "^7.1.7",
-    "@types/react-router-dom": "^5.1.3",
-    "@types/react-tagsinput": "^3.19.7",
-    "@types/uuid": "^8.0.0",
-    "@types/yup": "^0.26.9",
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
-    "cross-env": "^7.0.2",
-    "dpdm": "^3.8.0",
-    "env-cmd": "^10.1.0",
-    "esbuild": "^0.13.9",
-    "esbuild-plugin-copy": "^1.3.0",
-    "esbuild-plugin-d.ts": "1.0.6",
-    "eslint": "^8.15.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.5.0",
-    "install-peers-cli": "^2.2.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.6.2",
-    "redux-devtools-extension": "^2.13.8",
-    "rimraf": "^3.0.2",
-    "sw2dts": "^2.6.3",
-    "typescript": "^3.9.0"
-  },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "react",
-    "facet-lib",
-    "openshift",
-    "assisted-ui",
-    "assisted-ui-lib",
-    "library"
-  ],
-  "resolutions": {
-    "@types/react": "17.0.30"
-  }
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ]
 }
