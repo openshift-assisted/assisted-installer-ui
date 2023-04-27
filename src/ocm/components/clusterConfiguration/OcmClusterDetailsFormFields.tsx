@@ -16,7 +16,6 @@ import {
   useFeature,
   ClusterCreateParams,
   getSupportedCpuArchitectures,
-  CpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -28,6 +27,7 @@ import {
 } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
+import CustomManifestCheckbox from './CustomManifestCheckbox';
 import CpuArchitectureDropdown, {
   architectureData,
   CpuArchitectureItem,
@@ -46,7 +46,8 @@ export type OcmClusterDetailsFormFieldsProps = {
   toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
   clusterExists: boolean;
-  clusterCpuArchitecture?: CpuArchitecture;
+  clusterCpuArchitecture?: string;
+  clusterId?: string;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -70,6 +71,7 @@ export const OcmClusterDetailsFormFields = ({
   isOcm,
   clusterExists,
   clusterCpuArchitecture,
+  clusterId,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -173,6 +175,7 @@ export const OcmClusterDetailsFormFields = ({
       />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      <CustomManifestCheckbox clusterId={clusterId || ''} />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
