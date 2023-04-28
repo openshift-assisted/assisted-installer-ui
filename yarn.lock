@@ -354,7 +354,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/toolbox@workspace:libs/toolbox":
+"@openshift-assisted/toolbox@workspace:^, @openshift-assisted/toolbox@workspace:libs/toolbox":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/toolbox@workspace:libs/toolbox"
   dependencies:
@@ -373,6 +373,7 @@ __metadata:
   resolution: "@openshift-assisted/ui-lib@workspace:libs/ui-lib"
   dependencies:
     "@openshift-assisted/eslint-config-assisted-ui": "workspace:^"
+    "@openshift-assisted/toolbox": "workspace:^"
     "@tsconfig/recommended": ^1.0.2
     "@types/file-saver": ^2.0.1
     "@types/human-date": ^1.4.0
