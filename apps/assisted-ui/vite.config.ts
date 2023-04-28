@@ -26,6 +26,9 @@ export default defineConfig(async ({ mode }) => {
       outDir: 'build',
       sourcemap: true,
     },
+    resolve: {
+      conditions: ['source'],
+    },
     plugins: [
       EnvironmentPlugin(defaultValues, {
         prefix: envVarsPrefix,
