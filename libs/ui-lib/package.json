@@ -47,17 +47,17 @@
   },
   "exports": {
     ".": {
-      "development": "./lib/index.ts",
+      "source": "./lib/index.ts",
       "types": "./@types/index.d.ts",
       "default": "./build/index.js"
     },
     "./cim": {
-      "development": "./lib/cim/index.ts",
+      "source": "./lib/cim/index.ts",
       "types": "./@types/cim/index.d.ts",
       "default": "./build/cim/index.js"
     },
     "./ocm": {
-      "development": "./lib/ocm/index.ts",
+      "source": "./lib/ocm/index.ts",
       "types": "./@types/ocm/index.d.ts",
       "default": "./build/ocm/index.js"
     }
