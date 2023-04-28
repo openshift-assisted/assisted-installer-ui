@@ -223,6 +223,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
             setSelectedIDs={setSelectedHostIDs}
             onSelect={onSelect}
             ExpandComponent={DefaultExpandComponent}
+            actionsMenuElementID="content-scrollable"
             {...paginationProps}
           >
             {allHosts.length !== hosts.length ? (

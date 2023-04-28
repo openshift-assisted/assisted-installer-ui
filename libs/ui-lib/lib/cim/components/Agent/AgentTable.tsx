@@ -33,6 +33,7 @@ export type AgentTableProps = Pick<AgentTableActions, 'onUnbindHost'> & {
   agents: AgentK8sResource[];
   agentClusterInstall: AgentClusterInstallK8sResource;
   className?: string;
+  actionsMenuElementID?: string;
 };
 
 const AgentTable: React.FC<AgentTableProps> = ({
@@ -40,6 +41,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
   agentClusterInstall,
   className,
   onUnbindHost,
+  actionsMenuElementID,
 }) => {
   const { t } = useTranslation();
   const agentClusterInstalls = React.useMemo(() => [agentClusterInstall], [agentClusterInstall]);
@@ -74,6 +76,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
       actionResolver={actionResolver}
       className={className}
       ExpandComponent={DefaultExpandComponent}
+      actionsMenuElementID={actionsMenuElementID}
       {...paginationProps}
     >
       <AgentTableEmptyState />

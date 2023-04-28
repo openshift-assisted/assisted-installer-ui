@@ -38,6 +38,7 @@ type TableMemoProps = {
   variant?: TableProps['variant'];
   // eslint-disable-next-line
   actionResolver?: ActionsResolver<any>;
+  actionsMenuElementID?: string;
 };
 const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
   ({
@@ -51,6 +52,7 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
     testId,
     variant,
     actionResolver,
+    actionsMenuElementID,
   }) => {
     const tableActionResolver = React.useCallback(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -75,6 +77,9 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
           data-testid={testId}
           actionResolver={actionResolver ? tableActionResolver : undefined}
           variant={variant}
+          actionsMenuAppendTo={
+            (actionsMenuElementID && document.getElementById(actionsMenuElementID)) || undefined
+          }
           {...newProps}
         >
           <TableHeader />
@@ -157,6 +162,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
   variant?: TableProps['variant'];
+  actionsMenuElementID?: string;
 };
 // eslint-disable-next-line
 const AITable = <R extends any>({
@@ -179,6 +185,7 @@ const AITable = <R extends any>({
   perPageOptions,
   canSelectAll,
   variant,
+  actionsMenuElementID,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   React.useEffect(() => {
@@ -333,6 +340,7 @@ const AITable = <R extends any>({
           data-testid={testId}
           actionResolver={actionResolver}
           variant={variant}
+          actionsMenuElementID={actionsMenuElementID}
         />
       </SelectionProvider.Provider>
       {showPagination && (

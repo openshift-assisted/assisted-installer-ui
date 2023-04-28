@@ -58,6 +58,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     | 'className'
     | 'canSelectAll'
     | 'variant'
+    | 'actionsMenuElementID'
   > & {
     hosts: Host[];
     skipDisabled?: boolean;
