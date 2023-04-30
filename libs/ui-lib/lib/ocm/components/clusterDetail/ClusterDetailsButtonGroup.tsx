@@ -78,6 +78,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
           status={cluster.status}
           clusterId={cluster.id}
           data-testid={getID('button-download-kubeconfig')}
+          id={getID('button-download-kubeconfig')}
         />
       </FlexItem>
       <FlexItem>

@@ -17,6 +17,7 @@ const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) =>
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       className="cluster-summary-expandable"
+      id="cluster-summary-expandable"
     >
       <div className="pf-u-pl-md pf-u-pt-md">
         <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
