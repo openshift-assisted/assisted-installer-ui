@@ -29,6 +29,7 @@ const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       className="host-inventory-expandable"
+      id="host-inventory-expandable"
     >
       <ClusterHostsTable cluster={cluster} skipDisabled />
     </ExpandableSection>
