@@ -58,8 +58,7 @@ The principal folders are: `apps` and `libs`.
      ```
 6. Start the Assisted Installer UI stand-alone app
    - ```bash
-     yarn apps/assisted-ui
-     yarn serve
+     yarn workspace @openshift-assisted/assisted-ui serve
      ```
 7. Browse to http://localhost:5173/ using a [modern web browser](https://caniuse.com/usage-table).
 
