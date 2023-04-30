@@ -116,7 +116,7 @@
     "clean": "yarn run -T rimraf node_modules build @types",
     "copy:css": "rsync -Ruv lib/./**/*.css build",
     "update-api": "scripts/update-api.sh lib/common/api/swagger.yaml lib/common/api/types.ts",
-    "watch": "toolbox watch --dir=lib 'yarn build' 'yarn yalc:push'",
+    "watch": "yarn run -T toolbox watch --dir=lib 'yarn build' 'yarn yalc:push'",
     "yalc:push": "yalc push --changed"
   },
   "typesVersions": {
