@@ -31,17 +31,17 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
   return (
     <>
-      <TableSummaryExpandable title={'Cluster details'}>
+      <TableSummaryExpandable title={'Cluster details'} id={'cluster-details-expandable'}>
         <ReviewClusterDetailTable cluster={cluster} />
       </TableSummaryExpandable>
 
       {showOperatorsSummary && (
-        <TableSummaryExpandable title={'Operators'}>
+        <TableSummaryExpandable title={'Operators'} id={'operators-expandable'}>
           <ReviewOperatorsTable cluster={cluster} />
         </TableSummaryExpandable>
       )}
 
-      <TableSummaryExpandable title={'Host inventory'}>
+      <TableSummaryExpandable title={'Host inventory'} id={'host-inventory-expandable'}>
         <>
           <ReviewHostsInventory hosts={cluster.hosts} />
           <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
@@ -61,12 +61,12 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
         </>
       </TableSummaryExpandable>
 
-      <TableSummaryExpandable title={'Networking'}>
+      <TableSummaryExpandable title={'Networking'} id={'networking-expandable'}>
         <ReviewNetworkingTable cluster={cluster} />
       </TableSummaryExpandable>
 
       {customManifests && customManifests.length > 0 && (
-        <TableSummaryExpandable title={'Custom manifests'}>
+        <TableSummaryExpandable title={'Custom manifests'} id={'custom-manifests-expandable'}>
           <ReviewCustomManifestsTable manifests={customManifests} />
         </TableSummaryExpandable>
       )}
