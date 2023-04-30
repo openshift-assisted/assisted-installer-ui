@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/openshift-assisted-ui-lib"><img alt='NPM' src='https://img.shields.io/npm/v/openshift-assisted-ui-lib.svg'></a>
+  <a href="https://www.npmjs.com/package/@openshift-assisted/ui-lib"><img alt='NPM' src='https://img.shields.io/npm/v/@openshift-assisted/ui-lib.svg'></a>
 </p>
 
 ## Install
@@ -54,7 +54,7 @@ The principal folders are: `apps` and `libs`.
      ```
 5. Build the project
    - ```bash
-        yarn build:all
+     yarn build:all
      ```
 6. Start the Assisted Installer UI stand-alone app
    - ```bash
@@ -90,8 +90,8 @@ purposes prefer the use of assisted-ui application.
    [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git):
 
    - ```bash
-      cd ~/Projects
-      git clone https://gitlab.cee.redhat.com/<username>/uhc-portal.git
+     cd ~/Projects
+     git clone https://gitlab.cee.redhat.com/<username>/uhc-portal.git
      ```
 
 4. The first time, install npm dependencies and link `@openshift-assisted/ui-lib` and
@@ -101,32 +101,30 @@ purposes prefer the use of assisted-ui application.
    CONTROL.
 
    - ```bash
-      cd uhc-portal
-      yarn install
-      yalc link @openshift-assisted/ui-lib
-      yalc link @openshift-assisted/locales
+     cd uhc-portal
+     yarn install
+     yalc link @openshift-assisted/ui-lib
+     yalc link @openshift-assisted/locales
      ```
 
-5. Now you can start uhc-portal. Please follow the
-   [uhc-portal README](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md)
-
-   - ```bash
-      yarn start
-     ```
-
-6. Visit https://ENV.foo.redhat.com:1337/openshift/assisted-installer/clusters/~new
+5. Now you can start uhc-portal. Please follow their 
+   [README file](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md).
 
 #### CIM workflow
 
     // TODO...
 
-## Publish
+## Release workflow (maintainers only)
 
-To publish a new version of the package to
-[npmjs.com](https://www.npmjs.com/package/openshift-assisted-ui-lib)
+Releasing a new version involves publishing the following packages to npmjs.com and creating a container image containing a
+stand-alone version of the UI app
+(see [apps/assisted-ui](https://github.com/openshift-assisted/assisted-installer-ui/tree/master/apps/assisted-ui)):  
+- [@openshift-assisted/ui-lib](https://www.npmjs.com/package/@openshift-assisted/ui-lib)
+- [@openshift-assisted/locales](https://www.npmjs.com/package/@openshift-assisted/locales)
+- https://quay.io/repository/edge-infrastructure/assisted-installer-ui?tab=tags  
 
 1. Create a new branch from `master` in this repo, called `release/v<some-semver-string>`.
-2. [Draft a new release through GitHub's interface](https://github.com/openshift-assisted/assisted-ui-lib/releases/new).
+2. [Draft a new release through GitHub's interface](https://github.com/openshift-assisted/assisted-installer-ui/releases/new).
 3. Fill the form with the following details:
    1. Tag: `v<some-semver-string>`
    2. Target branch: `release/v<some-semver-string>` (same as in step 2 above).
