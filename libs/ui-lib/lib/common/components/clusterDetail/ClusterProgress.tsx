@@ -7,7 +7,7 @@ import {
   ProgressVariant,
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
-import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
+import { DetailItem, DetailList, getHumanizedDateTime } from '../ui';
 import { clusterStatusLabels } from '../../config';
 import './ClusterProgress.css';
 import { TFunction } from 'i18next';
@@ -87,8 +87,9 @@ const ClusterProgress = ({
           </FlexItem>
         </Flex>
       </DetailList>
-      <RenderIf condition={!minimizedView}>
+      {!minimizedView && (
         <Progress
+          id="cluster-progress-bar"
           value={totalPercentage || 0}
           label={`${totalPercentage || 0}%`}
           title=" "
@@ -96,7 +97,7 @@ const ClusterProgress = ({
           variant={getProgressVariant(status)}
           className="cluster-progress-bar"
         />
-      </RenderIf>
+      )}
     </>
   );
 };
