@@ -107,7 +107,7 @@ purposes prefer the use of assisted-ui application.
      yalc link @openshift-assisted/locales
      ```
 
-5. Now you can start uhc-portal. Please follow their 
+5. Now you can start uhc-portal. Please follow their
    [README file](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md).
 
 #### CIM workflow
@@ -116,12 +116,13 @@ purposes prefer the use of assisted-ui application.
 
 ## Release workflow (maintainers only)
 
-Releasing a new version involves publishing the following packages to npmjs.com and creating a container image containing a
-stand-alone version of the UI app
-(see [apps/assisted-ui](https://github.com/openshift-assisted/assisted-installer-ui/tree/master/apps/assisted-ui)):  
+Releasing a new version involves publishing the following packages to npmjs.com and creating a
+container image containing a stand-alone version of the UI app (see
+[apps/assisted-ui](https://github.com/openshift-assisted/assisted-installer-ui/tree/master/apps/assisted-ui)):
+
 - [@openshift-assisted/ui-lib](https://www.npmjs.com/package/@openshift-assisted/ui-lib)
 - [@openshift-assisted/locales](https://www.npmjs.com/package/@openshift-assisted/locales)
-- https://quay.io/repository/edge-infrastructure/assisted-installer-ui?tab=tags  
+- https://quay.io/repository/edge-infrastructure/assisted-installer-ui?tab=tags
 
 1. Create a new branch from `master` in this repo, called `release/v<some-semver-string>`.
 2. [Draft a new release through GitHub's interface](https://github.com/openshift-assisted/assisted-installer-ui/releases/new).
