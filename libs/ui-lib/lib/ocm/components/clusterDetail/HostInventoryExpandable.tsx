@@ -9,23 +9,31 @@ type HostInventoryExpandableProps = {
   cluster: Cluster;
 };
 
+const ExpandableSectionTitle = ({
+  hostsCount,
+  icon,
+}: {
+  hostsCount: number;
+  icon?: React.ReactNode;
+}) => (
+  <span>
+    {`Host inventory ${hostsCount > 0 ? `(${hostsCount})` : ''}`}
+    {icon && <span className="pf-u-ml-sm">{icon}</span>}
+  </span>
+);
+
 const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hosts = cluster.hosts || [];
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
-  const title = (
-    <span>
-      {`Host inventory ${hosts.length > 0 ? `(${hosts.length})` : ''}`}
-      {mostSevereHostStatus !== null && (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        <span className="pf-u-ml-sm">{hostStatus[mostSevereHostStatus].icon}</span>
-      )}
-    </span>
-  );
+  const hostStatusDef = mostSevereHostStatus ? hostStatus[mostSevereHostStatus] : null;
+
   return (
     <ExpandableSection
-      toggleContent={title}
+      toggleContent={
+        <ExpandableSectionTitle hostsCount={hosts.length} icon={hostStatusDef?.icon} />
+      }
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       className="host-inventory-expandable"
