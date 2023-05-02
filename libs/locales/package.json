@@ -29,5 +29,5 @@
     "validate_translation_files": "scripts/validate-translation-files.sh"
   },
   "type": "module",
-  "version": "2.19.5"
+  "version": "2.19.6"
 }
