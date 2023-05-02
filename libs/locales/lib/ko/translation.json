@@ -739,7 +739,7 @@
   "ai:Verify that your host machine is powered on": "호스트 시스템의 전원이 켜져 있는지 확인합니다.",
   "ai:View {{count}} affected host": "{{count}} 개의 영향을 받는 호스트 보기",
   "ai:View {{count}} affected host_plural": "{{count}} 개의 영향을 받는 호스트 보기",
-  "ai:View Cluster Events": "클러스터 이벤트 보기",
+  "ai:View cluster events": "클러스터 이벤트 보기",
   "ai:View documentation": "문서 보기",
   "ai:VIP IP allocation from DHCP server has been timed out": "DHCP 서버의 VIP IP 할당 시간이 초과되었습니다.",
   "ai:Virtual machine": "가상 머신",
