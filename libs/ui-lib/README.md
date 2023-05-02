@@ -15,7 +15,7 @@
 
 The project uses
 [conditional exports](https://nodejs.org/docs/latest-v16.x/api/packages.html#conditional-exports)
-which are only supported in Jest > v28.  
+which are only supported in Jest >= v28.  
 If your project uses an older Jest version add the following settings to Jest's configuration:
 
 ```json
