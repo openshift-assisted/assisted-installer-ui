@@ -739,7 +739,7 @@
   "ai:Verify that your host machine is powered on": "确认您的主机机器已开机",
   "ai:View {{count}} affected host": "查看 {{count}} 受影响的主机",
   "ai:View {{count}} affected host_plural": "查看 {{count}} 个受影响的主机",
-  "ai:View Cluster Events": "查看集群事件",
+  "ai:View cluster events": "查看集群事件",
   "ai:View documentation": "查看文档",
   "ai:VIP IP allocation from DHCP server has been timed out": "来自 DHCP 服务器的 VIP IP 分配超时",
   "ai:Virtual machine": "虚拟机器",
