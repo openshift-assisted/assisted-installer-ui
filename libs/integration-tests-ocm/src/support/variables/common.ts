@@ -1,0 +1,16 @@
+Cypress.env('spanRoleProgressBar', `span[role='progressbar']`);
+Cypress.env('inputTypeFile', 'input[type="file"]');
+Cypress.env('nextButton', `button[name='next']`);
+Cypress.env('backButton', `button[name='back']`);
+Cypress.env('submitButton', `button[type=submit]`);
+Cypress.env('buttonInstall', `button[name='install']`);
+Cypress.env('actionsButtonAriaLabel', `button[aria-label='Actions']`);
+Cypress.env('closeAriaLabel', '[aria-label="Close"]');
+Cypress.env('refreshButtonAriaLabel', 'button[aria-label="Refresh"]');
+Cypress.env('filterInputArialabel', 'input[aria-label="Filter"]');
+Cypress.env('infoAlertAriaLabel', 'div[aria-label="Info Alert"]');
+Cypress.env('dangerAlertAriaLabel', 'div[aria-label="Danger Alert"]');
+Cypress.env('clusterListAriaLabel', `table[aria-label="Cluster List"]`);
+Cypress.env('copyableInputAriaLabel', `[aria-label='Copyable input']`);
+Cypress.env('dataLayerContent', '[data-layer="Content"]');
+Cypress.env('AI_MOCKED_UI_VERSION','2.11.0');

@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "outDir": "build",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["cypress", "cypress-file-upload", "node"]
+  },
+  "include": ["./*.d.ts", "src/**/*.ts", "src/**/*.js"]
+}
