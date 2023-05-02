@@ -105,7 +105,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       onFetchEvents={onFetchEvents}
                       ButtonComponent={Button}
                     >
-                      {t('ai:View Cluster Events')}
+                      {t('ai:View cluster events')}
                     </EventsModalButton>
                   </StackItem>
                 </Stack>
