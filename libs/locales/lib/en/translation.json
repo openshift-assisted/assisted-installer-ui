@@ -591,6 +591,7 @@
   "ai:Ready for the installation": "Ready for the installation",
   "ai:Received error:": "Received error:",
   "ai:Recommended option. The generated discovery ISO will be smaller, but will need to download additional data during boot. This option is useful if ISO storage capacity is limited or if it's being served over a constrained network.": "Recommended option. The generated discovery ISO will be smaller, but will need to download additional data during boot. This option is useful if ISO storage capacity is limited or if it's being served over a constrained network.",
+  "ai:Release domain resolution": "Release domain resolution",
   "ai:Remove": "Remove",
   "ai:Remove nodepool": "Remove nodepool",
   "ai:Remove Nodepool": "Remove Nodepool",
