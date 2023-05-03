@@ -2,26 +2,12 @@
   The Assisted Installer User Interface
 </h1>
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@openshift-assisted/ui-lib"><img alt='NPM' src='https://img.shields.io/npm/v/@openshift-assisted/ui-lib.svg'></a>
-</p>
+## Documentation
 
-## Install
-
-```bash
-npm install --save @openshift-assisted/ui-lib
-```
-
-or
-
-```
-yarn add @openshift-assisted/ui-lib
-```
-
-## i18n
-
-See [i18n](docs/I18N.md) for information on our internationalization tools and guidelines.
+- [How to contribute](docs/CONTRIBUTING.md)
+- [I18N documentation](docs/I18N.md)
+- [Release process](docs/RELEASE_WORKFLOW.md)
 
 ## License
 
-Apache-2.0
+This project is [Apache 2.0](LICENSE) licensed and accepts contributions via GitHub pull requests.
