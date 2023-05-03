@@ -22,26 +22,28 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
     it('Should have the correct values for the Openshift versions', () => {
       commonActions.visitNewClusterPage();
 
-      clusterDetailsPage.getSelectedOpenShiftVersion() .should(
-        'contain',
-        `OpenShift ${versionsFixtures.getDefaultOpenShiftVersion()}`,
-      );
+      clusterDetailsPage
+        .getSelectedOpenShiftVersion()
+        .should('contain', `OpenShift ${versionsFixtures.getDefaultOpenShiftVersion()}`);
 
       // Checking that the submitting value (item ID) for each version is correct
       clusterDetailsPage.openOpenshiftVersionDropdown();
 
       const expectedVersionIds = versionsFixtures.getExpectedVersionIds();
-      clusterDetailsPage.getOpenshiftVersionDropdown().find('[role="menuitem"]').each((versionItem, index) => {
-        expect(versionItem).to.have.id(expectedVersionIds[index]);
-      });
+      clusterDetailsPage
+        .getOpenshiftVersionDropdown()
+        .find('[role="menuitem"]')
+        .each((versionItem, index) => {
+          expect(versionItem).to.have.text(expectedVersionIds[index]);
+        });
     });
 
     it('Should show when a version is beta', () => {
       commonActions.visitNewClusterPage();
-      clusterDetailsPage.inputOpenshiftVersion('4.12');
+      clusterDetailsPage.inputOpenshiftVersion('4.13');
       cy.get('.pf-c-helper-text').contains('production-ready').should('exist');
 
-      clusterDetailsPage.inputOpenshiftVersion('4.11');
+      clusterDetailsPage.inputOpenshiftVersion('4.12');
       cy.get('.pf-c-helper-text').contains('production-ready').should('not.exist');
     });
 
@@ -50,14 +52,14 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
 
       clusterDetailsPage.inputOpenshiftVersion(versionsFixtures.getVersionWithNoArmSupport());
       clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.checkDisabledCpuArchitectureStatus(arm64, true);
-      clusterDetailsPage.checkDisabledCpuArchitectureStatus(x86, false);
+      clusterDetailsPage.CpuArchitectureNotExists(arm64);
+      clusterDetailsPage.CpuArchitectureExists(x86);
       clusterDetailsPage.selectCpuArchitecture(x86);
 
       clusterDetailsPage.inputOpenshiftVersion(versionsFixtures.getVersionWithArmSupport());
       clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.checkDisabledCpuArchitectureStatus(arm64, false);
-      clusterDetailsPage.checkDisabledCpuArchitectureStatus(x86, false);
+      clusterDetailsPage.CpuArchitectureExists(arm64);
+      clusterDetailsPage.CpuArchitectureExists(x86);
       clusterDetailsPage.selectCpuArchitecture(arm64);
     });
   });

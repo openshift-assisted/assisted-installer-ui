@@ -26,8 +26,12 @@ const infraEnv = {
 };
 
 const imageDownload = {
-  expires_at: '0001-01-01T00:00:00.000Z',
-  url: isoDownloadLink,
+  statusCode: 200,
+  body: {
+    expires_at: '0001-01-01T00:00:00.000Z',
+    url: isoDownloadLink,
+  },
+  delay: 100,
 };
 
 export { infraEnv, imageDownload, isoDownloadLink };
