@@ -34,7 +34,6 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       clusterDetailsPage.inputOpenshiftVersion();
 
       clusterDetailsPage.enableSno();
-      commonActions.getInfoAlert().should('contain', 'Limitations for using Single Node OpenShift');
       clusterDetailsPage.inputPullSecret();
 
       // Create the cluster and store its ID when moving to the next step
@@ -48,6 +47,15 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.clickNextButton();
 
       commonActions.getHeader('h2').should('contain', 'Host discovery');
+    });
+
+    it('Show the dev-preview badge for SNO', () => {
+      commonActions.visitNewClusterPage();
+      clusterDetailsPage.inputOpenshiftVersion('4.8');
+      clusterDetailsPage.enableSno();
+      commonActions
+        .getWarningAlert()
+        .should('contain', 'Limitations for using Single Node OpenShift');
     });
 
     it('Lists the new cluster', () => {

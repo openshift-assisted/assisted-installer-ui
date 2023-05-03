@@ -55,9 +55,13 @@ export const commonActions = {
   waitForNext: () => {
     cy.get(Cypress.env('nextButton')).should('be.enabled');
   },
-  getHeader: (level = 'h1', timeout = Cypress.env('WAIT_FOR_HEADER_TIMEOUT')) => cy.get(level, { timeout: timeout }),
+  getHeader: (level = 'h1', timeout = Cypress.env('WAIT_FOR_HEADER_TIMEOUT')) =>
+    cy.get(level, { timeout: timeout }),
   getInfoAlert: () => {
     return cy.get(Cypress.env('infoAlertAriaLabel'));
+  },
+  getWarningAlert: () => {
+    return cy.get(Cypress.env('warningAlertAriaLabel'));
   },
   getDangerAlert: () => {
     return cy.get(Cypress.env('dangerAlertAriaLabel'));

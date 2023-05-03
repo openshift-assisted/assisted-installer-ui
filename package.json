@@ -26,6 +26,8 @@
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
     "format:all": "yarn prettier --cache --cache-strategy=content --check .",
     "lint:all": "yarn eslint --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
+    "build:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run build",
+    "preview:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run preview",
     "test:all": "echo WIP"
   },
   "workspaces": [

@@ -22,8 +22,9 @@ const infraEnvApiPath = `${allInfraEnvsApiPath}${fakeClusterInfraEnvId}`;
 const clusterApiPath = `${allClustersApiPath}${fakeClusterId}`;
 
 const transformClusterFixture = (fixtureMapping) => {
-  const { clusters: clusterFixtures, hosts: hostsFixtures  } = fixtureMapping;
-  const baseCluster = clusterFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.clusters['default'];
+  const { clusters: clusterFixtures, hosts: hostsFixtures } = fixtureMapping;
+  const baseCluster =
+    clusterFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.clusters['default'];
   baseCluster.platform.type = Cypress.env('AI_INTEGRATED_PLATFORM') || 'baremetal';
 
   const hosts = hostsFixtures
@@ -68,7 +69,9 @@ const mockClusterResponse = (req) => {
   if (fixtureMapping?.clusters) {
     req.reply(transformClusterFixture(fixtureMapping));
   } else {
-    throw new Error('Incorrect fixture mapping for scenario ' + ((Cypress.env('AI_SCENARIO') as string) || ''));
+    throw new Error(
+      'Incorrect fixture mapping for scenario ' + ((Cypress.env('AI_SCENARIO') as string) || ''),
+    );
   }
 };
 
@@ -146,11 +149,15 @@ const addClusterPatchAndDetailsIntercepts = () => {
 };
 
 const addInfraEnvIntercepts = () => {
-  cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${fakeClusterId}`, [infraEnv]).as('filter-infra-envs');
+  cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${fakeClusterId}`, [infraEnv]).as(
+    'filter-infra-envs',
+  );
 
   cy.intercept('GET', infraEnvApiPath, mockInfraEnvResponse).as('infra-env-details');
 
-  cy.intercept('GET', `${infraEnvApiPath}/downloads/image-url`, imageDownload).as('download-iso-image');
+  cy.intercept('GET', `${infraEnvApiPath}/downloads/image-url`, imageDownload).as(
+    'download-iso-image',
+  );
 
   cy.intercept('PATCH', infraEnvApiPath, mockInfraEnvResponse).as('update-infra-env');
 
@@ -177,11 +184,43 @@ const addPlatformFeatureIntercepts = () => {
 
   cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', openShiftVersions);
 
-  cy.intercept('GET', '/api/assisted-install/v2/feature-support-levels', featureSupport);
+  cy.intercept(
+    'GET',
+    '/api/assisted-install/v2/support-levels/features?openshift_version=4.8*',
+    featureSupport['4.8'],
+  );
+  cy.intercept(
+    'GET',
+    '/api/assisted-install/v2/support-levels/features?openshift_version=4.9*',
+    featureSupport['4.9'],
+  );
+  cy.intercept(
+    'GET',
+    '/api/assisted-install/v2/support-levels/features?openshift_version=4.10*',
+    featureSupport['4.10'],
+  );
+  cy.intercept(
+    'GET',
+    '/api/assisted-install/v2/support-levels/features?openshift_version=4.11*',
+    featureSupport['4.11'],
+  );
+  cy.intercept(
+    'GET',
+    '/api/assisted-install/v2/support-levels/features?openshift_version=4.12*',
+    featureSupport['4.12'],
+  );
+  cy.intercept(
+    'GET',
+    '/api/assisted-install/v2/support-levels/features?openshift_version=4.13*',
+    featureSupport['4.13'],
+  );
+  cy.intercept('GET', `${clusterApiPath}/manifests`, []);
 };
 
 const addAdditionalIntercepts = () => {
-  cy.intercept('GET', '/api/assisted-install/v2/domains', [{ domain: 'e2e.redhat.com', provider: 'route53' }]);
+  cy.intercept('GET', '/api/assisted-install/v2/domains', [
+    { domain: 'e2e.redhat.com', provider: 'route53' },
+  ]);
 
   cy.intercept('GET', '/api/assisted-install/v2/clusters//default-config', defaultConfig);
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);

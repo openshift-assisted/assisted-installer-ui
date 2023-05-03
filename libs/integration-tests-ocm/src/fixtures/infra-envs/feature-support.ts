@@ -1,155 +1,106 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-const featureSupport = [
-  {
-    features: [
-      { feature_id: 'SNO', support_level: 'supported' },
-      {
-        feature_id: 'DUAL_STACK_NETWORKING',
-        support_level: 'supported',
-      },
-      { feature_id: 'VIP_AUTO_ALLOC', support_level: 'dev-preview' },
-      {
-        feature_id: 'ARM64_ARCHITECTURE',
-        support_level: 'unsupported',
-      },
-      {
-        feature_id: 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-        support_level: 'unsupported',
-      },
-      { feature_id: 'SINGLE_NODE_EXPANSION', support_level: 'unsupported' },
-      {
-        feature_id: 'LVM',
-        support_level: 'unsupported',
-      },
-      { feature_id: 'MULTIARCH_RELEASE_IMAGE', support_level: 'unsupported' },
-      {
-        feature_id: 'NUTANIX_INTEGRATION',
-        support_level: 'unsupported',
-      },
-      { feature_id: 'DUAL_STACK_VIPS', support_level: 'unsupported' },
-    ],
-    openshift_version: '4.9',
+export default {
+  '4.8': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'unavailable',
+      LVM: 'unavailable',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'unavailable',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'unavailable',
+      SNO: 'dev-preview',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+    },
   },
-  {
-    features: [
-      { feature_id: 'SNO', support_level: 'supported' },
-      {
-        feature_id: 'ARM64_ARCHITECTURE',
-        support_level: 'supported',
-      },
-      { feature_id: 'DUAL_STACK_NETWORKING', support_level: 'supported' },
-      {
-        feature_id: 'VIP_AUTO_ALLOC',
-        support_level: 'dev-preview',
-      },
-      {
-        feature_id: 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-        support_level: 'unsupported',
-      },
-      { feature_id: 'SINGLE_NODE_EXPANSION', support_level: 'unsupported' },
-      {
-        feature_id: 'LVM',
-        support_level: 'unsupported',
-      },
-      { feature_id: 'MULTIARCH_RELEASE_IMAGE', support_level: 'unsupported' },
-      {
-        feature_id: 'NUTANIX_INTEGRATION',
-        support_level: 'unsupported',
-      },
-      { feature_id: 'DUAL_STACK_VIPS', support_level: 'unsupported' },
-    ],
-    openshift_version: '4.10',
+  '4.9': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'unavailable',
+      LVM: 'unavailable',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'unavailable',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'unavailable',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+    },
   },
-  {
-    features: [
-      { feature_id: 'SNO', support_level: 'supported' },
-      {
-        feature_id: 'ARM64_ARCHITECTURE',
-        support_level: 'supported',
-      },
-      {
-        feature_id: 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-        support_level: 'supported',
-      },
-      { feature_id: 'SINGLE_NODE_EXPANSION', support_level: 'supported' },
-      {
-        feature_id: 'DUAL_STACK_NETWORKING',
-        support_level: 'supported',
-      },
-      { feature_id: 'MULTIARCH_RELEASE_IMAGE', support_level: 'tech-preview' },
-      {
-        feature_id: 'VIP_AUTO_ALLOC',
-        support_level: 'dev-preview',
-      },
-      { feature_id: 'LVM', support_level: 'dev-preview' },
-      {
-        feature_id: 'NUTANIX_INTEGRATION',
-        support_level: 'dev-preview',
-      },
-      { feature_id: 'DUAL_STACK_VIPS', support_level: 'unsupported' },
-    ],
-    openshift_version: '4.11',
+  '4.10': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'unavailable',
+      LVM: 'unavailable',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'unavailable',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'unavailable',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+    },
   },
-  {
-    features: [
-      { feature_id: 'SNO', support_level: 'supported' },
-      {
-        feature_id: 'ARM64_ARCHITECTURE',
-        support_level: 'supported',
-      },
-      {
-        feature_id: 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-        support_level: 'supported',
-      },
-      { feature_id: 'SINGLE_NODE_EXPANSION', support_level: 'supported' },
-      {
-        feature_id: 'LVM',
-        support_level: 'supported',
-      },
-      { feature_id: 'DUAL_STACK_NETWORKING', support_level: 'supported' },
-      {
-        feature_id: 'NUTANIX_INTEGRATION',
-        support_level: 'supported',
-      },
-      { feature_id: 'DUAL_STACK_VIPS', support_level: 'supported' },
-      {
-        feature_id: 'MULTIARCH_RELEASE_IMAGE',
-        support_level: 'tech-preview',
-      },
-      { feature_id: 'VIP_AUTO_ALLOC', support_level: 'dev-preview' },
-    ],
-    openshift_version: '4.12',
+  '4.11': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'unavailable',
+      LVM: 'dev-preview',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'dev-preview',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'supported',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+    },
   },
-  {
-    features: [
-      { feature_id: 'SNO', support_level: 'supported' },
-      {
-        feature_id: 'ARM64_ARCHITECTURE',
-        support_level: 'supported',
-      },
-      {
-        feature_id: 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-        support_level: 'supported',
-      },
-      { feature_id: 'SINGLE_NODE_EXPANSION', support_level: 'supported' },
-      {
-        feature_id: 'LVM',
-        support_level: 'supported',
-      },
-      { feature_id: 'DUAL_STACK_NETWORKING', support_level: 'supported' },
-      {
-        feature_id: 'NUTANIX_INTEGRATION',
-        support_level: 'supported',
-      },
-      { feature_id: 'DUAL_STACK_VIPS', support_level: 'supported' },
-      {
-        feature_id: 'MULTIARCH_RELEASE_IMAGE',
-        support_level: 'tech-preview',
-      },
-      { feature_id: 'VIP_AUTO_ALLOC', support_level: 'dev-preview' },
-    ],
-    openshift_version: '4.13',
+  '4.12': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'supported',
+      LVM: 'supported',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'supported',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'supported',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+    },
   },
-];
-export default featureSupport;
+  '4.13': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'supported',
+      LVM: 'supported',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'supported',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'supported',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+    },
+  },
+};

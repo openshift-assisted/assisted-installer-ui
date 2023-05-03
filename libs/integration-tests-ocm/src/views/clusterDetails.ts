@@ -44,7 +44,9 @@ export const clusterDetailsPage = {
       .contains(Cypress.env('techPreviewSupportLevel'));
   },
   checkSnoDevSupportLevel: () => {
-    cy.get(Cypress.env('snoSupportLevel')).should('be.visible').contains(Cypress.env('devPreviewSupportLevel'));
+    cy.get(Cypress.env('snoSupportLevel'))
+      .should('be.visible')
+      .contains(Cypress.env('devPreviewSupportLevel'));
   },
   getBaseDnsDomain: () => {
     return cy.get(Cypress.env('baseDnsDomainFieldId'));
@@ -67,12 +69,16 @@ export const clusterDetailsPage = {
   },
   selectCpuArchitecture: (cpuArchitecture) => {
     cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).click();
-    cy.get(`${Cypress.env('cpuArchitectureFieldId')} .pf-c-dropdown__toggle-text`).should('contain', cpuArchitecture);
+    cy.get(`${Cypress.env('cpuArchitectureFieldId')} .pf-c-dropdown__toggle-text`).contains(
+      cpuArchitecture,
+      { matchCase: false },
+    );
   },
-  checkDisabledCpuArchitectureStatus: (cpuArchitecture, isDisabled) => {
-    cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`)
-      .invoke('attr', 'aria-disabled')
-      .should('eq', `${isDisabled}`); // it's a string
+  CpuArchitectureExists: (cpuArchitecture) => {
+    cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).should('exist');
+  },
+  CpuArchitectureNotExists: (cpuArchitecture) => {
+    cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).should('not.exist');
   },
   getSnoDisclaimer: () => {
     return cy.get(Cypress.env('checkboxSNODisclaimerFieldId'));
