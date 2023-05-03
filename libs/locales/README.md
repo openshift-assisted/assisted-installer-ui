@@ -8,6 +8,31 @@
 
 ## Usage
 
-`import someTranslation from @openshift-assisted/locales/<locale>/translation.json;`
+Internationalization is implemented with [i18next](https://www.i18next.com/) and
+[react-i18next](https://react.i18next.com/). The i18n namespace must be declared at build-time in an
+environment variable called: `TRANSLATION_NAMESPACE` in order to avoid naming conflicts.
 
-Check out the source code for the available locales.
+- Environment variables:
+
+  ```
+    TRANSLATION_NAMESPACE: required, name of translation namespace (by default is 'translation')
+  ```
+
+- We create the wrapper src/common/hooks/use-translation-wrapper.ts that use the `useTranslation`
+  hook with our namespace.
+
+- Use in our components :
+
+  ```tsx
+  import { useTranslation } from 'common/hooks/use-translation-wrapper';
+  const { t } = useTranslation();
+
+  <Button key="submit" onClick={submitForm}>
+    {t('ai:Generate Discovery ISO')}
+  </Button>;
+  ```
+
+  Add 'ai:' prefix to all strings.
+
+- Running `yarn i18n` updates the JSON files in the `locales` folder when adding or changing
+  messages.

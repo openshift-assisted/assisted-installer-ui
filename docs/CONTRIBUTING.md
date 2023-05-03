@@ -1,13 +1,10 @@
 # How to Contribute
 
-This project is [Apache 2.0 licensed](../LICENSE) and accepts contributions via GitHub pull
-requests.
-
-## Certificate of Origin
+## Developer Certificate of Origin
 
 By contributing to this project you agree to the Developer Certificate of Origin (DCO). This
 document was created by the Linux Kernel community and is a simple statement that you, as a
-contributor, have the legal right to make the contribution. See the [DCO](DCO) file for details.
+contributor, have the legal right to make the contribution. See the [DCO](../DCO) file for details.
 
 ## About the repository's folder structure
 
@@ -17,7 +14,7 @@ The principal folders are: `apps` and `libs`.
 ## Prerequisites
 
 1. A Linux distro, like Fedora.
-2. [NodeJS](https://nodejs.org/en) > v14, or any newer LTS version.
+2. [NodeJS](https://nodejs.org/en) > v14, or newer LTS version.
 3. [Yarn](https://yarnpkg.com/getting-started/install)
 4. This project uses `rsync` in order to synchronize .css files in one if it's build steps.
 5. A back-end API to connect to. Please see instructions in
