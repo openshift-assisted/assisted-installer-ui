@@ -3,6 +3,7 @@
 .npm
 .vscode
 .idea
+dist/
 apps/*/build
 libs/*/build
 libs/*/@types
