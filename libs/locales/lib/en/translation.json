@@ -764,7 +764,7 @@
   "ai:Verify that you can access your host machine using SSH, or a console such as BMC or virtual machine console. In the CLI, enter the following command:": "Verify that you can access your host machine using SSH, or a console such as BMC or virtual machine console. In the CLI, enter the following command:",
   "ai:View {{count}} affected host": "View {{count}} affected host",
   "ai:View {{count}} affected host_plural": "View {{count}} affected hosts",
-  "ai:View Cluster Events": "View Cluster Events",
+  "ai:View cluster events": "View cluster events",
   "ai:View documentation": "View documentation",
   "ai:VIP IP allocation from DHCP server has been timed out": "VIP IP allocation from DHCP server has been timed out",
   "ai:Virtual machine": "Virtual machine",

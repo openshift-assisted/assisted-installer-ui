@@ -12,10 +12,7 @@ import {
 import type WatchToolOptions from './@types/watch-tool-options';
 import type ChangedToolOptions from './@types/changed-tool-options';
 import type Runnable from './@types/runnable.js';
-import type {
-  ChokidarAllEventsListener,
-  ChokidarFSWatcher,
-} from './@types/chokidar-type-aliases.js';
+import type { ChokidarAllEventsListener } from './@types/chokidar-type-aliases.js';
 import debounce from 'lodash-es/debounce.js';
 
 export function watchTool(options: WatchToolOptions) {
@@ -36,24 +33,22 @@ export function watchTool(options: WatchToolOptions) {
   }
 
   const job = new JobsRunner(jobs);
-  process.on('SIGINT', (job: Runnable, watcher: ChokidarFSWatcher) => {
-    return (signal: string) => {
-      void watcher.close().then(async () => {
-        warn(`\n${signal} received. Stop watching files...`);
-        if (job.isDone) {
+  const handleSIGINT = (signal: string) => {
+    void watcher.close().then(async () => {
+      warn(`\n${signal} received. Stop watching files...`);
+      if (job.isDone) {
+        process.exit(EC_NORMAL);
+      } else {
+        warn('Waiting for the last job to finish...');
+        try {
+          await retry(MAX_RETRIES_BEFORE_ABORT, DELAY_BETWEEN_EXIT_ATTEMPTS, () => job.isDone);
           process.exit(EC_NORMAL);
-        } else {
-          warn('Waiting for the last job to finish...');
-          try {
-            await retry(MAX_RETRIES_BEFORE_ABORT, DELAY_BETWEEN_EXIT_ATTEMPTS, () => job.isDone);
-            process.exit(EC_NORMAL);
-          } catch {
-            process.abort();
-          }
+        } catch {
+          process.abort();
         }
-      });
-    };
-  });
+      }
+    });
+  };
 
   const handleChangeDebounced = (job: Runnable) =>
     debounce<ChokidarAllEventsListener>(
@@ -68,6 +63,8 @@ export function watchTool(options: WatchToolOptions) {
       WAIT_MS,
       { trailing: true },
     );
+
+  process.on('SIGINT', handleSIGINT);
   watcher.on('all', handleChangeDebounced(job));
 }
 

@@ -4,6 +4,7 @@ import { EventsModalButton } from './eventsModal';
 import { MonitoringIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api';
 import { EventListFetchProps } from '../../types';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ViewClusterEventsProps = {
   cluster: Cluster;
@@ -11,6 +12,7 @@ type ViewClusterEventsProps = {
 };
 
 const ViewClusterEventsButton = ({ cluster, onFetchEvents }: ViewClusterEventsProps) => {
+  const { t } = useTranslation();
   return (
     <EventsModalButton
       id="cluster-events-button"
@@ -21,7 +23,7 @@ const ViewClusterEventsButton = ({ cluster, onFetchEvents }: ViewClusterEventsPr
       variant={ButtonVariant.secondary}
       onFetchEvents={onFetchEvents}
     >
-      View Cluster Events
+      {t('ai:View cluster events')}
     </EventsModalButton>
   );
 };
