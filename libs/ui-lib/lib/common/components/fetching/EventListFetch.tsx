@@ -55,7 +55,6 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
   };
 
   const parseHeaders = React.useCallback((headers: AxiosResponseHeaders) => {
-    let total = 0;
     const severities: Record<Event['severity'], number> = {
       error: 0,
       info: 0,
@@ -65,9 +64,8 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     EVENT_SEVERITIES.forEach((severity) => {
       const count = Number(headers[`severity-count-${severity}`]);
       severities[severity] = count;
-      total += count;
     });
-    setTotalEvents(total);
+    setTotalEvents(Number(headers['event-count']));
     setSeverityCount(severities as SeverityCountsType);
   }, []);
 
