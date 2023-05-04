@@ -54,6 +54,7 @@ const PlatformIntegration = ({ clusterId }: { clusterId: Cluster['id'] }) => {
       </SplitItem>
       <SplitItem>
         <PopoverIcon
+          minWidth="22rem"
           bodyContent={
             <>
               <Text>{messages[supportedPlatformIntegration]}</Text>
