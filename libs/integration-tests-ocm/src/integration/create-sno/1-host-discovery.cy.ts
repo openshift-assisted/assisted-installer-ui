@@ -48,7 +48,10 @@ describe(`Assisted Installer SNO Host discovery`, () => {
       utils.setLastWizardSignal('HOST_DISCOVERED_1');
 
       const renamedHost = Cypress.env('HOST_RENAME');
-      bareMetalDiscoveryPage.selectHostRowKebabAction(0, Cypress.env('hostRowKebabMenuChangeHostnameText'));
+      bareMetalDiscoveryPage.selectHostRowKebabAction(
+        0,
+        Cypress.env('hostRowKebabMenuChangeHostnameText'),
+      );
       bareMetalDiscoveryPage.renameHost(renamedHost);
       bareMetalDiscoveryPage.clickSaveEditHostsForm();
 

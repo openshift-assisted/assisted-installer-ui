@@ -15,15 +15,15 @@
     "yaml": "^1.7.2"
   },
   "scripts": {
-    "test": "cypress run",
+    "test": "cypress run --headless --browser chrome",
     "test:open": "cypress open"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.4",
-    "cypress": "^7.4.0",
-    "cypress-file-upload": "^5.0.7",
+    "cypress": "^12.11.0",
+    "cypress-file-upload": "^5.0.8",
     "cypress-fill-command": "^1.0.2",
     "cypress-pipe": "^2.0.0",
     "prop-types": "^15.7.2",
