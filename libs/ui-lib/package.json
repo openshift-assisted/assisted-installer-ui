@@ -83,7 +83,7 @@
     "@patternfly/react-core": "^4.168.8",
     "@patternfly/react-icons": "^4.93.3",
     "@patternfly/react-styles": "^4.92.3",
-    "@patternfly/react-table": "^4.37.8",
+    "@patternfly/react-table": "^4.113.0",
     "@patternfly/react-tokens": "^4.94.3",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^5.9 || ^6",
