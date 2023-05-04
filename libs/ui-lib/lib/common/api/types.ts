@@ -1477,6 +1477,7 @@ export type HostValidationId =
   | 'api-domain-name-resolved-correctly'
   | 'api-int-domain-name-resolved-correctly'
   | 'apps-domain-name-resolved-correctly'
+  | 'release-domain-name-resolved-correctly'
   | 'compatible-with-cluster-platform'
   | 'dns-wildcard-not-configured'
   | 'disk-encryption-requirements-satisfied'
