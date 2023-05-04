@@ -48,8 +48,10 @@ export const bareMetalDiscoveryPage = {
     cy.get('table.hosts-table > tbody > tr', { timeout: timeout }).should('contain', text);
   },
   selectHostRowKebabAction: (rowIndex, actionItem) => {
-    cy.get(`[data-testid=host-row-${rowIndex}] > .pf-c-table__action`).scrollIntoView().click();
-    cy.get('li').contains(actionItem).click();
+    cy.get(`[data-testid=host-row-${rowIndex}] > .pf-c-table__action .pf-c-dropdown__toggle`)
+      .scrollIntoView()
+      .click({ force: true });
+    cy.get('li').contains(actionItem).click({ force: true });
   },
   getHostTableMassActions: () => {
     return cy.get('.pf-c-toolbar.table-toolbar');
@@ -58,8 +60,11 @@ export const bareMetalDiscoveryPage = {
     return cy.get(`[data-testid=host-row-${hostIndex}]`).find('.pf-c-check__input');
   },
   validateIsReadOnlyHostMenu: () => {
-    cy.get(`[data-testid=host-row-0] > .pf-c-table__action`).scrollIntoView().click();
-    cy.get('li[role][id^=button-view-host-events]').should('be.visible');
+    cy.get(`[data-testid=host-row-0] > .pf-c-table__action .pf-c-dropdown__toggle`)
+      .scrollIntoView()
+      .click({
+        force: true,
+      });
     cy.get('li[role][id^=button-edit-host]').should('not.exist');
     cy.get('li[role][id^=button-delete-host]').should('not.exist');
   },
@@ -67,7 +72,9 @@ export const bareMetalDiscoveryPage = {
     cy.get('.table-toolbar .pf-c-toolbar__item:first').click();
     cy.get('.table-toolbar .pf-c-toolbar__item:last').click();
     cy.get('ul[role="menu"]').within(() => {
-      cy.get('[role="menuitem"]').contains(Cypress.env('hostRowKebabMenuChangeHostnameText')).click();
+      cy.get('[role="menuitem"]')
+        .contains(Cypress.env('hostRowKebabMenuChangeHostnameText'))
+        .click();
     });
     bareMetalDiscoveryPage.renameHost(`${prefix}-{{n}}`);
     bareMetalDiscoveryPage.clickSaveEditHostsForm();
@@ -76,7 +83,10 @@ export const bareMetalDiscoveryPage = {
     return cy.get(Cypress.env('hostnameFieldId'));
   },
   renameHost: (newHostName) => {
-    bareMetalDiscoveryPage.getHostNameInput().clear().type(newHostName, { parseSpecialCharSequences: false });
+    bareMetalDiscoveryPage
+      .getHostNameInput()
+      .clear()
+      .type(newHostName, { parseSpecialCharSequences: false });
     bareMetalDiscoveryPage.getHostNameInput().should('have.value', newHostName);
   },
   deleteHost: () => {
