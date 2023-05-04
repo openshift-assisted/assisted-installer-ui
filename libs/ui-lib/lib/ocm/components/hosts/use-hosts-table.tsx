@@ -376,15 +376,32 @@ export const useHostsTable = (cluster: Cluster) => {
     });
   }, [selectedHostIDs, massUpdateHostnameDialog, cluster, onEditHost, resetCluster, dispatch]);
 
-  const onMassDeleteHost = React.useCallback(
-    () =>
-      massDeleteHostDialog.open({
+  const onMassDeleteHost = React.useCallback(() => {
+    if (selectedHostIDs.length === 1) {
+      const host = cluster.hosts?.find((host) => host.id === selectedHostIDs[0]);
+
+      return (
+        host &&
+        deleteHostDialog.open({
+          hostId: host.id,
+          hostname: host?.requestedHostname as string,
+        })
+      );
+    } else {
+      return massDeleteHostDialog.open({
         hosts: (cluster.hosts || []).filter((h) => selectedHostIDs.includes(h.id)),
         onDelete: (host) => HostsService.delete(host),
         reloadCluster: () => (resetCluster ? void resetCluster() : dispatch(forceReload())),
-      }),
-    [massDeleteHostDialog, cluster.hosts, selectedHostIDs, resetCluster, dispatch],
-  );
+      });
+    }
+  }, [
+    selectedHostIDs,
+    cluster.hosts,
+    deleteHostDialog,
+    massDeleteHostDialog,
+    resetCluster,
+    dispatch,
+  ]);
 
   return {
     onDiskRole,
