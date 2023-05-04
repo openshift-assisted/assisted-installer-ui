@@ -34,7 +34,7 @@ const serviceCidrHelperText =
   'Enter only 1 IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
 
 const AdvancedNetworkFields = () => {
-  const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
+  const { values, errors } = useFormikContext<NetworkConfigurationValues>();
 
   const isDualStack = values.stackType === DUAL_STACK;
 
@@ -42,15 +42,6 @@ const AdvancedNetworkFields = () => {
     parseInt(
       ((values.clusterNetworks && values.clusterNetworks[index].cidr) || '').split('/')[1],
     ) || 1;
-
-  const formatClusterNetworkHostPrefix = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    if (isNaN(parseInt(e.target.value))) {
-      setFieldValue(`clusterNetworks.${index}.hostPrefix`, clusterNetworkCidrPrefix(index));
-    }
-  };
 
   const isSubnetIPv6 = (index: number) => (isDualStack ? !!index : false);
 
@@ -92,9 +83,6 @@ const AdvancedNetworkFields = () => {
                         isSubnetIPv6(index)
                           ? PREFIX_MAX_RESTRICTION.IPv6
                           : PREFIX_MAX_RESTRICTION.IPv4
-                      }
-                      onBlur={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        formatClusterNetworkHostPrefix(e, index)
                       }
                       helperText={clusterNetworkHostPrefixHelperText(index)}
                       isRequired
