@@ -76,7 +76,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
       id={id}
       data-testid={id}
     >
-      Download kubeconfig
+      {t('ai:Download kubeconfig')}
     </Button>
   );
 };
