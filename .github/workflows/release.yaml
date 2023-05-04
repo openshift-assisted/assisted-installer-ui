@@ -37,9 +37,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build
-        run: yarn build:all
-
       - name: Bump workspaces to ${{ github.ref_name }}
         run: |
           workspaces=(ui-lib locales)
@@ -50,13 +47,16 @@ jobs:
             echo "$(jq 'del(.stableVersion)' libs/${ws}/package.json)" > libs/${ws}/package.json
           done
 
+      - name: Build
+        run: yarn build:all
+
       - name: Publish workspaces to NPM
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           yarn config set npmScopes.openshift-assisted.npmAuthToken $NPM_AUTH_TOKEN
           yarn workspace @openshift-assisted/ui-lib npm publish
-          # Sleep ${{ vars.NPM_PUBLISH_DELAY }} in order to give time for processing the prevously published package.
+          # Sleep ${{ vars.NPM_PUBLISH_DELAY }} in order to give time for processing the previously published package.
           sleep ${{ vars.NPM_PUBLISH_DELAY }}
           yarn workspace @openshift-assisted/locales npm publish
 
