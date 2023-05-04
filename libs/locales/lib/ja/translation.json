@@ -739,7 +739,7 @@
   "ai:Verify that your host machine is powered on": "ホストマシンの電源がオンになっていることを確認します",
   "ai:View {{count}} affected host": "影響を受けるホスト {{count}} 件の表示",
   "ai:View {{count}} affected host_plural": "影響を受けるホスト {{count}} 件の表示",
-  "ai:View Cluster Events": "クラスターイベントの表示",
+  "ai:View cluster events": "クラスターイベントの表示",
   "ai:View documentation": "ドキュメントの表示",
   "ai:VIP IP allocation from DHCP server has been timed out": "DHCP サーバーからの VIP IP の割り当てがタイムアウトしました",
   "ai:Virtual machine": "仮想マシン",
