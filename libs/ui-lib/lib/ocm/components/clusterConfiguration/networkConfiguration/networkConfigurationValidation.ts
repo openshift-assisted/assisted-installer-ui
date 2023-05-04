@@ -11,7 +11,7 @@ import {
   NetworkConfigurationValues,
   serviceNetworkValidationSchema,
   IPv4ValidationSchema,
-  sshPublicKeyValidationSchema,
+  sshPublicKeyListValidationSchema,
   vipNoSuffixValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
@@ -67,7 +67,7 @@ export const getNetworkConfigurationValidationSchema = (
         values.ingressVip !== undefined && values.ingressVip !== ''
           ? vipNoSuffixValidationSchema(hostSubnets, values, initialValues.ingressVip)
           : Yup.string(),
-      sshPublicKey: sshPublicKeyValidationSchema,
+      sshPublicKey: sshPublicKeyListValidationSchema,
       machineNetworks:
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
