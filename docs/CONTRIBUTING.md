@@ -91,9 +91,52 @@ apply for `libs/locales` as well.
 
 ## Integrating with CIM
 
-```
-// TODO...
-```
+Central infrastructure management part of Assisted Installer UI is integrated into
+[stolostron/console](https://github.com/stolostron/console).
+
+Use this setup if you want to test the `libs/ui-lib` integration with the stolostron/console. These
+steps apply for `libs/locales` as well.
+
+1. Install [yalc](https://github.com/wclr/yalc#installation) (it simulates local package registry).
+   ```bash
+   # with yarn:
+   yarn global add yalc
+   ```
+   ```bash
+   # or with npm:
+   npm i -g yalc
+   ```
+   ```bash
+   # then verify the command works as expected
+   yalc --version
+   ```
+2. In one terminal run `libs/ui-lib` in watch mode.  
+   The script builds and publishes the `@openshift-assisted/ui-lib` package to the local registry
+   everytime you make a change.
+
+   ```bash
+   yarn workspace @openshift-assisted/ui-lib watch
+   ```
+
+3. In another terminal run `libs/locales` in watch mode.  
+   The script builds and publishes the `@openshift-assisted/locales` package to the local registry
+   everytime you make a change.
+
+   ```bash
+   yarn workspace @openshift-assisted/locales watch
+   ```
+
+4. Follow the stolostron/console
+   [development setup guide](https://github.com/stolostron/console#running).
+5. To use locally published @openshift-assisted packages inside the stolostron/console run the
+   following commands
+   ```bash
+   cd frontend
+   yalc link @openshift-assisted/ui-lib
+   yalc link @openshift-assisted/locales
+   ```
+   Note that these commands need to be re-executed every time the `npm install` is run in the
+   `frontend` directory.
 
 ## Updating the API types
 
