@@ -73,9 +73,9 @@ const HostPropertyValidationPopover: React.FC<HostPropertyValidationPopoverProps
     }
     if (showSuccess && validation.status === 'success') {
       return (
-        <ValidationPopover validation={validation}>
+        <>
           <CheckCircleIcon color={successColor.value} /> {children}
-        </ValidationPopover>
+        </>
       );
     }
   }
