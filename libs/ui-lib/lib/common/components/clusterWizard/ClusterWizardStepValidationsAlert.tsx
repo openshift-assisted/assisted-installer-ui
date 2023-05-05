@@ -13,7 +13,7 @@ import { checkHostValidations, WizardStepsValidationMap } from './validationsInf
 import { Cluster } from '../../api/types';
 import { ValidationsInfo } from '../../types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
-import { ClusterWizardStepHostStatusDeterminationObject, Validation } from '../../types/hosts';
+import { ClusterWizardStepHostStatusDeterminationObject } from '../../types/hosts';
 import {
   getWizardStepClusterStatus,
   getWizardStepClusterValidationsInfo,
@@ -72,6 +72,7 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
       hosts,
     ) === 'ready';
   const { t } = useTranslation();
+
   return (
     <>
       {!validationsInfo && (
@@ -86,15 +87,21 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
             <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
               {!!failedClusterValidations.length && (
                 <>
-                  <FlexItem>{t('ai:The following requirements must be met:')}</FlexItem>
                   <FlexItem>
-                    <List>
-                      {(failedClusterValidations.filter(Boolean) as Validation[]).map(
-                        (validation) => (
+                    {t('ai:The following requirement must be met:', {
+                      count: failedClusterValidations.length,
+                    })}
+                  </FlexItem>
+                  <FlexItem>
+                    {failedClusterValidations.length === 1 ? (
+                      failedClusterValidations[0].message
+                    ) : (
+                      <List>
+                        {failedClusterValidations.map((validation) => (
                           <ListItem key={validation.id}>{validation.message}</ListItem>
-                        ),
-                      )}
-                    </List>
+                        ))}
+                      </List>
+                    )}
                   </FlexItem>
                 </>
               )}

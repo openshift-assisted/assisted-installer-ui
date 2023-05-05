@@ -27,7 +27,7 @@ const EventsAPI = {
     params += severities?.length ? `severities=${severities?.join(',')}&` : '';
     params += deletedHosts ? `deleted_hosts=${deletedHosts.toString()}&` : '';
     params += clusterLevel ? `cluster_level=${clusterLevel.toString()}&` : '';
-    params += message ? `message=${message}&` : '';
+    params += message ? `message=${encodeURIComponent(message)}&` : '';
 
     params += `limit=${limit}&`;
     params += `offset=${offset}`;

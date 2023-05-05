@@ -4,6 +4,9 @@ import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from 
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
 import { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+// @ts-ignore
+import buildManifest from '../../../build/build.json'; // This file is generated at build-time.
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
@@ -149,6 +152,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'api-domain-name-resolved-correctly': t('ai:API domain name resolution'),
   'api-int-domain-name-resolved-correctly': t('ai:API internal domain name resolution'),
   'apps-domain-name-resolved-correctly': t('ai:Application ingress domain name resolution'),
+  'release-domain-name-resolved-correctly': t('ai:Release domain resolution'),
   'dns-wildcard-not-configured': t('ai:DNS wildcard not configured'),
   'non-overlapping-subnets': t('ai:Non overlapping subnets'),
   'vsphere-disk-uuid-enabled': t('ai:Vsphere disk uuid enabled'),
@@ -196,6 +200,7 @@ export const hostValidationFailureHints = (
   'api-domain-name-resolved-correctly': '',
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
+  'release-domain-name-resolved-correctly': '',
   'dns-wildcard-not-configured': '',
   'non-overlapping-subnets': '',
   'vsphere-disk-uuid-enabled': '',
@@ -258,7 +263,14 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
   serviceNetworkCidr: '2003:db8::/112',
 };
 
-export const getAssistedUiLibVersion = () => process.env.AIUI_APP_VERSION || 'latest';
+/**
+ * The function returns the build-time generated version.
+ * It can be overriden via the AIUI_APP_VERSION environment variable.
+ */
+export const getAssistedUiLibVersion = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+  return process.env.AIUI_APP_VERSION || buildManifest.version;
+};
 
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 
