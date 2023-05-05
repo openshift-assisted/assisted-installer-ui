@@ -101,7 +101,6 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     perPage,
     pageNum,
     parseHeaders,
-    totalEvents,
     filters,
     setLoading,
     setError,
