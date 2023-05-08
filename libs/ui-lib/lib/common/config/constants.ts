@@ -365,5 +365,6 @@ export const CHANGE_ISO_PASSWORD_FILE_LINK =
 export const CUSTOM_MANIFESTS_HELP_LINK =
   'https://docs.openshift.com/container-platform/4.12/installing/install_config/installing-customizing.html';
 
+//TODO (mortegag): Change the link. Related to https://issues.redhat.com/browse/MGMT-13976
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
   'https://57587--docspreview.netlify.app/openshift-enterprise/latest/post_installation_configuration/multi-architecture-configuration.html#multi-architecture-verifying-cluster-compatibility_multi-architecture-configuration';
