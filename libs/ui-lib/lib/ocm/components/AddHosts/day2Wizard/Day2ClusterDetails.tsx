@@ -107,6 +107,41 @@ const Day2ClusterDetails = () => {
     [day2Cluster.id, wizardContext],
   );
 
+  const onChangeCpuArchitectureDropdown = React.useCallback(
+    (value: string, initialValues: Day2ClusterDetailValues): void => {
+      if (value !== initialValues.cpuArchitecture) {
+        //Fetch infraEnv by clusterId and cpu architecture
+        void InfraEnvsService.getInfraEnv(day2Cluster.id, value as SupportedCpuArchitecture)
+          .then((infraEnv) => {
+            if (!infraEnv && pullSecret) {
+              //If infraEnv don't exist, create a new one
+              void InfraEnvsService.create({
+                name: `${day2Cluster.name || ''}_infra-env-${value}`,
+                pullSecret,
+                clusterId: day2Cluster.id,
+                openshiftVersion: day2Cluster.openshiftVersion,
+                cpuArchitecture: value as ClusterCpuArchitecture,
+              });
+            }
+          })
+          .catch(() => {
+            if (pullSecret) {
+              //If infraEnv don't exist, create a new one
+              void InfraEnvsService.create({
+                name: `${day2Cluster.name || ''}_infra-env-${value}`,
+                pullSecret,
+                clusterId: day2Cluster.id,
+                openshiftVersion: day2Cluster.openshiftVersion,
+                cpuArchitecture: value as ClusterCpuArchitecture,
+              });
+            }
+          });
+      }
+      setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture);
+    },
+    [day2Cluster.id, day2Cluster.name, day2Cluster.openshiftVersion, pullSecret],
+  );
+
   if (!initialValues) {
     return <LoadingState />;
   } else if (initialValues instanceof Error) {
@@ -139,26 +174,7 @@ const Day2ClusterDetails = () => {
                     openshiftVersion={day2Cluster.openshiftVersion}
                     day1CpuArchitecture={initialValues.cpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
-                    onChange={async (value) => {
-                      setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture);
-                      if (isAlternativeCpuSelected) {
-                        //Fetch infraEnv by clusterId and cpu architecture
-                        const infraEnv = await InfraEnvsService.getInfraEnv(
-                          day2Cluster.id,
-                          value as SupportedCpuArchitecture,
-                        );
-                        if (!infraEnv && pullSecret) {
-                          //If infraEnv don't exist, create a new one
-                          await InfraEnvsService.create({
-                            name: `${day2Cluster.name || ''}_infra-env-${value}`,
-                            pullSecret,
-                            clusterId: day2Cluster.id,
-                            openshiftVersion: day2Cluster.openshiftVersion,
-                            cpuArchitecture: value as ClusterCpuArchitecture,
-                          });
-                        }
-                      }
-                    }}
+                    onChange={(value) => onChangeCpuArchitectureDropdown(value, initialValues)}
                   />
                 </GridItem>
                 {isAlternativeCpuSelected && (
