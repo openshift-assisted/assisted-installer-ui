@@ -24,4 +24,5 @@ export type EventListFetchProps = EventFetchProps & {
     onError: (message: string) => void,
   ) => Promise<void>;
   className?: string;
+  setLoading: (loading: boolean) => void;
 };
