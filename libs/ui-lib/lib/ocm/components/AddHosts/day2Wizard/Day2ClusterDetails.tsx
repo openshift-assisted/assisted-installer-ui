@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Alert, Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
@@ -7,7 +7,9 @@ import {
   ClusterWizardStepHeader,
   CpuArchitecture,
   ErrorState,
+  ExternalLink,
   getSupportedCpuArchitectures,
+  HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS,
   LoadingState,
   useFeature,
 } from '../../../../common';
@@ -53,7 +55,7 @@ const Day2ClusterDetails = () => {
     Day2ClusterDetailValues | Error | null
   >();
   const [isSubmitting, setSubmitting] = React.useState(false);
-
+  const [isAlternativeCpuSelected, setIsAlternativeCpuSelected] = React.useState(false);
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
@@ -129,13 +131,34 @@ const Day2ClusterDetails = () => {
                 <GridItem>
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </GridItem>
-                <GridItem span={12} lg={10} xl={9} xl2={7}>
+                <GridItem span={12} xl={10}>
                   <CpuArchitectureDropdown
                     openshiftVersion={day2Cluster.openshiftVersion}
                     day1CpuArchitecture={initialValues.cpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
+                    onChange={(value) =>
+                      setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture)
+                    }
                   />
                 </GridItem>
+                {isAlternativeCpuSelected && (
+                  <GridItem span={12} xl={10}>
+                    <Alert
+                      isInline
+                      variant="info"
+                      title={
+                        'To check if the current version of your cluster supports multiple CPU architectures,'
+                      }
+                    >
+                      <>
+                        <ExternalLink href={HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS}>
+                          follow these steps
+                        </ExternalLink>
+                      </>
+                    </Alert>
+                  </GridItem>
+                )}
+
                 <GridItem>
                   <Day2HostStaticIpConfigurations />
                 </GridItem>
