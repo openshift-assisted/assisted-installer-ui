@@ -39,7 +39,7 @@ export const NetworkTypeControlGroup = ({
         <SplitItem>
           <PopoverIcon
             bodyContent={t(
-              "ai:The next generation networking type, select this when you're using new features and telco features",
+              "ai:OVN separates the physical network topology from the logical one and is recommended if you're using new or telco features.",
             )}
             buttonStyle={{ top: '-4px' }}
           />
