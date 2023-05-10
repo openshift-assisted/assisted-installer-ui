@@ -28,13 +28,12 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
 
       // Checking that the submitting value (item ID) for each version is correct
       clusterDetailsPage.openOpenshiftVersionDropdown();
-
       const expectedVersionIds = versionsFixtures.getExpectedVersionIds();
       clusterDetailsPage
         .getOpenshiftVersionDropdown()
         .find('[role="menuitem"]')
         .each((versionItem, index) => {
-          expect(versionItem).to.have.text(expectedVersionIds[index]);
+          expect(versionItem.parent()).to.have.id(expectedVersionIds[index]);
         });
     });
 
