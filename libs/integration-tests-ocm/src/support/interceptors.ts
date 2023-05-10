@@ -186,33 +186,12 @@ const addPlatformFeatureIntercepts = () => {
 
   cy.intercept(
     'GET',
-    '/api/assisted-install/v2/support-levels/features?openshift_version=4.8*',
-    featureSupport['4.8'],
-  );
-  cy.intercept(
-    'GET',
-    '/api/assisted-install/v2/support-levels/features?openshift_version=4.9*',
-    featureSupport['4.9'],
-  );
-  cy.intercept(
-    'GET',
-    '/api/assisted-install/v2/support-levels/features?openshift_version=4.10*',
-    featureSupport['4.10'],
-  );
-  cy.intercept(
-    'GET',
-    '/api/assisted-install/v2/support-levels/features?openshift_version=4.11*',
-    featureSupport['4.11'],
-  );
-  cy.intercept(
-    'GET',
-    '/api/assisted-install/v2/support-levels/features?openshift_version=4.12*',
-    featureSupport['4.12'],
-  );
-  cy.intercept(
-    'GET',
-    '/api/assisted-install/v2/support-levels/features?openshift_version=4.13*',
-    featureSupport['4.13'],
+    `/api/assisted-install/v2/support-levels/features?openshift_version=**`,
+    (req) => {
+      const openshiftVersion = req.url.match(/openshift_version=([^&]+)/)[1];
+      const shortOpenshiftVersion = openshiftVersion.split('.').slice(0, 2).join('.');
+      req.reply(featureSupport[shortOpenshiftVersion]);
+    },
   );
   cy.intercept('GET', `${clusterApiPath}/manifests`, []);
 };
