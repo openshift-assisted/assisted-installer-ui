@@ -54,12 +54,14 @@ type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: SupportedCpuArchitecture;
   cpuArchitectures: SupportedCpuArchitecture[];
+  onChange?: (value: string) => void;
 };
 
 const CpuArchitectureDropdown = ({
   openshiftVersion,
   day1CpuArchitecture,
   cpuArchitectures,
+  onChange,
 }: CpuArchitectureDropdownProps) => {
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
     useField<SupportedCpuArchitecture>(INPUT_NAME);
@@ -93,8 +95,9 @@ const CpuArchitectureDropdown = ({
       setValue(selectedCpuArch);
       setOpen(false);
       setCurrentCpuArch(architectureData[selectedCpuArch].label);
+      onChange && onChange(selectedCpuArch);
     },
-    [setOpen, setValue],
+    [setOpen, setValue, onChange],
   );
 
   React.useEffect(() => {
