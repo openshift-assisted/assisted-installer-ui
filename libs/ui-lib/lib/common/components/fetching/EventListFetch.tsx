@@ -21,11 +21,10 @@ const initialSeverityCounts = {
 };
 
 export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps) => {
-  const { cluster, hostId, className, entityKind } = props;
+  const { cluster, hostId, className, entityKind, setLoading } = props;
 
   const [lastPolling, setLastPolling] = useStateSafely(0);
   const [error, setError] = useStateSafely('');
-  const [isLoading, setLoading] = useStateSafely(true);
   const [events, setEvents] = useStateSafely<EventList | undefined>(undefined);
 
   const [pageNum, setPageNum] = useStateSafely(1);
@@ -89,7 +88,10 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
         parseHeaders(headers);
         timer = setTimeout(() => setLastPolling(Date.now()), EVENTS_POLLING_INTERVAL);
       },
-      setError,
+      (err: string) => {
+        setError(err);
+        setLoading(false);
+      },
     );
 
     return () => clearTimeout(timer);
@@ -101,7 +103,6 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     perPage,
     pageNum,
     parseHeaders,
-    totalEvents,
     filters,
     setLoading,
     setError,
@@ -125,7 +126,7 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     eventList = <ErrorState title={error} fetchData={forceRefetch} />;
   }
 
-  if (isLoading || !events) {
+  if (!events) {
     eventList = <LoadingState />;
   }
 

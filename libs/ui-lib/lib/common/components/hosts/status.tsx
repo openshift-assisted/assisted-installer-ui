@@ -217,7 +217,7 @@ export const hostStatus: HostStatus<Host['status'] | 'finalizing'> = Object.free
     category: 'Installation related',
     icon: <ExclamationTriangleIcon color={warningColor.value} />,
     details:
-      'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
+      'Host has already been booted from disk during the previous installation. To finish resetting the installation, boot the host into the discovery image',
   },
   finalizing: {
     key: 'finalizing',

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, Modal, ButtonVariant, ModalVariant, ModalBoxBody } from '@patternfly/react-core';
+import {
+  Button,
+  Modal,
+  ButtonVariant,
+  ModalVariant,
+  ModalBoxBody,
+  Spinner,
+  Title,
+} from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens';
 import { ToolbarButton } from './Toolbar';
@@ -12,6 +20,7 @@ import ErrorState from './uiState/ErrorState';
 import './EventsModal.css';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
+import { useStateSafely } from '../../hooks';
 
 type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -80,9 +89,15 @@ export const EventsModal = ({
   fallbackEventsURL,
 }: EventsModalProps) => {
   const { t } = useTranslation();
+  const [isLoading, setLoading] = useStateSafely(true);
+
   return (
     <Modal
-      title={title}
+      header={
+        <Title headingLevel={'h1'}>
+          {title} {isLoading && <Spinner isSVG size="lg" />}
+        </Title>
+      }
       isOpen={isOpen}
       aria-label={t('ai:Displays events')}
       hasNoBodyWrapper
@@ -117,6 +132,7 @@ export const EventsModal = ({
             entityKind={entityKind}
             onFetchEvents={onFetchEvents}
             className="events-modal__event-list"
+            setLoading={setLoading}
           />
         )}
       </ModalBoxBody>
