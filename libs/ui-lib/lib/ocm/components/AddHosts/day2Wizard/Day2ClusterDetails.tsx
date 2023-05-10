@@ -3,6 +3,7 @@ import { Form, Formik } from 'formik';
 import React from 'react';
 import {
   Cluster,
+  ClusterCpuArchitecture,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
@@ -11,6 +12,7 @@ import {
   getSupportedCpuArchitectures,
   HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS,
   LoadingState,
+  SupportedCpuArchitecture,
   useFeature,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
@@ -23,7 +25,7 @@ import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
-import { useOpenshiftVersions } from '../../../hooks';
+import { useOpenshiftVersions, usePullSecret } from '../../../hooks';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -60,6 +62,7 @@ const Day2ClusterDetails = () => {
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
+  const pullSecret = usePullSecret();
   const cpuArchitectures = React.useMemo(
     () =>
       getSupportedCpuArchitectures(
@@ -136,9 +139,26 @@ const Day2ClusterDetails = () => {
                     openshiftVersion={day2Cluster.openshiftVersion}
                     day1CpuArchitecture={initialValues.cpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
-                    onChange={(value) =>
-                      setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture)
-                    }
+                    onChange={async (value) => {
+                      setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture);
+                      if (isAlternativeCpuSelected) {
+                        //Fetch infraEnv by clusterId and cpu architecture
+                        const infraEnv = await InfraEnvsService.getInfraEnv(
+                          day2Cluster.id,
+                          value as SupportedCpuArchitecture,
+                        );
+                        if (!infraEnv && pullSecret) {
+                          //If infraEnv don't exist, create a new one
+                          await InfraEnvsService.create({
+                            name: `${day2Cluster.name || ''}_infra-env-${value}`,
+                            pullSecret,
+                            clusterId: day2Cluster.id,
+                            openshiftVersion: day2Cluster.openshiftVersion,
+                            cpuArchitecture: value as ClusterCpuArchitecture,
+                          });
+                        }
+                      }
+                    }}
                   />
                 </GridItem>
                 {isAlternativeCpuSelected && (

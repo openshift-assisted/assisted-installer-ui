@@ -106,8 +106,6 @@ export const HostsClusterDetailTabContent = ({
             ocmCluster,
             pullSecret,
             normalizedVersion,
-            cpuArchitecturesByVersionImage,
-            canSelectCpuArch,
           );
           const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
             day2Cluster,
