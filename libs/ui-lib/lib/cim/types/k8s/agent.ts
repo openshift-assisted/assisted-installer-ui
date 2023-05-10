@@ -42,6 +42,7 @@ export type AgentK8sResource = K8sResourceCommon & {
   status?: {
     conditions?: AgentStatusCondition[];
     validationsInfo?: ValidationsInfo;
+    installation_disk_id?: string;
     inventory: AgentInventory;
     progress?: {
       currentStage?: HostStage;
