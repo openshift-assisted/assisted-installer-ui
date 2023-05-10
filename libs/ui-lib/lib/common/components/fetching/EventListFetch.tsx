@@ -1,18 +1,17 @@
 import React from 'react';
+import { AxiosResponseHeaders } from 'axios';
+import omit from 'lodash-es/omit.js';
+import { Pagination, PaginationVariant } from '@patternfly/react-core';
 import { Event, EventList } from '../../api';
 import { EVENTS_POLLING_INTERVAL, EVENT_SEVERITIES } from '../../config';
 import { ClusterEventsFiltersType, EventListFetchProps } from '../../types';
-
-// avoid circular dep
+import { useStateSafely } from '../../hooks';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import EventsList from '../ui/EventsList';
-import { Pagination, PaginationVariant } from '@patternfly/react-core';
 import ClusterEventsToolbar, {
   getInitialClusterEventsFilters,
   SeverityCountsType,
 } from '../ui/ClusterEventsToolbar';
-import { AxiosResponseHeaders } from 'axios';
-import omit from 'lodash-es/omit.js';
 
 const initialSeverityCounts = {
   critical: 0,
@@ -24,19 +23,19 @@ const initialSeverityCounts = {
 export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps) => {
   const { cluster, hostId, className, entityKind } = props;
 
-  const [lastPolling, setLastPolling] = React.useState(0);
-  const [error, setError] = React.useState('');
-  const [isLoading, setLoading] = React.useState(true);
-  const [events, setEvents] = React.useState<EventList>();
+  const [lastPolling, setLastPolling] = useStateSafely(0);
+  const [error, setError] = useStateSafely('');
+  const [isLoading, setLoading] = useStateSafely(true);
+  const [events, setEvents] = useStateSafely<EventList | undefined>(undefined);
 
-  const [pageNum, setPageNum] = React.useState(1);
-  const [perPage, setPerPage] = React.useState(10);
-  const [totalEvents, setTotalEvents] = React.useState<number>();
-  const [filters, setFilters] = React.useState<ClusterEventsFiltersType>(() =>
+  const [pageNum, setPageNum] = useStateSafely(1);
+  const [perPage, setPerPage] = useStateSafely(10);
+  const [totalEvents, setTotalEvents] = useStateSafely<number | undefined>(undefined);
+  const [filters, setFilters] = useStateSafely<ClusterEventsFiltersType>(
     getInitialClusterEventsFilters(entityKind, hostId),
   );
   const [severityCounts, setSeverityCount] =
-    React.useState<SeverityCountsType>(initialSeverityCounts);
+    useStateSafely<SeverityCountsType>(initialSeverityCounts);
 
   const onSetPage = (
     _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
@@ -54,22 +53,23 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     setPageNum(newPage);
   };
 
-  const parseHeaders = React.useCallback((headers: AxiosResponseHeaders) => {
-    let total = 0;
-    const severities: Record<Event['severity'], number> = {
-      error: 0,
-      info: 0,
-      warning: 0,
-      critical: 0,
-    };
-    EVENT_SEVERITIES.forEach((severity) => {
-      const count = Number(headers[`severity-count-${severity}`]);
-      severities[severity] = count;
-      total += count;
-    });
-    setTotalEvents(total);
-    setSeverityCount(severities as SeverityCountsType);
-  }, []);
+  const parseHeaders = React.useCallback(
+    (headers: AxiosResponseHeaders) => {
+      const severities: Record<Event['severity'], number> = {
+        error: 0,
+        info: 0,
+        warning: 0,
+        critical: 0,
+      };
+      EVENT_SEVERITIES.forEach((severity) => {
+        const count = Number(headers[`severity-count-${severity}`]);
+        severities[severity] = count;
+      });
+      setTotalEvents(Number(headers['event-count']));
+      setSeverityCount(severities as SeverityCountsType);
+    },
+    [setSeverityCount, setTotalEvents],
+  );
 
   React.useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -103,6 +103,10 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     parseHeaders,
     totalEvents,
     filters,
+    setLoading,
+    setError,
+    setEvents,
+    setLastPolling,
   ]);
 
   const forceRefetch = React.useCallback(() => {

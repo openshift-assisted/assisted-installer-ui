@@ -44,48 +44,99 @@ The principal folders are: `apps` and `libs`.
    ```
 6. Browse to http://localhost:5173/ using a [modern web browser](https://caniuse.com/usage-table).
 
-## Integrating with UHC portal (OCM)
+## Integrating with uhc-portal (OCM)
 
-The Assisted Installer UI is consumed at build-time by other applications.  
+The Assisted Installer UI is consumed as a library at build-time by other applications.  
 The [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) is one of them and is the
 application you see at https://console.redhat.com/openshift.
 
-Use this setup if you want to test the integration of ui-lib inside the uhc-portal.
+Use this setup if you want to test the `libs/ui-lib` integration with the uhc-portal. These steps
+apply for `libs/locales` as well.
 
-1. Install [yalc](https://github.com/wclr/yalc#installation). `yalc` simulates publishing packages
-   but to a local registry.
+1. Install [yalc](https://github.com/wclr/yalc#installation) (it simulates local package registry).
    ```bash
+   # with yarn:
+   yarn global add yalc
+   ```
+   ```bash
+   # or with npm:
+   npm i -g yalc
+   ```
+   ```bash
+   # then verify the command works as expected
    yalc --version
    ```
-2. Fork and clone the project
-   ```bash
-   git clone https://gitlab.cee.redhat.com/<username>/uhc-portal.git
-   ```
-3. In one terminal run `libs/ui-lib` in watch mode. It will build and publish
-   `@openshift-assisted/ui-lib` packages everytime you make a change.
+2. In one terminal run `libs/ui-lib` in watch mode.  
+   The script builds and publishes the `@openshift-assisted/ui-lib` package to the local registry
+   everytime you make a change.
    ```bash
    yarn workspace @openshift-assisted/ui-lib watch
    ```
-4. The first time it runs, it installs npm dependencies and links `@openshift-assisted/ui-lib` and
-   `@openshift-assisted/locales` using yalc. You can skip this after. The watcher on ui-lib will
-   update the packages for you.  
-   Be aware that `yalc` updates the `yarn.lock` file. DO NOT INCLUDE THESE CHANGES INTO VERSION
-   CONTROL.
+3. Fork and clone the uhc-portal project
    ```bash
-   cd uhc-portal
+   git clone https://gitlab.cee.redhat.com/<username>/uhc-portal.git
+   ```
+4. Inside the uhc-portal run the following commands
+   ```bash
    yarn install
    yalc link @openshift-assisted/ui-lib
    yalc link @openshift-assisted/locales
    ```
-5. Now you can follow the uhc-portal
+   `yalc link` needs to be executed only after cloning or pulling new changes from the uhc-portal.
+   **Be aware that this command updates the project's `yarn.lock` file**.  
+   **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
+5. Now you can follow the uhc-portal's
    [README file](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md) in order
    to set up their dev-environment.
 
 ## Integrating with CIM
 
-```
-// TODO...
-```
+Central infrastructure management part of Assisted Installer UI is integrated into
+[stolostron/console](https://github.com/stolostron/console).
+
+Use this setup if you want to test the `libs/ui-lib` integration with the stolostron/console. These
+steps apply for `libs/locales` as well.
+
+1. Install [yalc](https://github.com/wclr/yalc#installation) (it simulates local package registry).
+   ```bash
+   # with yarn:
+   yarn global add yalc
+   ```
+   ```bash
+   # or with npm:
+   npm i -g yalc
+   ```
+   ```bash
+   # then verify the command works as expected
+   yalc --version
+   ```
+2. In one terminal run `libs/ui-lib` in watch mode.  
+   The script builds and publishes the `@openshift-assisted/ui-lib` package to the local registry
+   everytime you make a change.
+
+   ```bash
+   yarn workspace @openshift-assisted/ui-lib watch
+   ```
+
+3. In another terminal run `libs/locales` in watch mode.  
+   The script builds and publishes the `@openshift-assisted/locales` package to the local registry
+   everytime you make a change.
+
+   ```bash
+   yarn workspace @openshift-assisted/locales watch
+   ```
+
+4. Follow the stolostron/console
+   [development setup guide](https://github.com/stolostron/console#running).
+5. To use locally published @openshift-assisted packages inside the stolostron/console run the
+   following commands
+   ```bash
+   cd frontend
+   yalc link @openshift-assisted/ui-lib
+   yalc link @openshift-assisted/locales
+   ```
+   Note that these commands need to be re-executed every time the `npm install` is run in the
+   `frontend` directory.
 
 ## Updating the API types
 
