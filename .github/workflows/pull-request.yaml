@@ -98,6 +98,8 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - run: yarn build:all
+      - name: Create env file for assisted-ui
+        run: echo "AIUI_APP_API_URL=http://localhost:4173" >> apps/assisted-ui/.env.local
       - name: Run integration tests
         uses: cypress-io/github-action@v5
         with:
