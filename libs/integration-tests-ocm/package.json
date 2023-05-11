@@ -1,6 +1,6 @@
 {
-  "name": "openshift-assisted-ui-integration-tests",
-  "version": "0.0.1",
+  "name": "@openshift-assisted/integration-tests-ocm",
+  "version": "0.1.0",
   "license": "Apache-2.0",
   "dependencies": {
     "@types/file-saver": "^2.0.1",
