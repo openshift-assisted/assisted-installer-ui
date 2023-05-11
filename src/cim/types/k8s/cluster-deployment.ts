@@ -46,6 +46,14 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
     pullSecretRef?: {
       name: string;
     };
+    clusterMetadata?: {
+      adminKubeconfigSecretRef?: {
+        name?: string;
+      };
+      adminPasswordSecretRef?: {
+        name?: string;
+      };
+    };
   };
   status?: {
     installVersion?: string;

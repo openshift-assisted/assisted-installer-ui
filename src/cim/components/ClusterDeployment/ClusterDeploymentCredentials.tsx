@@ -28,7 +28,8 @@ const ClusterDeploymentCredentials = ({
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
 
   const adminPasswordSecretRefName =
-    agentClusterInstall.spec?.clusterMetadata?.adminPasswordSecretRef?.name;
+    agentClusterInstall.spec?.clusterMetadata?.adminPasswordSecretRef?.name ||
+    clusterDeployment.spec?.clusterMetadata?.adminPasswordSecretRef?.name;
   const namespace = clusterDeployment.metadata?.namespace;
   const { t } = useTranslation();
   React.useEffect(() => {

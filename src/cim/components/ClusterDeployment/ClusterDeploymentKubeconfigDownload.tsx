@@ -22,7 +22,8 @@ const ClusterDeploymentKubeconfigDownload = ({
   const { t } = useTranslation();
   const handleKubeconfigDownload = async () => {
     const kubeconfigSecretName =
-      agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;
+      agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name ||
+      clusterDeployment.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;
     const kubeconfigSecretNamespace = clusterDeployment.metadata?.namespace;
     if (kubeconfigSecretName && kubeconfigSecretNamespace) {
       try {
