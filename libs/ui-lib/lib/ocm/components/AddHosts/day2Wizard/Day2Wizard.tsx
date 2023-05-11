@@ -20,7 +20,7 @@ const Day2WizardStep = () => {
     case 'generate-iso':
       return <Day2GenerateISO />;
     case 'download-iso':
-      return <Day2DownloadISO />;
+      return <Day2DownloadISO id="generate-discovery-iso-modal" />;
     case 'static-ip-network-wide-configurations':
     case 'static-ip-host-configurations':
     case 'static-ip-yaml-view':
