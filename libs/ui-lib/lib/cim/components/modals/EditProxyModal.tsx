@@ -27,8 +27,16 @@ import { getWarningMessage } from './utils';
 const validationSchema = () =>
   Yup.lazy<ProxyFieldsType>((values) =>
     Yup.object<ProxyFieldsType>().shape({
-      httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-      httpsProxy: httpProxyValidationSchema(values, 'httpProxy'),
+      httpProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpsProxy',
+        allowEmpty: true,
+      }),
+      httpsProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpProxy',
+        allowEmpty: true,
+      }),
       noProxy: noProxyValidationSchema,
     }),
   );
@@ -62,6 +70,10 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
   const { t } = useTranslation();
   const [error, setError] = React.useState<string>();
   const warningMsg = getWarningMessage(hasAgents, hasBMHs, t);
+  const enableProxy =
+    !!infraEnv.spec?.proxy?.httpProxy ||
+    !!infraEnv.spec?.proxy?.httpsProxy ||
+    !!infraEnv.spec?.proxy?.noProxy;
   return (
     <Modal
       aria-label={t('ai:Edit proxy settings')}
@@ -76,7 +88,7 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
           httpProxy: infraEnv.spec?.proxy?.httpProxy,
           httpsProxy: infraEnv.spec?.proxy?.httpsProxy,
           noProxy: infraEnv.spec?.proxy?.noProxy,
-          enableProxy: true,
+          enableProxy,
         }}
         validationSchema={validationSchema}
         onSubmit={async (values: ProxyFieldsType) => {
