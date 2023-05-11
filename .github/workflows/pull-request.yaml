@@ -104,5 +104,5 @@ jobs:
           working-directory: ./libs/integration-tests-ocm
           browser: chrome
           config-file: cypress.config.js
-          env: CYPRESS_API_BASE_URL=http://localhost:3000
+          wait-on: http://localhost:4173
           start: yarn --cwd=../../ preview:assisted-ui
