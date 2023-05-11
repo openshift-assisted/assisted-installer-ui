@@ -1,8 +1,18 @@
 declare namespace Cypress {
   interface Chainable {
-    runCmd(cmd: string, setAlias?: boolean, failOnNonZeroExit?: boolean, timeout?: number): Chainable<Cypress.Exec>;
+    runCmd(
+      cmd: string,
+      setAlias?: boolean,
+      failOnNonZeroExit?: boolean,
+      timeout?: number,
+    ): Chainable<Cypress.Exec>;
     runCmdOnNode(user: string, host: string, cmd: string): Chainable<Cypress.Exec>;
-    runCopyCmd(src: string, dst: string, failOnNonZeroExit?: boolean, timeout?: number): Chainable<Cypress.Exec>;
+    runCopyCmd(
+      src: string,
+      dst: string,
+      failOnNonZeroExit?: boolean,
+      timeout?: number,
+    ): Chainable<Cypress.Exec>;
     pasteText(selector: string, text: string): Chainable<Element>;
     setKubeAdminPassword(
       apiBaseUrl?: string,

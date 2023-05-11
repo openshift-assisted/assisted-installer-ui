@@ -75,11 +75,15 @@ const clusterValidationInfoPartial = {
     {
       id: 'container-images-available',
       status: 'success',
-      message: 'All required container images were either pulled successfully or no attempt was made to pull them',
+      message:
+        'All required container images were either pulled successfully or no attempt was made to pull them',
     },
   ],
 };
 
-const clusterValidationsInfo = upgradeValidationsInfo(prevClusterValidationsInfo, clusterValidationInfoPartial);
+const clusterValidationsInfo = upgradeValidationsInfo(
+  prevClusterValidationsInfo,
+  clusterValidationInfoPartial,
+);
 
 export { clusterValidationsInfo, hostValidationsInfo };

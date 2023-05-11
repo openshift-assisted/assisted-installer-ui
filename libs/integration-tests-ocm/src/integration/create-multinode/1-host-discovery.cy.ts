@@ -69,7 +69,11 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
       cy.wait(['@rename-host-1', '@rename-host-2', '@rename-host-3']).then(() => {
         utils.setLastWizardSignal('HOST_RENAMED_3');
         hostsTableSection.waitForHardwareStatus('Ready');
-        hostsTableSection.validateHostNames(3, 0, [`${hostPrefix}-1`, `${hostPrefix}-2`, `${hostPrefix}-3`]);
+        hostsTableSection.validateHostNames(3, 0, [
+          `${hostPrefix}-1`,
+          `${hostPrefix}-2`,
+          `${hostPrefix}-3`,
+        ]);
       });
       commonActions.getNextButton().should('be.enabled');
     });

@@ -24,7 +24,13 @@ const validateStaticIpRequest = (requestBody, ipVersion: NetworkSelection) => {
   const includedValues =
     ipVersion === 'ipv4'
       ? [dnsText, ipv4Fields.gateway, ipv4Fields.machineNetwork]
-      : [dnsText, ipv4Fields.gateway, ipv4Fields.machineNetwork, ipv6Fields.gateway, ipv6Fields.machineNetwork];
+      : [
+          dnsText,
+          ipv4Fields.gateway,
+          ipv4Fields.machineNetwork,
+          ipv6Fields.gateway,
+          ipv6Fields.machineNetwork,
+        ];
   includedValues.forEach((includedValue) => {
     expect(submitYaml).to.contain(includedValue);
     count++;
@@ -56,8 +62,12 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
   describe('Configuring Static IP in Form view', () => {
     it('Can configure single stack static IP', () => {
-      commonActions.getWizardStepNav('Network-wide configurations').should('have.class', ACTIVE_NAV_ITEM_CLASS);
-      commonActions.getWizardStepNav('Host specific configurations').should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
+      commonActions
+        .getWizardStepNav('Network-wide configurations')
+        .should('have.class', ACTIVE_NAV_ITEM_CLASS);
+      commonActions
+        .getWizardStepNav('Host specific configurations')
+        .should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
 
       commonActions.getNextButton().should('be.disabled');
       staticIpPage.networkWideDns().type(dnsText);
@@ -90,8 +100,12 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
       commonActions.getNextButton().click();
 
-      commonActions.getWizardStepNav('Network-wide configurations').should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
-      commonActions.getWizardStepNav('Host specific configurations').should('have.class', ACTIVE_NAV_ITEM_CLASS);
+      commonActions
+        .getWizardStepNav('Network-wide configurations')
+        .should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
+      commonActions
+        .getWizardStepNav('Host specific configurations')
+        .should('have.class', ACTIVE_NAV_ITEM_CLASS);
     });
   });
 

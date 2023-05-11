@@ -28,7 +28,10 @@ describe(`Assisted Installer SNO Networking`, () => {
 
     it('Should have enforced Network Management', () => {
       networkingPage.getUserManagedNetworking().should('not.be.enabled').and('be.checked');
-      networkingPage.getClusterManagedNetworking().should('not.be.enabled').should('not.be.checked');
+      networkingPage
+        .getClusterManagedNetworking()
+        .should('not.be.enabled')
+        .should('not.be.checked');
       networkingPage.getAdvancedNetwork().should('not.be.checked');
     });
 

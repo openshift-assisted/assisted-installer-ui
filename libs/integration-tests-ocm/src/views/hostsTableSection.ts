@@ -86,13 +86,19 @@ export const hostsTableSection = {
   },
   getHostDetailsTitle: (hostIndex: number) => {
     return cy.get(`h3[data-testid="disks-section"]`).then((hostTables) => {
-        return hostTables[hostIndex];
+      return hostTables[hostIndex];
     });
   },
   validateHostDisksDetails: (disks) => {
     disks.forEach((disk) => {
-      cy.get(`[data-testid="disk-row-${disk.id}"] [data-testid="drive-type"]`).should('contain', disk.type);
-      cy.get(`[data-testid="disk-row-${disk.id}"] [data-testid="disk-size"]`).should('contain', disk.size);
+      cy.get(`[data-testid="disk-row-${disk.id}"] [data-testid="drive-type"]`).should(
+        'contain',
+        disk.type,
+      );
+      cy.get(`[data-testid="disk-row-${disk.id}"] [data-testid="disk-size"]`).should(
+        'contain',
+        disk.size,
+      );
     });
   },
 };
