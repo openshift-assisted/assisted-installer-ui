@@ -1,9 +1,9 @@
 {
-  "name": "openshift-assisted-ui-lib",
+  "name": "@openshift-assisted/ui-lib",
   "version": "2.7.11-cim",
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
-  "repository": "openshift-assisted/assisted-ui-lib",
+  "repository": "openshift-assisted/assisted-installer-ui",
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
