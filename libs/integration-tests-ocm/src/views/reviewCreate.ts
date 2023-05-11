@@ -18,14 +18,14 @@ export const reviewAndCreatePage = {
   },
   checkAllClusterValidationsPassed: (timeout = 1000) => {
     cy.get(Cypress.env('clusterPreflightChecksResult'), { timeout }).should(
-        'contain',
-        Cypress.env('allValidationsPassedText'),
+      'contain',
+      Cypress.env('allValidationsPassedText'),
     );
   },
   checkAllHostsValidationsPassed: (timeout = 1000) => {
     cy.get(Cypress.env('hostsPreflightChecksResult'), { timeout }).should(
-        'contain',
-        Cypress.env('allValidationsPassedText'),
+      'contain',
+      Cypress.env('allValidationsPassedText'),
     );
   },
   waitForInstallButton: (timeout = Cypress.env('START_INSTALLATION_TIMEOUT')) => {

@@ -17,9 +17,24 @@ Cypress.env('searchTextId', '#search-text');
 Cypress.env('clusterEventsToolbarId', '#clusters-events-toolbar');
 Cypress.env('eventsTableAriaLabel', 'table[aria-label="Events table"]');
 
-Cypress.env('kubeconfigNoingressFile', path.join(Cypress.config('downloadsFolder'), 'kubeconfig-noingress'));
+Cypress.env(
+  'kubeconfigNoingressFile',
+  path.join(Cypress.config('downloadsFolder'), 'kubeconfig-noingress'),
+);
 Cypress.env('kubeconfigFile', path.join(String(Cypress.config('downloadsFolder')), 'kubeconfig'));
-Cypress.env('kubeadminPasswordFilePath', path.join(Cypress.config('downloadsFolder'), 'kubeadmin-password'));
-Cypress.env('installConfigFilePath', path.join(Cypress.config('downloadsFolder'), 'install-config.yaml'));
-Cypress.env('resultFile', path.join(Cypress.config('downloadsFolder'), 'cypress-deployment-result'));
-Cypress.env('validationsResultFile', path.join(Cypress.config('downloadsFolder'), 'validations-deployment-result'));
+Cypress.env(
+  'kubeadminPasswordFilePath',
+  path.join(Cypress.config('downloadsFolder'), 'kubeadmin-password'),
+);
+Cypress.env(
+  'installConfigFilePath',
+  path.join(Cypress.config('downloadsFolder'), 'install-config.yaml'),
+);
+Cypress.env(
+  'resultFile',
+  path.join(Cypress.config('downloadsFolder'), 'cypress-deployment-result'),
+);
+Cypress.env(
+  'validationsResultFile',
+  path.join(Cypress.config('downloadsFolder'), 'validations-deployment-result'),
+);

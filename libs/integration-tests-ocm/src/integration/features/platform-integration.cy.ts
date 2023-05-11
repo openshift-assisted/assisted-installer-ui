@@ -10,7 +10,7 @@ const togglePlatformIntegrationSwitch = (platformToIntegrate: string) => {
     expect(request.body).to.deep.equal({ platform: { type: platformToIntegrate } });
     Cypress.env('AI_INTEGRATED_PLATFORM', platformToIntegrate);
   });
-}
+};
 
 describe('Assisted Installer - Platform integration feature', () => {
   describe('Switch behaviour', () => {

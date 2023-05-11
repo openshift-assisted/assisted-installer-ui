@@ -16,7 +16,9 @@ export const bareMetalDiscoveryIsoModal = {
       cy.get('#sshPublicKey-filename')
         .invoke('attr', 'placeholder')
         .should('contain', 'Drag a file here or browse to upload');
-      cy.get('#sshPublicKey-browse-button').invoke('attr', 'aria-disabled').should('contain', 'false');
+      cy.get('#sshPublicKey-browse-button')
+        .invoke('attr', 'aria-disabled')
+        .should('contain', 'false');
     });
   },
   getMinimalIsoOption: () => {
@@ -66,7 +68,10 @@ export const bareMetalDiscoveryIsoModal = {
     cy.get('.pf-m-error').should('contain', msg);
   },
   validateNeverShareWarning: () => {
-    cy.get('.pf-c-modal-box__body > .pf-c-alert').should('contain', Cypress.env('neverShareWarningText'));
+    cy.get('.pf-c-modal-box__body > .pf-c-alert').should(
+      'contain',
+      Cypress.env('neverShareWarningText'),
+    );
   },
   getGenerateDiscoveryIso: () => {
     return cy.get(`.pf-c-modal-box__footer > .pf-m-primary`).contains('Generate Discovery ISO');
@@ -93,17 +98,14 @@ export const bareMetalDiscoveryIsoModal = {
     return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-c-dropdown__menu');
   },
   getSelectedImageType: () => {
-    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-c-dropdown__toggle-text')
+    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-c-dropdown__toggle-text');
   },
   selectImageType: (typeLabel: string) => {
     bareMetalDiscoveryIsoModal.openImageTypeDropdown();
     bareMetalDiscoveryIsoModal.getImageTypeDropdown().within(() => {
       cy.get('li').contains(typeLabel).click();
     });
-    bareMetalDiscoveryIsoModal.getSelectedImageType().should(
-        'contain',
-        typeLabel,
-    );
+    bareMetalDiscoveryIsoModal.getSelectedImageType().should('contain', typeLabel);
   },
   getCancelGenerateDiscoveryIsoButton: () => {
     return cy.get('.pf-c-modal-box__footer > .pf-m-link');
@@ -116,7 +118,11 @@ export const bareMetalDiscoveryIsoModal = {
       subjectType: 'drag-n-drop',
     });
   },
-  setProxyValues: (httpProxy = Cypress.env('HTTP_PROXY'), httpsProxy = Cypress.env('HTTP_PROXY'), noProxy = null) => {
+  setProxyValues: (
+    httpProxy = Cypress.env('HTTP_PROXY'),
+    httpsProxy = Cypress.env('HTTP_PROXY'),
+    noProxy = null,
+  ) => {
     bareMetalDiscoveryIsoModal.getEnableProxy().check();
     if (httpProxy) {
       bareMetalDiscoveryIsoModal.getHttpProxyInput().should('be.visible');

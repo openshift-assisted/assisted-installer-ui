@@ -36,7 +36,9 @@ describe(`Assisted Installer Static IP Cluster Creation`, () => {
 
       cy.wait('@create-cluster');
       cy.wait('@create-infra-env').then(({ request }) => {
-        expect(request.body.static_network_config, 'Static IP request body').to.deep.equal(dummyStaticNetworkConfig);
+        expect(request.body.static_network_config, 'Static IP request body').to.deep.equal(
+          dummyStaticNetworkConfig,
+        );
         utils.setLastWizardSignal('CLUSTER_CREATED');
       });
 

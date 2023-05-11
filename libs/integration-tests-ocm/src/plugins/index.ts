@@ -34,8 +34,12 @@ module.exports = (on) => {
       const myMimeType = 'application/octet-stream,binary/octet-stream';
 
       // prevents the browser download prompt
-      options.preferences['browser.helperApps.neverAsk.saveToDisk'] = `${existingMimeTypes},${myMimeType}`;
-      options.preferences['browser.helperApps.neverAsk.openFile'] = `${existingMimeTypes},${myMimeType}`;
+      options.preferences[
+        'browser.helperApps.neverAsk.saveToDisk'
+      ] = `${existingMimeTypes},${myMimeType}`;
+      options.preferences[
+        'browser.helperApps.neverAsk.openFile'
+      ] = `${existingMimeTypes},${myMimeType}`;
       options.preferences['browser.helperApps.alwaysAsk.force'] = false;
       options.preferences['browser.download.manager.useWindow'] = false;
       options.preferences['browser.download.folderList'] = 1;

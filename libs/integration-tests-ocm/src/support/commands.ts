@@ -18,12 +18,19 @@ Cypress.Commands.add('pasteText', (selector, text) => {
 });
 
 Cypress.Commands.add('runCmdOnNode', (user, host, cmd) => {
-  cy.runCmd(`ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${user}@${host} ${cmd}`).its('code').should('eq', 0);
+  cy.runCmd(`ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${user}@${host} ${cmd}`)
+    .its('code')
+    .should('eq', 0);
 });
 
 Cypress.Commands.add(
   'runCmd',
-  (cmd, setAlias = false, failOnNonZeroExit = true, timeout = Cypress.config('defaultCommandTimeout')) => {
+  (
+    cmd,
+    setAlias = false,
+    failOnNonZeroExit = true,
+    timeout = Cypress.config('defaultCommandTimeout'),
+  ) => {
     if (Cypress.env('DEV_FLAG')) {
       cmd = `${Cypress.env('sshCmd')} ${cmd}`;
     }
@@ -63,7 +70,10 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'virshDestroyAllHost',
-  (numMasters: number = Cypress.env('NUM_MASTERS'), numWorkers: number = Cypress.env('NUM_WORKERS')) => {
+  (
+    numMasters: number = Cypress.env('NUM_MASTERS'),
+    numWorkers: number = Cypress.env('NUM_WORKERS'),
+  ) => {
     for (let i = 0; i <= numMasters - 1; i++) {
       cy.runCmd(`virsh destroy master-0-${i}`, false, false);
     }
@@ -75,7 +85,10 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'virshStartNodes',
-  (numMasters: number = Cypress.env('NUM_MASTERS'), numWorkers: number = Cypress.env('NUM_WORKERS')) => {
+  (
+    numMasters: number = Cypress.env('NUM_MASTERS'),
+    numWorkers: number = Cypress.env('NUM_WORKERS'),
+  ) => {
     for (let i = 0; i <= numMasters - 1; i++) {
       cy.runCmd(`virsh start master-0-${i}`);
     }
@@ -112,7 +125,9 @@ Cypress.Commands.add('runAnsiblePlaybook', (inventory, playbookFile, extraVars, 
 });
 
 const getImageName = () => {
-  return `${Cypress.env('NODE_MANAGEMENT_IMAGE_ROOT')}/discovery_image_${Cypress.env('CLUSTER_NAME')}.iso`;
+  return `${Cypress.env('NODE_MANAGEMENT_IMAGE_ROOT')}/discovery_image_${Cypress.env(
+    'CLUSTER_NAME',
+  )}.iso`;
 };
 
 Cypress.Commands.add('deploySingleNodeOnServer', () => {
@@ -135,10 +150,12 @@ Cypress.Commands.add('cleanUpE2eNodeResources', () => {
   cy.runCmd(`rm ${getImageName()}`, false, failOnError);
 
   // Deleting the VM
-  cy.runCmd(`kcli list vm | grep ${Cypress.env('CLUSTER_NAME')} | awk '{printf "%s ",$2}'`).then((result) => {
-    const vmName = result.stdout;
-    if (vmName !== '') {
-      cy.runCmd(`kcli delete vm ${vmName} -y`).its('code').should('eq', 0);
-    }
-  });
+  cy.runCmd(`kcli list vm | grep ${Cypress.env('CLUSTER_NAME')} | awk '{printf "%s ",$2}'`).then(
+    (result) => {
+      const vmName = result.stdout;
+      if (vmName !== '') {
+        cy.runCmd(`kcli delete vm ${vmName} -y`).its('code').should('eq', 0);
+      }
+    },
+  );
 });

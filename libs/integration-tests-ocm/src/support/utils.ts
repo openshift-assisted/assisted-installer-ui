@@ -30,14 +30,16 @@ const signalOrder = [
   'READY_TO_INSTALL',
 ];
 
-export type SignalName = typeof signalOrder[number];
+export type SignalName = (typeof signalOrder)[number];
 
 export const setLastWizardSignal = (signalName: SignalName) => {
   Cypress.env('AI_LAST_SIGNAL', signalName);
 };
 
 export const hasWizardSignal = (signalName: SignalName) => {
-  const currentSignalOrder = signalOrder.findIndex((signal) => signal === Cypress.env('AI_LAST_SIGNAL'));
+  const currentSignalOrder = signalOrder.findIndex(
+    (signal) => signal === Cypress.env('AI_LAST_SIGNAL'),
+  );
 
   const reqSignalOrder = signalOrder.findIndex((signal) => signal === signalName);
   return reqSignalOrder !== -1 && reqSignalOrder <= currentSignalOrder;

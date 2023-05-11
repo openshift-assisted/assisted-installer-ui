@@ -140,7 +140,10 @@ const hosts = [
     logs_started_at: '0001-01-01T00:00:00.000Z',
     ntp_sources:
       '[{"source_name":"ns-he.la.spb.ru","source_state":"unreachable"},{"source_name":"inter.tyjo.eu","source_state":"unreachable"},{"source_name":"janetzki.eu","source_state":"unreachable"},{"source_name":"ntp1.wiktel.com","source_state":"unreachable"},{"source_name":"t2.time.bf1.yahoo.com","source_state":"unreachable"},{"source_name":"briareus.schulte.org","source_state":"unreachable"},{"source_name":"2603:c020:0:8369:16e7:baf9:64d9:7355","source_state":"unreachable"},{"source_name":"2601:603:b7f:fec0::f00d:feed","source_state":"unreachable"}]',
-    progress: { stage_started_at: '0001-01-01T00:00:00.000Z', stage_updated_at: '0001-01-01T00:00:00.000Z' },
+    progress: {
+      stage_started_at: '0001-01-01T00:00:00.000Z',
+      stage_updated_at: '0001-01-01T00:00:00.000Z',
+    },
     progress_stages: [
       'Starting installation',
       'Installing',
@@ -185,7 +188,10 @@ const hosts = [
     logs_started_at: '0001-01-01T00:00:00.000Z',
     ntp_sources:
       '[{"source_name":"janetzki.eu","source_state":"unreachable"},{"source_name":"38.229.59.9","source_state":"unreachable"},{"source_name":"t2.time.gq1.yahoo.com","source_state":"unreachable"},{"source_name":"2603:c020:0:8369:fec0:b7f:603:2601","source_state":"unreachable"},{"source_name":"2603:c020:0:8369:16e7:baf9:64d9:7355","source_state":"unreachable"},{"source_name":"briareus.schulte.org","source_state":"unreachable"},{"source_name":"t2.time.bf1.yahoo.com","source_state":"unreachable"},{"source_name":"2601:603:b7f:fec0::f00d:feed","source_state":"unreachable"}]',
-    progress: { stage_started_at: '0001-01-01T00:00:00.000Z', stage_updated_at: '0001-01-01T00:00:00.000Z' },
+    progress: {
+      stage_started_at: '0001-01-01T00:00:00.000Z',
+      stage_updated_at: '0001-01-01T00:00:00.000Z',
+    },
     progress_stages: [
       'Starting installation',
       'Installing',
@@ -230,7 +236,10 @@ const hosts = [
     logs_started_at: '0001-01-01T00:00:00.000Z',
     ntp_sources:
       '[{"source_name":"185.80.247.36","source_state":"unreachable"},{"source_name":"c-73-61-36-59.hsd1.nh.comcast.net","source_state":"unreachable"},{"source_name":"2001:470:1d:56a::120","source_state":"unreachable"},{"source_name":"ntp44.kashra-server.com","source_state":"unreachable"},{"source_name":"2601:603:b7f:fec0::f00d:feed","source_state":"unreachable"},{"source_name":"2603:c020:0:8369:16e7:baf9:64d9:7355","source_state":"unreachable"},{"source_name":"briareus.schulte.org","source_state":"unreachable"},{"source_name":"t2.time.bf1.yahoo.com","source_state":"unreachable"}]',
-    progress: { stage_started_at: '0001-01-01T00:00:00.000Z', stage_updated_at: '0001-01-01T00:00:00.000Z' },
+    progress: {
+      stage_started_at: '0001-01-01T00:00:00.000Z',
+      stage_updated_at: '0001-01-01T00:00:00.000Z',
+    },
     progress_stages: [
       'Starting installation',
       'Installing',
@@ -262,7 +271,8 @@ const hosts = [
     created_at: '2022-08-16T13:26:48.076809Z',
     deleted_at: null,
     discovery_agent_version: 'quay.io/edge-infrastructure/assisted-installer-agent:latest',
-    disks_to_be_formatted: '/dev/disk/by-path/pci-0000:00:1f.2-ata-40,/dev/disk/by-path/pci-0000:00:1f.2-ata-41,/dev/disk/by-path/pci-0000:00:1f.2-ata-42',
+    disks_to_be_formatted:
+      '/dev/disk/by-path/pci-0000:00:1f.2-ata-40,/dev/disk/by-path/pci-0000:00:1f.2-ata-41,/dev/disk/by-path/pci-0000:00:1f.2-ata-42',
     domain_name_resolutions:
       '{"resolutions":[{"domain_name":"api.storage-test-odf.redhat.com","ipv4_addresses":[],"ipv6_addresses":[]},{"domain_name":"api-int.storage-test-odf.redhat.com","ipv4_addresses":[],"ipv6_addresses":[]},{"domain_name":"console-openshift-console.apps.storage-test-odf.redhat.com","ipv4_addresses":[],"ipv6_addresses":[]},{"domain_name":"validateNoWildcardDNS.storage-test-odf.redhat.com","ipv4_addresses":[],"ipv6_addresses":[]}]}',
     href: '/api/assisted-install/v2/infra-envs/56dc322e-d6bc-4493-9c41-7ee277e98586/hosts/cf2f3477-896f-40be-876a-b2ac3f2a838c',
@@ -276,7 +286,10 @@ const hosts = [
     logs_started_at: '0001-01-01T00:00:00.000Z',
     ntp_sources:
       '[{"source_name":"2a02:e00:fff0:5db::1","source_state":"unreachable"},{"source_name":"ntp44.kashra-server.com","source_state":"unreachable"},{"source_name":"tick.srs1.ntfo.org","source_state":"unreachable"},{"source_name":"omay.w1nr.net","source_state":"unreachable"},{"source_name":"briareus.schulte.org","source_state":"unreachable"},{"source_name":"t2.time.bf1.yahoo.com","source_state":"unreachable"},{"source_name":"2601:603:b7f:fec0::f00d:feed","source_state":"unreachable"},{"source_name":"2603:c020:0:8369:16e7:baf9:64d9:7355","source_state":"unreachable"}]',
-    progress: { stage_started_at: '0001-01-01T00:00:00.000Z', stage_updated_at: '0001-01-01T00:00:00.000Z' },
+    progress: {
+      stage_started_at: '0001-01-01T00:00:00.000Z',
+      stage_updated_at: '0001-01-01T00:00:00.000Z',
+    },
     progress_stages: [
       'Starting installation',
       'Installing',
@@ -324,7 +337,10 @@ const hosts = [
     logs_started_at: '0001-01-01T00:00:00.000Z',
     ntp_sources:
       '[{"source_name":"clock.nyc.he.net","source_state":"unreachable"},{"source_name":"185.80.247.36","source_state":"unreachable"},{"source_name":"2604:4500:a:30:bad:babe:ca11:911","source_state":"unreachable"},{"source_name":"ns1.newsnet.li","source_state":"unreachable"},{"source_name":"t2.time.bf1.yahoo.com","source_state":"unreachable"},{"source_name":"2601:603:b7f:fec0::f00d:feed","source_state":"unreachable"},{"source_name":"2603:c020:0:8369:16e7:baf9:64d9:7355","source_state":"unreachable"},{"source_name":"briareus.schulte.org","source_state":"unreachable"}]',
-    progress: { stage_started_at: '0001-01-01T00:00:00.000Z', stage_updated_at: '0001-01-01T00:00:00.000Z' },
+    progress: {
+      stage_started_at: '0001-01-01T00:00:00.000Z',
+      stage_updated_at: '0001-01-01T00:00:00.000Z',
+    },
     progress_stages: [
       'Starting installation',
       'Installing',

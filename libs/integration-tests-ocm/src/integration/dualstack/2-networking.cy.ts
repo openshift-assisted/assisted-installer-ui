@@ -1,7 +1,10 @@
 import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
 import * as utils from '../../support/utils';
-import { dualStackNetworkingRequest, ipv4NetworkingRequest } from '../../fixtures/dualstack/requests';
+import {
+  dualStackNetworkingRequest,
+  ipv4NetworkingRequest,
+} from '../../fixtures/dualstack/requests';
 
 describe(`Assisted Installer Dualstack Networking`, () => {
   beforeEach(() => {

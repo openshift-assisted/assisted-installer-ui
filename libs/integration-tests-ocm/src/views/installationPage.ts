@@ -7,7 +7,10 @@ export const installationPage = {
       timeout: timeout,
     }).should('be.enabled');
   },
-  downloadKubeconfigAndSetKubeconfigEnv: (kubeconfigFile, timeout = Cypress.env('KUBECONFIG_DOWNLOAD_TIMEOUT')) => {
+  downloadKubeconfigAndSetKubeconfigEnv: (
+    kubeconfigFile,
+    timeout = Cypress.env('KUBECONFIG_DOWNLOAD_TIMEOUT'),
+  ) => {
     cy.get(Cypress.env('clusterDetailButtonDownloadKubeconfigId')).should('be.visible').click();
     cy.readFile(kubeconfigFile, { timeout: timeout })
       .should('have.length.gt', 50)
@@ -24,17 +27,24 @@ export const installationPage = {
     cy.runCopyCmd(Cypress.env('kubeconfigFile'), '~/kubeconfig');
     cy.runCopyCmd(
       Cypress.env('kubeconfigFile'),
-      `${Cypress.env('BASE_REPO_DIR_REMOTE')}/linchpin-workspace/hooks/ansible/ocp-edge-setup/kubeconfig`,
+      `${Cypress.env(
+        'BASE_REPO_DIR_REMOTE',
+      )}/linchpin-workspace/hooks/ansible/ocp-edge-setup/kubeconfig`,
     );
     cy.setKubeAdminPassword(Cypress.env('API_BASE_URL'), Cypress.env('clusterId'), true);
     cy.get('@kubeadmin-password').then((kubeadminPassword) => {
       cy.writeFile(Cypress.env('kubeadminPasswordFilePath'), kubeadminPassword);
     });
-    cy.runCopyCmd(Cypress.env('kubeadminPasswordFilePath'), '~/clusterconfigs/auth/kubeadmin-password');
+    cy.runCopyCmd(
+      Cypress.env('kubeadminPasswordFilePath'),
+      '~/clusterconfigs/auth/kubeadmin-password',
+    );
     cy.runCopyCmd(Cypress.env('kubeadminPasswordFilePath'), '~/kubeadmin-password');
     cy.runCopyCmd(
       Cypress.env('kubeadminPasswordFilePath'),
-      `${Cypress.env('BASE_REPO_DIR_REMOTE')}/linchpin-workspace/hooks/ansible/ocp-edge-setup/kubeadmin-password`,
+      `${Cypress.env(
+        'BASE_REPO_DIR_REMOTE',
+      )}/linchpin-workspace/hooks/ansible/ocp-edge-setup/kubeadmin-password`,
     );
     cy.setInstallConfig(Cypress.env('API_BASE_URL'), Cypress.env('clusterId'), true);
     cy.get('@install-config').then((installConfig) => {
@@ -43,15 +53,22 @@ export const installationPage = {
     cy.runCopyCmd(Cypress.env('installConfigFilePath'), '~/install-config.yaml');
     cy.runCopyCmd(
       Cypress.env('installConfigFilePath'),
-      `${Cypress.env('BASE_REPO_DIR_REMOTE')}/linchpin-workspace/hooks/ansible/ocp-edge-setup/install-config.yaml`,
+      `${Cypress.env(
+        'BASE_REPO_DIR_REMOTE',
+      )}/linchpin-workspace/hooks/ansible/ocp-edge-setup/install-config.yaml`,
     );
   },
-  waitForConsoleTroubleShootingHintToBeVisible: (timeout = Cypress.env('WAIT_FOR_CONSOLE_TIMEOUT')) => {
+  waitForConsoleTroubleShootingHintToBeVisible: (
+    timeout = Cypress.env('WAIT_FOR_CONSOLE_TIMEOUT'),
+  ) => {
     cy.newByDataTestId(Cypress.env('clusterDetailClusterCredsTshootHintOpen'), timeout)
       .scrollIntoView()
       .should('be.visible');
   },
-  progressStatusShouldContain: (status = 'Installed', timeout = Cypress.env('WAIT_FOR_PROGRESS_STATUS_INSTALLED')) => {
+  progressStatusShouldContain: (
+    status = 'Installed',
+    timeout = Cypress.env('WAIT_FOR_PROGRESS_STATUS_INSTALLED'),
+  ) => {
     cy.get(Cypress.env('clusterProgressStatusValueId')).scrollIntoView().should('be.visible');
     cy.get(Cypress.env('clusterProgressStatusValueId'), {
       timeout: timeout,

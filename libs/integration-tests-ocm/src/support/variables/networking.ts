@@ -14,7 +14,10 @@ Cypress.env('ingressVipFieldId', '#form-input-ingressVip-field');
 Cypress.env('nicStatus', `[data-testid=nic-status]`);
 Cypress.env('apiVipFieldHelperId', '#form-input-apiVip-field-helper');
 Cypress.env('clusterNetworkCidrFieldHelperId', '#form-input-clusterNetworks-0-cidr-field-helper');
-Cypress.env('clusterNetworkHostPrefixFieldHelperId', '#form-input-clusterNetworks-0-hostPrefix-field-helper');
+Cypress.env(
+  'clusterNetworkHostPrefixFieldHelperId',
+  '#form-input-clusterNetworks-0-hostPrefix-field-helper',
+);
 Cypress.env('serviceNetworkCidrFieldHelperId', '#form-input-serviceNetworks-0-cidr-field-helper');
 Cypress.env('userManagedNetworkingRadioText', 'User-Managed Networking');
 Cypress.env('openVirtualNetworkingRadioText', 'Open Virtual Networking');
