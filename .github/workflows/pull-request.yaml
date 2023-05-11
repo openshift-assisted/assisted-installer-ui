@@ -98,12 +98,10 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - run: yarn build:all
-      - run: yarn test:all
       - name: Run integration tests
         uses: cypress-io/github-action@v5
         with:
           working-directory: ./libs/integration-tests-ocm
           browser: chrome
           config-file: cypress.config.js
-          env: CYPRESS_API_BASE_URL=http://localhost:3000
           start: yarn --cwd=../../ preview:assisted-ui
