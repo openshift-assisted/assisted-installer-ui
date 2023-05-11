@@ -107,6 +107,20 @@ const Day2ClusterDetails = () => {
     [day2Cluster.id, wizardContext],
   );
 
+  const createNewInfraEnvWithCpuArchitecture = React.useCallback(
+    (pullSecret: string, cpuArchitecture: ClusterCpuArchitecture) => {
+      //If infraEnv don't exist, create a new one
+      void InfraEnvsService.create({
+        name: `${day2Cluster.name || ''}_infra-env-${cpuArchitecture}`,
+        pullSecret,
+        clusterId: day2Cluster.id,
+        openshiftVersion: day2Cluster.openshiftVersion,
+        cpuArchitecture: cpuArchitecture,
+      });
+    },
+    [day2Cluster.name, day2Cluster.id, day2Cluster.openshiftVersion],
+  );
+
   const onChangeCpuArchitectureDropdown = React.useCallback(
     (value: string, initialValues: Day2ClusterDetailValues): void => {
       if (value !== initialValues.cpuArchitecture) {
@@ -114,32 +128,19 @@ const Day2ClusterDetails = () => {
         void InfraEnvsService.getInfraEnv(day2Cluster.id, value as SupportedCpuArchitecture)
           .then((infraEnv) => {
             if (!infraEnv && pullSecret) {
-              //If infraEnv don't exist, create a new one
-              void InfraEnvsService.create({
-                name: `${day2Cluster.name || ''}_infra-env-${value}`,
-                pullSecret,
-                clusterId: day2Cluster.id,
-                openshiftVersion: day2Cluster.openshiftVersion,
-                cpuArchitecture: value as ClusterCpuArchitecture,
-              });
+              createNewInfraEnvWithCpuArchitecture(pullSecret, value as ClusterCpuArchitecture);
             }
           })
           .catch(() => {
             if (pullSecret) {
               //If infraEnv don't exist, create a new one
-              void InfraEnvsService.create({
-                name: `${day2Cluster.name || ''}_infra-env-${value}`,
-                pullSecret,
-                clusterId: day2Cluster.id,
-                openshiftVersion: day2Cluster.openshiftVersion,
-                cpuArchitecture: value as ClusterCpuArchitecture,
-              });
+              createNewInfraEnvWithCpuArchitecture(pullSecret, value as ClusterCpuArchitecture);
             }
           });
       }
       setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture);
     },
-    [day2Cluster.id, day2Cluster.name, day2Cluster.openshiftVersion, pullSecret],
+    [day2Cluster.id, createNewInfraEnvWithCpuArchitecture, pullSecret],
   );
 
   if (!initialValues) {
