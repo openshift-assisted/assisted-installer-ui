@@ -37,8 +37,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     infraEnvAgents.length > 1 &&
       errors.push(t('ai:Single node cluster cannot contain more than 1 host.'));
   } else {
-    (infraEnvAgents.length === 4 || infraEnvAgents.length < 3) &&
-      errors.push(t('ai:Cluster must have 3 or 5 and more hosts.'));
+    infraEnvAgents.length < 3 && errors.push(t('ai:Cluster must have at least 3 hosts.'));
   }
 
   if (infraEnvAgents.some((a) => !a.spec.approved)) {
