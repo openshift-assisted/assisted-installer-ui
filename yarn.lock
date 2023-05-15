@@ -1780,7 +1780,6 @@ __metadata:
     http-proxy-middleware: ^1.0.3
     lodash: ^4.17.15
     prop-types: ^15.7.2
-    start-server-and-test: ^2.0.0
     uuid: ^8.1.0
     xml-js: ^1.6.11
     yaml: ^1.7.2
@@ -3077,6 +3076,7 @@ __metadata:
     eslint: ^8.36.0
     prettier: 2.8.4
     rimraf: ^4.4.0
+    start-server-and-test: ^2.0.0
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
