@@ -101,9 +101,6 @@ jobs:
       - name: Create env file for assisted-ui
         run: echo "AIUI_APP_API_URL=http://localhost:4173" >> apps/assisted-ui/.env.local
       - name: Run integration tests
-        uses: cypress-io/github-action@v5
-        with:
-          working-directory: ./libs/integration-tests-ocm
-          browser: chrome
-          config-file: cypress.config.js
-          start: yarn preview:assisted-ui
+        run: |
+          cd ./libs/integration-tests-ocm
+          yarn test:assisted-ui
