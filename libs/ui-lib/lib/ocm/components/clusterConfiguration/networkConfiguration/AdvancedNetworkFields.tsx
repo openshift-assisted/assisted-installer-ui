@@ -21,11 +21,14 @@ const getNetworkLabelSuffix = (index: number, isDualStack: boolean) => {
   return isDualStack ? ` (${index === 0 ? 'IPv4' : 'IPv6'})` : '';
 };
 
-const IPv4PrefixHelperText =
-  'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
+const IPv4PrefixPopoverText =
+  'For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.';
 
-const IPv6PrefixHelperText =
-  'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 116, then each node is assigned a /116 subnet out of the given cidr (clusterNetworkCIDR), which allows for 4,094 (2^(128 - 116) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
+const IPv6PrefixPopoverText =
+  'For example, if Cluster Network Host Prefix is set to 116, then each node is assigned a /116 subnet out of the given cidr (clusterNetworkCIDR), which allows for 4,094 (2^(128 - 116) - 2) pod IPs addresses.';
+
+const ClusterPrefixHelperText =
+  'Defines how big the subnets for each individual node are out of the given CIDR. Must enter a whole number.';
 
 const clusterCidrHelperText =
   'The block must not overlap with existing physical networks. To access the Pods from an external network, configure load balancers and routers to manage the traffic.';
@@ -45,8 +48,18 @@ const AdvancedNetworkFields = () => {
 
   const isSubnetIPv6 = (index: number) => (isDualStack ? !!index : false);
 
-  const clusterNetworkHostPrefixHelperText = (index: number) =>
-    isSubnetIPv6(index) ? IPv6PrefixHelperText : IPv4PrefixHelperText;
+  const clusterNetworkHostPrefixPopoverText = (index: number) => (
+    <>
+      <p>
+        The subnet prefix length to assign to each individual node.{' '}
+        {isSubnetIPv6(index) ? IPv6PrefixPopoverText : IPv4PrefixPopoverText}
+      </p>
+      <p>
+        If you are required to provide access to nodes from an external network, configure load
+        balancers and routers to manage the traffic.
+      </p>
+    </>
+  );
 
   return (
     <Grid hasGutter className="pf-u-ml-lg">
@@ -76,7 +89,15 @@ const AdvancedNetworkFields = () => {
                   <StackItem className={'network-field-group pf-u-pb-md'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.hostPrefix`}
-                      label={`Cluster network host prefix${networkSuffix}`}
+                      label={
+                        <>
+                          <span>Cluster network host prefix{networkSuffix} </span>
+                          <PopoverIcon
+                            bodyContent={clusterNetworkHostPrefixPopoverText(index)}
+                            minWidth="30rem"
+                          />
+                        </>
+                      }
                       type={TextInputTypes.number}
                       min={clusterNetworkCidrPrefix(index)}
                       max={
@@ -84,7 +105,7 @@ const AdvancedNetworkFields = () => {
                           ? PREFIX_MAX_RESTRICTION.IPv6
                           : PREFIX_MAX_RESTRICTION.IPv4
                       }
-                      helperText={clusterNetworkHostPrefixHelperText(index)}
+                      helperText={ClusterPrefixHelperText}
                       isRequired
                     />
                   </StackItem>

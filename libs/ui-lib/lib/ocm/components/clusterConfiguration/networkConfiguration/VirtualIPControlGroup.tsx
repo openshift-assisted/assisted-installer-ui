@@ -11,6 +11,7 @@ import {
   getVipValidationsById,
   DUAL_STACK,
   SupportLevel,
+  PopoverIcon,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
@@ -59,20 +60,6 @@ const VipStaticValue = ({
   return <i>This IP will be allocated by the DHCP server</i>;
 };
 
-const getVipHelperSuffix = (
-  vip?: string,
-  vipDhcpAllocation?: boolean,
-  vipDhcpAllocationFormValue?: boolean,
-): string => {
-  if (!vipDhcpAllocationFormValue) {
-    return 'Make sure that the VIP is unique and not used by any other device on your network.';
-  }
-  if (vipDhcpAllocation && vip) {
-    return 'This IP was allocated by the DHCP server.';
-  }
-  return '';
-};
-
 export type VirtualIPControlGroupProps = {
   cluster: Cluster;
   isVipDhcpAllocationDisabled?: boolean;
@@ -88,16 +75,9 @@ export const VirtualIPControlGroup = ({
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { t } = useTranslation();
 
-  const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
-    cluster.apiVip,
-    cluster.vipDhcpAllocation,
-    values.vipDhcpAllocation,
-  )}`;
-  const ingressVipHelperText = `Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
-    cluster.ingressVip,
-    cluster.vipDhcpAllocation,
-    values.vipDhcpAllocation,
-  )}`;
+  const ipHelperText = 'Make sure the IP is not used by any other device on your network.';
+  const ipPopoverContent =
+    'Provides an endpoint for users, both human and machine, to interact with and configure the platform.';
 
   const {
     'api-vip-defined': apiVipFailedValidationMessage,
@@ -150,9 +130,13 @@ export const VirtualIPControlGroup = ({
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField
-            label={`API IP${ipFieldsSuffix}`}
+            label={
+              <>
+                <span>API IP{ipFieldsSuffix}</span> <PopoverIcon bodyContent={ipPopoverContent} />
+              </>
+            }
             name="apiVip"
-            helperText={apiVipHelperText}
+            helperText={ipHelperText}
             value={values.apiVip || ''}
             isValid={!apiVipFailedValidationMessage}
             isRequired
@@ -165,9 +149,14 @@ export const VirtualIPControlGroup = ({
             />
           </FormikStaticField>
           <FormikStaticField
-            label={`Ingress IP${ipFieldsSuffix}`}
+            label={
+              <>
+                <span>Ingress IP{ipFieldsSuffix}</span>{' '}
+                <PopoverIcon bodyContent={ipPopoverContent} />
+              </>
+            }
             name="ingressVip"
-            helperText={ingressVipHelperText}
+            helperText={ipHelperText}
             value={values.ingressVip || ''}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
@@ -183,15 +172,24 @@ export const VirtualIPControlGroup = ({
       ) : (
         <>
           <OcmInputField
-            label={`API IP${ipFieldsSuffix}`}
+            label={
+              <>
+                <span>API IP{ipFieldsSuffix}</span> <PopoverIcon bodyContent={ipPopoverContent} />
+              </>
+            }
             name="apiVip"
-            helperText={apiVipHelperText}
+            helperText={ipHelperText}
             isRequired
           />
           <OcmInputField
             name="ingressVip"
-            label={`Ingress IP${ipFieldsSuffix}`}
-            helperText={ingressVipHelperText}
+            label={
+              <>
+                <span>Ingress IP{ipFieldsSuffix}</span>{' '}
+                <PopoverIcon bodyContent={ipPopoverContent} />
+              </>
+            }
+            helperText={ipHelperText}
             isRequired
           />
         </>

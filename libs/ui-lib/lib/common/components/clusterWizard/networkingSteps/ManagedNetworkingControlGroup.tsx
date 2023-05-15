@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, TooltipProps } from '@patternfly/react-core';
-import { getFieldId } from '../../ui';
+import { PopoverIcon, getFieldId } from '../../ui';
 import RadioFieldWithTooltip from '../../ui/formik/RadioFieldWithTooltip';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
@@ -47,7 +47,16 @@ export const ManagedNetworkingControlGroup = ({
         name={GROUP_NAME}
         isDisabled={disabled}
         value={'userManaged'}
-        label={t('ai:User-Managed Networking')}
+        label={
+          <>
+            <span>{t('ai:User-Managed Networking')}</span>{' '}
+            <PopoverIcon
+              bodyContent={
+                "With User-Managed Networking, you'll need to provide and configure a load balancer for the API and ingress endpoints."
+              }
+            />
+          </>
+        }
       />
     </FormGroup>
   );

@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { TestOptionsMessage } from 'yup';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
 import { ClusterWizardStepHeader, useAlerts } from '../../../common';
@@ -74,18 +73,8 @@ const getInitialValues = ({
   };
 };
 
-const getMinHostsCount = (selectedHostsCount: number) => (selectedHostsCount === 4 ? 5 : 3);
-
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource, t: TFunction) => {
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
-
-  const getMinMessage: TestOptionsMessage<{ min: number }> = ({ min }) => {
-    const message = t('ai:Please select at least {{min}} hosts for the cluster', { min });
-    if (min === 5) {
-      return `${message} ${t('ai:or select just 3 hosts instead.')}`;
-    }
-    return `${message}.`;
-  };
 
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
@@ -100,7 +89,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
         ? Yup.array<string>()
             .min(1, t('ai:Please select one host for the cluster.'))
             .max(1, t('ai:Please select one host for the cluster.')) // TODO(jtomasek): replace this with Yup.array().length() after updating Yup
-        : Yup.array<string>().min(getMinHostsCount(values.selectedHostIds.length), getMinMessage),
+        : Yup.array<string>().min(3, t('ai:Please select at least 3 hosts for the cluster.')),
     });
   });
 };
