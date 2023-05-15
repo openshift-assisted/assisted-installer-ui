@@ -10,7 +10,7 @@ export default function useInfraEnvId(clusterId: Cluster['id'], cpuArchitecture:
   const findInfraEnvId = React.useCallback(async () => {
     try {
       const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
-      setInfraEnv(infraEnvId);
+      if (infraEnvId) setInfraEnv(infraEnvId);
     } catch (e) {
       setError(getErrorMessage(e));
     }

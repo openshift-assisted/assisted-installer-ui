@@ -11,7 +11,10 @@ import InfraEnvCache from './InfraEnvIdsCacheService';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 
 const InfraEnvsService = {
-  async getInfraEnvId(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<string> {
+  async getInfraEnvId(
+    clusterId: Cluster['id'],
+    cpuArchitecture: CpuArchitecture,
+  ): Promise<string | null> {
     let infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
@@ -21,11 +24,6 @@ const InfraEnvsService = {
       }
       if (!infraEnvId) {
         InfraEnvCache.removeInfraEnvId(clusterId, cpuArchitecture);
-        throw new Error(
-          `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${
-            cpuArchitecture || ''
-          }`,
-        );
       }
     }
     return infraEnvId;
@@ -37,11 +35,7 @@ const InfraEnvsService = {
       const { data } = await InfraEnvsAPI.get(infraEnvId);
       return data;
     } else {
-      throw new Error(
-        `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${
-          cpuArchitecture || ''
-        }`,
-      );
+      return null;
     }
   },
 
@@ -67,6 +61,7 @@ const InfraEnvsService = {
     }
 
     InfraEnvCache.updateInfraEnvs(params.clusterId, [infraEnv]);
+    return infraEnv;
   },
 
   async removeAll(clusterId: Cluster['id']) {
