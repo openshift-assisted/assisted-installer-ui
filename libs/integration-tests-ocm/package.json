@@ -1,6 +1,7 @@
 {
   "name": "@openshift-assisted/integration-tests-ocm",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "private": true,
   "license": "Apache-2.0",
   "dependencies": {
     "@types/file-saver": "^2.0.1",
@@ -15,6 +16,9 @@
     "yaml": "^1.7.2"
   },
   "scripts": {
+    "build:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run build",
+    "preview:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run preview",
+    "test:assisted-ui": "yarn run --top-level start-server-and-test preview:assisted-ui http://localhost:4173 test",
     "test": "cypress run --headless --browser chrome",
     "test:open": "cypress open"
   },
@@ -27,6 +31,7 @@
     "cypress-fill-command": "^1.0.2",
     "cypress-pipe": "^2.0.0",
     "prop-types": "^15.7.2",
+    "start-server-and-test": "^2.0.0",
     "xml-js": "^1.6.11"
   }
 }

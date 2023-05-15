@@ -106,4 +106,4 @@ jobs:
           working-directory: ./libs/integration-tests-ocm
           browser: chrome
           config-file: cypress.config.js
-          start: yarn --cwd=../../ preview:assisted-ui
+          start: yarn preview:assisted-ui

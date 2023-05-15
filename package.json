@@ -6,7 +6,6 @@
     "eslint": "^8.36.0",
     "prettier": "2.8.4",
     "rimraf": "^4.4.0",
-    "start-server-and-test": "^2.0.0",
     "typescript": "4.9.5"
   },
   "engines": {
@@ -27,10 +26,7 @@
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
     "format:all": "yarn prettier --cache --cache-strategy=content --check .",
     "lint:all": "yarn eslint --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
-    "build:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run build",
-    "preview:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run preview",
-    "test:assisted-ui": "yarn workspace @openshift-assisted/integration-tests-ocm run test",
-    "test:all": "start-server-and-test preview:assisted-ui http://localhost:4173 test:assisted-ui"
+    "test:all": "yarn workspace @openshift-assisted/integration-tests-ocm run test:assisted-ui"
   },
   "workspaces": [
     "apps/*",
