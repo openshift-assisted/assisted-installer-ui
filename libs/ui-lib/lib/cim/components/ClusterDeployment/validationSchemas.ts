@@ -14,6 +14,5 @@ export const hostCountValidationSchema = (t: TFunction) => {
       HOSTS_MAX_COUNT,
       t('ai:Maximum hosts count {{HOSTS_MAX_COUNT}} reached.', { HOSTS_MAX_COUNT }),
     )
-    .test('not-four', t('ai:A cluster needs 2 or more worker nodes.'), (value) => value !== 4)
     .required(t('ai:Required field'));
 };

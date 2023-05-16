@@ -131,7 +131,7 @@ export const OcmDiscoveryImageConfigForm = ({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, status }) => {
+      {({ submitForm, isSubmitting, status, setStatus }) => {
         return (
           <>
             <ModalBoxBody>
@@ -142,7 +142,6 @@ export const OcmDiscoveryImageConfigForm = ({
 
                 <StackItem>
                   <Form>
-                    <AlertFormikError status={status as StatusErrorType} />
                     <DiscoveryImageTypeDropdown
                       name="imageType"
                       defaultValue={discoveryImageTypes[imageTypeValue]}
@@ -161,18 +160,28 @@ export const OcmDiscoveryImageConfigForm = ({
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button
-                onClick={() => {
-                  void submitForm();
-                }}
-                isDisabled={isSubmitting}
-                isLoading={isSubmitting}
-              >
-                {isSubmitting ? t('ai:Generating') : buttonText}
-              </Button>
-              <Button key="cancel" variant="link" onClick={onCancel}>
-                {t('ai:Cancel')}
-              </Button>
+              <Stack hasGutter style={{ width: '100%' }}>
+                <StackItem>
+                  <AlertFormikError
+                    status={status as StatusErrorType}
+                    onClose={() => setStatus(undefined)}
+                  />
+                </StackItem>
+                <StackItem>
+                  <Button
+                    onClick={() => {
+                      void submitForm();
+                    }}
+                    isDisabled={isSubmitting}
+                    isLoading={isSubmitting}
+                  >
+                    {isSubmitting ? t('ai:Generating') : buttonText}
+                  </Button>
+                  <Button key="cancel" variant="link" onClick={onCancel}>
+                    {t('ai:Cancel')}
+                  </Button>
+                </StackItem>
+              </Stack>
             </ModalBoxFooter>
           </>
         );

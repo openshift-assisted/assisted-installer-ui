@@ -159,19 +159,12 @@ export const StackTypeControlGroup = ({
       >
         <Split>
           <SplitItem>
-            <Tooltip
-              content={
-                'Dual-stack is only available when your hosts are using IPV4 together with IPV6.'
-              }
-              hidden={isDualStackSelectable}
-            >
-              <OcmRadioField
-                name={'stackType'}
-                value={IPV4_STACK}
-                isDisabled={!isDualStackSelectable}
-                label="IPv4&nbsp;"
-              />
-            </Tooltip>
+            <OcmRadioField
+              name={'stackType'}
+              value={IPV4_STACK}
+              isDisabled={!isDualStackSelectable}
+              label="IPv4&nbsp;"
+            />
           </SplitItem>
           <SplitItem>
             <PopoverIcon

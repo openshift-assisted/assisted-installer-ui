@@ -20,7 +20,7 @@ const nutanixPlatformMessage =
   'Enable Nutanix platform integration to access features like node auto-scaling directly inside OpenShift.';
 
 const platformIntegrationTooltip =
-  'Platform integration is only applicable on non-SNO deployments and when all discovered hosts originated from the same platform.';
+  'Virtualization platform integration is only applicable on non-SNO deployments and when all discovered hosts originated from the same platform.';
 
 const messages: KeyType = {
   'no-active-integrations': undeterminedPlatformMessage,

@@ -226,6 +226,9 @@ const ClusterEventsToolbar = ({
               isOpen={isHostExpanded}
               placeholderText={<Placeholder text="Hosts" />}
               isDisabled={allHosts.length === 0}
+              maxHeight={280}
+              zIndex={600}
+              menuAppendTo={document.body}
             >
               {[
                 <SelectOption

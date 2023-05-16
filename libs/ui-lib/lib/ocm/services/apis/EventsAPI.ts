@@ -1,9 +1,21 @@
 import { EventList, V2Events } from '../../../common';
 import { client } from '../../api';
 
+let _getRequestAbortController = new AbortController();
+
 const EventsAPI = {
   makeBaseURI() {
     return '/v2/events';
+  },
+
+  abort() {
+    _getRequestAbortController.abort();
+    /*
+     * The AbortController.signal can only be aborted once per instance.
+     * Therefore in order for other requests to be also abortable we need
+     * to create a new instance when this event occurs
+     */
+    _getRequestAbortController = new AbortController();
   },
 
   createParams({
@@ -36,7 +48,9 @@ const EventsAPI = {
   },
 
   list(options: V2Events) {
-    return client.get<EventList>(`${EventsAPI.makeBaseURI()}${EventsAPI.createParams(options)}`);
+    return client.get<EventList>(`${EventsAPI.makeBaseURI()}${EventsAPI.createParams(options)}`, {
+      signal: _getRequestAbortController.signal,
+    });
   },
 };
 
