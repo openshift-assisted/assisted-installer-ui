@@ -10,11 +10,11 @@ module.exports = defineConfig({
   chromeWebSecurity: false,
   viewportWidth: 1440,
   viewportHeight: 1080,
-  execTimeout: 24000,
-  defaultCommandTimeout: 24000,
-  requestTimeout: 24000,
-  responseTimeout: 24000,
-  pageLoadTimeout: 24000,
+  execTimeout: 12000,
+  defaultCommandTimeout: 12000,
+  requestTimeout: 12000,
+  responseTimeout: 12000,
+  pageLoadTimeout: 12000,
   trashAssetsBeforeRuns: false,
   env: {
     OPENSHIFT_VERSION: '4.12.14',
@@ -36,7 +36,9 @@ module.exports = defineConfig({
   },
   e2e: {
     setupNodeEvents(on, config) {
-      return require('./src/plugins/index.ts')(on, config);
+      require('cypress-terminal-report/src/installLogsPrinter')(on, {
+        printLogsToConsole: 'always',
+      });
     },
     specPattern: './src/integration/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: './src/support/index.ts',
