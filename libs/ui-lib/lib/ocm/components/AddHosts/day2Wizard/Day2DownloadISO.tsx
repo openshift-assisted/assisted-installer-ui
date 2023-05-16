@@ -6,7 +6,7 @@ import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import DownloadIpxeScript from '../../../../common/components/clusterConfiguration/DownloadIpxeScript';
 
-const Day2DownloadISO = ({ id }: { id: string }) => {
+const Day2DownloadISO = ({ id }: { id?: string }) => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const { close, data } = day2DiscoveryImageDialog;
   const cluster = data.cluster;
@@ -15,7 +15,7 @@ const Day2DownloadISO = ({ id }: { id: string }) => {
   const ipxeDownloadUrl = wizardContext.selectedIpxeUrl;
   const nameImageSuffix = `${cluster.name || ''}`;
   return (
-    <ClusterWizardStep navigation={<Day2WizardNav />} id={id}>
+    <ClusterWizardStep navigation={<Day2WizardNav />} id={id ? id : ''}>
       <Stack hasGutter>
         <StackItem>
           <ClusterWizardStepHeader>Download Discovery ISO</ClusterWizardStepHeader>
