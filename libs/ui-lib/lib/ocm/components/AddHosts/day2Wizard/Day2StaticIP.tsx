@@ -65,7 +65,7 @@ const Day2StaticIP = () => {
         setInfraEnv(undefined);
         return;
       }
-      if (infraEnv) {
+      if (infraEnv && !(infraEnv instanceof Error)) {
         if (!infraEnv.staticNetworkConfig) {
           // Make sure the infraEnv we store in the state has staticIP config
           // This is required to be able to reuse the StaticIP services

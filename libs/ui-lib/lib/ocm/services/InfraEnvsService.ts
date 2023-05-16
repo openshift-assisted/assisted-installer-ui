@@ -14,7 +14,7 @@ const InfraEnvsService = {
   async getInfraEnvId(
     clusterId: Cluster['id'],
     cpuArchitecture: CpuArchitecture,
-  ): Promise<string | null> {
+  ): Promise<string | Error> {
     let infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
@@ -31,11 +31,11 @@ const InfraEnvsService = {
 
   async getInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
-    if (infraEnvId) {
+    if (infraEnvId && !(infraEnvId instanceof Error)) {
       const { data } = await InfraEnvsAPI.get(infraEnvId);
       return data;
     } else {
-      return null;
+      return new Error(`Failed to retrieve the infraEnv for ${clusterId}`);
     }
   },
 

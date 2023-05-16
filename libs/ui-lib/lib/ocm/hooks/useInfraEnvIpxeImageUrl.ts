@@ -14,7 +14,7 @@ export default function useInfraEnvIpxeImageUrl() {
     async (clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<ImgUrl> => {
       try {
         const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
-        if (!infraEnvId) {
+        if (!infraEnvId || infraEnvId instanceof Error) {
           return { url: '', error: `Failed to retrieve the infraEnv for ${clusterId}` };
         }
 

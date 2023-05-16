@@ -16,19 +16,18 @@ export default function useInfraEnvId(
   const findInfraEnvId = React.useCallback(async () => {
     try {
       const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
-      if (infraEnvId) setInfraEnv(infraEnvId);
+      if (infraEnvId && !(infraEnvId instanceof Error)) setInfraEnv(infraEnvId);
       else {
         //If infraEnv doesn't exist create a new one
         if (pullSecret) {
-          await InfraEnvsService.create({
+          const infraEnv = await InfraEnvsService.create({
             name: InfraEnvsService.makeInfraEnvName(cpuArchitecture, clusterName),
             pullSecret,
             clusterId: clusterId,
             openshiftVersion,
             cpuArchitecture: cpuArchitecture as ClusterCpuArchitecture,
-          }).then((infraEnv: InfraEnv) => {
-            setInfraEnv(infraEnv.id);
           });
+          setInfraEnv(infraEnv.id);
         }
       }
     } catch (e) {

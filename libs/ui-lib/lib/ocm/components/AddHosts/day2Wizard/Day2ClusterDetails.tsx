@@ -28,23 +28,6 @@ import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchite
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
 import { useOpenshiftVersions, usePullSecret } from '../../../hooks';
 
-const createNewInfraEnvWithCpuArchitecture = (
-  pullSecret: string,
-  cpuArchitecture: ClusterCpuArchitecture,
-  id: string,
-  name?: string,
-  openshiftVersion?: string,
-) => {
-  //If infraEnv don't exist, create a new one
-  return InfraEnvsService.create({
-    name: InfraEnvsService.makeInfraEnvName(cpuArchitecture, name),
-    pullSecret,
-    clusterId: id,
-    openshiftVersion: openshiftVersion,
-    cpuArchitecture: cpuArchitecture,
-  });
-};
-
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
   day1CpuArchitecture: CpuArchitecture,
@@ -54,7 +37,7 @@ const getDay2ClusterDetailInitialValues = async (
 ) => {
   try {
     const infraEnv = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
-    if (infraEnv) {
+    if (infraEnv && !(infraEnv instanceof Error)) {
       return {
         cpuArchitecture: day1CpuArchitecture,
         hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
@@ -64,13 +47,16 @@ const getDay2ClusterDetailInitialValues = async (
     } else {
       //Create a new InfraEnv because is not found
       if (pullSecret) {
-        const infraEnv = await createNewInfraEnvWithCpuArchitecture(
+        const infraEnv = await InfraEnvsService.create({
+          name: InfraEnvsService.makeInfraEnvName(
+            day1CpuArchitecture as ClusterCpuArchitecture,
+            name,
+          ),
           pullSecret,
-          day1CpuArchitecture as ClusterCpuArchitecture,
           clusterId,
-          name,
           openshiftVersion,
-        );
+          cpuArchitecture: day1CpuArchitecture as ClusterCpuArchitecture,
+        });
         return {
           cpuArchitecture: day1CpuArchitecture,
           hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
@@ -78,12 +64,12 @@ const getDay2ClusterDetailInitialValues = async (
             : HostsNetworkConfigurationType.DHCP,
         };
       } else {
-        throw Error('Could not get infraEnv for this cpu architecture');
+        return new Error('Could not get infraEnv for this cpu architecture');
       }
     }
   } catch (error) {
     handleApiError(error);
-    throw Error('Could not get infraEnv for this cpu architecture');
+    return new Error('Could not get infraEnv for this cpu architecture');
   }
 };
 
@@ -162,7 +148,7 @@ const Day2ClusterDetails = () => {
       if (!pullSecret) return;
       if (value !== initialValues.cpuArchitecture) {
         //Fetch infraEnv by clusterId and cpu architecture
-        let infraEnv: InfraEnv | null;
+        let infraEnv: InfraEnv | Error;
         try {
           infraEnv = await InfraEnvsService.getInfraEnv(
             day2Cluster.id,
@@ -170,13 +156,16 @@ const Day2ClusterDetails = () => {
           );
           if (!infraEnv) {
             try {
-              infraEnv = await createNewInfraEnvWithCpuArchitecture(
+              infraEnv = await InfraEnvsService.create({
+                name: InfraEnvsService.makeInfraEnvName(
+                  value as ClusterCpuArchitecture,
+                  day2Cluster.name,
+                ),
                 pullSecret,
-                value as ClusterCpuArchitecture,
-                day2Cluster.id,
-                day2Cluster.name,
-                day2Cluster.openshiftVersion,
-              );
+                clusterId: day2Cluster.id,
+                openshiftVersion: day2Cluster.openshiftVersion,
+                cpuArchitecture: value as ClusterCpuArchitecture,
+              });
             } catch {
               throw Error('Could not create infraEnv for this cpu architecture');
             }
