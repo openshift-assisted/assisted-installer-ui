@@ -102,6 +102,18 @@ jobs:
       - name: Create env file for assisted-ui
         run: echo "AIUI_APP_API_URL=http://localhost:4173" >> apps/assisted-ui/.env.local
       - name: Run integration tests
-        run: |
-          cd ./libs/integration-tests-ocm
-          yarn test:assisted-ui
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: ./libs/integration-tests-ocm
+          browser: chrome
+          config-file: cypress.config.js
+          env: CYPRESS_API_BASE_URL=http://localhost:4173
+          start: yarn preview:assisted-ui
+      - name: Store Cypress artifact on failure
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-artifact
+          path: |
+            libs/integration-tests-ocm/cypress/screenshots
+            libs/integration-tests-ocm/cypress/videos
