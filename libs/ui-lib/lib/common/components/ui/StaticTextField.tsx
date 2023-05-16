@@ -5,7 +5,7 @@ import { getFieldId, HelperText } from './formik';
 
 export interface StaticFieldProps {
   name: string;
-  label: string;
+  label: React.ReactNode;
   helperText?: React.ReactNode;
   helperTextInvalid?: React.ReactNode;
   isRequired?: boolean;
