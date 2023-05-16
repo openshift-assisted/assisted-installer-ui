@@ -29,11 +29,16 @@ const disabledTabResult = (tooltipMessage: string) => ({
 });
 
 export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) => {
-  const isHiddenTab =
-    (cluster.state !== 'ready' && cluster.state !== 'installed') ||
-    cluster.product?.id !== 'OCP-AssistedInstall';
+  const isHiddenTab = cluster.state !== 'ready' && cluster.state !== 'installed';
   if (isHiddenTab) {
     return hiddenTabResult;
+  }
+
+  // Cluster’s product id is not 'OCP-AssistedInstall'. We show disabled tab with a message
+  if (cluster.product?.id !== 'OCP-AssistedInstall') {
+    return disabledTabResult(
+      'Only clusters installed with Assisted Installer can be scaled up using the web interface. You can still scale up clusters using the CLI.',
+    );
   }
 
   // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
