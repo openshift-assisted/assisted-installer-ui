@@ -37,7 +37,7 @@ const createNewInfraEnvWithCpuArchitecture = (
 ) => {
   //If infraEnv don't exist, create a new one
   return InfraEnvsService.create({
-    name: `${name || ''}_infra-env-${cpuArchitecture}`,
+    name: InfraEnvsService.makeInfraEnvName(cpuArchitecture, name),
     pullSecret,
     clusterId: id,
     openshiftVersion: openshiftVersion,
@@ -177,11 +177,11 @@ const Day2ClusterDetails = () => {
                 day2Cluster.name,
                 day2Cluster.openshiftVersion,
               );
-            } catch (error) {
+            } catch {
               throw Error('Could not create infraEnv for this cpu architecture');
             }
           }
-        } catch (error) {
+        } catch {
           throw Error('Could not create infraEnv for this cpu architecture');
         }
       }

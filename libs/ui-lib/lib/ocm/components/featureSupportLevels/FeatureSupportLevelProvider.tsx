@@ -17,7 +17,7 @@ import {
 import { handleApiError } from '../../api';
 import { FeatureSupportLevelsAPI } from '../../services/apis';
 import { captureException } from '../../sentry';
-import { useOpenshiftVersions } from '../../hooks';
+import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
@@ -88,9 +88,13 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   loadingUi,
 }) => {
   const { loading: loadingOCPVersions, versions: versionOptions } = useOpenshiftVersions();
+  const pullSecret = usePullSecret();
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',
-    CpuArchitecture.USE_DAY1_ARCHITECTURE,
+    cluster?.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster?.name,
+    pullSecret,
+    cluster?.openshiftVersion,
   );
   const fetcher = () => FeatureSupportLevelsAPI.list().then((res) => res.data);
   const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels, unknown>(

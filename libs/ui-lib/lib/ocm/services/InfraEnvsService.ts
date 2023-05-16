@@ -121,6 +121,10 @@ const InfraEnvsService = {
       return updatedInfraEnv;
     });
   },
+
+  makeInfraEnvName(cpuArchitecture: string, name?: string) {
+    return `${name || ''}_infra-env-${cpuArchitecture}`;
+  },
 };
 
 export default InfraEnvsService;

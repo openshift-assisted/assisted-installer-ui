@@ -12,6 +12,7 @@ import {
   OcmDiscoveryImageFormValues,
 } from './OcmDiscoveryImageConfigForm';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectureService';
+import { usePullSecret } from '../../hooks';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -30,7 +31,14 @@ const DiscoveryImageForm = ({
   onSuccessIpxe,
   isIpxeSelected,
 }: DiscoveryImageFormProps) => {
-  const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
+  const pullSecret = usePullSecret();
+  const { infraEnv, error: infraEnvError } = useInfraEnv(
+    cluster.id,
+    cpuArchitecture,
+    cluster.name,
+    pullSecret,
+    cluster.openshiftVersion,
+  );
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
 

@@ -88,7 +88,7 @@ const Day2ClusterService = {
 
     // Create only the infraenv for the day1 cpu architecture
     await InfraEnvsService.create({
-      name: `${day2Cluster.name || ''}_infra-env-${cpuArchitecture}`,
+      name: InfraEnvsService.makeInfraEnvName(cpuArchitecture, day2Cluster.name),
       pullSecret,
       clusterId: day2Cluster.id,
       openshiftVersion,
