@@ -34,12 +34,12 @@ const getDay2ClusterDetailInitialValues = async (
   pullSecret?: string,
   name?: string,
   openshiftVersion?: string,
-) => {
+): Promise<Day2ClusterDetailValues | Error> => {
   try {
     const infraEnv = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
     if (infraEnv && !(infraEnv instanceof Error)) {
       return {
-        cpuArchitecture: day1CpuArchitecture,
+        cpuArchitecture: day1CpuArchitecture as SupportedCpuArchitecture,
         hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
           ? HostsNetworkConfigurationType.STATIC
           : HostsNetworkConfigurationType.DHCP,
@@ -58,7 +58,7 @@ const getDay2ClusterDetailInitialValues = async (
           cpuArchitecture: day1CpuArchitecture as ClusterCpuArchitecture,
         });
         return {
-          cpuArchitecture: day1CpuArchitecture,
+          cpuArchitecture: day1CpuArchitecture as SupportedCpuArchitecture,
           hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
             ? HostsNetworkConfigurationType.STATIC
             : HostsNetworkConfigurationType.DHCP,
@@ -80,16 +80,16 @@ const Day2ClusterDetails = () => {
     data: { cluster: day2Cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const [initialValues, setInitialValues] = React.useState<
-    Day2ClusterDetailValues | Error | null
-  >();
+  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>(null);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [isAlternativeCpuSelected, setIsAlternativeCpuSelected] = React.useState(false);
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
+  const [errorState, setErrorState] = React.useState<Error | null>(null);
   const pullSecret = usePullSecret();
+
   const cpuArchitectures = React.useMemo(
     () =>
       getSupportedCpuArchitectures(
@@ -110,7 +110,11 @@ const Day2ClusterDetails = () => {
       );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      setInitialValues(initialValues);
+      if (initialValues instanceof Error) {
+        setErrorState(initialValues);
+      } else {
+        setInitialValues(initialValues);
+      }
     };
     void fetchAndSetInitialValues();
   }, [
@@ -145,33 +149,36 @@ const Day2ClusterDetails = () => {
 
   const changeCpuArchitectureDropdownAsync = React.useCallback(
     async (value: string, initialValues: Day2ClusterDetailValues) => {
-      if (!pullSecret) return;
-      if (value !== initialValues.cpuArchitecture) {
-        //Fetch infraEnv by clusterId and cpu architecture
-        let infraEnv: InfraEnv | Error;
-        try {
-          infraEnv = await InfraEnvsService.getInfraEnv(
-            day2Cluster.id,
-            value as SupportedCpuArchitecture,
-          );
-          if (!infraEnv) {
-            try {
-              infraEnv = await InfraEnvsService.create({
-                name: InfraEnvsService.makeInfraEnvName(
-                  value as ClusterCpuArchitecture,
-                  day2Cluster.name,
-                ),
-                pullSecret,
-                clusterId: day2Cluster.id,
-                openshiftVersion: day2Cluster.openshiftVersion,
-                cpuArchitecture: value as ClusterCpuArchitecture,
-              });
-            } catch {
-              throw Error('Could not create infraEnv for this cpu architecture');
+      if (!pullSecret) {
+        setErrorState(new Error('Pull secret is missing'));
+      } else {
+        if (value !== initialValues.cpuArchitecture) {
+          //Fetch infraEnv by clusterId and cpu architecture
+          let infraEnv: InfraEnv | Error;
+          try {
+            infraEnv = await InfraEnvsService.getInfraEnv(
+              day2Cluster.id,
+              value as SupportedCpuArchitecture,
+            );
+            if (!infraEnv) {
+              try {
+                infraEnv = await InfraEnvsService.create({
+                  name: InfraEnvsService.makeInfraEnvName(
+                    value as ClusterCpuArchitecture,
+                    day2Cluster.name,
+                  ),
+                  pullSecret,
+                  clusterId: day2Cluster.id,
+                  openshiftVersion: day2Cluster.openshiftVersion,
+                  cpuArchitecture: value as ClusterCpuArchitecture,
+                });
+              } catch {
+                setErrorState(new Error('Could not get infraEnv for this cpu architecture'));
+              }
             }
+          } catch {
+            setErrorState(new Error('Could not get infraEnv for this cpu architecture'));
           }
-        } catch {
-          throw Error('Could not create infraEnv for this cpu architecture');
         }
       }
       setIsAlternativeCpuSelected(value !== initialValues.cpuArchitecture);
@@ -184,10 +191,10 @@ const Day2ClusterDetails = () => {
     [changeCpuArchitectureDropdownAsync],
   );
 
-  if (!initialValues) {
+  if (initialValues === null) {
     return <LoadingState />;
-  } else if (initialValues instanceof Error) {
-    return <ErrorState content="Failed to load associated data for the Day2 cluster" />;
+  } else if (errorState !== null) {
+    return <ErrorState content={errorState.message} />;
   }
 
   return (
