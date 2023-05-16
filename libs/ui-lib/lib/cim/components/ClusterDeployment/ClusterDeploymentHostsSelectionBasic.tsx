@@ -25,9 +25,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
   const { t } = useTranslation();
 
   React.useEffect(() => {
-    if (hostCount === 3) {
-      setFieldValue('useMastersAsWorkers', true);
-    }
+    setFieldValue('useMastersAsWorkers', hostCount === 3);
   }, [hostCount, setFieldValue]);
 
   return (
@@ -43,12 +41,6 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
             minValue={isSNOCluster ? 1 : HOSTS_MIN_COUNT}
             maxValue={isSNOCluster ? 1 : HOSTS_MAX_COUNT}
             isDisabled={isSNOCluster}
-            formatValue={(newValue) => {
-              if (newValue === 4) {
-                return hostCount >= 4 ? 3 : 5;
-              }
-              return newValue;
-            }}
           />
         </GridItem>
 
@@ -58,7 +50,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
             idPostfix="mastersasworkers"
             name="useMastersAsWorkers"
             label={t('ai:Run workloads on control plane hosts')}
-            isDisabled={hostCount < 5}
+            isDisabled={hostCount !== 3}
           />
         </GridItem>
 

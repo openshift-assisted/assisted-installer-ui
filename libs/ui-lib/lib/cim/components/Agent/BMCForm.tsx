@@ -183,7 +183,7 @@ const emptyValues: AddBmcValues = {
   password: '',
   bootMACAddress: '',
   disableCertificateVerification: true, // TODO(mlibra)
-  online: false, // TODO(mlibra)
+  online: true,
   nmState: '',
   macMapping: [{ macAddress: '', name: '' }],
 };

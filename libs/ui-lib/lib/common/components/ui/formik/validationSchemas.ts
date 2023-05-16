@@ -519,12 +519,16 @@ export const httpProxyValidationSchema = (
         return true;
       }
 
+      if (!value.startsWith('http://')) {
+        return false;
+      }
+
       try {
-        const url = new URL(value);
-        return url.protocol === 'http:';
+        new URL(value);
       } catch {
         return false;
       }
+      return true;
     });
 
 const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
