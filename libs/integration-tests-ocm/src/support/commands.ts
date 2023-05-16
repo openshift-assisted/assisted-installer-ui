@@ -8,6 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 import 'cypress-fill-command';
+import '@testing-library/cypress/add-commands';
 
 Cypress.Commands.add('pasteText', (selector, text) => {
   cy.get(selector).then((elem) => {
