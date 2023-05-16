@@ -65,18 +65,23 @@ const Day2StaticIP = () => {
         setInfraEnv(undefined);
         return;
       }
-
-      if (!infraEnv.staticNetworkConfig) {
-        // Make sure the infraEnv we store in the state has staticIP config
-        // This is required to be able to reuse the StaticIP services
-        infraEnv = await InfraEnvsService.setDummyStaticConfigToInfraEnv(infraEnv.id);
-      }
-      const staticIpInfo = getStaticIpInfo(infraEnv);
-      if (staticIpInfo) {
-        setInfraEnv(infraEnv);
-        setInitialStaticIpInfo(staticIpInfo);
+      if (infraEnv && !(infraEnv instanceof Error)) {
+        if (!infraEnv.staticNetworkConfig) {
+          // Make sure the infraEnv we store in the state has staticIP config
+          // This is required to be able to reuse the StaticIP services
+          infraEnv = await InfraEnvsService.setDummyStaticConfigToInfraEnv(infraEnv.id);
+        }
+        const staticIpInfo = getStaticIpInfo(infraEnv);
+        if (staticIpInfo) {
+          setInfraEnv(infraEnv);
+          setInitialStaticIpInfo(staticIpInfo);
+        } else {
+          setHasLoadError(true);
+        }
       } else {
         setHasLoadError(true);
+        setInfraEnv(undefined);
+        return;
       }
     };
     void setCurrentStaticConfig();

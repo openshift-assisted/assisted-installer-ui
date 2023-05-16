@@ -14,6 +14,7 @@ import { selectCurrentClusterState } from '../../selectors';
 import { Grid } from '@patternfly/react-core';
 import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
+import { usePullSecret } from '../../hooks';
 
 type AssistedInstallerExtraDetailCardProps = {
   allEnabledFeatures: FeatureListType;
@@ -23,9 +24,13 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
   allEnabledFeatures,
 }) => {
   const { data: cluster } = useSelector(selectCurrentClusterState);
+  const pullSecret = usePullSecret();
   const { infraEnv } = useInfraEnv(
     cluster?.id ? cluster?.id : '',
-    CpuArchitecture.USE_DAY1_ARCHITECTURE,
+    cluster?.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster?.name,
+    pullSecret,
+    cluster?.openshiftVersion,
   );
 
   if (!cluster || cluster.status === 'adding-hosts') {
@@ -52,7 +57,9 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
 
 const Wrapper: React.FC<AssistedInstallerExtraDetailCardProps> = (props) => (
   <Provider store={store}>
-    <AssistedInstallerExtraDetailCard {...props} />
+    <AlertsContextProvider>
+      <AssistedInstallerExtraDetailCard {...props} />
+    </AlertsContextProvider>
   </Provider>
 );
 

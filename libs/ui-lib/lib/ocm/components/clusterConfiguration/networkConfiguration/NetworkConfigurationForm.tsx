@@ -38,7 +38,7 @@ import { captureException } from '../../../sentry';
 import { ClustersService } from '../../../services';
 import { setServerUpdateError, updateClusterBase } from '../../../reducers/clusters';
 import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
-import { useClusterSupportedPlatforms } from '../../../hooks';
+import { useClusterSupportedPlatforms, usePullSecret } from '../../../hooks';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -127,11 +127,18 @@ const NetworkConfigurationForm: React.FC<{
 };
 
 const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
+  const pullSecret = usePullSecret();
   const {
     infraEnv,
     error: infraEnvError,
     isLoading,
-  } = useInfraEnv(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+  } = useInfraEnv(
+    cluster.id,
+    cluster.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster.name,
+    pullSecret,
+    cluster.openshiftVersion,
+  );
   const defaultNetworkValues = useDefaultConfiguration([
     'clusterNetworksDualstack',
     'clusterNetworksIpv4',

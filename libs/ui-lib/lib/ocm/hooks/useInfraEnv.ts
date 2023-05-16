@@ -8,6 +8,9 @@ import InfraEnvIdsCacheService from '../services/InfraEnvIdsCacheService';
 export default function useInfraEnv(
   clusterId: Cluster['id'],
   cpuArchitecture: CpuArchitecture,
+  clusterName?: string,
+  pullSecret?: string,
+  openshiftVersion?: string,
 ): {
   infraEnv?: InfraEnv;
   error?: string;
@@ -16,7 +19,13 @@ export default function useInfraEnv(
 } {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [error, setError] = React.useState('');
-  const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId, cpuArchitecture);
+  const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(
+    clusterId,
+    cpuArchitecture,
+    clusterName,
+    pullSecret,
+    openshiftVersion,
+  );
 
   const getInfraEnv = React.useCallback(async () => {
     try {

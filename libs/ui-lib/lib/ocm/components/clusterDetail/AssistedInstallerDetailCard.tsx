@@ -28,6 +28,7 @@ import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextP
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import { BackButton } from '../ui/Buttons/BackButton';
 import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { usePullSecret } from '../../hooks';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -90,12 +91,19 @@ const AssistedInstallerDetailCard = ({
   permissions,
 }: AssistedInstallerDetailCardProps) => {
   const { cluster, uiState } = useClusterPolling(aiClusterId);
+  const pullSecret = usePullSecret();
   const {
     infraEnv,
     isLoading: infraEnvLoading,
     error: infraEnvError,
     updateInfraEnv,
-  } = useInfraEnv(aiClusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+  } = useInfraEnv(
+    aiClusterId,
+    cluster?.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster?.name,
+    pullSecret,
+    cluster?.openshiftVersion,
+  );
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
   } else if ((uiState === ResourceUIState.POLLING_ERROR && !cluster) || infraEnvError) {
@@ -151,7 +159,9 @@ const AssistedInstallerDetailCard = ({
 
 const Wrapper = (props: AssistedInstallerDetailCardProps) => (
   <Provider store={store}>
-    <AssistedInstallerDetailCard {...props} />
+    <AlertsContextProvider>
+      <AssistedInstallerDetailCard {...props} />
+    </AlertsContextProvider>
   </Provider>
 );
 
