@@ -74,10 +74,10 @@ export const bareMetalDiscoveryIsoModal = {
     );
   },
   getGenerateDiscoveryIso: () => {
-    return cy.get(`.pf-c-modal-box__footer > .pf-m-primary`).contains('Generate Discovery ISO');
+    return cy.findByRole('button', { name: /generate discovery iso/i });
   },
   getGeneratingButton: () => {
-    return cy.get(`.pf-c-modal-box__footer > .pf-m-primary`).contains('Generating');
+    return cy.findByRole('button', { name: /generating/i });
   },
   getAddHostsInstructions: () => {
     return cy.contains('Adding hosts instructions').title();

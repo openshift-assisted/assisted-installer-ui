@@ -6,7 +6,7 @@
     "outDir": "build",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["cypress", "cypress-file-upload", "node"]
+    "types": ["cypress", "cypress-file-upload", "@testing-library/cypress", "node"]
   },
   "include": ["./*.d.ts", "src/**/*.ts", "src/**/*.js"]
 }
