@@ -21,5 +21,4 @@ export type NetworkStepProps = {
   formRef: React.Ref<FormikProps<NetworkFormValues>>;
   onValuesChanged: (values: NetworkFormValues, initRender: boolean) => void;
   initialValues: NetworkFormValues;
-  count: number;
 };
