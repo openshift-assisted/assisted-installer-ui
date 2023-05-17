@@ -10,7 +10,7 @@ type DeleteHostModalProps = {
 
 const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModalProps) => (
   <Modal
-    title="Delete Host"
+    title="Remove host?"
     isOpen={isOpen}
     onClose={onClose}
     variant={ModalVariant.small}
@@ -21,14 +21,14 @@ const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModa
         variant={ButtonVariant.danger}
         onClick={onDelete}
       >
-        Delete
+        Remove host
       </Button>,
       <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
         Cancel
       </Button>,
     ]}
   >
-    Are you sure you want to delete host{` ${hostname || ''}`} ?
+    Host {hostname || ''} will be removed.
   </Modal>
 );
 
