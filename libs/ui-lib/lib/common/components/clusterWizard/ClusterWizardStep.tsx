@@ -8,19 +8,17 @@ import './ClusterWizardStep.css';
 type ClusterWizardStepProps = {
   footer?: React.ReactNode;
   navigation?: React.ReactNode;
-  id?: string;
 };
 
 const ClusterWizardStep = ({
   navigation,
   footer,
   children,
-  id = '',
 }: React.PropsWithChildren<ClusterWizardStepProps>) => {
   // activeStep is required, but we're not passing it. Using the cast to avoid TS error
   const activeStep = undefined as unknown as WizardBodyProps['activeStep'];
   return (
-    <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')} id={id}>
+    <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')}>
       <div className={css(styles.wizardInnerWrap)}>
         {navigation}
         <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false} activeStep={activeStep}>
