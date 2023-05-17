@@ -16,7 +16,7 @@ const InfraEnvsService = {
     cpuArchitecture: CpuArchitecture,
   ): Promise<string | Error> {
     let infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
-    if (infraEnvId === null) {
+    if (infraEnvId instanceof Error) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
       if (infraEnvs.length > 0) {
         InfraEnvCache.updateInfraEnvs(clusterId, infraEnvs);
