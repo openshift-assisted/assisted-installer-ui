@@ -50,7 +50,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     const cache = read();
     const clusterInfraEnvs = cache[clusterId];
     if (!clusterInfraEnvs) {
-      return new Error(`Not infraEnvs founded for this cluster ${clusterId}`);
+      return new Error(`Not infraEnvs found for this cluster ${clusterId}`);
     }
     if (cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE) {
       return clusterInfraEnvs[cpuArchitecture] || new Error(`InfraEnv can't be found`);

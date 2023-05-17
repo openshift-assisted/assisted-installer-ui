@@ -16,8 +16,9 @@ export default function useInfraEnvId(
   const findInfraEnvId = React.useCallback(async () => {
     try {
       const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
-      if (infraEnvId && !(infraEnvId instanceof Error)) setInfraEnv(infraEnvId);
-      else {
+      if (infraEnvId && !(infraEnvId instanceof Error)) {
+        setInfraEnv(infraEnvId);
+      } else {
         //If infraEnv doesn't exist create a new one
         if (pullSecret) {
           const infraEnv = await InfraEnvsService.create({
