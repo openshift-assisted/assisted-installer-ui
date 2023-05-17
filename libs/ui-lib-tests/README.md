@@ -12,6 +12,10 @@ API.
 
 # How to use this repo
 
+- Install
+  [Linux Prerequisites](https://docs.cypress.io/guides/getting-started/installing-cypress#Linux-Prerequisites)
+  for your distro.
+
 - Clone the project.
 
 - Install npm dependencies yarn install
