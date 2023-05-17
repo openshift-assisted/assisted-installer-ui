@@ -38,9 +38,9 @@ type MatchParams = {
   clusterId: string;
 };
 
-const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean }> = ({
+const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolean }> = ({
   clusterId,
-  showBreadcrumbs,
+  showBreadcrumbs = false,
 }) => {
   if (!clusterId) {
     console.error('ClusterPageGeneric: missing clusterId');
@@ -196,8 +196,12 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
 };
 
 export const SingleClusterPage: React.FC<{ clusterId: string }> = ({ clusterId }) => (
-  <ClusterPageGeneric clusterId={clusterId} showBreadcrumbs={false} />
+  <AlertsContextProvider>
+    <ClusterPageGeneric clusterId={clusterId} />
+  </AlertsContextProvider>
 );
 export const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => (
-  <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
+  <AlertsContextProvider>
+    <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
+  </AlertsContextProvider>
 );
