@@ -52,7 +52,10 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     if (!clusterInfraEnvs) {
       return new Error(`Not infraEnvs found for this cluster ${clusterId}`);
     }
-    if (cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE) {
+    if (
+      cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE &&
+      cpuArchitecture !== CpuArchitecture.MULTI
+    ) {
       return clusterInfraEnvs[cpuArchitecture] || new Error(`InfraEnv can't be found`);
     }
 
