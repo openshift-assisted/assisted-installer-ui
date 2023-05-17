@@ -35,7 +35,9 @@ module.exports = defineConfig({
     ASSISTED_MINIMAL_ISO: false,
   },
   e2e: {
-    setupNodeEvents(on, config) {},
+    setupNodeEvents(on, config) {
+      return require('./src/plugins/index.ts')(on, config);
+    },
     specPattern: './src/integration/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: './src/support/index.ts',
     baseUrl: 'http://localhost:4173',
