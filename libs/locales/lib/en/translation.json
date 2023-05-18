@@ -554,7 +554,7 @@
   "ai:OVN separates the physical network topology from the logical one and is recommended if you're using new or telco features.": "OVN separates the physical network topology from the logical one and is recommended if you're using new or telco features.",
   "ai:Packet loss": "Packet loss",
   "ai:Password": "Password",
-  "ai:Paste one or more PEM formatted certificates that you want the cluster to trust into this field.": "Paste one or more PEM formatted certificates that you want the cluster to trust into this field.",
+  "ai:Paste in 1 or more PEM formatted certificates that you want the cluster to trust.": "Paste in 1 or more PEM formatted certificates that you want the cluster to trust.",
   "ai:Paste the content of a public ssh key you want to use to connect to the hosts into this field.": "Paste the content of a public ssh key you want to use to connect to the hosts into this field.",
   "ai:Pending - {{operatorsCountString}}": "Pending - {{operatorsCountString}}",
   "ai:Pending host assignment": "Pending host assignment",
