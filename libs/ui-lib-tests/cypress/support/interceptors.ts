@@ -14,6 +14,7 @@ import createReadOnlyClusterFixtureMapping from '../fixtures/read-only';
 import createStorageFixtureMapping from '../fixtures/storage';
 import createDualStackFixtureMapping from '../fixtures/dualstack';
 import createStaticIpFixtureMapping from '../fixtures/static-ip';
+import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
 const allClustersApiPath = '/api/assisted-install/v2/clusters/';
@@ -64,7 +65,7 @@ const getScenarioFixtureMapping = () => {
   return fixtureMapping;
 };
 
-const mockClusterResponse = (req) => {
+const mockClusterResponse: HttpRequestInterceptor = (req) => {
   const fixtureMapping = getScenarioFixtureMapping();
   if (fixtureMapping?.clusters) {
     req.reply(transformClusterFixture(fixtureMapping));
@@ -75,12 +76,12 @@ const mockClusterResponse = (req) => {
   }
 };
 
-const mockSupportedPlatformsResponse = (req) => {
+const mockSupportedPlatformsResponse: HttpRequestInterceptor = (req) => {
   const platforms = Cypress.env('AI_SUPPORTED_PLATFORMS') || ['none'];
   req.reply(platforms);
 };
 
-const mockInfraEnvResponse = (req) => {
+const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
   const fixtureMapping = getScenarioFixtureMapping();
   if (fixtureMapping?.infraEnvs) {
     req.reply(transformInfraEnvFixture(fixtureMapping.infraEnvs));
@@ -205,7 +206,7 @@ const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };
 
-const loadAiAPIIntercepts = (conf) => {
+const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   Cypress.env('clusterId', fakeClusterId);
 
   if (conf !== null) {
