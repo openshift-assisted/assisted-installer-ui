@@ -26,7 +26,7 @@ declare namespace Cypress {
       setAlias?: boolean,
       setEnvVar?: boolean,
     ): Chainable<Cypress.Exec>;
-    newByDataTestId(selector: string, timeout?: number): Chainable<JQuery<>>;
+    newByDataTestId(selector: string, timeout?: number): Chainable<JQuery<HTMLElement>>;
     hostDetailSelector(i: number, label: string, timeout?: number): Chainable<Element>;
     getClusterNameLinkSelector(clusterName?: string): Chainable<Element>;
     getIndexByName(selector: string, name: string, timeout?: number): Chainable<Element>;
