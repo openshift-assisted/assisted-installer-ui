@@ -16,7 +16,7 @@
     "build:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run build",
     "preview:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run preview",
     "serve:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run serve",
-    "test:ci": "yarn run start-test 'yarn preview:assisted-ui' http://localhost:4173 'cypress run --headless'",
-    "test": "yarn run start-test 'yarn serve:assisted-ui' http://localhost:5173 'cypress open'"
+    "cy:run": "yarn run start-test 'yarn preview:assisted-ui' http://localhost:4173 'cypress run --headless --browser chrome'",
+    "cy:open": "yarn run -T env-cmd -e dev start-test 'yarn serve:assisted-ui' http://localhost:5173 'cypress open'"
   }
 }
