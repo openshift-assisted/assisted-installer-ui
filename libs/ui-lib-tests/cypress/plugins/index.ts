@@ -11,7 +11,7 @@
 
 let shouldSkip = false;
 
-module.exports = (on) => {
+export default (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   on('task', {
     resetShouldSkipFlag() {
       shouldSkip = false;
