@@ -1,8 +1,9 @@
 import { defineConfig } from 'cypress';
+import pluginsConfig from './cypress/plugins';
 import dummyPullSecret from './cypress/fixtures/data/dummy-pull-secret.json';
 
 const GLOBAL_TIMEOUT = 12000;
-const GLOBAL_BASE_URL = 'http://localhost:4173';
+const GLOBAL_BASE_URL = process.env.GLOBAL_BASE_URL || 'http://localhost:4173';
 
 export default defineConfig({
   modifyObstructiveCode: false,
@@ -32,11 +33,13 @@ export default defineConfig({
   },
   e2e: {
     setupNodeEvents(on, config) {
-      return require('cypress/plugins/index.js')(on, config);
+      return pluginsConfig(on, config);
     },
     specPattern: 'cypress/integration/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/index.ts',
     baseUrl: GLOBAL_BASE_URL,
     experimentalRunAllSpecs: true,
+    experimentalMemoryManagement: true,
+    numTestsKeptInMemory: 5,
   },
 });
