@@ -30,7 +30,7 @@ const CLUSTER_NAME_VALID_CHARS_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)$/;
+const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)+$/;
 const DNS_NAME_REGEX_OCM = /^([a-z0-9]+(-[a-z0-9]+)*[.])+[a-z]{2,}$/;
 
 const PROXY_DNS_REGEX =
@@ -371,9 +371,10 @@ export const dnsNameValidationSchema = Yup.string()
   });
 
 export const validateBaseDomainName = (baseDomainName: string) => {
-  if (baseDomainName.match(BASE_DOMAIN_REGEX)) return true;
-  else if (baseDomainName.match(DNS_NAME_REGEX_OCM)) return true;
-  else return false;
+  if (baseDomainName.match(BASE_DOMAIN_REGEX) && baseDomainName.length > 1) {
+    return true;
+  }
+  return !!baseDomainName.match(DNS_NAME_REGEX_OCM);
 };
 
 export const baseDomainValidationSchema = Yup.string()
