@@ -51,14 +51,15 @@ export const StaticIPInfo: React.FC = () => {
 
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
-const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
-  Yup.object<DiscoveryImageFormValues>().shape({
-    sshPublicKey: sshPublicKeyValidationSchema,
-    httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-    httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
-    noProxy: noProxyValidationSchema,
-  }),
-);
+const getValidationSchema = (allowEmpty: boolean) =>
+  Yup.lazy<DiscoveryImageFormValues>((values) =>
+    Yup.object<DiscoveryImageFormValues>().shape({
+      sshPublicKey: sshPublicKeyValidationSchema,
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', allowEmpty }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', allowEmpty }), // share the schema, httpS is currently not supported
+      noProxy: noProxyValidationSchema,
+    }),
+  );
 
 type DiscoveryImageConfigFormProps = Proxy & {
   onCancel: () => void;
@@ -71,6 +72,7 @@ type DiscoveryImageConfigFormProps = Proxy & {
   sshPublicKey?: string;
   imageType?: ImageType;
   isIPXE?: boolean;
+  allowEmpty?: boolean;
 };
 
 export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> = ({
@@ -84,6 +86,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
   hideDiscoveryImageType,
   hasDHCP,
   isIPXE,
+  allowEmpty,
 }) => {
   const initialValues: DiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -99,7 +102,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={getValidationSchema(!!allowEmpty)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
