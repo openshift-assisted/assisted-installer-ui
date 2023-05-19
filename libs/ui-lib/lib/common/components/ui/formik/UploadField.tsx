@@ -80,8 +80,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
             dropzoneProps={{
               ...dropzoneProps,
               onDropRejected:
-                dropzoneProps?.onDropRejected &&
-                dropzoneProps?.onDropRejected(helpers as FieldHelperProps<string>),
+                dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers),
             }}
             allowEditingUploadedText={allowEdittingUploadedText}
           />
