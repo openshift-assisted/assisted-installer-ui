@@ -13,7 +13,7 @@ const Day2DownloadISO = () => {
   const wizardContext = useDay2WizardContext();
   const isoDownloadUrl = wizardContext.selectedIsoUrl;
   const ipxeDownloadUrl = wizardContext.selectedIpxeUrl;
-  const nameImageSuffix = `${cluster.name || ''}_${wizardContext.selectedCpuArchitecture}`;
+  const nameImageSuffix = `${cluster.name || ''}`;
   return (
     <ClusterWizardStep navigation={<Day2WizardNav />}>
       <Stack hasGutter>

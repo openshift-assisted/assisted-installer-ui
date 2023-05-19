@@ -30,12 +30,12 @@ export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureI
   [CpuArchitecture.ppc64le]: {
     description: 'Some features may not be available',
     featureSupportLevelId: 'PPC64LE_ARCHITECTURE',
-    label: 'PowerPC 64-bit LE',
+    label: 'IBM Power (ppc64le)',
   },
   [CpuArchitecture.s390x]: {
     description: 'Some features may not be available',
     featureSupportLevelId: 'S390X_ARCHITECTURE',
-    label: 'System/390 64-bit',
+    label: 'IBM zSystems (s390x)',
   },
 };
 

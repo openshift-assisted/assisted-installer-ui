@@ -18,6 +18,7 @@ import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
 import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
+import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -37,7 +38,12 @@ export const HostsClusterDetailTabContent = ({
 
   const { infraEnv } = useInfraEnv(
     ocmCluster.id ? ocmCluster.id : '',
-    CpuArchitecture.USE_DAY1_ARCHITECTURE,
+    ocmCluster.cpu_architecture
+      ? (mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) as CpuArchitecture)
+      : CpuArchitecture.x86,
+    ocmCluster.name,
+    pullSecret,
+    ocmCluster.openshift_version,
   );
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
@@ -106,8 +112,6 @@ export const HostsClusterDetailTabContent = ({
             ocmCluster,
             pullSecret,
             normalizedVersion,
-            cpuArchitecturesByVersionImage,
-            canSelectCpuArch,
           );
           const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
             day2Cluster,

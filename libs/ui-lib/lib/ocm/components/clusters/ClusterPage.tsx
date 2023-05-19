@@ -32,14 +32,15 @@ import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal'
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
 import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { usePullSecret } from '../../hooks';
 
 type MatchParams = {
   clusterId: string;
 };
 
-const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean }> = ({
+const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolean }> = ({
   clusterId,
-  showBreadcrumbs,
+  showBreadcrumbs = false,
 }) => {
   if (!clusterId) {
     console.error('ClusterPageGeneric: missing clusterId');
@@ -47,12 +48,19 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
   const fetchCluster = useFetchCluster(clusterId);
   const dispatch = useDispatch();
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
+  const pullSecret = usePullSecret();
   const {
     infraEnv,
     isLoading: infraEnvLoading,
     error: infraEnvError,
     updateInfraEnv,
-  } = useInfraEnv(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+  } = useInfraEnv(
+    clusterId,
+    cluster?.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster?.name,
+    pullSecret,
+    cluster?.openshiftVersion,
+  );
 
   const getContent = (cluster: Cluster, infraEnv: InfraEnv) => {
     if (cluster.status === 'adding-hosts') {
@@ -188,8 +196,12 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
 };
 
 export const SingleClusterPage: React.FC<{ clusterId: string }> = ({ clusterId }) => (
-  <ClusterPageGeneric clusterId={clusterId} showBreadcrumbs={false} />
+  <AlertsContextProvider>
+    <ClusterPageGeneric clusterId={clusterId} />
+  </AlertsContextProvider>
 );
 export const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => (
-  <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
+  <AlertsContextProvider>
+    <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
+  </AlertsContextProvider>
 );

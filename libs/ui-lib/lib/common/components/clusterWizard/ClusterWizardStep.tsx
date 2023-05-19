@@ -10,7 +10,11 @@ type ClusterWizardStepProps = {
   navigation?: React.ReactNode;
 };
 
-const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ navigation, footer, children }) => {
+const ClusterWizardStep = ({
+  navigation,
+  footer,
+  children,
+}: React.PropsWithChildren<ClusterWizardStepProps>) => {
   // activeStep is required, but we're not passing it. Using the cast to avoid TS error
   const activeStep = undefined as unknown as WizardBodyProps['activeStep'];
   return (

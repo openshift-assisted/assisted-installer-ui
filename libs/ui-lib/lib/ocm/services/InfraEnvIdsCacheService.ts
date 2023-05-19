@@ -21,7 +21,7 @@ const read = (): InfraEnvCache => {
 };
 
 type InfraEnvStorage = Omit<Storage, 'getItem' | 'removeItem' | 'setItem'> & {
-  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null;
+  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | Error;
   removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): void;
   removeInfraEnvs(clusterId: string): void;
   updateInfraEnvs(clusterId: string, infraEnvs: InfraEnv[]): void;
@@ -42,18 +42,21 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     localStorage.removeItem(CACHE_KEY);
   },
 
-  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null {
+  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | Error {
     if (!clusterId || !cpuArchitecture) {
-      return null;
+      return new Error(`clusterId or cpuArchitecture are missing`);
     }
 
     const cache = read();
     const clusterInfraEnvs = cache[clusterId];
     if (!clusterInfraEnvs) {
-      return null;
+      return new Error(`Not infraEnvs found for this cluster ${clusterId}`);
     }
-    if (cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE) {
-      return clusterInfraEnvs[cpuArchitecture] || null;
+    if (
+      cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE &&
+      cpuArchitecture !== CpuArchitecture.MULTI
+    ) {
+      return clusterInfraEnvs[cpuArchitecture] || new Error(`InfraEnv can't be found`);
     }
 
     const architectures = getAllCpuArchitectures().filter((arch) => {

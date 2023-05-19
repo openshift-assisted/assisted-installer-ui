@@ -54,7 +54,10 @@ jobs:
         run: |
           tags=( latest-${GITHUB_SHA} latest )
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            tags+=( ${GITHUB_REF_NAME} latest-released )
+            tags+=( ${GITHUB_REF_NAME} )
+            if [[ ! "${GITHUB_REF_NAME}" =~ -cim$ ]]; then
+              tags+=( latest-released )            
+            fi
           fi
           echo "tags=${tags[@]}" >> $GITHUB_OUTPUT
           echo "tags=${tags[@]}"

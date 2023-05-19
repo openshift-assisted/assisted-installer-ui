@@ -8,7 +8,7 @@ import {
   SupportLevel,
   SupportLevels,
 } from '../../../common';
-import { useOpenshiftVersions } from '../../hooks';
+import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import {
   getNewFeatureDisabledReason,
   isFeatureSupportedAndAvailable,
@@ -42,9 +42,13 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   openshiftVersion,
 }) => {
   const { loading: loadingOCPVersions } = useOpenshiftVersions();
+  const pullSecret = usePullSecret();
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',
-    CpuArchitecture.USE_DAY1_ARCHITECTURE,
+    cluster?.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster?.name,
+    pullSecret,
+    cluster?.openshiftVersion,
   );
   const featureSupportLevels = useSupportLevelsAPI('features', openshiftVersion, cpuArchitecture);
 

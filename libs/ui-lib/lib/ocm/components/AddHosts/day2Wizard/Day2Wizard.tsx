@@ -41,6 +41,7 @@ const Day2Wizard = () => {
       variant={ModalVariant.large}
       showClose={false}
       hasNoBodyWrapper
+      id="generate-discovery-iso-modal"
     >
       <div className={classNames('pf-c-wizard', 'cluster-wizard')}>
         <WizardHeader
