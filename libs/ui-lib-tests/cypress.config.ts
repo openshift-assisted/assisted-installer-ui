@@ -2,18 +2,13 @@ import { defineConfig } from 'cypress';
 import pluginsConfig from './cypress/plugins';
 import dummyPullSecret from './cypress/fixtures/data/dummy-pull-secret.json';
 
-const GLOBAL_TIMEOUT = 12000;
-const GLOBAL_BASE_URL = process.env.GLOBAL_BASE_URL || 'http://localhost:4173';
+const GLOBAL_TIMEOUT = Number(process.env.GLOBAL_TIMEOUT) || 60000;
+const GLOBAL_BASE_URL = 'http://localhost:4173';
 
 export default defineConfig({
   modifyObstructiveCode: false,
   viewportWidth: 1600,
   viewportHeight: 900,
-  execTimeout: GLOBAL_TIMEOUT,
-  defaultCommandTimeout: GLOBAL_TIMEOUT,
-  requestTimeout: GLOBAL_TIMEOUT,
-  responseTimeout: GLOBAL_TIMEOUT,
-  pageLoadTimeout: GLOBAL_TIMEOUT,
   env: {
     OPENSHIFT_VERSION: '4.12.14',
     DNS_DOMAIN_NAME: 'redhat.com',
@@ -22,7 +17,7 @@ export default defineConfig({
     REMOTE_SSH_ID_FILE: '',
     REMOTE_USER: '',
     REMOTE_HOST: '',
-    PULL_SECRET: dummyPullSecret,
+    PULL_SECRET: JSON.stringify(dummyPullSecret),
     API_BASE_URL: GLOBAL_BASE_URL,
     API_VERSION: 'v2',
     DEV_FLAG: true,

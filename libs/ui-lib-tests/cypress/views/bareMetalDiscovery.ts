@@ -26,7 +26,7 @@ export const bareMetalDiscoveryPage = {
   },
   platformIntegration: {
     getFullPotentialHint: () => {
-      return cy.get('[data-testid="discover-platform-integration-hosts"]');
+      return cy.get('[data-testid="discover-platform-integration-hosts"]', { timeout: 16000 });
     },
     getToggleSwitch: () => {
       return cy.get('#form-input-usePlatformIntegration-field');

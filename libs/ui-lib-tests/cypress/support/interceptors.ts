@@ -202,7 +202,7 @@ const addAdditionalIntercepts = () => {
     { domain: 'e2e.redhat.com', provider: 'route53' },
   ]);
 
-  cy.intercept('GET', '/api/assisted-install/v2/clusters//default-config', defaultConfig);
+  cy.intercept('GET', '/api/assisted-install/v2/clusters/default-config', defaultConfig).as('getDefaultConfig');
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };
 
