@@ -16,7 +16,6 @@ import {
   CustomManifestValues,
   ListManifestsExtended,
 } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
-import { Buffer } from 'buffer';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
@@ -97,7 +96,7 @@ const ClustersService = {
     return {
       folder: manifest.folder,
       fileName: manifest.filename,
-      content: Buffer.from(manifest.manifestYaml).toString('base64'),
+      content: window.btoa(manifest.manifestYaml),
     };
   },
 
@@ -110,7 +109,7 @@ const ClustersService = {
       fileName: existingManifest.filename,
       updatedFolder: updatedManifest.folder,
       updatedFileName: updatedManifest.filename,
-      updatedContent: Buffer.from(updatedManifest.manifestYaml).toString('base64'),
+      updatedContent: window.btoa(updatedManifest.manifestYaml),
     };
   },
 
