@@ -16,6 +16,7 @@ import {
   CustomManifestValues,
   ListManifestsExtended,
 } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import { Buffer } from 'buffer';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
