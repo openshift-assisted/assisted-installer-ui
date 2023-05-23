@@ -105,23 +105,24 @@ jobs:
           DEBUG: ${{ vars.CYPRESS_DEBUG }}
         with:
           install-command: yarn install --immutable
+          command: >
+            yarn dlx cypress run
+            --config-file cypress.config.ts
+            --browser chrome
+            --parallel
           build: yarn build:all
           start: yarn preview:assisted-ui
           working-directory: libs/ui-lib-tests
-          config-file: cypress.config.ts
-          browser: chrome
-          env: CYPRESS_API_BASE_URL=http://localhost:4173
           wait-on: 'http://[::1]:4173'
       - name: Store test execution screenshots on failure
         uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: cypress-screenshots
-          path: |
-            libs/ui-lib-tests/cypress/screenshots
+          path: libs/ui-lib-tests/cypress/screenshots
       - name: Store test execution video
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
-          path: cypress/videos
+          path: libs/ui-lib-tests/cypress/videos
