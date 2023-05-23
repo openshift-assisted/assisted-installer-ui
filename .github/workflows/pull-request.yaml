@@ -13,7 +13,8 @@ on:
 
 env:
   NODE_OPTIONS: '--max-old-space-size=8192'
-
+  # See https://github.com/cypress-io/cypress/issues/25357
+  ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
 jobs:
   preflight-check:
     # Prevents running the workflow when a PR is marked as draft.
@@ -90,7 +91,7 @@ jobs:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ vars.PR_CHECKS_TEST_TIMEOUT }}
+    timeout-minutes:  ${{ vars.PR_TESTS_TIMEOUT_MINUTES }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -111,6 +112,7 @@ jobs:
           start: yarn preview:assisted-ui
           working-directory: libs/ui-lib-tests
           wait-on: 'http://[::1]:4173'
+          publish-summary: true
       - name: Store test execution screenshots on failure
         uses: actions/upload-artifact@v3
         if: failure()
