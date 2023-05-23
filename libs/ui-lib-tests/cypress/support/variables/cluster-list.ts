@@ -1,0 +1,10 @@
+Cypress.env('emptyStateNewClusterButtonId', '#empty-state-new-cluster-button');
+Cypress.env('deleteClusterSubmit', `[data-testid=delete-cluster-submit]`);
+Cypress.env('createNewClusterId', '#button-create-new-cluster');
+Cypress.env('clustersTableAriaLabel', 'table[aria-label="Clusters table"]');
+Cypress.env('clusterListExtraActionsDropdown', `[data-testid=cluster-list-extra-actions-dropdown]`);
+Cypress.env('searchStringId', '#search-string');
+Cypress.env('clusterListFilterStatusId', '#cluster-list-filter-status');
+Cypress.env('clusterRowIdPrefix', '#cluster-row-');
+Cypress.env('buttonDeleteIdPrefix', '#button-delete-');
+Cypress.env('clusterNameDataTestIdPrefix', 'cluster-name-');
