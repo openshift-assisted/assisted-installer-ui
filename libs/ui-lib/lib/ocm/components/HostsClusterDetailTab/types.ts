@@ -6,3 +6,9 @@ export type HostsClusterDetailTabProps = {
   isVisible: boolean;
   allEnabledFeatures: FeatureListType;
 };
+
+export interface AddHostsTabState {
+  showTab: boolean;
+  isDisabled: boolean;
+  tabTooltip: string;
+}
