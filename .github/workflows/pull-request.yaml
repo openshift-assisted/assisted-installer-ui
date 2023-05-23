@@ -112,6 +112,7 @@ jobs:
           start: yarn preview:assisted-ui
           working-directory: libs/ui-lib-tests
           wait-on: 'http://[::1]:4173'
+          publish-summary: true
       - name: Store test execution screenshots on failure
         uses: actions/upload-artifact@v3
         if: failure()
