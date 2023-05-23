@@ -3,6 +3,7 @@
   "devDependencies": {
     "@openshift-assisted/toolbox": "workspace:*",
     "dpdm": "^3.12.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.36.0",
     "prettier": "2.8.4",
     "rimraf": "^4.4.0",
@@ -26,7 +27,7 @@
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
     "format:all": "yarn prettier --cache --cache-strategy=content --check .",
     "lint:all": "yarn eslint --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
-    "test:all": "echo WIP"
+    "test:all": "yarn workspace @openshift-assisted/integration-tests-ocm run test:assisted-ui"
   },
   "workspaces": [
     "apps/*",

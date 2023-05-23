@@ -1,6 +1,6 @@
-import Day2ClusterService from '../../services/Day2ClusterService';
 import { getFeatureSupported } from '../featureSupportLevels/FeatureSupportLevelProvider';
 import { OcmClusterType } from '../AddHosts/types';
+import { AddHostsTabState } from './types';
 
 const isSNOExpansionAllowed = (cluster: OcmClusterType) => {
   return getFeatureSupported(
@@ -10,51 +10,52 @@ const isSNOExpansionAllowed = (cluster: OcmClusterType) => {
   );
 };
 
-const visibleTabResult = {
-  showTab: true,
-  isDisabled: false,
-  tabTooltip: '',
+const makeState = (
+  state: 'hidden' | 'visible' | 'disabled',
+  tooltipMessage = '',
+): AddHostsTabState => {
+  switch (state) {
+    case 'hidden':
+      return {
+        showTab: false,
+        isDisabled: false,
+        tabTooltip: '',
+      };
+    case 'visible':
+      return {
+        showTab: true,
+        isDisabled: false,
+        tabTooltip: tooltipMessage,
+      };
+    case 'disabled':
+      return {
+        showTab: true,
+        isDisabled: true,
+        tabTooltip: tooltipMessage,
+      };
+  }
 };
 
-const hiddenTabResult = {
-  showTab: false,
-  isDisabled: false,
-  tabTooltip: '',
-};
-
-const disabledTabResult = (tooltipMessage: string) => ({
-  showTab: true,
-  isDisabled: true,
-  tabTooltip: tooltipMessage,
-});
-
-export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) => {
-  const isHiddenTab = cluster.state !== 'ready' && cluster.state !== 'installed';
-  if (isHiddenTab) {
-    return hiddenTabResult;
-  }
-
-  // Cluster’s product id is not 'OCP-AssistedInstall'. We show disabled tab with a message
-  if (cluster.product?.id !== 'OCP-AssistedInstall') {
-    return disabledTabResult(
-      'Only clusters installed with Assisted Installer can be scaled up using the web interface. You can still scale up clusters using the CLI.',
-    );
-  }
-
+export const getAddHostsTabState = (cluster: OcmClusterType): AddHostsTabState => {
+  const isClusterStateReady = /ready|installed/.test(cluster.state);
+  const wasInstalledUsingAssistedInstaller = cluster.product?.id === 'OCP-AssistedInstall';
   // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
-  // If that's not the case, we will still show the tab, and the content will be an ErrorState with an explanation message
   const day1ClusterHostCount = cluster.metrics?.nodes?.total || 0;
-  if (day1ClusterHostCount === 0 || !Day2ClusterService.getOpenshiftClusterId(cluster)) {
-    return visibleTabResult;
-  }
 
-  // The cluster has metrics etc., but it's an SNO with an OpenshiftVersion that doesn't support Day2 flow
-  if (day1ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
-    return disabledTabResult(
-      'OpenShift version not supported for SNO expansion. Hosts cannot be added to an existing SNO cluster that was installed with any OpenShift version older than 4.11. Upgrade to a newer OpenShift version and try again.',
-    );
-  }
+  if (isClusterStateReady && wasInstalledUsingAssistedInstaller) {
+    let tabState = makeState('visible');
+    if (day1ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
+      // The cluster has metrics etc., but it's an SNO with an OpenshiftVersion that doesn't support Day2 flow
+      tabState = makeState(
+        'disabled',
+        'OpenShift version not supported for SNO expansion. Hosts cannot be added to an existing SNO cluster that was installed with any OpenShift version older than 4.11. Upgrade to a newer OpenShift version and try again.',
+      );
+    }
 
-  // This is a cluster that supports the AI Day2 flow
-  return visibleTabResult;
+    return tabState;
+  } else {
+    // The cluster is not ready or was not installed using Assisted Installer.
+    // (see: https://issues.redhat.com/browse/HAC-3989)
+    return makeState('hidden');
+  }
 };
