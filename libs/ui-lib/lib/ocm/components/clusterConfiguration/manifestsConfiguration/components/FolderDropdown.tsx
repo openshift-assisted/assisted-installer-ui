@@ -6,10 +6,10 @@ import {
   HelperText,
   FormGroup,
 } from '@patternfly/react-core';
-import { CaretDownIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import { getFieldId } from '../../../../../common/components/ui/formik';
-import { CUSTOM_MANIFESTS_HELP_LINK, PopoverIcon } from '../../../../../common';
+import { PopoverIcon } from '../../../../../common';
 
 const FolderLabel = () => {
   return (
