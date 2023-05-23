@@ -104,14 +104,14 @@ jobs:
         env:
           DEBUG: ${{ vars.CYPRESS_DEBUG }}
         with:
-          install: yarn install --immutable
+          install-command: yarn install --immutable
           build: yarn build:all
           start: yarn preview:assisted-ui
           working-directory: libs/ui-lib-tests
           config-file: cypress.config.ts
           browser: chrome
           env: CYPRESS_API_BASE_URL=http://localhost:4173
-          wait-on: 'http://localhost:4173'
+          wait-on: 'http://[::1]:4173'
       - name: Store test execution screenshots on failure
         uses: actions/upload-artifact@v3
         if: failure()
