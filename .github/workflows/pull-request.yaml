@@ -91,7 +91,7 @@ jobs:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes:  ${{ vars.PR_TESTS_TIMEOUT_MINUTES }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
