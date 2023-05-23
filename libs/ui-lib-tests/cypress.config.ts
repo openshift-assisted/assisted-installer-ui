@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress';
 import pluginsConfig from './cypress/plugins';
-import dummyPullSecret from './cypress/fixtures/data/dummy-pull-secret.json';
+import * as dummyPullSecret from './cypress/fixtures/data/dummy-pull-secret.json';
 
 const GLOBAL_TIMEOUT = Number(process.env.GLOBAL_TIMEOUT) || 60000;
 const GLOBAL_BASE_URL = 'http://localhost:4173';
