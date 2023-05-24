@@ -16,6 +16,7 @@ import {
   InfraEnv,
   AssistedInstallerOCMPermissionTypesListType,
   useFeature,
+  useAlerts,
 } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
@@ -104,6 +105,8 @@ const ClusterWizardContextProvider = ({
   const { customManifests } = useClusterCustomManifests(cluster?.id || '', true);
   const setClusterPermissions = useSetClusterPermissions();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+
+  const { clearAlerts } = useAlerts();
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
     const customManifestsStepNeedsToBeFilled =
@@ -170,6 +173,7 @@ const ClusterWizardContextProvider = ({
     };
     return {
       moveBack(): void {
+        clearAlerts();
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
         let nextStepId = wizardStepIds[currentStepIdx - 1];
         if (nextStepId === 'static-ip-host-configurations') {
@@ -227,6 +231,7 @@ const ClusterWizardContextProvider = ({
     addCustomManifests,
     customManifests,
     isSingleClusterFeatureEnabled,
+    clearAlerts,
   ]);
   if (!contextValue) {
     return null;
