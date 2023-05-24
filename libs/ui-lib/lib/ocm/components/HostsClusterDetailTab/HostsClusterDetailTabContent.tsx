@@ -40,7 +40,7 @@ export const HostsClusterDetailTabContent = ({
     ocmCluster.id ? ocmCluster.id : '',
     ocmCluster.cpu_architecture
       ? (mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) as CpuArchitecture)
-      : CpuArchitecture.x86,
+      : CpuArchitecture.USE_DAY1_ARCHITECTURE,
     ocmCluster.name,
     pullSecret,
     ocmCluster.openshift_version,
