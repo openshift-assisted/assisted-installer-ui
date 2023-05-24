@@ -149,7 +149,7 @@ const Day2ClusterDetails = () => {
 
   const changeCpuArchitectureDropdownAsync = React.useCallback(
     async (value: string, initialValues: Day2ClusterDetailValues) => {
-      if (!pullSecret) {
+      if (pullSecret === undefined) {
         setErrorState(new Error('Pull secret is missing'));
       } else {
         if (value !== initialValues.cpuArchitecture) {
@@ -160,7 +160,7 @@ const Day2ClusterDetails = () => {
               day2Cluster.id,
               value as SupportedCpuArchitecture,
             );
-            if (!infraEnv) {
+            if (!infraEnv || infraEnv instanceof Error) {
               try {
                 infraEnv = await InfraEnvsService.create({
                   name: InfraEnvsService.makeInfraEnvName(
