@@ -34,7 +34,7 @@ const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)$/;
 const DNS_NAME_REGEX_OCM = /^([a-z0-9]+(-[a-z0-9]+)*[.])+[a-z]{2,}$/;
 
 const PROXY_DNS_REGEX =
-  /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}\.){1}([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})+$)|(^\*$)/;
+  /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})+$)/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
@@ -504,17 +504,19 @@ export const richHostnameValidationSchema = (
 };
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
-export const httpProxyValidationSchema = (
-  values: ProxyFieldsType,
-  pairValueName: 'httpProxy' | 'httpsProxy',
-) =>
-  Yup.string()
-    .test(
-      'http-proxy-no-empty-validation',
-      'At least one of the HTTP or HTTPS proxy URLs is required.',
-      (value) => Boolean(!values.enableProxy || value || values[pairValueName]),
-    )
-    .test('http-proxy-validation', httpProxyValidationMessage, (value: string) => {
+export const httpProxyValidationSchema = ({
+  values,
+  pairValueName,
+  allowEmpty,
+}: {
+  values: ProxyFieldsType;
+  pairValueName: 'httpProxy' | 'httpsProxy';
+  allowEmpty?: boolean;
+}) => {
+  const validation = Yup.string().test(
+    'http-proxy-validation',
+    httpProxyValidationMessage,
+    (value: string) => {
       if (!value) {
         return true;
       }
@@ -529,7 +531,19 @@ export const httpProxyValidationSchema = (
         return false;
       }
       return true;
-    });
+    },
+  );
+
+  if (allowEmpty) {
+    return validation;
+  }
+
+  return validation.test(
+    'http-proxy-no-empty-validation',
+    'At least one of the HTTP or HTTPS proxy URLs is required.',
+    (value) => !values.enableProxy || !!value || !!values[pairValueName],
+  );
+};
 
 const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
   if (value.match(dnsRegex)) {

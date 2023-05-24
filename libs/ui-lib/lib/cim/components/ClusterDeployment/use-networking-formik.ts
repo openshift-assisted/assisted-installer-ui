@@ -54,8 +54,8 @@ const getNetworkConfigurationValidationSchema = (
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
       hostSubnet: hostSubnetValidationSchema,
-      httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-      httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema,
     }),
   );

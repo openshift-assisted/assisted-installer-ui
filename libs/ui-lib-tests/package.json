@@ -1,0 +1,22 @@
+{
+  "name": "@openshift-assisted/ui-lib-tests",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@openshift-assisted/ui-lib": "workspace:*",
+    "@testing-library/cypress": "^9.0.0",
+    "@types/lodash": "^4.14.121",
+    "cypress": "^12.11.0",
+    "cypress-fill-command": "^1.0.2",
+    "lodash": "^4.17.15",
+    "start-server-and-test": "^2.0.0"
+  },
+  "scripts": {
+    "build:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run build",
+    "preview:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run preview",
+    "serve:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run serve",
+    "cy:run": "yarn run start-test 'yarn preview:assisted-ui' http://localhost:4173 'cypress run --headless --browser chrome'",
+    "cy:open": "yarn run start-test 'yarn preview:assisted-ui' http://localhost:4173 'cypress open'"
+  }
+}

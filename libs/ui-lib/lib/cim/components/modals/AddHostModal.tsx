@@ -73,6 +73,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
             noProxy={noProxy}
             hasDHCP={hasDHCP}
             isIPXE={isIPXE}
+            allowEmpty
           />
         )}
         {dialogType === 'download' && (

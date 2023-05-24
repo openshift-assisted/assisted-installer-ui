@@ -38,6 +38,7 @@ export const getClusterWizardFirstStep = (
   state?: ClusterWizardFlowStateType,
   hosts?: Host[] | undefined,
   isSingleClusterFeatureEnabled?: boolean,
+  customManifestsStepNeedsToBeFilled?: boolean,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
@@ -52,6 +53,10 @@ export const getClusterWizardFirstStep = (
       return 'static-ip-yaml-view';
     }
     return 'static-ip-network-wide-configurations';
+  }
+
+  if (customManifestsStepNeedsToBeFilled) {
+    return 'custom-manifests';
   }
   switch (state) {
     case 'ready':

@@ -72,8 +72,16 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
       location: locationValidationSchema(t).required(t('ai:Location is a required field.')),
       pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
       sshPublicKey: sshPublicKeyValidationSchema,
-      httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-      httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
+      httpProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpsProxy',
+        allowEmpty: true,
+      }),
+      httpsProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpProxy',
+        allowEmpty: true,
+      }), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema,
       labels: Yup.array()
         .of(Yup.string())

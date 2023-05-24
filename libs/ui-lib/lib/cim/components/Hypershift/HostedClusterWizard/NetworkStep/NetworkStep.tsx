@@ -28,8 +28,8 @@ const getValidationSchema = (t: TFunction) =>
       clusterNetworkHostPrefix: values.isAdvanced
         ? hostPrefixValidationSchema(values.clusterNetworkCidr)
         : Yup.number(),
-      httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-      httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema,
       nodePortAddress:
         values.apiPublishingStrategy === 'NodePort'
