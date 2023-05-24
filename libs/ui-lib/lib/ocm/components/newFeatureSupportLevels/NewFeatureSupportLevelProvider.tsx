@@ -43,8 +43,6 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
 }) => {
   const { loading: loadingOCPVersions } = useOpenshiftVersions();
   const pullSecret = usePullSecret();
-  console.log('Provider1');
-  console.log(cluster);
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',
     cluster?.cpuArchitecture
