@@ -3,9 +3,11 @@ import { UniqueStringArrayExtractor } from '../../staticIp/commonValidationSchem
 import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import { load } from 'js-yaml';
 
+const maxFileSize = 100000; //100 kb
 const FILENAME_REGEX = /^[^/]*\.(yaml|yml|json)$/;
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 const INCORRECT_TYPE_FILE = 'File type is not supported. File type must be yaml, yml or json.';
+const INCORRECT_FILE_SIZE = 'File size is too big. Upload a new 100 Kb or less.';
 
 export const getUniqueValidationSchema = <FormValues,>(
   uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
@@ -53,6 +55,9 @@ export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>((
           .concat(getUniqueValidationSchema(getAllManifests)),
         manifestYaml: Yup.string()
           .required('Required')
+          .test('not-big-file', INCORRECT_FILE_SIZE, (value: string) => {
+            return validateFileSize(value);
+          })
           .test('not-valid-file', INCORRECT_TYPE_FILE, (value: string) => {
             return validateFileType(value);
           }),
@@ -84,5 +89,14 @@ const isStringValidJSON = (input: string): boolean => {
     return true;
   } catch (error) {
     return false;
+  }
+};
+
+const validateFileSize = (value: string): boolean => {
+  const contentFile = new Blob([value], { type: 'text/plain;charset=utf-8' });
+  if (contentFile.size > maxFileSize) {
+    return false;
+  } else {
+    return true;
   }
 };
