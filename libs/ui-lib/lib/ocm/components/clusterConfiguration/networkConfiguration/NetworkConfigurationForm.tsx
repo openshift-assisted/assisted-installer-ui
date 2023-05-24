@@ -134,7 +134,9 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
     isLoading,
   } = useInfraEnv(
     cluster.id,
-    cluster.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster.cpuArchitecture
+      ? (cluster.cpuArchitecture as CpuArchitecture)
+      : CpuArchitecture.USE_DAY1_ARCHITECTURE,
     cluster.name,
     pullSecret,
     cluster.openshiftVersion,
