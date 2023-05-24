@@ -3,7 +3,7 @@ import { UniqueStringArrayExtractor } from '../../staticIp/commonValidationSchem
 import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import { load } from 'js-yaml';
 
-const maxFileSize = 100000; //100 kb
+const MAX_FILE_SIZE = 100000; //100 kb
 const FILENAME_REGEX = /^[^/]*\.(yaml|yml|json)$/;
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 const INCORRECT_TYPE_FILE = 'File type is not supported. File type must be yaml, yml or json.';
@@ -94,7 +94,7 @@ const isStringValidJSON = (input: string): boolean => {
 
 const validateFileSize = (value: string): boolean => {
   const contentFile = new Blob([value], { type: 'text/plain;charset=utf-8' });
-  if (contentFile.size > maxFileSize) {
+  if (contentFile.size > MAX_FILE_SIZE) {
     return false;
   } else {
     return true;
