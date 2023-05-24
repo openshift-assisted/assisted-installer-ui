@@ -6,6 +6,8 @@ import {
   FieldArrayRenderProps,
   Formik,
   FormikConfig,
+  FormikErrors,
+  FormikHelpers,
   useFormikContext,
   yupToFormErrors,
 } from 'formik';
@@ -68,6 +70,33 @@ const getManifestDetails = (
   };
 };
 
+const handleApiErrorInForm = (
+  manifests: CustomManifestValues[],
+  manifestsThatExists: CustomManifestValues[],
+  actions: FormikHelpers<ManifestFormData>,
+) => {
+  const errors: FormikErrors<ManifestFormData> = {};
+  errors.manifests = [];
+  manifests.forEach((manifest) => {
+    (errors.manifests as FormikErrors<CustomManifestValues>[]).push({
+      fakeId: manifest.fakeId,
+      folder: '',
+      filename: '',
+      manifestYaml: '',
+    });
+  });
+  errors.manifests.forEach((errorManifest) => {
+    manifestsThatExists.forEach((updatedManifest) => {
+      if ((errorManifest as CustomManifestValues).fakeId === updatedManifest.fakeId) {
+        (errorManifest as CustomManifestValues).manifestYaml =
+          'Failed to update the existing manifest';
+      }
+    });
+  });
+
+  actions.setErrors(errors);
+};
+
 export const CustomManifestsForm = ({
   onFormStateChange,
   getEmptyValues,
@@ -89,25 +118,22 @@ export const CustomManifestsForm = ({
     async (values, actions) => {
       clearAlerts();
       actions.setSubmitting(true);
-      try {
-        const manifests = values.manifests;
-        const manifestsModified = manifests.filter(
-          (manifest) =>
-            !customManifests?.some(
-              (customManifest) =>
-                customManifest.folder === manifest.folder &&
-                customManifest.fileName === manifest.filename &&
-                customManifest.yamlContent === manifest.manifestYaml,
-            ),
-        );
-        if (cluster && manifestsModified.length > 0) {
-          //See if manifests exists previously to make a patch or create a new one
-          const manifestsThatExists = manifestsModified.filter(
-            (manifest) => manifest.fakeId !== '',
-          );
-          const newManifestsToCreate = manifestsModified.filter(
-            (manifest) => manifest.fakeId === '',
-          );
+
+      const manifests = values.manifests;
+      const manifestsModified = manifests.filter(
+        (manifest) =>
+          !customManifests?.some(
+            (customManifest) =>
+              customManifest.folder === manifest.folder &&
+              customManifest.fileName === manifest.filename &&
+              customManifest.yamlContent === manifest.manifestYaml,
+          ),
+      );
+      if (cluster && manifestsModified.length > 0) {
+        //See if manifests exists previously to make a patch or create a new one
+        const manifestsThatExists = manifestsModified.filter((manifest) => manifest.fakeId !== '');
+        const newManifestsToCreate = manifestsModified.filter((manifest) => manifest.fakeId === '');
+        try {
           const manifestsRequests = manifestsThatExists.map((updatedManifest) => {
             const { folderName, fileName } = getManifestDetails(updatedManifest);
 
@@ -128,16 +154,17 @@ export const CustomManifestsForm = ({
           if (newManifestsToCreate.length > 0) {
             await ClustersService.createClusterManifests(newManifestsToCreate, cluster?.id);
           }
+        } catch (e) {
+          handleApiErrorInForm(manifests, manifestsThatExists, actions);
+          handleApiError(e, () =>
+            addAlert({
+              title: 'Failed to update the custom manifests',
+              message: getApiErrorMessage(e),
+            }),
+          );
+        } finally {
+          actions.setSubmitting(false);
         }
-      } catch (e) {
-        handleApiError(e, () =>
-          addAlert({
-            title: 'Failed to update the custom manifests',
-            message: getApiErrorMessage(e),
-          }),
-        );
-      } finally {
-        actions.setSubmitting(false);
       }
     },
     [addAlert, clearAlerts, cluster, customManifests],
