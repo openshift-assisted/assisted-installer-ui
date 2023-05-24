@@ -6,28 +6,17 @@ import {
   HelperText,
   FormGroup,
 } from '@patternfly/react-core';
-import { CaretDownIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import { getFieldId } from '../../../../../common/components/ui/formik';
-import { CUSTOM_MANIFESTS_HELP_LINK, PopoverIcon } from '../../../../../common';
+import { PopoverIcon } from '../../../../../common';
 
 const FolderLabel = () => {
   return (
     <>
       Folder{' '}
       <PopoverIcon
-        bodyContent={
-          <>
-            Use documentation to help you select the right folder for the manifest you want to add.{' '}
-            <a
-              href={CUSTOM_MANIFESTS_HELP_LINK as string}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {'Learn more'} <ExternalLinkAltIcon />
-            </a>
-          </>
-        }
+        bodyContent={<>To overwrite a manifest, select the folder the existing manifest is in.</>}
       />
     </>
   );
