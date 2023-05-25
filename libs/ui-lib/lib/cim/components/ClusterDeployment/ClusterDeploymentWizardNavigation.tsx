@@ -19,7 +19,12 @@ const ClusterDeploymentWizardNavigation: React.FC<{
   const stepNames = wizardStepNames(t);
   return (
     <WizardNav>
-      <WizardNavItem key="installation-type" content="Installation type" step={0} isDisabled />
+      <WizardNavItem
+        key="installation-type"
+        content={t('ai:Installation type')}
+        step={0}
+        isDisabled
+      />
       <WizardNavItem
         key="cluster-details"
         content={stepNames['cluster-details']}
@@ -29,7 +34,7 @@ const ClusterDeploymentWizardNavigation: React.FC<{
         step={1}
         onNavItemClick={() => setCurrentStepId('cluster-details')}
       />
-      <WizardNavItem key="automation" content="Automation" step={2} isDisabled />
+      <WizardNavItem key="automation" content={t('ai:Automation')} step={2} isDisabled />
       {isCIMFlow(clusterDeployment) ? (
         <WizardNavItem
           key="hosts-selection"
