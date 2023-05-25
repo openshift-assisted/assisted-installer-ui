@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldHelperProps, useField } from 'formik';
+import { useField } from 'formik';
 import { FormGroup, FileUpload, Stack, StackItem } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
@@ -80,8 +80,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
             dropzoneProps={{
               ...dropzoneProps,
               onDropRejected:
-                dropzoneProps?.onDropRejected &&
-                dropzoneProps?.onDropRejected(helpers as FieldHelperProps<string>),
+                dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers),
             }}
             allowEditingUploadedText={allowEdittingUploadedText}
           />
