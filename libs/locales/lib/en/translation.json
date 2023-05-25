@@ -38,6 +38,7 @@
   "ai:A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync.": "A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync.",
   "ai:A Red Hat account's pull secret can be found in ": "A Red Hat account's pull secret can be found in ",
   "ai:A role will be chosen automatically based on detected hardware and network latency.": "A role will be chosen automatically based on detected hardware and network latency.",
+  "ai:Actions": "Actions",
   "ai:Add": "Add",
   "ai:Add another Tang server": "Add another Tang server",
   "ai:Add BMC host dialog": "Add BMC host dialog",
