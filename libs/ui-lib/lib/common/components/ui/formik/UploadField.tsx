@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldHelperProps, useField } from 'formik';
+import { useField } from 'formik';
 import { FormGroup, FileUpload, Stack, StackItem } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
