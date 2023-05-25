@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
-import { Form } from '@patternfly/react-core';
+import { Form, debounce } from '@patternfly/react-core';
 import {
   FieldArray,
   FieldArrayRenderProps,
@@ -107,12 +107,21 @@ export const CustomManifestsForm = ({
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [initialValues, setInitialValues] = React.useState<ManifestFormData | undefined>();
   const { addAlert, clearAlerts } = useAlerts();
-  const { customManifests, isLoading, error } = useClusterCustomManifests(cluster.id || '', true);
+  const [refreshFlag, setRefreshFlag] = React.useState<boolean>(true);
+  const { customManifests, isLoading, error } = useClusterCustomManifests(
+    cluster.id || '',
+    true,
+    refreshFlag,
+  );
   React.useEffect(() => {
     if (customManifests) {
       setInitialValues(getInitialValues(customManifests));
     }
   }, [customManifests, getInitialValues]);
+
+  const refreshCustomManifests = () => {
+    setRefreshFlag((refreshFlag) => !refreshFlag);
+  };
 
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
     async (values, actions) => {
@@ -150,9 +159,10 @@ export const CustomManifestsForm = ({
             );
           });
           await Promise.all(manifestsRequests);
-
+          refreshCustomManifests();
           if (newManifestsToCreate.length > 0) {
             await ClustersService.createClusterManifests(newManifestsToCreate, cluster?.id);
+            refreshCustomManifests();
           }
         } catch (e) {
           handleApiErrorInForm(manifests, manifestsThatExists, actions);
@@ -170,7 +180,7 @@ export const CustomManifestsForm = ({
     [addAlert, clearAlerts, cluster, customManifests],
   );
 
-  const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
+  const onSubmit = isViewerMode ? () => Promise.resolve() : debounce(handleSubmit, 1000);
 
   const validate = (values: ManifestFormData) => {
     try {
