@@ -110,17 +110,13 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
     it('nrt Can use IPv4 and IPv6 on DNS when dual stack', () => {
       staticIpPage.dualStackNetworking().click();
-      [
-        '192.168.1.45',
-        '8c86:31b3:d1f9:f62c:5fbd:c152:147f:eaf8',
-        '192.168.1.46,cf72:7c8c:484d:033d:37d1:1696:8f89:632f',
-        'c727:f720:e48e:ea29:bf92:c777:488e:5d55,192.168.1.45',
-        '192.168.1.47,192.168.1.48',
-        'db9c:b59a:ca26:fe30:cdeb:39d2:19b1:aa68,a6c4:b658:a2b5:f590:3b00:1506:56aa:519c',
-      ].forEach((dnsEntry) => {
-        staticIpPage.networkWideDns().type(dnsEntry);
-        commonActions.getDNSErrorMessage().should('not.exist');
-        staticIpPage.networkWideDns().clear();
+
+      cy.fixture('data/ipv4-and-ipv6-addresses.json').then((addresses) => {
+        addresses.forEach((dnsEntry) => {
+          staticIpPage.networkWideDns().type(dnsEntry);
+          commonActions.getDNSErrorMessage().should('not.exist');
+          staticIpPage.networkWideDns().clear();
+        });
       });
     });
   });
