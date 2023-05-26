@@ -59,6 +59,9 @@ const getScenarioFixtureMapping = () => {
     case 'AI_CREATE_STATIC_IP':
       fixtureMapping = createStaticIpFixtureMapping;
       break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      fixtureMapping = createMultinodeFixtureMapping;
+      break;
     default:
       break;
   }
@@ -119,6 +122,10 @@ const setScenarioEnvVars = ({ activeScenario }) => {
       break;
     case 'AI_CREATE_STATIC_IP':
       Cypress.env('CLUSTER_NAME', 'ai-e2e-static-ip');
+      break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      Cypress.env('CLUSTER_NAME', 'ai-e2e-custom-manifests');
+      Cypress.env('NUM_WORKERS', 0);
       break;
     default:
       break;

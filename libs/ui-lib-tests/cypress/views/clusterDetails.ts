@@ -122,4 +122,11 @@ export const clusterDetailsPage = {
   getClusterDetailsBody: () => {
     return cy.get('.pf-l-grid');
   },
+  getCustomManifestCheckbox: () => {
+    return cy.get(Cypress.env('addCustomManifestId'));
+  },
+  enableCustomManifests: () => {
+    clusterDetailsPage.getCustomManifestCheckbox().should('be.visible').check();
+    clusterDetailsPage.getCustomManifestCheckbox().should('be.checked');
+  },
 };

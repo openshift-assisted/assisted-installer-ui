@@ -78,10 +78,16 @@ export const commonActions = {
   startAtStorageStep: () => {
     commonActions.getWizardStepNav('Storage').click();
   },
+  startAtClusterDetailsStep: () => {
+    commonActions.getWizardStepNav('Cluster details').click();
+  },
   visitNewClusterPage: () => {
     cy.visit('/clusters/~new');
   },
   visitClusterDetailsPage: () => {
     cy.visit(`/clusters/${Cypress.env('clusterId')}`);
+  },
+  startAtCustomManifestsStep: () => {
+    commonActions.getWizardStepNav('Custom manifests').click();
   },
 };
