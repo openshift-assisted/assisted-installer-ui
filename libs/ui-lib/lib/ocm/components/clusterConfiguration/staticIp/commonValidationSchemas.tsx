@@ -139,30 +139,32 @@ export const isReservedIpv6Address = (ipv6Address: Address6) => {
   return ipv6Address.isLoopback() || ipv6Address.isMulticast();
 };
 
+function areNotReservedAdresses(value: any, protocolVersion?: ProtocolVersion): boolean {
+  if (!value) {
+    return true;
+  }
+  // The field may admit multiple values as a comma-separated string
+  const addresses = (value as string).split(',');
+  return addresses.every((address) => !isReservedAddress(address, protocolVersion));
+}
+
 export const isNotReservedHostIPAddress = (protocolVersion?: ProtocolVersion) => {
   return Yup.string().test(
     'is-not-reserved-ip-address',
     ({ value }) => {
       const addresses = (value as string).split(',');
       if (addresses.length === 1) {
-        return `Provided IP address is not a correct address for an interface.`;
+        return `The provided IP address is not a correct address for an interface.`;
       }
 
       const reservedAddresses = addresses.filter((address) => {
         return isReservedAddress(address, protocolVersion);
       });
-      return `Provided IP addresses ${reservedAddresses.join(
+      return `The provided IP addresses ${reservedAddresses.join(
         ', ',
       )} are not correct addresses for an interface.`;
     },
-    function (value) {
-      if (!value) {
-        return true;
-      }
-      // The field may admit multiple values as a comma-separated string
-      const addresses = (value as string).split(',');
-      return addresses.every((address) => !isReservedAddress(address, protocolVersion));
-    },
+    (value) => areNotReservedAdresses(value, protocolVersion),
   );
 };
 
@@ -172,24 +174,17 @@ export const isNotReservedHostDNSAddress = (protocolVersion?: ProtocolVersion) =
     ({ value }) => {
       const addresses = (value as string).split(',');
       if (addresses.length === 1) {
-        return `Provided IP address is not a correct address for a DNS.`;
+        return `The provided IP address is not a valid DNS address.`;
       }
 
       const reservedAddresses = addresses.filter((address) => {
         return isReservedAddress(address, protocolVersion);
       });
-      return `Provided IP addresses ${reservedAddresses.join(
+      return `The provided IP addresses ${reservedAddresses.join(
         ', ',
       )} are not valid DNS addresses.`;
     },
-    function (value) {
-      if (!value) {
-        return true;
-      }
-      // The field may admit multiple values as a comma-separated string
-      const addresses = (value as string).split(',');
-      return addresses.every((address) => !isReservedAddress(address, protocolVersion));
-    },
+    (value) => areNotReservedAdresses(value, protocolVersion),
   );
 };
 
