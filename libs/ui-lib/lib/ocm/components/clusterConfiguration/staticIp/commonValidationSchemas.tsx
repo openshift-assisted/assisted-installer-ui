@@ -180,7 +180,7 @@ export const isNotReservedHostDNSAddress = (protocolVersion?: ProtocolVersion) =
       });
       return `Provided IP addresses ${reservedAddresses.join(
         ', ',
-      )} are not correct addresses for a DNS.`;
+      )} are not valid DNS addresses.`;
     },
     function (value) {
       if (!value) {
