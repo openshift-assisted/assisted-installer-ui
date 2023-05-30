@@ -7,33 +7,31 @@ const MAX_FILE_SIZE = 100000; //100 kb
 const FILENAME_REGEX = /^[^/]*\.(yaml|yml|json)$/;
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 const INCORRECT_TYPE_FILE = 'File type is not supported. File type must be yaml, yml or json.';
+const UNIQUE_FOLDER_FILENAME =
+  'Ensure unique file names within each folder to avoid conflicts and errors.';
 
 export const getUniqueValidationSchema = <FormValues,>(
   uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
 ) => {
-  return Yup.string().test(
-    'unique',
-    'Folder and file name must be unique',
-    function (value: string) {
-      const context = this.options.context as Yup.TestContext & { values?: FormValues };
-      if (!context || !context.values) {
-        return this.createError({
-          message: 'Unexpected error: Yup test context should contain form values',
-        });
-      }
+  return Yup.string().test('unique', UNIQUE_FOLDER_FILENAME, function (value: string) {
+    const context = this.options.context as Yup.TestContext & { values?: FormValues };
+    if (!context || !context.values) {
+      return this.createError({
+        message: 'Unexpected error: Yup test context should contain form values',
+      });
+    }
 
-      const values = uniqueStringArrayExtractor(context.values, this, value);
+    const values = uniqueStringArrayExtractor(context.values, this, value);
 
-      const setValues = new Set(values);
+    const setValues = new Set(values);
 
-      if (!values) {
-        return this.createError({
-          message: 'Unexpected error: Failed to get values to test uniqueness',
-        });
-      }
-      return values.length === setValues.size;
-    },
-  );
+    if (!values) {
+      return this.createError({
+        message: 'Unexpected error: Failed to get values to test uniqueness',
+      });
+    }
+    return values.length === setValues.size;
+  });
 };
 
 const getAllManifests: UniqueStringArrayExtractor<ManifestFormData> = (values: ManifestFormData) =>
