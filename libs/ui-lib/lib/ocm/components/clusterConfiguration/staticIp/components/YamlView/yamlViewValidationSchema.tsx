@@ -19,7 +19,7 @@ import {
 
 const MAX_FILE_SIZE = 100000; //100 kb
 const requiredMsg = 'A value is required';
-const FILE_TYPE_MESSAGE = 'File type is not supported. File type must be yaml or yml.';
+const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
 
 const networkYamlValidationSchema = Yup.string()
   .required(requiredMsg)
