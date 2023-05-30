@@ -182,8 +182,6 @@ export const CustomManifestsForm = ({
             1,
           );
         }
-
-        console.log(customManifestsLocal);
       }
     },
     [customManifestsLocal],
