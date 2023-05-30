@@ -160,6 +160,35 @@ export const CustomManifestsForm = ({
     [customManifestsLocal],
   );
 
+  const removeCustomManifestFromLocal = React.useCallback(
+    (manifests: CustomManifestValues[]) => {
+      if (customManifestsLocal) {
+        const customManifestsLocalCopy = [...customManifestsLocal].filter((customManifest) => {
+          return !manifests.some((manifest) => {
+            return (
+              customManifest.folder === manifest.folder &&
+              customManifest.fileName === manifest.filename &&
+              customManifest.yamlContent === manifest.manifestYaml
+            );
+          });
+        });
+        if (customManifestsLocalCopy.length > 0) {
+          customManifestsLocal.splice(
+            customManifestsLocal.findIndex(
+              (manifest) =>
+                manifest.folder === customManifestsLocalCopy[0].folder &&
+                manifest.fileName === customManifestsLocalCopy[0].fileName,
+            ),
+            1,
+          );
+        }
+
+        console.log(customManifestsLocal);
+      }
+    },
+    [customManifestsLocal],
+  );
+
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
     async (values, actions) => {
       clearAlerts();
@@ -216,9 +245,18 @@ export const CustomManifestsForm = ({
         } finally {
           actions.setSubmitting(false);
         }
+      } else {
+        removeCustomManifestFromLocal(manifests);
       }
     },
-    [addAlert, clearAlerts, cluster, customManifestsLocal, updateCustomManifestsLocal],
+    [
+      addAlert,
+      clearAlerts,
+      cluster,
+      customManifestsLocal,
+      updateCustomManifestsLocal,
+      removeCustomManifestFromLocal,
+    ],
   );
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
