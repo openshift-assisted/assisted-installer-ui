@@ -210,7 +210,6 @@ export const CustomManifestsForm = ({
         const newManifestsToCreate = manifestsModified.filter((manifest) => manifest.fakeId === '');
         try {
           const manifestsRequests = manifestsThatExists.map((updatedManifest) => {
-            console.log(updatedManifest);
             const { folderName, fileName } = getManifestDetails(updatedManifest);
 
             const existingManifest: CustomManifestValues = {
