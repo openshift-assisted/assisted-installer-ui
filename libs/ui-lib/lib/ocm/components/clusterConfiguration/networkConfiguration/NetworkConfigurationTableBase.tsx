@@ -23,6 +23,7 @@ import { usePagination } from '../../../../common/components/hosts/usePagination
 import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
 import HostsTable from '../../../../common/components/hosts/HostsTable';
 import { ValidationsInfo } from '../../../../common/types/hosts';
+import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -70,6 +71,7 @@ const NetworkConfigurationTableBase = ({
   onSelect,
   selectedIDs,
 }: NetworkConfigurationTableProps) => {
+  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
   const { t } = useTranslation();
   const content = React.useMemo(
     () => [
@@ -87,7 +89,7 @@ const NetworkConfigurationTableBase = ({
 
   const hosts = cluster.hosts || [];
 
-  const paginationProps = usePagination(hosts.length);
+  const paginationProps = usePagination(hosts.length, wizardPerPage, setWizardPerPage);
 
   const ExpandComponent = React.useCallback(
     ({ obj }: { obj: Host }) => {

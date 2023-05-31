@@ -66,6 +66,9 @@ export const commonActions = {
   getDangerAlert: () => {
     return cy.get(Cypress.env('dangerAlertAriaLabel'));
   },
+  getDNSErrorMessage: () => {
+    return cy.get('#form-input-dns-field-helper-error');
+  },
   startAtNetworkingStep: () => {
     if (utils.hasWizardSignal('READY_TO_INSTALL')) {
       commonActions.getWizardStepNav('Networking').click();

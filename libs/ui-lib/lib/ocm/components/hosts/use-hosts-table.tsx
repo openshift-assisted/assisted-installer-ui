@@ -54,6 +54,7 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -440,6 +441,7 @@ export const HostsTableModals = ({
   onAdditionalNtpSource,
   onUpdateDay2ApiVip,
 }: HostsTableModalsProps) => {
+  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
   const dispatch = useDispatch();
   const { resetCluster } = React.useContext(AddHostsContext);
   const { uiState } = useSelector(selectCurrentClusterState);
@@ -460,7 +462,11 @@ export const HostsTableModals = ({
     () => [hostnameColumn(t), hardwareStatusColumn({ isWithinModal: true })],
     [t],
   );
-  const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
+  const paginationProps = usePagination(
+    massDeleteHostDialog.data?.hosts?.length || 0,
+    wizardPerPage,
+    setWizardPerPage,
+  );
 
   if (uiState === ResourceUIState.UPDATE_ERROR) {
     // Do not show a modal beneath the ServerUpdateError

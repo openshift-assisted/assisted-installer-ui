@@ -17,9 +17,9 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './TableToolbar.css';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type TableToolbarProps = {
   itemIDs: string[];
@@ -45,6 +45,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   children,
   ...paginationProps
 }) => {
+  const { t } = useTranslation();
   const [actionsOpen, setActionsOpen] = React.useState(false);
   const [selectOpen, setSelectOpen] = React.useState(false);
   const onSelectToggle = React.useCallback(() => setSelectOpen(!selectOpen), [selectOpen]);
@@ -75,7 +76,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
           toggleIndicator={CaretDownIcon}
           isDisabled={isDisabled}
         >
-          Actions
+          {t('ai:Actions')}
         </DropdownToggle>
       }
       isOpen={actionsOpen}
@@ -85,7 +86,6 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
 
   const onSelectAll = () => setSelectedIDs(itemIDs);
   const onSelectNone = () => setSelectedIDs([]);
-  const { t } = useTranslation();
   return (
     <Split hasGutter>
       <SplitItem isFilled>

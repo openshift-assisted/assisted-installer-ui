@@ -22,16 +22,12 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { useStateSafely } from '../../hooks';
 
-type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
-  ButtonComponent?: typeof Button | typeof ToolbarButton;
-  onFetchEvents: EventListFetchProps['onFetchEvents'];
-  onClick?: () => void;
-  hostId?: Event['hostId'];
-  cluster: Cluster;
-  entityKind: EventsEntityKind;
-  title: string;
-  fallbackEventsURL?: string;
-};
+type EventsModalButtonProps = React.ComponentProps<typeof Button> &
+  Omit<EventsModalProps, 'onClose' | 'isOpen' | 'hostId'> & {
+    ButtonComponent?: typeof Button | typeof ToolbarButton;
+    onClick?: () => void;
+    hostId?: Event['hostId'];
+  };
 
 export const EventsModalButton = ({
   ButtonComponent = ToolbarButton,
@@ -43,6 +39,7 @@ export const EventsModalButton = ({
   children,
   title,
   fallbackEventsURL,
+  disablePagination,
   ...props
 }: EventsModalButtonProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -62,6 +59,7 @@ export const EventsModalButton = ({
         entityKind={entityKind}
         onFetchEvents={onFetchEvents}
         fallbackEventsURL={fallbackEventsURL}
+        disablePagination={disablePagination}
       />
     </>
   );
@@ -76,17 +74,15 @@ type EventsModalProps = {
   isOpen: boolean;
   title: string;
   fallbackEventsURL?: string;
+  disablePagination?: boolean;
 };
 
 export const EventsModal = ({
-  onFetchEvents,
-  hostId,
-  cluster,
-  entityKind,
   onClose,
   isOpen,
   title,
   fallbackEventsURL,
+  ...rest
 }: EventsModalProps) => {
   const { t } = useTranslation();
   const [isLoading, setLoading] = useStateSafely(true);
@@ -126,14 +122,7 @@ export const EventsModal = ({
             iconColor={globalWarningColor100.value}
           />
         ) : (
-          <EventListFetch
-            hostId={hostId}
-            cluster={cluster}
-            entityKind={entityKind}
-            onFetchEvents={onFetchEvents}
-            className="events-modal__event-list"
-            setLoading={setLoading}
-          />
+          <EventListFetch className="events-modal__event-list" setLoading={setLoading} {...rest} />
         )}
       </ModalBoxBody>
     </Modal>
