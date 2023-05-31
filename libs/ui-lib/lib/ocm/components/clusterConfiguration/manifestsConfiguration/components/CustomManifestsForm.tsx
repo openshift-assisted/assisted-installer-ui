@@ -190,8 +190,6 @@ export const CustomManifestsForm = ({
       clearAlerts();
       actions.setSubmitting(true);
       const manifests = values.manifests;
-      console.log(manifests);
-      console.log(customManifestsLocalRef.current);
       const manifestsModified = manifests.filter(
         (manifest) =>
           !customManifestsLocalRef.current?.some(
@@ -201,7 +199,6 @@ export const CustomManifestsForm = ({
               customManifest.yamlContent === manifest.manifestYaml,
           ),
       );
-      console.log(manifestsModified);
       if (cluster && manifestsModified.length > 0) {
         //See if manifests exists previously to make a patch or create a new one
         const manifestsThatExists = manifestsModified.filter((manifest) => manifest.fakeId !== '');
