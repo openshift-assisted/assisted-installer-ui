@@ -29,6 +29,7 @@ import { hardwareStatusColumn } from './HardwareStatus';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
   <HostDetail
@@ -55,6 +56,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     onMassDeleteHost,
     ...modalProps
   } = useHostsTable(cluster);
+  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
 
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const isSNOCluster = isSNO(cluster);
@@ -80,7 +82,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
   );
 
   const hosts = cluster.hosts || [];
-  const paginationProps = usePagination(hosts.length);
+  const paginationProps = usePagination(hosts.length, wizardPerPage, setWizardPerPage);
   const itemIDs = hosts.map((h) => h.id);
   const showBulkActions = !(isViewerMode || isSNOCluster);
 

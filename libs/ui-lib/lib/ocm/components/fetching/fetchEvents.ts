@@ -21,11 +21,9 @@ const parseHeaders = (headers: AxiosResponseHeaders) => {
   };
 };
 
-export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
-  props,
-  onSuccess,
-  onError,
-) => {
+const fetchEventsAsync = async (...args: Parameters<typeof onFetchEvents>): Promise<void> => {
+  const [props, onSuccess, onError] = args;
+
   try {
     EventsAPI.abort();
     const response = await EventsAPI.list(props);
@@ -41,4 +39,8 @@ export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
       });
     }
   }
+};
+
+export const onFetchEvents: EventListFetchProps['onFetchEvents'] = (props, onSuccess, onError) => {
+  void fetchEventsAsync(props, onSuccess, onError);
 };

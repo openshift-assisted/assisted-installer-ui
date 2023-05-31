@@ -14,9 +14,7 @@ export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
   const { t } = useTranslation();
   return (
     <HelperText fieldId={fieldId}>
-      {t(
-        'ai:Paste one or more PEM formatted certificates that you want the cluster to trust into this field.',
-      )}
+      {t('ai:Paste in 1 or more PEM formatted certificates that you want the cluster to trust.')}
     </HelperText>
   );
 };

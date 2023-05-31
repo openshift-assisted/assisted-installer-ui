@@ -57,8 +57,8 @@ const MassDeleteHostModal = ({
   };
   return (
     <Modal
-      aria-label={t('ai:Delete hosts dialog')}
-      title={t('ai:Delete hosts')}
+      aria-label={t('ai:Remove hosts dialog')}
+      title={t('ai:Remove hosts?')}
       isOpen={isOpen}
       onClose={onClose}
       hasNoBodyWrapper
@@ -68,11 +68,7 @@ const MassDeleteHostModal = ({
     >
       <ModalBoxBody>
         <Stack hasGutter>
-          <StackItem>
-            {t(
-              'ai:You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.',
-            )}
-          </StackItem>
+          <StackItem>{t('ai:All of the listed hosts will be removed.')}</StackItem>
           <StackItem>{children}</StackItem>
           <StackItem>
             <ModalProgress error={error} progress={progress} />
@@ -85,7 +81,7 @@ const MassDeleteHostModal = ({
           isDisabled={progress !== null}
           variant={ButtonVariant.danger}
         >
-          {t('ai:Delete hosts')}
+          {t('ai:Remove hosts')}
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
           {t('ai:Cancel')}

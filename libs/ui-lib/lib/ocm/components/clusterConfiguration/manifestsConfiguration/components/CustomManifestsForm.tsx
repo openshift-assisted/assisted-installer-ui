@@ -136,8 +136,8 @@ export const CustomManifestsForm = ({
           customManifestsLocalRef.current?.push(customManifest);
         });
       } else {
-        customManifestsLocalRef.current?.map((customManifest) => {
-          const updatedManifest = updatedManifests.find(
+        customManifestsLocalRef.current?.forEach((customManifest) => {
+          const updatedManifest: CustomManifestValues | undefined = updatedManifests.find(
             (updatedManifest) =>
               getManifestFakeId(
                 customManifest.folder || 'manifests',
@@ -146,15 +146,10 @@ export const CustomManifestsForm = ({
           );
 
           if (updatedManifest) {
-            return {
-              ...customManifest,
-              folder: updatedManifest.folder,
-              fileName: updatedManifest.filename,
-              yamlContent: updatedManifest.manifestYaml,
-            };
+            customManifest.folder = updatedManifest.folder;
+            customManifest.fileName = updatedManifest.filename;
+            customManifest.yamlContent = updatedManifest.manifestYaml;
           }
-
-          return customManifest;
         });
       }
     },
@@ -194,7 +189,6 @@ export const CustomManifestsForm = ({
     async (values, actions) => {
       clearAlerts();
       actions.setSubmitting(true);
-
       const manifests = values.manifests;
       const manifestsModified = manifests.filter(
         (manifest) =>

@@ -23,6 +23,7 @@ import {
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { TableVariant } from '@patternfly/react-table';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -44,6 +45,7 @@ export interface ClusterHostsTableProps {
 }
 
 const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
+  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
   const {
     onEditHost,
     onEditRole,
@@ -80,7 +82,7 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
   );
 
   const hosts = cluster.hosts || [];
-  const paginationProps = usePagination(hosts.length);
+  const paginationProps = usePagination(hosts.length, wizardPerPage, setWizardPerPage);
 
   return (
     <>
