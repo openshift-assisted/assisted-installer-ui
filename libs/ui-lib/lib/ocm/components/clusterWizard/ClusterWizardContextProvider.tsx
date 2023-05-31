@@ -106,6 +106,8 @@ const ClusterWizardContextProvider = ({
   const setClusterPermissions = useSetClusterPermissions();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { clearAlerts } = useAlerts();
+  const [wizardPerPage, setWizardPerPage] = React.useState(10);
+
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
     const customManifestsStepNeedsToBeFilled =
@@ -132,6 +134,7 @@ const ClusterWizardContextProvider = ({
     setAddCustomManifests(customManifests ? customManifests.length > 0 : false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customManifests]);
+
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
       return null;
@@ -170,6 +173,7 @@ const ClusterWizardContextProvider = ({
         ),
       );
     };
+
     return {
       moveBack(): void {
         clearAlerts();
@@ -222,6 +226,8 @@ const ClusterWizardContextProvider = ({
       addCustomManifests,
       setAddCustomManifests: onSetAddCustomManifests,
       customManifests,
+      wizardPerPage,
+      setWizardPerPage,
     };
   }, [
     wizardStepIds,
@@ -229,6 +235,7 @@ const ClusterWizardContextProvider = ({
     infraEnv,
     addCustomManifests,
     customManifests,
+    wizardPerPage,
     isSingleClusterFeatureEnabled,
     clearAlerts,
   ]);
