@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import { Cluster, Event, EventList, V2Events } from '../api';
 
 export type EventsEntityKind = 'cluster' | 'host';
@@ -16,13 +15,20 @@ export type EventFetchProps = {
   cluster: Cluster;
 };
 
+type OnSuccessResponse = {
+  data: EventList;
+  totalEvents: number;
+  severities: Record<Event['severity'], number>;
+};
+
 export type EventListFetchProps = EventFetchProps & {
   entityKind: EventsEntityKind;
   onFetchEvents: (
     params: V2Events,
-    onSuccess: (data: AxiosResponse<EventList>) => void,
+    onSuccess: (response: OnSuccessResponse) => void,
     onError: (message: string) => void,
-  ) => Promise<void>;
+  ) => void;
   className?: string;
   setLoading: (loading: boolean) => void;
+  disablePagination?: boolean;
 };

@@ -15,6 +15,7 @@ import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
 import { INFRAENV_GENERATED_AI_FLOW, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 import { gridSpans } from '@patternfly/react-core';
 import { getErrorMessage } from '../../../common/utils';
+
 export const shouldShowClusterDeploymentValidationOverview = (
   agentClusterInstall?: AgentClusterInstallK8sResource,
 ) => {
@@ -111,9 +112,14 @@ export const getOnFetchEventsHandler =
   (
     fetchEvents: (url: string) => Promise<string>,
     aiNamespace: string,
+    agents: AgentK8sResource[],
     agentClusterInstall?: AgentClusterInstallK8sResource,
   ): EventListFetchProps['onFetchEvents'] =>
-  async (params, onSuccess, onError) => {
+  async (
+    { message, severities: severitiesFilter, hostIds, clusterLevel, deletedHosts },
+    onSuccess,
+    onError,
+  ) => {
     const eventsURL = getEventsURL(aiNamespace, agentClusterInstall);
     if (!eventsURL) {
       onError('Cannot determine events URL');
@@ -121,10 +127,51 @@ export const getOnFetchEventsHandler =
     }
     try {
       const result = await fetchEvents(eventsURL);
-      const data = formatEventsData(result);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      onSuccess(data);
+      let data = formatEventsData(result);
+      const allNames = data.filter((d) => d.hostId).map((d) => d.hostId);
+
+      const severities = {
+        critical: data.filter((d) => d.severity === 'critical').length,
+        error: data.filter((d) => d.severity === 'error').length,
+        info: data.filter((d) => d.severity === 'info').length,
+        warning: data.filter((d) => d.severity === 'warning').length,
+      };
+
+      if (message) {
+        data = data.filter((d) => d.message.includes(message));
+      }
+      if (severitiesFilter && severitiesFilter.length > 0) {
+        data = data.filter((d) => severitiesFilter.includes(d.severity));
+      }
+
+      if (clusterLevel || deletedHosts || (hostIds && hostIds.length > 0)) {
+        data = data.filter((d) => {
+          if (clusterLevel && d.clusterId && !d.hostId) {
+            return d;
+          }
+          if (hostIds && hostIds.length > 0) {
+            const names = agents
+              .filter((a) => a.metadata?.uid && hostIds.includes(a.metadata.uid))
+              .map((a) => a.metadata?.name);
+            if (d.hostId && names.includes(d.hostId)) {
+              return d;
+            }
+          }
+          if (deletedHosts) {
+            const deleted = allNames.filter((n) => !agents.some((a) => a.metadata?.name === n));
+            if (d.hostId && deleted.includes(d.hostId)) {
+              return d;
+            }
+          }
+          return false;
+        });
+      }
+
+      onSuccess({
+        data,
+        totalEvents: data.length,
+        severities,
+      });
     } catch (e) {
       onError(getErrorMessage(e));
     }

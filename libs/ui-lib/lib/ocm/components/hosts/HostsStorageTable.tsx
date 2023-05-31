@@ -30,6 +30,7 @@ import {
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { hardwareStatusColumn } from './HardwareStatus';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -54,6 +55,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
     updateDiskSkipFormatting,
     ...modalProps
   } = useHostsTable(cluster);
+  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
 
   const content = React.useMemo(() => {
     const columns = [
@@ -72,7 +74,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
   }, [actionChecks.canEditHostname, cluster, onEditHost, t]);
 
   const hosts = cluster.hosts || [];
-  const paginationProps = usePagination(hosts.length);
+  const paginationProps = usePagination(hosts.length, wizardPerPage, setWizardPerPage);
 
   return (
     <>

@@ -4,5 +4,6 @@
 }
 
 .events-modal__event-list {
+  height: 34vh;
   overflow: auto;
 }
