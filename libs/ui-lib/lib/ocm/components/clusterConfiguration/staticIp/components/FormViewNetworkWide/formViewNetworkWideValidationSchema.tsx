@@ -1,6 +1,12 @@
 import * as Yup from 'yup';
 
-import { IpConfig, ProtocolVersion, FormViewNetworkWideValues, Cidr } from '../../data/dataTypes';
+import {
+  IpConfig,
+  ProtocolVersion,
+  FormViewNetworkWideValues,
+  Cidr,
+  StaticProtocolType,
+} from '../../data/dataTypes';
 
 import { showProtocolVersion } from '../../data/protocolVersion';
 import { getMachineNetworkCidr } from '../../data/machineNetwork';
@@ -10,6 +16,7 @@ import {
   getIpIsNotNetworkOrBroadcastAddressSchema,
   getMultipleIpAddressValidationSchema,
   isNotReservedHostIPAddress,
+  isNotReservedHostDNSAddress,
 } from '../../commonValidationSchemas';
 
 const REQUIRED_MESSAGE = 'A value is required';
@@ -63,17 +70,21 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
-const getIPValidationSchema = (
-  protocolVersion: ProtocolVersion,
-  allowsMultiple = false,
-  isDnsAddress = false,
-) => {
-  const baseValidation = allowsMultiple
-    ? getMultipleIpAddressValidationSchema
-    : getIpAddressValidationSchema;
-  return baseValidation(protocolVersion)
+const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
+  return getIpAddressValidationSchema(protocolVersion)
     .required(REQUIRED_MESSAGE)
-    .concat(isNotReservedHostIPAddress(protocolVersion, isDnsAddress));
+    .concat(isNotReservedHostIPAddress(protocolVersion));
+};
+
+const getDNSValidationSchema = (protocolType: StaticProtocolType) => {
+  if (protocolType === 'dualStack') {
+    return getMultipleIpAddressValidationSchema()
+      .required(REQUIRED_MESSAGE)
+      .concat(isNotReservedHostDNSAddress());
+  }
+  return getMultipleIpAddressValidationSchema(ProtocolVersion.ipv4)
+    .required(REQUIRED_MESSAGE)
+    .concat(isNotReservedHostDNSAddress(ProtocolVersion.ipv4));
 };
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
@@ -106,7 +117,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .transform(transformNumber) as Yup.NumberSchema,
       }),
       protocolType: Yup.string(),
-      dns: getIPValidationSchema(ProtocolVersion.ipv4, true, true),
+      dns: getDNSValidationSchema(values.protocolType),
       ipConfigs: ipConfigsValidationSchemas,
     });
   },
