@@ -50,6 +50,7 @@ export const getClusterWizardFirstStep = (
   isSingleClusterFeatureEnabled?: boolean,
   customManifestsStepNeedsToBeFilled?: boolean,
 ): ClusterWizardStepsType => {
+  return 'custom-manifests';
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
     if (isSingleClusterFeatureEnabled) {

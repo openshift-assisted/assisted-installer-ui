@@ -135,7 +135,7 @@ export const CustomManifestsForm = ({
           customManifestsLocal?.push(customManifest);
         });
       } else {
-        customManifestsLocal?.map((customManifest) => {
+        customManifestsLocal?.forEach((customManifest, index) => {
           const updatedManifest = updatedManifests.find(
             (updatedManifest) =>
               getManifestFakeId(
@@ -145,15 +145,13 @@ export const CustomManifestsForm = ({
           );
 
           if (updatedManifest) {
-            return {
+            customManifestsLocal[index] = {
               ...customManifest,
               folder: updatedManifest.folder,
               fileName: updatedManifest.filename,
               yamlContent: updatedManifest.manifestYaml,
             };
           }
-
-          return customManifest;
         });
       }
     },
