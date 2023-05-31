@@ -1,9 +1,8 @@
 import React from 'react';
-import { AxiosResponseHeaders } from 'axios';
 import omit from 'lodash-es/omit.js';
 import { Pagination, PaginationVariant } from '@patternfly/react-core';
-import { Event, EventList } from '../../api';
-import { EVENTS_POLLING_INTERVAL, EVENT_SEVERITIES } from '../../config';
+import { EventList } from '../../api';
+import { EVENTS_POLLING_INTERVAL } from '../../config';
 import { ClusterEventsFiltersType, EventListFetchProps } from '../../types';
 import { useStateSafely } from '../../hooks';
 import { ErrorState, LoadingState } from '../ui/uiState';
@@ -20,7 +19,11 @@ const initialSeverityCounts = {
   warning: 0,
 };
 
-export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps) => {
+export const EventListFetch = ({
+  onFetchEvents,
+  disablePagination,
+  ...props
+}: EventListFetchProps) => {
   const { cluster, hostId, className, entityKind, setLoading } = props;
 
   const [lastPolling, setLastPolling] = useStateSafely(0);
@@ -52,40 +55,23 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     setPageNum(newPage);
   };
 
-  const parseHeaders = React.useCallback(
-    (headers: AxiosResponseHeaders) => {
-      const severities: Record<Event['severity'], number> = {
-        error: 0,
-        info: 0,
-        warning: 0,
-        critical: 0,
-      };
-      EVENT_SEVERITIES.forEach((severity) => {
-        const count = Number(headers[`severity-count-${severity}`]);
-        severities[severity] = count;
-      });
-      setTotalEvents(Number(headers['event-count']));
-      setSeverityCount(severities as SeverityCountsType);
-    },
-    [setSeverityCount, setTotalEvents],
-  );
-
   React.useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     setLoading(true);
 
-    void onFetchEvents(
+    onFetchEvents(
       {
         clusterId: cluster.id,
         ...omit(filters, 'selectAll'),
         offset: perPage * (pageNum - 1),
         limit: perPage,
       },
-      ({ data: newEvents, headers }) => {
+      ({ data: newEvents, severities, totalEvents }) => {
         setError('');
         setEvents(newEvents);
         setLoading(false);
-        parseHeaders(headers);
+        setTotalEvents(totalEvents);
+        setSeverityCount(severities);
         timer = setTimeout(() => setLastPolling(Date.now()), EVENTS_POLLING_INTERVAL);
       },
       (err: string) => {
@@ -102,12 +88,13 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
     onFetchEvents,
     perPage,
     pageNum,
-    parseHeaders,
     filters,
     setLoading,
     setError,
     setEvents,
     setLastPolling,
+    setTotalEvents,
+    setSeverityCount,
   ]);
 
   const forceRefetch = React.useCallback(() => {
@@ -117,7 +104,6 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
   let eventList = (
     <EventsList
       events={events || []}
-      className={className}
       resetFilters={() => setFilters(getInitialClusterEventsFilters(entityKind, hostId))}
     />
   );
@@ -144,17 +130,19 @@ export const EventListFetch = ({ onFetchEvents, ...props }: EventListFetchProps)
         events={events || []}
         severityCounts={severityCounts}
       />
-      {eventList}
-      <Pagination
-        perPageComponent="button"
-        itemCount={totalEvents}
-        widgetId="events-pagination"
-        perPage={perPage}
-        page={pageNum}
-        variant={PaginationVariant.bottom}
-        onSetPage={onSetPage}
-        onPerPageSelect={onPerPageSelect}
-      />
+      <div className={className}>{eventList}</div>
+      {!disablePagination && (
+        <Pagination
+          perPageComponent="button"
+          itemCount={totalEvents}
+          widgetId="events-pagination"
+          perPage={perPage}
+          page={pageNum}
+          variant={PaginationVariant.bottom}
+          onSetPage={onSetPage}
+          onPerPageSelect={onPerPageSelect}
+        />
+      )}
     </>
   );
 };
