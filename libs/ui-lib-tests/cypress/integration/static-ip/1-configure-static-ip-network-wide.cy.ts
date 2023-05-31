@@ -107,6 +107,18 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
         .getWizardStepNav('Host specific configurations')
         .should('have.class', ACTIVE_NAV_ITEM_CLASS);
     });
+
+    it('nrt Can use IPv4 and IPv6 on DNS when dual stack', () => {
+      staticIpPage.dualStackNetworking().click();
+
+      cy.fixture('data/ipv4-and-ipv6-addresses.json').then((addresses) => {
+        addresses.forEach((dnsEntry) => {
+          staticIpPage.networkWideDns().type(dnsEntry);
+          commonActions.getDNSErrorMessage().should('not.exist');
+          staticIpPage.networkWideDns().clear();
+        });
+      });
+    });
   });
 
   describe('Reading existing configuration in Form view', () => {
