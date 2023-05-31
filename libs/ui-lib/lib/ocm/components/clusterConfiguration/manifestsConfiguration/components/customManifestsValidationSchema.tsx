@@ -1,7 +1,12 @@
 import * as Yup from 'yup';
 import { UniqueStringArrayExtractor } from '../../staticIp/commonValidationSchemas';
 import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
-import { load } from 'js-yaml';
+import {
+  getMaxFileSizeMessage,
+  isStringValidYAML,
+  isStringValidJSON,
+  validateFileSize,
+} from '../../../../../common/utils';
 
 const MAX_FILE_SIZE = 100000; //100 kb
 const FILENAME_REGEX = /^[^/]*\.(yaml|yml|json)$/;
@@ -52,44 +57,19 @@ export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>((
           .concat(getUniqueValidationSchema(getAllManifests)),
         manifestYaml: Yup.string()
           .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
+          .test('not-big-file', getMaxFileSizeMessage(MAX_FILE_SIZE), (value: string) =>
+            validateFileSize(value, MAX_FILE_SIZE),
+          )
           .test('not-valid-file', INCORRECT_TYPE_FILE, validateFileType),
       }),
     ),
   }),
 );
 
-export const validateFileName = (fileName: string) => {
+const validateFileName = (fileName: string) => {
   return new RegExp(FILENAME_REGEX).test((fileName || '').toString());
 };
 
-export const validateFileType = (value: string) => {
+const validateFileType = (value: string) => {
   return isStringValidYAML(value) || isStringValidJSON(value);
-};
-
-const isStringValidYAML = (input: string): boolean => {
-  try {
-    load(input);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-const isStringValidJSON = (input: string): boolean => {
-  try {
-    JSON.parse(input);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-const validateFileSize = (value: string): boolean => {
-  const contentFile = new Blob([value], { type: 'text/plain;charset=utf-8' });
-  return contentFile.size <= MAX_FILE_SIZE;
-};
-
-const getMaxFileSizeMessage = (): string => {
-  return `File size is too big. Upload a new ${MAX_FILE_SIZE / 1000} or less.`;
 };
