@@ -46,10 +46,9 @@ const getLabelIcon = (severity: Event['severity']) => {
 export type EventsListProps = {
   events: EventList;
   resetFilters: () => void;
-  className?: string;
 };
 
-const EventsList = ({ events, className, resetFilters }: EventsListProps) => {
+const EventsList = ({ events, resetFilters }: EventsListProps) => {
   const { t } = useTranslation();
   if (events.length === 0) {
     return (
@@ -97,20 +96,18 @@ const EventsList = ({ events, className, resetFilters }: EventsListProps) => {
   }));
 
   return (
-    <div className={className}>
-      <Table
-        rows={rows}
-        cells={[
-          { title: t('ai:Time'), cellTransforms: [fitContent, noPadding] },
-          { title: t('ai:Message'), cellTransforms: [breakWord] },
-        ]}
-        variant={TableVariant.compact}
-        aria-label={t('ai:Events table')}
-        borders={false}
-      >
-        <TableBody rowKey={getEventRowKey} />
-      </Table>
-    </div>
+    <Table
+      rows={rows}
+      cells={[
+        { title: t('ai:Time'), cellTransforms: [fitContent, noPadding] },
+        { title: t('ai:Message'), cellTransforms: [breakWord] },
+      ]}
+      variant={TableVariant.compact}
+      aria-label={t('ai:Events table')}
+      borders={false}
+    >
+      <TableBody rowKey={getEventRowKey} />
+    </Table>
   );
 };
 
