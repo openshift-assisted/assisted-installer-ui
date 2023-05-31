@@ -104,6 +104,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       style={{ textAlign: 'right' }}
                       onFetchEvents={onFetchEvents}
                       ButtonComponent={Button}
+                      disablePagination
                     >
                       {t('ai:View cluster events')}
                     </EventsModalButton>

@@ -13,6 +13,8 @@ export type ClusterWizardContextType = {
   onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
   setAddCustomManifests(addCustomManifest: boolean): void;
   addCustomManifests: boolean;
+  wizardPerPage: number;
+  setWizardPerPage: (perPage: number) => void;
 };
 
 const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);
