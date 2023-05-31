@@ -184,7 +184,7 @@ const ClusterEventsToolbar = ({
   };
 
   const getSelections = (): string[] => {
-    let selections = [...(filters.hostIds || [])];
+    const selections = [...(filters.hostIds || [])];
     if (filters.clusterLevel) {
       selections.push(CLUSTER_LEVEL);
     }
