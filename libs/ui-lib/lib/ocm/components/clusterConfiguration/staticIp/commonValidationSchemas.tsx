@@ -139,7 +139,7 @@ export const isReservedIpv6Address = (ipv6Address: Address6) => {
   return ipv6Address.isLoopback() || ipv6Address.isMulticast();
 };
 
-function areNotReservedAdresses(value: any, protocolVersion?: ProtocolVersion): boolean {
+function areNotReservedAdresses(value: unknown, protocolVersion?: ProtocolVersion): boolean {
   if (!value) {
     return true;
   }
