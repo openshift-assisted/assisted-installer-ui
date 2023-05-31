@@ -184,17 +184,21 @@ const ClusterEventsToolbar = ({
   };
 
   const getSelections = (): string[] => {
-    let selections = filters.clusterLevel
-      ? [...(filters.hostIds || []), CLUSTER_LEVEL]
-      : filters.hostIds;
-    selections = filters.deletedHosts ? [...(selections || []), DELETED_HOSTS] : selections;
-
-    return selections || [];
+    const selections = [...(filters.hostIds || [])];
+    if (filters.clusterLevel) {
+      selections.push(CLUSTER_LEVEL);
+    }
+    if (filters.deletedHosts) {
+      selections.push(DELETED_HOSTS);
+    }
+    return selections;
   };
 
   const sortedHosts = allHosts.sort((a, b) =>
     a.hostname && b.hostname && a.hostname < b.hostname ? -1 : 1,
   );
+
+  const hostChips = mapHostsChips(t, filters, sortedHosts);
 
   return (
     <Toolbar
@@ -210,7 +214,7 @@ const ClusterEventsToolbar = ({
         {entityKind === 'cluster' && (
           <ToolbarFilter
             categoryName="Hosts"
-            chips={mapHostsChips(t, filters, sortedHosts)}
+            chips={hostChips}
             deleteChip={(_, chip) =>
               onHostSelect(typeof chip === 'string' ? chip : chip.key, false)
             }
@@ -219,16 +223,16 @@ const ClusterEventsToolbar = ({
             <Select
               variant="checkbox"
               aria-label="hosts"
+              toggleId="cluster-events-hosts-dropdown-button"
               onToggle={onHostToggle}
               onSelect={(e, value) => onHostSelect(value as string, isSelectEventChecked(e))}
               selections={getSelections()}
-              customBadgeText={mapHostsChips(t, filters, sortedHosts).length}
+              customBadgeText={hostChips.length}
               isOpen={isHostExpanded}
               placeholderText={<Placeholder text="Hosts" />}
               isDisabled={allHosts.length === 0}
               maxHeight={280}
               zIndex={600}
-              menuAppendTo={document.body}
             >
               {[
                 <SelectOption
@@ -271,6 +275,7 @@ const ClusterEventsToolbar = ({
           <Select
             variant="checkbox"
             aria-label="Severity"
+            toggleId="cluster-events-severity-dropdown-button"
             onToggle={onSeverityToggle}
             onSelect={(event, value) =>
               onSeveritySelect(value as string, isSelectEventChecked(event))

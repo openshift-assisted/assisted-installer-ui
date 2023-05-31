@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
-import { Form, debounce } from '@patternfly/react-core';
+import { Form } from '@patternfly/react-core';
 import {
   FieldArray,
   FieldArrayRenderProps,
@@ -15,11 +15,18 @@ import isEqual from 'lodash-es/isEqual.js';
 import { ErrorState, LoadingState, useAlerts, useFormikAutoSave } from '../../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../../selectors';
 import { CustomManifestsFormProps } from './propTypes';
-import { CustomManifestValues, FormViewManifestFolder, ManifestFormData } from '../data/dataTypes';
+import {
+  CustomManifestValues,
+  FormViewManifestFolder,
+  ListManifestsExtended,
+  ManifestExtended,
+  ManifestFormData,
+} from '../data/dataTypes';
 import { getApiErrorMessage, handleApiError } from '../../../../api';
 import useClusterCustomManifests from '../../../../hooks/useClusterCustomManifests';
 import { ClustersService } from '../../../../services';
 import { CustomManifestsArray } from './CustomManifestsArray';
+import { getManifestFakeId } from './utils';
 
 const fieldName = 'manifests';
 
@@ -107,21 +114,81 @@ export const CustomManifestsForm = ({
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [initialValues, setInitialValues] = React.useState<ManifestFormData | undefined>();
   const { addAlert, clearAlerts } = useAlerts();
-  const [refreshFlag, setRefreshFlag] = React.useState<boolean>(true);
-  const { customManifests, isLoading, error } = useClusterCustomManifests(
-    cluster.id || '',
-    true,
-    refreshFlag,
-  );
+  const { customManifests, isLoading, error } = useClusterCustomManifests(cluster.id || '', true);
+  const customManifestsLocalRef = React.useRef<ListManifestsExtended | undefined>();
+
   React.useEffect(() => {
     if (customManifests) {
       setInitialValues(getInitialValues(customManifests));
+      customManifestsLocalRef.current = customManifests;
     }
   }, [customManifests, getInitialValues]);
 
-  const refreshCustomManifests = () => {
-    setRefreshFlag((refreshFlag) => !refreshFlag);
-  };
+  const updateCustomManifestsLocal = React.useCallback(
+    (updatedManifests: CustomManifestValues[], newValuesAdded: boolean) => {
+      if (newValuesAdded) {
+        updatedManifests.forEach((updatedManifest) => {
+          const customManifest: ManifestExtended = {
+            folder: updatedManifest.folder,
+            fileName: updatedManifest.filename,
+            yamlContent: updatedManifest.manifestYaml,
+          };
+          customManifestsLocalRef.current?.push(customManifest);
+        });
+      } else {
+        customManifestsLocalRef.current?.map((customManifest) => {
+          const updatedManifest = updatedManifests.find(
+            (updatedManifest) =>
+              getManifestFakeId(
+                customManifest.folder || 'manifests',
+                customManifest.fileName || '',
+              ) === updatedManifest.fakeId || '',
+          );
+
+          if (updatedManifest) {
+            return {
+              ...customManifest,
+              folder: updatedManifest.folder,
+              fileName: updatedManifest.filename,
+              yamlContent: updatedManifest.manifestYaml,
+            };
+          }
+
+          return customManifest;
+        });
+      }
+    },
+    [customManifestsLocalRef],
+  );
+
+  const removeCustomManifestFromLocal = React.useCallback(
+    (manifests: CustomManifestValues[]) => {
+      if (customManifestsLocalRef.current) {
+        const customManifestsLocalCopy = [...customManifestsLocalRef.current].filter(
+          (customManifest) => {
+            return !manifests.some((manifest) => {
+              return (
+                customManifest.folder === manifest.folder &&
+                customManifest.fileName === manifest.filename &&
+                customManifest.yamlContent === manifest.manifestYaml
+              );
+            });
+          },
+        );
+        if (customManifestsLocalCopy.length > 0) {
+          customManifestsLocalRef.current.splice(
+            customManifestsLocalRef.current.findIndex(
+              (manifest) =>
+                manifest.folder === customManifestsLocalCopy[0].folder &&
+                manifest.fileName === customManifestsLocalCopy[0].fileName,
+            ),
+            1,
+          );
+        }
+      }
+    },
+    [customManifestsLocalRef],
+  );
 
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
     async (values, actions) => {
@@ -131,7 +198,7 @@ export const CustomManifestsForm = ({
       const manifests = values.manifests;
       const manifestsModified = manifests.filter(
         (manifest) =>
-          !customManifests?.some(
+          !customManifestsLocalRef.current?.some(
             (customManifest) =>
               customManifest.folder === manifest.folder &&
               customManifest.fileName === manifest.filename &&
@@ -159,10 +226,13 @@ export const CustomManifestsForm = ({
             );
           });
           await Promise.all(manifestsRequests);
-          refreshCustomManifests();
           if (newManifestsToCreate.length > 0) {
             await ClustersService.createClusterManifests(newManifestsToCreate, cluster?.id);
-            refreshCustomManifests();
+            updateCustomManifestsLocal(newManifestsToCreate, true);
+          }
+
+          if (customManifestsLocalRef.current && manifestsThatExists.length > 0) {
+            updateCustomManifestsLocal(manifestsThatExists, false);
           }
         } catch (e) {
           handleApiErrorInForm(manifests, manifestsThatExists, actions);
@@ -175,12 +245,21 @@ export const CustomManifestsForm = ({
         } finally {
           actions.setSubmitting(false);
         }
+      } else {
+        removeCustomManifestFromLocal(manifests);
       }
     },
-    [addAlert, clearAlerts, cluster, customManifests],
+    [
+      addAlert,
+      clearAlerts,
+      cluster,
+      customManifestsLocalRef,
+      updateCustomManifestsLocal,
+      removeCustomManifestFromLocal,
+    ],
   );
 
-  const onSubmit = isViewerMode ? () => Promise.resolve() : debounce(handleSubmit, 1000);
+  const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
 
   const validate = (values: ManifestFormData) => {
     try {
