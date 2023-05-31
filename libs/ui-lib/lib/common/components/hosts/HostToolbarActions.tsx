@@ -14,5 +14,5 @@ type DeleteHostActionProps = {
 };
 
 export const DeleteHostAction: React.FC<DeleteHostActionProps> = ({ onDeleteHost }) => (
-  <DropdownItem onClick={onDeleteHost}>Delete</DropdownItem>
+  <DropdownItem onClick={onDeleteHost}>Remove</DropdownItem>
 );

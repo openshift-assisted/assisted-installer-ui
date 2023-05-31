@@ -462,14 +462,14 @@ export const hostActionResolver =
           if (typeof canDeleteHost === 'boolean') {
             canDeleteHost &&
               actions.push({
-                title: 'Delete host',
+                title: 'Remove host',
                 id: `button-delete-host-${hostname}`,
                 onClick: () => onDeleteHost(host),
               });
           } else {
             const [enabled, reason] = canDeleteHost;
             actions.push({
-              title: <ActionTitle disabled={!enabled} description={reason} title="Delete host" />,
+              title: <ActionTitle disabled={!enabled} description={reason} title="Remove host" />,
               id: `button-delete-host-${hostname}`,
               onClick: () => onDeleteHost(host),
               isDisabled: !enabled,
