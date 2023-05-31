@@ -18,6 +18,7 @@ import { CustomManifestsFormProps } from './propTypes';
 import {
   CustomManifestValues,
   FormViewManifestFolder,
+  ListManifestsExtended,
   ManifestExtended,
   ManifestFormData,
 } from '../data/dataTypes';
@@ -114,12 +115,12 @@ export const CustomManifestsForm = ({
   const [initialValues, setInitialValues] = React.useState<ManifestFormData | undefined>();
   const { addAlert, clearAlerts } = useAlerts();
   const { customManifests, isLoading, error } = useClusterCustomManifests(cluster.id || '', true);
-  const [customManifestsLocal, setCustomManifestsLocal] = React.useState(customManifests);
+  const customManifestsLocalRef = React.useRef<ListManifestsExtended | undefined>();
 
   React.useEffect(() => {
     if (customManifests) {
       setInitialValues(getInitialValues(customManifests));
-      setCustomManifestsLocal(customManifests);
+      customManifestsLocalRef.current = customManifests;
     }
   }, [customManifests, getInitialValues]);
 
@@ -132,10 +133,10 @@ export const CustomManifestsForm = ({
             fileName: updatedManifest.filename,
             yamlContent: updatedManifest.manifestYaml,
           };
-          customManifestsLocal?.push(customManifest);
+          customManifestsLocalRef.current?.push(customManifest);
         });
       } else {
-        customManifestsLocal?.forEach((customManifest, index) => {
+        customManifestsLocalRef.current?.map((customManifest) => {
           const updatedManifest = updatedManifests.find(
             (updatedManifest) =>
               getManifestFakeId(
@@ -145,34 +146,38 @@ export const CustomManifestsForm = ({
           );
 
           if (updatedManifest) {
-            customManifestsLocal[index] = {
+            return {
               ...customManifest,
               folder: updatedManifest.folder,
               fileName: updatedManifest.filename,
               yamlContent: updatedManifest.manifestYaml,
             };
           }
+
+          return customManifest;
         });
       }
     },
-    [customManifestsLocal],
+    [customManifestsLocalRef],
   );
 
   const removeCustomManifestFromLocal = React.useCallback(
     (manifests: CustomManifestValues[]) => {
-      if (customManifestsLocal) {
-        const customManifestsLocalCopy = [...customManifestsLocal].filter((customManifest) => {
-          return !manifests.some((manifest) => {
-            return (
-              customManifest.folder === manifest.folder &&
-              customManifest.fileName === manifest.filename &&
-              customManifest.yamlContent === manifest.manifestYaml
-            );
-          });
-        });
+      if (customManifestsLocalRef.current) {
+        const customManifestsLocalCopy = [...customManifestsLocalRef.current].filter(
+          (customManifest) => {
+            return !manifests.some((manifest) => {
+              return (
+                customManifest.folder === manifest.folder &&
+                customManifest.fileName === manifest.filename &&
+                customManifest.yamlContent === manifest.manifestYaml
+              );
+            });
+          },
+        );
         if (customManifestsLocalCopy.length > 0) {
-          customManifestsLocal.splice(
-            customManifestsLocal.findIndex(
+          customManifestsLocalRef.current.splice(
+            customManifestsLocalRef.current.findIndex(
               (manifest) =>
                 manifest.folder === customManifestsLocalCopy[0].folder &&
                 manifest.fileName === customManifestsLocalCopy[0].fileName,
@@ -182,7 +187,7 @@ export const CustomManifestsForm = ({
         }
       }
     },
-    [customManifestsLocal],
+    [customManifestsLocalRef],
   );
 
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
@@ -193,7 +198,7 @@ export const CustomManifestsForm = ({
       const manifests = values.manifests;
       const manifestsModified = manifests.filter(
         (manifest) =>
-          !customManifestsLocal?.some(
+          !customManifestsLocalRef.current?.some(
             (customManifest) =>
               customManifest.folder === manifest.folder &&
               customManifest.fileName === manifest.filename &&
@@ -226,7 +231,7 @@ export const CustomManifestsForm = ({
             updateCustomManifestsLocal(newManifestsToCreate, true);
           }
 
-          if (customManifestsLocal && manifestsThatExists.length > 0) {
+          if (customManifestsLocalRef.current && manifestsThatExists.length > 0) {
             updateCustomManifestsLocal(manifestsThatExists, false);
           }
         } catch (e) {
@@ -248,7 +253,7 @@ export const CustomManifestsForm = ({
       addAlert,
       clearAlerts,
       cluster,
-      customManifestsLocal,
+      customManifestsLocalRef,
       updateCustomManifestsLocal,
       removeCustomManifestFromLocal,
     ],
