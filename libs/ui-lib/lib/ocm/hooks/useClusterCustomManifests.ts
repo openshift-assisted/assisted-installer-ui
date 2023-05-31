@@ -45,11 +45,7 @@ const getManifestsInfo = async (customManifests: ListManifests, clusterId: strin
   return manifestsExtended;
 };
 
-const useClusterCustomManifests = (
-  clusterId: Cluster['id'],
-  extendedVersion: boolean,
-  refresh = true,
-) => {
+const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: boolean) => {
   const [customManifests, setCustomManifests] = React.useState<ListManifestsExtended>();
   const [error, setError] = React.useState('');
   const [extendedManifestsLoaded, setExtendedManifestsLoaded] = React.useState<boolean>(false);
@@ -85,10 +81,8 @@ const useClusterCustomManifests = (
   }, [clusterId, extendedVersion]);
 
   React.useEffect(() => {
-    if (refresh) {
-      void fetchCustomManifests();
-    }
-  }, [fetchCustomManifests, refresh]);
+    void fetchCustomManifests();
+  }, [fetchCustomManifests]);
 
   return {
     customManifests,
