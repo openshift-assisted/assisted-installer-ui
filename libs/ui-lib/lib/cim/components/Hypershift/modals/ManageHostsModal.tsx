@@ -14,7 +14,7 @@ import * as React from 'react';
 import { AgentK8sResource } from '../../../types';
 import { NodePoolK8sResource, HostedClusterK8sResource, AgentMachineK8sResource } from '../types';
 import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
-import { formikLabelsToLabels, labelsToFormikValue } from '../utils';
+import { labelsToFormikValue } from '../utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../../common/utils';
 
@@ -57,11 +57,6 @@ const ManageHostsModal = ({
         path: '/spec/replicas',
       });
     }
-    patches.push({
-      op: 'replace',
-      value: formikLabelsToLabels(values.agentLabels),
-      path: '/spec/platform/agent/agentLabelSelector/matchLabels',
-    });
     try {
       await onSubmit(nodePool, patches);
       onClose();
