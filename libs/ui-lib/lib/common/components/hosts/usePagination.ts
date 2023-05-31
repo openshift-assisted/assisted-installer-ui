@@ -17,16 +17,23 @@ const perPageOptions: PerPageOptions[] = [
   },
 ];
 
-export const usePagination = (dataCount: number) => {
-  const [perPage, setPerPage] = React.useState(10);
+export const usePagination = (
+  dataCount: number,
+  wizardPerPage?: number,
+  setWizardPerPage?: (perPage: number) => void,
+) => {
+  const [perPage, setPerPage] = React.useState(wizardPerPage || 10);
   const [page, setPage] = React.useState(1);
 
   const { onSetPage, onPerPageSelect } = React.useMemo<PaginationCallbacks>(
     () => ({
       onSetPage: (evt, pageNumber) => setPage(pageNumber),
-      onPerPageSelect: (evt, perPage) => setPerPage(perPage),
+      onPerPageSelect: (evt, perPage) => {
+        setPerPage(perPage);
+        setWizardPerPage && setWizardPerPage(perPage);
+      },
     }),
-    [],
+    [setWizardPerPage],
   );
 
   const showPagination = dataCount > 10;

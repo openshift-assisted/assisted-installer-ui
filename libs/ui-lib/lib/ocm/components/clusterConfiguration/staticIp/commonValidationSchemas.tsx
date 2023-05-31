@@ -35,25 +35,46 @@ export const getUniqueValidationSchema = <FormValues,>(
   });
 };
 
-const isValidAddress = (protocolVersion: ProtocolVersion, addressStr: string) => {
+const isValidIPv4Address = (addressStr: string) => {
   try {
-    const address =
-      protocolVersion === ProtocolVersion.ipv4
-        ? new Address4(addressStr)
-        : new Address6(addressStr);
     // ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
+    // Can't use Address4.isValid()
+    const address = new Address4(addressStr);
     return !address.parsedSubnet;
   } catch (e) {
     return false;
   }
 };
 
-const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
+const isValidIPv6Address = (addressStr: string) => {
   try {
-    if (protocolVersion === ProtocolVersion.ipv4) {
-      return RESERVED_IPS.includes(ip);
+    // ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
+    // Can't use Address6.isValid()
+    const address = new Address6(addressStr);
+    return !address.parsedSubnet;
+  } catch (e) {
+    return false;
+  }
+};
+
+const isValidAddress = (addressStr: string, protocolVersion?: ProtocolVersion) => {
+  if (protocolVersion === undefined) {
+    return isValidIPv4Address(addressStr) || isValidIPv6Address(addressStr);
+  }
+  return protocolVersion === ProtocolVersion.ipv4
+    ? isValidIPv4Address(addressStr)
+    : isValidIPv6Address(addressStr);
+};
+
+const isReservedAddress = (addressStr: string, protocolVersion?: ProtocolVersion) => {
+  try {
+    if (
+      (protocolVersion === undefined && isValidIPv4Address(addressStr)) ||
+      protocolVersion === ProtocolVersion.ipv4
+    ) {
+      return RESERVED_IPS.includes(addressStr);
     } else {
-      return isReservedIpv6Address(new Address6(ip));
+      return isReservedIpv6Address(new Address6(addressStr));
     }
   } catch (e) {
     return false;
@@ -69,19 +90,25 @@ export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) =
       if (!value) {
         return true;
       }
-      return isValidAddress(protocolVersion, value);
+      return isValidAddress(value, protocolVersion);
     },
   );
 };
 
-export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVersion) => {
-  const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
+export const getMultipleIpAddressValidationSchema = (protocolVersion?: ProtocolVersion) => {
+  const validationId = protocolVersion === undefined ? 'is-ipv4-or-ipv6-csv' : protocolVersion;
+  const protocolVersionLabel =
+    protocolVersion === undefined
+      ? 'IPv4 or IPv6'
+      : protocolVersion === ProtocolVersion.ipv4
+      ? 'IPv4'
+      : 'IPv6';
   return Yup.string().test(
-    protocolVersion,
+    validationId,
     ({ value }) => {
       const addresses = (value as string).split(',');
       const invalidAddresses = addresses.filter(
-        (address) => !isValidAddress(protocolVersion, address),
+        (address) => !isValidAddress(address, protocolVersion),
       );
       const displayValue = invalidAddresses.join(', ');
       if (invalidAddresses.length === 1) {
@@ -103,7 +130,7 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVe
         return false;
       }
 
-      return addresses.every((address) => isValidAddress(protocolVersion, address));
+      return addresses.every((address) => isValidAddress(address, protocolVersion));
     },
   );
 };
@@ -112,34 +139,52 @@ export const isReservedIpv6Address = (ipv6Address: Address6) => {
   return ipv6Address.isLoopback() || ipv6Address.isMulticast();
 };
 
-export const isNotReservedHostIPAddress = (
-  protocolVersion: ProtocolVersion,
-  isDnsAddress = false,
-) => {
-  const textForAddress = isDnsAddress ? 'a DNS' : 'an interface';
+function areNotReservedAdresses(value: unknown, protocolVersion?: ProtocolVersion): boolean {
+  if (!value) {
+    return true;
+  }
+  // The field may admit multiple values as a comma-separated string
+  const addresses = (value as string).split(',');
+  return addresses.every((address) => !isReservedAddress(address, protocolVersion));
+}
+
+export const isNotReservedHostIPAddress = (protocolVersion?: ProtocolVersion) => {
   return Yup.string().test(
-    'is-not-reserved-address',
+    'is-not-reserved-ip-address',
     ({ value }) => {
       const addresses = (value as string).split(',');
       if (addresses.length === 1) {
-        return `Provided IP address is not a correct address for ${textForAddress}.`;
+        return `The provided IP address is not a correct address for an interface.`;
       }
 
       const reservedAddresses = addresses.filter((address) => {
         return isReservedAddress(address, protocolVersion);
       });
-      return `Provided IP addresses ${reservedAddresses.join(
+      return `The provided IP addresses ${reservedAddresses.join(
         ', ',
-      )} are not correct addresses for ${textForAddress}.`;
+      )} are not correct addresses for an interface.`;
     },
-    function (value) {
-      if (!value) {
-        return true;
-      }
-      // The field may admit multiple values as a comma-separated string
+    (value) => areNotReservedAdresses(value, protocolVersion),
+  );
+};
+
+export const isNotReservedHostDNSAddress = (protocolVersion?: ProtocolVersion) => {
+  return Yup.string().test(
+    'is-not-reserved-dns-address',
+    ({ value }) => {
       const addresses = (value as string).split(',');
-      return addresses.every((address) => !isReservedAddress(address, protocolVersion));
+      if (addresses.length === 1) {
+        return `The provided IP address is not a valid DNS address.`;
+      }
+
+      const reservedAddresses = addresses.filter((address) => {
+        return isReservedAddress(address, protocolVersion);
+      });
+      return `The provided IP addresses ${reservedAddresses.join(
+        ', ',
+      )} are not valid DNS addresses.`;
     },
+    (value) => areNotReservedAdresses(value, protocolVersion),
   );
 };
 

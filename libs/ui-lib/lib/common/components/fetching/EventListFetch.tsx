@@ -104,7 +104,6 @@ export const EventListFetch = ({
   let eventList = (
     <EventsList
       events={events || []}
-      className={className}
       resetFilters={() => setFilters(getInitialClusterEventsFilters(entityKind, hostId))}
     />
   );
@@ -131,7 +130,7 @@ export const EventListFetch = ({
         events={events || []}
         severityCounts={severityCounts}
       />
-      {eventList}
+      <div className={className}>{eventList}</div>
       {!disablePagination && (
         <Pagination
           perPageComponent="button"
