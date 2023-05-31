@@ -27,7 +27,9 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
   const pullSecret = usePullSecret();
   const { infraEnv } = useInfraEnv(
     cluster?.id ? cluster?.id : '',
-    cluster?.cpuArchitecture ? (cluster.cpuArchitecture as CpuArchitecture) : CpuArchitecture.x86,
+    cluster?.cpuArchitecture
+      ? (cluster.cpuArchitecture as CpuArchitecture)
+      : CpuArchitecture.USE_DAY1_ARCHITECTURE,
     cluster?.name,
     pullSecret,
     cluster?.openshiftVersion,

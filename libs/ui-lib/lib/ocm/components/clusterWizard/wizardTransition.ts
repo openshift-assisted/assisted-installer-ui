@@ -32,12 +32,23 @@ export type ClusterWizardStepsType =
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
+export const getLastStepForWizard = (
+  customManifestsStepNeedsToBeFilled: boolean,
+): ClusterWizardStepsType => {
+  if (customManifestsStepNeedsToBeFilled) {
+    return 'custom-manifests';
+  } else {
+    return 'review';
+  }
+};
+
 export const getClusterWizardFirstStep = (
   locationState: ClusterWizardFlowStateType | undefined,
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
   hosts?: Host[] | undefined,
   isSingleClusterFeatureEnabled?: boolean,
+  customManifestsStepNeedsToBeFilled?: boolean,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
@@ -53,9 +64,10 @@ export const getClusterWizardFirstStep = (
     }
     return 'static-ip-network-wide-configurations';
   }
+
   switch (state) {
     case 'ready':
-      return 'review';
+      return getLastStepForWizard(customManifestsStepNeedsToBeFilled || false);
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':

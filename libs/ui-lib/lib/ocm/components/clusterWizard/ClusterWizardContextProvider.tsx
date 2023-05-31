@@ -16,9 +16,11 @@ import {
   InfraEnv,
   AssistedInstallerOCMPermissionTypesListType,
   useFeature,
+  useAlerts,
 } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
+import { ListManifestsExtended } from '../clusterConfiguration/manifestsConfiguration/data/dataTypes';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -77,6 +79,15 @@ const getWizardStepIds = (
   return stepsCopy;
 };
 
+const validateIfCustomsManifestsNeedsToBeFilled = (
+  customManifests: ListManifestsExtended,
+): boolean => {
+  const customManifestsEmpty = customManifests.filter(
+    (customManifest) => customManifest.yamlContent === '',
+  );
+  return customManifestsEmpty.length > 0;
+};
+
 const ClusterWizardContextProvider = ({
   children,
   cluster,
@@ -91,18 +102,23 @@ const ClusterWizardContextProvider = ({
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const [addCustomManifests, setAddCustomManifests] = React.useState<boolean>(false);
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
-  const { customManifests } = useClusterCustomManifests(cluster?.id || '', false);
+  const { customManifests } = useClusterCustomManifests(cluster?.id || '', true);
   const setClusterPermissions = useSetClusterPermissions();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-
+  const { clearAlerts } = useAlerts();
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
+    const customManifestsStepNeedsToBeFilled =
+      customManifests && customManifests.length > 0
+        ? validateIfCustomsManifestsNeedsToBeFilled(customManifests)
+        : false;
     const firstStep = getClusterWizardFirstStep(
       locationState,
       staticIpInfo,
       cluster?.status,
       cluster?.hosts,
       isSingleClusterFeatureEnabled,
+      customManifestsStepNeedsToBeFilled,
     );
     const firstStepIds = getWizardStepIds(
       wizardStepIds,
@@ -156,6 +172,7 @@ const ClusterWizardContextProvider = ({
     };
     return {
       moveBack(): void {
+        clearAlerts();
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
         let nextStepId = wizardStepIds[currentStepIdx - 1];
         if (nextStepId === 'static-ip-host-configurations') {
@@ -213,6 +230,7 @@ const ClusterWizardContextProvider = ({
     addCustomManifests,
     customManifests,
     isSingleClusterFeatureEnabled,
+    clearAlerts,
   ]);
   if (!contextValue) {
     return null;

@@ -74,7 +74,7 @@ const CodeField = ({
           <CodeEditor
             code={field.value as string}
             isUploadEnabled={!isDisabled}
-            isDownloadEnabled
+            isDownloadEnabled={isValid}
             isCopyEnabled
             isLanguageLabelVisible
             height="400px"
