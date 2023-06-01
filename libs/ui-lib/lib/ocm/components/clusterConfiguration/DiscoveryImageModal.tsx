@@ -15,6 +15,8 @@ import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
 
+import './DiscoveryImageModal.css';
+
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
   cluster: Cluster;
@@ -93,6 +95,7 @@ export const DiscoveryImageModal = () => {
       variant={ModalVariant.small}
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
+      tabIndex={0}
     >
       {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
       {isoDownloadUrl ? (
