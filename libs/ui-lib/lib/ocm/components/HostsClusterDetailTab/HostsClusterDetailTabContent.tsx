@@ -19,6 +19,7 @@ import { HostsClusterDetailTabProps } from './types';
 import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
+import { ClusterWizardContextProvider } from '../clusterWizard';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -206,20 +207,22 @@ export const HostsClusterDetailTabContent = ({
   }
 
   return (
-    <AddHostsContextProvider
-      cluster={day2Cluster}
-      resetCluster={resetCluster}
-      ocpConsoleUrl={ocmCluster?.console?.url}
-      canEdit={ocmCluster.canEdit}
-    >
-      <NewFeatureSupportLevelProvider
-        loadingUi={<LoadingState />}
+    <ClusterWizardContextProvider cluster={day2Cluster} infraEnv={infraEnv}>
+      <AddHostsContextProvider
         cluster={day2Cluster}
-        cpuArchitecture={infraEnv?.cpuArchitecture}
-        openshiftVersion={day2Cluster.openshiftVersion}
+        resetCluster={resetCluster}
+        ocpConsoleUrl={ocmCluster?.console?.url}
+        canEdit={ocmCluster.canEdit}
       >
-        <AddHosts />
-      </NewFeatureSupportLevelProvider>
-    </AddHostsContextProvider>
+        <NewFeatureSupportLevelProvider
+          loadingUi={<LoadingState />}
+          cluster={day2Cluster}
+          cpuArchitecture={infraEnv?.cpuArchitecture}
+          openshiftVersion={day2Cluster.openshiftVersion}
+        >
+          <AddHosts />
+        </NewFeatureSupportLevelProvider>
+      </AddHostsContextProvider>
+    </ClusterWizardContextProvider>
   );
 };

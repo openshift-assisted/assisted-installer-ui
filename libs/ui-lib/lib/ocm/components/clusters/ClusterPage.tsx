@@ -164,33 +164,35 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
 
   if (cluster && infraEnv) {
     return (
-      <AlertsContextProvider>
-        <SentryErrorMonitorContextProvider>
-          <ModalDialogsContextProvider>
-            <ClusterDefaultConfigurationProvider
-              loadingUI={<ClusterLoading />}
-              errorUI={<ClusterUiError />}
-            >
-              <NewFeatureSupportLevelProvider
-                loadingUi={<ClusterLoading />}
-                cluster={cluster}
-                cpuArchitecture={infraEnv.cpuArchitecture}
-                openshiftVersion={cluster.openshiftVersion}
+      <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
+        <AlertsContextProvider>
+          <SentryErrorMonitorContextProvider>
+            <ModalDialogsContextProvider>
+              <ClusterDefaultConfigurationProvider
+                loadingUI={<ClusterLoading />}
+                errorUI={<ClusterUiError />}
               >
-                {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
+                <NewFeatureSupportLevelProvider
+                  loadingUi={<ClusterLoading />}
+                  cluster={cluster}
+                  cpuArchitecture={infraEnv.cpuArchitecture}
+                  openshiftVersion={cluster.openshiftVersion}
+                >
+                  {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
                 <RebootNodeZeroModal cluster={cluster} />
                 */}
-                {getContent(cluster, infraEnv)}
-                {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
-                {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
-                <CancelInstallationModal />
-                <ResetClusterModal />
-                <DiscoveryImageModal />
-              </NewFeatureSupportLevelProvider>
-            </ClusterDefaultConfigurationProvider>
-          </ModalDialogsContextProvider>
-        </SentryErrorMonitorContextProvider>
-      </AlertsContextProvider>
+                  {getContent(cluster, infraEnv)}
+                  {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
+                  {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
+                  <CancelInstallationModal />
+                  <ResetClusterModal />
+                  <DiscoveryImageModal />
+                </NewFeatureSupportLevelProvider>
+              </ClusterDefaultConfigurationProvider>
+            </ModalDialogsContextProvider>
+          </SentryErrorMonitorContextProvider>
+        </AlertsContextProvider>
+      </ClusterWizardContextProvider>
     );
   }
 
