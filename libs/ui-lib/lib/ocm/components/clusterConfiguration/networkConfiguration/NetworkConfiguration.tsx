@@ -253,7 +253,13 @@ const NetworkConfiguration = ({
         openshiftVersion: cluster.openshiftVersion,
         featureSupportLevelData,
       }),
-    [cluster.openshiftVersion, cluster.platform?.type, featureSupportLevelData, isDualStack, underlyingCpuArchitecture],
+    [
+      cluster.openshiftVersion,
+      cluster.platform?.type,
+      featureSupportLevelData,
+      isDualStack,
+      underlyingCpuArchitecture,
+    ],
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(
