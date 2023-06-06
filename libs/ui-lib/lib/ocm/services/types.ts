@@ -21,4 +21,6 @@ export enum HostsNetworkConfigurationType {
 
 export type OcmClusterDetailsValues = ClusterDetailsValues & {
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
+  externalPartnerIntegrations: boolean;
+  addCustomManifest: boolean; 
 };

@@ -75,20 +75,35 @@ const isAdvNetworkConf = (
     )
   );
 
-const isManagedNetworkingDisabled = (
-  isDualStack: boolean,
-  openshiftVersion: Cluster['openshiftVersion'],
-  cpuArchitecture: CpuArchitecture,
-  featureSupportLevelData: NewFeatureSupportLevelData,
-) => {
-  if (isDualStack) {
+type IsManagedNetworkingDisabledFunctionParams = {
+  isArmCpu: boolean;
+  isDualStack: boolean;
+  isOracleCloudInfrastructure: boolean;
+  featureSupportLevelData: NewFeatureSupportLevelData;
+  openshiftVersion: Cluster['openshiftVersion'];
+};
+
+const isManagedNetworkingDisabled = ({
+  isArmCpu,
+  isDualStack,
+  isOracleCloudInfrastructure,
+  openshiftVersion,
+  featureSupportLevelData,
+}: IsManagedNetworkingDisabledFunctionParams) => {
+  if (isOracleCloudInfrastructure) {
+    return {
+      isNetworkManagementDisabled: true,
+      networkManagementDisabledReason:
+        'Network management selection is not supported with Oracle Cloud Infrastructure',
+    };
+  } else if (isDualStack) {
     return {
       isNetworkManagementDisabled: true,
       networkManagementDisabledReason:
         'Network management selection is not supported with dual-stack',
     };
   } else if (
-    cpuArchitecture === CpuArchitecture.ARM &&
+    isArmCpu &&
     !featureSupportLevelData.isFeatureSupported(
       'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
     )
@@ -231,13 +246,14 @@ const NetworkConfiguration = ({
   const isSupportedPlatformIntegrationNutanix = supportedPlatformIntegration === 'nutanix';
   const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
     () =>
-      isManagedNetworkingDisabled(
+      isManagedNetworkingDisabled({
+        isArmCpu: underlyingCpuArchitecture === CpuArchitecture.ARM,
         isDualStack,
-        cluster.openshiftVersion,
-        underlyingCpuArchitecture,
+        isOracleCloudInfrastructure: cluster.platform?.type === 'oci',
+        openshiftVersion: cluster.openshiftVersion,
         featureSupportLevelData,
-      ),
-    [underlyingCpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
+      }),
+    [cluster.openshiftVersion, cluster.platform?.type, featureSupportLevelData, isDualStack, underlyingCpuArchitecture],
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(

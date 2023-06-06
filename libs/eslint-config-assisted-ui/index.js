@@ -65,7 +65,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-assignment': 'error',
     '@typescript-eslint/no-unsafe-member-access': 'error',
     '@typescript-eslint/no-unsafe-return': 'error',
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': ["error", { "argsIgnorePattern": "^_" }],
     '@typescript-eslint/restrict-template-expressions': 'error',
     'no-restricted-imports': [
       'error',

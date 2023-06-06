@@ -57,7 +57,7 @@ const clusterValidation = {
   ],
   network: [
     {
-      id: 'api-vip-defined',
+      id: 'api-vips-defined',
       status: 'success',
       message: 'The API virtual IP is correct.',
     },
