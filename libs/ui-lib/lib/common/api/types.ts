@@ -2121,7 +2121,7 @@ export type OsImages = OsImage[];
 export interface Platform {
   type: PlatformType;
 }
-export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none';
+export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'oci';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
