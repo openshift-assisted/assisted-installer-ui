@@ -6,3 +6,4 @@
 apps/*/build
 libs/*/build
 libs/*/@types
+libs/ui-lib-tests/cypress/fixtures/static-ip/files/test.yaml

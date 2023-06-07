@@ -47,4 +47,23 @@ export const staticIpPage = {
   hostMappingIpv6Address: (index: number) => {
     return cy.get(`[data-testid="ipv6-address-${index}"]`);
   },
+
+  yamlView: {
+    getStartFromScratch: () => {
+      return cy.get(
+        `.pf-c-empty-state__secondary > .pf-c-button:contains(${Cypress.env(
+          'yamlStartFromScratchText',
+        )})`,
+      );
+    },
+    fileUpload: () => {
+      return cy.get(Cypress.env('inputTypeFile'));
+    },
+    macAddress: (host: number = 0, index: number = 0) => {
+      return cy.get(`[data-testid=mac-address-${host}-${index}]`);
+    },
+    interface: (host: number = 0, index: number = 0) => {
+      return cy.get(`[data-testid=interface-name-${host}-${index}]`);
+    },
+  },
 };
