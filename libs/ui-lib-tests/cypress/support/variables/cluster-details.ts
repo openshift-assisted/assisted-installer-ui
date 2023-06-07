@@ -23,3 +23,4 @@ Cypress.env(
   'staticIpNetworkConfigFieldId',
   '#form-radio-hostsNetworkConfigurationType-static-field',
 );
+Cypress.env('addCustomManifestId', '#form-input-addCustomManifest-field');

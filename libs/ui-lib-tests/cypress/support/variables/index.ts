@@ -1,6 +1,7 @@
 import './common';
 import './cluster-list';
 import './cluster-details';
+import './custom-manifests';
 import './host-discovery';
 import './installation';
 import './misc';

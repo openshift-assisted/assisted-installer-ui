@@ -15,6 +15,7 @@ import createStorageFixtureMapping from '../fixtures/storage';
 import createDualStackFixtureMapping from '../fixtures/dualstack';
 import createStaticIpFixtureMapping from '../fixtures/static-ip';
 import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
+import createCustomManifestsFixtureMapping from '../fixtures/custom-manifests';
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
 const allClustersApiPath = '/api/assisted-install/v2/clusters/';
@@ -59,6 +60,9 @@ const getScenarioFixtureMapping = () => {
     case 'AI_CREATE_STATIC_IP':
       fixtureMapping = createStaticIpFixtureMapping;
       break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      fixtureMapping = createCustomManifestsFixtureMapping;
+      break;
     default:
       break;
   }
@@ -87,6 +91,13 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
     req.reply(transformInfraEnvFixture(fixtureMapping.infraEnvs));
   } else {
     req.reply(infraEnv);
+  }
+};
+
+const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  if (fixtureMapping?.manifests) {
+    req.reply(fixtureMapping.manifests);
   }
 };
 
@@ -119,6 +130,10 @@ const setScenarioEnvVars = ({ activeScenario }) => {
       break;
     case 'AI_CREATE_STATIC_IP':
       Cypress.env('CLUSTER_NAME', 'ai-e2e-static-ip');
+      break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      Cypress.env('CLUSTER_NAME', 'ai-e2e-custom-manifests');
+      Cypress.env('NUM_WORKERS', 0);
       break;
     default:
       break;
@@ -194,7 +209,6 @@ const addPlatformFeatureIntercepts = () => {
       req.reply(featureSupport[shortOpenshiftVersion]);
     },
   );
-  cy.intercept('GET', `${clusterApiPath}/manifests`, []);
 };
 
 const addAdditionalIntercepts = () => {
@@ -206,6 +220,10 @@ const addAdditionalIntercepts = () => {
     'getDefaultConfig',
   );
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
+};
+
+const addCustomManifestsIntercepts = () => {
+  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('manifests');
 };
 
 const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
@@ -225,6 +243,7 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   addHostIntercepts();
   addPlatformFeatureIntercepts();
   addAdditionalIntercepts();
+  addCustomManifestsIntercepts();
 };
 
 Cypress.Commands.add('loadAiAPIIntercepts', loadAiAPIIntercepts);

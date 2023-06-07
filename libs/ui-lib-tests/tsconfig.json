@@ -5,5 +5,5 @@
     "resolveJsonModule": true,
     "types": ["cypress", "node", "@testing-library/cypress"]
   },
-  "include": ["cypress.config.ts", "cypress/**/*.ts"]
+  "include": ["cypress.config.ts", "cypress/**/*.ts", "../../node_modules/cypress-file-upload"]
 }
