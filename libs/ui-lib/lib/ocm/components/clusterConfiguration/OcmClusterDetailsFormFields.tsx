@@ -204,6 +204,7 @@ export const OcmClusterDetailsFormFields = ({
               <span>
                 External partner integrations{' '}
                 <PopoverIcon
+                  id={'externalPartnerIntegrations'}
                   noVerticalAlign
                   bodyContent={
                     <p>

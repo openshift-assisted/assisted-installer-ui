@@ -65,7 +65,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
 
   if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
     return (
-      <FormGroup isInline fieldId={fieldId}>
+      <FormGroup id={`form-control__${fieldId}`} isInline fieldId={fieldId}>
         <Tooltip hidden={!disabledReason} content={disabledReason}>
           <Checkbox
             {...field}

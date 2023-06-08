@@ -102,6 +102,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
     const isValid = !touched || !error?.length;
     return (
       <FormGroup
+        id={`form-control__${fieldId}`}
         fieldId={fieldId}
         label={label}
         helperText={
