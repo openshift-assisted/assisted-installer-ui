@@ -3,7 +3,7 @@
     "target": "es5",
     "lib": ["es5", "dom"],
     "resolveJsonModule": true,
-    "types": ["cypress", "node", "@testing-library/cypress"]
+    "types": ["cypress", "cypress-file-upload", "node", "@testing-library/cypress"]
   },
-  "include": ["cypress.config.ts","cypress-file-upload", "cypress/**/*.ts"]
+  "include": ["cypress.config.ts","cypress/**/*.ts"]
 }
