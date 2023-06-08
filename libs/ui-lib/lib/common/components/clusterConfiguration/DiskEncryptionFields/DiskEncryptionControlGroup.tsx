@@ -43,6 +43,7 @@ const DiskEncryptionControlGroup = ({
     diskEncryptionMode,
     diskEncryptionTangServers,
   } = values;
+  const fieldId = 'diskEncryption';
 
   const hasEnabledDiskEncryption = enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers;
   const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
@@ -79,7 +80,7 @@ const DiskEncryptionControlGroup = ({
   };
 
   return (
-    <FormGroup label="Encryption of installation disks">
+    <FormGroup id={`form-control__${fieldId}`} label="Encryption of installation disks">
       <Stack hasGutter>
         <StackItem>
           <SwitchField
