@@ -34,4 +34,10 @@ export const reviewAndCreatePage = {
   getInstallButton: () => {
     return cy.get(Cypress.env('buttonInstall'));
   },
+  getCustomManifestsSection: () => {
+    return cy.get('#custom-manifests-expandable');
+  },
+  getCustomManifestsDetail: () => {
+    return cy.get('td[data-testid="manifest-detail-manifests-manifest1.yaml"');
+  },
 };

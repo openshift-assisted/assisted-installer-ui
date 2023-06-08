@@ -12,6 +12,10 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
     cy.visit('/clusters');
   });
 
+  beforeEach(() => {
+    cy.loadAiAPIIntercepts(null, false);
+  });
+
   describe('Creating a new cluster', () => {
     it('Can submit the form to create a new cluster with custom manifests enabled', () => {
       commonActions.visitNewClusterPage();

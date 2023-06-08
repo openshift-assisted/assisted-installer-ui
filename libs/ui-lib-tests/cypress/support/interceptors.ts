@@ -101,6 +101,20 @@ const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
   }
 };
 
+const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  if (fixtureMapping?.manifestContent) {
+    req.reply(fixtureMapping.manifestContent);
+  }
+};
+
+const mockCustomManifestFileResponse2: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  if (fixtureMapping?.manifestContent) {
+    req.reply(fixtureMapping.manifestContent);
+  }
+};
+
 const setScenarioEnvVars = ({ activeScenario }) => {
   Cypress.env('AI_SCENARIO', activeScenario);
   Cypress.env('ASSISTED_SNO_DEPLOYMENT', false);
@@ -222,11 +236,25 @@ const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };
 
-const addCustomManifestsIntercepts = () => {
+const addCustomManifestsIntercepts = (loadManifestContent: boolean | false) => {
   cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('manifests');
+  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse);
+  cy.intercept('DELETE', `${clusterApiPath}/manifests`);
+  if (loadManifestContent) {
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
+      mockCustomManifestFileResponse,
+    );
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
+      mockCustomManifestFileResponse2,
+    );
+  }
 };
 
-const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
+const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null, loadManifestContent?: boolean) => {
   Cypress.env('clusterId', fakeClusterId);
 
   if (conf !== null) {
@@ -235,7 +263,7 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
       setScenarioEnvVars(conf);
     }
   }
-
+  addCustomManifestsIntercepts(loadManifestContent || false);
   addClusterCreationIntercepts();
   addClusterListIntercepts();
   addClusterPatchAndDetailsIntercepts();
@@ -243,7 +271,6 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   addHostIntercepts();
   addPlatformFeatureIntercepts();
   addAdditionalIntercepts();
-  addCustomManifestsIntercepts();
 };
 
 Cypress.Commands.add('loadAiAPIIntercepts', loadAiAPIIntercepts);

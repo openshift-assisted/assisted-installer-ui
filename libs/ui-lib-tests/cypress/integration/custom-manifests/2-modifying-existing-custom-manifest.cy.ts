@@ -17,17 +17,21 @@ describe(`Assisted Installer Custom manifests step`, () => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
   });
+
   describe('Modifyng existing Custom Manifests', () => {
     it('Can configure custom manifests step and next button is disabled', () => {
-      commonActions
-        .getWizardStepNav('Custom manifests')
-        .should('have.class', ACTIVE_NAV_ITEM_CLASS);
-      commonActions.getNextButton().should('be.disabled');
+      cy.wait('@manifests').then(() => {
+        commonActions
+          .getWizardStepNav('Custom manifests')
+          .should('have.class', ACTIVE_NAV_ITEM_CLASS);
+        commonActions.getNextButton().should('be.disabled');
+      });
     });
 
     it('Add valid manifest content', () => {
       customManifestsPage.getStartFromScratch().click();
       customManifestsPage.fileUpload().attachFile(`custom-manifests/files/manifest1.yaml`);
+      cy.loadAiAPIIntercepts(null, true);
       commonActions.getNextButton().should('be.enabled');
     });
     it('Cannot upload binary file into manifest content', () => {
