@@ -94,8 +94,8 @@ export const VirtualIPControlGroup = ({
   );
 
   const {
-    'api-vip-defined': apiVipFailedValidationMessage,
-    'ingress-vip-defined': ingressVipFailedValidationMessage,
+    'api-vips-defined': apiVipFailedValidationMessage,
+    'ingress-vips-defined': ingressVipFailedValidationMessage,
   } = React.useMemo(
     () => getVipValidationsById(t, cluster.validationsInfo),
     [t, cluster.validationsInfo],

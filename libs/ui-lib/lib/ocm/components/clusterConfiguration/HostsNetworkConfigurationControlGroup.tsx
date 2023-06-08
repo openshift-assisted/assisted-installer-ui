@@ -17,7 +17,7 @@ export const HostsNetworkConfigurationControlGroup = ({
   const GROUP_NAME = 'hostsNetworkConfigurationType';
   const clusterWizardContext = useClusterWizardContext();
   const [{ value }] = useField<HostsNetworkConfigurationType>(GROUP_NAME);
-
+  const fieldId = getFieldId(GROUP_NAME, 'radio');
   const tooltipProps: TooltipProps = {
     hidden: !clusterExists,
     content: clusterExistsReason,
@@ -31,10 +31,12 @@ export const HostsNetworkConfigurationControlGroup = ({
     clusterWizardContext.onUpdateHostNetworkConfigType(value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, clusterExists]);
+
   return (
     <FormGroup
+      id={`form-control__${fieldId}`}
       label="Hosts' network configuration"
-      fieldId={getFieldId(GROUP_NAME, 'radio')}
+      fieldId={fieldId}
       isInline
     >
       <RadioFieldWithTooltip

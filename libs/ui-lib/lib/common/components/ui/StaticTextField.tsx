@@ -25,6 +25,7 @@ export const StaticField: React.FC<StaticFieldProps> = ({
 
   return (
     <FormGroup
+      id={`form-control__${fieldId}`}
       fieldId={fieldId}
       label={label}
       helperText={

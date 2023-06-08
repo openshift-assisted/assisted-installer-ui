@@ -140,7 +140,7 @@ const CpuArchitectureDropdown = ({
   );
 
   return (
-    <FormGroup fieldId={fieldId} label={'CPU architecture'}>
+    <FormGroup id={`form-control__${fieldId}`} fieldId={fieldId} label={'CPU architecture'}>
       <Dropdown
         {...field}
         id={fieldId}

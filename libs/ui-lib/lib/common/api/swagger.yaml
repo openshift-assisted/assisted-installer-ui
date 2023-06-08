@@ -522,6 +522,9 @@ paths:
       security:
         - userAuth: [admin, read-only-admin, user]
         - agentAuth: []
+        - urlAuth: []
+        - imageAuth: []
+        - imageURLAuth: []
       description: Retrieves the details of the infra-env.
       operationId: GetInfraEnv
       parameters:
@@ -1640,7 +1643,7 @@ paths:
           name: file_name
           description: The file to be downloaded.
           type: string
-          enum: [discovery.ign, ipxe-script]
+          enum: [discovery.ign, ipxe-script, static-network-config]
           required: true
         - in: query
           name: mac
@@ -1654,6 +1657,13 @@ paths:
           required: false
           type: string
           enum: ['discovery-image-always', 'boot-order-control']
+        - in: query
+          name: discovery_iso_type
+          description:
+            Overrides the ISO type for the disovery ignition, either 'full-iso' or 'minimal-iso'.
+          required: false
+          type: string
+          enum: ['full-iso', 'minimal-iso']
       responses:
         '200':
           description: Success.
@@ -2490,12 +2500,58 @@ paths:
     post:
       tags:
         - installer
-      description: Transforming cluster to day2 and allowing adding hosts
+      description:
+        Deprecated, maintained for legacy purposes. Does the same thing as allow-add-hosts. Use
+        allow-add-hosts instead.
+      deprecated: true
       operationId: TransformClusterToDay2
       parameters:
         - in: path
           name: cluster_id
-          description: The cluster to transform to day2 and to allow adding hosts by this.
+          description: The cluster to transform.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '202':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/actions/allow-add-hosts:
+    post:
+      tags:
+        - installer
+      description: Transforms installed cluster to a state which allows adding hosts.
+      operationId: TransformClusterToAddingHosts
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to transform.
           type: string
           format: uuid
           required: true
@@ -3513,6 +3569,10 @@ paths:
               type: integer
               description: Count of events with severity 'critical'.
               minimum: 0
+            Event-Count:
+              type: integer
+              description: Count of events retrieved.
+              minimum: 0
           schema:
             $ref: '#/definitions/event-list'
         '401':
@@ -3696,7 +3756,96 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/clusters/{cluster_id}/ignored-validations:
+    get:
+      tags:
+        - installer
+      description: Fetch the validations which are to be ignored for this cluster.
+      operationId: v2GetIgnoredValidations
+      parameters:
+        - in: path
+          name: cluster_id
+          description:
+            The cluster whose failing validations should be ignored according to this list.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/ignored-validations'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      tags:
+        - installer
+      description: Register the validations which are to be ignored for this cluster.
+      operationId: v2SetIgnoredValidations
+      parameters:
+        - in: path
+          name: cluster_id
+          description:
+            The cluster whose failing validations should be ignored according to this list.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: ignored_validations
+          description: The validations to be ignored.
+          required: true
+          schema:
+            $ref: '#/definitions/ignored-validations'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/ignored-validations'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
 definitions:
+  ignored-validations:
+    type: object
+    properties:
+      cluster-validation-ids:
+        type: string
+        format: string
+        description:
+          JSON-formatted list of cluster validation IDs that will be ignored for all hosts that
+          belong to this cluster. It may also contain a list with a single string "all" to ignore
+          all cluster validations. Some validations cannot be ignored.
+      host-validation-ids:
+        type: string
+        format: string
+        description:
+          JSON-formatted list of host validation IDs that will be ignored for all hosts that belong
+          to this cluster. It may also contain a list with a single string "all" to ignore all host
+          validations. Some validations cannot be ignored.
   monitored-operator:
     type: object
     properties:
@@ -3709,6 +3858,9 @@ definitions:
         type: string
         description: Unique name of the operator.
         x-go-custom-tag: gorm:"primaryKey"
+      version:
+        type: string
+        description: Operator version
       namespace:
         type: string
         description: Namespace where to deploy an operator. Only some operators require a namespace.
@@ -3742,6 +3894,9 @@ definitions:
       name:
         type: string
         description: Unique name of the operator.
+      version:
+        type: string
+        description: operator version.
       status:
         $ref: '#/definitions/operator-status'
       status_info:
@@ -3856,6 +4011,8 @@ definitions:
                 - 'DUAL_STACK_NETWORKING'
                 - 'MULTIARCH_RELEASE_IMAGE'
                 - 'NUTANIX_INTEGRATION'
+                - 'DUAL_STACK_VIPS'
+                - 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE'
             support_level:
               $ref: '#/definitions/support-level'
 
@@ -3872,30 +4029,22 @@ definitions:
   feature-support-level-id:
     type: string
     enum:
-      - 'ADDITIONAL_NTP_SOURCE'
-      - 'REQUESTED_HOSTNAME'
-      - 'PROXY'
       - 'SNO'
-      - 'DAY2_HOSTS'
       - 'VIP_AUTO_ALLOC'
-      - 'DISK_SELECTION'
-      - 'OVN_NETWORK_TYPE'
-      - 'SDN_NETWORK_TYPE'
-      - 'SCHEDULABLE_MASTERS'
-      - 'AUTO_ASSIGN_ROLE'
       - 'CUSTOM_MANIFEST'
-      - 'DISK_ENCRYPTION'
-      - 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
       - 'SINGLE_NODE_EXPANSION'
       - 'LVM'
       - 'ODF'
+      - 'LSO'
       - 'CNV'
-      - 'DUAL_STACK_NETWORKING'
       - 'NUTANIX_INTEGRATION'
       - 'VSPHERE_INTEGRATION'
       - 'DUAL_STACK_VIPS'
-      - 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE'
       - 'CLUSTER_MANAGED_NETWORKING'
+      - 'USER_MANAGED_NETWORKING'
+      - 'MINIMAL_ISO'
+      - 'FULL_ISO'
+      - 'EXTERNAL_PLATFORM_OCI'
 
   architecture-support-level-id:
     type: string
@@ -4041,6 +4190,10 @@ definitions:
         x-go-name: SNORequirements
         $ref: '#/definitions/cluster-host-requirements-details'
         description: Single node OpenShift node requirements
+      edge-worker:
+        x-go-name: EdgeWorkerRequirements
+        $ref: '#/definitions/cluster-host-requirements-details'
+        description: Edge Worker OpenShift node requirements
 
   event-list:
     type: array
@@ -4241,6 +4394,7 @@ definitions:
         items:
           $ref: '#/definitions/host-stage'
         x-go-custom-tag: gorm:"-"
+        x-nullable: true
       connectivity:
         x-go-custom-tag: gorm:"type:text"
         type: string
@@ -4273,11 +4427,11 @@ definitions:
         type: boolean
       logs_collected_at:
         type: string
-        format: datetime
+        format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
       logs_started_at:
         type: string
-        format: datetime
+        format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
       installer_version:
         type: string
@@ -4444,6 +4598,7 @@ definitions:
       - upgrade-agent
       - download-boot-artifacts
       - reboot-for-reclaim
+      - verify-vips
 
   step:
     type: object
@@ -4572,11 +4727,29 @@ definitions:
       api_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
-        description: The virtual IP used to reach the OpenShift cluster's API.
+        description: (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
+      api_vips:
+        type: array
+        description:
+          The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for
+          single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP
+          stack used). The order of stacks should be the same as order of subnets in Cluster
+          Networks, Service Networks, and Machine Networks.
+        items:
+          $ref: '#/definitions/api_vip'
       ingress_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
-        description: The virtual IP used for cluster ingress traffic.
+        description: (DEPRECATED) The virtual IP used for cluster ingress traffic.
+      ingress_vips:
+        type: array
+        description:
+          The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack
+          clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used).
+          The order of stacks should be the same as order of subnets in Cluster Networks, Service
+          Networks, and Machine Networks.
+        items:
+          $ref: '#/definitions/ingress_vip'
       pull_secret:
         type: string
         description:
@@ -4632,7 +4805,7 @@ definitions:
         type: string
         description: 'The desired network type used.'
         enum: ['OpenShiftSDN', 'OVNKubernetes']
-        default: 'OpenShiftSDN'
+        x-nullable: true
       schedulable_masters:
         type: boolean
         description: Schedule workloads on masters
@@ -4641,21 +4814,18 @@ definitions:
         type: array
         description: Cluster networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/cluster_network'
         x-nullable: true
       service_networks:
         type: array
         description: Service networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/service_network'
         x-nullable: true
       machine_networks:
         type: array
         description: Machine networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/machine_network'
         x-nullable: true
       platform:
@@ -4669,11 +4839,9 @@ definitions:
         enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: The CPU architecture of the image (x86_64/arm64/etc).
       disk_encryption:
-        type: object
         $ref: '#/definitions/disk-encryption'
         description: Installation disks encryption mode and host roles to be applied.
       ignition_endpoint:
-        type: object
         $ref: '#/definitions/ignition-endpoint'
         description: Explicit ignition endpoint overrides the default ignition endpoint.
       tags:
@@ -4743,7 +4911,6 @@ definitions:
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
         x-nullable: true
       platform:
-        type: object
         $ref: '#/definitions/platform'
       cluster_network_host_prefix:
         type: integer
@@ -4767,12 +4934,32 @@ definitions:
       api_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
-        description: The virtual IP used to reach the OpenShift cluster's API.
+        description: (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
+        x-nullable: true
+      api_vips:
+        type: array
+        description:
+          The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for
+          single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP
+          stack used). The order of stacks should be the same as order of subnets in Cluster
+          Networks, Service Networks, and Machine Networks.
+        items:
+          $ref: '#/definitions/api_vip'
         x-nullable: true
       ingress_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
-        description: The virtual IP used for cluster ingress traffic.
+        description: (DEPRECATED) The virtual IP used for cluster ingress traffic.
+        x-nullable: true
+      ingress_vips:
+        type: array
+        description:
+          The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack
+          clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used).
+          The order of stacks should be the same as order of subnets in Cluster Networks, Service
+          Networks, and Machine Networks.
+        items:
+          $ref: '#/definitions/ingress_vip'
         x-nullable: true
       api_vip_dns_name:
         type: string
@@ -4849,29 +5036,24 @@ definitions:
         type: array
         description: Cluster networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/cluster_network'
         x-nullable: true
       service_networks:
         type: array
         description: Service networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/service_network'
         x-nullable: true
       machine_networks:
         type: array
         description: Machine networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/machine_network'
         x-nullable: true
       disk_encryption:
-        type: object
         $ref: '#/definitions/disk-encryption'
         description: Installation disks encryption mode and host roles to be applied.
       ignition_endpoint:
-        type: object
         $ref: '#/definitions/ignition-endpoint'
         description: Explicit ignition endpoint overrides the default ignition endpoint.
       tags:
@@ -4987,7 +5169,18 @@ definitions:
       api_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
-        description: The virtual IP used to reach the OpenShift cluster's API.
+        description: (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
+      api_vips:
+        x-go-custom-tag: gorm:"foreignkey:ClusterID;references:ID"
+        x-nullable: true
+        type: array
+        description:
+          The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for
+          single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP
+          stack used). The order of stacks should be the same as order of subnets in Cluster
+          Networks, Service Networks, and Machine Networks.
+        items:
+          $ref: '#/definitions/api_vip'
       api_vip_dns_name:
         type: string
         description: The domain name used to reach the OpenShift cluster API.
@@ -5001,7 +5194,18 @@ definitions:
       ingress_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
-        description: The virtual IP used for cluster ingress traffic.
+        description: (DEPRECATED) The virtual IP used for cluster ingress traffic.
+      ingress_vips:
+        x-go-custom-tag: gorm:"foreignkey:ClusterID;references:ID"
+        x-nullable: true
+        type: array
+        description:
+          The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack
+          clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used).
+          The order of stacks should be the same as order of subnets in Cluster Networks, Service
+          Networks, and Machine Networks.
+        items:
+          $ref: '#/definitions/ingress_vip'
       ssh_public_key:
         type: string
         description: SSH public key for debugging OpenShift nodes.
@@ -5049,7 +5253,6 @@ definitions:
         $ref: '#/definitions/cluster-progress-info'
         description: Installation progress percentages of the cluster.
       disk_encryption:
-        type: object
         $ref: '#/definitions/disk-encryption'
         description: Information regarding hosts' installation disks encryption.
       hosts:
@@ -5057,7 +5260,6 @@ definitions:
         type: array
         description: Hosts that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/host'
       ready_host_count:
         type: integer
@@ -5121,6 +5323,7 @@ definitions:
         items:
           $ref: '#/definitions/host_network'
         x-go-custom-tag: gorm:"-"
+        x-nullable: true
         description: List of host networks to be filled during query.
       pull_secret_set:
         type: boolean
@@ -5156,6 +5359,24 @@ definitions:
         type: string
         description: Json formatted string containing the majority groups for connectivity checks.
         x-go-custom-tag: gorm:"type:text"
+      ip_collisions:
+        type: string
+        description: Json formatted string containing ip collisions detected in the cluster.
+        x-go-custom-tag: gorm:"type:text"
+      ignored_host_validations:
+        type: string
+        description:
+          Json formatted string containing a list of host validations to be ignored. May also
+          contain a list with a single string "all" to ignore all host validations. Some validations
+          cannot be ignored.
+        x-go-custom-tag: gorm:"type:text"
+      ignored_cluster_validations:
+        type: string
+        description:
+          Json formatted string containing a list of cluster validations to be ignored. May also
+          contain a list with a single string "all" to ignore all cluster validations. Some
+          validations cannot be ignored.
+        x-go-custom-tag: gorm:"type:text"
       deleted_at:
         description: swagger:ignore
         x-go-custom-tag: gorm:"type:timestamp with time zone;index"
@@ -5179,7 +5400,6 @@ definitions:
         type: array
         description: Operators that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/monitored-operator'
       ams_subscription_id:
         type: string
@@ -5200,24 +5420,24 @@ definitions:
         x-nullable: true
       cluster_networks:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;references:ID"
+        x-nullable: true
         type: array
         description: Cluster networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/cluster_network'
       service_networks:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;references:ID"
+        x-nullable: true
         type: array
         description: Service networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/service_network'
       machine_networks:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;references:ID"
+        x-nullable: true
         type: array
         description: Machine networks that are associated with this cluster.
         items:
-          type: object
           $ref: '#/definitions/machine_network'
       cpu_architecture:
         type: string
@@ -5228,7 +5448,6 @@ definitions:
         enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
         description: The CPU architecture of the image (x86_64/arm64/etc).
       ignition_endpoint:
-        type: object
         $ref: '#/definitions/ignition-endpoint'
         description: Explicit ignition endpoint overrides the default ignition endpoint.
       imported:
@@ -5239,7 +5458,7 @@ definitions:
           regular cluster. Clusters are considered imported when they are
           created via the ../clusters/import endpoint. Day-2 clusters converted
           from day-1 clusters by kube-api controllers or the
-          ../clusters/<cluster_id>/actions/allow-add-workers endpoint are not
+          ../clusters/<cluster_id>/actions/allow-add-hosts endpoint are not
           considered imported. Imported clusters usually lack a lot of
           information and are filled with default values that don't necessarily
           reflect the actual cluster they represent
@@ -5270,6 +5489,10 @@ definitions:
     properties:
       type:
         $ref: '#/definitions/platform_type'
+      is_external:
+        description: Indicates if the underlying platform type is external.
+        readOnly: true
+        type: boolean
 
   image_info:
     type: object
@@ -5426,6 +5649,11 @@ definitions:
         type: boolean
       error_info:
         type: string
+      data:
+        type: object
+        description: additional data from the cluster
+        additionalProperties:
+          type: object
 
   host-progress:
     type: object
@@ -5564,22 +5792,18 @@ definitions:
       cluster_networks_ipv4:
         type: array
         items:
-          type: object
           $ref: '#/definitions/cluster_network'
       cluster_networks_dualstack:
         type: array
         items:
-          type: object
           $ref: '#/definitions/cluster_network'
       service_networks_ipv4:
         type: array
         items:
-          type: object
           $ref: '#/definitions/service_network'
       service_networks_dualstack:
         type: array
         items:
-          type: object
           $ref: '#/definitions/service_network'
       forbidden_hostnames:
         description:
@@ -5717,6 +5941,7 @@ definitions:
       - iSCSI
       - FC
       - LVM
+      - RAID
 
   io_perf:
     type: object
@@ -6028,7 +6253,7 @@ definitions:
             - domain_name
           properties:
             domain_name:
-              pattern: '^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}$'
+              pattern: '^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}[.]?$'
               description: 'The domain name that should be resolved'
               type: string
 
@@ -6089,6 +6314,7 @@ definitions:
       - nutanix
       - vsphere
       - none
+      - oci
 
   memory_method:
     type: string
@@ -6497,6 +6723,43 @@ definitions:
     enum: ['success', 'failure']
     description: Agent upgrade result.
 
+  vip_type:
+    type: string
+    description: The vip type.
+    enum: ['api', 'ingress']
+
+  verify_vip:
+    type: object
+    description: Request to verify single vip.
+    properties:
+      vip:
+        $ref: '#/definitions/ip'
+      vip_type:
+        $ref: '#/definitions/vip_type'
+
+  verified_vip:
+    type: object
+    description: Single VIP verification result.
+    properties:
+      vip:
+        $ref: '#/definitions/ip'
+      vip_type:
+        $ref: '#/definitions/vip_type'
+      verification:
+        $ref: '#/definitions/vip_verification'
+
+  verify_vips_request:
+    type: array
+    description: list of vips to be verified.
+    items:
+      $ref: '#/definitions/verify_vip'
+
+  verify_vips_response:
+    type: array
+    description: list of verified vips.
+    items:
+      $ref: '#/definitions/verified_vip'
+
   source_state:
     type: string
     enum:
@@ -6518,13 +6781,9 @@ definitions:
       - 'network-prefix-valid'
       - 'machine-cidr-equals-to-calculated-cidr'
       - 'api-vips-defined'
-      - 'api-vip-defined'
       - 'api-vips-valid'
-      - 'api-vip-valid'
       - 'ingress-vips-defined'
-      - 'ingress-vip-defined'
       - 'ingress-vips-valid'
-      - 'ingress-vip-valid'
       - 'all-hosts-are-ready-to-install'
       - 'sufficient-masters-count'
       - 'dns-domain-defined'
@@ -6741,6 +7000,35 @@ definitions:
     items:
       $ref: '#/definitions/release-image'
 
+  kernel_argument:
+    type: object
+    description:
+      pair of [operation, argument] specifying the argument and what operation should be applied on
+      it.
+    properties:
+      operation:
+        type: string
+        enum: ['append', 'replace', 'delete']
+        description: The operation to apply on the kernel argument.
+      value:
+        type: string
+        pattern: '^(?:(?:[^ \t\n\r"]+)|(?:"[^"]*"))+$'
+        description: |
+          Kernel argument can have the form <parameter> or <parameter>=<value>. The following examples should
+          be supported:
+          rd.net.timeout.carrier=60
+          isolcpus=1,2,10-20,100-2000:2/25
+          quiet
+          The parsing by the command line parser in linux kernel is much looser and this pattern follows it.
+
+  kernel_arguments:
+    description:
+      List of kernel arugment objects that define the operations and values to be applied.
+    x-omitempty: false
+    type: array
+    items:
+      $ref: '#/definitions/kernel_argument'
+
   operator-property:
     type: object
     properties:
@@ -6890,8 +7178,13 @@ definitions:
         default:
           'x86_64'
           # TODO: remove arm64 when AI moves to using aarch64
-        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x']
         description: The CPU architecture of the image (x86_64/arm64/etc).
+      kernel_arguments:
+        type: string
+        x-nullable: true
+        x-go-custom-tag: gorm:"type:text"
+        description: JSON formatted string array representing the discovery image kernel arguments.
       additional_trust_bundle:
         type: string
         x-nullable: false
@@ -6980,11 +7273,14 @@ definitions:
         default:
           'x86_64'
           # TODO: remove arm64 when AI moves to using aarch64
-        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x', 'multi']
+        enum: ['x86_64', 'aarch64', 'arm64', 'ppc64le', 's390x']
         description: The CPU architecture of the image (x86_64/arm64/etc).
+      kernel_arguments:
+        $ref: '#/definitions/kernel_arguments'
       additional_trust_bundle:
         type: string
         x-nullable: false
+        maxLength: 65535
         description: |-
           PEM-encoded X.509 certificate bundle. Hosts discovered by this
           infra-env will trust the certificates in this bundle. Clusters formed
@@ -7019,15 +7315,29 @@ definitions:
         type: string
         description:
           JSON formatted string containing the user overrides for the initial ignition config.
+      kernel_arguments:
+        $ref: '#/definitions/kernel_arguments'
       additional_trust_bundle:
         type: string
         description: Allows users to change the additional_trust_bundle infra-env field
         x-nullable: true
+        maxLength: 65535
+
+  ip:
+    type: string
+    x-go-custom-tag: gorm:"primaryKey"
+    pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
 
   subnet:
     type: string
     x-go-custom-tag: gorm:"primaryKey"
     pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
+
+  vip_verification:
+    type: string
+    enum: ['unverified', 'failed', 'succeeded']
+    description: vip verification result.
+    default: 'unverified'
 
   cluster_network:
     type: object
@@ -7082,6 +7392,38 @@ definitions:
       cidr:
         $ref: '#/definitions/subnet'
         description: The IP block address pool.
+
+  api_vip:
+    type: object
+    description: The virtual IP used to reach the OpenShift cluster's API.
+    properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: The cluster that this VIP is associated with.
+        x-go-custom-tag: gorm:"primaryKey"
+      ip:
+        $ref: '#/definitions/ip'
+        description: The IP address.
+      verification:
+        $ref: '#/definitions/vip_verification'
+        description: API VIP verification result.
+
+  ingress_vip:
+    type: object
+    description: The virtual IP used for cluster ingress traffic.
+    properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: The cluster that this VIP is associated with.
+        x-go-custom-tag: gorm:"primaryKey"
+      ip:
+        $ref: '#/definitions/ip'
+        description: The IP address.
+      verification:
+        $ref: '#/definitions/vip_verification'
+        description: Ingress VIP verification result.
 
   bind-host-params:
     required:

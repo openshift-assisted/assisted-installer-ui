@@ -1,6 +1,6 @@
 import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
-import { Cluster, ClusterCpuArchitecture, CpuArchitecture } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnvCreateParams } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
 
@@ -92,7 +92,7 @@ const Day2ClusterService = {
       pullSecret,
       clusterId: day2Cluster.id,
       openshiftVersion,
-      cpuArchitecture: cpuArchitecture as ClusterCpuArchitecture,
+      cpuArchitecture: cpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
     });
 
     return day2Cluster;

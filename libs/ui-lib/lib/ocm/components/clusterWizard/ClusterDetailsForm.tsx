@@ -64,10 +64,12 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     handleCustomManifestsChange,
     navigation,
   } = props;
+
   const clusterWizardContext = useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const featureSupportLevels = useNewFeatureSupportLevel();
+
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {
@@ -88,16 +90,22 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     ],
   );
 
-  const handleOnNext = (
-    dirty: boolean,
-    submitForm: FormikHelpers<unknown>['submitForm'],
-    cluster?: Cluster,
-  ): (() => void) => {
-    if (isViewerMode || (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster }))) {
-      return moveNext;
-    }
-    return () => void submitForm();
-  };
+  const handleOnNext = React.useCallback(
+    (
+      dirty: boolean,
+      submitForm: FormikHelpers<unknown>['submitForm'],
+      cluster?: Cluster,
+    ): (() => void) => {
+      if (isViewerMode || (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster }))) {
+        return moveNext;
+      }
+
+      return () => {
+        void submitForm();
+      };
+    },
+    [isViewerMode, moveNext],
+  );
 
   const initialValues = React.useMemo(
     () =>
@@ -133,8 +141,24 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         const toggleRedHatDnsService = (checked: boolean) =>
           setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
 
-        const form = (
-          <>
+        const footer = (
+          <ClusterWizardFooter
+            cluster={cluster}
+            errorFields={errorFields}
+            isSubmitting={isSubmitting}
+            isNextDisabled={
+              !(
+                !isSubmitting &&
+                isValid &&
+                (dirty || (cluster && canNextClusterDetails({ cluster })))
+              )
+            }
+            onNext={handleOnNext(dirty, submitForm, cluster)}
+          />
+        );
+
+        return (
+          <ClusterWizardStep navigation={navigation} footer={footer}>
             <Grid hasGutter>
               <GridItem>
                 <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
@@ -154,27 +178,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                 />
               </GridItem>
             </Grid>
-          </>
-        );
-
-        const footer = (
-          <ClusterWizardFooter
-            cluster={cluster}
-            errorFields={errorFields}
-            isSubmitting={isSubmitting}
-            isNextDisabled={
-              !(
-                !isSubmitting &&
-                isValid &&
-                (dirty || (cluster && canNextClusterDetails({ cluster })))
-              )
-            }
-            onNext={handleOnNext(dirty, submitForm, cluster)}
-          />
-        );
-        return (
-          <ClusterWizardStep navigation={navigation} footer={footer}>
-            {form}
           </ClusterWizardStep>
         );
       }}

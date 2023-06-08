@@ -110,7 +110,12 @@ export const OpenShiftVersionDropdown = ({
   );
 
   return (
-    <FormGroup fieldId={fieldId} label={t('ai:OpenShift version')} isRequired>
+    <FormGroup
+      id={`form-control__${fieldId}`}
+      fieldId={fieldId}
+      label={t('ai:OpenShift version')}
+      isRequired
+    >
       <Dropdown
         {...field}
         name={name}

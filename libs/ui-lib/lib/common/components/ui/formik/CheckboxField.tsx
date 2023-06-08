@@ -20,7 +20,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
 
   return (
-    <Stack>
+    <Stack id={`form-control__${fieldId}`}>
       <StackItem>
         <FormGroup
           fieldId={fieldId}

@@ -80,8 +80,8 @@ export const VirtualIPControlGroup = ({
     'Provides an endpoint for users, both human and machine, to interact with and configure the platform.';
 
   const {
-    'api-vip-defined': apiVipFailedValidationMessage,
-    'ingress-vip-defined': ingressVipFailedValidationMessage,
+    'api-vips-defined': apiVipFailedValidationMessage,
+    'ingress-vips-defined': ingressVipFailedValidationMessage,
   } = React.useMemo(
     () => getVipValidationsById(t, cluster.validationsInfo),
     [t, cluster.validationsInfo],
