@@ -40,25 +40,36 @@ const ClusterDetailsService = {
       cpuArchitecture: values.cpuArchitecture as ClusterCpuArchitecture,
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
     };
-    if (params.cpuArchitecture === CpuArchitecture.ARM) {
+
+    if (values.externalPartnerIntegrations) {
+      params.platform = { type: 'oci' };
+    }
+
+    if (params.cpuArchitecture === CpuArchitecture.ARM || params.platform?.type === 'oci') {
       params.userManagedNetworking = true;
     }
+
     if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC) {
       params.staticNetworkConfig = getDummyInfraEnvField();
     }
+
     if (ocmClient) {
       params.tags = AI_UI_TAG;
     }
+
     return params;
   },
+
   getClusterUpdateParams(values: OcmClusterDetailsValues): ClusterDetailsUpdateParams {
     const params: ClusterDetailsUpdateParams = {
       name: values.name,
       baseDnsDomain: values.baseDnsDomain,
     };
+
     if (values.pullSecret) {
       params.pullSecret = values.pullSecret;
     }
+
     return params;
   },
 
@@ -87,7 +98,14 @@ const ClusterDetailsService = {
     const hostsNetworkConfigurationType = infraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
-    return { ...values, cpuArchitecture, hostsNetworkConfigurationType };
+
+    return {
+      ...values,
+      cpuArchitecture,
+      hostsNetworkConfigurationType,
+      externalPartnerIntegrations: cluster?.platform?.type === 'oci',
+      addCustomManifest: false,
+    };
   },
 };
 

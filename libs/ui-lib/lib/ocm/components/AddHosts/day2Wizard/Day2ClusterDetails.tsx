@@ -12,6 +12,7 @@ import {
   getSupportedCpuArchitectures,
   HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS,
   InfraEnv,
+  InfraEnvCreateParams,
   LoadingState,
   SupportedCpuArchitecture,
   useFeature,
@@ -55,7 +56,7 @@ const getDay2ClusterDetailInitialValues = async (
           pullSecret,
           clusterId,
           openshiftVersion,
-          cpuArchitecture: day1CpuArchitecture as ClusterCpuArchitecture,
+          cpuArchitecture: day1CpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
         });
         return {
           cpuArchitecture: day1CpuArchitecture as SupportedCpuArchitecture,
@@ -170,7 +171,7 @@ const Day2ClusterDetails = () => {
                   pullSecret,
                   clusterId: day2Cluster.id,
                   openshiftVersion: day2Cluster.openshiftVersion,
-                  cpuArchitecture: value as ClusterCpuArchitecture,
+                  cpuArchitecture: value as InfraEnvCreateParams['cpuArchitecture'],
                 });
               } catch {
                 setErrorState(new Error('Could not get infraEnv for this cpu architecture'));

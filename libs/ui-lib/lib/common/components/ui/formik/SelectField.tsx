@@ -28,7 +28,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
 
   return (
-    <Stack>
+    <Stack id={`form-control__${fieldId}`}>
       <StackItem>
         <FormGroup
           fieldId={fieldId}

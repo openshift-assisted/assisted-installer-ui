@@ -58,7 +58,7 @@ export const clusterDetailsPage = {
     return cy.get(Cypress.env('highAvailabilityModeFieldId'));
   },
   enableSno: () => {
-    clusterDetailsPage.getSno().should('be.visible').check();
+    clusterDetailsPage.getSno().scrollIntoView().should('be.visible').check();
     clusterDetailsPage.getSno().should('be.checked');
   },
   getStaticIpNetworkConfig: () => {
