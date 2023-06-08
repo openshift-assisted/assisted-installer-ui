@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, ClusterCpuArchitecture, CpuArchitecture, InfraEnv } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnv, InfraEnvCreateParams } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
 
@@ -26,7 +26,7 @@ export default function useInfraEnvId(
             pullSecret,
             clusterId: clusterId,
             openshiftVersion,
-            cpuArchitecture: cpuArchitecture as ClusterCpuArchitecture,
+            cpuArchitecture: cpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
           });
           setInfraEnv(infraEnv.id);
         }

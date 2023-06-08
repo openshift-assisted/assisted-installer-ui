@@ -8,6 +8,7 @@
     "declarationMap": true,
     "incremental": true,
     "jsx": "react",
+    "lib": ["DOM", "DOM.Iterable", "ES2015"],
     "module": "ESNext",
     "moduleResolution": "node",
     "noEmit": false,

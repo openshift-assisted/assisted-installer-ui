@@ -1,3 +1,20 @@
+/**
+ * The virtual IP used to reach the OpenShift cluster's API.
+ */
+export interface ApiVip {
+  /**
+   * The cluster that this VIP is associated with.
+   */
+  clusterId?: string; // uuid
+  /**
+   * The IP address.
+   */
+  ip?: Ip; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  /**
+   * API VIP verification result.
+   */
+  verification?: VipVerification;
+}
 export interface ApiVipConnectivityRequest {
   /**
    * URL address of the API.
@@ -115,6 +132,10 @@ export interface Cluster {
    */
   apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
   /**
+   * The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
+   */
+  apiVips?: ApiVip[];
+  /**
    * The domain name used to reach the OpenShift cluster API.
    */
   apiVipDnsName?: string;
@@ -123,9 +144,13 @@ export interface Cluster {
    */
   machineNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The virtual IP used for cluster ingress traffic.
+   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
+  /**
+   * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
+   */
+  ingressVips?: IngressVip[];
   /**
    * SSH public key for debugging OpenShift nodes.
    */
@@ -252,6 +277,18 @@ export interface Cluster {
    */
   connectivityMajorityGroups?: string;
   /**
+   * Json formatted string containing ip collisions detected in the cluster.
+   */
+  ipCollisions?: string;
+  /**
+   * Json formatted string containing a list of host validations to be ignored. May also contain a list with a single string "all" to ignore all host validations. Some validations cannot be ignored.
+   */
+  ignoredHostValidations?: string;
+  /**
+   * Json formatted string containing a list of cluster validations to be ignored. May also contain a list with a single string "all" to ignore all cluster validations. Some validations cannot be ignored.
+   */
+  ignoredClusterValidations?: string;
+  /**
    * swagger:ignore
    */
   deletedAt?: unknown;
@@ -308,7 +345,7 @@ export interface Cluster {
    * regular cluster. Clusters are considered imported when they are
    * created via the ../clusters/import endpoint. Day-2 clusters converted
    * from day-1 clusters by kube-api controllers or the
-   * ../clusters/<clusterId>/actions/allow-add-workers endpoint are not
+   * ../clusters/<clusterId>/actions/allow-add-hosts endpoint are not
    * considered imported. Imported clusters usually lack a lot of
    * information and are filled with default values that don't necessarily
    * reflect the actual cluster they represent
@@ -355,13 +392,21 @@ export interface ClusterCreateParams {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The virtual IP used to reach the OpenShift cluster's API.
+   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
    */
   apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
   /**
-   * The virtual IP used for cluster ingress traffic.
+   * The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
+   */
+  apiVips?: ApiVip[];
+  /**
+   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
+  /**
+   * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
+   */
+  ingressVips?: IngressVip[];
   /**
    * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
@@ -541,13 +586,9 @@ export type ClusterValidationId =
   | 'network-prefix-valid'
   | 'machine-cidr-equals-to-calculated-cidr'
   | 'api-vips-defined'
-  | 'api-vip-defined'
   | 'api-vips-valid'
-  | 'api-vip-valid'
   | 'ingress-vips-defined'
-  | 'ingress-vip-defined'
   | 'ingress-vips-valid'
-  | 'ingress-vip-valid'
   | 'all-hosts-are-ready-to-install'
   | 'sufficient-masters-count'
   | 'dns-domain-defined'
@@ -562,6 +603,12 @@ export type ClusterValidationId =
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
+  /**
+   * additional data from the cluster
+   */
+  data?: {
+    [name: string]: Record<string, unknown>;
+  };
 }
 export interface ConnectivityCheckHost {
   hostId?: string; // uuid
@@ -797,7 +844,7 @@ export interface DomainResolutionRequest {
     /**
      * The domain name that should be resolved
      */
-    domainName: string; // ^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}$
+    domainName: string; // ^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}[.]?$
   }[];
 }
 export interface DomainResolutionResponse {
@@ -848,7 +895,8 @@ export type DriveType =
   | 'Multipath'
   | 'iSCSI'
   | 'FC'
-  | 'LVM';
+  | 'LVM'
+  | 'RAID';
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -945,30 +993,22 @@ export interface FeatureSupportLevel {
   }[];
 }
 export type FeatureSupportLevelId =
-  | 'ADDITIONAL_NTP_SOURCE'
-  | 'REQUESTED_HOSTNAME'
-  | 'PROXY'
   | 'SNO'
-  | 'DAY2_HOSTS'
   | 'VIP_AUTO_ALLOC'
-  | 'DISK_SELECTION'
-  | 'OVN_NETWORK_TYPE'
-  | 'SDN_NETWORK_TYPE'
-  | 'SCHEDULABLE_MASTERS'
-  | 'AUTO_ASSIGN_ROLE'
   | 'CUSTOM_MANIFEST'
-  | 'DISK_ENCRYPTION'
-  | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
   | 'SINGLE_NODE_EXPANSION'
   | 'LVM'
   | 'ODF'
+  | 'LSO'
   | 'CNV'
-  | 'DUAL_STACK_NETWORKING'
   | 'NUTANIX_INTEGRATION'
   | 'VSPHERE_INTEGRATION'
   | 'DUAL_STACK_VIPS'
-  | 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE'
-  | 'CLUSTER_MANAGED_NETWORKING';
+  | 'CLUSTER_MANAGED_NETWORKING'
+  | 'USER_MANAGED_NETWORKING'
+  | 'MINIMAL_ISO'
+  | 'FULL_ISO'
+  | 'EXTERNAL_PLATFORM_OCI';
 /**
  * (DEPRECATED) List of objects that containing a list of feature-support level and attached to openshift-version
  */
@@ -1097,8 +1137,8 @@ export interface Host {
   role?: HostRole;
   suggestedRole?: HostRole;
   bootstrap?: boolean;
-  logsCollectedAt?: string; // datetime
-  logsStartedAt?: string; // datetime
+  logsCollectedAt?: string; // date-time
+  logsStartedAt?: string; // date-time
   /**
    * Installer version.
    */
@@ -1296,8 +1336,8 @@ export interface HostRegistrationResponse {
   role?: HostRole;
   suggestedRole?: HostRole;
   bootstrap?: boolean;
-  logsCollectedAt?: string; // datetime
-  logsStartedAt?: string; // datetime
+  logsCollectedAt?: string; // date-time
+  logsStartedAt?: string; // date-time
   /**
    * Installer version.
    */
@@ -1500,6 +1540,16 @@ export interface IgnitionEndpoint {
    */
   caCertificate?: string;
 }
+export interface IgnoredValidations {
+  /**
+   * JSON-formatted list of cluster validation IDs that will be ignored for all hosts that belong to this cluster. It may also contain a list with a single string "all" to ignore all cluster validations. Some validations cannot be ignored.
+   */
+  'cluster-validation-ids'?: string; // string
+  /**
+   * JSON-formatted list of host validation IDs that will be ignored for all hosts that belong to this cluster. It may also contain a list with a single string "all" to ignore all host validations. Some validations cannot be ignored.
+   */
+  'host-validation-ids'?: string; // string
+}
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1614,7 +1664,11 @@ export interface InfraEnv {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x';
+  /**
+   * JSON formatted string array representing the discovery image kernel arguments.
+   */
+  kernelArguments?: string;
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this
    * infra-env will trust the certificates in this bundle. Clusters formed
@@ -1658,7 +1712,8 @@ export interface InfraEnvCreateParams {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x';
+  kernelArguments?: KernelArguments;
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this
    * infra-env will trust the certificates in this bundle. Clusters formed
@@ -1688,6 +1743,7 @@ export interface InfraEnvUpdateParams {
    * JSON formatted string containing the user overrides for the initial ignition config.
    */
   ignitionConfigOverride?: string;
+  kernelArguments?: KernelArguments;
   /**
    * Allows users to change the additionalTrustBundle infra-env field
    */
@@ -1704,6 +1760,23 @@ export interface InfraError {
   message: string;
 }
 export type IngressCertParams = string;
+/**
+ * The virtual IP used for cluster ingress traffic.
+ */
+export interface IngressVip {
+  /**
+   * The cluster that this VIP is associated with.
+   */
+  clusterId?: string; // uuid
+  /**
+   * The IP address.
+   */
+  ip?: Ip; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  /**
+   * Ingress VIP verification result.
+   */
+  verification?: VipVerification;
+}
 export interface InstallCmdRequest {
   /**
    * Cluster id
@@ -1813,6 +1886,30 @@ export interface IoPerf {
    */
   syncDuration?: number;
 }
+export type Ip = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+/**
+ * pair of [operation, argument] specifying the argument and what operation should be applied on it.
+ */
+export interface KernelArgument {
+  /**
+   * The operation to apply on the kernel argument.
+   */
+  operation?: 'append' | 'replace' | 'delete';
+  /**
+   * Kernel argument can have the form <parameter> or <parameter>=<value>. The following examples should
+   * be supported:
+   * rd.net.timeout.carrier=60
+   * isolcpus=1,2,10-20,100-2000:2/25
+   * quiet
+   * The parsing by the command line parser in linux kernel is much looser and this pattern follows it.
+   *
+   */
+  value?: string; // ^(?:(?:[^ \t\n\r"]+)|(?:"[^"]*"))+$
+}
+/**
+ * List of kernel arugment objects that define the operations and values to be applied.
+ */
+export type KernelArguments = KernelArgument[];
 export interface L2Connectivity {
   outgoingNic?: string;
   outgoingIpAddress?: string;
@@ -1928,6 +2025,10 @@ export interface MonitoredOperator {
    * Unique name of the operator.
    */
   name?: string;
+  /**
+   * Operator version
+   */
+  version?: string;
   /**
    * Namespace where to deploy an operator. Only some operators require a namespace.
    */
@@ -2053,6 +2154,10 @@ export interface OperatorMonitorReport {
    * Unique name of the operator.
    */
   name?: string;
+  /**
+   * operator version.
+   */
+  version?: string;
   status?: OperatorStatus;
   /**
    * Detailed information about the operator state.
@@ -2120,8 +2225,12 @@ export type OsImages = OsImage[];
  */
 export interface Platform {
   type: PlatformType;
+  /**
+   * Indicates if the underlying platform type is external.
+   */
+  readonly isExternal?: boolean;
 }
-export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none';
+export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'oci';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -2273,7 +2382,8 @@ export type StepType =
   | 'next-step-runner'
   | 'upgrade-agent'
   | 'download-boot-artifacts'
-  | 'reboot-for-reclaim';
+  | 'reboot-for-reclaim'
+  | 'verify-vips';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -2413,13 +2523,21 @@ export interface V2ClusterUpdateParams {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The virtual IP used to reach the OpenShift cluster's API.
+   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
    */
   apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
   /**
-   * The virtual IP used for cluster ingress traffic.
+   * The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
+   */
+  apiVips?: ApiVip[];
+  /**
+   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  /**
+   * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
+   */
+  ingressVips?: IngressVip[];
   /**
    * The domain name used to reach the OpenShift cluster API.
    */
@@ -2530,6 +2648,29 @@ export interface V2SupportLevelsFeatures {
   openshiftVersion: string;
   cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 }
+/**
+ * Single VIP verification result.
+ */
+export interface VerifiedVip {
+  vip?: Ip; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  vipType?: VipType;
+  verification?: VipVerification;
+}
+/**
+ * Request to verify single vip.
+ */
+export interface VerifyVip {
+  vip?: Ip; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  vipType?: VipType;
+}
+/**
+ * list of vips to be verified.
+ */
+export type VerifyVipsRequest = VerifyVip[];
+/**
+ * list of verified vips.
+ */
+export type VerifyVipsResponse = VerifiedVip[];
 export interface VersionedHostRequirements {
   /**
    * Version of the component for which requirements are defined
@@ -2547,7 +2688,19 @@ export interface VersionedHostRequirements {
    * Single node OpenShift node requirements
    */
   sno?: ClusterHostRequirementsDetails;
+  /**
+   * Edge Worker OpenShift node requirements
+   */
+  'edge-worker'?: ClusterHostRequirementsDetails;
 }
 export interface Versions {
   [name: string]: string;
 }
+/**
+ * The vip type.
+ */
+export type VipType = 'api' | 'ingress';
+/**
+ * vip verification result.
+ */
+export type VipVerification = 'unverified' | 'failed' | 'succeeded';

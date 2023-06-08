@@ -6,6 +6,7 @@ import {
   Cluster,
   CreateManifestParams,
   Host,
+  InfraEnvCreateParams,
   UpdateManifestParams,
   V2ClusterUpdateParams,
 } from '../../common';
@@ -24,14 +25,20 @@ const ClustersService = {
 
   async create(params: ClusterCreateParamsWithStaticNetworking) {
     const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
-    await InfraEnvsService.create({
+    const infraEnvCreateParams: InfraEnvCreateParams = {
       name: `${params.name}_infra-env`,
       pullSecret: params.pullSecret,
       clusterId: cluster.id,
       openshiftVersion: params.openshiftVersion,
-      cpuArchitecture: params.cpuArchitecture,
+      cpuArchitecture: params.cpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
       staticNetworkConfig: params.staticNetworkConfig,
-    });
+    };
+
+    if (params.platform?.type === 'oci') {
+      infraEnvCreateParams.imageType = 'minimal-iso';
+    }
+
+    await InfraEnvsService.create(infraEnvCreateParams);
 
     return cluster;
   },
