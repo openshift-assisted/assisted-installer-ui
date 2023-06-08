@@ -6,3 +6,5 @@
 apps/*/build
 libs/*/build
 libs/*/@types
+libs/ui-lib-tests/cypress/fixtures/custom-manifests/files/manifest1.yaml
+libs/ui-lib-tests/cypress/fixtures/custom-manifests/files/manifest2.yaml
