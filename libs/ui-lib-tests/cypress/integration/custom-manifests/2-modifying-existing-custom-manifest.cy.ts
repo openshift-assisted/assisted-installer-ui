@@ -3,7 +3,6 @@ import { commonActions } from '../../views/common';
 import { transformBasedOnUIVersion } from '../../support/transformations';
 import { customManifestsPage } from '../../views/customManifestsPage';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
-import { customManifest, customManifestContent } from '../../fixtures/custom-manifests/manifests';
 
 describe(`Assisted Installer Custom manifests step`, () => {
   before(() => {
@@ -19,25 +18,14 @@ describe(`Assisted Installer Custom manifests step`, () => {
     commonActions.visitClusterDetailsPage();
   });
 
-  describe('useClusterCustomManifests', () => {
-    it('should fetch custom manifests and return the correct values', () => {
-      // Stub the API functions
-      cy.stub(window, 'fetch')
-        .withArgs('/api/clusters/:clusterId/manifests')
-        .resolves({ data: customManifest });
-
-      cy.stub(window, 'fetch')
-        .withArgs('/api/clusters/:clusterId/manifests/:folder/:fileName')
-        .resolves({ data: customManifestContent });
-    });
-  });
-
   describe('Modifyng existing Custom Manifests', () => {
     it('Can configure custom manifests step and next button is disabled', () => {
-      commonActions
-        .getWizardStepNav('Custom manifests')
-        .should('have.class', ACTIVE_NAV_ITEM_CLASS);
-      commonActions.getNextButton().should('be.disabled');
+      cy.wait('@manifests').then(() => {
+        commonActions
+          .getWizardStepNav('Custom manifests')
+          .should('have.class', ACTIVE_NAV_ITEM_CLASS);
+        commonActions.getNextButton().should('be.disabled');
+      });
     });
 
     it('Add valid manifest content', () => {

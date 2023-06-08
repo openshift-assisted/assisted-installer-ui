@@ -238,30 +238,18 @@ const addAdditionalIntercepts = () => {
 };
 
 const addCustomManifestsIntercepts = (loadManifestContent: boolean | false) => {
-  cy.intercept(
-    'GET',
-    '/api/assisted-install/v2/clusters/fa39cf35-0b18-4e6a-b2c5-ef48784ff85e/manifests',
-    mockCustomManifestResponse,
-  ).as('getManifests');
-  cy.intercept(
-    'PATCH',
-    '/api/assisted-install/v2/clusters/fa39cf35-0b18-4e6a-b2c5-ef48784ff85e/manifests',
-    mockCustomManifestResponse,
-  );
-  cy.intercept(
-    'DELETE',
-    '/api/assisted-install/v2/clusters/fa39cf35-0b18-4e6a-b2c5-ef48784ff85e/manifests',
-  );
-
+  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('manifests');
+  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse);
+  cy.intercept('DELETE', `${clusterApiPath}/manifests`);
   if (loadManifestContent) {
     cy.intercept(
       'GET',
-      '/api/assisted-install/v2/clusters/fa39cf35-0b18-4e6a-b2c5-ef48784ff85e/manifests/files?folder=manifests&file_name=manifest1.yaml',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
       mockCustomManifestFileResponse,
     );
     cy.intercept(
       'GET',
-      '/api/assisted-install/v2/clusters/fa39cf35-0b18-4e6a-b2c5-ef48784ff85e/manifests/files?folder=manifests&file_name=manifest2.yaml',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
       mockCustomManifestFileResponse2,
     );
   }
