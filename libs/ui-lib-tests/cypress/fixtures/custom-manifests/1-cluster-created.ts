@@ -37,15 +37,17 @@ const customManifestsCluster = {
     },
   ],
   // We're adding this field to easily debug which mock is returning the response
-  e2e_mock_source: '1-base-cluster',
   feature_usage: JSON.stringify(featureUsage),
-  validations_info: JSON.stringify(clusterValidationsInfo),
   high_availability_mode: 'Full',
   network_type: 'OpenShiftSDN',
   user_managed_networking: false,
   vip_dhcp_allocation: true,
   manifests: customManifest,
   manifestContent: customManifestContent,
+  e2e_mock_source: '5-cluster-ready',
+  status: 'ready',
+  status_info: 'Cluster ready to be installed',
+  validations_info: JSON.stringify(clusterValidationsInfo),
 };
 
 export { customManifestsCluster };

@@ -20,7 +20,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
 
   describe('Modifyng existing Custom Manifests', () => {
     it('Can configure custom manifests step and next button is disabled', () => {
-      cy.wait('@manifests').then(() => {
+      cy.wait('@getManifests').then(() => {
         commonActions
           .getWizardStepNav('Custom manifests')
           .should('have.class', ACTIVE_NAV_ITEM_CLASS);
