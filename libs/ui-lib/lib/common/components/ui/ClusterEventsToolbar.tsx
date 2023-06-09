@@ -250,7 +250,7 @@ const ClusterEventsToolbar = ({
                   {t('ai:Deleted hosts')}
                 </SelectOption>,
                 ...sortedHosts.map((host) => (
-                  <SelectOption key={host.id} value={host.id}>
+                  <SelectOption inputId={`checkbox-${host.id}`} key={host.id} value={host.id}>
                     {host.hostname}
                   </SelectOption>
                 )),
