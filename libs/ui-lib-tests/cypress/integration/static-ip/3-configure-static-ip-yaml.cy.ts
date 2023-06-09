@@ -1,25 +1,25 @@
+import { should } from 'chai';
 import { transformBasedOnUIVersion } from '../../support/transformations';
 import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP YAML configuration`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: '',
-      activeScenario: 'AI_CREATE_STATIC_IP',
+  describe('Configuring static IP in YAML view', () => {
+    before(() => {
+      cy.loadAiAPIIntercepts({
+        activeSignal: '',
+        activeScenario: 'AI_CREATE_STATIC_IP',
+      });
+      transformBasedOnUIVersion();
     });
-    transformBasedOnUIVersion();
-    cy.visit('/test/');
-  });
 
-  beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
-    commonActions.visitClusterDetailsPage();
-    commonActions.getWizardStepNav('Static network configurations');
-    staticIpPage.getYamlViewSelect().click();
-  });
+    beforeEach(() => {
+      cy.loadAiAPIIntercepts(null);
+      commonActions.visitClusterDetailsPage();
+      commonActions.getWizardStepNav('Static network configurations').click();
+      staticIpPage.getYamlViewSelect().click();
+    });
 
-  describe('Configuring Static IP in YAML view', () => {
     it('Can configure static IP in YAML view', () => {
       staticIpPage.yamlView.getStartFromScratch().click();
       staticIpPage.yamlView.fileUpload().attachFile(`static-ip/files/test.yaml`);
@@ -28,6 +28,27 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
 
       commonActions.getNextButton().should('be.enabled');
     });
+
+    it('Can add another host configuration', () => {
+      staticIpPage.yamlView.addHostConfigurationControl().should('be.disabled');
+
+      staticIpPage.yamlView.getStartFromScratch().click();
+      staticIpPage.yamlView.fileUpload().attachFile(`static-ip/files/test.yaml`);
+      staticIpPage.yamlView.macAddress().type('00:00:5e:00:53:af');
+      staticIpPage.yamlView.interface().type('interface1');
+
+      staticIpPage.yamlView.copyConfigurationControl().should('be.checked');
+      staticIpPage.yamlView.addHostConfigurationControl().click();
+
+      staticIpPage.yamlView.macAddress(1, 0).should('be.visible').should('have.value', '');
+      staticIpPage.yamlView.interface(1, 0).should('be.visible').should('have.value', '');
+
+      staticIpPage.yamlView.macAddress(1, 0).type('00:00:5e:00:53:ae');
+      staticIpPage.yamlView.interface(1, 0).type('interface2');
+
+      commonActions.getNextButton().should('be.enabled');
+    });
+
     it('Cannot upload a binary file', () => {
       staticIpPage.yamlView.getStartFromScratch().click();
       staticIpPage.yamlView.fileUpload().attachFile(`static-ip/files/img.png`);
@@ -36,6 +57,33 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
 
       commonActions.getDangerAlert().should('be.visible');
       commonActions.getNextButton().should('not.be.enabled');
+    });
+  });
+
+  describe('Reading existing configuration in YAML view', () => {
+    before(() => {
+      cy.loadAiAPIIntercepts({
+        activeSignal: 'STATIC_IP_YAML_CONFIGURED',
+        activeScenario: 'AI_CREATE_STATIC_IP',
+      });
+      transformBasedOnUIVersion();
+    });
+
+    beforeEach(() => {
+      cy.loadAiAPIIntercepts(null);
+      commonActions.visitClusterDetailsPage();
+      commonActions.getWizardStepNav('Static network configurations').click();
+    });
+
+    it('Can show the correct type view', () => {
+      commonActions.getHeader('h2').contains('Static network configurations');
+      staticIpPage.getYamlViewSelect().should('be.enabled');
+    });
+
+    it('Can show the existing static IP configuration', () => {
+      staticIpPage.yamlView.getStartFromScratch().should('not.exist');
+      staticIpPage.yamlView.interface().should('have.value', 'interface1');
+      staticIpPage.yamlView.macAddress().should('have.value', '00:00:5e:00:53:af');
     });
   });
 });

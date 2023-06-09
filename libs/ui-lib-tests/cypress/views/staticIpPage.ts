@@ -65,5 +65,11 @@ export const staticIpPage = {
     interface: (host: number = 0, index: number = 0) => {
       return cy.get(`[data-testid=interface-name-${host}-${index}]`);
     },
+    copyConfigurationControl: () => {
+      return cy.get(`[data-testid="copy-host-configuration"]`);
+    },
+    addHostConfigurationControl: () => {
+      return cy.get('button').contains('Add another host configuration');
+    },
   },
 };
