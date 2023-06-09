@@ -238,7 +238,6 @@ const addAdditionalIntercepts = () => {
 };
 
 const addCustomManifestsIntercepts = (loadManifestContent: boolean | false) => {
-  console.log('intercept custom manifests');
   cy.intercept(
     'GET',
     '/api/assisted-install/v2/clusters/fa39cf35-0b18-4e6a-b2c5-ef48784ff85e/manifests',
