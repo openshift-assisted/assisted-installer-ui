@@ -7,8 +7,8 @@ const GLOBAL_BASE_URL = 'http://localhost:4173';
 
 export default defineConfig({
   modifyObstructiveCode: false,
-  viewportWidth: 1600,
-  viewportHeight: 900,
+  viewportWidth: 1360, // 16*85
+  viewportHeight: 765, // 9*85
   env: {
     OPENSHIFT_VERSION: '4.12.14',
     DNS_DOMAIN_NAME: 'redhat.com',
