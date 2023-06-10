@@ -166,7 +166,7 @@ const addClusterListIntercepts = () => {
   cy.intercept('GET', allClustersApiPath, (req) => {
     const fixture = hasWizardSignal('CLUSTER_CREATED') ? updatedList() : initialList;
     req.reply(fixture);
-  });
+  }).as('list-clusters');
 };
 
 const addClusterPatchAndDetailsIntercepts = () => {
@@ -220,7 +220,9 @@ const addPlatformFeatureIntercepts = () => {
     'supported-platforms',
   );
 
-  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', openShiftVersions);
+  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', openShiftVersions).as(
+    'get-openshift-versions',
+  );
 
   cy.intercept(
     'GET',
@@ -230,18 +232,22 @@ const addPlatformFeatureIntercepts = () => {
       const shortOpenshiftVersion = openshiftVersion.split('.').slice(0, 2).join('.');
       req.reply(featureSupport[shortOpenshiftVersion]);
     },
-  );
+  ).as('get-support-levels');
+
+  cy.intercept('GET', `${clusterApiPath}/manifests`, []).as('get-cluster-manifets');
 };
 
 const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/domains', [
     { domain: 'e2e.redhat.com', provider: 'route53' },
-  ]);
+  ]).as('get-domains');
 
   cy.intercept('GET', '/api/assisted-install/v2/clusters/default-config', defaultConfig).as(
     'get-default-config',
   );
-  cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
+  cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig).as(
+    'get-default-config',
+  );
 };
 
 const addCustomManifestsIntercepts = () => {
