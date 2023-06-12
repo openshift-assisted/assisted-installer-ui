@@ -18,6 +18,7 @@ describe(`Assisted Installer Review and create step with custom manifests`, () =
     cy.loadAiAPIIntercepts(null, true);
     commonActions.visitClusterDetailsPage();
   });
+
   describe('View existing Custom Manifests', () => {
     it('View existing manifests in Review and Create page', () => {
       commonActions

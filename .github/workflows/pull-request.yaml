@@ -110,8 +110,6 @@ jobs:
           start: yarn preview:assisted-ui
           working-directory: libs/ui-lib-tests
           wait-on: 'http://[::1]:4173'
-          spec: |
-            cypress/integration/custom-manifests/2-modifying-existing-custom-manifest.cy.ts
       - name: Store test execution screenshots on failure
         uses: actions/upload-artifact@v3
         if: failure()

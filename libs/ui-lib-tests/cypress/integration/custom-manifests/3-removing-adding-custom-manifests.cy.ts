@@ -2,6 +2,7 @@ import { commonActions } from '../../views/common';
 
 import { transformBasedOnUIVersion } from '../../support/transformations';
 import { customManifestsPage } from '../../views/customManifestsPage';
+import common = require('mocha/lib/interfaces/common');
 
 describe(`Assisted Installer Custom manifests step`, () => {
   before(() => {
@@ -30,13 +31,13 @@ describe(`Assisted Installer Custom manifests step`, () => {
       customManifestsPage.getLinkToAdd().should('be.enabled');
     });
     it('Can delete custom manifest', () => {
-      customManifestsPage.getStartFromScratch().click();
-      customManifestsPage.fileUpload().attachFile(`custom-manifests/files/manifest1.yaml`);
+      cy.loadAiAPIIntercepts(null, true);
+      commonActions.startAtCustomManifestsStep();
       customManifestsPage.getLinkToAdd().should('be.enabled');
       customManifestsPage.getLinkToAdd().click();
       customManifestsPage.getManifest1Id().type('manifest2.yaml');
       customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest2.yaml`);
-      customManifestsPage.getLinkToAdd().should('be.enabled');
+      cy.loadAiAPIIntercepts(null, true);
       customManifestsPage.getRemoveManifestButton().click();
       customManifestsPage.getRemoveConfirmationButton().click();
     });

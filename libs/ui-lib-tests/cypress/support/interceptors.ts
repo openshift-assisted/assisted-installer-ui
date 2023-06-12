@@ -252,6 +252,17 @@ const addCustomManifestsIntercepts = (loadManifestContent: boolean | false) => {
       `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
       mockCustomManifestFileResponse2,
     );
+  } else {
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
+      '',
+    );
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
+      '',
+    );
   }
 };
 
