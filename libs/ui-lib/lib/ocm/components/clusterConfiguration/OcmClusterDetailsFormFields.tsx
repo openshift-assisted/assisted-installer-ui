@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Tooltip } from '@patternfly/react-core';
+import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurationControlGroup';
@@ -16,7 +16,6 @@ import {
   useFeature,
   ClusterCreateParams,
   getSupportedCpuArchitectures,
-  PopoverIcon,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -38,7 +37,10 @@ import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import { clusterExistsReason } from '../newFeatureSupportLevels/newFeatureStateUtils';
+import {
+  ExternalPartnerIntegrationsCheckbox,
+  useExternalPartnerIntegrationsCheckboxState,
+} from './ExternalPartnerIntegrationsCheckbox';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -80,7 +82,6 @@ export const OcmClusterDetailsFormFields = ({
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
-  const shouldExternalPartnerIntegrationsBeDisabledRef = React.useRef<boolean>(clusterExists);
 
   const { t } = useTranslation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
@@ -104,6 +105,10 @@ export const OcmClusterDetailsFormFields = ({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const cpuArchitecture = (architectureData[values.cpuArchitecture] as CpuArchitectureItem).label;
+  const externalPartnerIntegrationsCheckboxState = useExternalPartnerIntegrationsCheckboxState(
+    clusterExists,
+    featureSupportLevelData,
+  );
 
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -193,32 +198,19 @@ export const OcmClusterDetailsFormFields = ({
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
-      {isOracleCloudPlatformIntegrationEnabled && (
-        <OcmCheckboxField
-          name={'externalPartnerIntegrations'}
-          label={
-            <Tooltip
-              hidden={!shouldExternalPartnerIntegrationsBeDisabledRef.current}
-              content={clusterExistsReason}
-            >
-              <span>
-                External partner integrations{' '}
-                <PopoverIcon
-                  id={'externalPartnerIntegrations'}
-                  noVerticalAlign
-                  bodyContent={
-                    <p>
-                      To integrate with an external partner (for example, Oracle Cloud), you'll need
-                      to provide a custom manifest.
-                    </p>
-                  }
-                />
-              </span>
-            </Tooltip>
+      {isOracleCloudPlatformIntegrationEnabled && externalPartnerIntegrationsCheckboxState && (
+        <ExternalPartnerIntegrationsCheckbox
+          disabledStateTooltipContent={externalPartnerIntegrationsCheckboxState.disabledReason}
+          popoverContent={
+            <p>
+              To integrate with an external partner (for example, Oracle Cloud), you'll need to
+              provide a custom manifest.
+            </p>
           }
+          label={'External partner integrations'}
           helperText={'Integrate with other platforms using custom manifests.'}
           onChange={handleExternalPartnerIntegrationsChange}
-          isDisabled={shouldExternalPartnerIntegrationsBeDisabledRef.current}
+          isDisabled={externalPartnerIntegrationsCheckboxState.isDisabled}
         />
       )}
 

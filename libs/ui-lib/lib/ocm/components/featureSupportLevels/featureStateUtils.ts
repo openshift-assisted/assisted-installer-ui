@@ -165,6 +165,9 @@ export const getFeatureDisabledReason = (
     case 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING': {
       return 'Network management selection is not supported for ARM architecture with this version of OpenShift.';
     }
+    case 'EXTERNAL_PLATFORM_OCI': {
+      return 'Requires OpenShift v4.14 and above.';
+    }
     default: {
       return undefined;
     }
