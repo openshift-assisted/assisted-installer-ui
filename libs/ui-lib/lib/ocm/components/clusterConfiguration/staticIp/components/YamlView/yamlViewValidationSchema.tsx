@@ -11,23 +11,18 @@ import {
   UniqueStringArrayExtractor,
 } from '../../commonValidationSchemas';
 import {
+  FILE_TYPE_MESSAGE,
   getMaxFileSizeMessage,
-  isStringValidJSON,
-  isStringValidYAML,
+  MAX_FILE_SIZE,
   validateFileSize,
+  validateFileType,
 } from '../../../../../../common/utils';
 
-const MAX_FILE_SIZE = 100000; //100 kb
 const requiredMsg = 'A value is required';
-const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
 
 const networkYamlValidationSchema = Yup.string()
   .required(requiredMsg)
-  .test(
-    'file-type-yaml',
-    FILE_TYPE_MESSAGE,
-    (value: string) => isStringValidYAML(value) && !isStringValidJSON(value),
-  )
+  .test('file-type-yaml', FILE_TYPE_MESSAGE, (value: string) => validateFileType(value))
   .test('file-size-limit', getMaxFileSizeMessage(MAX_FILE_SIZE), (value: string) =>
     validateFileSize(value, MAX_FILE_SIZE),
   );

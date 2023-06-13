@@ -3,13 +3,12 @@ import { UniqueStringArrayExtractor } from '../../staticIp/commonValidationSchem
 import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import {
   getMaxFileSizeMessage,
-  isStringValidYAML,
-  isStringValidJSON,
   validateFileSize,
+  MAX_FILE_SIZE,
+  validateFileName,
+  validateFileType,
 } from '../../../../../common/utils';
 
-const MAX_FILE_SIZE = 100000; //100 kb
-const FILENAME_REGEX = /^[^/]*\.(yaml|yml|json)$/;
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 const INCORRECT_TYPE_FILE = 'File type is not supported. File type must be yaml, yml or json.';
 const UNIQUE_FOLDER_FILENAME =
@@ -65,11 +64,3 @@ export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>((
     ),
   }),
 );
-
-const validateFileName = (fileName: string) => {
-  return new RegExp(FILENAME_REGEX).test((fileName || '').toString());
-};
-
-const validateFileType = (value: string) => {
-  return isStringValidYAML(value) || isStringValidJSON(value);
-};

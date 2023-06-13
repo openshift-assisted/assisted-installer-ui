@@ -7,6 +7,7 @@ import HelperText from './HelperText';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 import { monaco } from 'react-monaco-editor';
+import { FILE_TYPE_MESSAGE, validateFileName } from '../../../utils';
 
 const CodeField = ({
   label,
@@ -26,6 +27,8 @@ const CodeField = ({
   const [monacoSubscription, setMonacoSubscription] = React.useState<monaco.IDisposable>();
   const [monacoEditor, setMonacoEditor] = React.useState<monaco.editor.IStandaloneCodeEditor>();
   const errorMessage = useFieldErrorMsg({ name, validate });
+  const codeEditorRef = React.useRef(null);
+  const [isValidValue, setIsValidValue] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     //Work around for Patternfly CodeEditor not calling onChange after upload or drag/drop files
@@ -40,7 +43,7 @@ const CodeField = ({
     setMonacoSubscription(
       monacoEditor.onDidChangeModelContent(() => {
         setTouched(true);
-        setValue(monacoEditor.getModel()?.getValue(), true);
+        isValidValue ? setValue(monacoEditor.getModel()?.getValue(), true) : setValue('', true);
       }),
     );
     return () => {
@@ -49,11 +52,11 @@ const CodeField = ({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monacoEditor]);
+  }, [monacoEditor, isValidValue]);
 
-  const isValid = !errorMessage;
+  const isValid = !errorMessage && isValidValue;
   const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
-
+  console.log(isValidValue);
   return (
     <Stack>
       <StackItem>
@@ -72,6 +75,7 @@ const CodeField = ({
             </HelperText>
           )}
           <CodeEditor
+            ref={codeEditorRef}
             code={field.value as string}
             isUploadEnabled={!isDisabled}
             isDownloadEnabled={isValid}
@@ -81,13 +85,29 @@ const CodeField = ({
             language={language}
             onEditorDidMount={(editor) => setMonacoEditor(editor)}
             downloadFileName={downloadFileName}
+            onCodeChange={(value: string) => {
+              let isValidVal = true;
+              if (codeEditorRef && codeEditorRef.current) {
+                if ((codeEditorRef.current as CodeEditor).state.filename) {
+                  isValidVal = validateFileName(
+                    (codeEditorRef.current as CodeEditor).state.filename,
+                  );
+                  setIsValidValue(isValidVal);
+                }
+              }
+              if (!isValidVal) {
+                setValue('', true);
+              } else {
+                setValue(value, true);
+              }
+            }}
           />
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
+        {!isValid && (
           <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+            {!isValidValue ? FILE_TYPE_MESSAGE : errorMessage}
           </HelperText>
         )}
       </StackItem>
