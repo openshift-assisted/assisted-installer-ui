@@ -13,7 +13,7 @@ export const RebootNodeZeroModal: React.FC<{ cluster: Cluster }> = ({ cluster })
   const { credentials, credentialsError, fetchCredentials } = clusterVarieties;
 
   const onReboot = () => {
-    console.error('onReboot handler to be implemented');
+    // console.error('onReboot handler to be implemented');
     // TODO(mlibra): Make HTTP Rest call to the assisted-service to restart the node, such endpoint is not yet implemented
   };
 

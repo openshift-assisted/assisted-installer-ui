@@ -103,7 +103,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         parsed.sortBy && setSortBy(parsed.sortBy);
         parsed.searchString && setSearchString(parsed.searchString);
       } catch (e) {
-        console.info('Failed to restore clusters filter: ', e);
+        // console.info('Failed to restore clusters filter: ', e);
       }
     }
   }, []);

@@ -10,10 +10,10 @@ export const stringToJSON = <T>(jsonString: string | undefined): T | undefined =
       );
       jsObject = JSON.parse(camelCased) as T;
     } catch (e) {
-      console.error('Failed to parse api string', e, jsonString);
+      // console.error('Failed to parse api string', e, jsonString);
     }
   } else {
-    console.info('Empty api string received.');
+    // console.info('Empty api string received.');
   }
 
   return jsObject;

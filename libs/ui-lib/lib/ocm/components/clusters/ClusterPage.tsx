@@ -43,7 +43,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
   showBreadcrumbs = false,
 }) => {
   if (!clusterId) {
-    console.error('ClusterPageGeneric: missing clusterId');
+    // console.error('ClusterPageGeneric: missing clusterId');
   }
   const fetchCluster = useFetchCluster(clusterId);
   const dispatch = useDispatch();
