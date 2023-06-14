@@ -56,7 +56,6 @@ const CodeField = ({
 
   const isValid = !errorMessage && isValidValue;
   const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
-  console.log(isValidValue);
   return (
     <Stack>
       <StackItem>
