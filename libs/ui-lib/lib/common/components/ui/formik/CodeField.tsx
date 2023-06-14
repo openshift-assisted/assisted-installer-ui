@@ -29,7 +29,28 @@ const CodeField = ({
   const errorMessage = useFieldErrorMsg({ name, validate });
   const codeEditorRef = React.useRef(null);
   const [isValidValue, setIsValidValue] = React.useState<boolean>(true);
-
+  const [typingTimeout, setTypingTimeout] = React.useState<NodeJS.Timeout | null>(null);
+  const onCodeChange = (value: string) => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+      setIsValidValue(true);
+    }
+    const typingTimeout_new = setTimeout(() => {
+      let isValidVal = true;
+      if (codeEditorRef && codeEditorRef.current) {
+        if ((codeEditorRef.current as CodeEditor).state.filename) {
+          isValidVal = validateFileName((codeEditorRef.current as CodeEditor).state.filename);
+          setIsValidValue(isValidVal);
+        }
+      }
+      if (!isValidVal) {
+        setValue('', true);
+      } else {
+        setValue(value, true);
+      }
+    }, 500);
+    setTypingTimeout(typingTimeout_new);
+  };
   React.useEffect(() => {
     //Work around for Patternfly CodeEditor not calling onChange after upload or drag/drop files
     //The temporary solution is to handle the changes by registering to the change events of the internal editor in CodeEditor
@@ -85,20 +106,7 @@ const CodeField = ({
             onEditorDidMount={(editor) => setMonacoEditor(editor)}
             downloadFileName={downloadFileName}
             onCodeChange={(value: string) => {
-              let isValidVal = true;
-              if (codeEditorRef && codeEditorRef.current) {
-                if ((codeEditorRef.current as CodeEditor).state.filename) {
-                  isValidVal = validateFileName(
-                    (codeEditorRef.current as CodeEditor).state.filename,
-                  );
-                  setIsValidValue(isValidVal);
-                }
-              }
-              if (!isValidVal) {
-                setValue('', true);
-              } else {
-                setValue(value, true);
-              }
+              onCodeChange(value);
             }}
           />
         </FormGroup>
