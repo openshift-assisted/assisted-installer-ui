@@ -109,6 +109,7 @@ const DiscoveryImageForm = ({
           ? mapClusterCpuArchToInfraEnvCpuArch(infraEnv.cpuArchitecture)
           : mapClusterCpuArchToInfraEnvCpuArch(cpuArchitecture)
       }
+      isOracleCloudInfrastructure={cluster.platform?.type === 'oci'}
     />
   );
 };
