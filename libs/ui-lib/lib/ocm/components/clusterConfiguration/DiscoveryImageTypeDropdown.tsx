@@ -34,7 +34,7 @@ export const DiscoveryImageTypeDropdown = ({
   defaultValue,
   onChange,
   selectedCpuArchitecture,
-  isDisabled,
+  isDisabled = false,
 }: DiscoveryImageTypeDropdownProps) => {
   const [field, { value }, { setValue }] = useField<DiscoveryImageType>(name);
   const [isOpen, setOpen] = React.useState(false);

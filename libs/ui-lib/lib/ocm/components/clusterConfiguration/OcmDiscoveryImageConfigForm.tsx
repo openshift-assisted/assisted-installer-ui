@@ -83,7 +83,7 @@ export const OcmDiscoveryImageConfigForm = ({
   enableCertificate,
   trustBundle,
   selectedCpuArchitecture,
-  isOracleCloudInfrastructure,
+  isOracleCloudInfrastructure = false,
 }: OcmDiscoveryImageConfigFormProps) => {
   const imageTypeValue = isIpxeSelected
     ? 'discovery-image-ipxe'
