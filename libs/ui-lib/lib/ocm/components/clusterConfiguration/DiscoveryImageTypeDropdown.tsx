@@ -26,6 +26,7 @@ type DiscoveryImageTypeDropdownProps = {
   defaultValue: string | undefined;
   onChange: (isIpxeSelected: boolean) => void;
   selectedCpuArchitecture?: SupportedCpuArchitecture;
+  isDisabled?: boolean;
 };
 
 export const DiscoveryImageTypeDropdown = ({
@@ -33,6 +34,7 @@ export const DiscoveryImageTypeDropdown = ({
   defaultValue,
   onChange,
   selectedCpuArchitecture,
+  isDisabled,
 }: DiscoveryImageTypeDropdownProps) => {
   const [field, { value }, { setValue }] = useField<DiscoveryImageType>(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -95,11 +97,12 @@ export const DiscoveryImageTypeDropdown = ({
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-u-w-100"
+        isDisabled={isDisabled}
       >
         {current || value}
       </DropdownToggle>
     ),
-    [setOpen, current, value],
+    [setOpen, current, value, isDisabled],
   );
 
   return (
