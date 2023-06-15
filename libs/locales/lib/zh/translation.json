@@ -205,7 +205,6 @@
   "ai:Could not download kubeconfig": "无法下载 kubeconfig 文件",
   "ai:Could not fetch infra environments": "无法获取 infra 环境",
   "ai:Could not fetch pull secret": "无法获取 pull secret",
-  "ai:Could not get secret": "无法获取 secret",
   "ai:Could not load events": "无法加载事件",
   "ai:Could not load events from the standard location. You can check the events in the <1>raw format</1>.": "无法从标准位置加载事件。您可以检查<1>原始格式</1>的事件。",
   "ai:CPU architecture": "CPU 架构",
