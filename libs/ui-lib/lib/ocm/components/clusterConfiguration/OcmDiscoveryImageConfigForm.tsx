@@ -68,6 +68,7 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   enableCertificate?: boolean;
   trustBundle?: InfraEnv['additionalTrustBundle'];
   selectedCpuArchitecture?: SupportedCpuArchitecture;
+  isOracleCloudInfrastructure?: boolean;
 };
 
 export const OcmDiscoveryImageConfigForm = ({
@@ -82,6 +83,7 @@ export const OcmDiscoveryImageConfigForm = ({
   enableCertificate,
   trustBundle,
   selectedCpuArchitecture,
+  isOracleCloudInfrastructure = false,
 }: OcmDiscoveryImageConfigFormProps) => {
   const imageTypeValue = isIpxeSelected
     ? 'discovery-image-ipxe'
@@ -147,6 +149,7 @@ export const OcmDiscoveryImageConfigForm = ({
                       defaultValue={discoveryImageTypes[imageTypeValue]}
                       onChange={updateDiscoveryButtonAndAlertText}
                       selectedCpuArchitecture={selectedCpuArchitecture}
+                      isDisabled={isOracleCloudInfrastructure}
                     />
                     <UploadSSH
                       labelText={t(
