@@ -161,6 +161,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'no-skip-missing-disk': t('ai:No skip missing disk'),
   'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
   'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
+  'mce-requirements-satisfied': t('ai:MustiCluster Engine requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -208,6 +209,7 @@ export const hostValidationFailureHints = (
   'no-skip-installation-disk': '',
   'no-skip-missing-disk': '',
   'no-ip-collisions-in-network': '',
+  'mce-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
@@ -235,6 +237,7 @@ export const clusterValidationLabels = (
   'odf-requirements-satisfied': t('ai:ODF requirements'),
   'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
+  'mce-requirements-satisfied': t('ai:MCE requirements'),
 });
 
 export const clusterValidationGroupLabels = (
@@ -298,6 +301,7 @@ export const OPERATOR_NAME_LSO = 'lso';
 export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_LVMS = 'lvms';
+export const OPERATOR_NAME_MCE = 'mce';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -305,12 +309,14 @@ const OperatorNames = [
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
+  OPERATOR_NAME_MCE,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
+  OPERATOR_NAME_MCE,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -345,6 +351,7 @@ export const operatorLabels = (
     [OPERATOR_NAME_LVM]: useLVMS
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
+    [OPERATOR_NAME_MCE]: t('ai:MultiCluster Engine'),
   };
 };
 
@@ -366,3 +373,6 @@ export const CUSTOM_MANIFESTS_HELP_LINK =
 //TODO (mortegag): Change the link. Related to https://issues.redhat.com/browse/MGMT-13976
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
   'https://57587--docspreview.netlify.app/openshift-enterprise/latest/post_installation_configuration/multi-architecture-configuration.html#multi-architecture-verifying-cluster-compatibility_multi-architecture-configuration';
+
+export const MCE_LINK =
+  'https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.7/html/clusters/cluster_mce_overview';
