@@ -13,6 +13,7 @@ const MceLabel = ({ disabledReason }: { disabledReason?: string }) => (
       <span>Install MultiCluster Engine </span>
     </Tooltip>
     <PopoverIcon
+      id={MCE_FIELD_NAME}
       component={'a'}
       headerContent="Additional Requirements for MultiCluster Engine"
       bodyContent={

@@ -87,4 +87,7 @@ export const commonActions = {
   visitClusterDetailsPage: () => {
     cy.visit(`/clusters/${Cypress.env('clusterId')}`);
   },
+  clickBackButton: () => {
+    commonActions.getBackButton().should('be.enabled').click();
+  },
 };
