@@ -253,8 +253,8 @@ export function filterValidationsInfoByStatus(
 }
 
 type VipValidations = {
-  'api-vip-defined': string | undefined;
-  'ingress-vip-defined': string | undefined;
+  'api-vips-defined': string | undefined;
+  'ingress-vips-defined': string | undefined;
 };
 
 export const getVipValidationsById = (
@@ -267,7 +267,7 @@ export const getVipValidationsById = (
     t('ai:IP allocation from the DHCP server timed out.'),
   ];
   return (validationsInfo.network || []).reduce((lookup, validation) => {
-    if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
+    if (['api-vips-defined', 'ingress-vips-defined'].includes(validation.id)) {
       const vipId = validation.id as keyof VipValidations;
       lookup[vipId] =
         validation.status === 'failure' &&

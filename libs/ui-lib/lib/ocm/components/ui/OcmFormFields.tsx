@@ -46,27 +46,45 @@ export function RefFormFieldDisabler<T extends DisableableField>(
 
 // Formik Fields
 const OcmInputField = FormFieldDisabler<React.ComponentProps<typeof InputField>>(InputField);
+type OcmInputFieldProps = Parameters<typeof OcmInputField>[0];
 const OcmSelectField = FormFieldDisabler<SelectFieldProps>(SelectField);
+type OcmSelectFieldProps = Parameters<typeof OcmSelectField>[0];
 const OcmCheckboxField = FormFieldDisabler<CheckboxFieldProps>(CheckboxField);
+type OcmCheckboxFieldProps = Parameters<typeof OcmCheckboxField>[0];
 const OcmSwitchField = FormFieldDisabler<SwitchFieldProps>(SwitchField);
+type OcmSwitchFieldProps = Parameters<typeof OcmSwitchField>[0];
 const OcmRadioField = FormFieldDisabler<RadioFieldProps>(RadioField);
+type OcmRadioFieldProps = Parameters<typeof OcmRadioField>[0];
 const OcmCodeField = FormFieldDisabler<CodeFieldProps>(CodeField);
+type OcmCodeFieldProps = Parameters<typeof OcmCodeField>[0];
 
 // Patternfly components
 const OcmCheckbox = FormFieldDisabler<CheckboxProps>(Checkbox);
+type OcmCheckboxProps = Parameters<typeof OcmCheckbox>[0];
 const OcmRadio = FormFieldDisabler<RadioProps>(Radio);
+type OcmRadioProps = Parameters<typeof OcmRadio>[0];
 
 // With forwardRef
 const OcmRichInputField = RefFormFieldDisabler<RichInputFieldPropsProps>(RichInputField);
+type OcmRichInputFieldProps = Parameters<typeof OcmRichInputField>[0];
 
 export {
   OcmInputField,
+  OcmInputFieldProps,
   OcmRichInputField,
+  OcmRichInputFieldProps,
   OcmSelectField,
+  OcmSelectFieldProps,
   OcmCheckbox,
+  OcmCheckboxProps,
   OcmCheckboxField,
+  OcmCheckboxFieldProps,
   OcmCodeField,
+  OcmCodeFieldProps,
   OcmSwitchField,
+  OcmSwitchFieldProps,
   OcmRadioField,
+  OcmRadioFieldProps,
   OcmRadio,
+  OcmRadioProps,
 };

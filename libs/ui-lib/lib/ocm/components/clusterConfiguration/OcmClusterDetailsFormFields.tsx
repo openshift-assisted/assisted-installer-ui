@@ -21,6 +21,7 @@ import DiskEncryptionControlGroup from '../../../common/components/clusterConfig
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   OcmCheckboxField,
+  OcmCheckboxFieldProps,
   OcmInputField,
   OcmRichInputField,
   OcmSelectField,
@@ -35,6 +36,11 @@ import CpuArchitectureDropdown, {
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import {
+  ExternalPartnerIntegrationsCheckbox,
+  useExternalPartnerIntegrationsCheckboxState,
+} from './ExternalPartnerIntegrationsCheckbox';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -73,22 +79,20 @@ export const OcmClusterDetailsFormFields = ({
   clusterCpuArchitecture,
   clusterId,
 }: OcmClusterDetailsFormFieldsProps) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
+  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
-  React.useEffect(() => {
-    nameInputRef.current?.focus();
-  }, []);
 
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { t } = useTranslation();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
+  const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
   const {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
-  const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
-
+  const clusterWizardContext = useClusterWizardContext();
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
@@ -98,10 +102,28 @@ export const OcmClusterDetailsFormFields = ({
     () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),
     [cpuArchitecturesByVersionImage, isMultiArchSupported],
   );
-
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const cpuArchitecture = (architectureData[values.cpuArchitecture] as CpuArchitectureItem).label;
+  const externalPartnerIntegrationsCheckboxState = useExternalPartnerIntegrationsCheckboxState(
+    clusterExists,
+    featureSupportLevelData,
+  );
+
+  React.useEffect(() => {
+    nameInputRef.current?.focus();
+  }, []);
+
+  const handleExternalPartnerIntegrationsChange = React.useCallback<
+    NonNullable<OcmCheckboxFieldProps['onChange']>
+  >(
+    (value: boolean, _event: React.FormEvent<HTMLInputElement>) => {
+      const checked = Boolean(value);
+      setFieldValue('addCustomManifest', checked, false);
+      clusterWizardContext.setAddCustomManifests(checked);
+    },
+    [clusterWizardContext, setFieldValue],
+  );
 
   return (
     <Form id="wizard-cluster-details__form">
@@ -175,6 +197,23 @@ export const OcmClusterDetailsFormFields = ({
       />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+
+      {isOracleCloudPlatformIntegrationEnabled && externalPartnerIntegrationsCheckboxState && (
+        <ExternalPartnerIntegrationsCheckbox
+          disabledStateTooltipContent={externalPartnerIntegrationsCheckboxState.disabledReason}
+          popoverContent={
+            <p>
+              To integrate with an external partner (for example, Oracle Cloud), you'll need to
+              provide a custom manifest.
+            </p>
+          }
+          label={'External partner integrations'}
+          helperText={'Integrate with other platforms using custom manifests.'}
+          onChange={handleExternalPartnerIntegrationsChange}
+          isDisabled={externalPartnerIntegrationsCheckboxState.isDisabled}
+        />
+      )}
+
       <CustomManifestCheckbox clusterId={clusterId || ''} />
 
       {

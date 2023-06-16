@@ -94,7 +94,7 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
     manifestsDummy !== undefined;
   return (
     <>
-      <FormGroup isInline fieldId={fieldId}>
+      <FormGroup id={`form-control__${fieldId}`} isInline fieldId={fieldId}>
         <OcmCheckbox
           id={fieldId}
           name={name}
