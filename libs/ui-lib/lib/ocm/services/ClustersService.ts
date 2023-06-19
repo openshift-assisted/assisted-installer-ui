@@ -4,6 +4,7 @@ import InfraEnvsService from './InfraEnvsService';
 import {
   AI_UI_TAG,
   Cluster,
+  CpuArchitecture,
   CreateManifestParams,
   Host,
   InfraEnvCreateParams,
@@ -36,6 +37,10 @@ const ClustersService = {
 
     if (params.platform?.type === 'oci') {
       infraEnvCreateParams.imageType = 'minimal-iso';
+    }
+
+    if (params.cpuArchitecture === CpuArchitecture.s390x) {
+      infraEnvCreateParams.imageType = 'full-iso';
     }
 
     await InfraEnvsService.create(infraEnvCreateParams);
