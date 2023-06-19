@@ -1,8 +1,7 @@
 import isString from 'lodash-es/isString.js';
 import { load } from 'js-yaml';
+import { MAX_FILE_SIZE_BASELINE } from './configurations';
 
-export const MAX_FILE_SIZE = 2097152; //2 Mib
-export const MAX_FILE_SIZE_FOR_UI = 1; //1 Mb
 export const FILENAME_REGEX = /^[^\/]*\.(yaml|yml|json)$/;
 export const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
 
@@ -50,8 +49,8 @@ export const validateFileSize = (value: string, fileSize: number): boolean => {
   return contentFile.size <= fileSize;
 };
 
-export const getMaxFileSizeMessage = (fileSize: number): string => {
-  return `File size is too big. Upload a new ${fileSize * 1000} kB or less.`;
+export const getMaxFileSizeMessage = (): string => {
+  return `File size is too big. Upload a new ${MAX_FILE_SIZE_BASELINE * 1000} kB or less.`;
 };
 
 export const validateFileName = (fileName: string) => {

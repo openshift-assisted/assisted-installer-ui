@@ -4,11 +4,10 @@ import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import {
   getMaxFileSizeMessage,
   validateFileSize,
-  MAX_FILE_SIZE,
   validateFileName,
   validateFileType,
-  MAX_FILE_SIZE_FOR_UI,
 } from '../../../../../common/utils';
+import { MAX_FILE_SIZE_OFFSET_FACTOR } from '../../../../../common/configurations';
 
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 const INCORRECT_TYPE_FILE = 'File type is not supported. File type must be yaml, yml or json.';
@@ -57,8 +56,8 @@ export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>((
           .concat(getUniqueValidationSchema(getAllManifests)),
         manifestYaml: Yup.string()
           .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage(MAX_FILE_SIZE_FOR_UI), (value: string) =>
-            validateFileSize(value, MAX_FILE_SIZE),
+          .test('not-big-file', getMaxFileSizeMessage(), (value: string) =>
+            validateFileSize(value, MAX_FILE_SIZE_OFFSET_FACTOR),
           )
           .test('not-valid-file', INCORRECT_TYPE_FILE, validateFileType),
       }),

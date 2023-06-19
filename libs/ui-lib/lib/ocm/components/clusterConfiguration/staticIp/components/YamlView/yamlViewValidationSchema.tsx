@@ -13,19 +13,18 @@ import {
 import {
   FILE_TYPE_MESSAGE,
   getMaxFileSizeMessage,
-  MAX_FILE_SIZE,
-  MAX_FILE_SIZE_FOR_UI,
   validateFileSize,
   validateFileType,
 } from '../../../../../../common/utils';
+import { MAX_FILE_SIZE_OFFSET_FACTOR } from '../../../../../../common/configurations';
 
 const requiredMsg = 'A value is required';
 
 const networkYamlValidationSchema = Yup.string()
   .required(requiredMsg)
   .test('file-type-yaml', FILE_TYPE_MESSAGE, (value: string) => validateFileType(value))
-  .test('file-size-limit', getMaxFileSizeMessage(MAX_FILE_SIZE_FOR_UI), (value: string) =>
-    validateFileSize(value, MAX_FILE_SIZE),
+  .test('file-size-limit', getMaxFileSizeMessage(), (value: string) =>
+    validateFileSize(value, MAX_FILE_SIZE_OFFSET_FACTOR),
   );
 
 const getAllMacAddresses: UniqueStringArrayExtractor<YamlViewValues> = (

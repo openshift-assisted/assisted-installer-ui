@@ -1,3 +1,4 @@
+import './configurations.ts';
 import './styles.css';
 import './utils';
 
