@@ -41,3 +41,4 @@ export const ocmPermissionsToAIPermissions = (
 };
 
 export const OCM_CLUSTER_LIST_LINK = '/openshift'; // TODO(mlibra): Tweak it!!!
+export const EXTERNAL_PARTNER_INTEGRATIONS_MIN_VERSION = '4.14.0';
