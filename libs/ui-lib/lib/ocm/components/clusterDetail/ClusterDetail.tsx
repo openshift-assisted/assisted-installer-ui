@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Stack,
   StackItem,
@@ -46,7 +46,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const isSNOExpansionAllowed =
     featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION');
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-
+  const history = useHistory();
   const canAddHosts =
     (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
 
@@ -55,12 +55,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       try {
         const { data } = await ClustersAPI.allowAddHosts(cluster.id);
         updateCluster(data);
+        history.push(`${routeBasePath}/clusters/${cluster.id}`);
       } catch (e) {
         handleApiError(e);
       }
     };
     void doItAsync();
-  }, [cluster.id]);
+  }, [cluster.id, history]);
 
   return (
     <Stack hasGutter>
@@ -108,9 +109,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           {canAddHosts && (
             <ToolbarButton
               variant={ButtonVariant.primary}
-              component={(props) => (
-                <Link to={`${routeBasePath}/clusters/${cluster.id}`} {...props} />
-              )}
               id={getClusterDetailId('button-add-hosts')}
               onClick={onAddHosts}
             >
@@ -120,7 +118,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           {!isSingleClusterFeatureEnabled && (
             <ToolbarButton
               variant={ButtonVariant.link}
-              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+              onClick={() => history.push(`${routeBasePath}/clusters`)}
               id={getClusterDetailId('button-back-to-all-clusters')}
             >
               Back to all clusters
