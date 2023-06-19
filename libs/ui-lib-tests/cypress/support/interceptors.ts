@@ -95,7 +95,6 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
 };
 
 const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
-  console.log('mockresponse');
   const fixtureMapping = getScenarioFixtureMapping();
   if (fixtureMapping?.manifests) {
     req.reply(fixtureMapping.manifests);

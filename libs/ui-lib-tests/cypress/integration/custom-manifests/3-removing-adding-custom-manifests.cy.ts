@@ -27,7 +27,6 @@ describe(`Assisted Installer Custom manifests step`, () => {
       customManifestsPage.getLinkToAdd().click();
       customManifestsPage.getManifest1Id().type('manifest2.yaml');
       customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest2.yaml`);
-      cy.loadAiAPIIntercepts(null, true);
       customManifestsPage.getLinkToAdd().should('be.enabled');
     });
     it('Can delete custom manifest', () => {
@@ -37,7 +36,6 @@ describe(`Assisted Installer Custom manifests step`, () => {
       customManifestsPage.getLinkToAdd().click();
       customManifestsPage.getManifest1Id().type('manifest2.yaml');
       customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest2.yaml`);
-      cy.loadAiAPIIntercepts(null, true);
       customManifestsPage.getRemoveManifestButton().click();
       customManifestsPage.getRemoveConfirmationButton().click();
     });

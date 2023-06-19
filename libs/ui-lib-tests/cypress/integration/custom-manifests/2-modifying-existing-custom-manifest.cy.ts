@@ -43,7 +43,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
       commonActions.getNextButton().should('be.disabled');
     });
     it('Incorrect file name', () => {
-      customManifestsPage.getFileName().type('test.txt');
+      customManifestsPage.getFileName().clear().type('test.txt');
       customManifestsPage
         .getFileNameError()
         .contains('Must have a yaml, yml or json extension and can not contain /.');

@@ -81,9 +81,6 @@ export const commonActions = {
   startAtStorageStep: () => {
     commonActions.getWizardStepNav('Storage').click();
   },
-  startAtClusterDetailsStep: () => {
-    commonActions.getWizardStepNav('Cluster details').click();
-  },
   visitNewClusterPage: () => {
     cy.visit('/clusters/~new');
   },
