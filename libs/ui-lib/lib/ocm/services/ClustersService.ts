@@ -4,8 +4,10 @@ import InfraEnvsService from './InfraEnvsService';
 import {
   AI_UI_TAG,
   Cluster,
+  CpuArchitecture,
   CreateManifestParams,
   Host,
+  InfraEnvCreateParams,
   UpdateManifestParams,
   V2ClusterUpdateParams,
 } from '../../common';
@@ -24,14 +26,20 @@ const ClustersService = {
 
   async create(params: ClusterCreateParamsWithStaticNetworking) {
     const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
-    await InfraEnvsService.create({
+    const infraEnvCreateParams: InfraEnvCreateParams = {
       name: `${params.name}_infra-env`,
       pullSecret: params.pullSecret,
       clusterId: cluster.id,
       openshiftVersion: params.openshiftVersion,
-      cpuArchitecture: params.cpuArchitecture,
+      cpuArchitecture: params.cpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
       staticNetworkConfig: params.staticNetworkConfig,
-    });
+    };
+
+    if (params.cpuArchitecture === CpuArchitecture.s390x) {
+      infraEnvCreateParams.imageType = 'full-iso';
+    }
+
+    await InfraEnvsService.create(infraEnvCreateParams);
 
     return cluster;
   },
