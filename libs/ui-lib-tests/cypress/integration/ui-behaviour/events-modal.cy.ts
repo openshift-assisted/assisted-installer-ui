@@ -1,6 +1,9 @@
-import ClusterPage from '../../views/pages/ClusterPage';
-import EventsModal from '../../views/modals/eventsModal';
+import { ClusterPage } from '../../views/pages/ClusterPage';
 import { hostIds } from '../../fixtures/hosts';
+import { EventsModal } from '../../views/modals/EventsModal';
+
+let clusterPage;
+let eventsModal;
 
 describe('Events modal behavior', () => {
   before(() => {
@@ -12,13 +15,24 @@ describe('Events modal behavior', () => {
 
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
+
     ClusterPage.visit();
-    EventsModal.eventsModalControl.click();
+
+    clusterPage = new ClusterPage();
+    clusterPage.eventsModalControl.click();
+
+    eventsModal = new EventsModal();
+    eventsModal.spinner.should('not.exist');
+  });
+
+  afterEach(() => {
+    clusterPage = null;
+    eventsModal = null;
   });
 
   it('Can use pagination', () => {
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -27,12 +41,12 @@ describe('Events modal behavior', () => {
         expect(res[1]).eq('10');
         expect(res[2]).eq('28');
       });
-      EventsModal.contents.should('have.length', 10);
+      eventsModal.contents.should('have.length', 10);
     });
 
-    EventsModal.pagination.next.click();
+    eventsModal.pagination.next.click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -41,12 +55,12 @@ describe('Events modal behavior', () => {
         expect(res[1]).eq('20');
         expect(res[2]).eq('28');
       });
-      EventsModal.contents.should('have.length', 10);
+      eventsModal.contents.should('have.length', 10);
     });
 
-    EventsModal.pagination.previous.click();
+    eventsModal.pagination.previous.click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -55,12 +69,12 @@ describe('Events modal behavior', () => {
         expect(res[1]).eq('10');
         expect(res[2]).eq('28');
       });
-      EventsModal.contents.should('have.length', 10);
+      eventsModal.contents.should('have.length', 10);
     });
 
-    EventsModal.pagination.last.click();
+    eventsModal.pagination.last.click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -69,12 +83,12 @@ describe('Events modal behavior', () => {
         expect(res[1]).eq('28');
         expect(res[2]).eq('28');
       });
-      EventsModal.contents.should('have.length', 8);
+      eventsModal.contents.should('have.length', 8);
     });
 
-    EventsModal.pagination.first.click();
+    eventsModal.pagination.first.click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -83,13 +97,13 @@ describe('Events modal behavior', () => {
         expect(res[1]).eq('10');
         expect(res[2]).eq('28');
       });
-      EventsModal.contents.should('have.length', 10);
+      eventsModal.contents.should('have.length', 10);
     });
 
-    EventsModal.pagination.menuText.click();
-    EventsModal.pagination.perPageOption(50).click();
+    eventsModal.pagination.menuText.click();
+    eventsModal.pagination.perPageOption(50).click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -98,61 +112,61 @@ describe('Events modal behavior', () => {
         expect(res[1]).eq('28');
         expect(res[2]).eq('28');
       });
-      EventsModal.pagination.first.should('be.disabled');
-      EventsModal.pagination.previous.should('be.disabled');
-      EventsModal.pagination.next.should('be.disabled');
-      EventsModal.pagination.last.should('be.disabled');
-      EventsModal.contents.should('have.length', 28);
+      eventsModal.pagination.first.should('be.disabled');
+      eventsModal.pagination.previous.should('be.disabled');
+      eventsModal.pagination.next.should('be.disabled');
+      eventsModal.pagination.last.should('be.disabled');
+      eventsModal.contents.should('have.length', 28);
     });
   });
 
   it('Can use hosts filters', () => {
-    EventsModal.hostFilter.control.click();
-    EventsModal.hostFilter.option(hostIds[0]).click();
+    eventsModal.hostFilter.control.click();
+    eventsModal.hostFilter.option(hostIds[0]).click();
 
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
           .slice(1, 4);
         expect(res[2]).eq('7');
       });
-      EventsModal.contents.should('have.length', 7);
+      eventsModal.contents.should('have.length', 7);
     });
 
-    EventsModal.hostFilter.option(hostIds[1]).click();
-    EventsModal.hostFilter.option(hostIds[2]).click();
+    eventsModal.hostFilter.option(hostIds[1]).click();
+    eventsModal.hostFilter.option(hostIds[2]).click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
           .slice(1, 4);
         expect(res[2]).eq('21');
       });
-      EventsModal.contents.should('have.length', 10);
+      eventsModal.contents.should('have.length', 10);
     });
 
-    EventsModal.hostFilter.option('cluster-level-action').click();
+    eventsModal.hostFilter.option('cluster-level-action').click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
           .slice(1, 4);
         expect(res[2]).eq('28');
       });
-      EventsModal.contents.should('have.length', 10);
+      eventsModal.contents.should('have.length', 10);
     });
   });
 
   it('Can use severity filters', () => {
-    EventsModal.severityFilter.control.click();
+    eventsModal.severityFilter.control.click();
 
-    EventsModal.severityFilter.option('info').click();
+    eventsModal.severityFilter.option('info').click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -161,9 +175,9 @@ describe('Events modal behavior', () => {
       });
     });
 
-    EventsModal.severityFilter.option('warning').click();
+    eventsModal.severityFilter.option('warning').click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -172,9 +186,9 @@ describe('Events modal behavior', () => {
       });
     });
 
-    EventsModal.severityFilter.option('info').click();
+    eventsModal.severityFilter.option('info').click();
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -185,10 +199,10 @@ describe('Events modal behavior', () => {
   });
 
   it('Can use message filter', () => {
-    EventsModal.messageFilter.type('registered');
+    eventsModal.messageFilter.type('registered');
     cy.wait(500); // UI debounce time
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
@@ -197,10 +211,10 @@ describe('Events modal behavior', () => {
       });
     });
 
-    EventsModal.messageFilter.clear();
+    eventsModal.messageFilter.clear();
     cy.wait(500); // UI debounce time
     cy.wait('@events').then(() => {
-      EventsModal.pagination.menuText.then(($elem) => {
+      eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
           .match(/(\d+)\s\-\s(\d+)\sof\s(\d+)/)
