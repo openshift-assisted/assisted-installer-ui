@@ -102,7 +102,7 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
           aria-describedby={`${fieldId}-helper`}
           description={
             <HelperText fieldId={fieldId}>
-              Additional manifests will be applied at the install time for advance configuration of
+              Additional manifests will be applied at the install time for advanced configuration of
               the cluster.
             </HelperText>
           }
