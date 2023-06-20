@@ -41,6 +41,8 @@ import {
   ExternalPartnerIntegrationsCheckbox,
   useExternalPartnerIntegrationsCheckboxState,
 } from './ExternalPartnerIntegrationsCheckbox';
+import * as semver from 'semver';
+import { EXTERNAL_PARTNER_INTEGRATIONS_MIN_VERSION } from '../../config';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -113,6 +115,13 @@ export const OcmClusterDetailsFormFields = ({
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
+
+  React.useEffect(() => {
+    const ocpSemVer = semver.coerce(values.openshiftVersion, { loose: true });
+    if (ocpSemVer && semver.lt(ocpSemVer, EXTERNAL_PARTNER_INTEGRATIONS_MIN_VERSION)) {
+      setFieldValue('externalPartnerIntegrations', false);
+    }
+  }, [setFieldValue, values.openshiftVersion]);
 
   const handleExternalPartnerIntegrationsChange = React.useCallback<
     NonNullable<OcmCheckboxFieldProps['onChange']>
