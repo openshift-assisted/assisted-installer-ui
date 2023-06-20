@@ -1,10 +1,6 @@
-import {
-  Cluster,
-  FeatureSupportLevels,
-  OcmCpuArchitecture,
-  SupportedCpuArchitecture,
-} from '../../../common';
+import { Cluster, OcmCpuArchitecture, SupportedCpuArchitecture } from '../../../common';
 import { HostsNetworkConfigurationType } from '../../services';
+import { FeaturesSupportsLevel } from '../newFeatureSupportLevels/types';
 
 /* The type is reverse engineered.
    The OCM object contains additional data.
@@ -53,7 +49,7 @@ export type OcmClusterType = {
   };
 
   aiCluster?: Cluster;
-  aiSupportLevels?: FeatureSupportLevels;
+  aiSupportLevels?: FeaturesSupportsLevel;
 };
 
 export type Day2ClusterDetailValues = {
