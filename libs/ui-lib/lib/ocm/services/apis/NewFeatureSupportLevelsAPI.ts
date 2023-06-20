@@ -1,10 +1,9 @@
-import { CpuArchitecture } from '../../../common';
 import { clientWithoutConverter } from '../../api/axiosClient';
 import {
   ArchitecturesSupportsLevel,
   FeaturesSupportsLevel,
 } from '../../components/newFeatureSupportLevels/types';
-import { mapOcmArchToCpuArchitecture } from '../CpuArchitectureService';
+import { getCpuArchitecture } from '../CpuArchitectureService';
 
 const NewFeatureSupportLevelsAPI = {
   makeBaseURI() {
@@ -12,13 +11,10 @@ const NewFeatureSupportLevelsAPI = {
   },
 
   featuresSupportLevel(openshiftVersion: string, cpuArchitecture?: string, isOcm?: boolean) {
-    const cpuArch =
-      isOcm && cpuArchitecture
-        ? mapOcmArchToCpuArchitecture(cpuArchitecture)
-        : cpuArchitecture || CpuArchitecture.x86;
+    const cpuArch = getCpuArchitecture(cpuArchitecture, isOcm);
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
-    queryParams += cpuArchitecture ? `cpu_architecture=${cpuArch || CpuArchitecture.x86}` : '';
+    queryParams += cpuArchitecture ? `cpu_architecture=${cpuArch}` : '';
     return clientWithoutConverter.get<FeaturesSupportsLevel>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
     );
