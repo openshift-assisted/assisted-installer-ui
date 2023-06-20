@@ -375,4 +375,4 @@ export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
   'https://57587--docspreview.netlify.app/openshift-enterprise/latest/post_installation_configuration/multi-architecture-configuration.html#multi-architecture-verifying-cluster-compatibility_multi-architecture-configuration';
 
 export const MCE_LINK =
-  'https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.7/html/clusters/cluster_mce_overview';
+  'https://docs.openshift.com/container-platform/4.13/architecture/mce-overview-ocp.html';
