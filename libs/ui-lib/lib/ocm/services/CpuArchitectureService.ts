@@ -55,11 +55,10 @@ const mapClusterCpuArchToInfraEnvCpuArch = (
   }
 };
 
-const getCpuArchitecture = (cpuArchitecture?: string, isOcm?: boolean): string => {
-  const cpuArch =
-    isOcm && cpuArchitecture
-      ? mapOcmArchToCpuArchitecture(cpuArchitecture)
-      : cpuArchitecture || CpuArchitecture.x86;
+const getCpuArchitecture = (cpuArchitecture?: string): string => {
+  const cpuArch = cpuArchitecture
+    ? mapOcmArchToCpuArchitecture(cpuArchitecture)
+    : CpuArchitecture.x86;
   return cpuArch || CpuArchitecture.x86;
 };
 
