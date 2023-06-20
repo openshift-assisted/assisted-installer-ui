@@ -6,6 +6,7 @@ export * as Services from './services';
 
 // without namespace
 export * from './components';
+export * from './services';
 
 // re-export selected from common
 export * as Features from '../common/features';

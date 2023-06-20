@@ -55,8 +55,16 @@ const mapClusterCpuArchToInfraEnvCpuArch = (
   }
 };
 
+const getCpuArchitecture = (cpuArchitecture?: string): string => {
+  const cpuArch = cpuArchitecture
+    ? mapOcmArchToCpuArchitecture(cpuArchitecture)
+    : CpuArchitecture.x86;
+  return cpuArch || CpuArchitecture.x86;
+};
+
 export {
   mapOcmArchToCpuArchitecture,
   mapClusterCpuArchToInfraEnvCpuArch,
   getDefaultCpuArchitecture,
+  getCpuArchitecture,
 };
