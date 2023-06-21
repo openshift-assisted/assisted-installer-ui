@@ -34,6 +34,7 @@ export const ACM_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE: false,
   ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE: false,
   ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: false,
+  ASSISTED_INSTALLER_MULTIARCH_SUPPORTED: true,
 };
 
 // Hardcoded outside OCM
@@ -61,10 +62,12 @@ export const FeatureGateContextProvider: React.FC<{
   features: FeatureListType;
 }> = ({ features, children }) => {
   // hardcoded defaults
+  // TODO (mortegag): Remove all multiarch capacity related code in the UI.
   const featuresWithDefaults: FeatureListType = {
     ASSISTED_INSTALLER_OCS_FEATURE: false,
     ASSISTED_INSTALLER_ODF_FEATURE: false,
     ASSISTED_INSTALLER_CNV_FEATURE: false,
+    ASSISTED_INSTALLER_MULTIARCH_SUPPORTED: true,
     ...features,
   };
 
