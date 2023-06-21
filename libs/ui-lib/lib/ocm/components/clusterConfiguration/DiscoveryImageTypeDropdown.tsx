@@ -16,8 +16,8 @@ import {
 } from '../../../common';
 
 export const discoveryImageTypes: Record<DiscoveryImageType, string> = {
-  'minimal-iso': 'Minimal image file - Provision with virtual media',
-  'full-iso': 'Full image file - Provision with physical media',
+  'minimal-iso': 'Minimal image file - Download an ISO that fetches content on boot',
+  'full-iso': 'Full image file - Download a self-contained ISO',
   'discovery-image-ipxe': 'iPXE - Provision from your network server',
 };
 
@@ -46,7 +46,7 @@ export const DiscoveryImageTypeDropdown = ({
     <DropdownItem
       key="full-iso"
       id="full-iso"
-      description={'The generated discovery ISO will contain everything needed to boot.'}
+      description={'Use when configuring custom networking for easier debugging'}
     >
       {discoveryImageTypes['full-iso']}
     </DropdownItem>,
@@ -54,9 +54,7 @@ export const DiscoveryImageTypeDropdown = ({
     <DropdownItem
       key="minimal-iso"
       id="minimal-iso"
-      description={
-        'Use when your storage capacity is limited or being served over a constrained network.'
-      }
+      description={'Use when provisioning with default networking options'}
       tooltip={
         isMinimalISODisabled ? (
           <p>{'This provisioning type is not supported when using s390x architecture'}</p>
@@ -70,7 +68,7 @@ export const DiscoveryImageTypeDropdown = ({
     <DropdownItem
       key="discovery-image-ipxe"
       id="discovery-image-ipxe"
-      description={'Use when you have an iPXE server that has already been set up.'}
+      description={'Use when your platform does not support booting from ISO'}
     >
       {discoveryImageTypes['discovery-image-ipxe']}
     </DropdownItem>,
