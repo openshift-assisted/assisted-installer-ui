@@ -325,7 +325,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
               {isEdit ? t('ai:Submit') : t('ai:Create')}
             </Button>
             <Button onClick={onClose} variant={ButtonVariant.secondary}>
-              Cancel
+              {t('ai:Cancel')}
             </Button>
           </ModalBoxFooter>
         </>

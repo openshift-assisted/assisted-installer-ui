@@ -100,7 +100,14 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const content = React.useMemo(() => {
     return [
-      agentHostnameColumn(hosts, matchingAgents, [], actions.onEditHost, actions.canEditHostname),
+      agentHostnameColumn(
+        t,
+        hosts,
+        matchingAgents,
+        [],
+        actions.onEditHost,
+        actions.canEditHostname,
+      ),
       ...(addAll ? [infraEnvColumn(matchingAgents, t)] : []),
       agentStatusColumn({
         agents: matchingAgents,
@@ -108,7 +115,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
         t,
       }),
       roleColumn(t, actions.canEditRole, actions.onEditRole, undefined, undefined),
-      ...(addAll ? [cpuCoresColumn, memoryColumn, disksColumn] : []),
+      ...(addAll ? [cpuCoresColumn(t), memoryColumn(t), disksColumn(t)] : []),
     ];
   }, [
     matchingAgents,
