@@ -1,13 +1,13 @@
-import { getFeatureSupported } from '../featureSupportLevels/FeatureSupportLevelProvider';
 import { OcmClusterType } from '../AddHosts/types';
+import { getFeatureSupported } from '../newFeatureSupportLevels/NewFeatureSupportLevelProvider';
 import { AddHostsTabState } from './types';
 
 const isSNOExpansionAllowed = (cluster: OcmClusterType) => {
-  return getFeatureSupported(
-    cluster.openshift_version,
-    cluster.aiSupportLevels || [],
-    'SINGLE_NODE_EXPANSION',
-  );
+  if (cluster.aiSupportLevels) {
+    return getFeatureSupported(cluster.aiSupportLevels.features || [], 'SINGLE_NODE_EXPANSION');
+  } else {
+    return false;
+  }
 };
 
 const makeState = (

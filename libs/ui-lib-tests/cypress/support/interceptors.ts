@@ -80,6 +80,19 @@ const mockClusterResponse: HttpRequestInterceptor = (req) => {
   }
 };
 
+const mockClusterErrorResponse: HttpRequestInterceptor = (req) => {
+  req.reply({
+    statusCode: 400,
+    body: {
+      code: '400',
+      href: '',
+      id: 400,
+      kind: 'Error',
+      reason: 'This is an error response',
+    },
+  });
+};
+
 const mockSupportedPlatformsResponse: HttpRequestInterceptor = (req) => {
   const platforms = Cypress.env('AI_SUPPORTED_PLATFORMS') || ['none'];
   req.reply(platforms);
@@ -174,7 +187,11 @@ const addClusterPatchAndDetailsIntercepts = () => {
     }
 
     req.alias = 'update-cluster';
-    mockClusterResponse(req);
+    if (Cypress.env('AI_ERROR_CLUSTER_PATCH') === true) {
+      mockClusterErrorResponse(req);
+    } else {
+      mockClusterResponse(req);
+    }
   });
 };
 
