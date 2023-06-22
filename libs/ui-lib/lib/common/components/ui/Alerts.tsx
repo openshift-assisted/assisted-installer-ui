@@ -2,7 +2,8 @@ import React from 'react';
 import { AlertGroup, Alert } from '@patternfly/react-core';
 import { useAlerts } from '../AlertsContextProvider';
 
-const Alerts: React.FC<{ className?: string }> = ({ className }) => {
+const Alerts = ({ className }: { className?: string }) => {
+
   const { alerts } = useAlerts();
 
   if (alerts.length) {

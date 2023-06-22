@@ -47,7 +47,7 @@ const ClusterDeploymentCredentials = ({
         }
       } catch (e) {
         setIsError(true);
-        console.error(t('ai:Failed to fetch adminPasswordSecret secret.'), e);
+        // console.error(t('ai:Failed to fetch adminPasswordSecret secret.'), e);
       } finally {
         setIsLoading(false);
       }

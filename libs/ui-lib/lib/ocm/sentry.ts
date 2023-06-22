@@ -11,8 +11,8 @@ export const captureException = (
     message && Sentry.captureMessage(message, severity);
     Sentry.captureException(error);
   } else {
-    severity === Sentry.Severity.Error
-      ? console.error(message, error)
-      : console.warn(message, error);
+    // severity === Sentry.Severity.Error
+    //   ? console.error(message, error)
+    //   : console.warn(message, error);
   }
 };

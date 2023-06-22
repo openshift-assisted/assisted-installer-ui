@@ -40,7 +40,7 @@ export const getHWRequirements = (aiConfigMap: ConfigMapK8sResource): HostRequir
 
     hwRequirements = hwData.find((req: { version?: string }) => req.version === 'default');
   } catch {
-    console.error('Failed to parse hw requirements config map');
+    // console.error('Failed to parse hw requirements config map');
     hwRequirements = undefined;
   }
 

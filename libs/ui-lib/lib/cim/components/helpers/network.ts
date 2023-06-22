@@ -27,7 +27,7 @@ export const getHostNetworks = (
           (agent) => agent.metadata?.name === hostName,
         );
         if (!agent?.metadata?.uid) {
-          console.warn(`Can not find agent of ${hostName} name.`);
+          // console.warn(`Can not find agent of ${hostName} name.`);
         } else {
           hostIds.push(agent.metadata.uid);
         }

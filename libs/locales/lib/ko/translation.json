@@ -205,7 +205,6 @@
   "ai:Could not download kubeconfig": "kubeconfig을 다운로드할 수 없음",
   "ai:Could not fetch infra environments": "인프라 환경을 가져올 수 없음",
   "ai:Could not fetch pull secret": "풀 시크릿을 가져올 수 없음",
-  "ai:Could not get secret": "시크릿을 가져올 수 없음",
   "ai:Could not load events": "이벤트를 로드할 수 없음",
   "ai:Could not load events from the standard location. You can check the events in the <1>raw format</1>.": "표준 위치에서 이벤트를 로드할 수 없습니다. 이벤트를 <1>원시 형식</1>으로 확인할 수 있습니다",
   "ai:CPU architecture": "CPU 아키텍처",
