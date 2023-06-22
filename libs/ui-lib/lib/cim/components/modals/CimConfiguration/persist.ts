@@ -41,7 +41,7 @@ const getAssistedImageServiceRoute = async (
       apiVersion: 'route.openshift.io/v1',
     })) as RouteK8sResource[];
   } catch (e) {
-    console.error('Failed to read all routes: ', allRoutes);
+    // console.error('Failed to read all routes: ', allRoutes);
     setError({
       title: t('ai:Failed to save configuration'),
       message: t('ai:Can not query routes.'),
@@ -79,7 +79,7 @@ const getClusterDomain = (
 
   if (!domain) {
     // It must be present
-    console.error('Can not find domain in assistedImageServiceRoute: ', assistedImageServiceRoute);
+    // console.error('Can not find domain in assistedImageServiceRoute: ', assistedImageServiceRoute);
     setError({
       title: t('ai:Can not find cluster domain.'),
     });
@@ -118,7 +118,7 @@ const patchAssistedImageServiceRoute = async (
   try {
     await patchResource(convertOCPtoCIMResourceHeader(assistedImageServiceRoute), patches);
   } catch (e) {
-    console.error('Failed to patch assisted-image-service route: ', e, patches);
+    // console.error('Failed to patch assisted-image-service route: ', e, patches);
     setError({
       title: t('ai:Failed to patch assisted-image-service route for new domain.'),
     });
@@ -187,7 +187,7 @@ const createIngressController = async (
     await createResource(ingressController);
     return true;
   } catch (e) {
-    console.error('Create IngressController error: ', e);
+    // console.error('Create IngressController error: ', e);
     setError({
       title: t('ai:Failed to create IngressController'),
     });
@@ -226,7 +226,7 @@ const patchProvisioningConfiguration = async ({
 
     await patchResource(convertOCPtoCIMResourceHeader(provisioning), patches);
   } catch (e) {
-    console.error('Failed to patch provisioning-configuration: ', e);
+    // console.error('Failed to patch provisioning-configuration: ', e);
     setError({
       title: t('ai:Failed to configure provisioning to enable registering hosts via BMC.'),
       message: getErrorMessage(e),
@@ -289,7 +289,7 @@ const createAgentServiceConfig = async ({
     await createResource(agentServiceConfig);
     return true;
   } catch (e) {
-    console.error('Failed to create AgentServiceConfig: ', e);
+    // console.error('Failed to create AgentServiceConfig: ', e);
     setError({
       title: t('ai:Failed to create AgentServiceConfig'),
       message: getErrorMessage(e),
@@ -390,7 +390,7 @@ export const onEnableCIM = async ({
   }
 
   if (agentServiceConfig) {
-    console.log('The AgentServiceConfig recently can not be patched. Delete and create instead.');
+    // console.log('The AgentServiceConfig recently can not be patched. Delete and create instead.');
   } else {
     if (
       !(await createAgentServiceConfig({
@@ -412,7 +412,7 @@ export const onEnableCIM = async ({
   if (configureLoadBalancer) {
     // Recently No to Yes only (since we do not delete the ingress controller)
     if (await isIngressController(getResource)) {
-      console.log('IngressController already present, we do not patch it.');
+      // console.log('IngressController already present, we do not patch it.');
       return true /* Not an error */;
     }
 
