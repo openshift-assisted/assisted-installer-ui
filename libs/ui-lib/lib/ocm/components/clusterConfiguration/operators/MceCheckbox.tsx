@@ -29,7 +29,7 @@ const MceLabel = ({ disabledReason }: { disabledReason?: string }) => (
 const MceHelperText = () => {
   return (
     <>
-      Create, import and manage multiple clusters from this cluster.{' '}
+      Create, import, and manage multiple clusters from this cluster.{' '}
       <a href={MCE_LINK} target="_blank" rel="noopener noreferrer">
         {'Learn more'} <ExternalLinkAltIcon />
       </a>

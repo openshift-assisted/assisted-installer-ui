@@ -30,7 +30,7 @@ class MceOperatorControl {
 
   static findHelperText() {
     return MceOperatorControl.body.findByText(
-      /Transform your cluster into a cluster lifecycle manager for all your OpenShift clusters\./i,
+      /Create, import, and manage multiple clusters from this cluster\./i,
     );
   }
 }
