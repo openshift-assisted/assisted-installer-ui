@@ -1,6 +1,3 @@
-import { utils } from '../../../support';
-import { transformBasedOnUIVersion } from '../../../support/transformations';
-import { clusterDetailsPage } from '../../../views/clusterDetails';
 import { commonActions } from '../../../views/common';
 import OperatorsForm from '../../../views/forms/OperatorsForm';
 
@@ -10,7 +7,6 @@ describe(`Create cluster with mce operator enabled`, () => {
       activeSignal: 'CLUSTER_CREATED',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

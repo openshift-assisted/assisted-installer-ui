@@ -161,7 +161,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'no-skip-missing-disk': t('ai:No skip missing disk'),
   'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
   'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
-  'mce-requirements-satisfied': t('ai:MustiCluster Engine requirements'),
+  'mce-requirements-satisfied': t('ai:Multicluster engine requirements'),
 });
 
 export const hostValidationFailureHints = (
