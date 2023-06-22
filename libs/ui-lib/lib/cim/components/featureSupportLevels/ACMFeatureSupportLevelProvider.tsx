@@ -30,7 +30,7 @@ const getFeatureSupportLevelsMap = (): FeatureSupportLevelsMap => {
     });
     return featureSupportLevelsMap;
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     return {};
   }
 };

@@ -86,8 +86,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               infraEnv={infraEnv}
               fetchSecret={fetchSecret}
               onClose={onClose}
-              onChangeBMHHostname={(bmh, hostname) => {
-                console.log('onChangeBMHHostname is not implemented: ', hostname);
+              onChangeBMHHostname={(bmh, _hostname) => {
+                // console.log('onChangeBMHHostname is not implemented: ', hostname);
                 return Promise.resolve(bmh);
               }}
               onEditRole={hostActions.onEditRole}

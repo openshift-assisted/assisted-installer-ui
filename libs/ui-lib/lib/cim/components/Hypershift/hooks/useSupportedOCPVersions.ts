@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getErrorMessage } from '../../../../common/utils';
+// import { getErrorMessage } from '../../../../common/utils';
 import { ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
 import { getOCPVersions } from '../../helpers';
 
@@ -21,7 +21,7 @@ export const useSupportedOCPVersions = (
           .versions;
         return ocpVersions.filter((v) => supportedVersions.find((sv) => v.version.startsWith(sv)));
       } catch (err) {
-        console.error('Could not parse supported versions config map value.', getErrorMessage(err));
+        // console.error('Could not parse supported versions config map value.', getErrorMessage(err));
       }
     }
     return ocpVersions;

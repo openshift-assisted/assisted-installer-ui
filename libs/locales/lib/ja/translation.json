@@ -205,7 +205,6 @@
   "ai:Could not download kubeconfig": "kubeconfig をダウンロードできませんでした",
   "ai:Could not fetch infra environments": "インフラストラクチャー環境を取得できませんでした",
   "ai:Could not fetch pull secret": "プルシークレットをフェッチできませんでした",
-  "ai:Could not get secret": "シークレットを取得できませんでした",
   "ai:Could not load events": "イベントを読み込みできませんでした",
   "ai:Could not load events from the standard location. You can check the events in the <1>raw format</1>.": "標準場所からイベントを読み込みできませんでした。イベントは <1>raw 形式</1> で確認することができます。",
   "ai:CPU architecture": "CPU アーキテクチャー",
