@@ -19,6 +19,7 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
 
   afterEach(() => {
     Cypress.env('AI_FORBIDDEN_CLUSTER_PATCH', false);
+    Cypress.env('AI_ERROR_CLUSTER_PATCH', false);
   });
 
   describe('Prevent invalid PATCH requests', () => {

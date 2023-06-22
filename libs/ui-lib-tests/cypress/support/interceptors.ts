@@ -15,6 +15,7 @@ import createStorageFixtureMapping from '../fixtures/storage';
 import createDualStackFixtureMapping from '../fixtures/dualstack';
 import createStaticIpFixtureMapping from '../fixtures/static-ip';
 import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
+import { getEventHeaders, getEvents } from '../fixtures/cluster/events';
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
 const allClustersApiPath = '/api/assisted-install/v2/clusters/';
@@ -225,6 +226,27 @@ const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };
 
+const addEventsIntercepts = () => {
+  cy.intercept('GET', '/api/assisted-install/v2/events*', (req) => {
+    expect(req.query['order']).eq('descending');
+    expect(req.query['cluster_id']).eq(Cypress.env('clusterId'));
+
+    const events = getEvents({
+      limit: req.query['limit'],
+      offset: req.query['offset'],
+      severities: req.query['severities'] as string,
+      hostIds: req.query['host_ids'] as string,
+      clusterLevel: !!req.query['cluster_level'],
+      message: req.query['message'] as string,
+    });
+
+    req.reply({
+      body: events,
+      headers: getEventHeaders(req.query),
+    });
+  }).as('events');
+};
+
 const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   Cypress.env('clusterId', fakeClusterId);
 
@@ -242,6 +264,7 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   addHostIntercepts();
   addPlatformFeatureIntercepts();
   addAdditionalIntercepts();
+  addEventsIntercepts();
 };
 
 Cypress.Commands.add('loadAiAPIIntercepts', loadAiAPIIntercepts);
