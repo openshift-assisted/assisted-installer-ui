@@ -68,6 +68,7 @@ export const useHostsTable = (cluster: Cluster) => {
   } = useModalDialogsContext();
   const { resetCluster } = React.useContext(AddHostsContext);
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
@@ -330,6 +331,7 @@ export const useHostsTable = (cluster: Cluster) => {
   const actionResolver = React.useMemo(
     () =>
       hostActionResolver({
+        t,
         ...actionChecks,
         onEditRole,
         onDiskRole,
@@ -342,6 +344,7 @@ export const useHostsTable = (cluster: Cluster) => {
         ...hostActions,
       }),
     [
+      t,
       actionChecks,
       hostActions,
       onEditRole,
