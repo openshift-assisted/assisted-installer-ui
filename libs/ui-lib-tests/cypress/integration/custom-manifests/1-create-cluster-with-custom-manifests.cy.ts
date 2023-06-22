@@ -1,6 +1,5 @@
 import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => {
   before(() => {
