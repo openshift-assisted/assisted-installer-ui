@@ -99,12 +99,12 @@ const FailingValidation = <S extends string>({
       </>
     );
   } else {
-    console.error(
-      'Unknown validation ID detected in the ',
-      clusterGroup || hostGroup,
-      ' group:',
-      JSON.stringify(validation),
-    );
+    // console.error(
+    //   'Unknown validation ID detected in the ',
+    //   clusterGroup || hostGroup,
+    //   ' group:',
+    //   JSON.stringify(validation),
+    // );
   }
 
   let icon;

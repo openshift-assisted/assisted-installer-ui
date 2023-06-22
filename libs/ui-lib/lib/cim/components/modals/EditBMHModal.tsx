@@ -37,7 +37,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
           const secretResult = await fetchSecret(bmhNamespace, bmhSecret);
           setSecret(secretResult);
         } catch (err) {
-          console.error(t('ai:Could not get secret'), err);
+          // console.error(t('ai:Could not get secret'), err);
         }
       }
 

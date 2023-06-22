@@ -31,7 +31,7 @@ export const parseTangServers = (tangServersString?: string): TangServer[] => {
   try {
     return JSON.parse(tangServersString) as TangServer[];
   } catch (e) {
-    console.warn('Tang Servers can not be parsed');
+    // console.warn('Tang Servers can not be parsed');
   }
   return emptyTangServers();
 };
