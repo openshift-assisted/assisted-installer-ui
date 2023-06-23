@@ -248,8 +248,12 @@ const addAdditionalIntercepts = () => {
 };
 
 const addCustomManifestsIntercepts = (loadManifestContent = false) => {
-  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('list-manifests');
-  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('update-manifests');
+  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'list-manifests',
+  );
+  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'update-manifests',
+  );
   cy.intercept('DELETE', `${clusterApiPath}/manifests`).as('delete-manifests');
   if (loadManifestContent) {
     cy.intercept(
@@ -261,7 +265,7 @@ const addCustomManifestsIntercepts = (loadManifestContent = false) => {
       'GET',
       `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
       mockCustomManifestFileResponse,
-    ).as('info-manifest-with-content-2');;
+    ).as('info-manifest-with-content-2');
   } else {
     cy.intercept(
       'GET',
@@ -297,7 +301,7 @@ const addEventsIntercepts = () => {
   }).as('events');
 };
 
-const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
+const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null, loadManifestContent?: boolean) => {
   Cypress.env('clusterId', fakeClusterId);
 
   if (conf !== null) {
