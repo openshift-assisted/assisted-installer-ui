@@ -12,7 +12,7 @@ import { TFunction } from 'i18next';
 import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
-import { ocmClient } from '../../api';
+import { isInOcm } from '../../api';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -81,7 +81,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
       items={selectOptions}
       versions={versions}
       getHelperText={getOpenshiftVersionHelperText}
-      showReleasesLink={ocmClient !== undefined}
+      showReleasesLink={isInOcm}
     />
   );
 };

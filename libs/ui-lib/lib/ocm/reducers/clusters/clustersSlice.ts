@@ -8,15 +8,14 @@ import {
 } from '@reduxjs/toolkit';
 import { Cluster, ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
-import { handleApiError, ocmClient } from '../../api';
+import { handleApiError, isInOcm } from '../../api';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',
   async (value, { rejectWithValue }) => {
     try {
       const { data } = await ClustersAPI.list();
-      const isOcm = !!ocmClient;
-      return data.filter((cluster) => (isOcm ? cluster.kind === 'Cluster' : true));
+      return data.filter((cluster) => (isInOcm ? cluster.kind === 'Cluster' : true));
     } catch (e) {
       return handleApiError(e, () => rejectWithValue(value));
     }

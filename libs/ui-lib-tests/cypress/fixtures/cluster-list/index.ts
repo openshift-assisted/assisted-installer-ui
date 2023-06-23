@@ -15,8 +15,8 @@ const addedCluster = () => ({
   name: Cypress.env('CLUSTER_NAME'),
 });
 
-const initialList = [fakeCluster];
+const initialClusterList = [fakeCluster];
 
-const updatedList = () => [addedCluster(), fakeCluster];
+const updatedClusterList = () => [addedCluster(), fakeCluster];
 
-export { initialList, updatedList };
+export { initialClusterList, updatedClusterList };

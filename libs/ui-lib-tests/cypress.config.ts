@@ -1,6 +1,5 @@
 import { defineConfig } from 'cypress';
 import pluginsConfig from './cypress/plugins';
-import * as dummyPullSecret from './cypress/fixtures/data/dummy-pull-secret.json';
 
 const GLOBAL_TIMEOUT = Number(process.env.GLOBAL_TIMEOUT) || 60000;
 const GLOBAL_BASE_URL = 'http://localhost:4173';
@@ -14,7 +13,6 @@ export default defineConfig({
     DNS_DOMAIN_NAME: 'redhat.com',
     CLUSTER_NAME: 'ai-e2e-sno',
     HOST_RENAME: 'e2e-control-host',
-    PULL_SECRET: JSON.stringify(dummyPullSecret),
     API_BASE_URL: GLOBAL_BASE_URL,
     API_VERSION: 'v2',
     NUM_MASTERS: '1',

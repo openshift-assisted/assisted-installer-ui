@@ -1,5 +1,6 @@
 import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
+import testIpv4AndIpv6Addresses from '../../fixtures/data/ipv4-and-ipv6-addresses';
 
 type NetworkSelection = 'ipv4' | 'dual-stack';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
@@ -106,15 +107,13 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
         .should('have.class', ACTIVE_NAV_ITEM_CLASS);
     });
 
-    it('nrt Can use IPv4 and IPv6 on DNS when dual stack', () => {
+    it('Can use IPv4 and IPv6 on DNS when dual stack', () => {
       staticIpPage.dualStackNetworking().click();
 
-      cy.fixture('data/ipv4-and-ipv6-addresses.json').then((addresses) => {
-        addresses.forEach((dnsEntry) => {
-          staticIpPage.networkWideDns().type(dnsEntry);
-          commonActions.getDNSErrorMessage().should('not.exist');
-          staticIpPage.networkWideDns().clear();
-        });
+      testIpv4AndIpv6Addresses.forEach((dnsEntry) => {
+        staticIpPage.networkWideDns().type(dnsEntry);
+        commonActions.getDNSErrorMessage().should('not.exist');
+        staticIpPage.networkWideDns().clear();
       });
     });
   });

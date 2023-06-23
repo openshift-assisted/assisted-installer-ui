@@ -26,4 +26,4 @@ const defaultConfig = {
   service_networks_ipv4: [{ cidr: '172.30.0.0/16' }],
 };
 
-export default defaultConfig;
+export { defaultConfig };

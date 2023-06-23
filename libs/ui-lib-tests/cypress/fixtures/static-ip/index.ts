@@ -28,4 +28,4 @@ const createStaticIpFixtureMapping = {
     },
   },
 };
-export default createStaticIpFixtureMapping;
+export { createStaticIpFixtureMapping };

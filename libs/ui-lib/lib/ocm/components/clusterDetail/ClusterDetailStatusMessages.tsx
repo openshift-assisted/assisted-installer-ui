@@ -13,7 +13,7 @@ import {
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
-import { ocmClient } from '../../api';
+import { isInOcm } from '../../api';
 import { integrationPlatformLinks } from '../clusterWizard/ClusterPlatformIntegrationHint';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
@@ -32,7 +32,7 @@ const ClusterDetailStatusMessages = ({
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
   const showAddHostsAlert = Boolean(
     showAddHostsInfo &&
-      ocmClient &&
+      isInOcm &&
       cluster.status === 'installed' &&
       (!isSNO(cluster) || featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION')),
   );
