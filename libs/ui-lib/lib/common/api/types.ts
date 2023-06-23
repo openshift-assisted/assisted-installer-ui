@@ -599,6 +599,7 @@ export type ClusterValidationId =
   | 'odf-requirements-satisfied'
   | 'cnv-requirements-satisfied'
   | 'lvm-requirements-satisfied'
+  | 'mce-requirements-satisfied'
   | 'network-type-valid';
 export interface CompletionParams {
   isSuccess: boolean;
@@ -1001,6 +1002,7 @@ export type FeatureSupportLevelId =
   | 'ODF'
   | 'LSO'
   | 'CNV'
+  | 'MCE'
   | 'NUTANIX_INTEGRATION'
   | 'VSPHERE_INTEGRATION'
   | 'DUAL_STACK_VIPS'
@@ -1509,6 +1511,7 @@ export type HostValidationId =
   | 'ocs-requirements-satisfied'
   | 'odf-requirements-satisfied'
   | 'lvm-requirements-satisfied'
+  | 'mce-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'

@@ -90,4 +90,7 @@ export const commonActions = {
   startAtCustomManifestsStep: () => {
     commonActions.getWizardStepNav('Custom manifests').click();
   },
+  clickBackButton: () => {
+    commonActions.getBackButton().should('be.enabled').click();
+  },
 };
