@@ -90,4 +90,7 @@ export const commonActions = {
   clickBackButton: () => {
     commonActions.getBackButton().should('be.enabled').click();
   },
+  startAtOperatorsStep: () => {
+    commonActions.getWizardStepNav('Operators').click();
+  },
 };
