@@ -121,13 +121,6 @@ const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
   }
 };
 
-const mockCustomManifestFileResponse2: HttpRequestInterceptor = (req) => {
-  const fixtureMapping = getScenarioFixtureMapping();
-  if (fixtureMapping?.manifestContent) {
-    req.reply(fixtureMapping.manifestContent);
-  }
-};
-
 const setScenarioEnvVars = ({ activeScenario }) => {
   Cypress.env('AI_SCENARIO', activeScenario);
   Cypress.env('ASSISTED_SNO_DEPLOYMENT', false);
@@ -253,32 +246,32 @@ const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };
 
-const addCustomManifestsIntercepts = (loadManifestContent: boolean | false) => {
-  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('manifests');
-  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse);
-  cy.intercept('DELETE', `${clusterApiPath}/manifests`);
+const addCustomManifestsIntercepts = (loadManifestContent = false) => {
+  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('list-manifests');
+  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as('update-manifests');
+  cy.intercept('DELETE', `${clusterApiPath}/manifests`).as('delete-manifests');
   if (loadManifestContent) {
     cy.intercept(
       'GET',
       `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
       mockCustomManifestFileResponse,
-    );
+    ).as('info-manifest-with-content-1');
     cy.intercept(
       'GET',
       `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
-      mockCustomManifestFileResponse2,
-    );
+      mockCustomManifestFileResponse,
+    ).as('info-manifest-with-content-2');;
   } else {
     cy.intercept(
       'GET',
       `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
       '',
-    );
+    ).as('info-manifest-without-content-1');
     cy.intercept(
       'GET',
       `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
       '',
-    );
+    ).as('info-manifest-without-content-2');
   }
 };
 

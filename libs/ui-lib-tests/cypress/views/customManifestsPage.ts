@@ -1,6 +1,6 @@
 export const customManifestsPage = {
   getFileName: () => {
-    return cy.get('[data-testid=filename-0]');
+    return cy.findByTestId('filename-0');
   },
   getFileNameError: () => {
     return cy.get('div.pf-c-form__helper-text.pf-m-error');
@@ -18,10 +18,10 @@ export const customManifestsPage = {
     return cy.get('div.pf-c-alert.pf-m-danger > h4.pf-c-alert__title');
   },
   getLinkToAdd: () => {
-    return cy.get('[data-testid=add-manifest]');
+    return cy.findByTestId('add-manifest');
   },
   getManifest1Id: () => {
-    return cy.get('[data-testid=filename-1]');
+    return cy.findByTestId('filename-1');
   },
   lastFileUpload: () => {
     return cy.get('input[type="file"]:last');
@@ -30,6 +30,6 @@ export const customManifestsPage = {
     return cy.get('[aria-label="remove manifest"]:last');
   },
   getRemoveConfirmationButton: () => {
-    return cy.get('[data-testid=confirm-modal-submit]');
+    return cy.findByTestId('confirm-modal-submit');
   },
 };

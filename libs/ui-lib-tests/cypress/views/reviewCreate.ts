@@ -38,6 +38,6 @@ export const reviewAndCreatePage = {
     return cy.get('#custom-manifests-expandable');
   },
   getCustomManifestsDetail: () => {
-    return cy.get('td[data-testid="manifest-detail-manifests-manifest1.yaml"');
+    return cy.findByTestId('manifest-detail-manifests-manifest1.yaml');
   },
 };
