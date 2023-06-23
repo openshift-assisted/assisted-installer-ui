@@ -16,7 +16,7 @@ The principal folders are: `apps` and `libs`.
 1. A Linux distro, like Fedora.
 2. [NodeJS](https://nodejs.org/en) > v14, or newer LTS version.
 3. [Yarn](https://yarnpkg.com/getting-started/install)
-4. This project uses `rsync` in order to synchronize .css files in one if it's build steps.
+4. This project uses `rsync` in order to synchronize .css files in one of its build steps.
 5. A back-end API to connect to. Please see instructions in
    [assisted-test-infra](https://github.com/openshift/assisted-test-infra).
 
