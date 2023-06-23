@@ -3,7 +3,6 @@ import { AlertGroup, Alert } from '@patternfly/react-core';
 import { useAlerts } from '../AlertsContextProvider';
 
 const Alerts = ({ className }: { className?: string }) => {
-
   const { alerts } = useAlerts();
 
   if (alerts.length) {
