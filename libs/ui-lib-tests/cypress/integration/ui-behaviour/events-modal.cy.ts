@@ -22,7 +22,6 @@ describe('Events modal behavior', () => {
     clusterPage.eventsModalControl.click();
 
     eventsModal = new EventsModal();
-    eventsModal.spinner.should('not.exist');
   });
 
   afterEach(() => {
@@ -32,6 +31,7 @@ describe('Events modal behavior', () => {
 
   it('Can use pagination', () => {
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -46,6 +46,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.pagination.next.click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -60,6 +61,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.pagination.previous.click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -74,6 +76,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.pagination.last.click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -88,6 +91,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.pagination.first.click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -103,6 +107,7 @@ describe('Events modal behavior', () => {
     eventsModal.pagination.menuText.click();
     eventsModal.pagination.perPageOption(50).click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -125,6 +130,7 @@ describe('Events modal behavior', () => {
     eventsModal.hostFilter.option(hostIds[0]).click();
 
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -138,6 +144,7 @@ describe('Events modal behavior', () => {
     eventsModal.hostFilter.option(hostIds[1]).click();
     eventsModal.hostFilter.option(hostIds[2]).click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -150,6 +157,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.hostFilter.option('cluster-level-action').click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -166,6 +174,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.severityFilter.option('info').click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -177,6 +186,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.severityFilter.option('warning').click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -188,6 +198,7 @@ describe('Events modal behavior', () => {
 
     eventsModal.severityFilter.option('info').click();
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -202,6 +213,7 @@ describe('Events modal behavior', () => {
     eventsModal.messageFilter.type('registered');
     cy.wait(500); // UI debounce time
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
@@ -214,6 +226,7 @@ describe('Events modal behavior', () => {
     eventsModal.messageFilter.clear();
     cy.wait(500); // UI debounce time
     cy.wait('@events').then(() => {
+      eventsModal.spinner.should('not.exist');
       eventsModal.pagination.menuText.then(($elem) => {
         const res = $elem
           .text()
