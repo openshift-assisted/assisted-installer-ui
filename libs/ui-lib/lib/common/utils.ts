@@ -54,7 +54,7 @@ export const getMaxFileSizeMessage = (): string => {
   return `File size is too big. Upload a new ${fileSize(
     MAX_FILE_SIZE_BYTES,
     MAX_FILE_SIZE_OFFSET_FACTOR,
-    'Kb',
+    'si',
   )} or less.`;
 };
 

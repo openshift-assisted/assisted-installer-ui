@@ -105,9 +105,7 @@ const CodeField = ({
             language={language}
             onEditorDidMount={(editor) => setMonacoEditor(editor)}
             downloadFileName={downloadFileName}
-            onCodeChange={(value: string) => {
-              onCodeChange(value);
-            }}
+            onCodeChange={onCodeChange}
           />
         </FormGroup>
       </StackItem>

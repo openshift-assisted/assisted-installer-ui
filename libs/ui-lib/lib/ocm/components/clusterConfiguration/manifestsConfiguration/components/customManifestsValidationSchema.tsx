@@ -54,7 +54,7 @@ export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>((
           .concat(getUniqueValidationSchema(getAllManifests)),
         manifestYaml: Yup.string()
           .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage(), (value: string) => validateFileSize(value))
+          .test('not-big-file', getMaxFileSizeMessage(), validateFileSize)
           .test('not-valid-file', INCORRECT_TYPE_FILE, validateFileType),
       }),
     ),
