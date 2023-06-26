@@ -74,7 +74,7 @@ export const getClusterStatusFromConditions = (
   if (Completed.status === 'False' && Completed.reason === 'UnapprovedAgents')
     return ['insufficient', Completed.message];
 
-  console.error('Unhandled conditions to cluster status mapping: ', conditionsByType);
+  // console.error('Unhandled conditions to cluster status mapping: ', conditionsByType);
   return ['insufficient', t('ai:Unexpected AgentClusterInstall conditions.')];
 };
 
@@ -116,7 +116,7 @@ export const getAgentStatusFromConditions = (
   if (ReadyForInstallation?.status === 'False' && ReadyForInstallation?.reason === 'AgentNotReady')
     return ['insufficient', ReadyForInstallation.message];
 
-  console.error('Unhandled conditions to agent status mapping: ', conditionsByType);
+  // console.error('Unhandled conditions to agent status mapping: ', conditionsByType);
   return ['insufficient', t('ai:Unexpected Agent conditions.')];
 };
 

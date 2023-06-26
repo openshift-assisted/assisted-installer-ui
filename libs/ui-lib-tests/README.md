@@ -1,14 +1,14 @@
 #### Assisted UI tests
 
 This folder contains the integration test suites run by the Vertical Markets UI team for the
-[Assisted Installer UI Lib](https://github.com/openshift-assisted/assisted-ui-lib).
-
-Due to the nature of the Assisted Installer, each individual test in this suite depends on the
-previous tests having completed correctly.
+[Assisted Installer UI](https://github.com/openshift-assisted/assisted-installer-ui).
 
 In order to run the tests fast and not to depend on HW infrastructure, the API is mocked. It's
 important to mock the API accurately to avoid having passing UI tests that would fail with a real
 API.
+
+Each individual test should mock the required status in which starts, as they should all be
+independent of each other.
 
 # How to use this repo
 

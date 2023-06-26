@@ -60,6 +60,7 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   useOpenShiftDataFoundation: boolean;
   useOdfLogicalVolumeManager: boolean;
   useContainerNativeVirtualization: boolean;
+  useMultiClusterEngine: boolean;
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix'>;

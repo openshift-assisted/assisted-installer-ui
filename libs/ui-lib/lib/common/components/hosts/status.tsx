@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-  AddCircleOIcon,
   BanIcon,
   CheckCircleIcon,
   ConnectedIcon,
@@ -229,7 +228,7 @@ export const hostStatus: HostStatus<Host['status'] | 'finalizing'> = Object.free
     key: 'added-to-existing-cluster',
     title: 'Installed',
     category: 'Installation related',
-    icon: <AddCircleOIcon />,
+    icon: <CheckCircleIcon color={okColor.value} />,
     details: 'This host completed its installation successfully.',
   },
 });
