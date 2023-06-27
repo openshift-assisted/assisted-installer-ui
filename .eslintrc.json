@@ -48,7 +48,8 @@
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
       "files": ["libs/ui-lib/lib/**/*.{ts,tsx}"],
       "parserOptions": {
-        "tsconfigRootDir": "libs/ui-lib"
+        "tsconfigRootDir": "libs/ui-lib",
+        "project": "tsconfig.eslint.json"
       },
       "rules": {
         "no-restricted-imports": [
