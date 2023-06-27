@@ -15,17 +15,16 @@ type ClusterCredentialsProps = {
   idPrefix?: string;
   credentialsError?: string;
   notAvailable?: boolean;
+  isMceEnabled?: boolean;
 };
 
-
-export const getConsoleUrl = (consoleUrl:string,isMceOperatorEnabled:boolean) =>{
-  if (isMceOperatorEnabled){
+export const getConsoleUrl = (consoleUrl: string, isMceOperatorEnabled: boolean) => {
+  if (isMceOperatorEnabled) {
     return consoleUrl.concat('/multicloud/infrastructure/clusters');
-  }
-  else {
+  } else {
     return consoleUrl;
   }
-}
+};
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   cluster,
@@ -35,6 +34,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   idPrefix = 'cluster-creds',
   credentialsError = '',
   notAvailable = false,
+  isMceEnabled = false,
 }) => {
   let credentialsBody: JSX.Element;
   const { t } = useTranslation();
@@ -64,7 +64,9 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   } else if (!credentials.username && !credentials.consoleUrl) {
     return <>N/A</>;
   } else {
-    const consoleUrl = credentials.consoleUrl? getConsoleUrl(credentials.consoleUrl,false):'';
+    const consoleUrl = credentials.consoleUrl
+      ? getConsoleUrl(credentials.consoleUrl, isMceEnabled)
+      : '';
     credentialsBody = (
       <DetailList>
         {credentials.consoleUrl && (
