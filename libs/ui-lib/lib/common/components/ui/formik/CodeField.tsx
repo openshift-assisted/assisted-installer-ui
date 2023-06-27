@@ -29,13 +29,13 @@ const CodeField = ({
   const errorMessage = useFieldErrorMsg({ name, validate });
   const codeEditorRef = React.useRef(null);
   const [isValidValue, setIsValidValue] = React.useState<boolean>(true);
-  const [typingTimeout, setTypingTimeout] = React.useState<NodeJS.Timeout | null>(null);
+  const [typingTimeout, setTypingTimeout] = React.useState<number | null>(null);
   const onCodeChange = (value: string) => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
       setIsValidValue(true);
     }
-    const typingTimeout_new = setTimeout(() => {
+    const typingTimeout_new = window.setTimeout(() => {
       let isValidVal = true;
       if (codeEditorRef && codeEditorRef.current) {
         if ((codeEditorRef.current as CodeEditor).state.filename) {
