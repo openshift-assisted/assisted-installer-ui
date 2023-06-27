@@ -1,0 +1,27 @@
+dns-resolver:
+  config:
+    server:
+      - 10.40.125.11
+      - 10.40.125.12
+interfaces:
+- name: ens1f0
+  type: ethernet
+  state: up
+- name: ens1f0.1020
+  type: vlan
+  state: up
+  ipv4:
+    enabled: true
+    address:
+    - ip: 10.49.125.200
+      prefix-length: 23
+    dhcp: false
+  vlan:
+    base-iface: ens1f0
+    id: 1020
+routes:
+  config:
+  - destination: 0.0.0.0/0
+    next-hop-address: 10.49.124.1
+    next-hop-interface: ens1f0.1020
+    table-id: 254
