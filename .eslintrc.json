@@ -128,8 +128,18 @@
       }
     },
     {
-      "files": ["apps/assisted-ui/vite.config.ts"],
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "files": ["libs/ui-lib-tests/cypress/**/*.{ts,tsx}", "libs/ui-lib-tests/cypress.config.ts"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/ui-lib-tests"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["apps/assisted-ui/vite.config.ts"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"]
       "env": {
         "browser": false
       },
