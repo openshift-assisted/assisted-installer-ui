@@ -9,6 +9,7 @@
 // ***********************************************
 import 'cypress-fill-command';
 import '@testing-library/cypress/add-commands';
+import 'cypress-file-upload';
 
 Cypress.Commands.add('pasteText', (selector, text) => {
   cy.get(selector).then((elem) => {
