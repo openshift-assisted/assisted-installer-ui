@@ -74,6 +74,19 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build:all
       - run: yarn check_circular_deps:all
+  unit-tests:
+    needs: preflight-check
+    if: needs.preflight-check.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODEJS_VERSION }}
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn build:all
+      - run: yarn test:unit
   translation-files:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
