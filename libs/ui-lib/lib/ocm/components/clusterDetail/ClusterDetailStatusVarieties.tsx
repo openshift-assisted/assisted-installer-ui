@@ -7,6 +7,8 @@ import {
   MonitoredOperator,
   MonitoredOperatorsList,
   ClusterCredentials,
+  hasEnabledOperators,
+  OPERATOR_NAME_MCE,
 } from '../../../common';
 import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
@@ -99,6 +101,7 @@ const ClusterDetailStatusVarieties = ({
           retry={fetchCredentials}
           idPrefix={getClusterDetailId('cluster-creds')}
           credentialsError={credentialsError}
+          isMceEnabled={hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_MCE)}
         />
       )}
       <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />

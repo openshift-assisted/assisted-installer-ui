@@ -15,6 +15,15 @@ type ClusterCredentialsProps = {
   idPrefix?: string;
   credentialsError?: string;
   notAvailable?: boolean;
+  isMceEnabled?: boolean;
+};
+
+export const getConsoleUrl = (consoleUrl: string, isMceOperatorEnabled: boolean) => {
+  if (isMceOperatorEnabled) {
+    return consoleUrl.concat('/multicloud/infrastructure/clusters');
+  } else {
+    return consoleUrl;
+  }
 };
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
@@ -25,6 +34,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   idPrefix = 'cluster-creds',
   credentialsError = '',
   notAvailable = false,
+  isMceEnabled = false,
 }) => {
   let credentialsBody: JSX.Element;
   const { t } = useTranslation();
@@ -54,6 +64,9 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   } else if (!credentials.username && !credentials.consoleUrl) {
     return <>N/A</>;
   } else {
+    const consoleUrl = credentials.consoleUrl
+      ? getConsoleUrl(credentials.consoleUrl, isMceEnabled)
+      : '';
     credentialsBody = (
       <DetailList>
         {credentials.consoleUrl && (
@@ -66,15 +79,15 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
                   icon={<ExternalLinkAltIcon />}
                   iconPosition="right"
                   isInline
-                  onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
+                  onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
                   data-testid={`${idPrefix}-link-console-url`}
                 >
-                  {credentials.consoleUrl}
+                  {consoleUrl}
                 </Button>
                 <br />
                 {cluster.apiVip && cluster.ingressVip && (
                   <TroubleshootingOpenshiftConsoleButton
-                    consoleUrl={credentials.consoleUrl}
+                    consoleUrl={consoleUrl}
                     cluster={cluster}
                     idPrefix={idPrefix}
                   />
