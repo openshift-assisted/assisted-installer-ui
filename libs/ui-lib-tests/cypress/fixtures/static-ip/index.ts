@@ -1,5 +1,9 @@
 import { getBaseCluster, getBaseInfraEnv } from './1-cluster-created';
-import { dualStackSpecificHostsConfigured, networkWideConfigured } from './static-network-config';
+import {
+  dualStackSpecificHostsConfigured,
+  networkWideConfigured,
+  yamlConfigured,
+} from './static-network-config';
 
 const initialCluster = getBaseCluster({ name: 'ai-e2e-static-ip' });
 const initialInfraEnv = getBaseInfraEnv();
@@ -17,6 +21,10 @@ const createStaticIpFixtureMapping = {
     STATIC_IP_HOST_SPECIFIC_CONFIGURED: {
       ...initialInfraEnv,
       static_network_config: JSON.stringify(dualStackSpecificHostsConfigured),
+    },
+    STATIC_IP_YAML_CONFIGURED: {
+      ...initialInfraEnv,
+      static_network_config: JSON.stringify(yamlConfigured),
     },
   },
 };

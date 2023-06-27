@@ -12,6 +12,7 @@ import {
   ReviewHostsInventory,
   SupportedPlatformType,
   RenderIf,
+  OPERATOR_NAME_MCE,
 } from '../../../../common';
 import {
   ReviewClusterDetailTable,
@@ -27,7 +28,8 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM);
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM) ||
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_MCE);
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
   return (
     <>

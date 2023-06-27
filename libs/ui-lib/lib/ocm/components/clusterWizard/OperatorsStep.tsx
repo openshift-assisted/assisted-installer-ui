@@ -6,11 +6,13 @@ import { selectIsCurrentClusterSNO } from '../../selectors';
 import CnvCheckbox from '../clusterConfiguration/operators/CnvCheckbox';
 import OdfCheckbox from '../clusterConfiguration/operators/OdfCheckbox';
 import LvmCheckbox from '../clusterConfiguration/operators/LvmCheckbox';
+import MceCheckbox from '../clusterConfiguration/operators/MceCheckbox';
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const isOpenshiftDataFoundationEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE') && !isSNO;
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
+  const isMceOperatorEnabled = useFeature('ASSISTED_INSTALLER_MCE_FEATURE');
 
   return (
     <Stack hasGutter>
@@ -20,6 +22,11 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       {isContainerNativeVirtualizationEnabled && (
         <StackItem>
           <CnvCheckbox {...props} />
+        </StackItem>
+      )}
+      {isMceOperatorEnabled && (
+        <StackItem>
+          <MceCheckbox />
         </StackItem>
       )}
       {isOpenshiftDataFoundationEnabled && (
