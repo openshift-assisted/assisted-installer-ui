@@ -139,7 +139,7 @@ export const statusColumn = (
       const sublabel =
         areOnlySoftValidationsFailing(validationsInfo) &&
         ['known', 'known-unbound'].includes(host.status)
-          ? 'Some validations failed'
+          ? t('ai:Some validations failed')
           : undefined;
 
       const actualHostStatus = getHostStatus(host.status, clusterStatus);
@@ -162,9 +162,9 @@ export const statusColumn = (
   };
 };
 
-export const discoveredAtColumn: TableRow<Host> = {
+export const discoveredAtColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: 'Discovered on',
+    title: t('ai:Discovered on'),
     props: {
       id: 'col-header-discoveredat',
     },
@@ -179,7 +179,7 @@ export const discoveredAtColumn: TableRow<Host> = {
       sortableValue: dateTimeCell.sortableValue,
     };
   },
-};
+});
 
 export const cpuArchitectureColumn = (t: TFunction): TableRow<Host> => ({
   header: {
@@ -199,9 +199,9 @@ export const cpuArchitectureColumn = (t: TFunction): TableRow<Host> => ({
   },
 });
 
-export const cpuCoresColumn: TableRow<Host> = {
+export const cpuCoresColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: 'CPU Cores',
+    title: t('ai:CPU Cores'),
     props: {
       id: 'col-header-cpucores',
     },
@@ -224,11 +224,11 @@ export const cpuCoresColumn: TableRow<Host> = {
       sortableValue: cores.sortableValue,
     };
   },
-};
+});
 
-export const memoryColumn: TableRow<Host> = {
+export const memoryColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: 'Memory',
+    title: t('ai:Memory'),
     props: {
       id: 'col-header-memory',
     },
@@ -249,11 +249,11 @@ export const memoryColumn: TableRow<Host> = {
       sortableValue: memory.sortableValue,
     };
   },
-};
+});
 
-export const disksColumn: TableRow<Host> = {
+export const disksColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: 'Total storage',
+    title: t('ai:Total storage'),
     props: {
       id: 'col-header-disk',
     },
@@ -274,7 +274,7 @@ export const disksColumn: TableRow<Host> = {
       sortableValue: disk.sortableValue,
     };
   },
-};
+});
 
 export const countColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: <HostsCount cluster={cluster} inParenthesis /> },

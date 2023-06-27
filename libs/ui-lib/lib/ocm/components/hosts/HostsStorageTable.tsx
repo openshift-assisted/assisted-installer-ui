@@ -62,7 +62,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, undefined, undefined, selectSchedulableMasters(cluster)),
       hardwareStatusColumn({}),
-      disksColumn,
+      disksColumn(t),
       numberOfDisksColumn,
     ];
     if (hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)) {

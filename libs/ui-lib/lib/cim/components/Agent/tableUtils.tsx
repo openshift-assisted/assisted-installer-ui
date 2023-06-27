@@ -29,6 +29,7 @@ import { TFunction } from 'i18next';
 import { AgentMachineK8sResource } from '../Hypershift/types';
 
 export const agentHostnameColumn = (
+  t: TFunction,
   hosts: Host[],
   agents: AgentK8sResource[],
   bareMetalHosts: BareMetalHostK8sResource[],
@@ -37,7 +38,7 @@ export const agentHostnameColumn = (
   canEditBMH?: HostsTableActions['canEditBMH'],
 ): TableRow<Host> => ({
   header: {
-    title: 'Hostname',
+    title: t('ai:Hostname'),
     props: {
       id: 'col-header-hostname', // ACM jest tests require id over testId
     },
@@ -97,12 +98,12 @@ export const discoveryTypeColumn = (
       if (agent) {
         // eslint-disable-next-line no-prototype-builtins
         discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-          ? 'BMC'
-          : 'Discovery ISO';
+          ? t('ai:BMC')
+          : t('ai:Discovery ISO');
       } else {
         const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
         if (bmh) {
-          discoveryType = 'BMC';
+          discoveryType = t('ai:BMC');
         }
       }
       return {
@@ -135,7 +136,7 @@ export const agentStatusColumn = ({
 }: AgentStatusColumnProps): TableRow<Host> => {
   return {
     header: {
-      title: 'Status',
+      title: t('ai:Status'),
       props: {
         id: 'col-header-infraenvstatus',
       },
