@@ -105,6 +105,7 @@ export const EventsModal = ({
       onClose={onClose}
       variant={ModalVariant.large}
       className="events-modal"
+      id={'events-modal'}
     >
       <ModalBoxBody className="events-modal__body">
         {fallbackEventsURL ? (
