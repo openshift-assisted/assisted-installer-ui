@@ -12,10 +12,12 @@ import {
   serviceNetworkValidationSchema,
   IPv4ValidationSchema,
   sshPublicKeyListValidationSchema,
-  vipNoSuffixValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
   ClusterDefaultConfig,
+  ApiVip,
+  IngressVip,
+  VIPArrayValidationSchema,
 } from '../../../../common';
 
 export const getNetworkInitialValues = (
@@ -32,8 +34,8 @@ export const getNetworkInitialValues = (
   const isDualStackType = isDualStack(cluster);
 
   return {
-    apiVip: cluster.apiVip || '',
-    ingressVip: cluster.ingressVip || '',
+    apiVips: cluster.apiVips,
+    ingressVips: cluster.ingressVips,
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
@@ -59,14 +61,12 @@ export const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      apiVip:
-        values.apiVip !== undefined && values.apiVip !== ''
-          ? vipNoSuffixValidationSchema(hostSubnets, values, initialValues.apiVip)
-          : Yup.string(),
-      ingressVip:
-        values.ingressVip !== undefined && values.ingressVip !== ''
-          ? vipNoSuffixValidationSchema(hostSubnets, values, initialValues.ingressVip)
-          : Yup.string(),
+      apiVips: VIPArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
+      ingressVips: VIPArrayValidationSchema<IngressVip>(
+        hostSubnets,
+        values,
+        initialValues.ingressVips,
+      ),
       sshPublicKey: sshPublicKeyListValidationSchema,
       machineNetworks:
         values.managedNetworkingType === 'userManaged'

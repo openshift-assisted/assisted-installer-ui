@@ -27,6 +27,11 @@ export const selectServiceNetworkCIDR = ({
 }: Pick<Cluster, 'serviceNetworks' | 'serviceNetworkCidr'>) =>
   head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
 
+export const selectApiVip = ({ apiVips }: Pick<Cluster, 'apiVips'>) => head(apiVips)?.ip || '';
+
+export const selectIngressVip = ({ ingressVips }: Pick<Cluster, 'ingressVips'>) =>
+  head(ingressVips)?.ip || '';
+
 export const selectMonitoredOperators = (monitoredOperators: Cluster['monitoredOperators']) => {
   // monitoredOperators can sometimes be either undefined or also null, we must use the fallback
   return monitoredOperators || [];

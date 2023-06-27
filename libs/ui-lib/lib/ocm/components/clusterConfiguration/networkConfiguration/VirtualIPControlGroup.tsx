@@ -1,7 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useFormikContext } from 'formik';
-import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
+import { FieldArray, useFormikContext } from 'formik';
+import {
+  Spinner,
+  Alert,
+  AlertVariant,
+  Tooltip,
+  FormGroup,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import {
   Cluster,
   NetworkConfigurationValues,
@@ -12,6 +20,8 @@ import {
   DUAL_STACK,
   SupportLevel,
   PopoverIcon,
+  selectApiVip,
+  selectIngressVip,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
@@ -98,11 +108,14 @@ export const VirtualIPControlGroup = ({
   const onChangeDhcp = React.useCallback(
     (hasDhcp: boolean) => {
       // We need to sync the values back to the form
-      setFieldValue('apiVip', hasDhcp ? '' : cluster.apiVip);
-      setFieldValue('ingressVip', hasDhcp ? '' : cluster.ingressVip);
+      setFieldValue('apiVips', hasDhcp ? [] : cluster.apiVips);
+      setFieldValue('ingressVips', hasDhcp ? [] : cluster.ingressVips);
     },
-    [cluster.apiVip, cluster.ingressVip, setFieldValue],
+    [cluster.apiVips, cluster.ingressVips, setFieldValue],
   );
+
+  const setVipValue = (field: string, e: React.ChangeEvent<HTMLInputElement>) =>
+    setFieldValue(field, [{ ip: e.target.value, clusterId: cluster.id }]);
 
   const ipFieldsSuffix = values.stackType === DUAL_STACK ? ' (IPv4)' : '';
   return (
@@ -137,7 +150,7 @@ export const VirtualIPControlGroup = ({
             }
             name="apiVip"
             helperText={ipHelperText}
-            value={values.apiVip || ''}
+            value={selectApiVip(values)}
             isValid={!apiVipFailedValidationMessage}
             isRequired
           >
@@ -157,7 +170,7 @@ export const VirtualIPControlGroup = ({
             }
             name="ingressVip"
             helperText={ipHelperText}
-            value={values.ingressVip || ''}
+            value={selectIngressVip(values)}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
           >
@@ -170,29 +183,46 @@ export const VirtualIPControlGroup = ({
           </FormikStaticField>
         </>
       ) : (
-        <>
-          <OcmInputField
-            label={
-              <>
-                <span>API IP{ipFieldsSuffix}</span> <PopoverIcon bodyContent={ipPopoverContent} />
-              </>
-            }
-            name="apiVip"
-            helperText={ipHelperText}
-            isRequired
-          />
-          <OcmInputField
-            name="ingressVip"
-            label={
-              <>
-                <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                <PopoverIcon bodyContent={ipPopoverContent} />
-              </>
-            }
-            helperText={ipHelperText}
-            isRequired
-          />
-        </>
+        <FormGroup>
+          <FieldArray name="vips">
+            {() => (
+              <Stack>
+                <StackItem>
+                  <OcmInputField
+                    label={
+                      <>
+                        <span>API IP{ipFieldsSuffix}</span>{' '}
+                        <PopoverIcon bodyContent={ipPopoverContent} />
+                      </>
+                    }
+                    name="apiVips.0.ip"
+                    helperText={ipHelperText}
+                    isRequired
+                    onChange={(e) =>
+                      setVipValue('apiVips', e as React.ChangeEvent<HTMLInputElement>)
+                    }
+                  />
+                </StackItem>
+                <StackItem>
+                  <OcmInputField
+                    name="ingressVips.0.ip"
+                    label={
+                      <>
+                        <span>Ingress IP{ipFieldsSuffix}</span>{' '}
+                        <PopoverIcon bodyContent={ipPopoverContent} />
+                      </>
+                    }
+                    helperText={ipHelperText}
+                    isRequired
+                    onChange={(e) =>
+                      setVipValue('ingressVips', e as React.ChangeEvent<HTMLInputElement>)
+                    }
+                  />
+                </StackItem>
+              </Stack>
+            )}
+          </FieldArray>
+        </FormGroup>
       )}
     </>
   );
