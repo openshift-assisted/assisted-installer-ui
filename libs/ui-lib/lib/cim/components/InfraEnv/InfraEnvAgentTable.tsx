@@ -120,6 +120,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     () =>
       [
         agentHostnameColumn(
+          t,
           hosts,
           agents,
           bareMetalHosts,
@@ -136,10 +137,10 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           t,
         }),
         clusterColumn(agents, agentMachines, getClusterDeploymentLink, t),
-        discoveredAtColumn,
-        cpuCoresColumn,
-        memoryColumn,
-        disksColumn,
+        discoveredAtColumn(t),
+        cpuCoresColumn(t),
+        memoryColumn(t),
+        disksColumn(t),
       ].filter(Boolean),
     [
       hosts,
