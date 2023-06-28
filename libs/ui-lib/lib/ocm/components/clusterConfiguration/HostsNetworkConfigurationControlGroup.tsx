@@ -5,7 +5,7 @@ import { HostsNetworkConfigurationType } from '../../services/types';
 import { useField } from 'formik';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import RadioFieldWithTooltip from '../../../common/components/ui/formik/RadioFieldWithTooltip';
-import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
+import { clusterExistsReason } from '../newFeatureSupportLevels/newFeatureStateUtils';
 
 export interface HostsNetworkConfigurationControlGroupProps {
   clusterExists: boolean;

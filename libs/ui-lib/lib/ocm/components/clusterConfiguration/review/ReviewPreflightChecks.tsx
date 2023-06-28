@@ -37,11 +37,11 @@ import {
   wizardStepsValidationsMap,
   allClusterWizardSoftValidationIds,
 } from '../../clusterWizard/wizardTransition';
-import { ClusterFeatureSupportLevelsDetailItem } from '../../featureSupportLevels';
+import { ClusterNewFeatureSupportLevelsDetailItem } from '../../newFeatureSupportLevels';
 import {
   SupportLevelMemo,
   getSupportLevelInfo,
-} from '../../featureSupportLevels/ReviewClusterFeatureSupportLevels';
+} from '../../newFeatureSupportLevels/ReviewClusterNewFeatureSupportLevels';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
@@ -80,7 +80,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
         classNameValue={'pf-u-mb-md'}
         testId="host-preflight-checks"
       />
-      <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
+      <ClusterNewFeatureSupportLevelsDetailItem cluster={cluster} />
     </DetailList>
   );
 };

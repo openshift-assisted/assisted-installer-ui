@@ -17,7 +17,7 @@ import {
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
+import { getLvmIncompatibleWithCnvReason } from '../../newFeatureSupportLevels/newFeatureStateUtils';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 

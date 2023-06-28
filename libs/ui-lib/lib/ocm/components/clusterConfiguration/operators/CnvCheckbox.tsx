@@ -10,7 +10,7 @@ import {
   PopoverIcon,
 } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
-import { getCnvIncompatibleWithLvmReason } from '../../featureSupportLevels/featureStateUtils';
+import { getCnvIncompatibleWithLvmReason } from '../../newFeatureSupportLevels/newFeatureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
