@@ -128,10 +128,10 @@ export const networkingPage = {
     }
   },
   getApiVipField: () => {
-    return cy.get(Cypress.env('apiVipFieldId'));
+    return cy.get('#form-input-apiVips-0-ip-field');
   },
   getIngressVipField: () => {
-    return cy.get(Cypress.env('ingressVipFieldId'));
+    return cy.get('#form-input-ingressVips-0-ip-field');
   },
   inputApiVipIngressVip: (
     apiVip = Cypress.env('API_VIP'),
@@ -144,7 +144,7 @@ export const networkingPage = {
       fillField(networkingPage.getApiVipField(), apiVip);
     }
     if (ingressVip) {
-      fillField(networkingPage.getIngressVipField(), apiVip);
+      fillField(networkingPage.getIngressVipField(), ingressVip);
     }
   },
   inputClusterNetworkHostPrefix: (hostPrefix = Cypress.env('NETWORK_HOST_PREFIX')) => {
