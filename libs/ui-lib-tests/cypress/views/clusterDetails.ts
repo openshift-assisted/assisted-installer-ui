@@ -123,6 +123,6 @@ export const clusterDetailsPage = {
     return cy.get('.pf-l-grid');
   },
   getCustomManifestCheckbox: () => {
-    return cy.get(Cypress.env('addCustomManifestId'));
+    return cy.get('#form-input-addCustomManifest-field');
   },
 };

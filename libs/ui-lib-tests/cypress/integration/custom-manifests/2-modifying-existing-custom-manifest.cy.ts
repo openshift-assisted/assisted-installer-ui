@@ -10,7 +10,6 @@ describe(`Assisted Installer Custom manifests step`, () => {
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
@@ -43,7 +42,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
       commonActions.getNextButton().should('be.disabled');
     });
     it('Incorrect file name', () => {
-      customManifestsPage.getFileName().clear().type('test.txt');
+      customManifestsPage.getFileName(0).clear().type('test.txt');
       customManifestsPage
         .getFileNameError()
         .contains('Must have a yaml, yml or json extension and can not contain /.');

@@ -9,7 +9,6 @@ describe(`Assisted Installer Custom manifests step`, () => {
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
@@ -24,8 +23,8 @@ describe(`Assisted Installer Custom manifests step`, () => {
       cy.loadAiAPIIntercepts(null, true);
       customManifestsPage.getLinkToAdd().should('be.enabled');
       customManifestsPage.getLinkToAdd().click();
-      customManifestsPage.getManifest1Id().type('manifest2.yaml');
-      customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest2.yaml`);
+      customManifestsPage.getFileName(1).type('manifest2.yaml');
+      customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest1.yaml`);
       customManifestsPage.getLinkToAdd().should('be.enabled');
     });
     it('Can delete custom manifest', () => {
@@ -33,9 +32,9 @@ describe(`Assisted Installer Custom manifests step`, () => {
       commonActions.startAtCustomManifestsStep();
       customManifestsPage.getLinkToAdd().should('be.enabled');
       customManifestsPage.getLinkToAdd().click();
-      customManifestsPage.getManifest1Id().type('manifest2.yaml');
-      customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest2.yaml`);
-      customManifestsPage.getRemoveManifestButton().click();
+      customManifestsPage.getFileName(1).type('manifest2.yaml');
+      customManifestsPage.lastFileUpload().attachFile(`custom-manifests/files/manifest1.yaml`);
+      customManifestsPage.getRemoveManifestButton(1).click();
       customManifestsPage.getRemoveConfirmationButton().click();
     });
   });

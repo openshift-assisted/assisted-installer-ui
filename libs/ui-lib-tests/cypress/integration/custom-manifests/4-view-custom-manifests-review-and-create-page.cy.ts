@@ -10,7 +10,6 @@ describe(`Assisted Installer Review and create step with custom manifests`, () =
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
