@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, HelperTextItem, Stack, StackItem } from '@patternfly/react-core';
+import { FormGroup, HelperTextItem, Stack, StackItem, debounce } from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
@@ -29,28 +29,23 @@ const CodeField = ({
   const errorMessage = useFieldErrorMsg({ name, validate });
   const codeEditorRef = React.useRef(null);
   const [isValidValue, setIsValidValue] = React.useState<boolean>(true);
-  const [typingTimeout, setTypingTimeout] = React.useState<number | null>(null);
-  const onCodeChange = (value: string) => {
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-      setIsValidValue(true);
-    }
-    const typingTimeout_new = window.setTimeout(() => {
-      let isValidVal = true;
-      if (codeEditorRef && codeEditorRef.current) {
-        if ((codeEditorRef.current as CodeEditor).state.filename) {
-          isValidVal = validateFileName((codeEditorRef.current as CodeEditor).state.filename);
-          setIsValidValue(isValidVal);
+
+  const onCodeChange = debounce((value: string) => {
+    let isValidVal = true;
+    if (codeEditorRef && codeEditorRef.current) {
+      const codeEditor = codeEditorRef.current as CodeEditor;
+      if (codeEditor.state.filename) {
+        isValidVal = validateFileName(codeEditor.state.filename || '');
+        if (!isValidVal) {
+          setValue('', true);
+        } else {
+          setValue(value, true);
         }
       }
-      if (!isValidVal) {
-        setValue('', true);
-      } else {
-        setValue(value, true);
-      }
-    }, 500);
-    setTypingTimeout(typingTimeout_new);
-  };
+      setIsValidValue(isValidVal);
+    }
+  }, 100);
+
   React.useEffect(() => {
     //Work around for Patternfly CodeEditor not calling onChange after upload or drag/drop files
     //The temporary solution is to handle the changes by registering to the change events of the internal editor in CodeEditor
@@ -62,7 +57,7 @@ const CodeField = ({
       monacoSubscription.dispose();
     }
     setMonacoSubscription(
-      monacoEditor.onDidChangeModelContent(() => {
+      monacoEditor.getModel()?.onDidChangeContent(() => {
         setTouched(true);
         isValidValue ? setValue(monacoEditor.getModel()?.getValue(), true) : setValue('', true);
       }),
@@ -73,7 +68,7 @@ const CodeField = ({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monacoEditor, isValidValue]);
+  }, [monacoEditor]);
 
   const isValid = !errorMessage && isValidValue;
   const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
