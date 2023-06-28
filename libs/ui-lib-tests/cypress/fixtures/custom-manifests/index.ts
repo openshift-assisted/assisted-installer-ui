@@ -6,9 +6,9 @@ import { hostRenamedBuilder } from '../create-sno/4-host-renamed';
 import { customManifest, customManifestContent } from './manifests';
 
 const isoDownloadedCluster = isoDownloadedClusterBuilder(customManifestsCluster);
-const hostDiscoveredCluster = () => hostDiscoveredBuilder(isoDownloadedCluster);
-const hostRenamedCluster = () => hostRenamedBuilder(hostDiscoveredCluster());
-const readyToInstallCluster = clusterReadyBuilder(hostRenamedCluster());
+const hostDiscoveredCluster = hostDiscoveredBuilder(isoDownloadedCluster);
+const hostRenamedCluster = hostRenamedBuilder(hostDiscoveredCluster);
+const readyToInstallCluster = clusterReadyBuilder(hostRenamedCluster);
 
 const createCustomManifestsFixtureMapping = {
   clusters: {
