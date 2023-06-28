@@ -351,7 +351,7 @@ export const operatorLabels = (
     [OPERATOR_NAME_LVM]: useLVMS
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
-    [OPERATOR_NAME_MCE]: t('ai:MultiCluster Engine'),
+    [OPERATOR_NAME_MCE]: t('ai:Multicluster engine'),
   };
 };
 

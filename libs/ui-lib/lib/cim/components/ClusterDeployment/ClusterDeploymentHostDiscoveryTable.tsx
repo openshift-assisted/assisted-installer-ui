@@ -86,7 +86,9 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         t,
       }),
       roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
-      ...(addAll ? [discoveredAtColumn, cpuCoresColumn, memoryColumn, disksColumn] : []),
+      ...(addAll
+        ? [discoveredAtColumn(t), cpuCoresColumn(t), memoryColumn(t), disksColumn(t)]
+        : []),
     ],
     [agents, hostActions, bareMetalHosts, onApprove, onEditHost, addAll, t],
   );
