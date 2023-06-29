@@ -309,7 +309,7 @@ export const VIPArrayValidationSchema = <T>(
   values: NetworkConfigurationValues,
   initialValues?: ApiVip[] | IngressVip[],
 ) =>
-  (values.apiVips?.length
+  (values.apiVips?.length && values.managedNetworkingType === 'clusterManaged'
     ? Yup.array<T>().of(
         Yup.object().shape({
           clusterId: Yup.string(),
