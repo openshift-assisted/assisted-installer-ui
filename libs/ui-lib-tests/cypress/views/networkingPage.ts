@@ -138,7 +138,7 @@ export const networkingPage = {
     ingressVip = Cypress.env('INGRESS_VIP'),
   ) => {
     const fillField = (element, value) => {
-      element.should('be.visible').fill(value).should('have.value', value);
+      element.scrollIntoView().should('be.visible').fill(value).should('have.value', value);
     };
     if (apiVip) {
       fillField(networkingPage.getApiVipField(), apiVip);

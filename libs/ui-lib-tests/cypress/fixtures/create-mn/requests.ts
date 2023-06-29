@@ -1,7 +1,9 @@
 import { fakeClusterId } from '../cluster/base-cluster';
 
 export const UMNetworkingRequest = {
+  api_vips: [],
   api_vip: '',
+  ingress_vips: [],
   ingress_vip: '',
   cluster_networks: [
     {
@@ -19,5 +21,5 @@ export const UMNetworkingRequest = {
   ssh_public_key: '',
   user_managed_networking: true,
   vip_dhcp_allocation: false,
-  network_type: 'OpenShiftSDN',
+  network_type: 'OVNKubernetes',
 };
