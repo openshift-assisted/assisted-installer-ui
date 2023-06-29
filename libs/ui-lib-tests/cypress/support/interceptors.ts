@@ -15,6 +15,7 @@ import createStorageFixtureMapping from '../fixtures/storage';
 import createDualStackFixtureMapping from '../fixtures/dualstack';
 import createStaticIpFixtureMapping from '../fixtures/static-ip';
 import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
+import createCustomManifestsFixtureMapping from '../fixtures/custom-manifests';
 import { getEventHeaders, getEvents } from '../fixtures/cluster/events';
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
@@ -60,6 +61,9 @@ const getScenarioFixtureMapping = () => {
     case 'AI_CREATE_STATIC_IP':
       fixtureMapping = createStaticIpFixtureMapping;
       break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      fixtureMapping = createCustomManifestsFixtureMapping;
+      break;
     default:
       break;
   }
@@ -104,6 +108,20 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
   }
 };
 
+const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  if (fixtureMapping?.manifests) {
+    req.reply(fixtureMapping.manifests);
+  }
+};
+
+const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  if (fixtureMapping?.manifestContent) {
+    req.reply(fixtureMapping.manifestContent);
+  }
+};
+
 const setScenarioEnvVars = ({ activeScenario }) => {
   Cypress.env('AI_SCENARIO', activeScenario);
   Cypress.env('ASSISTED_SNO_DEPLOYMENT', false);
@@ -133,6 +151,10 @@ const setScenarioEnvVars = ({ activeScenario }) => {
       break;
     case 'AI_CREATE_STATIC_IP':
       Cypress.env('CLUSTER_NAME', 'ai-e2e-static-ip');
+      break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      Cypress.env('CLUSTER_NAME', 'ai-e2e-custom-manifests');
+      Cypress.env('NUM_WORKERS', 0);
       break;
     default:
       break;
@@ -212,7 +234,6 @@ const addPlatformFeatureIntercepts = () => {
       req.reply(featureSupport[shortOpenshiftVersion]);
     },
   );
-  cy.intercept('GET', `${clusterApiPath}/manifests`, []);
 };
 
 const addAdditionalIntercepts = () => {
@@ -224,6 +245,39 @@ const addAdditionalIntercepts = () => {
     'getDefaultConfig',
   );
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
+};
+
+const addCustomManifestsIntercepts = (loadManifestContent = false) => {
+  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'list-manifests',
+  );
+  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'update-manifests',
+  );
+  cy.intercept('DELETE', `${clusterApiPath}/manifests`).as('delete-manifests');
+  if (loadManifestContent) {
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
+      mockCustomManifestFileResponse,
+    ).as('info-manifest-with-content-1');
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
+      mockCustomManifestFileResponse,
+    ).as('info-manifest-with-content-2');
+  } else {
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
+      '',
+    ).as('info-manifest-without-content-1');
+    cy.intercept(
+      'GET',
+      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
+      '',
+    ).as('info-manifest-without-content-2');
+  }
 };
 
 const addEventsIntercepts = () => {
@@ -247,7 +301,7 @@ const addEventsIntercepts = () => {
   }).as('events');
 };
 
-const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
+const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null, loadManifestContent?: boolean) => {
   Cypress.env('clusterId', fakeClusterId);
 
   if (conf !== null) {
@@ -256,7 +310,7 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
       setScenarioEnvVars(conf);
     }
   }
-
+  addCustomManifestsIntercepts(loadManifestContent || false);
   addClusterCreationIntercepts();
   addClusterListIntercepts();
   addClusterPatchAndDetailsIntercepts();
