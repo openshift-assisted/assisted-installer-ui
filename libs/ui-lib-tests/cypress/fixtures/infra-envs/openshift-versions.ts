@@ -1,8 +1,14 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-const x86 = 'x86_64';
-const arm64 = 'arm64';
+interface Version {
+  cpu_architectures: string[],
+  display_name:string;
+  support_level: string;
+  default?: boolean;
+}
 
-const versions = {
+export const x86 = 'x86_64';
+export const arm64 = 'arm64';
+
+const versions: Record<string, Version> = {
   '4.8': {
     cpu_architectures: [x86],
     display_name: '4.8.57',
@@ -40,6 +46,8 @@ const versions = {
     support_level: 'beta',
   },
 };
+
+expect(Object.entries(versions).filter(([_, versionItem]) => versionItem.default === true)).to.have.length(1);
 
 // The values must be sorted with most recent version being first
 const getExpectedVersionIds = () => Object.keys(versions).reverse();
