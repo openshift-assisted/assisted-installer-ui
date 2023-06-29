@@ -1,6 +1,4 @@
 import { commonActions } from '../../views/common';
-
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { reviewAndCreatePage } from '../../views/reviewCreate';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 

@@ -1,6 +1,4 @@
 import { commonActions } from '../../views/common';
-
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { customManifestsPage } from '../../views/customManifestsPage';
 
 describe(`Assisted Installer Custom manifests step`, () => {
