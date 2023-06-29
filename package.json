@@ -7,7 +7,8 @@
     "eslint": "^8.36.0",
     "prettier": "2.8.4",
     "rimraf": "^4.4.0",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "vitest": "^0.32.2"
   },
   "engines": {
     "node": ">=14"
@@ -28,7 +29,8 @@
     "format:all": "yarn prettier --cache --cache-strategy=content --check .",
     "lint:all": "yarn eslint --max-warnings 0 --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
     "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
-    "test:open": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open"
+    "test:open": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open",
+    "test:unit": "yarn workspaces foreach -v run vitest"
   },
   "workspaces": [
     "apps/*",

@@ -59,9 +59,9 @@ const AgentTable: React.FC<AgentTableProps> = ({
       }),
       infraEnvColumn(agents, t),
       cpuArchitectureColumn(t),
-      cpuCoresColumn,
-      memoryColumn,
-      disksColumn,
+      cpuCoresColumn(t),
+      memoryColumn(t),
+      disksColumn(t),
     ],
     [agents, hostActions, t],
   );

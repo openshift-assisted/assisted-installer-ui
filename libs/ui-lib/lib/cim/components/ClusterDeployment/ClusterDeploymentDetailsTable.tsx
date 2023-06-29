@@ -48,9 +48,9 @@ const ClusterDeploymentDetailsTable: React.FC<ClusterDeploymentDetailsTableProps
         t,
       }),
       infraEnvColumn(agents, t),
-      cpuCoresColumn,
-      memoryColumn,
-      disksColumn,
+      cpuCoresColumn(t),
+      memoryColumn(t),
+      disksColumn(t),
     ],
     [agents, t],
   );

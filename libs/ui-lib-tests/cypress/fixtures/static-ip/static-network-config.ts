@@ -16,6 +16,24 @@ const networkWideConfigured = [
   },
 ];
 
+const yamlConfigured = [
+  {
+    mac_interface_map: [
+      {
+        mac_address: '00:00:5e:00:53:af',
+        logical_nic_name: 'interface1',
+      },
+    ],
+    network_yaml:
+      'dns-resolver:\n  config:\n    server:\n      - 10.40.125.11\n      - 10.40.125.12\ninterfaces:\n- name: ens1f0.1020\n  type: vlan\n  state: up\n  ipv4:\n    enabled: true\n    address:\n    - ip: 10.49.125.200\n      prefix-length: 23\n    dhcp: false\n  vlan:\n    base-iface: ens1f0\n    id: 1020\nroutes:\n  config:\n  - destination: 0.0.0.0/0\n    next-hop-address: 10.49.124.1\n    next-hop-interface: ens1f0.1020\n    table-id: 254\n',
+  },
+];
+
 const dualStackSpecificHostsConfigured = dualStackHostConfigs;
 
-export { dummyStaticNetworkConfig, networkWideConfigured, dualStackSpecificHostsConfigured };
+export {
+  dummyStaticNetworkConfig,
+  networkWideConfigured,
+  dualStackSpecificHostsConfigured,
+  yamlConfigured,
+};
