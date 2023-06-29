@@ -30,6 +30,6 @@ declare namespace Cypress {
     hostDetailSelector(i: number, label: string, timeout?: number): Chainable<Element>;
     getClusterNameLinkSelector(clusterName?: string): Chainable<Element>;
     getIndexByName(selector: string, name: string, timeout?: number): Chainable<Element>;
-    loadAiAPIIntercepts(conf: AIInterceptsConfig | null);
+    loadAiAPIIntercepts(conf: AIInterceptsConfig | null, loadManifestContent?: boolean);
   }
 }

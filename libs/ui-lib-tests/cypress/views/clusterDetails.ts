@@ -122,4 +122,7 @@ export const clusterDetailsPage = {
   getClusterDetailsBody: () => {
     return cy.get('.pf-l-grid');
   },
+  getCustomManifestCheckbox: () => {
+    return cy.get('#form-input-addCustomManifest-field');
+  },
 };

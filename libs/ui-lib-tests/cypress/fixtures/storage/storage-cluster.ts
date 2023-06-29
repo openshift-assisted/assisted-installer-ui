@@ -163,7 +163,7 @@ const storageCluster = {
   progress: {},
   pull_secret_set: true,
   schedulable_masters: false,
-  schedulable_masters_forced_true: false,
+  schedulable_masters_forced_true: true,
   service_networks: [{ cidr: '172.30.0.0/16', cluster_id: fakeClusterId }],
   status: 'ready',
   status_info: 'Cluster ready to be installed',
