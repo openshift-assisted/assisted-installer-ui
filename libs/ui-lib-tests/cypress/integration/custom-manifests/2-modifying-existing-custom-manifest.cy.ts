@@ -27,13 +27,13 @@ describe(`Assisted Installer Custom manifests step`, () => {
 
     it('Add valid manifest content', () => {
       customManifestsPage.getStartFromScratch().click();
-      customManifestsPage.fileUpload().attachFile(`custom-manifests/files/manifest1.yaml`);
+      customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/manifest1.yaml`);
       cy.loadAiAPIIntercepts(null, true);
       commonActions.getNextButton().should('be.enabled');
     });
     it('Cannot upload binary file into manifest content', () => {
       customManifestsPage.getStartFromScratch().click();
-      customManifestsPage.fileUpload().attachFile(`custom-manifests/files/img.png`);
+      customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/img.png`);
       customManifestsPage
         .getYamlContentError()
         .contains('File type is not supported. File type must be yaml, yml or json.');

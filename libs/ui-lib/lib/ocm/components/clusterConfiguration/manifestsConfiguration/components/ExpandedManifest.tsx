@@ -45,7 +45,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
           <OcmCodeField
             language={Language.yaml}
             name={`${fieldName}.manifestYaml`}
-            data-testid={`yaml-${manifestIdx}`}
+            dataTestid={`yamlContent-${manifestIdx}`}
             label="Content"
             isRequired
             downloadFileName={getDownloadFileName(manifestIdx, value)}

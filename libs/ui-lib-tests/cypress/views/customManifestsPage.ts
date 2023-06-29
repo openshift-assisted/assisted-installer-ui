@@ -8,8 +8,8 @@ export const customManifestsPage = {
   getStartFromScratch: () => {
     return cy.get('.pf-c-file-upload .pf-c-empty-state__secondary > button');
   },
-  fileUpload: () => {
-    return cy.get('input[type="file"]');
+  fileUpload: (index: number) => {
+    return cy.findByTestId(`yamlContent-${index}`).find('input[type="file"]');
   },
   getYamlContentError: () => {
     return cy.get('div.pf-c-form__helper-text.pf-m-error');
@@ -19,9 +19,6 @@ export const customManifestsPage = {
   },
   getLinkToAdd: () => {
     return cy.findByTestId('add-manifest');
-  },
-  lastFileUpload: () => {
-    return cy.get('input[type="file"]:last');
   },
   getRemoveManifestButton: (index: number) => {
     return cy.findByTestId(`remove-manifest-${index}`);
