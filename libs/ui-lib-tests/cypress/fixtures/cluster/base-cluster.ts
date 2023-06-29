@@ -42,6 +42,7 @@ const baseCluster = (name = Cypress.env('CLUSTER_NAME')) => ({
   },
   pull_secret_set: true,
   schedulable_masters: false,
+  schedulable_masters_forced_true: true,
   service_network_cidr: '172.30.0.0/16',
   status: 'insufficient',
   status_info: 'Cluster is not ready for install',
