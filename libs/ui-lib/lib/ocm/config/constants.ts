@@ -41,3 +41,5 @@ export const ocmPermissionsToAIPermissions = (
 };
 
 export const OCM_CLUSTER_LIST_LINK = '/openshift'; // TODO(mlibra): Tweak it!!!
+
+export const DEBOUNCE_TIME_CODEFIELD = 100;

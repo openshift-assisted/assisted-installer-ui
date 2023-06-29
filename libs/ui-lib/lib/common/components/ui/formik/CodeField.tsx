@@ -21,6 +21,7 @@ const CodeField = ({
   description,
   isDisabled,
   downloadFileName,
+  debounceTime,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -44,7 +45,7 @@ const CodeField = ({
       }
       setIsValidValue(isValidVal);
     }
-  }, 100);
+  }, debounceTime || 100);
 
   React.useEffect(() => {
     //Work around for Patternfly CodeEditor not calling onChange after upload or drag/drop files
