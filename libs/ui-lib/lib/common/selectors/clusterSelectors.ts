@@ -102,18 +102,8 @@ export const selectIpv4HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'cluster
 export const selectIpv6HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'clusterNetworks'>) =>
   clusterNetworks && clusterNetworks[1].hostPrefix;
 
-const getOldSchedulableMastersAlwaysOn = (cluster: Cluster) => {
-  return cluster.hosts ? cluster.hosts.length < 5 : true;
-};
-
-export const selectMastersMustRunWorkloads = (cluster: Cluster): boolean => {
-  // TODO camador 2022-06-30 Remove the logic for old schedulableMasters logic after a few weeks
-  // as by then all clusters should have the new field "schedulableMastersForcedTrue"
-  if (cluster.schedulableMastersForcedTrue === undefined) {
-    return getOldSchedulableMastersAlwaysOn(cluster);
-  }
-  return cluster.schedulableMastersForcedTrue;
-};
+export const selectMastersMustRunWorkloads = (cluster: Cluster): boolean =>
+  !!cluster.schedulableMastersForcedTrue;
 
 export const selectSchedulableMasters = (cluster: Cluster): boolean => {
   if (selectMastersMustRunWorkloads(cluster)) {
