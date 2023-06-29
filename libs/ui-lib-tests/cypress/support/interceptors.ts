@@ -16,10 +16,10 @@ type Archs = typeof x86 | typeof arm;
 const getDay1ClusterApiPath = () => `${allClustersApiPath}${Cypress.env('clusterId')}`;
 const getDay1InfraEnvApiPath = () => `${allInfraEnvsApiPath}${Cypress.env('infraEnvId')}`;
 const getDay2InfraEnvApiPath = (cpuArch?: Archs) =>
-    `${allInfraEnvsApiPath}${day2FlowIds.day2.infraEnvIds[cpuArch || x86]}`;
+  `${allInfraEnvsApiPath}${day2FlowIds.day2.infraEnvIds[cpuArch || x86]}`;
 const getDay2ClusterApiPath = () => `${allClustersApiPath}${day2FlowIds.day2.aiClusterId}`;
 const day2InfraEnvDetailsUrl = new RegExp(
-    `${getDay2InfraEnvApiPath(x86)}|${getDay2InfraEnvApiPath(arm)}`,
+  `${getDay2InfraEnvApiPath(x86)}|${getDay2InfraEnvApiPath(arm)}`,
 );
 
 const getDay2InfraEnv = (cpuArch: Archs) => allFixtures.day2InfraEnvs[cpuArch];
@@ -36,12 +36,12 @@ const getCpuArchitectureParam = (cpuArch: string): Archs | undefined => {
 const transformClusterFixture = (fixtureMapping) => {
   const { clusters: clusterFixtures, hosts: hostsFixtures } = fixtureMapping;
   const baseCluster =
-      clusterFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.clusters['default'];
+    clusterFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.clusters['default'];
   baseCluster.platform.type = Cypress.env('AI_INTEGRATED_PLATFORM') || 'baremetal';
 
   const hosts = hostsFixtures
-      ? hostsFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.hosts['default']
-      : allFixtures.getUpdatedHosts();
+    ? hostsFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.hosts['default']
+    : allFixtures.getUpdatedHosts();
   return { ...baseCluster, hosts };
 };
 
@@ -85,7 +85,7 @@ const mockClusterResponse: HttpRequestInterceptor = (req) => {
     req.reply(transformClusterFixture(fixtureMapping));
   } else {
     throw new Error(
-        'Incorrect fixture mapping for scenario ' + ((Cypress.env('AI_SCENARIO') as string) || ''),
+      'Incorrect fixture mapping for scenario ' + ((Cypress.env('AI_SCENARIO') as string) || ''),
     );
   }
 };
@@ -201,7 +201,7 @@ const addDay1InfraEnvIntercepts = () => {
   cy.intercept('GET', infraEnvApiPath, mockInfraEnvResponse).as('infra-env-details');
 
   cy.intercept('GET', `${infraEnvApiPath}/downloads/image-url`, allFixtures.imageDownload).as(
-      'download-iso-image',
+    'download-iso-image',
   );
 
   // Actions on all the infraEnvs
@@ -229,12 +229,12 @@ const addDay2ClusterIntercepts = () => {
   const day2ClusterApiPath = getDay2ClusterApiPath();
 
   cy.intercept(
-      'GET',
-      `${allClustersApiPath}?openshift_cluster_id=${day2FlowIds.day1.aiClusterId}`,
-      (req) => {
-        const fixture = hasWizardSignal('CREATED_DAY2_CLUSTER') ? [allFixtures.day2AiCluster] : [];
-        req.reply(fixture);
-      },
+    'GET',
+    `${allClustersApiPath}?openshift_cluster_id=${day2FlowIds.day1.aiClusterId}`,
+    (req) => {
+      const fixture = hasWizardSignal('CREATED_DAY2_CLUSTER') ? [allFixtures.day2AiCluster] : [];
+      req.reply(fixture);
+    },
   ).as('find-associated-day2-cluster');
 
   cy.intercept('POST', `${allClustersApiPath}/import`, (req) => {
@@ -261,10 +261,10 @@ const addDay2InfraEnvIntercepts = () => {
   const day1InfraEnvApiPath = getDay1InfraEnvApiPath();
   cy.intercept('GET', day1InfraEnvApiPath, allFixtures.day1InfraEnv).as('day1-infra-env-details');
   cy.intercept('GET', day2InfraEnvDetailsUrl, getDay2InfraEnvByCpuArch).as(
-      'day2-infra-env-details',
+    'day2-infra-env-details',
   );
   cy.intercept('PATCH', day2InfraEnvDetailsUrl, getDay2InfraEnvByCpuArch).as(
-      'update-day2-infra-env',
+    'update-day2-infra-env',
   );
 
   // Actions on all the infraEnvs
@@ -353,9 +353,9 @@ const addPlatformFeatureIntercepts = () => {
 
   // Calls that are requested for a particular cluster, the same response is returned for all clusters
   cy.intercept(
-      'GET',
-      `${allClustersApiPath}/*/supported-platforms`,
-      mockSupportedPlatformsResponse,
+    'GET',
+    `${allClustersApiPath}/*/supported-platforms`,
+    mockSupportedPlatformsResponse,
   ).as('supported-platforms');
 };
 

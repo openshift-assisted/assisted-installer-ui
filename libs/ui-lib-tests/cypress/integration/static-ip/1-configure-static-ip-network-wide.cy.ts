@@ -107,7 +107,7 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
         .should('have.class', ACTIVE_NAV_ITEM_CLASS);
     });
 
-    it('Can use IPv4 and IPv6 on DNS when dual stack', () => {
+    it('[nrt] Can use IPv4 and IPv6 on DNS when dual stack', () => {
       staticIpPage.dualStackNetworking().click();
 
       testIpv4AndIpv6Addresses.forEach((dnsEntry) => {

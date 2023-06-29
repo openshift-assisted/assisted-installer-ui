@@ -1,6 +1,6 @@
 interface Version {
-  cpu_architectures: string[],
-  display_name:string;
+  cpu_architectures: string[];
+  display_name: string;
   support_level: string;
   default?: boolean;
 }
@@ -47,7 +47,9 @@ const versions: Record<string, Version> = {
   },
 };
 
-expect(Object.entries(versions).filter(([_, versionItem]) => versionItem.default === true)).to.have.length(1);
+expect(
+  Object.entries(versions).filter(([_, versionItem]) => versionItem.default === true),
+).to.have.length(1);
 
 // The values must be sorted with most recent version being first
 const getExpectedVersionIds = () => Object.keys(versions).reverse();
