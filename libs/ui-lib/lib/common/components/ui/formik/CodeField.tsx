@@ -22,6 +22,7 @@ const CodeField = ({
   isDisabled,
   downloadFileName,
   debounceTime,
+  dataTestid,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -84,6 +85,7 @@ const CodeField = ({
           validated={isValid ? 'default' : 'error'}
           isRequired={isRequired}
           labelIcon={labelIcon}
+          data-testid={dataTestid ? dataTestid : `${fieldId}-testid`}
         >
           {description && (
             <HelperText fieldId={fieldId}>

@@ -87,6 +87,9 @@ export const commonActions = {
   visitClusterDetailsPage: () => {
     cy.visit(`/clusters/${Cypress.env('clusterId')}`);
   },
+  startAtCustomManifestsStep: () => {
+    commonActions.getWizardStepNav('Custom manifests').click();
+  },
   clickBackButton: () => {
     commonActions.getBackButton().should('be.enabled').click();
   },
