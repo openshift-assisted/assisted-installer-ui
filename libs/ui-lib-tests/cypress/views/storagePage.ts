@@ -26,7 +26,6 @@ export const storagePage = {
   },
   getSkipFormattingCheckbox: (hostId: string, indexSelect: number) => {
     return cy.get(`input[id="select-formatted-${hostId}-${indexSelect}"]`);
-    ``;
   },
   validateSkipFormattingDisks: (hostId: string, numDisks: number) => {
     cy.get(Cypress.env('skipFormattingDataLabel')).should('have.length', numDisks);
@@ -40,13 +39,16 @@ export const storagePage = {
     storagePage.getSkipFormattingCheckbox(hostId, 2).should('be.disabled');
   },
   validateSkipFormattingWarning: () => {
-    cy.get('.pf-c-alert__title').should('contain', Cypress.env('skipFormattingWarningTitle'));
-    cy.get('.pf-c-alert__description').should('contain', Cypress.env('skipFormattingWarningDesc'));
+    cy.get('.pf-c-alert__title').should('contain.text', Cypress.env('skipFormattingWarningTitle'));
+    cy.get('.pf-c-alert__description').should(
+      'contain.text',
+      Cypress.env('skipFormattingWarningDesc'),
+    );
   },
   validateSkipFormattingIcon: (diskId: string) => {
     //If a disk is skip formatting validate that warning icon is shown
-    cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"] > svg > path`)
-      .invoke('attr', 'd')
-      .should('contain', Cypress.env('warningIconPath'));
+    cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within((/* $diskRow */) => {
+      cy.get('[role="img"]').should('have.attr', 'fill', Cypress.env('warningIconFillColor'));
+    })
   },
 };

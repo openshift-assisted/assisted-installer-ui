@@ -78,7 +78,7 @@ export const networkingPage = {
     timeout = Cypress.env('HOST_READY_TIMEOUT'),
   ) => {
     for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-      cy.hostDetailSelector(i, 'Status', timeout).should('contain', status);
+      cy.hostDetailSelector(i, 'Status', timeout).should('contain.text', status);
     }
   },
   waitForHostNetworkStatusInsufficient: (
@@ -87,7 +87,7 @@ export const networkingPage = {
   ) => {
     // host row index starts at 0 and increments by 2
     cy.newByDataTestId(`host-row-${idx}`).within(() => {
-      cy.newByDataTestId('nic-status', timeout).should('contain', 'Insufficient');
+      cy.newByDataTestId('nic-status', timeout).should('contain.text', 'Insufficient');
     });
   },
   getClusterNetworkCidr: () => {
@@ -248,7 +248,7 @@ export const networkingPage = {
     cy.get('.pf-c-content')
       .should('be.visible')
       .within(() => {
-        cy.get('p').should('contain', 'Please refer to the');
+        cy.get('p').should('contain.text', 'Please refer to the');
         cy.get('li').should((list) => {
           expect(list).to.have.length(4);
           expect(list.eq(0)).to.have.text('DHCP or static IP Addresses');

@@ -22,7 +22,7 @@ export const clusterDetailsPage = {
     clusterDetailsPage.getOpenshiftVersionDropdown().within(() => {
       cy.get('li').contains(version).click();
     });
-    clusterDetailsPage.getSelectedOpenShiftVersion().should('contain', `OpenShift ${version}`);
+    clusterDetailsPage.getSelectedOpenShiftVersion().should('contain.text', `OpenShift ${version}`);
   },
   getPullSecret: () => {
     return cy.get(Cypress.env('pullSecretFieldId'));
@@ -36,7 +36,7 @@ export const clusterDetailsPage = {
     }
     clusterDetailsPage.getPullSecret().clear();
     cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecret);
-    clusterDetailsPage.getPullSecret().should('contain', pullSecret);
+    clusterDetailsPage.getPullSecret().should('contain.text', pullSecret);
   },
   checkAiTechSupportLevel: () => {
     cy.get(Cypress.env('assistedInstallerSupportLevel'))
@@ -102,7 +102,7 @@ export const clusterDetailsPage = {
   validateInputNameFieldHelper: (status) => {
     cy.get(`[aria-label='Validation'] > svg`)
       .invoke('attr', 'fill')
-      .should('contain', status === 'fail' ? '#c9190b' : '#3e8635');
+      .should('contain.text', status === 'fail' ? '#c9190b' : '#3e8635');
   },
   getClusterNameFieldValidator: () => {
     return cy.get(Cypress.env('clusterNameFieldValidator'));

@@ -46,7 +46,7 @@ export const clusterListPage = {
       .within(() => {
         cy.get('td[data-label="Provider (Location)"]', {
           timeout: timeout,
-        }).should('contain', provider);
+        }).should('contain.text', provider);
       });
   },
   filterSearchString: (searchString) => {
