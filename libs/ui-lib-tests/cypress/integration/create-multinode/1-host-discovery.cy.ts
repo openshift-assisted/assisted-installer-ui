@@ -73,7 +73,7 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
           `${hostPrefix}-3`,
         ]);
       });
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.validateNextIsEnabled();
     });
   });
 });

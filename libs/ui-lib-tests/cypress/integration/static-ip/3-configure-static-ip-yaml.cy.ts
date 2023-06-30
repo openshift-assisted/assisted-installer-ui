@@ -23,7 +23,7 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       staticIpPage.yamlView.macAddress().type('00:00:5e:00:53:af');
       staticIpPage.yamlView.interface().type('interface1');
 
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.validateNextIsEnabled();
     });
 
     it('Can add another host configuration', () => {
@@ -43,7 +43,7 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       staticIpPage.yamlView.macAddress(1, 0).type('00:00:5e:00:53:ae');
       staticIpPage.yamlView.interface(1, 0).type('interface2');
 
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.validateNextIsEnabled();
     });
 
     it('Cannot upload a binary file', () => {
@@ -53,7 +53,7 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       staticIpPage.yamlView.interface().type('interface1');
 
       commonActions.getDangerAlert().should('be.visible');
-      commonActions.getNextButton().should('not.be.enabled');
+      commonActions.validateNextIsDisabled();
     });
   });
 

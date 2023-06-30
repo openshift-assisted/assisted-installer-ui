@@ -29,8 +29,7 @@ describe(`Assisted Installer Static IP Cluster Creation`, () => {
       commonActions.getWizardStepNav('Static network configurations').should('exist');
 
       commonActions.getInfoAlert().should('not.exist');
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
+      commonActions.toNextStepAfter('Cluster details');
 
       cy.wait('@create-cluster');
       cy.wait('@create-infra-env').then(({ request }) => {

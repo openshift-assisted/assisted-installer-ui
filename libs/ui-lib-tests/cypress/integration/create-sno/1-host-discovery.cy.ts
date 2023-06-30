@@ -62,7 +62,8 @@ describe(`Assisted Installer SNO Host discovery`, () => {
       bareMetalDiscoveryPage.waitForHostRowToContain(renamedHost);
       hostsTableSection.waitForHardwareStatus('Ready');
       bareMetalDiscoveryPage.waitForHostTablePopulation(1, 0);
-      commonActions.getNextButton().should('be.enabled');
+
+      commonActions.validateNextIsEnabled();
     });
   });
 });

@@ -68,36 +68,36 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
         .getWizardStepNav('Host specific configurations')
         .should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
 
-      commonActions.getNextButton().should('be.disabled');
+      commonActions.validateNextIsDisabled();
       staticIpPage.networkWideDns().type(dnsText);
       fillStaticIpForm('ipv4', ipv4Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-      commonActions.getNextButton().should('be.disabled'); // auto-save is triggered
+      commonActions.validateNextIsDisabled(); // auto-save is triggered
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'ipv4');
-        commonActions.getNextButton().should('be.enabled');
+      commonActions.validateNextIsEnabled();
       });
     });
 
     it('Can configure dual stack Static IP', () => {
       staticIpPage.dualStackNetworking().click();
 
-      commonActions.getNextButton().should('be.disabled');
+      commonActions.validateNextIsDisabled();
       staticIpPage.networkWideDns().type(dnsText);
       fillStaticIpForm('ipv4', ipv4Fields);
       fillStaticIpForm('dual-stack', ipv6Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-      commonActions.getNextButton().should('be.disabled'); // auto-save is triggered
+      commonActions.validateNextIsDisabled(); // auto-save is triggered
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'dual-stack');
-        commonActions.getNextButton().should('be.enabled');
+        commonActions.validateNextIsEnabled();
       });
 
-      commonActions.getNextButton().click();
+      commonActions.toNextStepAfter('Static network configurations');
 
       commonActions
         .getWizardStepNav('Network-wide configurations')

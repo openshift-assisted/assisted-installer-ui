@@ -23,8 +23,7 @@ describe(`Create cluster with mce operator enabled`, () => {
     });
     it('The user can select the multicluster engine checkbox', () => {
       OperatorsForm.mceOperatorControl.findLabel().click();
-      commonActions.waitForNext();
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.toNextStepAfter('Review and create'); // don't think so
     });
   });
 });

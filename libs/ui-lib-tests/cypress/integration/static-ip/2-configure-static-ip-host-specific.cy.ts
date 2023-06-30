@@ -16,7 +16,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
   });
 
   it('Can be entered using Form View', () => {
-    commonActions.getNextButton().click();
+    commonActions.toNextStepAfter('Static network configurations');
 
     staticIpPage.getFormViewSelect().should('be.checked');
     staticIpPage.getAddMoreHosts().should('be.disabled');
@@ -29,8 +29,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
     staticIpPage.hostSpecificMacAddress(1).type('00:00:5e:00:53:ae');
     staticIpPage.hostSpecificIpv4Address(1).type('192.168.2.39');
 
-    commonActions.getNextButton().should('be.enabled');
-    commonActions.getNextButton().click();
+    commonActions.toNextStepAfter('Static network configurations'); // NEXT EVEN
   });
 
   describe('Reading existing configuration in Form view', () => {
@@ -69,7 +68,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
       staticIpPage.hostMappingMacAddress(2).should('have.value', '00:00:5e:00:53:af');
       staticIpPage.hostMappingBlockToggle(2).click();
 
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.validateNextIsEnabled();
     });
   });
 });

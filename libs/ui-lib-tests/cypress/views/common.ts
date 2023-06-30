@@ -1,17 +1,66 @@
 import * as utils from '../support/utils';
 
+// TODO complete
+const wizardSteps = [
+    'Cluster details',
+    'Operators',
+    'Host discovery',
+    'Storage',
+    'Networking',
+    'Review and create',
+];
+
+const wizardStepsWithStaticIp = [
+  'Cluster details',
+  'Static network configurations',
+  'Operators',
+  'Host discovery',
+  'Storage',
+  'Networking',
+  'Review and create',
+]
+
+const day2WizardSteps = [
+  'Cluster details',
+  'Generate Discovery ISO',
+  'Download Discovery ISO',
+];
+
+// TODO EXTRACT FROM DATA
+type Day1Steps = 'Cluster details' | 'Static network configurations' | 'Host discovery' | 'Storage' | 'Networking' | 'Review and create' | 'Operators';
+type Day2Steps = 'Cluster details' | 'Generate Discovery ISO' | 'Download Discovery ISO';
+
+type WizardConf = {
+  hasStaticIp: boolean;
+}
+
 export const commonActions = {
   getWizardStepNav: (stepName: string) => {
     return cy.get('.pf-c-wizard__nav-item').contains(stepName);
   },
-  getNextButton: () => {
-    return cy.get(Cypress.env('nextButton'));
+  toNextStepAfter: (fromStep: Day1Steps, conf?: WizardConf) => {
+    const steps = conf?.hasStaticIp ? wizardStepsWithStaticIp: wizardSteps;
+    const currentIndex = steps.findIndex((step) => step === fromStep);
+
+    cy.get(Cypress.env('nextButton')).should('be.enabled').click();
+    commonActions.validateIsAtStep(wizardSteps[currentIndex + 1]);
   },
-  clickNextButton: () => {
-    commonActions.getNextButton().should('be.enabled').click();
+  toNextDay2StepAfter: (fromStep: Day2Steps) => {
+    const currentIndex = day2WizardSteps.findIndex((step) => step === fromStep);
+
+    cy.get(Cypress.env('nextButton')).should('be.enabled').click();
+    cy.get('.pf-c-wizard__main-body').within(() => {
+      commonActions.validateIsAtStep(day2WizardSteps[currentIndex + 1]);
+    })
   },
-  waitForNext: () => {
+  validateIsAtStep: (stepTitle: string) => {
+    cy.get('h2', { timeout: 2500 }).should('contain.text', stepTitle);
+  },
+  validateNextIsEnabled: () => {
     cy.get(Cypress.env('nextButton')).should('be.enabled');
+  },
+  validateNextIsDisabled: () => {
+    cy.get(Cypress.env('nextButton')).should('be.disabled');
   },
   getInfoAlert: () => {
     return cy.get(Cypress.env('infoAlertAriaLabel'));
@@ -30,27 +79,32 @@ export const commonActions = {
       },
       visitClusterDetailsPage: () => {
         cy.visit(`/clusters/${Cypress.env('clusterId')}`);
-      },
+  cy.get('h2').should('exist');
+},
   verifyIsAtStep: (stepTitle: string, timeout?: number) => {
-    cy.get('h2', { timeout }).should('contain.text', stepTitle);
+  cy.get('h2', {timeout}).should('contain.text', stepTitle);
+},
+  startAtCustomManifestsStep: () => {
+    commonActions.getWizardStepNav('Custom manifests').click();
+    commonActions.validateIsAtStep('Custom manifests');
   },
   startAtOperatorsStep: () => {
     commonActions.getWizardStepNav('Operators').click();
+    commonActions.validateIsAtStep('Operators');
   },
   startAtStorageStep: () => {
     commonActions.getWizardStepNav('Storage').click();
+    commonActions.validateIsAtStep('Storage');
   },
-  startAtCustomManifestsStep: () => {
-    commonActions.getWizardStepNav('Custom manifests').click();
-  },
-  startAtNetworkingStep: () => {
+  startAtNetworkingStepFrom: (fromStep: 'Host discovery' | 'Storage' = 'Host discovery') => {
     if (utils.hasWizardSignal('READY_TO_INSTALL')) {
       commonActions.getWizardStepNav('Networking').click();
     } else {
-      commonActions.verifyIsAtStep('Host discovery');
-      commonActions.clickNextButton();
-      commonActions.verifyIsAtStep('Storage');
-      commonActions.clickNextButton();
+      if (fromStep === 'Host discovery') {
+        commonActions.toNextStepAfter(fromStep);
+      }
+      commonActions.toNextStepAfter('Storage');
     }
+    commonActions.validateIsAtStep('Networking');
   },
 };

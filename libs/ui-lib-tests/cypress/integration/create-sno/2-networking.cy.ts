@@ -13,7 +13,7 @@ describe(`Assisted Installer SNO Networking`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtNetworkingStep();
+    commonActions.startAtNetworkingStepFrom('Host discovery');
   });
 
   describe('Validating the Network configuration', () => {
@@ -42,7 +42,7 @@ describe(`Assisted Installer SNO Networking`, () => {
     });
 
     it('Should go to the final step', () => {
-      commonActions.clickNextButton();
+      commonActions.toNextStepAfter('Networking');
     });
   });
 });
