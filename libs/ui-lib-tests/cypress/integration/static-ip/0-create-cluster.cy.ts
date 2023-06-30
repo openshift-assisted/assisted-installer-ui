@@ -42,7 +42,7 @@ describe(`Assisted Installer Static IP Cluster Creation`, () => {
         utils.setLastWizardSignal('CLUSTER_CREATED');
       });
 
-      cy.get('h2').should('contain', 'Static network configurations');
+      commonActions.verifyIsAtStep('Static network configurations');
     });
   });
 });
