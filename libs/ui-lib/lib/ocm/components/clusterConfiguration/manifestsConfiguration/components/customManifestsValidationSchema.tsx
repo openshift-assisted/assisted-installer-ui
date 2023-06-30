@@ -6,9 +6,10 @@ import {
   validateFileSize,
   validateFileName,
   validateFileType,
+  INCORRECT_TYPE_FILE_MESSAGE,
 } from '../../../../../common/utils';
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
-const INCORRECT_TYPE_FILE = 'File type is not supported. File type must be yaml, yml or json.';
+
 const UNIQUE_FOLDER_FILENAME =
   'Ensure unique file names within each folder to avoid conflicts and errors.';
 
@@ -54,8 +55,8 @@ export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>((
           .concat(getUniqueValidationSchema(getAllManifests)),
         manifestYaml: Yup.string()
           .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage(), validateFileSize)
-          .test('not-valid-file', INCORRECT_TYPE_FILE, validateFileType),
+          .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
+          .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
       }),
     ),
   }),
