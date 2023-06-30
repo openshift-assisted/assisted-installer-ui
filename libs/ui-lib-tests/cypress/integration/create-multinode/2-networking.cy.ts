@@ -15,6 +15,7 @@ describe(`Assisted Installer Multinode Networking`, () => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
     commonActions.startAtNetworkingStep();
+    commonActions.verifyIsAtStep('Networking');
   });
 
   describe('Validating the Network configuration', () => {
@@ -29,6 +30,7 @@ describe(`Assisted Installer Multinode Networking`, () => {
     it('Should see the Ready Host inventory status', () => {
       networkingPage.waitForNetworkStatus('Ready');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
+      utils.setLastWizardSignal('HOST_RENAMED_1');
     });
 
     it('Should have enforced Network Management', () => {

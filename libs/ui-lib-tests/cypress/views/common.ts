@@ -25,18 +25,14 @@ export const commonActions = {
   getDNSErrorMessage: () => {
     return cy.get('#form-input-dns-field-helper-error');
   },
+      visitNewClusterPage: () => {
+        cy.visit('/clusters/~new');
+      },
+      visitClusterDetailsPage: () => {
+        cy.visit(`/clusters/${Cypress.env('clusterId')}`);
+      },
   verifyIsAtStep: (stepTitle: string, timeout?: number) => {
     cy.get('h2', { timeout }).should('contain.text', stepTitle);
-  },
-  startAtNetworkingStep: () => {
-    if (utils.hasWizardSignal('READY_TO_INSTALL')) {
-      commonActions.getWizardStepNav('Networking').click();
-    } else {
-      commonActions.verifyIsAtStep('Host discovery');
-      commonActions.clickNextButton();
-      commonActions.verifyIsAtStep('Storage', 1500);
-      commonActions.clickNextButton();
-    }
   },
   startAtOperatorsStep: () => {
     commonActions.getWizardStepNav('Operators').click();
@@ -47,10 +43,14 @@ export const commonActions = {
   startAtCustomManifestsStep: () => {
     commonActions.getWizardStepNav('Custom manifests').click();
   },
-  visitNewClusterPage: () => {
-    cy.visit('/clusters/~new');
-  },
-  visitClusterDetailsPage: () => {
-    cy.visit(`/clusters/${Cypress.env('clusterId')}`);
+  startAtNetworkingStep: () => {
+    if (utils.hasWizardSignal('READY_TO_INSTALL')) {
+      commonActions.getWizardStepNav('Networking').click();
+    } else {
+      commonActions.verifyIsAtStep('Host discovery');
+      commonActions.clickNextButton();
+      commonActions.verifyIsAtStep('Storage');
+      commonActions.clickNextButton();
+    }
   },
 };
