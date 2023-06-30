@@ -46,7 +46,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.waitForNext();
       commonActions.clickNextButton();
 
-      commonActions.getHeader('h2').should('contain', 'Host discovery');
+      commonActions.verifyIsAtStep('Host discovery');
     });
 
     it('Show the dev-preview badge for SNO', () => {
