@@ -6,7 +6,6 @@ import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
 import { CustomManifestValues } from '../data/dataTypes';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
-import { DEBOUNCE_TIME_CODEFIELD } from '../../../../config';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename
@@ -50,7 +49,6 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
             label="Content"
             isRequired
             downloadFileName={getDownloadFileName(manifestIdx, value)}
-            debounceTime={DEBOUNCE_TIME_CODEFIELD}
           />
         </GridItem>
       </Grid>

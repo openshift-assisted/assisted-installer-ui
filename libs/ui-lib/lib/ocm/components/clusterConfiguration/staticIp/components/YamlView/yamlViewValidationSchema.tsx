@@ -21,8 +21,8 @@ const requiredMsg = 'A value is required';
 
 const networkYamlValidationSchema = Yup.string()
   .required(requiredMsg)
-  .test('file-type-yaml', FILE_TYPE_MESSAGE, (value: string) => validateFileType(value))
-  .test('file-size-limit', getMaxFileSizeMessage(), validateFileSize);
+  .test('file-size-limit', getMaxFileSizeMessage(), validateFileSize)
+  .test('file-type-yaml', FILE_TYPE_MESSAGE, (value: string) => validateFileType(value));
 
 const getAllMacAddresses: UniqueStringArrayExtractor<YamlViewValues> = (
   values: YamlViewValues,

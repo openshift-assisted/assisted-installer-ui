@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, HelperTextItem, Stack, StackItem, debounce } from '@patternfly/react-core';
+import { FormGroup, HelperTextItem, Stack, StackItem } from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 import { monaco } from 'react-monaco-editor';
-import { FILE_TYPE_MESSAGE, validateFileName } from '../../../utils';
 
 const CodeField = ({
   label,
@@ -21,7 +20,6 @@ const CodeField = ({
   description,
   isDisabled,
   downloadFileName,
-  debounceTime,
   dataTestid,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
@@ -29,24 +27,6 @@ const CodeField = ({
   const [monacoSubscription, setMonacoSubscription] = React.useState<monaco.IDisposable>();
   const [monacoEditor, setMonacoEditor] = React.useState<monaco.editor.IStandaloneCodeEditor>();
   const errorMessage = useFieldErrorMsg({ name, validate });
-  const codeEditorRef = React.useRef(null);
-  const [isValidValue, setIsValidValue] = React.useState<boolean>(true);
-
-  const onCodeChange = debounce((value: string) => {
-    let isValidVal = true;
-    if (codeEditorRef && codeEditorRef.current) {
-      const codeEditor = codeEditorRef.current as CodeEditor;
-      if (codeEditor.state.filename) {
-        isValidVal = validateFileName(codeEditor.state.filename || '');
-        if (!isValidVal) {
-          setValue('', true);
-        } else {
-          setValue(value, true);
-        }
-      }
-      setIsValidValue(isValidVal);
-    }
-  }, debounceTime || 100);
 
   React.useEffect(() => {
     //Work around for Patternfly CodeEditor not calling onChange after upload or drag/drop files
@@ -59,9 +39,9 @@ const CodeField = ({
       monacoSubscription.dispose();
     }
     setMonacoSubscription(
-      monacoEditor.getModel()?.onDidChangeContent(() => {
+      monacoEditor.onDidChangeModelContent(() => {
         setTouched(true);
-        isValidValue ? setValue(monacoEditor.getModel()?.getValue(), true) : setValue('', true);
+        setValue(monacoEditor.getModel()?.getValue(), true);
       }),
     );
     return () => {
@@ -72,8 +52,9 @@ const CodeField = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monacoEditor]);
 
-  const isValid = !errorMessage && isValidValue;
+  const isValid = !errorMessage;
   const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
+
   return (
     <Stack>
       <StackItem>
@@ -93,7 +74,6 @@ const CodeField = ({
             </HelperText>
           )}
           <CodeEditor
-            ref={codeEditorRef}
             code={field.value as string}
             isUploadEnabled={!isDisabled}
             isDownloadEnabled={isValid}
@@ -103,14 +83,13 @@ const CodeField = ({
             language={language}
             onEditorDidMount={(editor) => setMonacoEditor(editor)}
             downloadFileName={downloadFileName}
-            onCodeChange={onCodeChange}
           />
         </FormGroup>
       </StackItem>
       <StackItem>
-        {!isValid && (
+        {errorMessage && (
           <HelperText fieldId={fieldId} isError>
-            {!isValidValue ? FILE_TYPE_MESSAGE : errorMessage}
+            {errorMessage}
           </HelperText>
         )}
       </StackItem>

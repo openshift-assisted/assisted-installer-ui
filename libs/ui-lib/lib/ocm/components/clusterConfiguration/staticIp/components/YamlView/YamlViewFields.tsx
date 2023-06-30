@@ -14,7 +14,6 @@ import HostSummary from '../CollapsedHost';
 import { MacIpMapping } from './MacIpMapping';
 import { getEmptyYamlHost } from '../../data/emptyData';
 import { OcmCodeField } from '../../../../ui/OcmFormFields';
-import { DEBOUNCE_TIME_CODEFIELD } from '../../../../../config';
 
 const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
   const mapFieldName = `${fieldName}.macInterfaceMap`;
@@ -57,7 +56,6 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
           language={Language.yaml}
           name={`${fieldName}.networkYaml`}
           data-testid={`yaml-${hostIdx}`}
-          debounceTime={DEBOUNCE_TIME_CODEFIELD}
         />
       </FormGroup>
       <FormGroup

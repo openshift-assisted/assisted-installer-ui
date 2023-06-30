@@ -132,7 +132,6 @@ export interface CodeFieldProps extends FieldProps {
   language: CodeEditorProps['language'];
   description?: React.ReactNode;
   downloadFileName?: string;
-  debounceTime?: number;
   dataTestid?: string;
 }
 
