@@ -30,7 +30,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.visitNewClusterPage();
 
       clusterDetailsPage.inputClusterName();
-      clusterDetailsPage.inputbaseDnsDomain();
+      clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion();
 
       clusterDetailsPage.enableSno();

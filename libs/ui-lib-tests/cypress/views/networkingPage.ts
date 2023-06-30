@@ -51,7 +51,7 @@ export const networkingPage = {
   validateSupportLimitation: () => {
     cy.newByDataTestId(Cypress.env('networkingVmsAlert'))
       .should('be.visible')
-      .contains(Cypress.env('vmsSupportLimitationText'));
+      .should('contain.text', Cypress.env('vmsSupportLimitationText'));
   },
   validateBMnoSupportLimitation: () => {
     cy.newByDataTestId(Cypress.env('networkingVmsAlert')).should('not.exist');
@@ -59,7 +59,7 @@ export const networkingPage = {
   checkDhcpSupportLevel: () => {
     cy.get(Cypress.env('vipAutoAllocSupportLevel'))
       .should('be.visible')
-      .contains(Cypress.env('devPreviewSupportLevel'));
+      .should('contain.text', Cypress.env('devPreviewSupportLevel'));
   },
   waitForNetworkStatusToNotContain: (
     text,

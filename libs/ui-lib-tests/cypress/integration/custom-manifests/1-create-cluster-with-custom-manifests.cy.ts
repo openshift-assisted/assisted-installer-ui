@@ -19,7 +19,7 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
       commonActions.visitNewClusterPage();
 
       clusterDetailsPage.inputClusterName();
-      clusterDetailsPage.inputbaseDnsDomain();
+      clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion();
 
       clusterDetailsPage.inputPullSecret();

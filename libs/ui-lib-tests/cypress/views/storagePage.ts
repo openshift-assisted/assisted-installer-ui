@@ -47,8 +47,10 @@ export const storagePage = {
   },
   validateSkipFormattingIcon: (diskId: string) => {
     //If a disk is skip formatting validate that warning icon is shown
-    cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within((/* $diskRow */) => {
-      cy.get('[role="img"]').should('have.attr', 'fill', Cypress.env('warningIconFillColor'));
-    })
+    cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within(
+      (/* $diskRow */) => {
+        cy.get('[role="img"]').should('have.attr', 'fill', Cypress.env('warningIconFillColor'));
+      },
+    );
   },
 };
