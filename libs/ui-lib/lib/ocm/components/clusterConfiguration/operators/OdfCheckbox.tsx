@@ -14,7 +14,7 @@ const OdfLabel = ({ disabledReason }: { disabledReason?: string }) => (
     </Tooltip>
     <PopoverIcon
       component={'a'}
-      headerContent="Additional Requirements"
+      headerContent="Additional requirements"
       bodyContent={
         <a href={ODF_REQUIREMENTS_LINK} target="_blank" rel="noopener noreferrer">
           Learn more about the requirements for OpenShift Data Foundation <ExternalLinkAltIcon />.
