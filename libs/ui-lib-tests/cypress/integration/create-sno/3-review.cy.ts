@@ -14,7 +14,7 @@ describe(`Assisted Installer SNO Review`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.getHeader('h2').should('contain', 'Review and create');
+    commonActions.verifyIsAtStep('Review and create');
   });
 
   describe('Cluster summary', () => {

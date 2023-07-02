@@ -45,7 +45,7 @@ export const bareMetalDiscoveryPage = {
     });
   },
   waitForHostRowToContain: (text, timeout = Cypress.env('HOST_DISCOVERY_TIMEOUT')) => {
-    cy.get('table.hosts-table > tbody > tr', { timeout: timeout }).should('contain', text);
+    cy.get('table.hosts-table > tbody > tr', { timeout: timeout }).should('contain.text', text);
   },
   selectHostRowKebabAction: (rowIndex, actionItem) => {
     cy.get(`[data-testid=host-row-${rowIndex}] > .pf-c-table__action .pf-c-dropdown__toggle`)
@@ -98,21 +98,21 @@ export const bareMetalDiscoveryPage = {
   validateHostRowColumnValue: (hostRowIndex, columnDataTestId, value) => {
     cy.get(
       `[data-testid=host-row-${hostRowIndex}] > [data-testid=${columnDataTestId}] > .pf-m-align-items-center > .pf-l-flex > .pf-c-button`,
-    ).should('contain', value);
+    ).should('contain.text', value);
   },
   sortCpuAscending: () => {
     // first click will sort in Ascending order (lowest to highest)
     cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-c-table__button`).click();
     cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-c-table__button > div > span > svg > path`)
       .invoke('attr', 'd')
-      .should('contain', 'M88');
+      .should('contain.text', 'M88');
   },
   sortCpuDescending: () => {
     // second click will sort in Descending order (highest to lowest)
     cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-c-table__button`).click();
     cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-c-table__button > div > span > svg > path`)
       .invoke('attr', 'd')
-      .should('contain', 'M168');
+      .should('contain.text', 'M168');
   },
   clickSaveEditHostsForm: () => {
     cy.get(Cypress.env('submitButton')).click();

@@ -15,7 +15,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
     commonActions.visitClusterDetailsPage();
   });
 
-  describe('Modifyng existing Custom Manifests', () => {
+  describe('Modifying existing Custom Manifests', () => {
     it('Can configure custom manifests step and next button is disabled', () => {
       cy.wait('@list-manifests').then(() => {
         commonActions
@@ -36,17 +36,20 @@ describe(`Assisted Installer Custom manifests step`, () => {
       customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/img.png`);
       customManifestsPage
         .getYamlContentError()
-        .contains('File type is not supported. File type must be yaml, yml or json.');
+        .should('contain.text', 'File type is not supported. File type must be yaml, yml or json.');
       commonActions.getNextButton().should('be.disabled');
     });
     it('Incorrect file name', () => {
       customManifestsPage.getFileName(0).clear().type('test.txt');
       customManifestsPage
         .getFileNameError()
-        .contains('Must have a yaml, yml or json extension and can not contain /.');
+        .should('contain.text', 'Must have a yaml, yml or json extension and can not contain /.');
       customManifestsPage
         .getAlertTitle()
-        .contains('Custom manifests configuration contains missing or invalid fields');
+        .should(
+          'contain.text',
+          'Custom manifests configuration contains missing or invalid fields',
+        );
       commonActions.getNextButton().should('be.disabled');
     });
   });

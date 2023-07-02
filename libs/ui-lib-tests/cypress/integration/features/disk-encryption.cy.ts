@@ -69,7 +69,7 @@ describe(`Assisted Installer Disk Encryption`, () => {
     utils.setLastWizardSignal('CLUSTER_CREATED');
 
     commonActions.clickNextButton();
-    cy.get('h2').should('contain', 'Host discovery');
+    commonActions.verifyIsAtStep('Host discovery');
     bareMetalDiscoveryPage.setClusterIdFromUrl();
   });
 });
