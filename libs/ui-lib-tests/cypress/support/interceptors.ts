@@ -110,16 +110,13 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
 
 const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
   const fixtureMapping = getScenarioFixtureMapping();
-  if (fixtureMapping?.manifests) {
-    req.reply(fixtureMapping.manifests);
-  }
+  req.reply(fixtureMapping?.manifests || []);
 };
 
 const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
   const fixtureMapping = getScenarioFixtureMapping();
-  if (fixtureMapping?.manifestContent) {
-    req.reply(fixtureMapping.manifestContent);
-  }
+  const sendContent = hasWizardSignal('CUSTOM_MANIFEST_ADDED');
+  req.reply(sendContent ? fixtureMapping.manifestContent : '');
 };
 
 const setScenarioEnvVars = ({ activeScenario }) => {
@@ -247,37 +244,28 @@ const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };
 
-const addCustomManifestsIntercepts = (loadManifestContent = false) => {
+const addCustomManifestsIntercepts = () => {
   cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
     'list-manifests',
   );
   cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
     'update-manifests',
   );
-  cy.intercept('DELETE', `${clusterApiPath}/manifests`).as('delete-manifests');
-  if (loadManifestContent) {
-    cy.intercept(
-      'GET',
-      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
-      mockCustomManifestFileResponse,
-    ).as('info-manifest-with-content-1');
-    cy.intercept(
-      'GET',
-      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
-      mockCustomManifestFileResponse,
-    ).as('info-manifest-with-content-2');
-  } else {
-    cy.intercept(
-      'GET',
-      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest1.yaml`,
-      '',
-    ).as('info-manifest-without-content-1');
-    cy.intercept(
-      'GET',
-      `${clusterApiPath}/manifests/files?folder=manifests&file_name=manifest2.yaml`,
-      '',
-    ).as('info-manifest-without-content-2');
-  }
+
+  cy.intercept('POST', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'create-manifest',
+  );
+
+  cy.intercept('DELETE', `${clusterApiPath}/manifests?folder=manifests&file_name=*`, {
+    statusCode: 200,
+    body: {},
+  }).as('delete-manifests');
+
+  cy.intercept(
+    'GET',
+    `${clusterApiPath}/manifests/files?folder=manifests&file_name=*`,
+    mockCustomManifestFileResponse,
+  ).as('info-manifest-with-content');
 };
 
 const addEventsIntercepts = () => {
@@ -301,7 +289,7 @@ const addEventsIntercepts = () => {
   }).as('events');
 };
 
-const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null, loadManifestContent?: boolean) => {
+const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   Cypress.env('clusterId', fakeClusterId);
 
   if (conf !== null) {
@@ -310,7 +298,7 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null, loadManifestConten
       setScenarioEnvVars(conf);
     }
   }
-  addCustomManifestsIntercepts(loadManifestContent || false);
+  addCustomManifestsIntercepts();
   addClusterCreationIntercepts();
   addClusterListIntercepts();
   addClusterPatchAndDetailsIntercepts();

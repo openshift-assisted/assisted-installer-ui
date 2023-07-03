@@ -22,6 +22,19 @@ export const defaultWizardSteps: ClusterWizardStepsType[] = [
   'review',
 ];
 
+export const wizardStepsOrder: ClusterWizardStepsType[] = [
+  'cluster-details',
+  'static-ip-yaml-view',
+  'static-ip-network-wide-configurations',
+  'static-ip-host-configurations',
+  'operators',
+  'host-discovery',
+  'storage',
+  'networking',
+  'custom-manifests',
+  'review',
+];
+
 export const staticIpFormViewSubSteps: ClusterWizardStepsType[] = [
   'static-ip-network-wide-configurations',
   'static-ip-host-configurations',

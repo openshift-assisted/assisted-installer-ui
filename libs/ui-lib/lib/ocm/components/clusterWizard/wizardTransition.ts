@@ -16,6 +16,7 @@ import {
   Validation as HostValidation,
 } from '../../../common/types/hosts';
 import { getKeys } from '../../../common/utils';
+import { wizardStepsOrder } from './constants';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -40,6 +41,16 @@ export const getLastStepForWizard = (
   } else {
     return 'review';
   }
+};
+
+export const isStepAfter = (stepA: ClusterWizardStepsType, stepB: ClusterWizardStepsType) => {
+  const indexA = wizardStepsOrder.findIndex((step) => step === stepA);
+  const indexB = wizardStepsOrder.findIndex((step) => step === stepB);
+  if (indexA === -1 || indexB === -1) {
+    return false; // Missing step in "wizardStepsOrder"
+  }
+
+  return indexA > indexB;
 };
 
 export const getClusterWizardFirstStep = (

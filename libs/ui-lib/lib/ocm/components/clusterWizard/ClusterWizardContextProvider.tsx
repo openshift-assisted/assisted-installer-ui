@@ -6,6 +6,7 @@ import {
   ClusterWizardStepsType,
   getClusterWizardFirstStep,
   isStaticIpStep,
+  isStepAfter,
 } from './wizardTransition';
 import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
@@ -79,13 +80,10 @@ const getWizardStepIds = (
   return stepsCopy;
 };
 
-const validateIfCustomsManifestsNeedsToBeFilled = (
-  customManifests: ListManifestsExtended,
+const validateIfCustomsManifestsNeedToBeFilled = (
+  customManifests: ListManifestsExtended | undefined,
 ): boolean => {
-  const customManifestsEmpty = customManifests.filter(
-    (customManifest) => customManifest.yamlContent === '',
-  );
-  return customManifestsEmpty.length > 0;
+  return (customManifests || []).some((customManifest) => customManifest.yamlContent === '');
 };
 
 const ClusterWizardContextProvider = ({
@@ -111,10 +109,9 @@ const ClusterWizardContextProvider = ({
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
     const customManifestsStepNeedsToBeFilled =
-      customManifests && customManifests.length > 0
-        ? validateIfCustomsManifestsNeedsToBeFilled(customManifests)
-        : false;
-    const firstStep = getClusterWizardFirstStep(
+      validateIfCustomsManifestsNeedToBeFilled(customManifests);
+    const hasManifests = (customManifests || []).length > 0;
+    const requiredStepId = getClusterWizardFirstStep(
       locationState,
       staticIpInfo,
       cluster?.status,
@@ -125,13 +122,18 @@ const ClusterWizardContextProvider = ({
     const firstStepIds = getWizardStepIds(
       wizardStepIds,
       staticIpInfo?.view,
-      customManifests && customManifests.length > 0,
+      hasManifests,
       isSingleClusterFeatureEnabled,
     );
-    setCurrentStepId(firstStep);
+    // Only move step if there is still none, or the user is at a forbidden step
+    const shouldMoveStep = !currentStepId || isStepAfter(currentStepId, requiredStepId);
+    if (shouldMoveStep) {
+      setCurrentStepId(requiredStepId);
+    }
+
     setWizardStepIds(firstStepIds);
     setClusterPermissions(cluster, permissions);
-    setAddCustomManifests(customManifests ? customManifests.length > 0 : false);
+    setAddCustomManifests(hasManifests);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customManifests]);
 
