@@ -1,4 +1,4 @@
-import './configurations.ts';
+import './configurations';
 import './styles.css';
 import './utils';
 
