@@ -16,7 +16,6 @@ import {
   Validation as HostValidation,
 } from '../../../common/types/hosts';
 import { getKeys } from '../../../common/utils';
-import { wizardStepsOrder } from './constants';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -29,6 +28,19 @@ export type ClusterWizardStepsType =
   | 'networking'
   | 'review'
   | 'custom-manifests';
+
+const wizardStepsOrder: ClusterWizardStepsType[] = [
+  'cluster-details',
+  'static-ip-yaml-view',
+  'static-ip-network-wide-configurations',
+  'static-ip-host-configurations',
+  'operators',
+  'host-discovery',
+  'storage',
+  'networking',
+  'custom-manifests',
+  'review',
+];
 
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
