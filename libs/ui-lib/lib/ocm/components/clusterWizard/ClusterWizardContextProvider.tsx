@@ -126,7 +126,9 @@ const ClusterWizardContextProvider = ({
       isSingleClusterFeatureEnabled,
     );
     // Only move step if there is still none, or the user is at a forbidden step
-    const shouldMoveStep = !currentStepId || isStepAfter(currentStepId, requiredStepId);
+    const shouldMoveStep =
+      !currentStepId ||
+      (customManifestsStepNeedsToBeFilled && isStepAfter(currentStepId, requiredStepId));
     if (shouldMoveStep) {
       setCurrentStepId(requiredStepId);
     }
