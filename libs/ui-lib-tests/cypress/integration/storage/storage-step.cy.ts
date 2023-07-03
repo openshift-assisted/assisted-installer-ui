@@ -1,7 +1,6 @@
 import { storagePage } from '../../views/storagePage';
 import { commonActions } from '../../views/common';
 import { hostsTableSection } from '../../views/hostsTableSection';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 const masterDisks = [
   {
@@ -35,7 +34,6 @@ describe(`Assisted Installer Storage Step`, () => {
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_STORAGE_CLUSTER',
     });
-    transformBasedOnUIVersion();
   });
 
   describe(`Host storage table`, () => {

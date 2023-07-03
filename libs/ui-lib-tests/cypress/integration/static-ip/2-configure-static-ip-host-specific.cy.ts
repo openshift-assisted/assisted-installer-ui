@@ -1,6 +1,5 @@
 import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer Static IP Host specific Configuration`, () => {
   before(() => {
@@ -8,7 +7,6 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
       activeSignal: 'STATIC_IP_NETWORK_WIDE_CONFIGURED',
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
