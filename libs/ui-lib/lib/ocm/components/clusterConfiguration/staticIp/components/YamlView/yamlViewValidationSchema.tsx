@@ -11,26 +11,18 @@ import {
   UniqueStringArrayExtractor,
 } from '../../commonValidationSchemas';
 import {
+  INCORRECT_TYPE_FILE_MESSAGE,
   getMaxFileSizeMessage,
-  isStringValidJSON,
-  isStringValidYAML,
   validateFileSize,
+  validateFileType,
 } from '../../../../../../common/utils';
 
-const MAX_FILE_SIZE = 100000; //100 kb
 const requiredMsg = 'A value is required';
-const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
 
 const networkYamlValidationSchema = Yup.string()
   .required(requiredMsg)
-  .test(
-    'file-type-yaml',
-    FILE_TYPE_MESSAGE,
-    (value: string) => isStringValidYAML(value) && !isStringValidJSON(value),
-  )
-  .test('file-size-limit', getMaxFileSizeMessage(MAX_FILE_SIZE), (value: string) =>
-    validateFileSize(value, MAX_FILE_SIZE),
-  );
+  .test('file-size-limit', getMaxFileSizeMessage, validateFileSize)
+  .test('file-type-yaml', INCORRECT_TYPE_FILE_MESSAGE, validateFileType);
 
 const getAllMacAddresses: UniqueStringArrayExtractor<YamlViewValues> = (
   values: YamlViewValues,
