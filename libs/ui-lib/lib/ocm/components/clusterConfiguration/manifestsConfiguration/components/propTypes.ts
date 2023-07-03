@@ -17,7 +17,13 @@ export type CustomManifestsFormProps = {
   showEmptyValues: boolean;
   getInitialValues(customManifests: ListManifestsExtended): ManifestFormData;
   getEmptyValues(): ManifestFormData;
-  validationSchema: Yup.Schema<ManifestFormData>;
+  validationSchema: Yup.ObjectSchema<
+    {
+      manifests: object[];
+    } & {
+      manifests: object[];
+    }
+  >;
   cluster: Cluster;
 };
 

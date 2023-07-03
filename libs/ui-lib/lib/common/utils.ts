@@ -54,10 +54,10 @@ export const validateFileSize = (value: string): boolean => {
 
 export const getMaxFileSizeMessage = `File size is too big. Upload a new ${fileSize(
   MAX_FILE_SIZE_BYTES,
-  MAX_FILE_SIZE_OFFSET_FACTOR,
+  0,
   'si',
 )} or less.`;
 
 export const validateFileName = (fileName: string) => {
-  return new RegExp(FILENAME_REGEX).test((fileName || '').toString());
+  return new RegExp(FILENAME_REGEX).test(fileName || '');
 };

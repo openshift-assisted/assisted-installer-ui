@@ -40,24 +40,22 @@ export const getUniqueValidationSchema = <FormValues,>(
 const getAllManifests: UniqueStringArrayExtractor<ManifestFormData> = (values: ManifestFormData) =>
   values.manifests.map((manifest) => `${manifest.folder}_${manifest.filename}`);
 
-export const getFormViewManifestsValidationSchema = Yup.lazy<ManifestFormData>(() =>
-  Yup.object<ManifestFormData>().shape({
-    manifests: Yup.array<CustomManifestValues>().of(
-      Yup.object().shape({
-        folder: Yup.mixed().required('Required').concat(getUniqueValidationSchema(getAllManifests)),
-        filename: Yup.string()
-          .required('Required')
-          .min(1, 'Number of characters must be 1-255')
-          .max(255, 'Number of characters must be 1-255')
-          .test('not-correct-filename', INCORRECT_FILENAME, (value: string) => {
-            return validateFileName(value);
-          })
-          .concat(getUniqueValidationSchema(getAllManifests)),
-        manifestYaml: Yup.string()
-          .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
-          .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
-      }),
-    ),
-  }),
-);
+export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
+  manifests: Yup.array<CustomManifestValues>().of(
+    Yup.object().shape({
+      folder: Yup.mixed().required('Required').concat(getUniqueValidationSchema(getAllManifests)),
+      filename: Yup.string()
+        .required('Required')
+        .min(1, 'Number of characters must be 1-255')
+        .max(255, 'Number of characters must be 1-255')
+        .test('not-correct-filename', INCORRECT_FILENAME, (value: string) => {
+          return validateFileName(value);
+        })
+        .concat(getUniqueValidationSchema(getAllManifests)),
+      manifestYaml: Yup.string()
+        .required('Required')
+        .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
+        .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
+    }),
+  ),
+});
