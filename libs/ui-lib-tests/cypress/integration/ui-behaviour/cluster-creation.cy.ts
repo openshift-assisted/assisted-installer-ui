@@ -24,7 +24,7 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
 
       clusterDetailsPage
         .getSelectedOpenShiftVersion()
-        .should('contain', `OpenShift ${versionsFixtures.getDefaultOpenShiftVersion()}`);
+        .should('contain.text', `OpenShift ${versionsFixtures.getDefaultOpenShiftVersion()}`);
 
       // Checking that the submitting value (item ID) for each version is correct
       clusterDetailsPage.openOpenshiftVersionDropdown();

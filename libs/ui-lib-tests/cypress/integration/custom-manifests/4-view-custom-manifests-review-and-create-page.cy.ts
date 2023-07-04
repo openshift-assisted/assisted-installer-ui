@@ -11,7 +11,7 @@ describe(`Assisted Installer Review and create step with custom manifests`, () =
   });
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null, true);
+    cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
   });
 
@@ -21,7 +21,9 @@ describe(`Assisted Installer Review and create step with custom manifests`, () =
         .getWizardStepNav('Review and create')
         .should('have.class', ACTIVE_NAV_ITEM_CLASS);
       reviewAndCreatePage.getCustomManifestsSection().click();
-      reviewAndCreatePage.getCustomManifestsDetail().contains('manifests/manifest1.yaml');
+      reviewAndCreatePage
+        .getCustomManifestsDetail()
+        .should('contain.text', 'manifests/manifest1.yaml');
     });
   });
 });

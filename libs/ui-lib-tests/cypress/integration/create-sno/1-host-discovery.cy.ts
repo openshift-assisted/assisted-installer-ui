@@ -20,7 +20,7 @@ describe(`Assisted Installer SNO Host discovery`, () => {
 
   describe('Downloading the Discovery ISO', () => {
     it('Should generate discovery ISO and wait for generate to complete', () => {
-      bareMetalDiscoveryPage.getAddHostsButton().should('contain', 'Add host');
+      bareMetalDiscoveryPage.getAddHostsButton().should('contain.text', 'Add host');
       bareMetalDiscoveryPage.openAddHostsModal();
 
       bareMetalDiscoveryIsoModal.getGenerateDiscoveryIso().click();

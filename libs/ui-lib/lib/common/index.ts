@@ -1,3 +1,4 @@
+import './configurations';
 import './styles.css';
 import './utils';
 
