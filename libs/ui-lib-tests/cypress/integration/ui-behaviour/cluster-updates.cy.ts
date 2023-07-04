@@ -1,5 +1,4 @@
 import { navbar } from '../../views/navbar';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { commonActions } from '../../views/common';
 import { operatorsPage } from '../../views/operatorsPage';
 
@@ -9,7 +8,6 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

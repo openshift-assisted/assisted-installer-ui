@@ -1,7 +1,6 @@
 import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as utils from '../../support/utils';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer Multinode Cluster Installation`, () => {
   before(() => {
@@ -9,7 +8,6 @@ describe(`Assisted Installer Multinode Cluster Installation`, () => {
       activeSignal: '',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

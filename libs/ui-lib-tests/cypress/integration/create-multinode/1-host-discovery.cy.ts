@@ -4,7 +4,6 @@ import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoMod
 import { hostsTableSection } from '../../views/hostsTableSection';
 import { navbar } from '../../views/navbar';
 
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import * as utils from '../../support/utils';
 
 const validateHostTableDetails = () => {
@@ -24,7 +23,6 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
       activeSignal: 'CLUSTER_CREATED',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

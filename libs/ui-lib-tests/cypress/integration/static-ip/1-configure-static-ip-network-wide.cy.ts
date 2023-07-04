@@ -1,6 +1,5 @@
 import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 type NetworkSelection = 'ipv4' | 'dual-stack';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
@@ -51,7 +50,6 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       activeSignal: 'STATIC_IP_ENABLED',
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
