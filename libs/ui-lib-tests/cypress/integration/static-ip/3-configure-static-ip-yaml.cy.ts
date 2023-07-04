@@ -1,5 +1,3 @@
-import { should } from 'chai';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
@@ -10,7 +8,6 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
         activeSignal: '',
         activeScenario: 'AI_CREATE_STATIC_IP',
       });
-      transformBasedOnUIVersion();
     });
 
     beforeEach(() => {
@@ -66,7 +63,6 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
         activeSignal: 'STATIC_IP_YAML_CONFIGURED',
         activeScenario: 'AI_CREATE_STATIC_IP',
       });
-      transformBasedOnUIVersion();
     });
 
     beforeEach(() => {
