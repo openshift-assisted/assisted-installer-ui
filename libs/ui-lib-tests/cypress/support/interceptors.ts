@@ -15,6 +15,7 @@ import createStorageFixtureMapping from '../fixtures/storage';
 import createDualStackFixtureMapping from '../fixtures/dualstack';
 import createStaticIpFixtureMapping from '../fixtures/static-ip';
 import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
+import createCustomManifestsFixtureMapping from '../fixtures/custom-manifests';
 import { getEventHeaders, getEvents } from '../fixtures/cluster/events';
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
@@ -60,6 +61,9 @@ const getScenarioFixtureMapping = () => {
     case 'AI_CREATE_STATIC_IP':
       fixtureMapping = createStaticIpFixtureMapping;
       break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      fixtureMapping = createCustomManifestsFixtureMapping;
+      break;
     default:
       break;
   }
@@ -104,6 +108,17 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
   }
 };
 
+const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  req.reply(fixtureMapping?.manifests || []);
+};
+
+const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  const sendContent = hasWizardSignal('CUSTOM_MANIFEST_ADDED');
+  req.reply(sendContent ? fixtureMapping.manifestContent : '');
+};
+
 const setScenarioEnvVars = ({ activeScenario }) => {
   Cypress.env('AI_SCENARIO', activeScenario);
   Cypress.env('ASSISTED_SNO_DEPLOYMENT', false);
@@ -133,6 +148,10 @@ const setScenarioEnvVars = ({ activeScenario }) => {
       break;
     case 'AI_CREATE_STATIC_IP':
       Cypress.env('CLUSTER_NAME', 'ai-e2e-static-ip');
+      break;
+    case 'AI_CREATE_CUSTOM_MANIFESTS':
+      Cypress.env('CLUSTER_NAME', 'ai-e2e-custom-manifests');
+      Cypress.env('NUM_WORKERS', 0);
       break;
     default:
       break;
@@ -212,7 +231,6 @@ const addPlatformFeatureIntercepts = () => {
       req.reply(featureSupport[shortOpenshiftVersion]);
     },
   );
-  cy.intercept('GET', `${clusterApiPath}/manifests`, []);
 };
 
 const addAdditionalIntercepts = () => {
@@ -221,9 +239,33 @@ const addAdditionalIntercepts = () => {
   ]);
 
   cy.intercept('GET', '/api/assisted-install/v2/clusters/default-config', defaultConfig).as(
-    'getDefaultConfig',
+    'get-default-config',
   );
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
+};
+
+const addCustomManifestsIntercepts = () => {
+  cy.intercept('GET', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'list-manifests',
+  );
+  cy.intercept('PATCH', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'update-manifests',
+  );
+
+  cy.intercept('POST', `${clusterApiPath}/manifests`, mockCustomManifestResponse).as(
+    'create-manifest',
+  );
+
+  cy.intercept('DELETE', `${clusterApiPath}/manifests?folder=manifests&file_name=*`, {
+    statusCode: 200,
+    body: {},
+  }).as('delete-manifests');
+
+  cy.intercept(
+    'GET',
+    `${clusterApiPath}/manifests/files?folder=manifests&file_name=*`,
+    mockCustomManifestFileResponse,
+  ).as('info-manifest-with-content');
 };
 
 const addEventsIntercepts = () => {
@@ -256,7 +298,7 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
       setScenarioEnvVars(conf);
     }
   }
-
+  addCustomManifestsIntercepts();
   addClusterCreationIntercepts();
   addClusterListIntercepts();
   addClusterPatchAndDetailsIntercepts();

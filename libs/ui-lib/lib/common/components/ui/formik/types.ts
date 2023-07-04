@@ -132,6 +132,7 @@ export interface CodeFieldProps extends FieldProps {
   language: CodeEditorProps['language'];
   description?: React.ReactNode;
   downloadFileName?: string;
+  dataTestid?: string;
 }
 
 type RadioWithoutRef = Omit<RadioProps, 'ref'>;

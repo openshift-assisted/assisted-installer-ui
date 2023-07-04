@@ -4,7 +4,6 @@ import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoMod
 import { hostsTableSection } from '../../views/hostsTableSection';
 import { navbar } from '../../views/navbar';
 
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import * as utils from '../../support/utils';
 
 const validateHostTableDetails = () => {
@@ -24,7 +23,6 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
       activeSignal: 'CLUSTER_CREATED',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
@@ -34,7 +32,7 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
 
   describe('Downloading the Discovery ISO', () => {
     it('Should generate discovery ISO and wait for generate to complete', () => {
-      bareMetalDiscoveryPage.getAddHostsButton().should('contain', 'Add hosts');
+      bareMetalDiscoveryPage.getAddHostsButton().should('contain.text', 'Add hosts');
       bareMetalDiscoveryPage.openAddHostsModal();
 
       bareMetalDiscoveryIsoModal.getGenerateDiscoveryIso().click();

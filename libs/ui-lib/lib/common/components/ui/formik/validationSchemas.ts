@@ -34,7 +34,7 @@ const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)$/;
 const DNS_NAME_REGEX_OCM = /^([a-z0-9]+(-[a-z0-9]+)*[.])+[a-z]{2,}$/;
 
 const PROXY_DNS_REGEX =
-  /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})+$)/;
+  /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*$)/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
