@@ -18,4 +18,8 @@ const clusterValidationsInfo = {
   operators: [],
 };
 
-export { clusterValidationsInfo };
+const initialClusterValidations = {
+  clusterValidationsInfo,
+};
+
+export { initialClusterValidations };

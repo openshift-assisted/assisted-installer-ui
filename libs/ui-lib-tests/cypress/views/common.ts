@@ -1,49 +1,57 @@
 import * as utils from '../support/utils';
 
-// TODO complete
 const wizardSteps = [
-    'Cluster details',
-    'Operators',
-    'Host discovery',
-    'Storage',
-    'Networking',
-    'Review and create',
-];
-
-const wizardStepsWithStaticIp = [
   'Cluster details',
-  'Static network configurations',
   'Operators',
   'Host discovery',
   'Storage',
   'Networking',
   'Review and create',
-]
-
-const day2WizardSteps = [
-  'Cluster details',
-  'Generate Discovery ISO',
-  'Download Discovery ISO',
 ];
 
-// TODO EXTRACT FROM DATA
-type Day1Steps = 'Cluster details' | 'Static network configurations' | 'Host discovery' | 'Storage' | 'Networking' | 'Review and create' | 'Operators';
+const wizardStepsWithStaticIp = [
+  'Cluster details',
+  'Network-wide configurations',
+  'Host specific configurations',
+  'Operators',
+  'Host discovery',
+  'Storage',
+  'Networking',
+  'Review and create',
+];
+
+const day2WizardSteps = ['Cluster details', 'Generate Discovery ISO', 'Download Discovery ISO'];
+
+type Day1Steps =
+  | 'Cluster details'
+  | 'Network-wide configurations'
+  | 'Host specific configurations'
+  | 'Host discovery'
+  | 'Storage'
+  | 'Networking'
+  | 'Review and create'
+  | 'Operators';
 type Day2Steps = 'Cluster details' | 'Generate Discovery ISO' | 'Download Discovery ISO';
 
 type WizardConf = {
   hasStaticIp: boolean;
-}
+};
 
 export const commonActions = {
   getWizardStepNav: (stepName: string) => {
     return cy.get('.pf-c-wizard__nav-item').contains(stepName);
   },
   toNextStepAfter: (fromStep: Day1Steps, conf?: WizardConf) => {
-    const steps = conf?.hasStaticIp ? wizardStepsWithStaticIp: wizardSteps;
-    const currentIndex = steps.findIndex((step) => step === fromStep);
+    const steps = conf?.hasStaticIp ? wizardStepsWithStaticIp : wizardSteps;
 
+    const currentIndex = steps.findIndex((step) => step === fromStep);
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
-    commonActions.validateIsAtStep(wizardSteps[currentIndex + 1]);
+
+    if (conf?.hasStaticIp) {
+      commonActions.validateIsAtSubStep(steps[currentIndex + 1]);
+    } else {
+      commonActions.validateIsAtStep(steps[currentIndex + 1]);
+    }
   },
   toNextDay2StepAfter: (fromStep: Day2Steps) => {
     const currentIndex = day2WizardSteps.findIndex((step) => step === fromStep);
@@ -51,10 +59,13 @@ export const commonActions = {
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
     cy.get('.pf-c-wizard__main-body').within(() => {
       commonActions.validateIsAtStep(day2WizardSteps[currentIndex + 1]);
-    })
+    });
   },
   validateIsAtStep: (stepTitle: string) => {
-    cy.get('h2', { timeout: 2500 }).should('contain.text', stepTitle);
+    cy.get('h2', { timeout: 2000 }).should('contain.text', stepTitle);
+  },
+  validateIsAtSubStep: (subStepTitle: string) => {
+    cy.get('h3', { timeout: 2000 }).should('contain.text', subStepTitle);
   },
   validateNextIsEnabled: () => {
     cy.get(Cypress.env('nextButton')).should('be.enabled');
@@ -74,16 +85,19 @@ export const commonActions = {
   getDNSErrorMessage: () => {
     return cy.get('#form-input-dns-field-helper-error');
   },
-      visitNewClusterPage: () => {
-        cy.visit('/clusters/~new');
-      },
-      visitClusterDetailsPage: () => {
-        cy.visit(`/clusters/${Cypress.env('clusterId')}`);
-  cy.get('h2').should('exist');
-},
+  visitNewClusterPage: () => {
+    cy.visit('/clusters/~new');
+  },
+  visitClusterDetailsPage: () => {
+    cy.visit(`/clusters/${Cypress.env('clusterId')}`);
+    cy.get('h2').should('exist');
+  },
   verifyIsAtStep: (stepTitle: string, timeout?: number) => {
-  cy.get('h2', {timeout}).should('contain.text', stepTitle);
-},
+    cy.get('h2', { timeout }).should('contain.text', stepTitle);
+  },
+  verifyIsAtSubStep: (stepTitle: string, timeout?: number) => {
+    cy.get('h3', { timeout }).should('contain.text', stepTitle);
+  },
   startAtCustomManifestsStep: () => {
     commonActions.getWizardStepNav('Custom manifests').click();
     commonActions.validateIsAtStep('Custom manifests');

@@ -1,4 +1,3 @@
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { day2FlowIds } from '../../fixtures';
 import { setLastWizardSignal } from '../../support/utils';
 
@@ -8,7 +7,6 @@ describe(`Day2 flow`, () => {
       activeScenario: 'DAY2_FLOW',
       activeSignal: 'CLUSTER_FINISHED_INSTALLATION',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

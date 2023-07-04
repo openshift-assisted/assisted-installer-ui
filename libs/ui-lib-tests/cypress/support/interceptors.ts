@@ -335,9 +335,9 @@ const addCustomManifestsIntercepts = () => {
   }).as('delete-manifests');
 
   cy.intercept(
-      'GET',
-      `${day1ManifestsPath}/files?folder=manifests&file_name=*`,
-      mockCustomManifestFileResponse,
+    'GET',
+    `${day1ManifestsPath}/files?folder=manifests&file_name=*`,
+    mockCustomManifestFileResponse,
   ).as('info-manifest-with-content');
 };
 

@@ -77,7 +77,7 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'ipv4');
-      commonActions.validateNextIsEnabled();
+        commonActions.validateNextIsEnabled();
       });
     });
 
@@ -94,10 +94,10 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'dual-stack');
-        commonActions.validateNextIsEnabled();
       });
 
-      commonActions.toNextStepAfter('Static network configurations');
+      commonActions.validateNextIsEnabled();
+      commonActions.toNextStepAfter('Network-wide configurations', { hasStaticIp: true });
 
       commonActions
         .getWizardStepNav('Network-wide configurations')

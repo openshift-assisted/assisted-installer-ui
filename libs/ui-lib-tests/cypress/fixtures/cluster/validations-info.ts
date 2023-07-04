@@ -1,5 +1,5 @@
 // Imports from `lodash/module` are not working in the monorepo
-import { isArray, merge } from 'lodash';
+import { isArray, merge, cloneDeep } from 'lodash';
 
 const addOrUpdateValidationInfo = (prevValidationGroup, newValidationGroup) => {
   const isNewValidationId = () =>
@@ -14,7 +14,11 @@ const addOrUpdateValidationInfo = (prevValidationGroup, newValidationGroup) => {
 };
 
 const upgradeValidationsInfo = (prevValidationInfo, newValidationInfo) => {
-  return merge(prevValidationInfo, newValidationInfo, addOrUpdateValidationInfo);
+  return merge(
+    cloneDeep(prevValidationInfo),
+    cloneDeep(prevValidationInfo),
+    addOrUpdateValidationInfo,
+  );
 };
 
 export { upgradeValidationsInfo };

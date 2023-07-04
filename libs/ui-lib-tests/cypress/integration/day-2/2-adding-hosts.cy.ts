@@ -1,6 +1,5 @@
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { clusterDetailsPage } from '../../views/clusterDetails';
-import {commonActions} from "../../views/common";
+import { commonActions } from '../../views/common';
 
 describe(`Assisted Installer Day2 flow`, () => {
   before(() => {
@@ -8,7 +7,6 @@ describe(`Assisted Installer Day2 flow`, () => {
       activeScenario: 'DAY2_FLOW',
       activeSignal: 'CREATED_DAY2_CLUSTER',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
@@ -33,7 +31,6 @@ describe(`Assisted Installer Day2 flow`, () => {
         // TODO ADD the assertion for the cpu architecture (infraEnv Id), or use the alias in the interceptor
         expect(request.body).to.deep.equal({ static_network_config: [] });
       });
-
     });
 
     it('Can select a different CPU architecture and move next', () => {
