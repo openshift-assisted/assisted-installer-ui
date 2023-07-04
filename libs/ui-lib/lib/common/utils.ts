@@ -1,5 +1,12 @@
 import isString from 'lodash-es/isString.js';
 import { load } from 'js-yaml';
+import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_OFFSET_FACTOR } from './configurations';
+import { fileSize } from './components/hosts/utils';
+
+export const FILENAME_REGEX = /^[^\/]*\.(yaml|yml|json)$/;
+export const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
+export const INCORRECT_TYPE_FILE_MESSAGE =
+  'File type is not supported. File type must be yaml, yml or json.';
 
 export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
@@ -40,11 +47,17 @@ export const isStringValidJSON = (input: string): boolean => {
   }
 };
 
-export const validateFileSize = (value: string, fileSize: number): boolean => {
+export const validateFileSize = (value: string): boolean => {
   const contentFile = new Blob([value], { type: 'text/plain;charset=utf-8' });
-  return contentFile.size <= fileSize;
+  return contentFile.size <= MAX_FILE_SIZE_BYTES * MAX_FILE_SIZE_OFFSET_FACTOR;
 };
 
-export const getMaxFileSizeMessage = (fileSize: number): string => {
-  return `File size is too big. Upload a new ${fileSize / 1000} kB or less.`;
+export const getMaxFileSizeMessage = `File size is too big. The file size must be less than ${fileSize(
+  MAX_FILE_SIZE_BYTES,
+  0,
+  'si',
+)}.`;
+
+export const validateFileName = (fileName: string) => {
+  return new RegExp(FILENAME_REGEX).test(fileName || '');
 };

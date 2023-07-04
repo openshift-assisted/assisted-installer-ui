@@ -29,6 +29,19 @@ export type ClusterWizardStepsType =
   | 'review'
   | 'custom-manifests';
 
+const wizardStepsOrder: ClusterWizardStepsType[] = [
+  'cluster-details',
+  'static-ip-yaml-view',
+  'static-ip-network-wide-configurations',
+  'static-ip-host-configurations',
+  'operators',
+  'host-discovery',
+  'storage',
+  'networking',
+  'custom-manifests',
+  'review',
+];
+
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
@@ -40,6 +53,16 @@ export const getLastStepForWizard = (
   } else {
     return 'review';
   }
+};
+
+export const isStepAfter = (stepA: ClusterWizardStepsType, stepB: ClusterWizardStepsType) => {
+  const indexA = wizardStepsOrder.findIndex((step) => step === stepA);
+  const indexB = wizardStepsOrder.findIndex((step) => step === stepB);
+  if (indexA === -1 || indexB === -1) {
+    return false; // Missing step in "wizardStepsOrder"
+  }
+
+  return indexA > indexB;
 };
 
 export const getClusterWizardFirstStep = (
