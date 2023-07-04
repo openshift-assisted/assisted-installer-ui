@@ -25,8 +25,8 @@ export const commonActions = {
   getDNSErrorMessage: () => {
     return cy.get('#form-input-dns-field-helper-error');
   },
-  verifyIsAtStep: (stepTitle: string) => {
-    cy.get('h2').should('contain.text', stepTitle);
+  verifyIsAtStep: (stepTitle: string, timeout?: number) => {
+    cy.get('h2', { timeout }).should('contain.text', stepTitle);
   },
   startAtNetworkingStep: () => {
     if (utils.hasWizardSignal('READY_TO_INSTALL')) {
@@ -34,6 +34,7 @@ export const commonActions = {
     } else {
       commonActions.verifyIsAtStep('Host discovery');
       commonActions.clickNextButton();
+      commonActions.verifyIsAtStep('Storage', 1500);
       commonActions.clickNextButton();
     }
   },

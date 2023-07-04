@@ -1,36 +1,53 @@
 import { commonActions } from '../../views/common';
+import { setLastWizardSignal } from '../../support/utils';
 import { customManifestsPage } from '../../views/customManifestsPage';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
 describe(`Assisted Installer Custom manifests step`, () => {
   before(() => {
     cy.loadAiAPIIntercepts({
-      activeSignal: 'READY_TO_INSTALL',
+      activeSignal: 'ONLY_DUMMY_CUSTOM_MANIFEST_ADDED',
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
   });
 
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
+    setLastWizardSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
     commonActions.visitClusterDetailsPage();
   });
 
-  describe('Modifying existing Custom Manifests', () => {
-    it('Can configure custom manifests step and next button is disabled', () => {
+  describe('Initial step for Custom Manifests', () => {
+    it('Should move to "Custom manifests" step if the current manifests are incomplete', () => {
       cy.wait('@list-manifests').then(() => {
         commonActions
           .getWizardStepNav('Custom manifests')
           .should('have.class', ACTIVE_NAV_ITEM_CLASS);
+
+        commonActions.verifyIsAtStep('Custom manifests');
         commonActions.getNextButton().should('be.disabled');
       });
     });
 
-    it('Add valid manifest content', () => {
+    it('Should stay in "Review" step if the current manifests are complete', () => {
+      setLastWizardSignal('CUSTOM_MANIFEST_ADDED');
+      cy.wait('@list-manifests').then(() => {
+        commonActions
+          .getWizardStepNav('Custom manifests')
+          .should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
+
+        commonActions.verifyIsAtStep('Review');
+      });
+    });
+  });
+
+  describe('Editing manifests', () => {
+    it('Adding valid content to dummy manifest enables next button', () => {
       customManifestsPage.getStartFromScratch().click();
       customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/manifest1.yaml`);
-      cy.loadAiAPIIntercepts(null, true);
       commonActions.getNextButton().should('be.enabled');
     });
+
     it('Cannot upload binary file into manifest content', () => {
       customManifestsPage.getStartFromScratch().click();
       customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/img.png`);
@@ -39,7 +56,8 @@ describe(`Assisted Installer Custom manifests step`, () => {
         .should('contain.text', 'File type is not supported. File type must be yaml, yml or json.');
       commonActions.getNextButton().should('be.disabled');
     });
-    it('Incorrect file name', () => {
+
+    it('Incorrect file name is shown as an error', () => {
       customManifestsPage.getFileName(0).clear().type('test.txt');
       customManifestsPage
         .getFileNameError()

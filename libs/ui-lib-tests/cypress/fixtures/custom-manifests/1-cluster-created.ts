@@ -2,7 +2,6 @@
 
 import { baseCluster, fakeClusterId } from '../cluster/base-cluster';
 import { clusterValidationsInfo } from '../cluster/validation-info-initial-cluster';
-import { customManifest, customManifestContent } from './manifests';
 
 const featureUsage = {
   'SDN network type': {
@@ -42,8 +41,6 @@ const customManifestsCluster = {
   network_type: 'OpenShiftSDN',
   user_managed_networking: false,
   vip_dhcp_allocation: true,
-  manifests: customManifest,
-  manifestContent: customManifestContent,
   e2e_mock_source: '5-cluster-ready',
   status: 'ready',
   status_info: 'Cluster ready to be installed',

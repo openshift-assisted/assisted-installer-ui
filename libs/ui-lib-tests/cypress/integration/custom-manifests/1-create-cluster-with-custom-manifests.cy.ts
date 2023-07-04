@@ -11,7 +11,7 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
   });
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null, false);
+    cy.loadAiAPIIntercepts(null);
   });
 
   describe('Creating a new cluster', () => {
@@ -21,8 +21,8 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
       clusterDetailsPage.inputClusterName();
       clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion();
-
       clusterDetailsPage.inputPullSecret();
+
       clusterDetailsPage.getCustomManifestCheckbox().should('be.visible').check();
       clusterDetailsPage.getCustomManifestCheckbox().should('be.checked');
       commonActions
@@ -31,6 +31,14 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
       commonActions.getWizardStepNav('Custom manifests').should('exist');
       commonActions.waitForNext();
       commonActions.clickNextButton();
+
+      cy.wait('@create-manifest').then(({ request }) => {
+        expect(request.body).to.deep.equal({
+          folder: 'manifests',
+          file_name: 'manifest1.yaml',
+          content: '',
+        });
+      });
     });
   });
 });
