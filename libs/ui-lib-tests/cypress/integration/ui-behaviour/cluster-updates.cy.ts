@@ -25,15 +25,8 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
       Cypress.env('AI_FORBIDDEN_CLUSTER_PATCH', true);
 
       navbar.clickOnNavItem('Cluster details');
-<<<<<<< HEAD
-      commonActions.clickNextButton();
-      commonActions.clickNextButton();
-      commonActions.verifyIsAtStep('Host discovery');
-=======
       commonActions.toNextStepAfter('Cluster details');
       commonActions.toNextStepAfter('Operators');
-      commonActions.validateIsAtStep('Host discovery');
->>>>>>> ccc0ed18 (Try to make consistent actions to move next and check current step)
     });
   });
 

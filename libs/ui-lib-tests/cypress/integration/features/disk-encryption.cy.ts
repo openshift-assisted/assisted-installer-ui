@@ -66,12 +66,7 @@ describe(`Assisted Installer Disk Encryption`, () => {
     cy.wait('@create-infra-env');
     utils.setLastWizardSignal('CLUSTER_CREATED');
 
-<<<<<<< HEAD
-    commonActions.clickNextButton();
-    commonActions.verifyIsAtStep('Host discovery');
-=======
     commonActions.toNextStepAfter('Operators');
->>>>>>> ccc0ed18 (Try to make consistent actions to move next and check current step)
     bareMetalDiscoveryPage.setClusterIdFromUrl();
   });
 });
