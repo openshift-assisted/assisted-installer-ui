@@ -41,7 +41,7 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
         commonActions.getDangerAlert().within(() => {
           cy.get('button').should('not.exist');
         });
-        commonActions.validateNextIsDisabled();
+        commonActions.verifyNextIsDisabled();
       });
     });
   });

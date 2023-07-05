@@ -29,7 +29,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
     staticIpPage.hostSpecificMacAddress(1).type('00:00:5e:00:53:ae');
     staticIpPage.hostSpecificIpv4Address(1).type('192.168.2.39');
 
-    commonActions.validateNextIsEnabled();
+    commonActions.verifyNextIsEnabled();
   });
 
   describe('Reading existing configuration in Form view', () => {
@@ -68,7 +68,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
       staticIpPage.hostMappingMacAddress(2).should('have.value', '00:00:5e:00:53:af');
       staticIpPage.hostMappingBlockToggle(2).click();
 
-      commonActions.validateNextIsEnabled();
+      commonActions.verifyNextIsEnabled();
     });
   });
 });

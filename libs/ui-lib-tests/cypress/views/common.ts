@@ -65,10 +65,10 @@ export const commonActions = {
   verifyIsAtSubStep: (subStepTitle: string) => {
     cy.get('h3', { timeout: 2000 }).should('contain.text', subStepTitle);
   },
-  validateNextIsEnabled: () => {
+  verifyNextIsEnabled: () => {
     cy.get(Cypress.env('nextButton')).should('be.enabled');
   },
-  validateNextIsDisabled: () => {
+  verifyNextIsDisabled: () => {
     cy.get(Cypress.env('nextButton')).should('be.disabled');
   },
   getInfoAlert: () => {
@@ -97,6 +97,6 @@ export const commonActions = {
   moveNextSteps: (steps: Day1Steps[]) => {
     steps.forEach((step) => {
       commonActions.toNextStepAfter(step);
-    })
+    });
   },
 };
