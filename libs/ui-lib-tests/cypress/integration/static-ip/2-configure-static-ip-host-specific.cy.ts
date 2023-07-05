@@ -16,7 +16,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
   });
 
   it('Can be entered using Form View', () => {
-    commonActions.toNextStepAfter('Network-wide configurations', { hasStaticIp: true });
+    commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
     staticIpPage.getFormViewSelect().should('be.checked');
     staticIpPage.getAddMoreHosts().should('be.disabled');

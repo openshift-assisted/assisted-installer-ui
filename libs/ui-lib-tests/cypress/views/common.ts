@@ -24,34 +24,34 @@ const day2WizardSteps = ['Cluster details', 'Generate Discovery ISO', 'Download 
 
 type Day1Steps =
   | 'Cluster details'
-  | 'Network-wide configurations'
-  | 'Host specific configurations'
   | 'Host discovery'
   | 'Storage'
   | 'Networking'
   | 'Review and create'
   | 'Operators';
-type Day2Steps = 'Cluster details' | 'Generate Discovery ISO' | 'Download Discovery ISO';
 
-type WizardConf = {
-  hasStaticIp: boolean;
-};
+type Day1StaticIpSteps =
+    | 'Cluster details'
+    | 'Network-wide configurations'
+    | 'Host specific configurations'
+    | 'Host discovery';
+
+type Day2Steps = 'Cluster details' | 'Generate Discovery ISO' | 'Download Discovery ISO';
 
 export const commonActions = {
   getWizardStepNav: (stepName: string) => {
     return cy.get('.pf-c-wizard__nav-item').contains(stepName);
   },
-  toNextStepAfter: (fromStep: Day1Steps, conf?: WizardConf) => {
-    const steps = conf?.hasStaticIp ? wizardStepsWithStaticIp : wizardSteps;
-
-    const currentIndex = steps.findIndex((step) => step === fromStep);
+  toNextStepAfter: (fromStep: Day1Steps) => {
+    const currentIndex = wizardSteps.findIndex((step) => step === fromStep);
+    cy.get(Cypress.env('nextButton')).should('be.enabled').click();
+    commonActions.validateIsAtStep(wizardSteps[currentIndex + 1]);
+  },
+  toNextStaticIpStepAfter: (fromStep: Day1StaticIpSteps) => {
+    const currentIndex = wizardStepsWithStaticIp.findIndex((step) => step === fromStep);
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
 
-    if (conf?.hasStaticIp) {
-      commonActions.validateIsAtSubStep(steps[currentIndex + 1]);
-    } else {
-      commonActions.validateIsAtStep(steps[currentIndex + 1]);
-    }
+    commonActions.validateIsAtSubStep(wizardStepsWithStaticIp[currentIndex + 1]);
   },
   toNextDay2StepAfter: (fromStep: Day2Steps) => {
     const currentIndex = day2WizardSteps.findIndex((step) => step === fromStep);

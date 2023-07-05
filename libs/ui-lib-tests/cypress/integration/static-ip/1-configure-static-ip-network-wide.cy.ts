@@ -97,7 +97,7 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       });
 
       commonActions.validateNextIsEnabled();
-      commonActions.toNextStepAfter('Network-wide configurations', { hasStaticIp: true });
+      commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
       commonActions
         .getWizardStepNav('Network-wide configurations')
