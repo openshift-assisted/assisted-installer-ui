@@ -67,15 +67,6 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
         setValue(checked);
         setManifestsRemoved(false);
         clusterWizardContext.setAddCustomManifests(checked);
-        //if cluster exists create new custom manifests
-        if (clusterId) {
-          void ClustersService.createDummyManifest(clusterId).then((manifestCreated) => {
-            const manifestDummy = manifestCreated.data;
-            const manifestLists: ListManifestsExtended = [];
-            manifestLists.push(manifestDummy);
-            setManifestsDummy(manifestLists);
-          });
-        }
       }
     },
     [setValue, clusterWizardContext, setDeleteCustomManifestsOpen, cleanCustomManifests, clusterId],
