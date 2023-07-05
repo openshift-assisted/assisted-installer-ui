@@ -29,16 +29,18 @@ const workerDisks = [
 ];
 
 describe(`Assisted Installer Storage Step`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_STORAGE_CLUSTER',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   describe(`Host storage table`, () => {
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      refreshTestSetup();
       commonActions.visitClusterDetailsPage();
       commonActions.startAtWizardStep('Storage');
     });

@@ -2,15 +2,17 @@ import { reviewAndCreatePage } from '../../views/reviewCreate';
 import { commonActions } from '../../views/common';
 
 describe(`Assisted Installer Dualstack Review`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_DUALSTACK',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
     commonActions.verifyIsAtStep('Review and create');
   });

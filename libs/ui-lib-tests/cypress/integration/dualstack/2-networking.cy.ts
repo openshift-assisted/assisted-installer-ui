@@ -7,19 +7,21 @@ import {
 } from '../../fixtures/dualstack/requests';
 
 describe(`Assisted Installer Dualstack Networking`, () => {
-  beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
-    commonActions.visitClusterDetailsPage();
-    commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
-  });
+  const startTestWithSignal = (activeSignal: string) => {
+    cy.setTestingEnvironment({
+      activeSignal,
+      activeScenario: 'AI_CREATE_DUALSTACK',
+    });
+  };
+  before(() => startTestWithSignal('NETWORKING_DUAL_STACK_DISCOVERED'));
 
   describe('Cluster configured with Single Stack', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: 'NETWORKING_DUAL_STACK_DISCOVERED',
-        activeScenario: 'AI_CREATE_DUALSTACK',
-      });
+    beforeEach(() => {
+      startTestWithSignal('NETWORKING_DUAL_STACK_DISCOVERED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.startAtWizardStep('Networking');
     });
+
     it('Networking is displayed correctly', () => {
       networkingPage.getStackTypeSingleStack().should('be.enabled').and('be.checked');
       networkingPage.getClusterManagedNetworking().should('be.enabled').and('be.checked');
@@ -47,11 +49,10 @@ describe(`Assisted Installer Dualstack Networking`, () => {
   });
 
   describe('Cluster configured with Dual Stack', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: 'NETWORKING_DUAL_STACK_SELECT_DUAL_STACK',
-        activeScenario: 'AI_CREATE_DUALSTACK',
-      });
+    beforeEach(() => {
+      startTestWithSignal('NETWORKING_DUAL_STACK_SELECT_DUAL_STACK');
+      commonActions.visitClusterDetailsPage();
+      commonActions.startAtWizardStep('Networking');
     });
 
     it('Can switch to single-stack', () => {

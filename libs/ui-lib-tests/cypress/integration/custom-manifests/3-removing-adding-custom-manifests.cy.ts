@@ -3,15 +3,17 @@ import { customManifestsPage } from '../../views/customManifestsPage';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer Custom manifests step`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'ONLY_DUMMY_CUSTOM_MANIFEST',
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
   });
 

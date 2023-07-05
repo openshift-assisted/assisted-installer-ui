@@ -4,6 +4,6 @@ declare namespace Cypress {
     newByDataTestId(selector: string, timeout?: number): Chainable<JQuery<HTMLElement>>;
     hostDetailSelector(i: number, label: string, timeout?: number): Chainable<Element>;
     getClusterNameLinkSelector(clusterName?: string): Chainable<Element>;
-    loadAiAPIIntercepts(conf: AIInterceptsConfig | null);
+    setTestingEnvironment(conf: AIInterceptsConfig | null);
   }
 }

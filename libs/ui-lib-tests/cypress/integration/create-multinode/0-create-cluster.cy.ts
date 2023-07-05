@@ -3,15 +3,17 @@ import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer Multinode Cluster Installation`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: '',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     cy.visit('/clusters');
   });
 

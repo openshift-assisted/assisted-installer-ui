@@ -3,15 +3,17 @@ import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP YAML configuration`, () => {
   describe('Configuring static IP in YAML view', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
+    const refreshTestSetup = () => {
+      cy.setTestingEnvironment({
         activeSignal: '',
         activeScenario: 'AI_CREATE_STATIC_IP',
       });
-    });
+    };
+
+    before(refreshTestSetup);
 
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      refreshTestSetup();
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
       staticIpPage.getYamlViewSelect().click();
@@ -58,15 +60,17 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
   });
 
   describe('Reading existing configuration in YAML view', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
+    const refreshTestSetup = () => {
+      cy.setTestingEnvironment({
         activeSignal: 'STATIC_IP_YAML_CONFIGURED',
         activeScenario: 'AI_CREATE_STATIC_IP',
       });
-    });
+    };
+
+    before(refreshTestSetup);
 
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      refreshTestSetup();
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
     });

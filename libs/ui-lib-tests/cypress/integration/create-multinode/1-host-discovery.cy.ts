@@ -18,15 +18,17 @@ const validateHostTableDetails = () => {
 };
 
 describe(`Assisted Installer Multinode Host discovery`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'CLUSTER_CREATED',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
   });
 

@@ -2,15 +2,17 @@ import { reviewAndCreatePage } from '../../views/reviewCreate';
 import { commonActions } from '../../views/common';
 
 describe(`Assisted Installer Multinode Review`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
     commonActions.verifyIsAtStep('Review and create');
   });

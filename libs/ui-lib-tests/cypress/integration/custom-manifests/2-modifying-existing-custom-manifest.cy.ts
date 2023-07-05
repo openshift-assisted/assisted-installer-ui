@@ -1,19 +1,21 @@
 import { commonActions } from '../../views/common';
 import { setLastWizardSignal } from '../../support/utils';
 import { customManifestsPage } from '../../views/customManifestsPage';
+
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
 describe(`Assisted Installer Custom manifests step`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'ONLY_DUMMY_CUSTOM_MANIFEST_ADDED',
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
-    setLastWizardSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
   });
 

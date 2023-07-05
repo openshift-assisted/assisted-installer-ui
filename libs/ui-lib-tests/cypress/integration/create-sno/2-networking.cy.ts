@@ -3,15 +3,17 @@ import { networkingPage } from '../../views/networkingPage';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Networking`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'HOST_RENAMED_1',
       activeScenario: 'AI_CREATE_SNO',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
     commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
     utils.setLastWizardSignal('HOST_RENAMED_1');

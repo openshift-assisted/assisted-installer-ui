@@ -4,15 +4,17 @@ import { clusterListPage } from '../../views/clusterList';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: '',
       activeScenario: 'AI_CREATE_SNO',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     cy.visit('/clusters');
   });
 

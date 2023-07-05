@@ -6,15 +6,17 @@ import * as utils from '../../support/utils';
 import { hostsTableSection } from '../../views/hostsTableSection';
 
 describe(`Assisted Installer SNO Host discovery`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'CLUSTER_CREATED',
       activeScenario: 'AI_CREATE_SNO',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
   });
 

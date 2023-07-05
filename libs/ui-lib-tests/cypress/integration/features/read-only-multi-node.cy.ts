@@ -6,15 +6,17 @@ import { reviewAndCreatePage } from '../../views/reviewCreate';
 import { commonActions } from '../../views/common';
 
 describe(`Assisted Installer Read Only Cluster`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const refreshTestSetup = () => {
+    cy.setTestingEnvironment({
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_READONLY_CLUSTER',
     });
-  });
+  };
+
+  before(refreshTestSetup);
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    refreshTestSetup();
     commonActions.visitClusterDetailsPage();
   });
 
