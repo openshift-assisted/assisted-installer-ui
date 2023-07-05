@@ -12,7 +12,7 @@ describe(`Create cluster with mce operator enabled`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtOperatorsStep();
+    commonActions.startAtWizardStep('Operators');
   });
 
   describe('When the feature is enabled:', () => {

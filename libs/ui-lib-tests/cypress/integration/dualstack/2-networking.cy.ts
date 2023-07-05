@@ -10,7 +10,7 @@ describe(`Assisted Installer Dualstack Networking`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtNetworkingStepFrom('Host discovery');
+    commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
   });
 
   describe('Cluster configured with Single Stack', () => {

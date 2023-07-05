@@ -1,5 +1,3 @@
-import * as utils from '../support/utils';
-
 const wizardSteps = [
   'Cluster details',
   'Operators',
@@ -45,26 +43,26 @@ export const commonActions = {
   toNextStepAfter: (fromStep: Day1Steps) => {
     const currentIndex = wizardSteps.findIndex((step) => step === fromStep);
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
-    commonActions.validateIsAtStep(wizardSteps[currentIndex + 1]);
+    commonActions.verifyIsAtStep(wizardSteps[currentIndex + 1]);
   },
   toNextStaticIpStepAfter: (fromStep: Day1StaticIpSteps) => {
     const currentIndex = wizardStepsWithStaticIp.findIndex((step) => step === fromStep);
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
 
-    commonActions.validateIsAtSubStep(wizardStepsWithStaticIp[currentIndex + 1]);
+    commonActions.verifyIsAtSubStep(wizardStepsWithStaticIp[currentIndex + 1]);
   },
   toNextDay2StepAfter: (fromStep: Day2Steps) => {
     const currentIndex = day2WizardSteps.findIndex((step) => step === fromStep);
 
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
     cy.get('.pf-c-wizard__main-body').within(() => {
-      commonActions.validateIsAtStep(day2WizardSteps[currentIndex + 1]);
+      commonActions.verifyIsAtStep(day2WizardSteps[currentIndex + 1]);
     });
   },
-  validateIsAtStep: (stepTitle: string) => {
+  verifyIsAtStep: (stepTitle: string) => {
     cy.get('h2', { timeout: 2000 }).should('contain.text', stepTitle);
   },
-  validateIsAtSubStep: (subStepTitle: string) => {
+  verifyIsAtSubStep: (subStepTitle: string) => {
     cy.get('h3', { timeout: 2000 }).should('contain.text', subStepTitle);
   },
   validateNextIsEnabled: () => {
@@ -92,33 +90,13 @@ export const commonActions = {
     cy.visit(`/clusters/${Cypress.env('clusterId')}`);
     cy.get('h2').should('exist');
   },
-  verifyIsAtStep: (stepTitle: string, timeout?: number) => {
-    cy.get('h2', { timeout }).should('contain.text', stepTitle);
+  startAtWizardStep: (step: string) => {
+    commonActions.getWizardStepNav(step).click();
+    commonActions.verifyIsAtStep(step);
   },
-  verifyIsAtSubStep: (stepTitle: string, timeout?: number) => {
-    cy.get('h3', { timeout }).should('contain.text', stepTitle);
-  },
-  startAtCustomManifestsStep: () => {
-    commonActions.getWizardStepNav('Custom manifests').click();
-    commonActions.validateIsAtStep('Custom manifests');
-  },
-  startAtOperatorsStep: () => {
-    commonActions.getWizardStepNav('Operators').click();
-    commonActions.validateIsAtStep('Operators');
-  },
-  startAtStorageStep: () => {
-    commonActions.getWizardStepNav('Storage').click();
-    commonActions.validateIsAtStep('Storage');
-  },
-  startAtNetworkingStepFrom: (fromStep: 'Host discovery' | 'Storage' = 'Host discovery') => {
-    if (utils.hasWizardSignal('READY_TO_INSTALL')) {
-      commonActions.getWizardStepNav('Networking').click();
-    } else {
-      if (fromStep === 'Host discovery') {
-        commonActions.toNextStepAfter(fromStep);
-      }
-      commonActions.toNextStepAfter('Storage');
-    }
-    commonActions.validateIsAtStep('Networking');
+  moveNextSteps: (steps: Day1Steps[]) => {
+    steps.forEach((step) => {
+      commonActions.toNextStepAfter(step);
+    })
   },
 };
