@@ -239,7 +239,7 @@ const addAdditionalIntercepts = () => {
   ]);
 
   cy.intercept('GET', '/api/assisted-install/v2/clusters/default-config', defaultConfig).as(
-    'getDefaultConfig',
+    'get-default-config',
   );
   cy.intercept('GET', '/api/assisted-install/v2/default-config', defaultConfig);
 };

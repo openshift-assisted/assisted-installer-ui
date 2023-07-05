@@ -1,4 +1,3 @@
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
 import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoModal';
 import { commonActions } from '../../views/common';
@@ -9,7 +8,6 @@ describe('Assisted Installer UI behaviour - infra env updates', () => {
       activeSignal: 'CLUSTER_CREATED',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

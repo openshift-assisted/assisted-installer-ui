@@ -4,7 +4,6 @@ import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
 import { networkingPage } from '../../views/networkingPage';
 import { reviewAndCreatePage } from '../../views/reviewCreate';
 import { commonActions } from '../../views/common';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer Read Only Cluster`, () => {
   before(() => {
@@ -12,7 +11,6 @@ describe(`Assisted Installer Read Only Cluster`, () => {
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_READONLY_CLUSTER',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

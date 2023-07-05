@@ -4,7 +4,6 @@ import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
 import { commonActions } from '../../views/common';
 import { diskEncryptionValues, tangServerValues } from '../../fixtures/disk-encryption';
 import * as utils from '../../support/utils';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 const fillTangServers = (index) => {
   const tangServerUrl = diskEncryptionSection.getTangServerUrl(index);
@@ -21,7 +20,6 @@ describe(`Assisted Installer Disk Encryption`, () => {
       activeSignal: '',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {

@@ -2,7 +2,6 @@ import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 import { clusterListPage } from '../../views/clusterList';
 import * as utils from '../../support/utils';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {
   before(() => {
@@ -10,7 +9,6 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       activeSignal: '',
       activeScenario: 'AI_CREATE_SNO',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
