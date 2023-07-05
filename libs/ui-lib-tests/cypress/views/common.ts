@@ -31,10 +31,10 @@ type Day1Steps =
   | 'Operators';
 
 type Day1StaticIpSteps =
-    | 'Cluster details'
-    | 'Network-wide configurations'
-    | 'Host specific configurations'
-    | 'Host discovery';
+  | 'Cluster details'
+  | 'Network-wide configurations'
+  | 'Host specific configurations'
+  | 'Host discovery';
 
 type Day2Steps = 'Cluster details' | 'Generate Discovery ISO' | 'Download Discovery ISO';
 

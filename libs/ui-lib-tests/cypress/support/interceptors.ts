@@ -364,11 +364,9 @@ const addAdditionalIntercepts = () => {
     { domain: 'e2e.redhat.com', provider: 'route53' },
   ]);
 
-  cy.intercept(
-      'GET',
-      '/api/assisted-install/v2/**/default-config',
-      allFixtures.defaultConfig,
-  ).as('get-default-config');
+  cy.intercept('GET', '/api/assisted-install/v2/**/default-config', allFixtures.defaultConfig).as(
+    'get-default-config',
+  );
 
   cy.intercept('POST', '/api/accounts_mgmt/v1/access_token', (req) => {
     req.reply(allFixtures.pullSecret);
