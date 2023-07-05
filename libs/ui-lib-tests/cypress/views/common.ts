@@ -40,6 +40,15 @@ export const commonActions = {
   getWizardStepNav: (stepName: string) => {
     return cy.get('.pf-c-wizard__nav-item').contains(stepName);
   },
+  startAtWizardStep: (step: string) => {
+    commonActions.getWizardStepNav(step).click();
+    commonActions.verifyIsAtStep(step);
+  },
+  moveNextSteps: (steps: Day1Steps[]) => {
+    steps.forEach((step) => {
+      commonActions.toNextStepAfter(step);
+    });
+  },
   toNextStepAfter: (fromStep: Day1Steps) => {
     const currentIndex = wizardSteps.findIndex((step) => step === fromStep);
     cy.get(Cypress.env('nextButton')).should('be.enabled').click();
@@ -89,14 +98,5 @@ export const commonActions = {
   visitClusterDetailsPage: () => {
     cy.visit(`/clusters/${Cypress.env('clusterId')}`);
     cy.get('h2').should('exist');
-  },
-  startAtWizardStep: (step: string) => {
-    commonActions.getWizardStepNav(step).click();
-    commonActions.verifyIsAtStep(step);
-  },
-  moveNextSteps: (steps: Day1Steps[]) => {
-    steps.forEach((step) => {
-      commonActions.toNextStepAfter(step);
-    });
   },
 };
