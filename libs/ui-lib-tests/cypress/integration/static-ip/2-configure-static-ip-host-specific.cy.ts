@@ -2,17 +2,17 @@ import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP Host specific Configuration`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'STATIC_IP_NETWORK_WIDE_CONFIGURED',
+      activeSignal,
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED');
     commonActions.visitClusterDetailsPage();
     commonActions.getWizardStepNav('Static network configurations').click();
   });
@@ -35,14 +35,11 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
   });
 
   describe('Reading existing configuration in Form view', () => {
-    const refreshTestSetup = () => {
-      cy.setTestingEnvironment({
-        activeSignal: 'STATIC_IP_HOST_SPECIFIC_CONFIGURED',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
-    };
-
-    before(refreshTestSetup);
+    beforeEach(() => {
+      startTestWithSignal('STATIC_IP_HOST_SPECIFIC_CONFIGURED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.getWizardStepNav('Static network configurations').click();
+    });
 
     it('Can show the existing static IP configuration', () => {
       commonActions.getWizardStepNav('Host specific configurations').click();

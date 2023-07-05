@@ -18,17 +18,17 @@ const validateHostTableDetails = () => {
 };
 
 describe(`Assisted Installer Multinode Host discovery`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'CLUSTER_CREATED',
+      activeSignal: activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
   });
 
@@ -54,12 +54,18 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
       bareMetalDiscoveryIsoModal.getAddHostsInstructions().should('exist');
     });
 
-    it('Should generate three hosts in Insufficient state', () => {
+    it('Should populate the host table when hosts are discovered', () => {
       navbar.navItemsShouldNotShowErrors();
       utils.setLastWizardSignal('HOST_DISCOVERED_3');
 
       bareMetalDiscoveryPage.waitForHostTablePopulation(3, 0);
       validateHostTableDetails();
+    });
+  });
+
+  describe('When all hosts are discovered', () => {
+    beforeEach(() => {
+      startTestWithSignal('HOST_DISCOVERED_3');
     });
 
     it('Should mass-rename the hosts and be able to continue', () => {

@@ -5,17 +5,17 @@ import { customManifestsPage } from '../../views/customManifestsPage';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
 describe(`Assisted Installer Custom manifests step`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'ONLY_DUMMY_CUSTOM_MANIFEST_ADDED',
+      activeSignal,
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
     commonActions.visitClusterDetailsPage();
   });
 

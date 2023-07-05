@@ -2,15 +2,15 @@ import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 
 describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: '',
+      activeSignal,
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
   };
 
-  before(refreshTestSetup);
-  beforeEach(refreshTestSetup);
+  before(() => startTestWithSignal(''));
+  beforeEach(() => startTestWithSignal(''));
 
   describe('Creating a new cluster', () => {
     it('Can submit the form to create a new cluster with custom manifests enabled', () => {

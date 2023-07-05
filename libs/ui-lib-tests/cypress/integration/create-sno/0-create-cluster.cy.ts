@@ -4,17 +4,17 @@ import { clusterListPage } from '../../views/clusterList';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: '',
+      activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal(''));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('');
     cy.visit('/clusters');
   });
 
@@ -55,8 +55,15 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
         .should('contain.text', 'Limitations for using Single Node OpenShift');
     });
 
-    it('Lists the new cluster', () => {
-      clusterListPage.getClusterByName().should('be.visible');
+    describe('When the cluster is created', () => {
+      beforeEach(() => {
+        startTestWithSignal('CLUSTER_CREATED');
+        cy.visit('/clusters');
+      });
+
+      it('Lists the new cluster', () => {
+        clusterListPage.getClusterByName().should('be.visible');
+      });
     });
   });
 });

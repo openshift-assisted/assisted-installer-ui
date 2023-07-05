@@ -2,18 +2,18 @@ import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP YAML configuration`, () => {
-  describe('Configuring static IP in YAML view', () => {
-    const refreshTestSetup = () => {
-      cy.setTestingEnvironment({
-        activeSignal: '',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
-    };
+  const startTestWithSignal = (activeSignal: string) => {
+    cy.setTestingEnvironment({
+      activeSignal,
+      activeScenario: 'AI_CREATE_STATIC_IP',
+    });
+  };
 
-    before(refreshTestSetup);
+  describe('Configuring static IP in YAML view', () => {
+    before(() => startTestWithSignal(''));
 
     beforeEach(() => {
-      refreshTestSetup();
+      startTestWithSignal('');
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
       staticIpPage.getYamlViewSelect().click();
@@ -60,17 +60,10 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
   });
 
   describe('Reading existing configuration in YAML view', () => {
-    const refreshTestSetup = () => {
-      cy.setTestingEnvironment({
-        activeSignal: 'STATIC_IP_YAML_CONFIGURED',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
-    };
-
-    before(refreshTestSetup);
+    before(() => startTestWithSignal('STATIC_IP_YAML_CONFIGURED'));
 
     beforeEach(() => {
-      refreshTestSetup();
+      startTestWithSignal('STATIC_IP_YAML_CONFIGURED');
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
     });

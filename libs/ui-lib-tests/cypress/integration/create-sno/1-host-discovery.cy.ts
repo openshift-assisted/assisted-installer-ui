@@ -6,21 +6,21 @@ import * as utils from '../../support/utils';
 import { hostsTableSection } from '../../views/hostsTableSection';
 
 describe(`Assisted Installer SNO Host discovery`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'CLUSTER_CREATED',
+      activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
-  before(refreshTestSetup);
-
-  beforeEach(() => {
-    refreshTestSetup();
-    commonActions.visitClusterDetailsPage();
-  });
+  before(() => startTestWithSignal('CLUSTER_CREATED'));
 
   describe('Downloading the Discovery ISO', () => {
+    beforeEach(() => {
+      startTestWithSignal('CLUSTER_CREATED');
+      commonActions.visitClusterDetailsPage();
+    });
+
     it('Should generate discovery ISO and wait for generate to complete', () => {
       bareMetalDiscoveryPage.getAddHostsButton().should('contain.text', 'Add host');
       bareMetalDiscoveryPage.openAddHostsModal();
@@ -35,7 +35,7 @@ describe(`Assisted Installer SNO Host discovery`, () => {
       bareMetalDiscoveryIsoModal.getCloseIsoButton().click();
     });
 
-    it('Should generate a host in Insufficient state', () => {
+    it('Should populate the host table when the host is discovered', () => {
       navbar.navItemsShouldNotShowErrors();
 
       utils.setLastWizardSignal('HOST_DISCOVERED_1');
@@ -44,16 +44,20 @@ describe(`Assisted Installer SNO Host discovery`, () => {
       bareMetalDiscoveryPage.waitForHostRowToContain('localhost');
       hostsTableSection.waitForHardwareStatus('Insufficient');
     });
+  });
+  describe('When the host is discovered', () => {
+    beforeEach(() => {
+      startTestWithSignal('HOST_DISCOVERED_1');
+      commonActions.visitClusterDetailsPage();
+    });
 
     it('Should rename the host, get valid state and see the "next" button enabled', () => {
-      navbar.navItemsShouldNotShowErrors();
-      utils.setLastWizardSignal('HOST_DISCOVERED_1');
-
-      const renamedHost = Cypress.env('HOST_RENAME');
       bareMetalDiscoveryPage.selectHostRowKebabAction(
         0,
         Cypress.env('hostRowKebabMenuChangeHostnameText'),
       );
+
+      const renamedHost = Cypress.env('HOST_RENAME');
       bareMetalDiscoveryPage.renameHost(renamedHost);
       bareMetalDiscoveryPage.clickSaveEditHostsForm();
 

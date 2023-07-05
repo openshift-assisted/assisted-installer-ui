@@ -2,15 +2,15 @@ import ClusterDetailsForm from '../../../views/forms/ClusterDetailsForm';
 import NewClusterPage from '../../../views/pages/NewClusterPage';
 
 describe('Create a new cluster with external partner integrations', () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: '',
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(refreshTestSetup);
-  beforeEach(refreshTestSetup);
+  before(() => startTestWithSignal(''));
+  beforeEach(() => startTestWithSignal(''));
 
   xcontext('When the feature is disabled:', () => {
     // TODO(jkilzi): Find out how to mock the LibRouter store and features props.

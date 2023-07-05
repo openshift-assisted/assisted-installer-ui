@@ -1,19 +1,20 @@
 import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
-import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Networking`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'HOST_RENAMED_1',
+      activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => {
+    startTestWithSignal('READY_TO_INSTALL');
+  });
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
     commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
     utils.setLastWizardSignal('HOST_RENAMED_1');
@@ -21,10 +22,6 @@ describe(`Assisted Installer SNO Networking`, () => {
 
   describe('Validating the Network configuration', () => {
     it('Should see the Ready Host inventory status', () => {
-      cy.wait('@cluster-details').then(() => {
-        utils.setLastWizardSignal('READY_TO_INSTALL');
-      });
-
       networkingPage.waitForNetworkStatus('Ready');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
     });

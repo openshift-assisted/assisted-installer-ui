@@ -6,17 +6,17 @@ let clusterPage;
 let eventsModal;
 
 describe('Events modal behavior', () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'READY_TO_INSTALL',
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal('READY_TO_INSTALL'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('READY_TO_INSTALL');
 
     ClusterPage.visit();
 

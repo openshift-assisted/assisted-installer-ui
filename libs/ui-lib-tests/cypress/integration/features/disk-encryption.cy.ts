@@ -15,17 +15,17 @@ const fillTangServers = (index) => {
 };
 
 describe(`Assisted Installer Disk Encryption`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: '',
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal(''));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('');
     commonActions.visitNewClusterPage();
     clusterDetailsPage.inputClusterName();
     clusterDetailsPage.getRedHatDnsServiceCheck().check();

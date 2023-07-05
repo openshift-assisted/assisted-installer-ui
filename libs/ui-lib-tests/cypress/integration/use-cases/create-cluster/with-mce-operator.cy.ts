@@ -2,17 +2,17 @@ import { commonActions } from '../../../views/common';
 import OperatorsForm from '../../../views/forms/OperatorsForm';
 
 describe(`Create cluster with mce operator enabled`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'CLUSTER_CREATED',
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
     commonActions.startAtWizardStep('Operators');
   });

@@ -46,16 +46,17 @@ const fillStaticIpForm = (networkSelection: NetworkSelection, fields) => {
 };
 
 describe(`Assisted Installer Static IP Network wide Configuration`, () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'STATIC_IP_ENABLED',
+      activeSignal,
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
   };
-  before(refreshTestSetup);
+
+  before(() => startTestWithSignal('STATIC_IP_ENABLED'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('STATIC_IP_ENABLED');
     commonActions.visitClusterDetailsPage();
     commonActions.getWizardStepNav('Static network configurations').click();
   });
@@ -120,14 +121,9 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
   });
 
   describe('Reading existing configuration in Form view', () => {
-    const refreshTestSetup = () => {
-      cy.setTestingEnvironment({
-        activeSignal: 'STATIC_IP_NETWORK_WIDE_CONFIGURED',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
-    };
-    before(refreshTestSetup);
-    beforeEach(refreshTestSetup);
+    before(() => {
+      startTestWithSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED');
+    });
 
     it('Can show the existing static IP configuration', () => {
       staticIpPage.dualStackNetworking().should('not.be.checked');

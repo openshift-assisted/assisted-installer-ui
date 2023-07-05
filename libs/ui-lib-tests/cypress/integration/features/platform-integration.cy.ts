@@ -14,17 +14,17 @@ const togglePlatformIntegrationSwitch = (platformToIntegrate: string) => {
 
 describe('Assisted Installer - Platform integration feature', () => {
   describe('Switch behaviour', () => {
-    const refreshTestSetup = () => {
+    const startTestWithSignal = (activeSignal: string) => {
       cy.setTestingEnvironment({
-        activeSignal: 'CLUSTER_CREATED',
+        activeSignal,
         activeScenario: 'AI_CREATE_MULTINODE',
       });
     };
 
-    before(refreshTestSetup);
+    before(() => startTestWithSignal('CLUSTER_CREATED'));
 
     beforeEach(() => {
-      refreshTestSetup();
+      startTestWithSignal('CLUSTER_CREATED');
       commonActions.visitClusterDetailsPage();
     });
 

@@ -3,30 +3,36 @@ import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoMod
 import { commonActions } from '../../views/common';
 
 describe('Assisted Installer UI behaviour - infra env updates', () => {
-  const refreshTestSetup = () => {
+  const startTestWithSignal = (activeSignal: string) => {
     cy.setTestingEnvironment({
-      activeSignal: 'CLUSTER_CREATED',
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(refreshTestSetup);
+  before(() => startTestWithSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    refreshTestSetup();
+    startTestWithSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
   });
 
-  it('Should discriminate between full and minimal image', () => {
+  it('Should use the selected image type', () => {
     bareMetalDiscoveryPage.openAddHostsModal();
+
+    // Default should be full-iso
     bareMetalDiscoveryIsoModal.getGenerateDiscoveryIso().click();
+    cy.wait('@update-infra-env').then(({ request }) => {
+      expect(request.body.image_type).to.equal('full-iso');
+    });
+
+    // Change to minimal-iso
     bareMetalDiscoveryIsoModal.getEditISO().click();
     bareMetalDiscoveryIsoModal.selectImageType('Minimal image file');
     bareMetalDiscoveryIsoModal.getGenerateDiscoveryIso().click();
-    cy.wait(['@update-infra-env', '@update-infra-env']).then((interceptions) => {
-      // The infraEnv fixture has full-iso initially, so we change it to the minimal
-      const isoRequests = interceptions.map((x) => x.request.body.image_type);
-      expect(isoRequests.join(',')).to.equal(['full-iso', 'minimal-iso'].join(','));
+
+    cy.wait('@update-infra-env').then(({ request }) => {
+      expect(request.body.image_type).to.equal('minimal-iso');
     });
   });
 });
