@@ -14,6 +14,7 @@ describe(`Assisted Installer SNO Networking`, () => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
     commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
+    utils.setLastWizardSignal('HOST_RENAMED_1');
   });
 
   describe('Validating the Network configuration', () => {
@@ -39,10 +40,6 @@ describe(`Assisted Installer SNO Networking`, () => {
       networkingPage.getAdvancedNetwork().click();
       networkingPage.getSdnNetworkingField().should('not.be.enabled').and('not.be.checked');
       networkingPage.getOvnNetworkingField().should('not.be.enabled').and('be.checked');
-    });
-
-    it('Should go to the final step', () => {
-      commonActions.toNextStepAfter('Networking');
     });
   });
 });

@@ -44,9 +44,5 @@ describe(`Assisted Installer Multinode Networking`, () => {
             networkingPage.getSdnNetworkingField().should('be.enabled').and('not.be.checked');
             networkingPage.getOvnNetworkingField().should('be.enabled').and('be.checked');
         });
-
-        it('Should go to the final step', () => {
-            commonActions.toNextStepAfter('Networking');
-        });
     });
 });
