@@ -72,7 +72,7 @@ export const AddHosts = () => {
 
   return (
     <ModalDialogsContextProvider>
-      <Card label="add-hosts-tab-content">
+      <Card>
         <CardTitle>
           <Title headingLevel="h2" size="lg" className="card-title">
             Host Discovery
