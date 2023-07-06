@@ -55,13 +55,13 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
   before(() => startTestWithSignal('STATIC_IP_ENABLED'));
 
-  beforeEach(() => {
-    startTestWithSignal('STATIC_IP_ENABLED');
-    commonActions.visitClusterDetailsPage();
-    commonActions.getWizardStepNav('Static network configurations').click();
-  });
-
   describe('Configuring Static IP in Form view', () => {
+    beforeEach(() => {
+      startTestWithSignal('STATIC_IP_ENABLED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.getWizardStepNav('Static network configurations').click();
+    });
+
     it('Can configure single stack static IP', () => {
       commonActions
         .getWizardStepNav('Network-wide configurations')
@@ -121,8 +121,10 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
   });
 
   describe('Reading existing configuration in Form view', () => {
-    before(() => {
+    beforeEach(() => {
       startTestWithSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.getWizardStepNav('Static network configurations').click();
     });
 
     it('Can show the existing static IP configuration', () => {
