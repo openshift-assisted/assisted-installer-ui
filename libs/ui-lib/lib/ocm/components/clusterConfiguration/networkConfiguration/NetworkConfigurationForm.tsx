@@ -201,8 +201,8 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
       };
 
       if (params.userManagedNetworking) {
-        delete params.apiVip;
-        delete params.ingressVip;
+        params.apiVip = '';
+        params.ingressVip = '';
         if (isMultiNodeCluster) {
           delete params.machineNetworks;
         }
