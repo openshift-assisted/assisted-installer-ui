@@ -7,7 +7,6 @@ import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import DeleteCustomManifestModal from './manifestsConfiguration/DeleteCustomManifestModal';
 import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
 import { ClustersService } from '../../services';
-import { ListManifestsExtended } from './manifestsConfiguration/data/dataTypes';
 
 const Label = () => {
   return (
@@ -34,7 +33,6 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
   const { customManifests } = useClusterCustomManifests(clusterId, false);
   const [isDeleteCustomManifestsOpen, setDeleteCustomManifestsOpen] = React.useState(false);
   const [manifestsRemoved, setManifestsRemoved] = React.useState(false);
-  const [manifestsDummy, setManifestsDummy] = React.useState<ListManifestsExtended | undefined>();
   const cleanCustomManifests = React.useCallback(() => {
     setValue(false);
     clusterWizardContext.setAddCustomManifests(false);
@@ -43,17 +41,10 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
     //if cluster exists remove existing cluster manifests
     if (clusterId) {
       if (customManifests) {
-        void ClustersService.removeClusterManifests(customManifests, clusterId).then(() => {
-          setManifestsDummy(undefined);
-        });
-      }
-      if (manifestsDummy !== undefined) {
-        void ClustersService.removeClusterManifests(manifestsDummy, clusterId).then(() => {
-          setManifestsDummy(undefined);
-        });
+        void ClustersService.removeClusterManifests(customManifests, clusterId);
       }
     }
-  }, [clusterWizardContext, setValue, clusterId, customManifests, manifestsDummy]);
+  }, [clusterWizardContext, setValue, clusterId, customManifests]);
 
   const onChanged = React.useCallback(
     (checked: boolean) => {
@@ -80,9 +71,7 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
   }, [clusterWizardContext, setValue]);
 
   const customManifestsActivated =
-    clusterWizardContext.addCustomManifests ||
-    (customManifests && customManifests.length > 0) ||
-    manifestsDummy !== undefined;
+    clusterWizardContext.addCustomManifests || (customManifests && customManifests.length > 0);
   return (
     <>
       <FormGroup id={`form-control__${fieldId}`} isInline fieldId={fieldId}>
