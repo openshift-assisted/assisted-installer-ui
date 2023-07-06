@@ -6,6 +6,7 @@ import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
 import { CustomManifestValues } from '../data/dataTypes';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
+import { PopoverIcon } from '../../../../../common';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename
@@ -33,11 +34,18 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
         <GridItem span={6}>
           <OcmInputField
             name={`${fieldName}.filename`}
-            label="File name"
             isRequired
             data-testid={`filename-${manifestIdx}`}
-            helperText={
-              'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
+            helperText={'Use yaml, yml or JSON file types. File size must not exceed 1MB.'}
+            label={
+              <>
+                <span>File name</span>
+                <PopoverIcon
+                  bodyContent={
+                    'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
+                  }
+                />
+              </>
             }
           />
         </GridItem>
