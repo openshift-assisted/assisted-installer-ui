@@ -12,13 +12,13 @@ export const bareMetalDiscoveryIsoModal = {
         'contain',
         'Add host', // TODO variation for SNO
       );
-      cy.get('.pf-c-form__label-text').should('contain', 'SSH public key');
+      cy.get('.pf-c-form__label-text').should('contain.text', 'SSH public key');
       cy.get('#sshPublicKey-filename')
         .invoke('attr', 'placeholder')
-        .should('contain', 'Drag a file here or browse to upload');
+        .should('contain.text', 'Drag a file here or browse to upload');
       cy.get('#sshPublicKey-browse-button')
         .invoke('attr', 'aria-disabled')
-        .should('contain', 'false');
+        .should('contain.text', 'false');
     });
   },
   getMinimalIsoOption: () => {
@@ -31,7 +31,7 @@ export const bareMetalDiscoveryIsoModal = {
     bareMetalDiscoveryIsoModal.getSshPublicKey().should('be.visible');
     if (sshKey) {
       bareMetalDiscoveryIsoModal.getSshPublicKey().fill(sshKey);
-      bareMetalDiscoveryIsoModal.getSshPublicKey().invoke('text').should('contain', sshKey);
+      bareMetalDiscoveryIsoModal.getSshPublicKey().invoke('text').should('contain.text', sshKey);
     } else {
       // trigger empty ssh key error field helper
       bareMetalDiscoveryIsoModal.getSshPublicKey().clear().type(' {backspace}');
@@ -65,7 +65,7 @@ export const bareMetalDiscoveryIsoModal = {
     return cy.get('#form-input-hostname-field-helper');
   },
   validateChangeHostnameHelperTextError: (msg) => {
-    cy.get('.pf-m-error').should('contain', msg);
+    cy.get('.pf-m-error').should('contain.text', msg);
   },
   validateNeverShareWarning: () => {
     cy.get('.pf-c-modal-box__body > .pf-c-alert').should(
@@ -105,7 +105,7 @@ export const bareMetalDiscoveryIsoModal = {
     bareMetalDiscoveryIsoModal.getImageTypeDropdown().within(() => {
       cy.get('li').contains(typeLabel).click();
     });
-    bareMetalDiscoveryIsoModal.getSelectedImageType().should('contain', typeLabel);
+    bareMetalDiscoveryIsoModal.getSelectedImageType().should('contain.text', typeLabel);
   },
   getCancelGenerateDiscoveryIsoButton: () => {
     return cy.get('.pf-c-modal-box__footer > .pf-m-link');
@@ -141,7 +141,7 @@ export const bareMetalDiscoveryIsoModal = {
     }
   },
   waitForIsoGeneration: (timeout = Cypress.env('GENERATE_ISO_TIMEOUT')) => {
-    cy.get('h4', { timeout: timeout }).should('contain', Cypress.env('isoReadyToDownloadText'));
+    cy.get('h4', { timeout }).should('contain.text', Cypress.env('isoReadyToDownloadText'));
   },
   verifyDownloadIsoLinks: () => {
     return cy

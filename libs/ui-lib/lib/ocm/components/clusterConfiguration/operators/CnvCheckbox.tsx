@@ -30,7 +30,7 @@ const CnvLabel = ({
       </Tooltip>
       <PopoverIcon
         component={'a'}
-        headerContent="Additional Requirements"
+        headerContent="Additional requirements"
         bodyContent={<CnvHostRequirements clusterId={clusterId} />}
       />
     </>

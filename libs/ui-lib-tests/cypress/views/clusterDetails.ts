@@ -22,7 +22,7 @@ export const clusterDetailsPage = {
     clusterDetailsPage.getOpenshiftVersionDropdown().within(() => {
       cy.get('li').contains(version).click();
     });
-    clusterDetailsPage.getSelectedOpenShiftVersion().should('contain', `OpenShift ${version}`);
+    clusterDetailsPage.getSelectedOpenShiftVersion().should('contain.text', `OpenShift ${version}`);
   },
   getPullSecret: () => {
     return cy.get(Cypress.env('pullSecretFieldId'));
@@ -36,22 +36,22 @@ export const clusterDetailsPage = {
     }
     clusterDetailsPage.getPullSecret().clear();
     cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecret);
-    clusterDetailsPage.getPullSecret().should('contain', pullSecret);
+    clusterDetailsPage.getPullSecret().should('contain.text', pullSecret);
   },
   checkAiTechSupportLevel: () => {
     cy.get(Cypress.env('assistedInstallerSupportLevel'))
       .should('be.visible')
-      .contains(Cypress.env('techPreviewSupportLevel'));
+      .should('contain.text', Cypress.env('techPreviewSupportLevel'));
   },
   checkSnoDevSupportLevel: () => {
     cy.get(Cypress.env('snoSupportLevel'))
       .should('be.visible')
-      .contains(Cypress.env('devPreviewSupportLevel'));
+      .should('contain.text', Cypress.env('devPreviewSupportLevel'));
   },
   getBaseDnsDomain: () => {
     return cy.get(Cypress.env('baseDnsDomainFieldId'));
   },
-  inputbaseDnsDomain: (dns = Cypress.env('DNS_DOMAIN_NAME')) => {
+  inputBaseDnsDomain: (dns = Cypress.env('DNS_DOMAIN_NAME')) => {
     clusterDetailsPage.getBaseDnsDomain().clear().type(dns).should('have.value', dns);
   },
   getSno: () => {
@@ -69,10 +69,9 @@ export const clusterDetailsPage = {
   },
   selectCpuArchitecture: (cpuArchitecture) => {
     cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).click();
-    cy.get(`${Cypress.env('cpuArchitectureFieldId')} .pf-c-dropdown__toggle-text`).contains(
-      cpuArchitecture,
-      { matchCase: false },
-    );
+    cy.get(`${Cypress.env('cpuArchitectureFieldId')} .pf-c-dropdown__toggle-text`)
+      .invoke('text')
+      .should('match', new RegExp(cpuArchitecture, 'i'));
   },
   CpuArchitectureExists: (cpuArchitecture) => {
     cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).should('exist');
@@ -102,7 +101,7 @@ export const clusterDetailsPage = {
   validateInputNameFieldHelper: (status) => {
     cy.get(`[aria-label='Validation'] > svg`)
       .invoke('attr', 'fill')
-      .should('contain', status === 'fail' ? '#c9190b' : '#3e8635');
+      .should('contain.text', status === 'fail' ? '#c9190b' : '#3e8635');
   },
   getClusterNameFieldValidator: () => {
     return cy.get(Cypress.env('clusterNameFieldValidator'));

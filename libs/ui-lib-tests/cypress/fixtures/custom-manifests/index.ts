@@ -3,7 +3,7 @@ import { clusterReadyBuilder } from '../create-sno/5-cluster-ready';
 import { isoDownloadedClusterBuilder } from '../create-sno/2-iso-downloaded';
 import { hostDiscoveredBuilder } from '../create-sno/3-host-discovered';
 import { hostRenamedBuilder } from '../create-sno/4-host-renamed';
-import { customManifest, customManifestContent } from './manifests';
+import { customManifests, customManifestContent } from './manifests';
 
 const isoDownloadedCluster = isoDownloadedClusterBuilder(customManifestsCluster);
 const hostDiscoveredCluster = hostDiscoveredBuilder(isoDownloadedCluster);
@@ -15,7 +15,7 @@ const createCustomManifestsFixtureMapping = {
     READY_TO_INSTALL: readyToInstallCluster,
     default: customManifestsCluster,
   },
-  manifests: customManifest,
+  manifests: customManifests,
   manifestContent: customManifestContent,
 };
 

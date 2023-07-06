@@ -12,9 +12,9 @@ export const reviewAndCreatePage = {
     version = Cypress.env('OPENSHIFT_VERSION'),
     stackType = 'IPv4',
   } = {}) => {
-    cy.get(Cypress.env('clusterAddressValueId')).should('contain', `${clusterName}.${dns}`);
-    cy.get(Cypress.env('openshiftVersionValueId')).should('contain', version);
-    cy.get(Cypress.env('stackTypeValueId')).should('contain', stackType);
+    cy.get(Cypress.env('clusterAddressValueId')).should('contain.text', `${clusterName}.${dns}`);
+    cy.get(Cypress.env('openshiftVersionValueId')).should('contain.text', version);
+    cy.get(Cypress.env('stackTypeValueId')).should('contain.text', stackType);
   },
   checkAllClusterValidationsPassed: (timeout = 1000) => {
     cy.get(Cypress.env('clusterPreflightChecksResult'), { timeout }).should(

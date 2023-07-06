@@ -1,7 +1,6 @@
 import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as utils from '../../support/utils';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { dummyStaticNetworkConfig } from '../../fixtures/static-ip/static-network-config';
 
 describe(`Assisted Installer Static IP Cluster Creation`, () => {
@@ -10,7 +9,6 @@ describe(`Assisted Installer Static IP Cluster Creation`, () => {
       activeSignal: '',
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
@@ -42,7 +40,7 @@ describe(`Assisted Installer Static IP Cluster Creation`, () => {
         utils.setLastWizardSignal('CLUSTER_CREATED');
       });
 
-      cy.get('h2').should('contain', 'Static network configurations');
+      commonActions.verifyIsAtStep('Static network configurations');
     });
   });
 });
