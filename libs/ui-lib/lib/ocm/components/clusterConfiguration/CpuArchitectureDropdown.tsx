@@ -35,7 +35,7 @@ export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureI
   [CpuArchitecture.s390x]: {
     description: 'Some features may not be available',
     featureSupportLevelId: 'S390X_ARCHITECTURE',
-    label: 'IBM zSystems (s390x)',
+    label: 'IBM Z (s390x)',
   },
 };
 
