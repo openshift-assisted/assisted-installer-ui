@@ -65,10 +65,8 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const handleCustomManifestsChange = React.useCallback(
     async (clusterId: string, addCustomManifests: boolean) => {
       const addCustomManifestsNew = customManifests ? customManifests.length === 0 : true;
-      if (addCustomManifests) {
-        if (addCustomManifestsNew && clusterId) {
-          await ClustersService.createDummyManifest(clusterId);
-        }
+      if (addCustomManifests && addCustomManifestsNew && clusterId) {
+        await ClustersService.createDummyManifest(clusterId);
       }
     },
     [customManifests],

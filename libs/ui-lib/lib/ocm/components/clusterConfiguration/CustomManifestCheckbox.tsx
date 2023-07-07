@@ -39,10 +39,8 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
     setDeleteCustomManifestsOpen(false);
     setManifestsRemoved(true);
     //if cluster exists remove existing cluster manifests
-    if (clusterId) {
-      if (customManifests) {
-        void ClustersService.removeClusterManifests(customManifests, clusterId);
-      }
+    if (clusterId && customManifests) {
+      void ClustersService.removeClusterManifests(customManifests, clusterId);
     }
   }, [clusterWizardContext, setValue, clusterId, customManifests]);
 
