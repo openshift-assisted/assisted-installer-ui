@@ -2,7 +2,7 @@ import { ExpandableSection } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { Cluster } from '../../../common';
 import { ReviewSummaryContent } from '../clusterConfiguration/review/ReviewSummary';
-import { ClusterNewFeatureSupportLevelsDetailItem } from '../newFeatureSupportLevels';
+import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import './ClusterSummaryExpandable.css';
 
 type ClusterSummaryExpandableProps = {
@@ -20,7 +20,7 @@ const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) =>
       id="cluster-summary-expandable"
     >
       <div className="pf-u-pl-md pf-u-pt-md">
-        <ClusterNewFeatureSupportLevelsDetailItem cluster={cluster} />
+        <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
         <ReviewSummaryContent cluster={cluster} />
       </div>
     </ExpandableSection>

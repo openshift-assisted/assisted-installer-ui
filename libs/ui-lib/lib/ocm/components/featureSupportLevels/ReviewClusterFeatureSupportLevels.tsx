@@ -178,9 +178,9 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
   );
 };
 
-const ClusterNewFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
+const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
   <WithErrorBoundary title="Failed to load feature support levels review">
     <SupportLevel {...props} />
   </WithErrorBoundary>
 );
-export default ClusterNewFeatureSupportLevelsDetailItem;
+export default ClusterFeatureSupportLevelsDetailItem;

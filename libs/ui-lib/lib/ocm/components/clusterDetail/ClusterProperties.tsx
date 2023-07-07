@@ -14,7 +14,7 @@ import {
   selectIpv6HostPrefix,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ClusterNewFeatureSupportLevelsDetailItem } from '../newFeatureSupportLevels';
+import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
@@ -165,7 +165,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
             isHidden={cluster.diskEncryption?.enableOn === 'none'}
             testId="disk-encryption"
           />
-          <ClusterNewFeatureSupportLevelsDetailItem cluster={cluster} />
+          <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
         </DetailList>
       </GridItem>
     </>

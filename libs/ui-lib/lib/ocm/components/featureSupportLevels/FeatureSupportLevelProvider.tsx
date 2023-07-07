@@ -9,10 +9,7 @@ import {
   SupportLevels,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
-import {
-  getNewFeatureDisabledReason,
-  isFeatureSupportedAndAvailable,
-} from './newFeatureStateUtils';
+import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import {
   NewFeatureSupportLevelContextProvider,
