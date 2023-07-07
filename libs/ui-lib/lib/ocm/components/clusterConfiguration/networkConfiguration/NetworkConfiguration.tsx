@@ -77,13 +77,11 @@ type IsManagedNetworkingDisabledFunctionParams = {
   isDualStack: boolean;
   isOracleCloudInfrastructure: boolean;
   featureSupportLevelData: NewFeatureSupportLevelData;
-  openshiftVersion: Cluster['openshiftVersion'];
 };
 
 const isManagedNetworkingDisabled = ({
   isDualStack,
   isOracleCloudInfrastructure,
-  openshiftVersion,
   featureSupportLevelData,
 }: IsManagedNetworkingDisabledFunctionParams) => {
   if (isOracleCloudInfrastructure) {
@@ -98,10 +96,7 @@ const isManagedNetworkingDisabled = ({
       networkManagementDisabledReason:
         'Network management selection is not supported with dual-stack',
     };
-  } else if (
-    !!openshiftVersion &&
-    featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')
-  ) {
+  } else if (featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')) {
     return {
       isNetworkManagementDisabled: true,
       networkManagementDisabledReason:
@@ -230,10 +225,9 @@ const NetworkConfiguration = ({
       isManagedNetworkingDisabled({
         isDualStack,
         isOracleCloudInfrastructure: cluster.platform?.type === 'oci',
-        openshiftVersion: cluster.openshiftVersion,
         featureSupportLevelData,
       }),
-    [cluster.openshiftVersion, cluster.platform?.type, featureSupportLevelData, isDualStack],
+    [cluster.platform?.type, featureSupportLevelData, isDualStack],
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(
