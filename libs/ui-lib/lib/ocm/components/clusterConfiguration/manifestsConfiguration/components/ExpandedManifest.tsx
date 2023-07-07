@@ -6,7 +6,8 @@ import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
 import { CustomManifestValues } from '../data/dataTypes';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
-import { PopoverIcon } from '../../../../../common';
+import { PopoverIcon, fileSize } from '../../../../../common';
+import { MAX_FILE_SIZE_BYTES } from '../../../../../common/configurations';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename
@@ -36,7 +37,11 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
             name={`${fieldName}.filename`}
             isRequired
             data-testid={`filename-${manifestIdx}`}
-            helperText={'Use yaml, yml or JSON file types. File size must not exceed 1MB.'}
+            helperText={`Use yaml, yml or JSON file types. File size must not exceed ${fileSize(
+              MAX_FILE_SIZE_BYTES,
+              0,
+              'si',
+            )}.`}
             label={
               <>
                 <span>File name</span>
