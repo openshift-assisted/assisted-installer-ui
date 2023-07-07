@@ -59,5 +59,9 @@ export const getMaxFileSizeMessage = `File size is too big. The file size must b
 )}.`;
 
 export const validateFileName = (fileName: string) => {
-  return new RegExp(FILENAME_REGEX).test(fileName || '');
+  return (
+    new RegExp(FILENAME_REGEX).test(fileName || '') ||
+    fileName.indexOf('.yaml.patch') > -1 ||
+    fileName.indexOf('.yml.patch') > -1
+  );
 };
