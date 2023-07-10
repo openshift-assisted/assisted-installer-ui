@@ -182,10 +182,10 @@ export const HostsClusterDetailTabContent = ({
         canEdit={ocmCluster.canEdit}
       >
         <NewFeatureSupportLevelProvider
-            loadingUi={<LoadingState />}
-            cluster={day2Cluster}
-            cpuArchitecture={infraEnv?.cpuArchitecture}
-            openshiftVersion={day2Cluster.openshiftVersion}
+          loadingUi={<LoadingState />}
+          cluster={day2Cluster}
+          cpuArchitecture={infraEnv?.cpuArchitecture}
+          openshiftVersion={day2Cluster.openshiftVersion}
         >
           <AddHosts />
         </NewFeatureSupportLevelProvider>
