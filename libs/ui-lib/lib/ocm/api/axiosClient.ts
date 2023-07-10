@@ -15,23 +15,21 @@ const axiosCaseConverterOptions = {
   },
 };
 
-const token = '';
-
-const getDefaultClient = () => {
+const getDefaultClient = (withoutConverter = false) => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
     ...cfg,
     url: `${process.env.AIUI_APP_API_ROOT || ''}${cfg.url || ''}`,
-    headers: {
-      ...cfg.headers,
-      Authorization: `Bearer ${token}`,
-    },
   }));
-  return client;
+  if (withoutConverter) {
+    return client;
+  } else {
+    return applyCaseMiddleware(client, axiosCaseConverterOptions);
+  }
 };
 
-let client = applyCaseMiddleware(getDefaultClient(), axiosCaseConverterOptions);
-let clientWithoutConverter = getDefaultClient();
+let client: AxiosInstance = getDefaultClient();
+let clientWithoutConverter: AxiosInstance = getDefaultClient(true);
 let ocmClient: AxiosInstance | null;
 let isInOcm = false;
 
@@ -48,7 +46,6 @@ const getOcmClient = () => ocmClient;
 export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => AxiosInstance) => {
   ocmClient = authInterceptor(axios.create());
   isInOcm = true;
-
   client = applyCaseMiddleware(
     aiInterceptor(authInterceptor(axios.create())),
     axiosCaseConverterOptions,
@@ -56,4 +53,4 @@ export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => A
   clientWithoutConverter = aiInterceptor(authInterceptor(axios.create()));
 };
 
-export { client, isInOcm, getOcmClient, clientWithoutConverter };
+export { client, getOcmClient, isInOcm, clientWithoutConverter };
