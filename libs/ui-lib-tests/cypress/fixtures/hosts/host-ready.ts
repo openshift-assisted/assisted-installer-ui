@@ -103,6 +103,8 @@ const hostReady = (originalHost) => {
   const allValidations = hostReadyValidationsInfo(originalHost.requested_hostname);
   return {
     ...originalHost,
+    status: 'known',
+    status_info: 'Host is ready to be installed',
     validations_info: JSON.stringify(allValidations),
   };
 };

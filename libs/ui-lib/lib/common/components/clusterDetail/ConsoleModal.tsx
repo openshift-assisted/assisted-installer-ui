@@ -12,6 +12,7 @@ import { Cluster, removeProtocolFromURL } from '../../api';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { selectApiVip, selectIngressVip } from '../../selectors';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
@@ -54,7 +55,7 @@ const ModalExpandableSection: React.FC<ModalExpandableSectionProps> = (props) =>
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
   const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
   const handleToggle = () => setIsDNSExpanded(!isDNSExpanded);
-  const [apiVip = '', ingressVip = ''] = [cluster.apiVip, cluster.ingressVip];
+  const [apiVip, ingressVip] = [selectApiVip(cluster), selectIngressVip(cluster)];
   const clusterUrl = `${cluster.name || ''}.${cluster.baseDnsDomain || ''}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [

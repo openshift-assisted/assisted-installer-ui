@@ -19,8 +19,9 @@ const hostRename = (originalHost, newName) => ({
     'Joined',
     'Done',
   ],
-  status: 'known',
-  status_info: 'Host is ready to be installed',
+  status: 'pending-for-input',
+  status_info:
+    'Waiting for user input: Machine Network CIDR is undefined; the Machine Network CIDR can be defined by setting either the API or Ingress virtual IPs',
   inventory: JSON.stringify(getHostInventory(newName)),
   validations_info: JSON.stringify(hostValidationsInfo(newName)),
 });
