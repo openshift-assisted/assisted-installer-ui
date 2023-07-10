@@ -166,6 +166,13 @@ export const getNewFeatureDisabledReason = (
     case 'EXTERNAL_PLATFORM_OCI': {
       return 'Requires OpenShift v4.14 and above.';
     }
+    case 'MCE': {
+      if (!isSupported) {
+        return 'Multicluster engine is not supported in this OpenShift version.';
+      } else {
+        return undefined;
+      }
+    }
     default: {
       return undefined;
     }
