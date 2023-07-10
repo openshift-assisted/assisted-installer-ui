@@ -17,7 +17,7 @@ import {
   ClusterDefaultConfig,
   ApiVip,
   IngressVip,
-  VIPArrayValidationSchema,
+  vipArrayValidationSchema,
 } from '../../../../common';
 
 export const getNetworkInitialValues = (
@@ -61,8 +61,8 @@ export const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      apiVips: VIPArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
-      ingressVips: VIPArrayValidationSchema<IngressVip>(
+      apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
+      ingressVips: vipArrayValidationSchema<IngressVip>(
         hostSubnets,
         values,
         initialValues.ingressVips,

@@ -304,7 +304,7 @@ export const vipNoSuffixValidationSchema = (
       }),
   });
 
-export const VIPArrayValidationSchema = <T>(
+export const vipArrayValidationSchema = <T>(
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
   initialValues?: ApiVip[] | IngressVip[],

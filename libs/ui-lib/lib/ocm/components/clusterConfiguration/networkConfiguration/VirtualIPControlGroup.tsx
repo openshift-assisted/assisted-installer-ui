@@ -22,6 +22,7 @@ import {
   PopoverIcon,
   selectApiVip,
   selectIngressVip,
+  Ip,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
@@ -30,13 +31,13 @@ import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatur
 
 interface VipStaticValueProps {
   id?: string;
-  vipName: 'apiVip' | 'ingressVip';
+  vipValue: Ip;
   cluster: Cluster;
   validationErrorMessage?: string;
 }
 
 const VipStaticValue = ({
-  vipName,
+  vipValue,
   cluster,
   validationErrorMessage,
   id = 'vip-static',
@@ -44,8 +45,8 @@ const VipStaticValue = ({
   const { vipDhcpAllocation } = cluster;
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
-  if (vipDhcpAllocation && cluster[vipName]) {
-    return <span id={`${id}-allocated`}>{cluster[vipName]}</span>;
+  if (vipDhcpAllocation && !!vipValue) {
+    return <span id={`${id}-allocated`}>{vipValue}</span>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (
@@ -156,7 +157,7 @@ export const VirtualIPControlGroup = ({
           >
             <VipStaticValue
               id="vip-api"
-              vipName="apiVip"
+              vipValue={selectApiVip(cluster)}
               cluster={cluster}
               validationErrorMessage={apiVipFailedValidationMessage}
             />
@@ -176,7 +177,7 @@ export const VirtualIPControlGroup = ({
           >
             <VipStaticValue
               id="vip-ingress"
-              vipName="ingressVip"
+              vipValue={selectIngressVip(cluster)}
               cluster={cluster}
               validationErrorMessage={ingressVipFailedValidationMessage}
             />

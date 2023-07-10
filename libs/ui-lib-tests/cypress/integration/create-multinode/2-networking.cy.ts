@@ -1,6 +1,7 @@
 import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
 import * as utils from '../../support/utils';
+import { NetworkingRequest } from '../../fixtures/create-mn/requests';
 
 describe(`Assisted Installer Multinode Networking`, () => {
   before(() => {
@@ -20,7 +21,9 @@ describe(`Assisted Installer Multinode Networking`, () => {
     it('Should fill in network information', () => {
       networkingPage.inputApiVipIngressVip('192.168.122.10', '192.168.122.110');
       utils.setLastWizardSignal('READY_TO_INSTALL');
-      cy.wait('@update-cluster');
+      cy.wait('@update-cluster').then((req) => {
+        expect(req.request.body).to.deep.equal(NetworkingRequest);
+      });
     });
 
     it('Should see the Ready Host inventory status', () => {
