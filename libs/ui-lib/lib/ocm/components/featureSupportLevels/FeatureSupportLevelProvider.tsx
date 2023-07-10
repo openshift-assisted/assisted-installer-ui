@@ -104,7 +104,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const getDisabledReasonCallback = React.useCallback(
-    (featureId: FeatureId, t?: TFunction, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
+    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
       const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
         featureId,
@@ -118,7 +118,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
 
   const isFeatureDisabled = React.useCallback(
     (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) =>
-      !!getDisabledReasonCallback(featureId, undefined, supportLevelDataNew),
+      !!getDisabledReasonCallback(featureId, supportLevelDataNew),
     [getDisabledReasonCallback],
   );
 

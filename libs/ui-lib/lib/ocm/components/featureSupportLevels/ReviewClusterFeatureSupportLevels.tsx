@@ -179,7 +179,7 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
 };
 
 const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
-  <WithErrorBoundary title="Failed to load feature support levels review">
+  <WithErrorBoundary title="Failed to load feature support levels">
     <SupportLevel {...props} />
   </WithErrorBoundary>
 );

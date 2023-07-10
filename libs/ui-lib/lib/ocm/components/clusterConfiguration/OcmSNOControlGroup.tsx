@@ -34,7 +34,6 @@ const OcmSNOControlGroup = ({
   );
   const disabledReason = newFeatureSupportLevelContext.getFeatureDisabledReason(
     'SNO',
-    t,
     featureSupportLevelData,
   );
 

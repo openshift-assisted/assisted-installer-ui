@@ -22,7 +22,6 @@ export type NewFeatureSupportLevelData = {
   isFeatureDisabled(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   getFeatureDisabledReason(
     featureId: FeatureId,
-    t?: TFunction,
     supportLevelData?: NewFeatureSupportLevelMap,
   ): string | undefined;
   isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
