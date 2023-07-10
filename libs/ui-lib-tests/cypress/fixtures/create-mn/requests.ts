@@ -24,11 +24,11 @@ const UMNetworkingRequest = {
   network_type: 'OVNKubernetes',
 };
 
-const NetworkingRequest = {
-  api_vips: [{ ip: '192.168.122.10', cluster_id: fakeClusterId }],
-  api_vip: '192.168.122.10',
-  ingress_vips: [{ ip: '192.168.122.110', cluster_id: fakeClusterId }],
-  ingress_vip: '192.168.122.110',
+const getNetworkingRequest = (apiVip: string, ingressVip: string) => ({
+  api_vips: [{ ip: apiVip, cluster_id: fakeClusterId }],
+  api_vip: apiVip,
+  ingress_vips: [{ ip: ingressVip, cluster_id: fakeClusterId }],
+  ingress_vip: ingressVip,
   cluster_networks: [
     {
       cidr: '10.128.0.0/14',
@@ -47,6 +47,6 @@ const NetworkingRequest = {
   user_managed_networking: false,
   vip_dhcp_allocation: false,
   network_type: 'OVNKubernetes',
-};
+});
 
-export { NetworkingRequest, UMNetworkingRequest };
+export { getNetworkingRequest, UMNetworkingRequest };

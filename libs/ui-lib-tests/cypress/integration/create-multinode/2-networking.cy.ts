@@ -1,12 +1,11 @@
 import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
-import * as utils from '../../support/utils';
-import { NetworkingRequest } from '../../fixtures/create-mn/requests';
+import { getNetworkingRequest } from '../../fixtures/create-mn/requests';
 
 describe(`Assisted Installer Multinode Networking`, () => {
   before(() => {
     cy.loadAiAPIIntercepts({
-      activeSignal: 'HOST_RENAMED_1',
+      activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   });
@@ -14,29 +13,23 @@ describe(`Assisted Installer Multinode Networking`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
+    commonActions.startAtWizardStep('Networking');
   });
 
   describe('Validating the Network configuration', () => {
     it('Should see the Ready Host inventory status', () => {
-      cy.wait('@cluster-details').then(() => {
-        utils.setLastWizardSignal('READY_TO_INSTALL');
-      });
       networkingPage.waitForNetworkStatus('Ready');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
     });
 
-    it('Should fill in network information', () => {
-      networkingPage.inputApiVipIngressVip('192.168.122.10', '192.168.122.110');
-      utils.setLastWizardSignal('READY_TO_INSTALL');
+    it('Should submit updated network information', () => {
+      const newApiVip = '192.168.122.33';
+      const newIngressVip = '192.168.122.44';
+
+      networkingPage.inputApiVipIngressVip(newApiVip, newIngressVip);
       cy.wait('@update-cluster').then((req) => {
-        expect(req.request.body).to.deep.equal(NetworkingRequest);
+        expect(req.request.body).to.deep.equal(getNetworkingRequest(newApiVip, newIngressVip));
       });
-    });
-
-    it('Should see the Ready Host inventory status', () => {
-      networkingPage.waitForNetworkStatus('Ready');
-      networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
     });
 
     it('Should have enforced Network Management', () => {
