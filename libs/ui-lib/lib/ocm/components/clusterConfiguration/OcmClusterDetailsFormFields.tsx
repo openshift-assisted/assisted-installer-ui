@@ -16,6 +16,7 @@ import {
   useFeature,
   ClusterCreateParams,
   getSupportedCpuArchitectures,
+  PlatformType,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -41,6 +42,7 @@ import {
   ExternalPartnerIntegrationsCheckbox,
   useExternalPartnerIntegrationsCheckboxState,
 } from './ExternalPartnerIntegrationsCheckbox';
+import ExternalPlatformDropdown from './ExternalPlatformDropdown';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -54,6 +56,7 @@ export type OcmClusterDetailsFormFieldsProps = {
   clusterExists: boolean;
   clusterCpuArchitecture?: string;
   clusterId?: string;
+  clusterPlatform?: PlatformType;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -78,6 +81,7 @@ export const OcmClusterDetailsFormFields = ({
   clusterExists,
   clusterCpuArchitecture,
   clusterId,
+  clusterPlatform,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -198,6 +202,10 @@ export const OcmClusterDetailsFormFields = ({
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
+      <ExternalPlatformDropdown
+        isOciEnabled={isOracleCloudPlatformIntegrationEnabled}
+        selectedPlatform={clusterPlatform}
+      />
       {isOracleCloudPlatformIntegrationEnabled && externalPartnerIntegrationsCheckboxState && (
         <ExternalPartnerIntegrationsCheckbox
           disabledStateTooltipContent={externalPartnerIntegrationsCheckboxState.disabledReason}

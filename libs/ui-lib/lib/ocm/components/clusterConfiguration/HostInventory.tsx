@@ -24,15 +24,11 @@ import { DiscoveryImageModalButton } from './DiscoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
-import PlatformIntegration from './platformIntegration/PlatformIntegration';
 
 const schedulableMastersTooltip =
   'Workloads must be run on control plane nodes when less than 5 hosts are discovered';
 
 const HostInventory = ({ cluster }: { cluster: Cluster }) => {
-  const isPlatformIntegrationFeatureEnabled = useFeature(
-    'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
-  );
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
@@ -61,13 +57,6 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
           </TextContent>
         )}
       </StackItem>
-      {isPlatformIntegrationFeatureEnabled && (
-        <StackItem>
-          <Split>
-            <PlatformIntegration clusterId={cluster.id} />
-          </Split>
-        </StackItem>
-      )}
       <StackItem>
         <Split>
           <SplitItem>

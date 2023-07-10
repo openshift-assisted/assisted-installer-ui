@@ -39,6 +39,9 @@ const ClusterDetailsService = {
       baseDnsDomain: values.baseDnsDomain,
       cpuArchitecture: values.cpuArchitecture as ClusterCpuArchitecture,
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
+      platform: {
+        type: values.platform,
+      },
     };
 
     if (values.externalPartnerIntegrations) {
