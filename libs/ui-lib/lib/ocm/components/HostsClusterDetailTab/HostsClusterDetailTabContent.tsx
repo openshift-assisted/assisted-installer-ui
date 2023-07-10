@@ -16,7 +16,7 @@ import { handleApiError } from '../../api';
 import { isApiError } from '../../api/types';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
-import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
 import { ClusterWizardContextProvider } from '../clusterWizard';
