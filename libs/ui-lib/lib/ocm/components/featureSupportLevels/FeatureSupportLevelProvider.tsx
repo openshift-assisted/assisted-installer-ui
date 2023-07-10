@@ -17,7 +17,6 @@ import {
   NewFeatureSupportLevelMap,
 } from '../../../common/components/newFeatureSupportLevels';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { TFunction } from 'i18next';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;

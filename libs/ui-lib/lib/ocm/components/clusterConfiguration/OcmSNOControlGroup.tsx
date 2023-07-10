@@ -6,7 +6,6 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type OcmSNOControlGroupProps = {
   highAvailabilityMode: ClusterDetailsValues['highAvailabilityMode'];
@@ -17,7 +16,6 @@ const OcmSNOControlGroup = ({
   highAvailabilityMode,
   featureSupportLevelData,
 }: OcmSNOControlGroupProps) => {
-  const { t } = useTranslation();
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
 
   const snoSupportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
