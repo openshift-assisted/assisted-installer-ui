@@ -1,9 +1,9 @@
 import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
 
 import { hasWizardSignal, setLastWizardSignal } from './utils';
-import * as allFixtures from '../fixtures';
+import * as fixtures from '../fixtures';
 
-const { day2FlowIds } = allFixtures;
+const { day2FlowIds } = fixtures;
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
 const allClustersApiPath = '/api/assisted-install/v2/clusters/';
@@ -22,7 +22,7 @@ const day2InfraEnvDetailsUrl = new RegExp(
   `${getDay2InfraEnvApiPath(x86)}|${getDay2InfraEnvApiPath(arm)}`,
 );
 
-const getDay2InfraEnv = (cpuArch: Archs) => allFixtures.day2InfraEnvs[cpuArch];
+const getDay2InfraEnv = (cpuArch: Archs) => fixtures.day2InfraEnvs[cpuArch];
 const getCpuArchitectureParam = (cpuArch: string): Archs | undefined => {
   if (!cpuArch) {
     return undefined;
@@ -41,7 +41,7 @@ const transformClusterFixture = (fixtureMapping) => {
 
   const hosts = hostsFixtures
     ? hostsFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.hosts['default']
-    : allFixtures.getUpdatedHosts();
+    : fixtures.getUpdatedHosts();
   return { ...baseCluster, hosts };
 };
 
@@ -53,25 +53,25 @@ const getScenarioFixtureMapping = () => {
   let fixtureMapping = null;
   switch (Cypress.env('AI_SCENARIO')) {
     case 'AI_CREATE_SNO':
-      fixtureMapping = allFixtures.createSnoFixtureMapping;
+      fixtureMapping = fixtures.createSnoFixtureMapping;
       break;
     case 'AI_CREATE_MULTINODE':
-      fixtureMapping = allFixtures.createMultinodeFixtureMapping;
+      fixtureMapping = fixtures.createMultinodeFixtureMapping;
       break;
     case 'AI_CREATE_DUALSTACK':
-      fixtureMapping = allFixtures.createDualStackFixtureMapping;
+      fixtureMapping = fixtures.createDualStackFixtureMapping;
       break;
     case 'AI_READONLY_CLUSTER':
-      fixtureMapping = allFixtures.createReadOnlyFixtureMapping;
+      fixtureMapping = fixtures.createReadOnlyFixtureMapping;
       break;
     case 'AI_STORAGE_CLUSTER':
-      fixtureMapping = allFixtures.createStorageFixtureMapping;
+      fixtureMapping = fixtures.createStorageFixtureMapping;
       break;
     case 'AI_CREATE_STATIC_IP':
-      fixtureMapping = allFixtures.createStaticIpFixtureMapping;
+      fixtureMapping = fixtures.createStaticIpFixtureMapping;
       break;
     case 'AI_CREATE_CUSTOM_MANIFESTS':
-      fixtureMapping = allFixtures.createCustomManifestsFixtureMapping;
+      fixtureMapping = fixtures.createCustomManifestsFixtureMapping;
       break;
     default:
       break;
@@ -113,7 +113,7 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
   if (fixtureMapping?.infraEnvs) {
     req.reply(transformInfraEnvFixture(fixtureMapping.infraEnvs));
   } else {
-    req.reply(allFixtures.baseInfraEnv);
+    req.reply(fixtures.baseInfraEnv);
   }
 };
 
@@ -171,7 +171,7 @@ const addClusterCreationIntercepts = () => {
 
 const addClusterListIntercepts = () => {
   cy.intercept('GET', allClustersApiPath, (req) => {
-    const { initialClusterList, updatedClusterList } = allFixtures;
+    const { initialClusterList, updatedClusterList } = fixtures;
     const fixture = hasWizardSignal('CLUSTER_CREATED') ? updatedClusterList() : initialClusterList;
     req.reply(fixture);
   });
@@ -200,7 +200,7 @@ const addDay1InfraEnvIntercepts = () => {
   // Actions on particular infraEnv
   cy.intercept('GET', infraEnvApiPath, mockInfraEnvResponse).as('infra-env-details');
 
-  cy.intercept('GET', `${infraEnvApiPath}/downloads/image-url`, allFixtures.imageDownload).as(
+  cy.intercept('GET', `${infraEnvApiPath}/downloads/image-url`, fixtures.imageDownload).as(
     'download-iso-image',
   );
 
@@ -208,7 +208,7 @@ const addDay1InfraEnvIntercepts = () => {
   cy.intercept('PATCH', infraEnvApiPath, mockInfraEnvResponse).as('update-infra-env');
 
   cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${Cypress.env('clusterId')}`, [
-    allFixtures.baseInfraEnv,
+    fixtures.baseInfraEnv,
   ]).as('filter-infra-envs');
 
   cy.intercept('POST', allInfraEnvsApiPath, mockInfraEnvResponse).as('create-infra-env');
@@ -232,7 +232,7 @@ const addDay2ClusterIntercepts = () => {
     'GET',
     `${allClustersApiPath}?openshift_cluster_id=${day2FlowIds.day1.aiClusterId}`,
     (req) => {
-      const fixture = hasWizardSignal('CREATED_DAY2_CLUSTER') ? [allFixtures.day2AiCluster] : [];
+      const fixture = hasWizardSignal('CREATED_DAY2_CLUSTER') ? [fixtures.day2AiCluster] : [];
       req.reply(fixture);
     },
   ).as('find-associated-day2-cluster');
@@ -244,22 +244,22 @@ const addDay2ClusterIntercepts = () => {
       name: 'scale-up-day2-flow',
       api_vip_dnsname: 'console-openshift-console.apps.day2-flow.redhat.com',
     });
-    req.reply({ body: allFixtures.day2AiCluster, delay: 1200 }); // add some delay
+    req.reply({ body: fixtures.day2AiCluster, delay: 1200 }); // add some delay
   }).as('create-day2-cluster');
 
   cy.intercept('GET', day1ClusterApiPath, (req) => {
-    req.reply(allFixtures.day1OcmSubscription);
+    req.reply(fixtures.day1OcmSubscription);
   }).as('cluster-details');
 
   cy.intercept('GET', day2ClusterApiPath, (req) => {
-    req.reply(allFixtures.day2AiCluster);
+    req.reply(fixtures.day2AiCluster);
   }).as('day2-cluster-details');
 };
 
 const addDay2InfraEnvIntercepts = () => {
   // Actions on an individual infraEnv (for Day2 cluster, they are associated to a particular cpu_architecture)
   const day1InfraEnvApiPath = getDay1InfraEnvApiPath();
-  cy.intercept('GET', day1InfraEnvApiPath, allFixtures.day1InfraEnv).as('day1-infra-env-details');
+  cy.intercept('GET', day1InfraEnvApiPath, fixtures.day1InfraEnv).as('day1-infra-env-details');
   cy.intercept('GET', day2InfraEnvDetailsUrl, getDay2InfraEnvByCpuArch).as(
     'day2-infra-env-details',
   );
@@ -274,7 +274,7 @@ const addDay2InfraEnvIntercepts = () => {
 
     if (clusterId === day2FlowIds.day1.ocmClusterId) {
       // The Day1 cluster has a single infraEnv
-      infraEnvs = [allFixtures.day1InfraEnv];
+      infraEnvs = [fixtures.day1InfraEnv];
     } else {
       // The Day2 cluster can have more than 1 infraEnvs, each for a different CPU architecture
       const cpuArchitecture = getCpuArchitectureParam(req.query.cpu_architecture as string);
@@ -308,7 +308,7 @@ const addDay1HostIntercepts = () => {
   const infraEnvApiPath = getDay1InfraEnvApiPath();
   cy.intercept('PATCH', `${infraEnvApiPath}/hosts/**`, (req) => {
     const patchedHostId = req.url.match(/\/hosts\/(.+)$/)[1];
-    const { hostIds, getUpdatedHosts } = allFixtures;
+    const { hostIds, getUpdatedHosts } = fixtures;
     const index = hostIds.findIndex((hostId) => hostId === patchedHostId);
     if (req.body.host_name) {
       req.alias = `rename-host-${index + 1}`;
@@ -342,13 +342,13 @@ const addCustomManifestsIntercepts = () => {
 };
 
 const addPlatformFeatureIntercepts = () => {
-  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', allFixtures.openShiftVersions);
+  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', fixtures.openShiftVersions);
 
   cy.intercept('GET', `/api/assisted-install/v2/support-levels/features*`, (req) => {
     // This request can also have cpu_architecture in the query, for now we always assume x86_64
     const openshiftVersion = (req.query.openshift_version as string) || '';
     const shortOpenshiftVersion = openshiftVersion.split('.').slice(0, 2).join('.');
-    req.reply(allFixtures.featureSupportLevels[shortOpenshiftVersion]);
+    req.reply(fixtures.featureSupportLevels[shortOpenshiftVersion]);
   }).as('feature-support-levels');
 
   // Calls that are requested for a particular cluster, the same response is returned for all clusters
@@ -364,12 +364,12 @@ const addAdditionalIntercepts = () => {
     { domain: 'e2e.redhat.com', provider: 'route53' },
   ]);
 
-  cy.intercept('GET', '/api/assisted-install/v2/**/default-config', allFixtures.defaultConfig).as(
+  cy.intercept('GET', '/api/assisted-install/v2/**/default-config', fixtures.defaultConfig).as(
     'get-default-config',
   );
 
   cy.intercept('POST', '/api/accounts_mgmt/v1/access_token', (req) => {
-    req.reply(allFixtures.pullSecret);
+    req.reply(fixtures.pullSecret);
   });
 };
 
@@ -378,7 +378,7 @@ const addEventsIntercepts = () => {
     expect(req.query['order']).eq('descending');
     expect(req.query['cluster_id']).eq(Cypress.env('clusterId'));
 
-    const events = allFixtures.getEvents({
+    const events = fixtures.getEvents({
       limit: req.query['limit'],
       offset: req.query['offset'],
       severities: req.query['severities'] as string,
@@ -389,7 +389,7 @@ const addEventsIntercepts = () => {
 
     req.reply({
       body: events,
-      headers: allFixtures.getEventHeaders(req.query),
+      headers: fixtures.getEventHeaders(req.query),
     });
   }).as('events');
 };
@@ -401,8 +401,8 @@ const setEntityIds = (activeScenario: string) => {
     clusterId = day2FlowIds.day1.aiClusterId;
     infraEnvId = day2FlowIds.day1.infraEnvId;
   } else {
-    clusterId = allFixtures.fakeClusterId;
-    infraEnvId = allFixtures.fakeClusterInfraEnvId;
+    clusterId = fixtures.fakeClusterId;
+    infraEnvId = fixtures.fakeClusterInfraEnvId;
   }
 
   Cypress.env('clusterId', clusterId);
