@@ -19,9 +19,9 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { ClusterWizardContextProvider } from '../clusterWizard';
 import {
   AddHostsApiError,
-  ReloadFailed,
+  ReloadFailedError,
   UnableToAddHostsError,
-  UnsupportedVersion,
+  UnsupportedVersionError,
 } from './HostsClusterDetailTabContentErrors';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
@@ -64,7 +64,7 @@ export const HostsClusterDetailTabContent = ({
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
-          <UnsupportedVersion
+          <UnsupportedVersionError
             version={ocmCluster.openshift_version}
             onTryAgain={handleClickTryAgainLink}
           />,
@@ -148,7 +148,7 @@ export const HostsClusterDetailTabContent = ({
       setDay2Cluster(aiCluster ?? null);
     } catch (e) {
       handleApiError(e);
-      setError(<ReloadFailed onTryAgain={handleClickTryAgainLink} />);
+      setError(<ReloadFailedError onTryAgain={handleClickTryAgainLink} />);
     }
   }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
