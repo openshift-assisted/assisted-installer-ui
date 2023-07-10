@@ -2,7 +2,6 @@ import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 import { clusterListPage } from '../../views/clusterList';
 import * as utils from '../../support/utils';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {
   before(() => {
@@ -10,7 +9,6 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       activeSignal: '',
       activeScenario: 'AI_CREATE_SNO',
     });
-    transformBasedOnUIVersion();
   });
 
   beforeEach(() => {
@@ -30,7 +28,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.visitNewClusterPage();
 
       clusterDetailsPage.inputClusterName();
-      clusterDetailsPage.inputbaseDnsDomain();
+      clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion();
 
       clusterDetailsPage.enableSno();
@@ -46,7 +44,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.waitForNext();
       commonActions.clickNextButton();
 
-      commonActions.getHeader('h2').should('contain', 'Host discovery');
+      commonActions.verifyIsAtStep('Host discovery');
     });
 
     it('Show the dev-preview badge for SNO', () => {
@@ -55,7 +53,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       clusterDetailsPage.enableSno();
       commonActions
         .getWarningAlert()
-        .should('contain', 'Limitations for using Single Node OpenShift');
+        .should('contain.text', 'Limitations for using Single Node OpenShift');
     });
 
     it('Lists the new cluster', () => {

@@ -12,7 +12,7 @@ describe(`Assisted Installer Dualstack Review`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.getHeader('h2').should('contain', 'Review and create');
+    commonActions.verifyIsAtStep('Review and create');
   });
 
   it('Should be ready to install', () => {

@@ -15,7 +15,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isMceOperatorEnabled = useFeature('ASSISTED_INSTALLER_MCE_FEATURE');
 
   return (
-    <Stack hasGutter>
+    <Stack hasGutter data-testid={'operators-form'}>
       <StackItem>
         <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
       </StackItem>

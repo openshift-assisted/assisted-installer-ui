@@ -5,8 +5,10 @@ import { fakeClusterId } from '../cluster/base-cluster';
 export const ipv4NetworkingRequest = {
   ssh_public_key: '',
   vip_dhcp_allocation: false,
+  api_vips: [{ ip: '192.168.122.10', cluster_id: fakeClusterId }],
   api_vip: '192.168.122.10',
   ingress_vip: '192.168.122.110',
+  ingress_vips: [{ ip: '192.168.122.110', cluster_id: fakeClusterId }],
   network_type: 'OVNKubernetes',
   machine_networks: [],
   cluster_networks: [
@@ -60,6 +62,8 @@ export const dualStackNetworkingRequest = {
     },
   ],
   user_managed_networking: false,
+  api_vips: [{ ip: '192.168.122.10', cluster_id: fakeClusterId }],
   api_vip: '192.168.122.10',
+  ingress_vips: [{ ip: '192.168.122.110', cluster_id: fakeClusterId }],
   ingress_vip: '192.168.122.110',
 };

@@ -6,7 +6,8 @@ const hostRenamedBuilder = (baseCluster) => {
   return {
     ...baseCluster,
     e2e_mock_source: '4-node-renamed',
-    status: 'insufficient',
+    status: 'pending-for-input',
+    status_info: 'User input required',
     validations_info: JSON.stringify(clusterValidationsInfo),
     feature_usage: JSON.stringify({
       ...baseCluster.featureUsage,

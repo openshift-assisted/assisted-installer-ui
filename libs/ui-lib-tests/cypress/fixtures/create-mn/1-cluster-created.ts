@@ -29,20 +29,12 @@ const multinodeCluster = {
       cluster_id: fakeClusterId,
     },
   ],
-  machine_networks: [
-    {
-      cidr: '192.168.122.0/24',
-      cluster_id: fakeClusterId,
-    },
-  ],
   // We're adding this field to easily debug which mock is returning the response
   e2e_mock_source: '1-base-cluster',
   feature_usage: JSON.stringify(featureUsage),
   validations_info: JSON.stringify(clusterValidationsInfo),
   high_availability_mode: 'Full',
-  network_type: 'OpenShiftSDN',
   user_managed_networking: false,
-  vip_dhcp_allocation: true,
 };
 
 export { multinodeCluster };

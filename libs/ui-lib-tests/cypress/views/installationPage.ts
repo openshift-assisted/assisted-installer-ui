@@ -72,7 +72,7 @@ export const installationPage = {
     cy.get(Cypress.env('clusterProgressStatusValueId')).scrollIntoView().should('be.visible');
     cy.get(Cypress.env('clusterProgressStatusValueId'), {
       timeout: timeout,
-    }).should('contain', status);
+    }).should('contain.text', status);
   },
   operatorsPopover: {
     open: () => {
@@ -80,7 +80,7 @@ export const installationPage = {
     },
     validateListItemContents: (msg) => {
       cy.get('.pf-c-popover__body').within(() => {
-        cy.get('li').should('contain', msg);
+        cy.get('li').should('contain.text', msg);
       });
     },
     close: () => {

@@ -13,7 +13,7 @@ export const clusterListPage = {
   },
   openCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
     cy.getClusterNameLinkSelector(clusterName).click();
-    cy.get('.pf-c-breadcrumb__list > :nth-child(3)').contains(clusterName);
+    cy.get('.pf-c-breadcrumb__list > :nth-child(3)').should('contain', clusterName);
     cy.get(Cypress.env('clusterNameFieldId')).should('have.value', clusterName);
   },
   deleteCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
@@ -46,7 +46,7 @@ export const clusterListPage = {
       .within(() => {
         cy.get('td[data-label="Provider (Location)"]', {
           timeout: timeout,
-        }).should('contain', provider);
+        }).should('contain.text', provider);
       });
   },
   filterSearchString: (searchString) => {

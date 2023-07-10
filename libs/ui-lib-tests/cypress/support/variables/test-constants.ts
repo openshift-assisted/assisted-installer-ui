@@ -1,10 +1,3 @@
-// Dev mode
-Cypress.env(
-  'sshCmd',
-  `ssh -o StrictHostKeyChecking=no -i
-    ${Cypress.env('REMOTE_SSH_ID_FILE') || '~/.ssh/id_rsa'}
-    ${Cypress.env('REMOTE_USER')}@${Cypress.env('REMOTE_HOST')}`,
-);
 // timeouts
 Cypress.env('DEFAULT_API_REQUEST_TIMEOUT', 20 * 1000);
 Cypress.env('DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT', 60 * 1000);

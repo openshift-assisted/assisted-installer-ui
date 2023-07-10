@@ -1,10 +1,8 @@
 import { commonActions } from '../../views/common';
 import { reviewAndCreatePage } from '../../views/reviewCreate';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer SNO Review`, () => {
   before(() => {
-    transformBasedOnUIVersion();
     cy.loadAiAPIIntercepts({
       activeSignal: 'READY_TO_INSTALL',
       activeScenario: 'AI_CREATE_SNO',
@@ -14,7 +12,7 @@ describe(`Assisted Installer SNO Review`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.getHeader('h2').should('contain', 'Review and create');
+    commonActions.verifyIsAtStep('Review and create');
   });
 
   describe('Cluster summary', () => {

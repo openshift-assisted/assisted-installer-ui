@@ -78,7 +78,7 @@ export const hostsTableSection = {
   ) => {
     // Start at index 2 here because of selector
     for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-      cy.hostDetailSelector(i, 'Status', timeout).should('contain', status);
+      cy.hostDetailSelector(i, 'Status', timeout).should('contain.text', status);
     }
   },
   getHostDisksExpander: (hostIndex: number) => {

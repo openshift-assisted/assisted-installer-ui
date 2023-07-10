@@ -9,6 +9,7 @@ import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { getVipValidationsById } from '../../clusterConfiguration';
+import { selectApiVip } from '../../../selectors';
 
 interface VipStaticValueProps {
   vipName: 'apiVip' | 'ingressVip';
@@ -76,7 +77,7 @@ export const VirtualIPControlGroup = ({
   const { t } = useTranslation();
   const vipHelperSuffix = getVipHelperSuffix(
     t,
-    cluster.apiVip,
+    selectApiVip(cluster),
     cluster.vipDhcpAllocation,
     values.vipDhcpAllocation,
   );

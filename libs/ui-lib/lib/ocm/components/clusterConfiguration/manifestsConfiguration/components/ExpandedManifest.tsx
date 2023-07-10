@@ -6,6 +6,8 @@ import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
 import { CustomManifestValues } from '../data/dataTypes';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
+import { PopoverIcon, fileSize } from '../../../../../common';
+import { MAX_FILE_SIZE_BYTES } from '../../../../../common/configurations';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename
@@ -33,11 +35,22 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
         <GridItem span={6}>
           <OcmInputField
             name={`${fieldName}.filename`}
-            label="File name"
             isRequired
             data-testid={`filename-${manifestIdx}`}
-            helperText={
-              'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
+            helperText={`Use yaml, yml or JSON file types. File size must not exceed ${fileSize(
+              MAX_FILE_SIZE_BYTES,
+              0,
+              'si',
+            )}.`}
+            label={
+              <>
+                <span>File name</span>
+                <PopoverIcon
+                  bodyContent={
+                    'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
+                  }
+                />
+              </>
             }
           />
         </GridItem>
@@ -45,7 +58,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
           <OcmCodeField
             language={Language.yaml}
             name={`${fieldName}.manifestYaml`}
-            data-testid={`yaml-${manifestIdx}`}
+            dataTestid={`yamlContent-${manifestIdx}`}
             label="Content"
             isRequired
             downloadFileName={getDownloadFileName(manifestIdx, value)}

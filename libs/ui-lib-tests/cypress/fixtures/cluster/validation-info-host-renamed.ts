@@ -18,6 +18,16 @@ const readyHostValidationsInfoPartial = (hostName) => ({
       status: 'success',
       message: `Hostname ${hostName} is allowed`,
     },
+    {
+      id: 'no-skip-installation-disk',
+      status: 'success',
+      message: 'No request to skip formatting of the installation disk',
+    },
+    {
+      id: 'no-skip-missing-disk',
+      status: 'success',
+      message: 'All disks that have skipped formatting are present in the host inventory',
+    },
   ],
 });
 

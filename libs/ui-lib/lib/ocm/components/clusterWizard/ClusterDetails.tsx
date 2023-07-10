@@ -64,16 +64,9 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
 
   const handleCustomManifestsChange = React.useCallback(
     async (clusterId: string, addCustomManifests: boolean) => {
-      //If checkbox is selected, then we need to know if cluster is created or updated
-      const addCustomManifestsNew = customManifests
-        ? customManifests.length === 0
-        : addCustomManifests;
-      if (clusterId && addCustomManifestsNew) {
+      const addCustomManifestsNew = customManifests ? customManifests.length === 0 : true;
+      if (addCustomManifests && addCustomManifestsNew && clusterId) {
         await ClustersService.createDummyManifest(clusterId);
-      }
-      //If checkbox is unselected, we need to remove custom manifests if exists
-      else if (!addCustomManifests && customManifests && customManifests.length > 0) {
-        await ClustersService.removeClusterManifests(customManifests, clusterId);
       }
     },
     [customManifests],

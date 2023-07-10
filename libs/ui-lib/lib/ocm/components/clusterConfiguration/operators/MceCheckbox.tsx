@@ -15,7 +15,7 @@ const MceLabel = ({ disabledReason }: { disabledReason?: string }) => (
     <PopoverIcon
       id={MCE_FIELD_NAME}
       component={'a'}
-      headerContent="Additional Requirements"
+      headerContent="Additional requirements"
       bodyContent={
         <>
           OpenShift Data Foundation (recommended for creating additional on-premise clusters) or
