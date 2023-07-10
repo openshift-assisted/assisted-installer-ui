@@ -14,6 +14,8 @@ import {
   HostSubnets,
   isSNO,
   NetworkConfigurationValues,
+  selectApiVip,
+  selectIngressVip,
   serviceNetworksEqual,
 } from '../../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/newFeatureSupportLevels/utils';
@@ -166,8 +168,8 @@ const NetworkConfiguration = ({
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVip', '', false);
-      setFieldValue('apiVip', '', false);
+      setFieldValue('ingressVips', [], false);
+      setFieldValue('apiVips', [], false);
 
       if (isMultiNodeCluster) {
         setFieldValue('machineNetworks', [], false);
@@ -271,8 +273,8 @@ const NetworkConfiguration = ({
           isRequired={!isUserManagedNetworking}
           isDisabled={
             (cluster.vipDhcpAllocation &&
-              cluster.apiVip === undefined &&
-              cluster.ingressVip === undefined) ||
+              selectApiVip(cluster) === '' &&
+              selectIngressVip(cluster) === '') ||
             hostSubnets.length === 0 ||
             false
           }

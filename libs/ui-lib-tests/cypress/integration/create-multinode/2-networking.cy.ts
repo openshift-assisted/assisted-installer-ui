@@ -1,6 +1,7 @@
 import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
 import * as utils from '../../support/utils';
+import { NetworkingRequest } from '../../fixtures/create-mn/requests';
 
 describe(`Assisted Installer Multinode Networking`, () => {
   before(() => {
@@ -17,10 +18,15 @@ describe(`Assisted Installer Multinode Networking`, () => {
   });
 
   describe('Validating the Network configuration', () => {
-    it('Should see the Ready Host inventory status', () => {
-      cy.wait('@cluster-details').then(() => {
-        utils.setLastWizardSignal('READY_TO_INSTALL');
+    it('Should fill in network information', () => {
+      networkingPage.inputApiVipIngressVip('192.168.122.10', '192.168.122.110');
+      utils.setLastWizardSignal('READY_TO_INSTALL');
+      cy.wait('@update-cluster').then((req) => {
+        expect(req.request.body).to.deep.equal(NetworkingRequest);
       });
+    });
+
+    it('Should see the Ready Host inventory status', () => {
       networkingPage.waitForNetworkStatus('Ready');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
     });
@@ -35,8 +41,8 @@ describe(`Assisted Installer Multinode Networking`, () => {
 
     it('Should have the correct default network type', () => {
       networkingPage.getAdvancedNetwork().click();
-      networkingPage.getSdnNetworkingField().should('be.enabled').and('be.checked');
-      networkingPage.getOvnNetworkingField().should('be.enabled').and('not.be.checked');
+      networkingPage.getSdnNetworkingField().should('be.enabled').and('not.be.checked');
+      networkingPage.getOvnNetworkingField().should('be.enabled').and('be.checked');
     });
 
     it('Should go to the final step', () => {
