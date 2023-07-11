@@ -112,7 +112,7 @@ jobs:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
       - name: Create env file for assisted-ui
-        run: echo "AIUI_APP_API_URL=http://localhost:4173" >> apps/assisted-ui/.env.local
+        run: echo "AIUI_APP_API_URL=http://127.0.0.1:4173" >> apps/assisted-ui/.env.local
       - name: Run integration tests
         uses: cypress-io/github-action@v5
         with:
@@ -122,7 +122,7 @@ jobs:
           build: yarn build:all
           start: yarn preview:assisted-ui
           working-directory: libs/ui-lib-tests
-          wait-on: 'http://[::1]:4173'
+          wait-on: 'http://127.0.0.1:4173'
       - name: Store test execution screenshots on failure
         uses: actions/upload-artifact@v3
         if: failure()
