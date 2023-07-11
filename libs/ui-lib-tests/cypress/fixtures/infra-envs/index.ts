@@ -6,7 +6,7 @@ const isoDownloadLink = `${Cypress.env(
   'API_BASE_URL',
 )}/images/${fakeClusterInfraEnvId}?arch=x86_64&type=full-iso&version=4.9`;
 
-const infraEnv = {
+const baseInfraEnv = {
   id: fakeClusterInfraEnvId,
   cluster_id: fakeClusterId,
   href: `/api/assisted-install/v2/infra-envs/${fakeClusterInfraEnvId}`,
@@ -34,4 +34,4 @@ const imageDownload = {
   delay: 100,
 };
 
-export { infraEnv, imageDownload, isoDownloadLink };
+export { baseInfraEnv, imageDownload, isoDownloadLink };

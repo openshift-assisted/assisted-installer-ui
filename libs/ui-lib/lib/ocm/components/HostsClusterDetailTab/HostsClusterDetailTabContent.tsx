@@ -7,7 +7,6 @@ import {
   ErrorState,
   LoadingState,
   POLLING_INTERVAL,
-  useFeature,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
@@ -17,9 +16,15 @@ import { isApiError } from '../../api/types';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
+import { ClusterWizardContextProvider } from '../clusterWizard';
+import {
+  AddHostsApiError,
+  ReloadFailedError,
+  UnableToAddHostsError,
+  UnsupportedVersionError,
+} from './HostsClusterDetailTabContentErrors';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
-import { ClusterWizardContextProvider } from '../clusterWizard';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -28,24 +33,22 @@ export const HostsClusterDetailTabContent = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
-  const { normalizeClusterVersion } = useOpenshiftVersions();
-  const { getCpuArchitectures } = useOpenshiftVersions();
+  const { getCpuArchitectures, normalizeClusterVersion } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(ocmCluster.openshift_version);
-  const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
     setDay2Cluster(null);
   }, [setDay2Cluster]);
 
   const { infraEnv } = useInfraEnv(
-    ocmCluster.id ? ocmCluster.id : '',
-    ocmCluster.cpu_architecture
-      ? (mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) as CpuArchitecture)
-      : CpuArchitecture.USE_DAY1_ARCHITECTURE,
+    ocmCluster.id || '',
+    mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) ||
+      CpuArchitecture.USE_DAY1_ARCHITECTURE,
     ocmCluster.name,
     pullSecret,
     ocmCluster.openshift_version,
   );
+
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
       // the tab is not visible, stop polling
@@ -54,32 +57,17 @@ export const HostsClusterDetailTabContent = ({
     const day1ClusterHostCount = ocmCluster?.metrics?.nodes?.total || 0;
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
     if (day1ClusterHostCount === 0 || !openshiftClusterId) {
-      setError(
-        <>
-          Temporarily unable to add hosts
-          <br />
-          We're waiting for your recently installed cluster to report its metrics.{' '}
-          <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-            Try again
-          </Button>{' '}
-          in a few minutes.
-        </>,
-      );
+      setError(<UnableToAddHostsError onTryAgain={handleClickTryAgainLink} />);
     }
 
     if (isVisible && !day2Cluster && pullSecret) {
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
-          <>
-            Unsupported OpenShift cluster version: {ocmCluster.openshift_version || 'N/A'}.
-            <br />
-            Check your connection and{' '}
-            <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-              try again
-            </Button>
-            .
-          </>,
+          <UnsupportedVersionError
+            version={ocmCluster.openshift_version}
+            onTryAgain={handleClickTryAgainLink}
+          />,
         );
         return;
       }
@@ -107,7 +95,7 @@ export const HostsClusterDetailTabContent = ({
         return;
       }
 
-      const doItAsync = async () => {
+      const loadDay2Cluster = async () => {
         try {
           const day2Cluster = await Day2ClusterService.fetchCluster(
             ocmCluster,
@@ -124,24 +112,17 @@ export const HostsClusterDetailTabContent = ({
           if (isApiError(e)) {
             const isImport = e.config?.url?.includes('/import');
             setError(
-              <>
-                {isImport
-                  ? 'Failed to create wrapping cluster for adding new hosts.'
-                  : 'Failed to fetch cluster for adding new hosts.'}
-                <br />
-                Check your connection and{' '}
-                <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-                  try again
-                </Button>
-                .
-              </>,
+              <AddHostsApiError
+                isImport={isImport || false}
+                onTryAgain={handleClickTryAgainLink}
+              />,
             );
           }
           return;
         }
       };
 
-      void doItAsync();
+      void loadDay2Cluster();
     }
   }, [
     ocmCluster,
@@ -152,10 +133,9 @@ export const HostsClusterDetailTabContent = ({
     normalizeClusterVersion,
     handleClickTryAgainLink,
     cpuArchitecturesByVersionImage,
-    canSelectCpuArch,
   ]);
 
-  const resetCluster = React.useCallback(async () => {
+  const refreshCluster = React.useCallback(async () => {
     if (!day2Cluster?.id) {
       return;
     }
@@ -168,29 +148,16 @@ export const HostsClusterDetailTabContent = ({
       setDay2Cluster(aiCluster ?? null);
     } catch (e) {
       handleApiError(e);
-      setError(
-        <>
-          Failed to reload cluster data.
-          <br />
-          Check your connection and{' '}
-          <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-            try again
-          </Button>
-          .
-        </>,
-      );
+      setError(<ReloadFailedError onTryAgain={handleClickTryAgainLink} />);
     }
   }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
-      const doItAsync = async () => {
-        await resetCluster();
-      };
-      void doItAsync();
+      void refreshCluster();
     }, POLLING_INTERVAL);
     return () => clearTimeout(id);
-  }, [resetCluster]);
+  }, [refreshCluster]);
 
   if (error) {
     return (
@@ -210,7 +177,7 @@ export const HostsClusterDetailTabContent = ({
     <ClusterWizardContextProvider cluster={day2Cluster} infraEnv={infraEnv}>
       <AddHostsContextProvider
         cluster={day2Cluster}
-        resetCluster={resetCluster}
+        resetCluster={refreshCluster}
         ocpConsoleUrl={ocmCluster?.console?.url}
         canEdit={ocmCluster.canEdit}
       >

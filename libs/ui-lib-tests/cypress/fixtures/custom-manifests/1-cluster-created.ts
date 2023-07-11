@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { baseCluster, fakeClusterId } from '../cluster/base-cluster';
-import { clusterValidationsInfo } from '../cluster/validation-info-initial-cluster';
+import { initialClusterValidations } from '../cluster/validation-info-initial-cluster';
 
 const featureUsage = {
   'SDN network type': {
@@ -44,7 +44,7 @@ const customManifestsCluster = {
   e2e_mock_source: '5-cluster-ready',
   status: 'ready',
   status_info: 'Cluster ready to be installed',
-  validations_info: JSON.stringify(clusterValidationsInfo),
+  validations_info: JSON.stringify(initialClusterValidations.clusterValidationsInfo),
 };
 
 export { customManifestsCluster };

@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import {
-  hostValidationsInfo as prevHostValidationsInfo,
-  clusterValidationsInfo,
-} from './validation-info-host-discovery';
+import { hostDiscoveryValidations } from './validation-info-host-discovery';
 import { upgradeValidationsInfo } from './validations-info';
 
 const readyHostValidationsInfoPartial = (hostName) => ({
@@ -32,6 +29,9 @@ const readyHostValidationsInfoPartial = (hostName) => ({
 });
 
 const hostValidationsInfo = (hostName) =>
-  upgradeValidationsInfo(prevHostValidationsInfo, readyHostValidationsInfoPartial(hostName));
+  upgradeValidationsInfo(
+    hostDiscoveryValidations.hostValidationsInfo,
+    readyHostValidationsInfoPartial(hostName),
+  );
 
-export { clusterValidationsInfo, hostValidationsInfo };
+export { hostValidationsInfo };

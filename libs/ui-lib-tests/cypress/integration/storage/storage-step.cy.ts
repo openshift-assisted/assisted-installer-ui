@@ -40,7 +40,7 @@ describe(`Assisted Installer Storage Step`, () => {
     beforeEach(() => {
       cy.loadAiAPIIntercepts(null);
       commonActions.visitClusterDetailsPage();
-      commonActions.startAtStorageStep();
+      commonActions.startAtWizardStep('Storage');
     });
 
     it('Should display the existing hosts storage details', () => {

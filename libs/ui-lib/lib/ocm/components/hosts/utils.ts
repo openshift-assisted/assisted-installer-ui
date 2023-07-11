@@ -8,7 +8,7 @@ import {
   Inventory,
 } from '../../../common';
 
-import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
+import { isInOcm, handleApiError, getApiErrorMessage } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { ClustersService } from '../../services';
 import ClustersAPI from '../../services/apis/ClustersAPI';
@@ -23,7 +23,7 @@ export const downloadHostInstallationLogs = async (
         `Cannot download logs for host ${host.id}. Missing clusterId field value in host.`,
       );
     }
-    if (ocmClient) {
+    if (isInOcm) {
       const { data } = await ClustersAPI.getPresignedForClusterFiles({
         clusterId: host.clusterId,
         fileName: 'logs',

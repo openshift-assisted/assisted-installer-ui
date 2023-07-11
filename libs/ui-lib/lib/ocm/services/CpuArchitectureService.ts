@@ -8,7 +8,7 @@ import {
 
 const mapOcmArchToCpuArchitecture = (
   ocmArch: OcmCpuArchitecture | string,
-): Exclude<CpuArchitecture, CpuArchitecture.USE_DAY1_ARCHITECTURE> | undefined => {
+): SupportedCpuArchitecture | undefined => {
   switch (ocmArch) {
     case OcmCpuArchitecture.x86:
       return CpuArchitecture.x86;
@@ -56,9 +56,7 @@ const mapClusterCpuArchToInfraEnvCpuArch = (
 };
 
 const getCpuArchitecture = (cpuArchitecture?: string): string => {
-  const cpuArch = cpuArchitecture
-    ? mapOcmArchToCpuArchitecture(cpuArchitecture)
-    : CpuArchitecture.x86;
+  const cpuArch = mapOcmArchToCpuArchitecture(cpuArchitecture || '');
   return cpuArch || CpuArchitecture.x86;
 };
 

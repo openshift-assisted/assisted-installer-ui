@@ -1,20 +1,25 @@
 // Imports from `lodash/module` are not working in the monorepo
-import { isArray, merge } from 'lodash';
+import { isArray, mergeWith, cloneDeep } from 'lodash';
+
+const isNewValidationId = (prevGroup, newGroup) =>
+  prevGroup.find((prev) => {
+    return newGroup.find((next) => prev.id === next.id);
+  }) === undefined;
 
 const addOrUpdateValidationInfo = (prevValidationGroup, newValidationGroup) => {
-  const isNewValidationId = () =>
-    prevValidationGroup.find((prev) => {
-      return newValidationGroup.find((next) => prev.id === next.id);
-    }) === undefined;
-
-  if (isArray(prevValidationGroup) && isNewValidationId()) {
+  if (isArray(prevValidationGroup) && isNewValidationId(prevValidationGroup, newValidationGroup)) {
     return prevValidationGroup.concat(newValidationGroup);
   }
-  return prevValidationGroup;
+  return newValidationGroup;
 };
 
 const upgradeValidationsInfo = (prevValidationInfo, newValidationInfo) => {
-  return merge(prevValidationInfo, newValidationInfo, addOrUpdateValidationInfo);
+  return mergeWith(
+    // Use clone to avoid changes propagating to other fixtures by reference
+    cloneDeep(prevValidationInfo),
+    cloneDeep(newValidationInfo),
+    addOrUpdateValidationInfo,
+  );
 };
 
 export { upgradeValidationsInfo };

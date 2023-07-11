@@ -10,4 +10,4 @@ const createStorageFixtureMapping = {
   },
 };
 
-export default createStorageFixtureMapping;
+export { createStorageFixtureMapping };

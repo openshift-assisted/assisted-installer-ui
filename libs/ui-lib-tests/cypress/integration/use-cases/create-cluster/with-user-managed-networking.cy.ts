@@ -13,7 +13,7 @@ describe('Create cluster with UMN', () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtNetworkingStep();
+    commonActions.startAtWizardStep('Networking');
   });
 
   it('Should be able to switch to UMN', () => {

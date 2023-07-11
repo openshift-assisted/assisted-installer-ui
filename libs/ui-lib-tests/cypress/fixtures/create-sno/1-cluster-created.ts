@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { baseCluster, fakeClusterId } from '../cluster/base-cluster';
-import { clusterValidationsInfo } from '../cluster/validation-info-initial-cluster';
+import { initialClusterValidations } from '../cluster/validation-info-initial-cluster';
 
 const featureUsage = {
   'OVN network type': {
@@ -40,7 +40,7 @@ const getSnoCluster = ({ name }) => ({
     },
   ],
   feature_usage: JSON.stringify(featureUsage),
-  validations_info: JSON.stringify(clusterValidationsInfo),
+  validations_info: JSON.stringify(initialClusterValidations.clusterValidationsInfo),
   ...baseCluster(name),
 });
 

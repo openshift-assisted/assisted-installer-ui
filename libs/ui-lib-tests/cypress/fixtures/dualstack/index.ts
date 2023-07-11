@@ -14,4 +14,4 @@ const createDualStackFixtureMapping = {
   },
 };
 
-export default createDualStackFixtureMapping;
+export { createDualStackFixtureMapping };

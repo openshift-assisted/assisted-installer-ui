@@ -5,7 +5,7 @@ import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api/types';
 /* eslint-disable no-restricted-imports */
-import { ocmClient } from '../../../ocm/api/axiosClient';
+import { isInOcm } from '../../../ocm/api/axiosClient';
 import { getApiErrorMessage, handleApiError } from '../../../ocm/api/utils';
 import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
 /* eslint-enable no-restricted-imports */
@@ -43,7 +43,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   const download = React.useCallback(
     async (clusterId: Cluster['id'], t: TFunction) => {
       try {
-        if (ocmClient) {
+        if (isInOcm) {
           const { data } = await ClustersAPI.getPresignedForClusterCredentials({
             clusterId,
             fileName: 'kubeconfig',

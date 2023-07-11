@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { clusterValidationsInfo as prevClusterValidationsInfo } from './validation-info-initial-cluster';
+import { initialClusterValidations } from './validation-info-initial-cluster';
 import { upgradeValidationsInfo } from './validations-info';
 
 const operatorValidations = [
@@ -132,8 +132,13 @@ const clusterValidationInfoPartial = {
 };
 
 const clusterValidationsInfo = upgradeValidationsInfo(
-  prevClusterValidationsInfo,
+  initialClusterValidations.clusterValidationsInfo,
   clusterValidationInfoPartial,
 );
 
-export { clusterValidationsInfo, hostValidationsInfo };
+const hostDiscoveryValidations = {
+  clusterValidationsInfo,
+  hostValidationsInfo,
+};
+
+export { hostDiscoveryValidations };
