@@ -58,7 +58,7 @@ describe(`Assisted Installer Disk Encryption`, () => {
     diskEncryptionSection.getEncryptionMode().check('tang');
     fillTangServers(0);
 
-    commonActions.clickNextButton();
+    commonActions.toNextStepAfter('Cluster details');
 
     cy.wait('@create-cluster').then(({ request }) => {
       expect(request.body.disk_encryption.valueOf()).to.deep.equal(diskEncryptionValues);
@@ -66,8 +66,7 @@ describe(`Assisted Installer Disk Encryption`, () => {
     cy.wait('@create-infra-env');
     utils.setLastWizardSignal('CLUSTER_CREATED');
 
-    commonActions.clickNextButton();
-    commonActions.verifyIsAtStep('Host discovery');
+    commonActions.toNextStepAfter('Operators');
     bareMetalDiscoveryPage.setClusterIdFromUrl();
   });
 });

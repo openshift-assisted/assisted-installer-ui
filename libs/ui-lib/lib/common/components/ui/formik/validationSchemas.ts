@@ -5,7 +5,13 @@ import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
 
 import { TFunction } from 'i18next';
-import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
+import {
+  ApiVip,
+  ClusterNetwork,
+  IngressVip,
+  MachineNetwork,
+  ServiceNetwork,
+} from '../../../api/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../types/clusters';
@@ -21,6 +27,8 @@ import {
   nameValidationMessages,
 } from './constants';
 import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { selectApiVip, selectIngressVip } from '../../../selectors';
+import { head } from 'lodash-es';
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -220,15 +228,15 @@ export const vipRangeValidationSchema = (
     },
   );
 
-const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationValues) =>
+const vipUniqueValidationSchema = ({ ingressVips, apiVips }: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-uniqueness-validation',
     'The Ingress and API IP addresses cannot be the same.',
     (value) => {
-      if (!value) {
+      if (!value || ingressVips?.length === 0 || apiVips?.length === 0) {
         return true;
       }
-      return ingressVip !== apiVip;
+      return selectApiVip({ apiVips }) !== selectIngressVip({ ingressVips });
     },
   );
 
@@ -280,12 +288,12 @@ export const vipValidationSchema = (
 export const vipNoSuffixValidationSchema = (
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
-  initialValue?: string,
+  initialValues?: ApiVip[] | IngressVip[],
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (vipDhcpAllocation, managedNetworkingType) =>
       !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
+    then: requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
       .concat(ipNoSuffixValidationSchema)
       .concat(vipRangeValidationSchema(hostSubnets, values, false))
       .concat(vipBroadcastValidationSchema(values))
@@ -295,6 +303,25 @@ export const vipNoSuffixValidationSchema = (
         then: Yup.string().required('Required. Please provide an IP address'),
       }),
   });
+
+export const vipArrayValidationSchema = <T>(
+  hostSubnets: HostSubnets,
+  values: NetworkConfigurationValues,
+  initialValues?: ApiVip[] | IngressVip[],
+) =>
+  (values.apiVips?.length && values.managedNetworkingType === 'clusterManaged'
+    ? Yup.array<T>().of(
+        Yup.object().shape({
+          clusterId: Yup.string(),
+          ip: vipNoSuffixValidationSchema(hostSubnets, values, initialValues),
+        }),
+      )
+    : Yup.array<T>()
+  ).test(
+    'vips-length',
+    'Both API and ingress APIs must be provided.',
+    (_value) => values.apiVips?.length === values.ingressVips?.length,
+  );
 
 export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undefined) =>
   Yup.string()

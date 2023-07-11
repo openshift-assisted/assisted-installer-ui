@@ -12,7 +12,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const isOpenshiftDataFoundationEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE') && !isSNO;
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
-  const isMceOperatorEnabled = useFeature('ASSISTED_INSTALLER_MCE_FEATURE');
 
   return (
     <Stack hasGutter data-testid={'operators-form'}>
@@ -24,11 +23,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           <CnvCheckbox {...props} />
         </StackItem>
       )}
-      {isMceOperatorEnabled && (
-        <StackItem>
-          <MceCheckbox />
-        </StackItem>
-      )}
+      <StackItem>
+        <MceCheckbox />
+      </StackItem>
       {isOpenshiftDataFoundationEnabled && (
         <StackItem>
           <OdfCheckbox />

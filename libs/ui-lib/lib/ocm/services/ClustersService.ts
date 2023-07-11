@@ -10,7 +10,7 @@ import {
   UpdateManifestParams,
   V2ClusterUpdateParams,
 } from '../../common';
-import { ocmClient } from '../api';
+import { isInOcm } from '../api';
 import { ClusterCreateParamsWithStaticNetworking } from './types';
 import omit from 'lodash-es/omit.js';
 import {
@@ -63,14 +63,14 @@ const ClustersService = {
 
   update(clusterId: Cluster['id'], clusterTags: Cluster['tags'], params: V2ClusterUpdateParams) {
     ClustersAPI.abortLastGetRequest();
-    if (ocmClient) {
+    if (isInOcm) {
       params = ClustersService.updateClusterTags(clusterTags, params);
     }
     return ClustersAPI.update(clusterId, params);
   },
 
   async install(clusterId: Cluster['id'], clusterTags: Cluster['tags']) {
-    if (ocmClient) {
+    if (isInOcm) {
       const params = ClustersService.updateClusterTags(clusterTags, {});
       if (params.tags) {
         await ClustersService.update(clusterId, clusterTags, {});

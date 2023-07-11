@@ -1,7 +1,13 @@
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, TableBody } from '@patternfly/react-table';
 import React from 'react';
-import { Cluster, genericTableRowKey, isDualStack } from '../../../../common';
+import {
+  Cluster,
+  genericTableRowKey,
+  isDualStack,
+  selectApiVip,
+  selectIngressVip,
+} from '../../../../common';
 import {
   getManagementType,
   getStackTypeLabel,
@@ -56,7 +62,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'API IP' },
           {
-            title: cluster.apiVip,
+            title: selectApiVip(cluster),
             props: { 'data-testid': 'api-vip', colSpan: 2 },
           },
         ],
@@ -67,7 +73,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'Ingress IP' },
           {
-            title: cluster.ingressVip,
+            title: selectIngressVip(cluster),
             props: { 'data-testid': 'ingress-vip', colSpan: 2 },
           },
         ],

@@ -29,7 +29,7 @@ import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
 import { ClustersAPI } from '../../services/apis';
 import { updateCluster } from '../../reducers/clusters';
-import { handleApiError, ocmClient } from '../../api';
+import { handleApiError, isInOcm } from '../../api';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
@@ -48,7 +48,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const history = useHistory();
   const canAddHosts =
-    (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
+    (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !isInOcm;
 
   const onAddHosts = React.useCallback(() => {
     const doItAsync = async () => {

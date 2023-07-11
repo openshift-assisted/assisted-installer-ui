@@ -1,5 +1,5 @@
 import React from 'react';
-import { getApiErrorMessage, handleApiError, ocmClient } from '../api';
+import { getApiErrorMessage, handleApiError, getOcmClient } from '../api';
 import { useAlerts } from '../../common';
 import { OcmClientRequestResponse } from '../types';
 
@@ -9,6 +9,7 @@ export default function usePullSecret() {
 
   const getPullSecret = React.useCallback(async () => {
     try {
+      const ocmClient = getOcmClient();
       if (ocmClient) {
         const response: OcmClientRequestResponse = await ocmClient.post<string>(
           '/api/accounts_mgmt/v1/access_token',

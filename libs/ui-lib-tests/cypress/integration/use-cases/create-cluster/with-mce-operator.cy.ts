@@ -12,7 +12,7 @@ describe(`Create cluster with mce operator enabled`, () => {
   beforeEach(() => {
     cy.loadAiAPIIntercepts(null);
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtOperatorsStep();
+    commonActions.startAtWizardStep('Operators');
   });
 
   describe('When the feature is enabled:', () => {
@@ -23,8 +23,11 @@ describe(`Create cluster with mce operator enabled`, () => {
     });
     it('The user can select the multicluster engine checkbox', () => {
       OperatorsForm.mceOperatorControl.findLabel().click();
-      commonActions.waitForNext();
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.toNextStepAfter('Operators');
+
+      cy.wait('@update-cluster').then(({ request }) => {
+        expect(request.body.olm_operators).to.deep.equal([{ name: 'mce' }]);
+      });
     });
   });
 });

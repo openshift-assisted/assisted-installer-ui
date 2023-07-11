@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { baseCluster, fakeClusterId } from '../cluster/base-cluster';
-import { clusterValidationsInfo } from '../cluster/validation-info-host-renamed';
+import { hostDiscoveryValidations } from '../cluster/validation-info-host-discovery';
 import { hostIds } from '../hosts';
 
 const connectivityMajorityGroups = {
@@ -47,7 +47,9 @@ const featureUsageDualstack = {
 const dualstackClusterBase = {
   ...baseCluster('ai-e2e-dualstack'),
   apiVip: '192.168.122.10',
+  apiVips: [{ ip: '192.168.122.10', clusterId: fakeClusterId }],
   ingressVip: '192.168.122.110',
+  ingressVips: [{ ip: '192.168.122.110', clusterId: fakeClusterId }],
   cluster_networks: [
     {
       cidr: '10.128.0.0/14',
@@ -85,7 +87,7 @@ const dualstackClusterBase = {
   user_managed_networking: false,
   vip_dhcp_allocation: false,
   connectivity_majority_groups: JSON.stringify(connectivityMajorityGroups),
-  validations_info: JSON.stringify(clusterValidationsInfo),
+  validations_info: JSON.stringify(hostDiscoveryValidations.clusterValidationsInfo),
   enabled_host_count: 3,
   total_host_count: 3,
   status: 'pending-for-input',
@@ -98,6 +100,10 @@ const addNetworkItem = (networkItems, data) => {
 
 const withDualStackNetworks = (singleStackCluster) => ({
   ...singleStackCluster,
+  apiVip: '192.168.122.10',
+  apiVips: [{ ip: '192.168.122.10', clusterId: fakeClusterId }],
+  ingressVip: '192.168.122.110',
+  ingressVips: [{ ip: '192.168.122.110', clusterId: fakeClusterId }],
   cluster_networks: addNetworkItem(singleStackCluster.cluster_networks, {
     cidr: 'fd01::/48',
     host_prefix: 64,
@@ -111,7 +117,7 @@ const withDualStackNetworks = (singleStackCluster) => ({
   // We're adding this field to easily debug which mock is returning the response
   e2e_mock_source: '1-dualstack-dualstack',
   feature_usage: JSON.stringify(featureUsageDualstack),
-  validations_info: JSON.stringify(clusterValidationsInfo),
+  validations_info: JSON.stringify(hostDiscoveryValidations.clusterValidationsInfo),
   high_availability_mode: 'Full',
   network_type: 'OVNKubernetes',
   user_managed_networking: false,

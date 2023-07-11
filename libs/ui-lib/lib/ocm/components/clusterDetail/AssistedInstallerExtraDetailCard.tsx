@@ -12,7 +12,7 @@ import {
 import ClusterProperties from './ClusterProperties';
 import { selectCurrentClusterState } from '../../selectors';
 import { Grid } from '@patternfly/react-core';
-import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { usePullSecret } from '../../hooks';
 

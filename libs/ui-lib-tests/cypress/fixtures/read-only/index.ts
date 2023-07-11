@@ -6,4 +6,4 @@ const createReadOnlyFixtureMapping = {
   },
 };
 
-export default createReadOnlyFixtureMapping;
+export { createReadOnlyFixtureMapping };

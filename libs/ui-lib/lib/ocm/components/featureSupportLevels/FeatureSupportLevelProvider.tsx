@@ -1,93 +1,43 @@
-import useSWR from 'swr';
 import React, { PropsWithChildren } from 'react';
-import * as Sentry from '@sentry/browser';
 import {
   ActiveFeatureConfiguration,
   Cluster,
   CpuArchitecture,
   FeatureId,
-  FeatureIdToSupportLevel,
-  FeatureSupportLevelContextProvider,
-  FeatureSupportLevelData,
-  FeatureSupportLevels,
-  FeatureSupportLevelsMap,
   getDefaultCpuArchitecture,
   SupportLevel,
+  SupportLevels,
 } from '../../../common';
-import { handleApiError } from '../../api';
-import { FeatureSupportLevelsAPI } from '../../services/apis';
-import { captureException } from '../../sentry';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
-import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
+import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
-import { isFeatureSupportedAndAvailable } from '../newFeatureSupportLevels/newFeatureStateUtils';
+import {
+  NewFeatureSupportLevelContextProvider,
+  NewFeatureSupportLevelData,
+  NewFeatureSupportLevelMap,
+} from '../../../common/components/newFeatureSupportLevels';
+import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 
-export type SupportLevelProviderProps = PropsWithChildren<{
+export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
   openshiftVersion?: string;
   loadingUi: React.ReactNode;
   cluster?: Cluster;
+  cpuArchitecture?: string;
 }>;
 
-const getFeatureSupportLevelsMap = (
-  featureSupportLevels: FeatureSupportLevels,
-): FeatureSupportLevelsMap => {
-  try {
-    const featureSupportLevelsMap: FeatureSupportLevelsMap = {};
-    for (const { openshiftVersion, features } of featureSupportLevels) {
-      if (!openshiftVersion || !features) {
-        continue;
-      }
-      featureSupportLevelsMap[openshiftVersion] = {};
-      for (const { featureId, supportLevel } of features) {
-        if (!featureId || !supportLevel) {
-          continue;
-        }
-        featureSupportLevelsMap[openshiftVersion][featureId] = supportLevel;
-      }
-    }
-    return featureSupportLevelsMap;
-  } catch (err) {
-    captureException(err, 'Failed to parse feature support levels', Sentry.Severity.Warning);
-    return {};
-  }
+export const getFeatureSupported = (featureSupportLevels: SupportLevels, featureId: FeatureId) => {
+  return featureSupportLevels && isFeatureSupportedAndAvailable(featureSupportLevels[featureId]);
 };
 
-const getVersionSupportLevelsMap = (
-  versionName: string,
-  supportLevelData: FeatureSupportLevelsMap,
-): FeatureIdToSupportLevel | undefined => {
-  // There is only one feature-support-level item per minor OpenShift version
-  // To solve the problem of partial matching (4.1 vs 4.11), we sort the list from most recent to least recent.
-  const versionKey = Object.keys(supportLevelData)
-    .reverse()
-    .find((key) => versionName.startsWith(key));
-  if (!versionKey) {
-    return undefined;
-  }
-
-  return supportLevelData[versionKey];
-};
-
-export const getFeatureSupported = (
-  openshiftVersion: string,
-  featureSupportLevels: FeatureSupportLevels,
-  featureId: FeatureId,
-) => {
-  const featureSupportLevelsMap = getFeatureSupportLevelsMap(featureSupportLevels);
-  const versionSupportLevels = getVersionSupportLevelsMap(
-    openshiftVersion,
-    featureSupportLevelsMap,
-  );
-  return versionSupportLevels && isFeatureSupportedAndAvailable(versionSupportLevels[featureId]);
-};
-
-export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = ({
+export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderProps> = ({
   cluster,
   children,
   loadingUi,
+  cpuArchitecture,
+  openshiftVersion,
 }) => {
-  const { loading: loadingOCPVersions, versions: versionOptions } = useOpenshiftVersions();
+  const { loading: loadingOCPVersions } = useOpenshiftVersions();
   const pullSecret = usePullSecret();
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',
@@ -98,20 +48,16 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     pullSecret,
     cluster?.openshiftVersion,
   );
-  const fetcher = () => FeatureSupportLevelsAPI.list().then((res) => res.data);
-  const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels, unknown>(
-    FeatureSupportLevelsAPI.makeBaseURI(),
-    fetcher,
-    { errorRetryCount: 0, revalidateOnFocus: false },
-  );
-  const isLoading = (!featureSupportLevels && !error) || loadingOCPVersions || isInfraEnvLoading;
+  const featureSupportLevels = useSupportLevelsAPI('features', openshiftVersion, cpuArchitecture);
 
-  const supportLevelData = React.useMemo<FeatureSupportLevelsMap>(() => {
-    if (!featureSupportLevels || error) {
-      return {};
+  const supportLevelData = React.useMemo<NewFeatureSupportLevelMap>(() => {
+    if (!featureSupportLevels) {
+      return {} as NewFeatureSupportLevelMap;
     }
-    return getFeatureSupportLevelsMap(featureSupportLevels);
-  }, [error, featureSupportLevels]);
+    return featureSupportLevels;
+  }, [featureSupportLevels]);
+
+  const isLoading = !supportLevelData || loadingOCPVersions || isInfraEnvLoading;
 
   const activeFeatureConfiguration = React.useMemo<ActiveFeatureConfiguration>(
     () => ({
@@ -123,54 +69,61 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     [cluster?.cpuArchitecture, infraEnv?.cpuArchitecture, infraEnv?.staticNetworkConfig],
   );
 
-  const getVersionSupportLevelsMapCallback = React.useCallback(
-    (versionName: string): FeatureIdToSupportLevel | undefined => {
-      return getVersionSupportLevelsMap(versionName, supportLevelData);
+  const getFeatureSupportLevels = React.useCallback((): NewFeatureSupportLevelMap => {
+    return supportLevelData;
+  }, [supportLevelData]);
+
+  const getFeatureSupportLevel = React.useCallback(
+    (
+      featureId: FeatureId,
+      supportLevelDataNew?: NewFeatureSupportLevelMap,
+    ): SupportLevel | undefined => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (supportLevelDataNew) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return supportLevelDataNew ? (supportLevelDataNew[featureId] as SupportLevel) : undefined;
+      } else {
+        if (supportLevelData) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          return supportLevelData ? (supportLevelData[featureId] as SupportLevel) : undefined;
+        }
+      }
     },
     [supportLevelData],
   );
 
-  const getFeatureSupportLevel = React.useCallback(
-    (versionName: string, featureId: FeatureId): SupportLevel | undefined => {
-      const versionSupportLevelData = getVersionSupportLevelsMapCallback(versionName);
-      return versionSupportLevelData ? versionSupportLevelData[featureId] : undefined;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [getVersionSupportLevelsMapCallback],
-  );
-
   const isFeatureSupportedCallback = React.useCallback(
-    (versionName: string, featureId: FeatureId) => {
-      const supportLevel = getFeatureSupportLevel(versionName, featureId);
-      return isFeatureSupported(versionName, featureId, supportLevel, versionOptions);
+    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
+      const supportLevel = getFeatureSupportLevel(featureId, supportLevelDataNew);
+      return isFeatureSupportedAndAvailable(supportLevel);
     },
-    [getFeatureSupportLevel, versionOptions],
+    [getFeatureSupportLevel],
   );
 
-  //TODO(brotman): move to separate context FeatureStateContext
   const getDisabledReasonCallback = React.useCallback(
-    (versionName: string, featureId: FeatureId) => {
-      const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(
+    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
+      const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
+      return getNewFeatureDisabledReason(
         featureId,
         cluster,
         activeFeatureConfiguration,
-        versionName,
-        versionOptions,
         isSupported,
       );
     },
-    [isFeatureSupportedCallback, versionOptions, cluster, activeFeatureConfiguration],
+    [isFeatureSupportedCallback, cluster, activeFeatureConfiguration],
   );
 
   const isFeatureDisabled = React.useCallback(
-    (version: string, featureId: FeatureId) => !!getDisabledReasonCallback(version, featureId),
+    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) =>
+      !!getDisabledReasonCallback(featureId, supportLevelDataNew),
     [getDisabledReasonCallback],
   );
 
-  const providerValue = React.useMemo<FeatureSupportLevelData>(() => {
+  const providerValue = React.useMemo<NewFeatureSupportLevelData>(() => {
     return {
-      getVersionSupportLevelsMap: getVersionSupportLevelsMapCallback,
+      getFeatureSupportLevels: getFeatureSupportLevels,
       getFeatureSupportLevel: getFeatureSupportLevel,
       isFeatureDisabled: isFeatureDisabled,
       getFeatureDisabledReason: getDisabledReasonCallback,
@@ -178,7 +131,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
       activeFeatureConfiguration,
     };
   }, [
-    getVersionSupportLevelsMapCallback,
+    getFeatureSupportLevels,
     getFeatureSupportLevel,
     isFeatureDisabled,
     getDisabledReasonCallback,
@@ -186,17 +139,11 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     activeFeatureConfiguration,
   ]);
 
-  React.useEffect(() => {
-    if (error) {
-      handleApiError(error);
-    }
-  }, [error]);
-
   return (
-    <FeatureSupportLevelContextProvider value={providerValue}>
+    <NewFeatureSupportLevelContextProvider value={providerValue}>
       {isLoading ? loadingUi : children}
-    </FeatureSupportLevelContextProvider>
+    </NewFeatureSupportLevelContextProvider>
   );
 };
 
-export default FeatureSupportLevelProvider;
+export default NewFeatureSupportLevelProvider;

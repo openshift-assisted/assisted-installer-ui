@@ -1,5 +1,6 @@
 import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
+import testIpv4AndIpv6Addresses from '../../fixtures/data/ipv4-and-ipv6-addresses';
 
 type NetworkSelection = 'ipv4' | 'dual-stack';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
@@ -67,36 +68,36 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
         .getWizardStepNav('Host specific configurations')
         .should('not.have.class', ACTIVE_NAV_ITEM_CLASS);
 
-      commonActions.getNextButton().should('be.disabled');
+      commonActions.verifyNextIsDisabled();
       staticIpPage.networkWideDns().type(dnsText);
       fillStaticIpForm('ipv4', ipv4Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-      commonActions.getNextButton().should('be.disabled'); // auto-save is triggered
+      commonActions.verifyNextIsDisabled(); // auto-save is triggered
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'ipv4');
-        commonActions.getNextButton().should('be.enabled');
+        commonActions.verifyNextIsEnabled();
       });
     });
 
     it('Can configure dual stack Static IP', () => {
       staticIpPage.dualStackNetworking().click();
 
-      commonActions.getNextButton().should('be.disabled');
+      commonActions.verifyNextIsDisabled();
       staticIpPage.networkWideDns().type(dnsText);
       fillStaticIpForm('ipv4', ipv4Fields);
       fillStaticIpForm('dual-stack', ipv6Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-      commonActions.getNextButton().should('be.disabled'); // auto-save is triggered
+      commonActions.verifyNextIsDisabled(); // auto-save is triggered
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'dual-stack');
-        commonActions.getNextButton().should('be.enabled');
       });
 
-      commonActions.getNextButton().click();
+      commonActions.verifyNextIsEnabled();
+      commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
       commonActions
         .getWizardStepNav('Network-wide configurations')
@@ -106,15 +107,13 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
         .should('have.class', ACTIVE_NAV_ITEM_CLASS);
     });
 
-    it('nrt Can use IPv4 and IPv6 on DNS when dual stack', () => {
+    it('[nrt] Can use IPv4 and IPv6 on DNS when dual stack', () => {
       staticIpPage.dualStackNetworking().click();
 
-      cy.fixture('data/ipv4-and-ipv6-addresses.json').then((addresses) => {
-        addresses.forEach((dnsEntry) => {
-          staticIpPage.networkWideDns().type(dnsEntry);
-          commonActions.getDNSErrorMessage().should('not.exist');
-          staticIpPage.networkWideDns().clear();
-        });
+      testIpv4AndIpv6Addresses.forEach((dnsEntry) => {
+        staticIpPage.networkWideDns().type(dnsEntry);
+        commonActions.getDNSErrorMessage().should('not.exist');
+        staticIpPage.networkWideDns().clear();
       });
     });
   });

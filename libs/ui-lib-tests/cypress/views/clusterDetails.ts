@@ -1,3 +1,5 @@
+import { pullSecret } from '../fixtures';
+
 export const clusterDetailsPage = {
   getClusterNameField: () => {
     return cy.get(Cypress.env('clusterNameFieldId'));
@@ -30,10 +32,7 @@ export const clusterDetailsPage = {
   getPullSecretFieldHelper: () => {
     return cy.get(Cypress.env('pullSecretFieldHelperId'));
   },
-  inputPullSecret: (pullSecret = Cypress.env('PULL_SECRET')) => {
-    if (Cypress.env('OCM_USER')) {
-      clusterDetailsPage.getPullSecret().check();
-    }
+  inputPullSecret: () => {
     clusterDetailsPage.getPullSecret().clear();
     cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecret);
     clusterDetailsPage.getPullSecret().should('contain.text', pullSecret);

@@ -18,7 +18,7 @@ import {
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
 import ClusterWizardFooter from './ClusterWizardFooter';
-import { ocmClient } from '../../api';
+import { isInOcm } from '../../api';
 import {
   ClusterDetailsService,
   ClusterDetailsUpdateParams,
@@ -170,7 +170,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                   forceOpenshiftVersion={cluster?.openshiftVersion}
                   isPullSecretSet={!!cluster?.pullSecretSet}
                   defaultPullSecret={pullSecret}
-                  isOcm={!!ocmClient}
+                  isOcm={isInOcm}
                   managedDomains={managedDomains}
                   clusterExists={!!cluster}
                   clusterCpuArchitecture={cluster?.cpuArchitecture as CpuArchitecture}

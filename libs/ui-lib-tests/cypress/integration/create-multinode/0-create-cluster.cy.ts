@@ -25,17 +25,12 @@ describe(`Assisted Installer Multinode Cluster Installation`, () => {
       clusterDetailsPage.inputPullSecret();
 
       commonActions.getInfoAlert().should('not.exist');
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
-
+      commonActions.toNextStepAfter('Cluster details');
       cy.wait('@create-cluster');
       cy.wait('@create-infra-env');
       utils.setLastWizardSignal('CLUSTER_CREATED');
 
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
-
-      commonActions.verifyIsAtStep('Host discovery');
+      commonActions.toNextStepAfter('Operators');
     });
   });
 });

@@ -41,7 +41,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
 
     it('Can delete custom manifest', () => {
       utils.setLastWizardSignal('CUSTOM_MANIFEST_ADDED');
-      commonActions.startAtCustomManifestsStep();
+      commonActions.startAtWizardStep('Custom manifests');
 
       customManifestsPage.getLinkToAdd().should('be.enabled');
       customManifestsPage.getLinkToAdd().click();

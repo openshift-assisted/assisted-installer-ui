@@ -19,4 +19,4 @@ const createCustomManifestsFixtureMapping = {
   manifestContent: customManifestContent,
 };
 
-export default createCustomManifestsFixtureMapping;
+export { createCustomManifestsFixtureMapping };

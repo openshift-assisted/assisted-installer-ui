@@ -16,7 +16,7 @@ import {
   OcmClusterDetailsValues,
 } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
-import { ocmClient } from '../api';
+import { isInOcm } from '../api';
 import { getDefaultCpuArchitecture } from './CpuArchitectureService';
 
 const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
@@ -56,7 +56,7 @@ const ClusterDetailsService = {
       params.staticNetworkConfig = getDummyInfraEnvField();
     }
 
-    if (ocmClient) {
+    if (isInOcm) {
       params.tags = AI_UI_TAG;
     }
 

@@ -25,9 +25,7 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
       Cypress.env('AI_FORBIDDEN_CLUSTER_PATCH', true);
 
       navbar.clickOnNavItem('Cluster details');
-      commonActions.clickNextButton();
-      commonActions.clickNextButton();
-      commonActions.verifyIsAtStep('Host discovery');
+      commonActions.moveNextSteps(['Cluster details', 'Operators']);
     });
   });
 
@@ -42,7 +40,7 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
         commonActions.getDangerAlert().within(() => {
           cy.get('button').should('not.exist');
         });
-        commonActions.getNextButton().should('be.disabled');
+        commonActions.verifyNextIsDisabled();
       });
     });
   });

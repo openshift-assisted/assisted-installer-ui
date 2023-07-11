@@ -29,8 +29,8 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
         .getInfoAlert()
         .should('contain.text', 'This is an advanced configuration feature.');
       commonActions.getWizardStepNav('Custom manifests').should('exist');
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
+
+      commonActions.toNextStepAfter('Cluster details');
 
       cy.wait('@create-manifest').then(({ request }) => {
         expect(request.body).to.deep.equal({

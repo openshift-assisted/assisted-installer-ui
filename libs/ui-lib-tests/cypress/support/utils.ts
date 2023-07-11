@@ -32,6 +32,11 @@ const signalOrder = [
 
   // End of Day1 flow
   'READY_TO_INSTALL',
+
+  // Day2 flow
+  'CLUSTER_FINISHED_INSTALLATION',
+  'CREATED_DAY2_CLUSTER',
+  'ADDED_SECOND_CPU_ARCHITECTURE',
 ];
 
 export type SignalName = (typeof signalOrder)[number];

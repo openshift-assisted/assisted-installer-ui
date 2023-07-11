@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
-export default {
+const featureSupportLevels = {
   '4.8': {
     features: {
       CLUSTER_MANAGED_NETWORKING: 'supported',
@@ -104,3 +102,5 @@ export default {
     },
   },
 };
+
+export { featureSupportLevels };

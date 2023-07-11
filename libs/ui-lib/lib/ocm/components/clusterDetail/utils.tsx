@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import get from 'lodash-es/get.js';
-import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
+import { isInOcm, handleApiError, getApiErrorMessage } from '../../api';
 import {
   Cluster,
   Host,
@@ -18,7 +18,7 @@ export const downloadClusterInstallationLogs = async (
   clusterId: string,
 ) => {
   try {
-    if (ocmClient) {
+    if (isInOcm) {
       const { data } = await ClustersAPI.getPresignedForClusterFiles({
         clusterId,
         fileName: 'logs',
