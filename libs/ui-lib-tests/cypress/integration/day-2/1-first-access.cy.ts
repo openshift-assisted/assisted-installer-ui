@@ -2,15 +2,16 @@ import { day2FlowIds } from '../../fixtures';
 import { setLastWizardSignal } from '../../support/utils';
 
 describe(`Day2 flow`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
+  const startTestWithSignal = (activeSignal: string) => {
+    cy.setTestingEnvironment({
+      activeSignal,
       activeScenario: 'DAY2_FLOW',
-      activeSignal: 'CLUSTER_FINISHED_INSTALLATION',
     });
-  });
+  };
+  before(() => startTestWithSignal('CLUSTER_FINISHED_INSTALLATION'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+        startTestWithSignal('CLUSTER_FINISHED_INSTALLATION')
     cy.visit('/day2-flow-mock');
   });
 
