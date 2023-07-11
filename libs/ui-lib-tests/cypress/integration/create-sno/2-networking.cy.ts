@@ -2,22 +2,21 @@ import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
 
 describe(`Assisted Installer SNO Networking`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
   before(() => {
-    startTestWithSignal('READY_TO_INSTALL');
+    setTestStartSignal('READY_TO_INSTALL');
   });
 
   beforeEach(() => {
-    startTestWithSignal('READY_TO_INSTALL');
+    setTestStartSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
-    commonActions.moveNextSteps(['Host discovery', 'Storage']); // To Networking
-    utils.setLastWizardSignal('HOST_RENAMED_1');
+    commonActions.startAtWizardStep('Networking');
   });
 
   describe('Validating the Network configuration', () => {

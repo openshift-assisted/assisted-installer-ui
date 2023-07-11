@@ -4,17 +4,17 @@ import { clusterListPage } from '../../views/clusterList';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
-  before(() => startTestWithSignal(''));
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    startTestWithSignal('');
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 
@@ -57,7 +57,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
 
     describe('When the cluster is created', () => {
       beforeEach(() => {
-        startTestWithSignal('CLUSTER_CREATED');
+        setTestStartSignal('CLUSTER_CREATED');
         cy.visit('/clusters');
       });
 

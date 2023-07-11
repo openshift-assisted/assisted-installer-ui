@@ -2,17 +2,17 @@ import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP Host specific Configuration`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
   };
 
-  before(() => startTestWithSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED'));
+  before(() => setTestStartSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED'));
 
   beforeEach(() => {
-    startTestWithSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED');
+    setTestStartSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED');
     commonActions.visitClusterDetailsPage();
     commonActions.getWizardStepNav('Static network configurations').click();
   });
@@ -36,7 +36,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
 
   describe('Reading existing configuration in Form view', () => {
     beforeEach(() => {
-      startTestWithSignal('STATIC_IP_HOST_SPECIFIC_CONFIGURED');
+      setTestStartSignal('STATIC_IP_HOST_SPECIFIC_CONFIGURED');
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
     });

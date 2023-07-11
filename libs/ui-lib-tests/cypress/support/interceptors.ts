@@ -438,7 +438,7 @@ const loadAiAPIIntercepts = () => {
   }
 };
 
-const setTestingEnvironment = ({ activeSignal, activeScenario }) => {
+const setTestEnvironment = ({ activeSignal, activeScenario }) => {
   setLastWizardSignal(activeSignal);
   setScenarioEnvVars(activeScenario);
   setEntityIds(activeScenario);
@@ -446,4 +446,4 @@ const setTestingEnvironment = ({ activeSignal, activeScenario }) => {
   loadAiAPIIntercepts();
 };
 
-Cypress.Commands.add('setTestingEnvironment', setTestingEnvironment);
+Cypress.Commands.add('setTestEnvironment', setTestEnvironment);

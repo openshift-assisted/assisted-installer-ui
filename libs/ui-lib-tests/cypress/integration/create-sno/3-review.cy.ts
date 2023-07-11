@@ -2,17 +2,17 @@ import { commonActions } from '../../views/common';
 import { reviewAndCreatePage } from '../../views/reviewCreate';
 
 describe(`Assisted Installer SNO Review`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
-  before(() => startTestWithSignal('READY_TO_INSTALL'));
+  before(() => setTestStartSignal('READY_TO_INSTALL'));
 
   beforeEach(() => {
-    startTestWithSignal('READY_TO_INSTALL');
+    setTestStartSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
     commonActions.verifyIsAtStep('Review and create');
   });

@@ -3,17 +3,17 @@ import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoMod
 import { commonActions } from '../../views/common';
 
 describe('Assisted Installer UI behaviour - infra env updates', () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(() => startTestWithSignal('CLUSTER_CREATED'));
+  before(() => setTestStartSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    startTestWithSignal('CLUSTER_CREATED');
+    setTestStartSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
   });
 

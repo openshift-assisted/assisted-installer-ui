@@ -3,17 +3,17 @@ import { reviewAndCreatePage } from '../../views/reviewCreate';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
 describe(`Assisted Installer Review and create step with custom manifests`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
   };
 
-  before(() => startTestWithSignal('READY_TO_INSTALL'));
+  before(() => setTestStartSignal('READY_TO_INSTALL'));
 
   beforeEach(() => {
-    startTestWithSignal('READY_TO_INSTALL');
+    setTestStartSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
   });
 

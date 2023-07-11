@@ -3,17 +3,17 @@ import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer Multinode Cluster Installation`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(() => startTestWithSignal(''));
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    startTestWithSignal('');
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 

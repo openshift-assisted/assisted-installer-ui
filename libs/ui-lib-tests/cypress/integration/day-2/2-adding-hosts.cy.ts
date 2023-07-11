@@ -2,17 +2,17 @@ import { clusterDetailsPage } from '../../views/clusterDetails';
 import { commonActions } from '../../views/common';
 
 describe(`Assisted Installer Day2 flow`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'DAY2_FLOW',
     });
   };
 
-  before(() => startTestWithSignal('CREATED_DAY2_CLUSTER'));
+  before(() => setTestStartSignal('CREATED_DAY2_CLUSTER'));
 
   beforeEach(() => {
-    startTestWithSignal('CREATED_DAY2_CLUSTER')
+    setTestStartSignal('CREATED_DAY2_CLUSTER');
     cy.visit('/day2-flow-mock');
     cy.findByRole('button', { name: 'Add hosts (With metrics)' }).click();
   });

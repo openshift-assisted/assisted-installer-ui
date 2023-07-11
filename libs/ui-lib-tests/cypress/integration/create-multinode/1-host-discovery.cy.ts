@@ -18,17 +18,17 @@ const validateHostTableDetails = () => {
 };
 
 describe(`Assisted Installer Multinode Host discovery`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal: activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
 
-  before(() => startTestWithSignal('CLUSTER_CREATED'));
+  before(() => setTestStartSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    startTestWithSignal('CLUSTER_CREATED');
+    setTestStartSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
   });
 
@@ -65,7 +65,7 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
 
   describe('When all hosts are discovered', () => {
     beforeEach(() => {
-      startTestWithSignal('HOST_DISCOVERED_3');
+      setTestStartSignal('HOST_DISCOVERED_3');
     });
 
     it('Should mass-rename the hosts and be able to continue', () => {

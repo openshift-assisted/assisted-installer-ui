@@ -6,18 +6,18 @@ import * as utils from '../../support/utils';
 import { hostsTableSection } from '../../views/hostsTableSection';
 
 describe(`Assisted Installer SNO Host discovery`, () => {
-  const startTestWithSignal = (activeSignal: string) => {
-    cy.setTestingEnvironment({
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
       activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
   };
 
-  before(() => startTestWithSignal('CLUSTER_CREATED'));
+  before(() => setTestStartSignal('CLUSTER_CREATED'));
 
   describe('Downloading the Discovery ISO', () => {
     beforeEach(() => {
-      startTestWithSignal('CLUSTER_CREATED');
+      setTestStartSignal('CLUSTER_CREATED');
       commonActions.visitClusterDetailsPage();
     });
 
@@ -47,7 +47,7 @@ describe(`Assisted Installer SNO Host discovery`, () => {
   });
   describe('When the host is discovered', () => {
     beforeEach(() => {
-      startTestWithSignal('HOST_DISCOVERED_1');
+      setTestStartSignal('HOST_DISCOVERED_1');
       commonActions.visitClusterDetailsPage();
     });
 
