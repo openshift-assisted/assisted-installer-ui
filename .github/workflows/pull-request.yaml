@@ -120,7 +120,7 @@ jobs:
           config-file: cypress.config.ts
           browser: chrome
           build: yarn build:all
-          start: yarn preview:assisted-ui
+          start: yarn preview:assisted-ui --host 127.0.0.1
           working-directory: libs/ui-lib-tests
           wait-on: 'http://127.0.0.1:4173'
       - name: Store test execution screenshots on failure
