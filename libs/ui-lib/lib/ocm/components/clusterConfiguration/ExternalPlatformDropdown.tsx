@@ -8,28 +8,47 @@ import {
   VSPHERE_CONFIG_LINK,
   getFieldId,
 } from '../../../common';
-import {
-  NewFeatureSupportLevelMap,
-  useNewFeatureSupportLevel,
-} from '../../../common/components/newFeatureSupportLevels';
-import { clusterExistsReason as CLUSTER_EXISTS_REASON } from '../featureSupportLevels/featureStateUtils';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
+export type ExternalPlatformType = Extract<PlatformType, 'none' | 'nutanix' | 'oci' | 'vsphere'>;
 
 type ExternalPlatformDropdownProps = {
   isOracleCloudPlatformIntegrationEnabled: boolean;
-  selectedPlatform?: PlatformType;
+  selectedPlatform: ExternalPlatformType;
   disabledOciTooltipContent: React.ReactNode;
   isOciDisabled: boolean;
+  onChange: (isOracleOptionSelected: boolean) => void;
 };
 
-export const externalPlatformTypes: Record<PlatformType, string> = {
-  none: 'None',
-  baremetal: 'Baremetal',
-  nutanix: 'Nutanix',
-  oci: 'Oracle',
-  vsphere: 'vSphere',
+export type ExternalPlatformInfo = {
+  label: string;
+  href: string;
+  tooltip: string;
+};
+
+export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatformInfo> = {
+  none: {
+    label: 'None',
+    href: '',
+    tooltip: '',
+  },
+  nutanix: {
+    label: 'Nutanix',
+    href: NUTANIX_CONFIG_LINK,
+    tooltip: '',
+  },
+  oci: {
+    label: 'Oracle  (Using custom manifests)',
+    href: 'www.google.es',
+    tooltip:
+      "To integrate with an external partner (for example, Oracle Cloud), you'll need to provide a custom manifest.",
+  },
+  vsphere: {
+    label: 'vSphere',
+    href: VSPHERE_CONFIG_LINK,
+    tooltip: '',
+  },
 };
 
 export const ExternalPlatformDropdown = ({
@@ -37,78 +56,52 @@ export const ExternalPlatformDropdown = ({
   selectedPlatform,
   disabledOciTooltipContent,
   isOciDisabled,
+  onChange,
 }: ExternalPlatformDropdownProps) => {
   const [field, { value }, { setValue }] = useField<string>(INPUT_NAME);
-  const [current, setCurrent] = React.useState(
-    selectedPlatform ? externalPlatformTypes[selectedPlatform] : 'None',
+  const [currentPlatform, setCurrentPlatform] = React.useState(
+    externalPlatformTypes[selectedPlatform].label,
   );
   const [isOpen, setOpen] = React.useState(false);
-
-  const enabledItems = [
-    <DropdownItem key="none" id="none">
-      {externalPlatformTypes['none']}
-      <a
-        href={'www.google.es'}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ float: 'right' }}
-      >
-        Learn more <i className="fas fa-external-link-alt" />
-      </a>
-    </DropdownItem>,
-    <DropdownItem key="nutanix-platform" id="nutanix">
-      {externalPlatformTypes['nutanix']}
-      <a
-        href={NUTANIX_CONFIG_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ float: 'right' }}
-      >
-        {'Learn more'} <i className="fas fa-external-link-alt" />
-      </a>
-    </DropdownItem>,
-    <DropdownItem key="vsphere-platform" id="vsphere">
-      {externalPlatformTypes['vsphere']}
-      <a
-        href={VSPHERE_CONFIG_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ float: 'right' }}
-      >
-        {'Learn more'} <i className="fas fa-external-link-alt" />
-      </a>
-    </DropdownItem>,
-  ];
-
-  if (isOracleCloudPlatformIntegrationEnabled) {
-    enabledItems.push(
-      <DropdownItem
-        key="oracle-platform"
-        id="oci"
-        tooltip={isOciDisabled ? disabledOciTooltipContent : undefined}
-        isAriaDisabled={!!isOciDisabled}
-      >
-        {externalPlatformTypes['oci']}
-        <a
-          href={VSPHERE_CONFIG_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ float: 'right' }}
-        >
-          {'Learn more'} <i className="fas fa-external-link-alt" />
-        </a>
-      </DropdownItem>,
-    );
-  }
+  const enabledItems = Object.keys(externalPlatformTypes)
+    .filter((platformType) => {
+      if (platformType === 'oci') {
+        return isOracleCloudPlatformIntegrationEnabled;
+      }
+      return true;
+    })
+    .map((platformType) => {
+      const { label, href, tooltip } = externalPlatformTypes[platformType as ExternalPlatformType];
+      const isOracleDisabled = platformType === 'oci' && isOciDisabled;
+      const isHrefEmpty = href === '';
+      return (
+        <>
+          <DropdownItem
+            key={platformType}
+            id={platformType}
+            tooltip={isOracleDisabled ? disabledOciTooltipContent : tooltip}
+            isAriaDisabled={isOracleDisabled}
+          >
+            {label}
+            {!isHrefEmpty && (
+              <a href={href} target="_blank" rel="noopener noreferrer" style={{ float: 'right' }}>
+                Learn more <i className="fas fa-external-link-alt" />
+              </a>
+            )}
+          </DropdownItem>
+        </>
+      );
+    });
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const selectedPlatform = event?.currentTarget.id as PlatformType;
+      const selectedPlatform = event?.currentTarget.id as ExternalPlatformType;
       setValue(selectedPlatform);
       setOpen(false);
-      setCurrent(externalPlatformTypes[selectedPlatform]);
+      setCurrentPlatform(externalPlatformTypes[selectedPlatform].label);
+      onChange(selectedPlatform === 'oci');
     },
-    [setOpen, setValue],
+    [setOpen, setValue, onChange],
   );
 
   const toggle = React.useMemo(
@@ -119,10 +112,10 @@ export const ExternalPlatformDropdown = ({
         isText
         className="pf-u-w-100"
       >
-        {current || value}
+        {currentPlatform || value}
       </DropdownToggle>
     ),
-    [setOpen, current, value],
+    [setOpen, currentPlatform, value],
   );
 
   return (
@@ -138,43 +131,4 @@ export const ExternalPlatformDropdown = ({
       />
     </FormGroup>
   );
-};
-
-export const FEATURE_ID = 'EXTERNAL_PLATFORM_OCI';
-
-export interface OracleDropdownItemState {
-  readonly featureId: string;
-  readonly isSupported: boolean;
-  readonly isDisabled: boolean;
-  readonly disabledReason?: string;
-}
-
-export const useOracleDropdownItemState = (
-  hasExistentCluster: boolean,
-  featureSupportLevelData: NewFeatureSupportLevelMap | null,
-): OracleDropdownItemState | null => {
-  const featureSupportLevelContext = useNewFeatureSupportLevel();
-  if (!featureSupportLevelData) {
-    return null;
-  }
-
-  const isSupported = featureSupportLevelData
-    ? featureSupportLevelContext.isFeatureSupported(FEATURE_ID, featureSupportLevelData)
-    : false;
-  const isDisabled = hasExistentCluster || !isSupported;
-  let disabledReason: string | undefined;
-  if (isDisabled) {
-    if (hasExistentCluster) {
-      disabledReason = CLUSTER_EXISTS_REASON;
-    } else {
-      disabledReason = featureSupportLevelContext.getFeatureDisabledReason(FEATURE_ID);
-    }
-  }
-
-  return {
-    featureId: FEATURE_ID,
-    isSupported,
-    isDisabled,
-    disabledReason,
-  };
 };

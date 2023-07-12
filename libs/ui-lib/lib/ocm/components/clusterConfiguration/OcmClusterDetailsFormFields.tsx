@@ -36,7 +36,9 @@ import CpuArchitectureDropdown, {
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
-import { ExternalPlatformDropdown, useOracleDropdownItemState } from './ExternalPlatformDropdown';
+import { ExternalPlatformDropdown } from './ExternalPlatformDropdown';
+import { useOracleDropdownItemState } from '../../hooks/useOracleDropdownItemState';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -77,7 +79,7 @@ export const OcmClusterDetailsFormFields = ({
   clusterId,
   clusterPlatform,
 }: OcmClusterDetailsFormFieldsProps) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
+  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
 
@@ -90,7 +92,7 @@ export const OcmClusterDetailsFormFields = ({
   } = useFormikContext<ClusterCreateParams>();
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
-
+  const clusterWizardContext = useClusterWizardContext();
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
@@ -111,6 +113,15 @@ export const OcmClusterDetailsFormFields = ({
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
+
+  const handleExternalPartnerIntegrationsChange = React.useCallback(
+    (isOracleSelected: boolean) => {
+      const checked = Boolean(isOracleSelected);
+      setFieldValue('addCustomManifest', checked, false);
+      clusterWizardContext.setAddCustomManifests(checked);
+    },
+    [clusterWizardContext, setFieldValue],
+  );
 
   return (
     <Form id="wizard-cluster-details__form">
@@ -187,9 +198,10 @@ export const OcmClusterDetailsFormFields = ({
 
       <ExternalPlatformDropdown
         isOracleCloudPlatformIntegrationEnabled={isOracleCloudPlatformIntegrationEnabled}
-        selectedPlatform={clusterPlatform}
+        selectedPlatform={clusterPlatform === 'baremetal' ? 'none' : clusterPlatform || 'none'}
         disabledOciTooltipContent={oracleDropdownItemState?.disabledReason}
         isOciDisabled={oracleDropdownItemState?.isDisabled || false}
+        onChange={handleExternalPartnerIntegrationsChange}
       />
 
       <CustomManifestCheckbox clusterId={clusterId || ''} />

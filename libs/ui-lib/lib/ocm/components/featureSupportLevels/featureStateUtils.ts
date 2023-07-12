@@ -164,7 +164,7 @@ export const getNewFeatureDisabledReason = (
       return 'Network management selection is not supported for ARM architecture with this version of OpenShift.';
     }
     case 'EXTERNAL_PLATFORM_OCI': {
-      return 'Requires OpenShift v4.14 and above.';
+      return 'Integration with Oracle is available for OpenShift 4.14 and later versions.';
     }
     case 'MCE': {
       if (!isSupported) {
