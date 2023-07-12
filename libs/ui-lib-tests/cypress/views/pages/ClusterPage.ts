@@ -1,4 +1,3 @@
-import { fakeClusterId } from '../../fixtures/cluster/base-cluster';
 import { EventsModalControl } from '../modals/EventsModal';
 
 export class ClusterPage {
@@ -11,7 +10,7 @@ export class ClusterPage {
   }
 
   static visit(options?: Partial<Cypress.VisitOptions>) {
-    cy.visit(`/clusters/${fakeClusterId}`, options);
+    cy.visit(`/clusters/${Cypress.env('clusterId')}`, options);
   }
 
   get body() {

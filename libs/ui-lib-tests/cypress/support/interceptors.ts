@@ -429,16 +429,7 @@ const loadDay2Intercepts = () => {
   addDay2InfraEnvIntercepts();
 };
 
-const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
-  if (conf !== null) {
-    const { activeSignal, activeScenario } = conf;
-    setLastWizardSignal(activeSignal);
-    if (activeScenario) {
-      setScenarioEnvVars(activeScenario);
-      setEntityIds(activeScenario);
-    }
-  }
-
+const loadAiAPIIntercepts = () => {
   loadCommonIntercepts();
   if (Cypress.env('AI_SCENARIO') === 'DAY2_FLOW') {
     loadDay2Intercepts();
@@ -447,4 +438,12 @@ const loadAiAPIIntercepts = (conf: AIInterceptsConfig | null) => {
   }
 };
 
-Cypress.Commands.add('loadAiAPIIntercepts', loadAiAPIIntercepts);
+const setTestEnvironment = ({ activeSignal, activeScenario }) => {
+  setLastWizardSignal(activeSignal);
+  setScenarioEnvVars(activeScenario);
+  setEntityIds(activeScenario);
+
+  loadAiAPIIntercepts();
+};
+
+Cypress.Commands.add('setTestEnvironment', setTestEnvironment);

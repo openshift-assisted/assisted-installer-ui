@@ -3,15 +3,17 @@ import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as versionsFixtures from '../../fixtures/infra-envs/openshift-versions';
 
 describe('Assisted Installer UI behaviour - cluster creation', () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: '',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: '',
     });
-  });
+  };
+
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 
