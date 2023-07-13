@@ -1,5 +1,12 @@
 import React from 'react';
-import { TextContent, Text, TextVariants, Popover } from '@patternfly/react-core';
+import {
+  TextContent,
+  Text,
+  TextVariants,
+  Popover,
+  Alert,
+  AlertVariant,
+} from '@patternfly/react-core';
 import {
   Table,
   TableHeader,
@@ -53,6 +60,80 @@ const SkipFormattingDisk = () => (
   </TextContent>
 );
 
+const getDiskLimitation = (
+  diskName: Disk['name'],
+  hostName: Host['requestedHostname'],
+  holder: Disk,
+) => {
+  if (holder.driveType) {
+    switch (holder.driveType) {
+      case 'LVM':
+        return `LVM logical volumes were found on the installation disk ${
+          diskName as string
+        } selected for host ${hostName as string} and will be deleted during installation.`;
+      case 'RAID':
+        return `The installation disk ${diskName as string} selected for host ${
+          hostName as string
+        }, is part of a software RAID that will be deleted during the installation.`;
+      case 'Multipath':
+        return `The installation disk ${diskName as string} selected for host ${
+          hostName as string
+        } is managed by multipath. We strongly recommend using the multipath device ${
+          holder.name as string
+        } to improve reliability.`;
+    }
+  }
+};
+
+const DiskName = ({
+  disk,
+  disks,
+  host,
+  installationDiskId,
+}: {
+  disk: Disk;
+  disks: Disk[];
+  host: Host;
+  installationDiskId?: string;
+}) => {
+  const isIndented = disk.holders?.split(',').length === 1;
+  let diskLimitations = null;
+
+  if (disk.id === installationDiskId) {
+    const parentDisk = disks.find((d) => disk.holders?.split(',').includes(d.name as string));
+    if (parentDisk) {
+      diskLimitations = getDiskLimitation(disk.name, host.requestedHostname, parentDisk);
+    }
+  }
+
+  return (
+    <>
+      {isIndented && <span style={{ width: '1rem', display: 'inline-block' }} />}
+      {isInDiskSkipFormattingList(host, disk.id) && (
+        <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
+          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+        </Popover>
+      )}
+      {'   '}
+      {disk.bootable ? `${disk.name || ''} (bootable)` : disk.name}
+      {diskLimitations && (
+        <>
+          {'    '}
+          <Popover
+            headerContent="Warning"
+            bodyContent={<Alert variant={AlertVariant.warning} isInline title={diskLimitations} />}
+            minWidth="20rem"
+            maxWidth="30rem"
+            data-testid="disk-limitations-popover"
+          >
+            <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          </Popover>
+        </>
+      )}
+    </>
+  );
+};
+
 const DisksTable = ({
   canEditDisks,
   host,
@@ -65,21 +146,25 @@ const DisksTable = ({
   const isEditable = !!canEditDisks?.(host);
   const diskColumnTitles = diskColumns(isEditable);
 
-  const rows: IRow[] = [...disks]
-    .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
+  const rows: IRow[] = disks
+    .filter((disk) => disk.driveType !== 'LVM')
+    .sort((a, b) => (a.name && a.name.localeCompare(b.name as string)) || 0)
+    .sort((a, b) => {
+      const aVal = (a.holders || a.name) as string;
+      const bVal = (b.holders || b.name) as string;
+
+      return aVal?.localeCompare(bVal) || 0;
+    })
     .map((disk, index) => ({
       cells: [
         {
           title: (
-            <>
-              {isInDiskSkipFormattingList(host, disk.id) && (
-                <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
-                  <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-                </Popover>
-              )}
-              {'   '}
-              {disk.bootable ? `${disk.name || ''} (bootable)` : disk.name}
-            </>
+            <DiskName
+              disk={disk}
+              disks={disks}
+              host={host}
+              installationDiskId={installationDiskId}
+            />
           ),
           props: { 'data-testid': 'disk-name' },
         },
@@ -133,4 +218,4 @@ const DisksTable = ({
   );
 };
 
-export default DisksTable;
+export { DisksTable, getDiskLimitation };
