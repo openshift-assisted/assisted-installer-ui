@@ -84,7 +84,9 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
         title={t('ai:Configuration may take a few minutes.')}
         actionLinks={actionLinks}
       >
-        {t("ai:If the configuration is taking longer than 3 minutes, you'll need to troubleshoot.")}
+        {t(
+          'ai:If the configuration is taking longer than 5 minutes, you might need to troubleshoot.',
+        )}
       </Alert>
     );
   }
@@ -103,7 +105,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   return (
     <Alert
       title={t('ai:Configuration is hanging for a long time.')}
-      variant={AlertVariant.danger}
+      variant={AlertVariant.info}
       isInline
       actionLinks={actionLinks}
     >
