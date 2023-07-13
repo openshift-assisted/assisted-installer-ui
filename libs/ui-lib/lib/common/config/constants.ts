@@ -7,7 +7,9 @@ import { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevel
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
 // @ts-ignore
 import buildManifest from '../../../build/build.json'; // This file is generated at build-time.
-import { getShortOpenshiftVersion } from '../utils';
+
+export const getShortOpenshiftVersion = (ocpVersion?: string) =>
+  ocpVersion?.split('.').slice(0, 2).join('.');
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
