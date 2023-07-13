@@ -44,10 +44,6 @@ const ClusterDetailsService = {
       },
     };
 
-    if (values.externalPartnerIntegrations) {
-      params.platform = { type: 'oci' };
-    }
-
     if (params.cpuArchitecture === CpuArchitecture.ARM || params.platform?.type === 'oci') {
       params.userManagedNetworking = true;
     }
@@ -71,6 +67,12 @@ const ClusterDetailsService = {
 
     if (values.pullSecret) {
       params.pullSecret = values.pullSecret;
+    }
+
+    if (values.platform) {
+      params.platform = {
+        type: values.platform,
+      };
     }
 
     return params;
