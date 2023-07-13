@@ -1,8 +1,14 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+interface Version {
+  cpu_architectures: string[];
+  display_name: string;
+  support_level: string;
+  default?: boolean;
+}
+
 export const x86 = 'x86_64';
 export const arm64 = 'arm64';
 
-const versions = {
+const versions: Record<string, Version> = {
   '4.8': {
     cpu_architectures: [x86],
     display_name: '4.8.57',
@@ -15,7 +21,6 @@ const versions = {
   },
   '4.10': {
     cpu_architectures: [x86, arm64],
-    default: true,
     display_name: '4.10.57',
     support_level: 'production',
   },
@@ -42,6 +47,10 @@ const versions = {
   },
 };
 
+expect(
+  Object.entries(versions).filter(([_, versionItem]) => versionItem.default === true),
+).to.have.length(1);
+
 // The values must be sorted with most recent version being first
 const getExpectedVersionIds = () => Object.keys(versions).reverse();
 const getVersionWithNoArmSupport = (): string => '4.9';
@@ -49,10 +58,9 @@ const getVersionWithArmSupport = (): string => '4.10';
 const getDefaultOpenShiftVersion = (): string => '4.11';
 
 export {
+  versions as openShiftVersions,
   getExpectedVersionIds,
   getVersionWithNoArmSupport,
   getVersionWithArmSupport,
   getDefaultOpenShiftVersion,
 };
-
-export default versions;

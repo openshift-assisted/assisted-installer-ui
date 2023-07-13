@@ -20,4 +20,4 @@ const createSnoFixtureMapping = {
   },
 };
 
-export default createSnoFixtureMapping;
+export { createSnoFixtureMapping };

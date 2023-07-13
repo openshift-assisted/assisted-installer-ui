@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { baseCluster, fakeClusterId, fakeClusterInfraEnvId } from '../cluster/base-cluster';
-import { clusterValidationsInfo } from '../cluster/validation-info-initial-cluster';
+import { initialClusterValidations } from '../cluster/validation-info-initial-cluster';
 import { dummyStaticNetworkConfig } from './static-network-config';
 
 const featureUsage = {
@@ -36,7 +36,7 @@ const getBaseCluster = ({ name }) => ({
     },
   ],
   feature_usage: JSON.stringify(featureUsage),
-  validations_info: JSON.stringify(clusterValidationsInfo),
+  validations_info: JSON.stringify(initialClusterValidations.clusterValidationsInfo),
   ...baseCluster(name),
   high_availability_mode: 'Full',
 });

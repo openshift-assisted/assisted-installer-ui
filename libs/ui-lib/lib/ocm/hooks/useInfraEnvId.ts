@@ -24,7 +24,7 @@ export default function useInfraEnvId(
           const infraEnv = await InfraEnvsService.create({
             name: InfraEnvsService.makeInfraEnvName(cpuArchitecture, clusterName),
             pullSecret,
-            clusterId: clusterId,
+            clusterId,
             openshiftVersion,
             cpuArchitecture: cpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
           });

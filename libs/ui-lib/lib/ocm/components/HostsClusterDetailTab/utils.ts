@@ -1,5 +1,5 @@
 import { OcmClusterType } from '../AddHosts/types';
-import { getFeatureSupported } from '../newFeatureSupportLevels/NewFeatureSupportLevelProvider';
+import { getFeatureSupported } from '../featureSupportLevels/FeatureSupportLevelProvider';
 import { AddHostsTabState } from './types';
 
 const isSNOExpansionAllowed = (cluster: OcmClusterType) => {

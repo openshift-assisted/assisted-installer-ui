@@ -274,7 +274,7 @@ const clusterEvents = [
   },
 ];
 
-export const getEvents = ({
+const getEvents = ({
   limit,
   offset,
   hostIds,
@@ -310,7 +310,7 @@ export const getEvents = ({
   return events.slice(Number(offset), Number(offset) + Number(limit));
 };
 
-export const getEventHeaders = (query: Record<string, string | number>) => {
+const getEventHeaders = (query: Record<string, string | number>) => {
   const severitiesFilter = {
     offset: '0',
     limit: '100',
@@ -342,3 +342,5 @@ export const getEventHeaders = (query: Record<string, string | number>) => {
     }).length.toString(),
   };
 };
+
+export { getEvents, getEventHeaders };

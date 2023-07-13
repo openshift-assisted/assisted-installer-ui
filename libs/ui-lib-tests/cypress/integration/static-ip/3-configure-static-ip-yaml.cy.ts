@@ -2,16 +2,18 @@ import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP YAML configuration`, () => {
-  describe('Configuring static IP in YAML view', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: '',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
+      activeScenario: 'AI_CREATE_STATIC_IP',
     });
+  };
+
+  describe('Configuring static IP in YAML view', () => {
+    before(() => setTestStartSignal(''));
 
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      setTestStartSignal('');
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
       staticIpPage.getYamlViewSelect().click();
@@ -23,7 +25,7 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       staticIpPage.yamlView.macAddress().type('00:00:5e:00:53:af');
       staticIpPage.yamlView.interface().type('interface1');
 
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.verifyNextIsEnabled();
     });
 
     it('Can add another host configuration', () => {
@@ -43,7 +45,7 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       staticIpPage.yamlView.macAddress(1, 0).type('00:00:5e:00:53:ae');
       staticIpPage.yamlView.interface(1, 0).type('interface2');
 
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.verifyNextIsEnabled();
     });
 
     it('Cannot upload a binary file', () => {
@@ -53,20 +55,15 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       staticIpPage.yamlView.interface().type('interface1');
 
       commonActions.getDangerAlert().should('be.visible');
-      commonActions.getNextButton().should('not.be.enabled');
+      commonActions.verifyNextIsDisabled();
     });
   });
 
   describe('Reading existing configuration in YAML view', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: 'STATIC_IP_YAML_CONFIGURED',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
-    });
+    before(() => setTestStartSignal('STATIC_IP_YAML_CONFIGURED'));
 
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      setTestStartSignal('STATIC_IP_YAML_CONFIGURED');
       commonActions.visitClusterDetailsPage();
       commonActions.getWizardStepNav('Static network configurations').click();
     });

@@ -31,7 +31,7 @@ import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
-import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 
 type MatchParams = {

@@ -16,7 +16,7 @@ import {
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { ocmClient } from '../../api';
+import { isInOcm } from '../../api';
 import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
@@ -60,7 +60,7 @@ const getFailedHostsMessage = (
   hostsType?: string,
 ) => {
   if (hostsType === 'worker') {
-    if (ocmClient) {
+    if (isInOcm) {
       return (
         <>
           Error information for each host can be found in the host inventory table. To retry adding

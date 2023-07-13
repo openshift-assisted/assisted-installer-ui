@@ -4,15 +4,17 @@ import { clusterListPage } from '../../views/clusterList';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: '',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
-  });
+  };
+
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 
@@ -35,16 +37,13 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       clusterDetailsPage.inputPullSecret();
 
       // Create the cluster and store its ID when moving to the next step
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
+      commonActions.toNextStepAfter('Cluster details');
 
       cy.wait('@create-cluster');
       cy.wait('@create-infra-env');
       utils.setLastWizardSignal('CLUSTER_CREATED');
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
 
-      commonActions.verifyIsAtStep('Host discovery');
+      commonActions.toNextStepAfter('Operators');
     });
 
     it('Show the dev-preview badge for SNO', () => {
@@ -56,8 +55,15 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
         .should('contain.text', 'Limitations for using Single Node OpenShift');
     });
 
-    it('Lists the new cluster', () => {
-      clusterListPage.getClusterByName().should('be.visible');
+    describe('When the cluster is created', () => {
+      beforeEach(() => {
+        setTestStartSignal('CLUSTER_CREATED');
+        cy.visit('/clusters');
+      });
+
+      it('Lists the new cluster', () => {
+        clusterListPage.getClusterByName().should('be.visible');
+      });
     });
   });
 });

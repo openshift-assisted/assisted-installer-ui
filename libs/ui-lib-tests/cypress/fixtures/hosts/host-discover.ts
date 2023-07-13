@@ -4,7 +4,7 @@ import { hostIds } from './index';
 import { getHostInventory } from '../cluster/host-inventory';
 import { fakeClusterId, fakeClusterInfraEnvId } from '../cluster/base-cluster';
 
-import { hostValidationsInfo } from '../cluster/validation-info-host-discovery';
+import { hostDiscoveryValidations } from '../cluster/validation-info-host-discovery';
 
 const baseHost = {
   infra_env_id: fakeClusterInfraEnvId,
@@ -52,7 +52,7 @@ const hostDiscover = (hostIndex) => {
     status: 'insufficient',
     status_info:
       "Host cannot be installed due to following failing validation(s): Host couldn't synchronize with any NTP server ; Hostname localhost is forbidden",
-    validations_info: JSON.stringify(hostValidationsInfo),
+    validations_info: JSON.stringify(hostDiscoveryValidations.hostValidationsInfo),
   };
 };
 

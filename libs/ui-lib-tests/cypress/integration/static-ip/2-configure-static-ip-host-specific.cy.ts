@@ -2,21 +2,23 @@ import { commonActions } from '../../views/common';
 import { staticIpPage } from '../../views/staticIpPage';
 
 describe(`Assisted Installer Static IP Host specific Configuration`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'STATIC_IP_NETWORK_WIDE_CONFIGURED',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
-  });
+  };
+
+  before(() => setTestStartSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('STATIC_IP_NETWORK_WIDE_CONFIGURED');
     commonActions.visitClusterDetailsPage();
     commonActions.getWizardStepNav('Static network configurations').click();
   });
 
   it('Can be entered using Form View', () => {
-    commonActions.getNextButton().click();
+    commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
     staticIpPage.getFormViewSelect().should('be.checked');
     staticIpPage.getAddMoreHosts().should('be.disabled');
@@ -29,16 +31,14 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
     staticIpPage.hostSpecificMacAddress(1).type('00:00:5e:00:53:ae');
     staticIpPage.hostSpecificIpv4Address(1).type('192.168.2.39');
 
-    commonActions.getNextButton().should('be.enabled');
-    commonActions.getNextButton().click();
+    commonActions.verifyNextIsEnabled();
   });
 
   describe('Reading existing configuration in Form view', () => {
-    before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: 'STATIC_IP_HOST_SPECIFIC_CONFIGURED',
-        activeScenario: 'AI_CREATE_STATIC_IP',
-      });
+    beforeEach(() => {
+      setTestStartSignal('STATIC_IP_HOST_SPECIFIC_CONFIGURED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.getWizardStepNav('Static network configurations').click();
     });
 
     it('Can show the existing static IP configuration', () => {
@@ -69,7 +69,7 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
       staticIpPage.hostMappingMacAddress(2).should('have.value', '00:00:5e:00:53:af');
       staticIpPage.hostMappingBlockToggle(2).click();
 
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.verifyNextIsEnabled();
     });
   });
 });

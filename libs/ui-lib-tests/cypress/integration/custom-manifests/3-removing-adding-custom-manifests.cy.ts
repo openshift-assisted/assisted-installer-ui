@@ -3,15 +3,17 @@ import { customManifestsPage } from '../../views/customManifestsPage';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer Custom manifests step`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'ONLY_DUMMY_CUSTOM_MANIFEST',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-  });
+  };
+
+  before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST');
     commonActions.visitClusterDetailsPage();
   });
 
@@ -41,7 +43,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
 
     it('Can delete custom manifest', () => {
       utils.setLastWizardSignal('CUSTOM_MANIFEST_ADDED');
-      commonActions.startAtCustomManifestsStep();
+      commonActions.startAtWizardStep('Custom manifests');
 
       customManifestsPage.getLinkToAdd().should('be.enabled');
       customManifestsPage.getLinkToAdd().click();

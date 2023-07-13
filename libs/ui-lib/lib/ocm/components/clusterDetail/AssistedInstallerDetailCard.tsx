@@ -27,7 +27,7 @@ import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import { BackButton } from '../ui/Buttons/BackButton';
-import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 
 type AssistedInstallerDetailCardProps = {

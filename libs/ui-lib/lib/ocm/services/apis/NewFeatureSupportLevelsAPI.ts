@@ -2,7 +2,7 @@ import { clientWithoutConverter } from '../../api/axiosClient';
 import {
   ArchitecturesSupportsLevel,
   FeaturesSupportsLevel,
-} from '../../components/newFeatureSupportLevels/types';
+} from '../../components/featureSupportLevels/types';
 
 const NewFeatureSupportLevelsAPI = {
   makeBaseURI() {

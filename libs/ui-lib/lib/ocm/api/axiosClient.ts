@@ -31,6 +31,7 @@ const getDefaultClient = (withoutConverter = false) => {
 let client: AxiosInstance = getDefaultClient();
 let clientWithoutConverter: AxiosInstance = getDefaultClient(true);
 let ocmClient: AxiosInstance | null;
+let isInOcm = false;
 
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({
@@ -40,8 +41,11 @@ const aiInterceptor = (client: AxiosInstance) => {
   return client;
 };
 
+const getOcmClient = () => ocmClient;
+
 export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => AxiosInstance) => {
   ocmClient = authInterceptor(axios.create());
+  isInOcm = true;
   client = applyCaseMiddleware(
     aiInterceptor(authInterceptor(axios.create())),
     axiosCaseConverterOptions,
@@ -49,4 +53,4 @@ export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => A
   clientWithoutConverter = aiInterceptor(authInterceptor(axios.create()));
 };
 
-export { client, ocmClient, clientWithoutConverter };
+export { client, getOcmClient, isInOcm, clientWithoutConverter };

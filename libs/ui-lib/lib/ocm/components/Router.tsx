@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
+import { Day2AddHostsMock } from './HostsClusterDetailTab';
 import { store } from '../store';
 import { FeatureGateContextProvider, FeatureListType } from '../../common';
 import { routeBasePath } from '../config';
@@ -22,6 +23,7 @@ export const Router: React.FC<{ features: FeatureListType }> = ({ features, chil
       <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
       <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
       <Route path={`${routeBasePath}/clusters`} component={Clusters} />
+      <Route path={`${routeBasePath}/day2-flow-mock`} component={Day2AddHostsMock} />
       {children}
       <Redirect to={`${routeBasePath}/clusters`} />
     </Switch>

@@ -3,15 +3,17 @@ import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer Multinode Cluster Installation`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: '',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-  });
+  };
+
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 
@@ -25,17 +27,12 @@ describe(`Assisted Installer Multinode Cluster Installation`, () => {
       clusterDetailsPage.inputPullSecret();
 
       commonActions.getInfoAlert().should('not.exist');
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
-
+      commonActions.toNextStepAfter('Cluster details');
       cy.wait('@create-cluster');
       cy.wait('@create-infra-env');
       utils.setLastWizardSignal('CLUSTER_CREATED');
 
-      commonActions.waitForNext();
-      commonActions.clickNextButton();
-
-      commonActions.verifyIsAtStep('Host discovery');
+      commonActions.toNextStepAfter('Operators');
     });
   });
 });

@@ -1,19 +1,21 @@
 import { commonActions } from '../../views/common';
 import { setLastWizardSignal } from '../../support/utils';
 import { customManifestsPage } from '../../views/customManifestsPage';
+
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
 describe(`Assisted Installer Custom manifests step`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'ONLY_DUMMY_CUSTOM_MANIFEST_ADDED',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
     });
-  });
+  };
+
+  before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
-    setLastWizardSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
+    setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
     commonActions.visitClusterDetailsPage();
   });
 
@@ -25,7 +27,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
           .should('have.class', ACTIVE_NAV_ITEM_CLASS);
 
         commonActions.verifyIsAtStep('Custom manifests');
-        commonActions.getNextButton().should('be.disabled');
+        commonActions.verifyNextIsDisabled();
       });
     });
 
@@ -45,7 +47,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
     it('Adding valid content to dummy manifest enables next button', () => {
       customManifestsPage.getStartFromScratch().click();
       customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/manifest1.yaml`);
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.verifyNextIsEnabled();
     });
 
     it('Cannot upload binary file into manifest content', () => {
@@ -54,7 +56,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
       customManifestsPage
         .getYamlContentError()
         .should('contain.text', 'File type is not supported. File type must be yaml, yml or json.');
-      commonActions.getNextButton().should('be.disabled');
+      commonActions.verifyNextIsDisabled();
     });
 
     it('Incorrect file name is shown as an error', () => {
@@ -68,7 +70,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
           'contain.text',
           'Custom manifests configuration contains missing or invalid fields',
         );
-      commonActions.getNextButton().should('be.disabled');
+      commonActions.verifyNextIsDisabled();
     });
   });
 });
