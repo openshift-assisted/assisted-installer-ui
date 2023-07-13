@@ -8,6 +8,8 @@ import {
   getDefaultCpuArchitecture,
   isDualStack,
   NETWORK_TYPE_SDN,
+  selectApiVip,
+  selectIngressVip,
   selectIpv4Cidr,
   selectIpv4HostPrefix,
   selectIpv6Cidr,
@@ -99,14 +101,14 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           />
           <DetailItem
             title="API IP"
-            value={cluster.apiVip}
-            isHidden={!cluster.apiVip}
+            value={selectApiVip(cluster)}
+            isHidden={selectApiVip(cluster) === ''}
             testId="api-vip"
           />
           <DetailItem
             title="Ingress IP"
-            value={cluster.ingressVip}
-            isHidden={!cluster.ingressVip}
+            value={selectIngressVip(cluster)}
+            isHidden={selectIngressVip(cluster) === ''}
             testId="ingress-vip"
           />
           <DetailItem

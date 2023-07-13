@@ -1,6 +1,6 @@
 import head from 'lodash-es/head.js';
 import { SupportedPlatformIntegrations, ValidationsInfo } from '../types';
-import { Cluster, stringToJSON } from '../api';
+import { Cluster, Ip, stringToJSON } from '../api';
 import { ExposedOperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
@@ -26,6 +26,11 @@ export const selectServiceNetworkCIDR = ({
   serviceNetworkCidr,
 }: Pick<Cluster, 'serviceNetworks' | 'serviceNetworkCidr'>) =>
   head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
+
+export const selectApiVip = ({ apiVips }: Pick<Cluster, 'apiVips'>): Ip => head(apiVips)?.ip || '';
+
+export const selectIngressVip = ({ ingressVips }: Pick<Cluster, 'ingressVips'>): Ip =>
+  head(ingressVips)?.ip || '';
 
 export const selectMonitoredOperators = (monitoredOperators: Cluster['monitoredOperators']) => {
   // monitoredOperators can sometimes be either undefined or also null, we must use the fallback

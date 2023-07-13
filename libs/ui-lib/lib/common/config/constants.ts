@@ -96,8 +96,8 @@ export const clusterFieldLabels = (t: TFunction): { [key in string]: string } =>
   clusterNetworkCidr: t('ai:Cluster network CIDR'),
   clusterNetworkHostPrefix: t('ai:Cluster network host prefix'),
   serviceNetworkCidr: t('ai:Service network CIDR'),
-  apiVip: t('ai:API IP'),
-  ingressVip: t('ai:Ingress IP'),
+  apiVips: t('ai:API IP'),
+  ingressVips: t('ai:Ingress IP'),
   pullSecret: t('ai:Pull secret'),
   sshPublicKey: t('ai:SSH public key'),
   SNODisclaimer: t('ai:Single Node OpenShift disclaimer'),
@@ -370,9 +370,8 @@ export const CHANGE_ISO_PASSWORD_FILE_LINK =
 export const CUSTOM_MANIFESTS_HELP_LINK =
   'https://docs.openshift.com/container-platform/4.12/installing/install_config/installing-customizing.html';
 
-//TODO (mortegag): Change the link. Related to https://issues.redhat.com/browse/MGMT-13976
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
-  'https://57587--docspreview.netlify.app/openshift-enterprise/latest/post_installation_configuration/multi-architecture-configuration.html#multi-architecture-verifying-cluster-compatibility_multi-architecture-configuration';
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html-single/assisted_installer_for_openshift_container_platform/index#checking-for-multiple-architectures_expanding-the-cluster';
 
 export const MCE_LINK =
   'https://docs.openshift.com/container-platform/4.13/architecture/mce-overview-ocp.html';

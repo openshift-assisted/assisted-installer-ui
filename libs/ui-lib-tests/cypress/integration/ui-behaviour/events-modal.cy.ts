@@ -6,15 +6,17 @@ let clusterPage;
 let eventsModal;
 
 describe('Events modal behavior', () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'READY_TO_INSTALL',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-  });
+  };
+
+  before(() => setTestStartSignal('READY_TO_INSTALL'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('READY_TO_INSTALL');
 
     ClusterPage.visit();
 

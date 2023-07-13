@@ -48,7 +48,7 @@ const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: Lv
       </Tooltip>
       <PopoverIcon
         component={'a'}
-        headerContent="Additional Requirements"
+        headerContent="Additional requirements"
         bodyContent={<LvmHostRequirements clusterId={clusterId} />}
       />
       <NewFeatureSupportLevelBadge featureId="LVM" supportLevel={supportLevel} />

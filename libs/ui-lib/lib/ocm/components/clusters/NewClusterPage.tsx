@@ -8,7 +8,7 @@ import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextP
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterLoading from './ClusterLoading';
 import { ClusterUiError } from './ClusterPageErrors';
-import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
+import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 
 const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
   pageTitleSection,

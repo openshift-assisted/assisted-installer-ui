@@ -1,8 +1,6 @@
 import React from 'react';
-import { TFunction } from 'i18next';
 
 import { CpuArchitecture, FeatureId } from '../../types';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { ArchitectureSupportLevelId, FeatureSupportLevelId, SupportLevel } from '../../api';
 
 export type NewFeatureSupportLevelMap = Record<FeatureSupportLevelId, SupportLevel>;
@@ -22,7 +20,6 @@ export type NewFeatureSupportLevelData = {
   isFeatureDisabled(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   getFeatureDisabledReason(
     featureId: FeatureId,
-    t?: TFunction,
     supportLevelData?: NewFeatureSupportLevelMap,
   ): string | undefined;
   isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
@@ -44,10 +41,9 @@ export const NewFeatureSupportLevelContextProvider: React.FC<{
 
 export const useNewFeatureSupportLevel = () => {
   const context = React.useContext(NewFeatureSupportLevelContext);
-  const { t } = useTranslation();
   if (!context) {
     throw new Error(
-      t('ai:useNewFeatureSupportLevel must be used within NewFeatureSupportLevelContextProvider.'),
+      'useNewFeatureSupportLevel must be used within NewFeatureSupportLevelContextProvider.',
     );
   }
   return context;

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { baseCluster, fakeClusterId } from '../cluster/base-cluster';
-import { clusterValidationsInfo } from '../cluster/validation-info-cluster-ready';
+import { clusterReadyValidations } from '../cluster/validation-info-cluster-ready';
 import { hostIds } from '../hosts';
 
 const featureUsage = {
@@ -54,7 +54,7 @@ const readOnlyCluster = {
   feature_usage: JSON.stringify(featureUsage),
   status: 'ready',
   status_info: 'Cluster ready to be installed',
-  validations_info: JSON.stringify(clusterValidationsInfo),
+  validations_info: JSON.stringify(clusterReadyValidations.clusterValidationsInfo),
   high_availability_mode: 'Full',
   permissions: {
     canEdit: false,

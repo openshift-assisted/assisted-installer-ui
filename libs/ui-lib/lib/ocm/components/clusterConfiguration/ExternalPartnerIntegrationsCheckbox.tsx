@@ -8,7 +8,7 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
-import { clusterExistsReason as CLUSTER_EXISTS_REASON } from '../newFeatureSupportLevels/newFeatureStateUtils';
+import { clusterExistsReason as CLUSTER_EXISTS_REASON } from '../featureSupportLevels/featureStateUtils';
 
 export const FEATURE_ID = 'EXTERNAL_PLATFORM_OCI';
 export const FIELD_NAME = 'externalPartnerIntegrations';

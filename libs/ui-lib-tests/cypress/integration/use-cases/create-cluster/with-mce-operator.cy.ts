@@ -2,17 +2,19 @@ import { commonActions } from '../../../views/common';
 import OperatorsForm from '../../../views/forms/OperatorsForm';
 
 describe(`Create cluster with mce operator enabled`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'CLUSTER_CREATED',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-  });
+  };
+
+  before(() => setTestStartSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtOperatorsStep();
+    commonActions.startAtWizardStep('Operators');
   });
 
   describe('When the feature is enabled:', () => {
@@ -23,8 +25,11 @@ describe(`Create cluster with mce operator enabled`, () => {
     });
     it('The user can select the multicluster engine checkbox', () => {
       OperatorsForm.mceOperatorControl.findLabel().click();
-      commonActions.waitForNext();
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.toNextStepAfter('Operators');
+
+      cy.wait('@update-cluster').then(({ request }) => {
+        expect(request.body.olm_operators).to.deep.equal([{ name: 'mce' }]);
+      });
     });
   });
 });

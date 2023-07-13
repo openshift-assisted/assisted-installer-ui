@@ -10,12 +10,12 @@ import {
   Cluster,
   ClusterDefaultConfig,
   clusterNetworksEqual,
-  CpuArchitecture,
   DUAL_STACK,
-  getDefaultCpuArchitecture,
   HostSubnets,
   isSNO,
   NetworkConfigurationValues,
+  selectApiVip,
+  selectIngressVip,
   serviceNetworksEqual,
 } from '../../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/newFeatureSupportLevels/utils';
@@ -76,18 +76,14 @@ const isAdvNetworkConf = (
   );
 
 type IsManagedNetworkingDisabledFunctionParams = {
-  isArmCpu: boolean;
   isDualStack: boolean;
   isOracleCloudInfrastructure: boolean;
   featureSupportLevelData: NewFeatureSupportLevelData;
-  openshiftVersion: Cluster['openshiftVersion'];
 };
 
 const isManagedNetworkingDisabled = ({
-  isArmCpu,
   isDualStack,
   isOracleCloudInfrastructure,
-  openshiftVersion,
   featureSupportLevelData,
 }: IsManagedNetworkingDisabledFunctionParams) => {
   if (isOracleCloudInfrastructure) {
@@ -102,22 +98,7 @@ const isManagedNetworkingDisabled = ({
       networkManagementDisabledReason:
         'Network management selection is not supported with dual-stack',
     };
-  } else if (
-    isArmCpu &&
-    !featureSupportLevelData.isFeatureSupported(
-      'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-    )
-  ) {
-    return {
-      isNetworkManagementDisabled: true,
-      networkManagementDisabledReason: featureSupportLevelData.getFeatureDisabledReason(
-        'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
-      ),
-    };
-  } else if (
-    !!openshiftVersion &&
-    featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')
-  ) {
+  } else if (featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')) {
     return {
       isNetworkManagementDisabled: true,
       networkManagementDisabledReason:
@@ -158,16 +139,13 @@ const NetworkConfiguration = ({
   const featureSupportLevelData = useNewFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
-  const { clusterFeatureSupportLevels, underlyingCpuArchitecture } = React.useMemo(() => {
+  const { clusterFeatureSupportLevels } = React.useMemo(() => {
     return {
       clusterFeatureSupportLevels: getLimitedFeatureSupportLevels(
         cluster,
         featureSupportLevelData,
         t,
       ),
-      underlyingCpuArchitecture:
-        featureSupportLevelData.activeFeatureConfiguration?.underlyingCpuArchitecture ||
-        getDefaultCpuArchitecture(),
     };
   }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);
@@ -190,8 +168,8 @@ const NetworkConfiguration = ({
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVip', '', false);
-      setFieldValue('apiVip', '', false);
+      setFieldValue('ingressVips', [], false);
+      setFieldValue('apiVips', [], false);
 
       if (isMultiNodeCluster) {
         setFieldValue('machineNetworks', [], false);
@@ -247,19 +225,11 @@ const NetworkConfiguration = ({
   const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
     () =>
       isManagedNetworkingDisabled({
-        isArmCpu: underlyingCpuArchitecture === CpuArchitecture.ARM,
         isDualStack,
         isOracleCloudInfrastructure: cluster.platform?.type === 'oci',
-        openshiftVersion: cluster.openshiftVersion,
         featureSupportLevelData,
       }),
-    [
-      cluster.openshiftVersion,
-      cluster.platform?.type,
-      featureSupportLevelData,
-      isDualStack,
-      underlyingCpuArchitecture,
-    ],
+    [cluster.platform?.type, featureSupportLevelData, isDualStack],
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(
@@ -303,8 +273,8 @@ const NetworkConfiguration = ({
           isRequired={!isUserManagedNetworking}
           isDisabled={
             (cluster.vipDhcpAllocation &&
-              cluster.apiVip === undefined &&
-              cluster.ingressVip === undefined) ||
+              selectApiVip(cluster) === '' &&
+              selectIngressVip(cluster) === '') ||
             hostSubnets.length === 0 ||
             false
           }

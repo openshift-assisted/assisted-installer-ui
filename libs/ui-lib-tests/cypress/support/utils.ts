@@ -26,8 +26,17 @@ const signalOrder = [
   'NETWORKING_DUAL_STACK_SELECT_SINGLE_STACK',
   'NETWORKING_DUAL_STACK_SELECT_DUAL_STACK',
 
-  // Last signal must always be Ready to install
+  // Custom manifests transitions
+  'ONLY_DUMMY_CUSTOM_MANIFEST_ADDED',
+  'CUSTOM_MANIFEST_ADDED',
+
+  // End of Day1 flow
   'READY_TO_INSTALL',
+
+  // Day2 flow
+  'CLUSTER_FINISHED_INSTALLATION',
+  'CREATED_DAY2_CLUSTER',
+  'ADDED_SECOND_CPU_ARCHITECTURE',
 ];
 
 export type SignalName = (typeof signalOrder)[number];

@@ -4,7 +4,6 @@ import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoMod
 import { hostsTableSection } from '../../views/hostsTableSection';
 import { navbar } from '../../views/navbar';
 
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import * as utils from '../../support/utils';
 
 const validateHostTableDetails = () => {
@@ -19,16 +18,17 @@ const validateHostTableDetails = () => {
 };
 
 describe(`Assisted Installer Multinode Host discovery`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'CLUSTER_CREATED',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal: activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
-    transformBasedOnUIVersion();
-  });
+  };
+
+  before(() => setTestStartSignal('CLUSTER_CREATED'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
   });
 
@@ -54,12 +54,18 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
       bareMetalDiscoveryIsoModal.getAddHostsInstructions().should('exist');
     });
 
-    it('Should generate three hosts in Insufficient state', () => {
+    it('Should populate the host table when hosts are discovered', () => {
       navbar.navItemsShouldNotShowErrors();
       utils.setLastWizardSignal('HOST_DISCOVERED_3');
 
       bareMetalDiscoveryPage.waitForHostTablePopulation(3, 0);
       validateHostTableDetails();
+    });
+  });
+
+  describe('When all hosts are discovered', () => {
+    beforeEach(() => {
+      setTestStartSignal('HOST_DISCOVERED_3');
     });
 
     it('Should mass-rename the hosts and be able to continue', () => {
@@ -75,7 +81,7 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
           `${hostPrefix}-3`,
         ]);
       });
-      commonActions.getNextButton().should('be.enabled');
+      commonActions.verifyNextIsEnabled();
     });
   });
 });

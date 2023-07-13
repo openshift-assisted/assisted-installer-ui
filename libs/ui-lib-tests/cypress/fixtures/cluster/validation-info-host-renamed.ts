@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import {
-  hostValidationsInfo as prevHostValidationsInfo,
-  clusterValidationsInfo,
-} from './validation-info-host-discovery';
+import { hostDiscoveryValidations } from './validation-info-host-discovery';
 import { upgradeValidationsInfo } from './validations-info';
 
 const readyHostValidationsInfoPartial = (hostName) => ({
@@ -18,10 +15,23 @@ const readyHostValidationsInfoPartial = (hostName) => ({
       status: 'success',
       message: `Hostname ${hostName} is allowed`,
     },
+    {
+      id: 'no-skip-installation-disk',
+      status: 'success',
+      message: 'No request to skip formatting of the installation disk',
+    },
+    {
+      id: 'no-skip-missing-disk',
+      status: 'success',
+      message: 'All disks that have skipped formatting are present in the host inventory',
+    },
   ],
 });
 
 const hostValidationsInfo = (hostName) =>
-  upgradeValidationsInfo(prevHostValidationsInfo, readyHostValidationsInfoPartial(hostName));
+  upgradeValidationsInfo(
+    hostDiscoveryValidations.hostValidationsInfo,
+    readyHostValidationsInfoPartial(hostName),
+  );
 
-export { clusterValidationsInfo, hostValidationsInfo };
+export { hostValidationsInfo };

@@ -85,7 +85,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
                   {consoleUrl}
                 </Button>
                 <br />
-                {cluster.apiVip && cluster.ingressVip && (
+                {!!cluster.apiVips && !!cluster.ingressVips && (
                   <TroubleshootingOpenshiftConsoleButton
                     consoleUrl={consoleUrl}
                     cluster={cluster}

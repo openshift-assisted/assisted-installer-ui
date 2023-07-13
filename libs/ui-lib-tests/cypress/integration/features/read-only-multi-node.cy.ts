@@ -4,19 +4,19 @@ import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
 import { networkingPage } from '../../views/networkingPage';
 import { reviewAndCreatePage } from '../../views/reviewCreate';
 import { commonActions } from '../../views/common';
-import { transformBasedOnUIVersion } from '../../support/transformations';
 
 describe(`Assisted Installer Read Only Cluster`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'READY_TO_INSTALL',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_READONLY_CLUSTER',
     });
-    transformBasedOnUIVersion();
-  });
+  };
+
+  before(() => setTestStartSignal('READY_TO_INSTALL'));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
   });
 

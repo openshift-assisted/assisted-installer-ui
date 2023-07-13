@@ -2,7 +2,7 @@
 
 import { hostIPs, hostIds } from '../hosts';
 
-import { clusterValidationsInfo } from '../cluster/validation-info-host-discovery';
+import { hostDiscoveryValidations } from '../cluster/validation-info-host-discovery';
 
 const snoHostIP = hostIPs[0];
 const snoHostID = hostIds[0];
@@ -19,7 +19,7 @@ const hostDiscoveredBuilder = (baseCluster) => {
         host_ids: [snoHostID],
       },
     ],
-    validations_info: JSON.stringify(clusterValidationsInfo),
+    validations_info: JSON.stringify(hostDiscoveryValidations.clusterValidationsInfo),
     connectivity_majority_groups: {
       ...baseCluster.connectivity_majority_groups,
       [snoHostIP]: [],

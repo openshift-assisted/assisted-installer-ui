@@ -23,4 +23,4 @@ const createMultinodeFixtureMapping = {
   },
 };
 
-export default createMultinodeFixtureMapping;
+export { createMultinodeFixtureMapping };

@@ -1,20 +1,19 @@
-import { transformBasedOnUIVersion } from '../../support/transformations';
 import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as versionsFixtures from '../../fixtures/infra-envs/openshift-versions';
-import { arm64, x86 } from '../../fixtures/infra-envs/openshift-versions';
 
 describe('Assisted Installer UI behaviour - cluster creation', () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: '',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: '',
     });
-    transformBasedOnUIVersion();
-  });
+  };
+
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 
@@ -51,15 +50,15 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
 
       clusterDetailsPage.inputOpenshiftVersion(versionsFixtures.getVersionWithNoArmSupport());
       clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.CpuArchitectureNotExists(arm64);
-      clusterDetailsPage.CpuArchitectureExists(x86);
-      clusterDetailsPage.selectCpuArchitecture(x86);
+      clusterDetailsPage.CpuArchitectureNotExists(versionsFixtures.arm64);
+      clusterDetailsPage.CpuArchitectureExists(versionsFixtures.x86);
+      clusterDetailsPage.selectCpuArchitecture(versionsFixtures.x86);
 
       clusterDetailsPage.inputOpenshiftVersion(versionsFixtures.getVersionWithArmSupport());
       clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.CpuArchitectureExists(arm64);
-      clusterDetailsPage.CpuArchitectureExists(x86);
-      clusterDetailsPage.selectCpuArchitecture(arm64);
+      clusterDetailsPage.CpuArchitectureExists(versionsFixtures.arm64);
+      clusterDetailsPage.CpuArchitectureExists(versionsFixtures.x86);
+      clusterDetailsPage.selectCpuArchitecture(versionsFixtures.arm64);
     });
   });
 });

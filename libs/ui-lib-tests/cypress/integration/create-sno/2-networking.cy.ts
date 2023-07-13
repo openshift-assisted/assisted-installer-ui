@@ -1,27 +1,26 @@
 import { commonActions } from '../../views/common';
 import { networkingPage } from '../../views/networkingPage';
-import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Networking`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'HOST_RENAMED_1',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_SNO',
     });
+  };
+
+  before(() => {
+    setTestStartSignal('READY_TO_INSTALL');
   });
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
-    commonActions.startAtNetworkingStep();
+    commonActions.startAtWizardStep('Networking');
   });
 
   describe('Validating the Network configuration', () => {
     it('Should see the Ready Host inventory status', () => {
-      cy.wait('@cluster-details').then(() => {
-        utils.setLastWizardSignal('READY_TO_INSTALL');
-      });
-
       networkingPage.waitForNetworkStatus('Ready');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
     });
@@ -39,10 +38,6 @@ describe(`Assisted Installer SNO Networking`, () => {
       networkingPage.getAdvancedNetwork().click();
       networkingPage.getSdnNetworkingField().should('not.be.enabled').and('not.be.checked');
       networkingPage.getOvnNetworkingField().should('not.be.enabled').and('be.checked');
-    });
-
-    it('Should go to the final step', () => {
-      commonActions.clickNextButton();
     });
   });
 });
