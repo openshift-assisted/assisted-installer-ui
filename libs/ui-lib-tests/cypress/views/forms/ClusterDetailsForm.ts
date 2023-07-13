@@ -49,31 +49,31 @@ class BaseDomainControl {
 /** @private */
 class ExternalPartnerIntegrationsControl {
   static get body() {
-    return ClusterDetailsForm.body.find(
-      '#form-control__form-checkbox-externalPartnerIntegrations-field',
-    );
+    return ClusterDetailsForm.body.find('#form-control__form-input-platform-field');
   }
 
-  static findPopoverButton() {
-    return ExternalPartnerIntegrationsControl.body.findByRole('img', {
-      hidden: true,
-    });
+  static get dropdownField() {
+    return ClusterDetailsForm.body.find('#form-input-platform-field');
   }
 
-  static findPopoverContent() {
-    return ExternalPartnerIntegrationsControl.body
-      .scrollIntoView()
-      .get('#popover-externalPartnerIntegrations-body');
+  static get platformIntegrationDropdownButton() {
+    return ExternalPartnerIntegrationsControl.dropdownField.find('button.pf-c-dropdown__toggle');
   }
 
-  static findLabel() {
-    return ExternalPartnerIntegrationsControl.body.findByText(/external partner integrations/i);
+  static get platformIntegrationDropdown() {
+    return ExternalPartnerIntegrationsControl.dropdownField.find('.pf-c-dropdown__menu');
   }
 
-  static findHelperText() {
-    return ExternalPartnerIntegrationsControl.body.findByText(
-      /integrate with other platforms using custom manifests\./i,
-    );
+  static get platformIntegrationDropdownItems() {
+    return ExternalPartnerIntegrationsControl.platformIntegrationDropdown.find('[role="menuitem"]');
+  }
+
+  static getPlatformIntegrationDropdownItemById(id: string) {
+    return ExternalPartnerIntegrationsControl.platformIntegrationDropdown.find('[id="' + id + '"]');
+  }
+
+  static get tooltip() {
+    return cy.get('body').find('.pf-c-tooltip');
   }
 }
 
