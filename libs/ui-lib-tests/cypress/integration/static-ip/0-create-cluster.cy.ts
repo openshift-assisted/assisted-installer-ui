@@ -4,15 +4,17 @@ import * as utils from '../../support/utils';
 import { dummyStaticNetworkConfig } from '../../fixtures/static-ip/static-network-config';
 
 describe(`Assisted Installer Static IP Cluster Creation`, () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: '',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_STATIC_IP',
     });
-  });
+  };
+
+  before(() => setTestStartSignal(''));
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('');
     cy.visit('/clusters');
   });
 

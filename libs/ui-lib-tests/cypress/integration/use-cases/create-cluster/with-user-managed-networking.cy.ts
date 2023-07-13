@@ -3,15 +3,19 @@ import { commonActions } from '../../../views/common';
 import { networkingPage } from '../../../views/networkingPage';
 
 describe('Create cluster with UMN', () => {
-  before(() => {
-    cy.loadAiAPIIntercepts({
-      activeSignal: 'READY_TO_INSTALL',
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
       activeScenario: 'AI_CREATE_MULTINODE',
     });
+  };
+
+  before(() => {
+    setTestStartSignal('READY_TO_INSTALL');
   });
 
   beforeEach(() => {
-    cy.loadAiAPIIntercepts(null);
+    setTestStartSignal('READY_TO_INSTALL');
     commonActions.visitClusterDetailsPage();
     commonActions.startAtWizardStep('Networking');
   });

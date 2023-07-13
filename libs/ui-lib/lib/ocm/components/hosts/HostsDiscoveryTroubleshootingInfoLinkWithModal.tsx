@@ -1,7 +1,7 @@
 import React from 'react';
 import InfoLinkWithModal from '../ui/InfoLinkWithModal';
-import { pluralize } from 'humanize-plus';
 import { DiscoveryTroubleshootingModalContent } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export interface HostsDiscoveryTroubleshootingInfoLinkWithModalProps {
   isInline?: boolean;
@@ -12,10 +12,12 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
   isInline = false,
   isSingleNode = false,
 }: HostsDiscoveryTroubleshootingInfoLinkWithModalProps) => {
+  const { t } = useTranslation();
+
   return (
     <InfoLinkWithModal
-      linkText={`${pluralize(+isSingleNode, 'Host')} not showing up?`}
-      modalTitle={'Hosts not showing up troubleshooter'}
+      linkText={t('ai:Host not showing up?', { count: isSingleNode ? 1 : 2 })}
+      modalTitle={t('ai:Hosts not showing up troubleshooter')}
       modalVariant={'large'}
       isInline={isInline}
       linkId="link-host-troubleshooting"

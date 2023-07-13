@@ -3,16 +3,19 @@ import { networkingPage } from '../../views/networkingPage';
 import { NetworkingRequest } from '../../fixtures/create-mn/requests';
 
 describe(`Assisted Installer Multinode Networking`, () => {
+  const setTestStartSignal = (activeSignal: string) => {
+    cy.setTestEnvironment({
+      activeSignal,
+      activeScenario: 'AI_CREATE_MULTINODE',
+    });
+  };
+
   describe('Before entering Network configuration', () => {
     before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: 'HOST_RENAMED_3',
-        activeScenario: 'AI_CREATE_MULTINODE',
-      });
+      setTestStartSignal('HOST_RENAMED_3');
     });
-
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      setTestStartSignal('HOST_RENAMED_3');
       commonActions.visitClusterDetailsPage();
       commonActions.moveNextSteps(['Host discovery', 'Storage']); // to networking
     });
@@ -29,14 +32,10 @@ describe(`Assisted Installer Multinode Networking`, () => {
 
   describe('After entering Network configuration', () => {
     before(() => {
-      cy.loadAiAPIIntercepts({
-        activeSignal: 'READY_TO_INSTALL',
-        activeScenario: 'AI_CREATE_MULTINODE',
-      });
+      setTestStartSignal('READY_TO_INSTALL');
     });
-
     beforeEach(() => {
-      cy.loadAiAPIIntercepts(null);
+      setTestStartSignal('READY_TO_INSTALL');
       commonActions.visitClusterDetailsPage();
       commonActions.startAtWizardStep('Networking');
     });
