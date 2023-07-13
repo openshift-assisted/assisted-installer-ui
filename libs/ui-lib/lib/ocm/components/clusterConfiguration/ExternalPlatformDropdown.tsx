@@ -14,7 +14,7 @@ const fieldId = getFieldId(INPUT_NAME, 'input');
 export type ExternalPlatformType = Extract<PlatformType, 'none' | 'nutanix' | 'oci' | 'vsphere'>;
 
 type ExternalPlatformDropdownProps = {
-  isOracleCloudPlatformIntegrationEnabled: boolean;
+  showOciOption: boolean;
   selectedPlatform: ExternalPlatformType;
   disabledOciTooltipContent: React.ReactNode;
   isOciDisabled: boolean;
@@ -52,7 +52,7 @@ export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatfor
 };
 
 export const ExternalPlatformDropdown = ({
-  isOracleCloudPlatformIntegrationEnabled,
+  showOciOption,
   selectedPlatform,
   disabledOciTooltipContent,
   isOciDisabled,
@@ -66,7 +66,7 @@ export const ExternalPlatformDropdown = ({
   const enabledItems = Object.keys(externalPlatformTypes)
     .filter((platformType) => {
       if (platformType === 'oci') {
-        return isOracleCloudPlatformIntegrationEnabled;
+        return showOciOption;
       }
       return true;
     })

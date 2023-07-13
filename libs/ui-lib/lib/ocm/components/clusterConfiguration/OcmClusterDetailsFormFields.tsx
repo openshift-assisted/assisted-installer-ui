@@ -197,7 +197,7 @@ export const OcmClusterDetailsFormFields = ({
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
       <ExternalPlatformDropdown
-        isOracleCloudPlatformIntegrationEnabled={isOracleCloudPlatformIntegrationEnabled}
+        showOciOption={isOracleCloudPlatformIntegrationEnabled}
         selectedPlatform={clusterPlatform === 'baremetal' ? 'none' : clusterPlatform || 'none'}
         disabledOciTooltipContent={oracleDropdownItemState?.disabledReason}
         isOciDisabled={oracleDropdownItemState?.isDisabled || false}
