@@ -36,7 +36,7 @@ import CpuArchitectureDropdown, {
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
-import { ExternalPlatformDropdown } from './ExternalPlatformDropdown';
+import { ExternalPlatformDropdown, ExternalPlatformType } from './ExternalPlatformDropdown';
 import { useOracleDropdownItemState } from '../../hooks/useOracleDropdownItemState';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
@@ -115,10 +115,10 @@ export const OcmClusterDetailsFormFields = ({
   }, []);
 
   const handleExternalPartnerIntegrationsChange = React.useCallback(
-    (isOracleSelected: boolean) => {
-      const checked = Boolean(isOracleSelected);
-      setFieldValue('addCustomManifest', checked, false);
-      clusterWizardContext.setAddCustomManifests(checked);
+    (selectedPlatform: ExternalPlatformType) => {
+      const isOracleSelected = selectedPlatform === 'oci';
+      setFieldValue('addCustomManifest', isOracleSelected, false);
+      clusterWizardContext.setAddCustomManifests(isOracleSelected);
     },
     [clusterWizardContext, setFieldValue],
   );

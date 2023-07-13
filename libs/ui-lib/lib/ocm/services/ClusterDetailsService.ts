@@ -108,7 +108,6 @@ const ClusterDetailsService = {
       ...values,
       cpuArchitecture,
       hostsNetworkConfigurationType,
-      externalPartnerIntegrations: cluster?.platform?.type === 'oci',
       addCustomManifest: false,
     };
   },

@@ -18,7 +18,7 @@ type ExternalPlatformDropdownProps = {
   selectedPlatform: ExternalPlatformType;
   disabledOciTooltipContent: React.ReactNode;
   isOciDisabled: boolean;
-  onChange: (isOracleOptionSelected: boolean) => void;
+  onChange: (selectedPlatform: ExternalPlatformType) => void;
 };
 
 export type ExternalPlatformInfo = {
@@ -99,7 +99,7 @@ export const ExternalPlatformDropdown = ({
       setValue(selectedPlatform);
       setOpen(false);
       setCurrentPlatform(externalPlatformTypes[selectedPlatform].label);
-      onChange(selectedPlatform === 'oci');
+      onChange(selectedPlatform);
     },
     [setOpen, setValue, onChange],
   );
