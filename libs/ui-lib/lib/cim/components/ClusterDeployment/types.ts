@@ -100,7 +100,6 @@ export type ClusterDeploymentDetailsNetworkingProps = Pick<
   onClose: () => void;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   isPreviewOpen: boolean;
-  docVersion: string;
 };
 
 export type AgentSelectorChangeProps = {
@@ -162,7 +161,7 @@ export type ClusterDeploymentWizardProps = {
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   onCreateBMH?: BMCFormProps['onCreateBMH'];
-  docVersion: string;
+  docVersion: string; // ACM version
   onCreateBmcByYaml: UploadActionModalProps['onCreateBmcByYaml'];
 };
 

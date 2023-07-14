@@ -26,7 +26,6 @@ import { NetworkTypeControlGroup } from '../../../common/components/clusterWizar
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
-  docVersion: string;
   hideManagedNetworking?: boolean;
 };
 
@@ -36,7 +35,6 @@ const NetworkConfiguration = ({
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
   hideManagedNetworking,
-  docVersion,
 }: NetworkConfigurationProps) => {
   const { t } = useTranslation();
   const { setFieldValue, values, touched, validateField } =
@@ -125,7 +123,7 @@ const NetworkConfiguration = ({
       {isUserManagedNetworking && (
         <UserManagedNetworkingTextContent
           shouldDisplayLoadBalancersBullet={isMultiNodeCluster}
-          docVersion={docVersion}
+          docVersion={cluster.openshiftVersion}
         />
       )}
 
