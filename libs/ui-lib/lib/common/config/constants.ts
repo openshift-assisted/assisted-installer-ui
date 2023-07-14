@@ -8,10 +8,15 @@ import { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevel
 // @ts-ignore
 import buildManifest from '../../../build/build.json'; // This file is generated at build-time.
 
+export const getShortOpenshiftVersion = (ocpVersion?: string) =>
+  ocpVersion?.split('.').slice(0, 2).join('.');
+
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
-export const getOpenShiftNetworkingDocsLink = (ocpVersion = '4.7') =>
-  `https://docs.openshift.com/container-platform/${ocpVersion}/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal`;
+export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
+  `https://docs.openshift.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.13'
+  }/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal`;
 export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const ODF_REQUIREMENTS_LINK =
