@@ -202,6 +202,7 @@ export const OcmClusterDetailsFormFields = ({
         disabledOciTooltipContent={oracleDropdownItemState?.disabledReason}
         isOciDisabled={oracleDropdownItemState?.isDisabled || false}
         onChange={handleExternalPartnerIntegrationsChange}
+        dropdownIsDisabled={clusterPlatform === 'oci'}
       />
 
       <CustomManifestCheckbox clusterId={clusterId || ''} />

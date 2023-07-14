@@ -19,6 +19,7 @@ type ExternalPlatformDropdownProps = {
   disabledOciTooltipContent: React.ReactNode;
   isOciDisabled: boolean;
   onChange: (selectedPlatform: ExternalPlatformType) => void;
+  dropdownIsDisabled: boolean;
 };
 
 export type ExternalPlatformInfo = {
@@ -57,6 +58,7 @@ export const ExternalPlatformDropdown = ({
   disabledOciTooltipContent,
   isOciDisabled,
   onChange,
+  dropdownIsDisabled,
 }: ExternalPlatformDropdownProps) => {
   const [field, { value }, { setValue }] = useField<string>(INPUT_NAME);
   const [currentPlatform, setCurrentPlatform] = React.useState(
@@ -81,6 +83,7 @@ export const ExternalPlatformDropdown = ({
             id={platformType}
             tooltip={isOracleDisabled ? disabledOciTooltipContent : tooltip}
             isAriaDisabled={isOracleDisabled}
+            tooltipProps={{ position: 'top-start' }}
           >
             {label}
             {!isHrefEmpty && (
@@ -111,11 +114,12 @@ export const ExternalPlatformDropdown = ({
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-u-w-100"
+        isDisabled={dropdownIsDisabled}
       >
         {currentPlatform || value}
       </DropdownToggle>
     ),
-    [setOpen, currentPlatform, value],
+    [dropdownIsDisabled, currentPlatform, value],
   );
 
   return (
