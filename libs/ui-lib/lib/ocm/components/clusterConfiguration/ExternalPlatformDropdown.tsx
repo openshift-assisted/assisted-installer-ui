@@ -40,7 +40,7 @@ export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatfor
     tooltip: '',
   },
   oci: {
-    label: 'Oracle  (Using custom manifests)',
+    label: 'Oracle  (Requires a custom manifest)',
     href: 'www.google.es',
     tooltip:
       "To integrate with an external partner (for example, Oracle Cloud), you'll need to provide a custom manifest.",
@@ -123,7 +123,11 @@ export const ExternalPlatformDropdown = ({
   );
 
   return (
-    <FormGroup id={`form-control__${fieldId}`} fieldId={fieldId} label={'Integrate with platform'}>
+    <FormGroup
+      id={`form-control__${fieldId}`}
+      fieldId={fieldId}
+      label={'Integrate with external partner platforms'}
+    >
       <Dropdown
         {...field}
         id={fieldId}
