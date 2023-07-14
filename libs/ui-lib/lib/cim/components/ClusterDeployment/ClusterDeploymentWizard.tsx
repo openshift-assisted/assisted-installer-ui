@@ -115,7 +115,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             fetchInfraEnv={fetchInfraEnv}
             isPreviewOpen={isPreviewOpen}
             onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
-            docVersion={rest.docVersion}
           />
         );
       case 'review':

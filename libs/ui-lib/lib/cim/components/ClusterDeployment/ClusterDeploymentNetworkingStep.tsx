@@ -35,7 +35,6 @@ type NetworkingFormProps = {
   onEditRole: AgentTableActions['onEditRole'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   isPreviewOpen: ClusterDeploymentDetailsNetworkingProps['isPreviewOpen'];
-  docVersion: string;
 };
 
 const NetworkingForm: React.FC<NetworkingFormProps> = ({
@@ -48,7 +47,6 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
   onEditRole,
   isPreviewOpen,
   onSetInstallationDiskId,
-  docVersion,
 }) => {
   const [showFormErrors, setShowFormErrors] = React.useState(false);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
@@ -151,7 +149,6 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
             onEditRole={onEditRole}
             isPreviewOpen={isPreviewOpen}
             onSetInstallationDiskId={onSetInstallationDiskId}
-            docVersion={docVersion}
           />
         </GridItem>
       </Grid>
