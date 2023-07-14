@@ -24,20 +24,18 @@ export const useOracleDropdownItemState = (
   const isSupported = featureSupportLevelData
     ? featureSupportLevelContext.isFeatureSupported(FEATURE_ID, featureSupportLevelData)
     : false;
-  const isDisabled = hasExistentCluster || !isSupported;
+
   let disabledReason: string | undefined;
-  if (isDisabled) {
-    if (hasExistentCluster) {
-      disabledReason = CLUSTER_EXISTS_REASON;
-    } else {
-      disabledReason = featureSupportLevelContext.getFeatureDisabledReason(FEATURE_ID);
-    }
+  if (hasExistentCluster) {
+    disabledReason = CLUSTER_EXISTS_REASON;
+  } else {
+    disabledReason = featureSupportLevelContext.getFeatureDisabledReason(FEATURE_ID);
   }
 
   return {
     featureId: FEATURE_ID,
     isSupported,
-    isDisabled,
+    isDisabled: disabledReason !== undefined,
     disabledReason,
   };
 };

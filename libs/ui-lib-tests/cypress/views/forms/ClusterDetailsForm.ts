@@ -68,8 +68,8 @@ class ExternalPartnerIntegrationsControl {
     return ExternalPartnerIntegrationsControl.platformIntegrationDropdown.find('[role="menuitem"]');
   }
 
-  static getPlatformIntegrationDropdownItemById(id: string) {
-    return ExternalPartnerIntegrationsControl.platformIntegrationDropdown.find('[id="' + id + '"]');
+  static getPlatformIntegrationDropdownItemByLabel(label: string) {
+    return ExternalPartnerIntegrationsControl.platformIntegrationDropdownItems.contains(label);
   }
 
   static get tooltip() {

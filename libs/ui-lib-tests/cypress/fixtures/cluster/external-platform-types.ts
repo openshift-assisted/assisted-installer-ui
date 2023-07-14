@@ -11,7 +11,7 @@ export const externalPlatformTypes = {
   },
   oci: {
     label: 'Oracle  (Requires a custom manifest)',
-    href: 'www.google.es',
+    href: '',
     tooltip:
       "To integrate with an external partner (for example, Oracle Cloud), you'll need to provide a custom manifest.",
   },

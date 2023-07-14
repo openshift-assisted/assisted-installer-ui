@@ -41,7 +41,7 @@ export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatfor
   },
   oci: {
     label: 'Oracle  (Requires a custom manifest)',
-    href: 'www.google.es',
+    href: '',
     tooltip:
       "To integrate with an external partner (for example, Oracle Cloud), you'll need to provide a custom manifest.",
   },
@@ -76,23 +76,23 @@ export const ExternalPlatformDropdown = ({
       const { label, href, tooltip } = externalPlatformTypes[platformType as ExternalPlatformType];
       const isOracleDisabled = platformType === 'oci' && isOciDisabled;
       const isHrefEmpty = href === '';
+      // eslint-disable-next-line no-console
+      console.log(platformType);
       return (
-        <>
-          <DropdownItem
-            key={platformType}
-            id={platformType}
-            tooltip={isOracleDisabled ? disabledOciTooltipContent : tooltip}
-            isAriaDisabled={isOracleDisabled}
-            tooltipProps={{ position: 'top-start' }}
-          >
-            {label}
-            {!isHrefEmpty && (
-              <a href={href} target="_blank" rel="noopener noreferrer" style={{ float: 'right' }}>
-                Learn more <i className="fas fa-external-link-alt" />
-              </a>
-            )}
-          </DropdownItem>
-        </>
+        <DropdownItem
+          key={platformType}
+          id={platformType}
+          tooltip={isOracleDisabled ? disabledOciTooltipContent : tooltip}
+          isAriaDisabled={isOracleDisabled}
+          tooltipProps={{ position: 'top-start' }}
+        >
+          {label}
+          {!isHrefEmpty && (
+            <a href={href} target="_blank" rel="noopener noreferrer" style={{ float: 'right' }}>
+              Learn more <i className="fas fa-external-link-alt" />
+            </a>
+          )}
+        </DropdownItem>
       );
     });
 
@@ -122,6 +122,8 @@ export const ExternalPlatformDropdown = ({
     [dropdownIsDisabled, currentPlatform, value],
   );
 
+  // eslint-disable-next-line no-console
+  console.log(enabledItems);
   return (
     <FormGroup
       id={`form-control__${fieldId}`}

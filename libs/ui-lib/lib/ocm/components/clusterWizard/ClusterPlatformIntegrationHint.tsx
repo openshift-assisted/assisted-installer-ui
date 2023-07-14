@@ -18,11 +18,13 @@ type ClusterPlatformIntegrationHintProps = {
 const integrationBrands: Record<SupportedPlatformType, string> = {
   vsphere: 'vSphere',
   nutanix: 'Nutanix',
+  oci: 'Oracle',
 };
 
 export const integrationPlatformLinks: Record<SupportedPlatformType, string> = {
   vsphere: VSPHERE_CONFIG_LINK,
   nutanix: NUTANIX_CONFIG_LINK,
+  oci: '',
 };
 
 export const ClusterPlatformIntegrationHint = ({

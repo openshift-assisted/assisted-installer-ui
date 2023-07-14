@@ -33,10 +33,10 @@ describe('Create a new cluster with external partner integrations', () => {
     it('Should display correct items in the external platform integration dropdown', () => {
       ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
       ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownItems.each(
-        (item, index) => {
+        (item) => {
           // Get the expected values from the externalPlatformTypes object
           const platformType = item.parent().attr('id');
-          const { label, href, tooltip } = externalPlatformTypes[platformType];
+          const { label, href } = externalPlatformTypes[platformType];
 
           // Assert the label
           cy.wrap(item).should('contain', label);
@@ -55,7 +55,7 @@ describe('Create a new cluster with external partner integrations', () => {
       );
     });
 
-    it('Can select one platform option and next option is enabled', () => {
+    it('Can select one platform option and cluster is created well', () => {
       clusterDetailsPage.inputClusterName();
       clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion();
@@ -64,9 +64,14 @@ describe('Create a new cluster with external partner integrations', () => {
 
       ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
       ClusterDetailsForm.externalPartnerIntegrationsControl
-        .getPlatformIntegrationDropdownItemById('nutanix')
+        .getPlatformIntegrationDropdownItemByLabel('Nutanix')
         .click();
       commonActions.verifyNextIsEnabled();
+      commonActions.toNextStepAfter('Cluster details');
+
+      cy.wait('@create-cluster').then(({ request }) => {
+        expect(request.body.platform.type.valueOf()).to.deep.equal('nutanix');
+      });
     });
 
     //TODO (mortegag) : Add tests for options disabled and tooltips
