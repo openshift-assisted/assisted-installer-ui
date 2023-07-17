@@ -15,7 +15,7 @@ export const getNodepoolAgents = (
       (am) =>
         am.metadata?.namespace ===
           `${hostedCluster.metadata?.namespace || ''}-${hostedCluster.metadata?.name || ''}` &&
-        am.metadata?.labels?.[CLUSTER_NAME_LABEL] === hostedCluster.metadata?.name &&
+        am.metadata?.labels?.[CLUSTER_NAME_LABEL] === hostedCluster.spec.infraID &&
         am.metadata?.annotations?.[NODEPOOL_NAME_ANNOTATION] === nodePool.metadata?.name &&
         am.status?.agentRef?.name &&
         am.status?.agentRef?.namespace,
