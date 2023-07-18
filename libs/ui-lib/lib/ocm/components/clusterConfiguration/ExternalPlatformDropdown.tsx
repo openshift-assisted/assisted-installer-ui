@@ -76,8 +76,6 @@ export const ExternalPlatformDropdown = ({
       const { label, href, tooltip } = externalPlatformTypes[platformType as ExternalPlatformType];
       const isOracleDisabled = platformType === 'oci' && isOciDisabled;
       const isHrefEmpty = href === '';
-      // eslint-disable-next-line no-console
-      console.log(platformType);
       return (
         <DropdownItem
           key={platformType}
@@ -122,8 +120,6 @@ export const ExternalPlatformDropdown = ({
     [dropdownIsDisabled, currentPlatform, value],
   );
 
-  // eslint-disable-next-line no-console
-  console.log(enabledItems);
   return (
     <FormGroup
       id={`form-control__${fieldId}`}
