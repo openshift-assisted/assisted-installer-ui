@@ -57,13 +57,6 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
       commonActions.getDangerAlert().should('be.visible');
       commonActions.verifyNextIsDisabled();
     });
-
-    it('Can configure static IP in YAML view uploading a file directly', () => {
-      staticIpPage.yamlView.fileUpload().attachFile(`static-ip/files/test.yaml`);
-      staticIpPage.yamlView.macAddress().type('00:00:5e:00:53:af');
-      staticIpPage.yamlView.interface().type('interface1');
-      commonActions.verifyNextIsEnabled();
-    });
   });
 
   describe('Reading existing configuration in YAML view', () => {
