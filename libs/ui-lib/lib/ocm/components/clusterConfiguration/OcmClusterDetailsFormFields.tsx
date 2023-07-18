@@ -109,6 +109,8 @@ export const OcmClusterDetailsFormFields = ({
     clusterExists,
     featureSupportLevelData,
   );
+  const [customManifestsCheckboxDisabled, setCustomManifestsCheckboxDisabled] =
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -119,6 +121,7 @@ export const OcmClusterDetailsFormFields = ({
       const isOracleSelected = selectedPlatform === 'oci';
       setFieldValue('addCustomManifest', isOracleSelected, false);
       clusterWizardContext.setAddCustomManifests(isOracleSelected);
+      setCustomManifestsCheckboxDisabled(isOracleSelected);
     },
     [clusterWizardContext, setFieldValue],
   );
@@ -205,7 +208,10 @@ export const OcmClusterDetailsFormFields = ({
         dropdownIsDisabled={clusterPlatform === 'oci'}
       />
 
-      <CustomManifestCheckbox clusterId={clusterId || ''} />
+      <CustomManifestCheckbox
+        clusterId={clusterId || ''}
+        isDisabled={customManifestsCheckboxDisabled}
+      />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download

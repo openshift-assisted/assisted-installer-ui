@@ -26,9 +26,10 @@ export const useOracleDropdownItemState = (
     : false;
 
   let disabledReason: string | undefined;
+
   if (hasExistentCluster) {
     disabledReason = CLUSTER_EXISTS_REASON;
-  } else {
+  } else if (!isSupported) {
     disabledReason = featureSupportLevelContext.getFeatureDisabledReason(FEATURE_ID);
   }
 
