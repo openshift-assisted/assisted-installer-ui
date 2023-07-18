@@ -41,7 +41,7 @@ const ClusterDetailsService = {
       cpuArchitecture: values.cpuArchitecture as ClusterCpuArchitecture,
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
       platform: {
-        type: values.platform as PlatformType,
+        type: values.platform,
       },
     };
 

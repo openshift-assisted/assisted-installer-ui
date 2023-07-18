@@ -14,7 +14,6 @@ import {
   InfraEnv,
   getRichTextValidation,
   CpuArchitecture,
-  PlatformType,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -74,9 +73,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {
-        const resetPlatform = cluster.userManagedNetworking
-          ? 'none'
-          : (values.platform as PlatformType);
+        const resetPlatform = cluster.userManagedNetworking ? 'none' : values.platform;
 
         const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
         await handleClusterUpdate(cluster.id, params);
