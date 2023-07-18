@@ -7,6 +7,7 @@ import {
   OpenshiftVersionOptionType,
   getClusterDetailsInitialValues,
   ClusterCpuArchitecture,
+  PlatformType,
 } from '../../common';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
@@ -40,7 +41,7 @@ const ClusterDetailsService = {
       cpuArchitecture: values.cpuArchitecture as ClusterCpuArchitecture,
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
       platform: {
-        type: values.platform,
+        type: values.platform as PlatformType,
       },
     };
 
@@ -59,7 +60,10 @@ const ClusterDetailsService = {
     return params;
   },
 
-  getClusterUpdateParams(values: OcmClusterDetailsValues): ClusterDetailsUpdateParams {
+  getClusterUpdateParams(
+    values: OcmClusterDetailsValues,
+    platform: PlatformType,
+  ): ClusterDetailsUpdateParams {
     const params: ClusterDetailsUpdateParams = {
       name: values.name,
       baseDnsDomain: values.baseDnsDomain,
@@ -71,7 +75,7 @@ const ClusterDetailsService = {
 
     if (values.platform) {
       params.platform = {
-        type: values.platform,
+        type: platform,
       };
     }
 
