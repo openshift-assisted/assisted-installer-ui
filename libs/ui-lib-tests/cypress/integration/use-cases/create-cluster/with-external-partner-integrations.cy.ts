@@ -53,6 +53,7 @@ describe('Create a new cluster with external partner integrations', () => {
     });
 
     it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
+      clusterDetailsPage.getStaticIpNetworkConfig().click();
       clusterDetailsPage.inputOpenshiftVersion('4.14');
       ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
       clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
