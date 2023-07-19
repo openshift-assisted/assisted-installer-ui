@@ -763,7 +763,7 @@
   "ai:Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.": "Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.",
   "ai:useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.": "useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.",
   "ai:User-Managed Networking": "User-Managed Networking",
-  "ai:User-Managed Networking is not supported when using Nutanix": "User-Managed Networking is not supported when using Nutanix",
+  "ai:User-Managed Networking is not supported when using Nutanix or vSphere": "User-Managed Networking is not supported when using Nutanix or vSphere",
   "ai:Username": "Username",
   "ai:Valid hostname": "Valid hostname",
   "ai:Valid network prefix": "Valid network prefix",
