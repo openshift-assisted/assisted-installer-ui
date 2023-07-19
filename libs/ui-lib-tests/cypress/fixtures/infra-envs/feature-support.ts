@@ -14,6 +14,7 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
     },
   },
   '4.9': {
@@ -31,6 +32,7 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
     },
   },
   '4.10': {
@@ -48,6 +50,7 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
     },
   },
   '4.11': {
@@ -65,6 +68,7 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
     },
   },
   '4.12': {
@@ -82,6 +86,7 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
     },
   },
   '4.13': {
@@ -99,6 +104,25 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
+    },
+  },
+  '4.14': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'supported',
+      CNV: 'supported',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK_VIPS: 'supported',
+      LVM: 'supported',
+      MINIMAL_ISO: 'supported',
+      NUTANIX_INTEGRATION: 'supported',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'supported',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'supported',
     },
   },
 };

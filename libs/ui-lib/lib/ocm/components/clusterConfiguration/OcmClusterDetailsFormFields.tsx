@@ -114,6 +114,12 @@ export const OcmClusterDetailsFormFields = ({
     nameInputRef.current?.focus();
   }, []);
 
+  React.useEffect(() => {
+    if (!externalPartnerIntegrationsCheckboxState?.isSupported) {
+      setFieldValue('externalPartnerIntegrations', false);
+    }
+  }, [externalPartnerIntegrationsCheckboxState?.isSupported, setFieldValue]);
+
   const handleExternalPartnerIntegrationsChange = React.useCallback<
     NonNullable<OcmCheckboxFieldProps['onChange']>
   >(
