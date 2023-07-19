@@ -40,6 +40,7 @@ import {
   ExternalPartnerIntegrationsCheckbox,
   useExternalPartnerIntegrationsCheckboxState,
 } from './ExternalPartnerIntegrationsCheckbox';
+import { HostsNetworkConfigurationType } from '../../services';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -124,7 +125,7 @@ export const OcmClusterDetailsFormFields = ({
       const checked = Boolean(value);
       setFieldValue('addCustomManifest', checked, false);
       clusterWizardContext.setAddCustomManifests(checked);
-      setFieldValue('hostsNetworkConfigurationType', 'dhcp');
+      setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
     },
     [clusterWizardContext, setFieldValue],
   );
