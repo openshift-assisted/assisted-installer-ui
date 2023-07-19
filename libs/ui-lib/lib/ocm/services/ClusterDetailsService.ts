@@ -73,7 +73,7 @@ const ClusterDetailsService = {
       params.pullSecret = values.pullSecret;
     }
 
-    if (values.platform) {
+    if (platform) {
       params.platform = {
         type: platform,
       };

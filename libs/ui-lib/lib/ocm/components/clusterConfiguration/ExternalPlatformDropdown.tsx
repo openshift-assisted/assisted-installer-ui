@@ -30,7 +30,7 @@ export type ExternalPlatformInfo = {
 
 export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatformInfo> = {
   none: {
-    label: 'None',
+    label: 'No platform integration',
     href: '',
     tooltip: '',
   },

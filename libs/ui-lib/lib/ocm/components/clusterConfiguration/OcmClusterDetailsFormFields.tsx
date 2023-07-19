@@ -119,8 +119,10 @@ export const OcmClusterDetailsFormFields = ({
   const handleExternalPartnerIntegrationsChange = React.useCallback(
     (selectedPlatform: ExternalPlatformType) => {
       const isOracleSelected = selectedPlatform === 'oci';
-      setFieldValue('addCustomManifest', isOracleSelected, false);
-      clusterWizardContext.setAddCustomManifests(isOracleSelected);
+      if (isOracleSelected) {
+        setFieldValue('addCustomManifest', isOracleSelected, false);
+        clusterWizardContext.setAddCustomManifests(isOracleSelected);
+      }
       setCustomManifestsCheckboxDisabled(isOracleSelected);
     },
     [clusterWizardContext, setFieldValue],
