@@ -51,6 +51,12 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
     });
 
+    it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
+      clusterDetailsPage.inputOpenshiftVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+      clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
+    });
+
     xit('The minimal ISO is presented by default', () => {
       // TODO(jkilzi): WIP...
       // ClusterDetailsForm.clusterNameControl
