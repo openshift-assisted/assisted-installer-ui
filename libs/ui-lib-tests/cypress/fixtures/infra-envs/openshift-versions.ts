@@ -40,6 +40,11 @@ const versions = {
     display_name: '4.13.0-rc.6',
     support_level: 'beta',
   },
+  '4.14': {
+    cpu_architectures: [x86, arm64],
+    display_name: '4.14.0-ec.3',
+    support_level: 'beta',
+  },
 };
 
 // The values must be sorted with most recent version being first
