@@ -218,7 +218,10 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
 
-      <CustomManifestCheckbox clusterId={clusterId || ''} />
+      <CustomManifestCheckbox
+        clusterId={clusterId || ''}
+        isDisabled={externalPartnerIntegrations}
+      />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
