@@ -1,6 +1,6 @@
 export const externalPlatformTypes = {
   none: {
-    label: 'None',
+    label: 'No platform integration',
     href: '',
     tooltip: '',
   },

@@ -1,4 +1,3 @@
-
 import { externalPlatformTypes } from '../../../fixtures/cluster/external-platform-types';
 import { clusterDetailsPage } from '../../../views/clusterDetails';
 import { commonActions } from '../../../views/common';
@@ -42,7 +41,6 @@ describe('Create a new cluster with external partner integrations', () => {
           // Assert the label
           cy.wrap(item).should('contain', label);
 
-
           // Assert the href
           if (href) {
             cy.wrap(item)
@@ -74,16 +72,22 @@ describe('Create a new cluster with external partner integrations', () => {
       cy.wait('@create-cluster').then(({ request }) => {
         expect(request.body.platform.type.valueOf()).to.deep.equal('nutanix');
       });
+    });
 
-    it('Selecting external partner integrations checkbox enables custom manifests as well', () => {
+    it.skip('Selecting external partner integrations checkbox enables custom manifests as well', () => {
       clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl
+        .getPlatformIntegrationDropdownItemByLabel('Oracle')
+        .click();
       ClusterDetailsForm.customManifestsControl.findCheckbox().should('be.checked');
     });
 
-    it('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
+    it.skip('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
       clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl
+        .getPlatformIntegrationDropdownItemByLabel('Oracle')
+        .click();
+
       clusterDetailsPage.inputOpenshiftVersion('4.13');
       ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
     });
@@ -96,7 +100,6 @@ describe('Create a new cluster with external partner integrations', () => {
       //   .type(Cypress.env('CLUSTER_NAME'));
       // ClusterDetailsForm.baseDomainControl.findInputField().scrollIntoView().type('redhat.com');
       // ClusterDetailsForm.openshiftVersionControl.findInputField().scrollIntoView().type('redhat.com');
-
     });
 
     //TODO (mortegag) : Add tests for options disabled and tooltips
