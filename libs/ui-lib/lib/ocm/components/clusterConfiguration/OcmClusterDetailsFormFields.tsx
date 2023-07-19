@@ -14,7 +14,6 @@ import {
   CLUSTER_NAME_MAX_LENGTH,
   StaticTextField,
   useFeature,
-  ClusterCreateParams,
   getSupportedCpuArchitectures,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
@@ -87,9 +86,7 @@ export const OcmClusterDetailsFormFields = ({
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
-  const {
-    values: { openshiftVersion },
-  } = useFormikContext<ClusterCreateParams>();
+  const { openshiftVersion, externalPartnerIntegrations } = values;
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
@@ -109,8 +106,6 @@ export const OcmClusterDetailsFormFields = ({
     clusterExists,
     featureSupportLevelData,
   );
-  const [isDisabledHostsNetworkConfiguration, setIsDisabledHostsNetworkConfiguration] =
-    React.useState<boolean>(false);
 
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -129,7 +124,7 @@ export const OcmClusterDetailsFormFields = ({
       const checked = Boolean(value);
       setFieldValue('addCustomManifest', checked, false);
       clusterWizardContext.setAddCustomManifests(checked);
-      setIsDisabledHostsNetworkConfiguration(checked);
+      setFieldValue('hostsNetworkConfigurationType', 'dhcp');
     },
     [clusterWizardContext, setFieldValue],
   );
@@ -230,7 +225,7 @@ export const OcmClusterDetailsFormFields = ({
         !isSingleClusterFeatureEnabled && (
           <HostsNetworkConfigurationControlGroup
             clusterExists={clusterExists}
-            isDisabled={isDisabledHostsNetworkConfiguration}
+            isDisabled={externalPartnerIntegrations}
           />
         )
       }
