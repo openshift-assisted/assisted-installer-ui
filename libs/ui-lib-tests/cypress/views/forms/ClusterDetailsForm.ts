@@ -75,6 +75,12 @@ class ExternalPartnerIntegrationsControl {
       /integrate with other platforms using custom manifests\./i,
     );
   }
+
+  static findCheckbox() {
+    return ExternalPartnerIntegrationsControl.body.findByRole('checkbox', {
+      name: /external partner integrations/i,
+    });
+  }
 }
 
 /** @private */
