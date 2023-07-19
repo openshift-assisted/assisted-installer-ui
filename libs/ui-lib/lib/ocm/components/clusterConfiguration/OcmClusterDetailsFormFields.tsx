@@ -109,6 +109,8 @@ export const OcmClusterDetailsFormFields = ({
     clusterExists,
     featureSupportLevelData,
   );
+  const [isDisabledHostsNetworkConfiguration, setIsDisabledHostsNetworkConfiguration] =
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -127,6 +129,7 @@ export const OcmClusterDetailsFormFields = ({
       const checked = Boolean(value);
       setFieldValue('addCustomManifest', checked, false);
       clusterWizardContext.setAddCustomManifests(checked);
+      setIsDisabledHostsNetworkConfiguration(checked);
     },
     [clusterWizardContext, setFieldValue],
   );
@@ -225,7 +228,10 @@ export const OcmClusterDetailsFormFields = ({
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
         !isSingleClusterFeatureEnabled && (
-          <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
+          <HostsNetworkConfigurationControlGroup
+            clusterExists={clusterExists}
+            isDisabled={isDisabledHostsNetworkConfiguration}
+          />
         )
       }
 
