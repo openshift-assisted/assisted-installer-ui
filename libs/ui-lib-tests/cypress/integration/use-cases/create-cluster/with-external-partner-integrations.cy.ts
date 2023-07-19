@@ -39,11 +39,13 @@ describe('Create a new cluster with external partner integrations', () => {
     });
 
     it('Selecting external partner integrations checkbox enables custom manifests as well', () => {
+      clusterDetailsPage.inputOpenshiftVersion('4.14');
       ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
       ClusterDetailsForm.customManifestsControl.findCheckbox().should('be.checked');
     });
 
     it('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
+      clusterDetailsPage.inputOpenshiftVersion('4.14');
       ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
       clusterDetailsPage.inputOpenshiftVersion('4.13');
       ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
