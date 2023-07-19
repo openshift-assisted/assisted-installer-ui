@@ -124,6 +124,7 @@ export const OcmClusterDetailsFormFields = ({
         clusterWizardContext.setAddCustomManifests(isOracleSelected);
       }
       setCustomManifestsCheckboxDisabled(isOracleSelected);
+
     },
     [clusterWizardContext, setFieldValue],
   );

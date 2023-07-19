@@ -75,6 +75,12 @@ class ExternalPartnerIntegrationsControl {
   static get tooltip() {
     return cy.get('body').find('.pf-c-tooltip');
   }
+
+  static findCheckbox() {
+    return ExternalPartnerIntegrationsControl.body.findByRole('checkbox', {
+      name: /external partner integrations/i,
+    });
+  }
 }
 
 /** @private */

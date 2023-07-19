@@ -249,7 +249,10 @@ const NetworkConfiguration = ({
       )}
 
       {isUserManagedNetworking && (
-        <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />
+        <UserManagedNetworkingTextContent
+          shouldDisplayLoadBalancersBullet={isMultiNodeCluster}
+          docVersion={cluster.openshiftVersion}
+        />
       )}
 
       {!isUserManagedNetworking &&
