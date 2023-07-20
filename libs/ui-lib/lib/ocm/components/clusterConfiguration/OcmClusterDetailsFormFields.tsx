@@ -14,7 +14,6 @@ import {
   CLUSTER_NAME_MAX_LENGTH,
   StaticTextField,
   useFeature,
-  ClusterCreateParams,
   getSupportedCpuArchitectures,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
@@ -41,6 +40,7 @@ import {
   ExternalPartnerIntegrationsCheckbox,
   useExternalPartnerIntegrationsCheckboxState,
 } from './ExternalPartnerIntegrationsCheckbox';
+import { HostsNetworkConfigurationType } from '../../services';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -87,9 +87,7 @@ export const OcmClusterDetailsFormFields = ({
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
-  const {
-    values: { openshiftVersion },
-  } = useFormikContext<ClusterCreateParams>();
+  const { openshiftVersion, externalPartnerIntegrations } = values;
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
@@ -127,6 +125,7 @@ export const OcmClusterDetailsFormFields = ({
       const checked = Boolean(value);
       setFieldValue('addCustomManifest', checked, false);
       clusterWizardContext.setAddCustomManifests(checked);
+      setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
     },
     [clusterWizardContext, setFieldValue],
   );
@@ -220,12 +219,18 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
 
-      <CustomManifestCheckbox clusterId={clusterId || ''} />
+      <CustomManifestCheckbox
+        clusterId={clusterId || ''}
+        isDisabled={externalPartnerIntegrations}
+      />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
         !isSingleClusterFeatureEnabled && (
-          <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
+          <HostsNetworkConfigurationControlGroup
+            clusterExists={clusterExists}
+            isDisabled={externalPartnerIntegrations}
+          />
         )
       }
 
