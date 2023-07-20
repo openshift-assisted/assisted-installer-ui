@@ -40,17 +40,6 @@ describe('Create a new cluster with external partner integrations', () => {
 
           // Assert the label
           cy.wrap(item).should('contain', label);
-
-          // Assert the href
-          if (href) {
-            cy.wrap(item)
-              .find('a')
-              .should('have.attr', 'href', href)
-              .and('have.attr', 'target', '_blank')
-              .and('have.attr', 'rel', 'noopener noreferrer');
-          } else {
-            cy.wrap(item).find('a').should('not.exist');
-          }
         },
       );
     });

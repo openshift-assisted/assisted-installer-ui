@@ -1,5 +1,12 @@
-import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
+import React, { MouseEvent } from 'react';
+import {
+  Button,
+  ButtonVariant,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  FormGroup,
+} from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
@@ -65,6 +72,10 @@ export const ExternalPlatformDropdown = ({
     externalPlatformTypes[selectedPlatform].label,
   );
   const [isOpen, setOpen] = React.useState(false);
+  const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {
+    event.stopPropagation(); // Stop event propagation here
+    window.open(href, '_blank');
+  };
   const enabledItems = Object.keys(externalPlatformTypes)
     .filter((platformType) => {
       if (platformType === 'oci') {
@@ -86,9 +97,13 @@ export const ExternalPlatformDropdown = ({
         >
           {label}
           {!isHrefEmpty && (
-            <a href={href} target="_blank" rel="noopener noreferrer" style={{ float: 'right' }}>
+            <Button
+              variant={ButtonVariant.link}
+              style={{ float: 'right' }}
+              onClick={(event) => handleClick(event, href)}
+            >
               Learn more <i className="fas fa-external-link-alt" />
-            </a>
+            </Button>
           )}
         </DropdownItem>
       );
