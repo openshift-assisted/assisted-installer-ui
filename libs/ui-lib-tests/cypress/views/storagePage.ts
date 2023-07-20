@@ -54,3 +54,49 @@ export const storagePage = {
     );
   },
 };
+
+export class StoragePage {
+  constructor() {
+    cy.get('.cluster-wizard').as(StoragePage.name);
+  }
+
+  static get alias() {
+    return `@${StoragePage.name}`;
+  }
+
+  get body() {
+    return cy.get(StoragePage.alias);
+  }
+
+  get diskLimitationAlert() {
+    return new Alert(StoragePage.alias, 'diskLimitationsAlert');
+  }
+
+  get diskFormattingAlert() {
+    return new Alert(StoragePage.alias, 'alert-format-bootable-disks');
+  }
+}
+
+class Alert {
+  constructor(parentAlias: string, dataTestId?: string) {
+    dataTestId
+      ? cy.get(parentAlias).findByTestId(dataTestId).as(Alert.name)
+      : cy.get(parentAlias).find('.pf-c-alert').as(Alert.name);
+  }
+
+  static get alias() {
+    return `@${Alert.name}`;
+  }
+
+  get body() {
+    return cy.get(Alert.alias);
+  }
+
+  get title() {
+    return this.body.find('.pf-c-alert__title');
+  }
+
+  get description() {
+    return this.body.find('.pf-c-alert__description');
+  }
+}

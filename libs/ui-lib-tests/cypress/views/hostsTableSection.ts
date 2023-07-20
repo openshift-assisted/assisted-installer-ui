@@ -1,3 +1,5 @@
+export type ValidateDiskHoldersParams = { name: string; indented?: boolean; warning?: boolean }[];
+
 export const hostsTableSection = {
   validateHostNames: (
     numMasters: number = Cypress.env('NUM_MASTERS'),
@@ -99,6 +101,24 @@ export const hostsTableSection = {
         'contain',
         disk.size,
       );
+    });
+  },
+  validateGroupingByDiskHolders: (disks: ValidateDiskHoldersParams, message?: string) => {
+    cy.get('td[data-testid="disk-name"]').then(($diskNames) => {
+      disks.forEach((disk, index) => {
+        cy.wrap($diskNames).eq(index).should('contain.text', disk.name);
+
+        if (disk.indented) {
+          cy.wrap($diskNames).eq(index).find('span').should('exist');
+        } else {
+          cy.wrap($diskNames).eq(index).find('span').should('not.exist');
+        }
+
+        if (disk.warning && message) {
+          cy.wrap($diskNames).eq(index).find('svg').click();
+          cy.get('[data-testid="disk-limitations-popover"').should('contain.text', message);
+        }
+      });
     });
   },
 };

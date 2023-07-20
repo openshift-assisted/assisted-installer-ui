@@ -1,5 +1,6 @@
 import storageCluster from './storage-cluster';
-import storageHosts from './storage-hosts';
+import { createMultinodeFixtureMapping } from '../create-mn';
+import { storageHosts, hostsWithDiskHolders } from './storage-hosts';
 
 const createStorageFixtureMapping = {
   clusters: {
@@ -10,4 +11,13 @@ const createStorageFixtureMapping = {
   },
 };
 
-export { createStorageFixtureMapping };
+const createDiskHoldersFixtureMapping = {
+  clusters: {
+    default: createMultinodeFixtureMapping.clusters.READY_TO_INSTALL,
+  },
+  hosts: {
+    default: hostsWithDiskHolders,
+  },
+};
+
+export { createStorageFixtureMapping, createDiskHoldersFixtureMapping };
