@@ -55,7 +55,7 @@ describe('Create a new cluster with external partner integrations', () => {
       );
     });
 
-    it('Can select one platform option and cluster is created well', () => {
+    it('Can select one external platform integration option and cluster is created well', () => {
       clusterDetailsPage.inputClusterName();
       clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion();
@@ -74,8 +74,12 @@ describe('Create a new cluster with external partner integrations', () => {
       });
     });
 
-    it.skip('Selecting external partner integrations checkbox enables custom manifests as well', () => {
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
+    it('External partner integrations with OCI is selected and enables custom manifests as well', () => {
+      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
+      ClusterDetailsForm.openshiftVersionControl
+        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.14.0-ec.3 - Developer preview release')
+        .click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
       ClusterDetailsForm.externalPartnerIntegrationsControl
         .getPlatformIntegrationDropdownItemByLabel('Oracle')
         .click();
@@ -85,20 +89,35 @@ describe('Create a new cluster with external partner integrations', () => {
         .and('be.disabled');
     });
 
-    it.skip('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
+    //TODO (mortegag):  Make adaptations in code to adapt this change
+    it.skip('External partner integrations with OCI is unselected after OCP < v4.14 is selected', () => {
+      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
+      ClusterDetailsForm.openshiftVersionControl
+        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.14.0-ec.3 - Developer preview release')
+        .click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
       ClusterDetailsForm.externalPartnerIntegrationsControl
         .getPlatformIntegrationDropdownItemByLabel('Oracle')
         .click();
-
-      clusterDetailsPage.inputOpenshiftVersion('4.13');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
+      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
+      ClusterDetailsForm.openshiftVersionControl
+        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.13.0-rc.6 - Developer preview release')
+        .click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl
+        .getDropdownToggleText()
+        .contains('No platform integration');
     });
 
-    it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
+    it("Hosts' Network Configuration control is disabled when external partner integration with OCI is selected", () => {
+      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
+      ClusterDetailsForm.openshiftVersionControl
+        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.14.0-ec.3 - Developer preview release')
+        .click();
       clusterDetailsPage.getStaticIpNetworkConfig().click();
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
+      ClusterDetailsForm.externalPartnerIntegrationsControl
+        .getPlatformIntegrationDropdownItemByLabel('Oracle')
+        .click();
       clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
     });
 

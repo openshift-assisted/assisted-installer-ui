@@ -18,6 +18,10 @@ export default class ClusterDetailsForm {
   static get baseDomainControl() {
     return BaseDomainControl;
   }
+
+  static get openshiftVersionControl() {
+    return OpenshiftVersionControl;
+  }
 }
 
 /** @private */
@@ -81,6 +85,10 @@ class ExternalPartnerIntegrationsControl {
       name: /external partner integrations/i,
     });
   }
+
+  static getDropdownToggleText() {
+    return ExternalPartnerIntegrationsControl.dropdownField.find('.pf-c-dropdown__toggle-text');
+  }
 }
 
 /** @private */
@@ -101,5 +109,33 @@ class CustomManifestsControl {
     return ExternalPartnerIntegrationsControl.body
       .scrollIntoView()
       .findByText(/include custom manifests/i);
+  }
+}
+
+class OpenshiftVersionControl {
+  static get body() {
+    return ClusterDetailsForm.body
+      .find('#form-control__form-input-openshiftVersion-field')
+      .parent();
+  }
+
+  static get dropdownField() {
+    return ClusterDetailsForm.body.find('#form-input-openshiftVersion-field');
+  }
+
+  static get openshiftVersionDropdownButton() {
+    return OpenshiftVersionControl.dropdownField.find('button.pf-c-dropdown__toggle');
+  }
+
+  static get openshiftVersionDropdown() {
+    return OpenshiftVersionControl.dropdownField.find('.pf-c-dropdown__menu');
+  }
+
+  static get openshiftVersionDropdownItems() {
+    return OpenshiftVersionControl.openshiftVersionDropdown.find('[role="menuitem"]');
+  }
+
+  static getOpenshiftVersionDropdownItemByLabel(label: string) {
+    return OpenshiftVersionControl.openshiftVersionDropdownItems.contains(label);
   }
 }
