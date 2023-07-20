@@ -182,3 +182,6 @@ export const getNewFeatureDisabledReason = (
 export const isFeatureSupportedAndAvailable = (supportLevel: SupportLevel | undefined): boolean => {
   return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };
+
+export const hostsNetworkConfigurationDisabledReason =
+  "DHCP only is the supported hosts' network configuration when external partner integrations is selected";

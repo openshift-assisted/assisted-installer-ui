@@ -79,7 +79,10 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.externalPartnerIntegrationsControl
         .getPlatformIntegrationDropdownItemByLabel('Oracle')
         .click();
-      ClusterDetailsForm.customManifestsControl.findCheckbox().should('be.checked');
+      ClusterDetailsForm.customManifestsControl
+        .findCheckbox()
+        .should('be.checked')
+        .and('be.disabled');
     });
 
     it.skip('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
@@ -90,6 +93,13 @@ describe('Create a new cluster with external partner integrations', () => {
 
       clusterDetailsPage.inputOpenshiftVersion('4.13');
       ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
+    });
+
+    it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
+      clusterDetailsPage.getStaticIpNetworkConfig().click();
+      clusterDetailsPage.inputOpenshiftVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+      clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
     });
 
     xit('The minimal ISO is presented by default', () => {
