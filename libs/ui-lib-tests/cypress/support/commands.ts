@@ -18,3 +18,7 @@ Cypress.Commands.add('pasteText', (selector, text) => {
     cy.get(selector).type(' {backspace}');
   });
 });
+
+Cypress.Commands.add('findWithinOrGet', (childSelector: string, ancestorAlias?: string) => {
+  return ancestorAlias ? cy.get(ancestorAlias).find(childSelector) : cy.get(childSelector);
+});

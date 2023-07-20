@@ -1,6 +1,5 @@
-import { clusterDetailsPage } from '../../../views/clusterDetails';
-import ClusterDetailsForm from '../../../views/forms/ClusterDetailsForm';
-import NewClusterPage from '../../../views/pages/NewClusterPage';
+import { NewClusterPage } from '../../../views/pages/NewClusterPage';
+import { ClusterDetailsForm } from '../../../views/forms/ClusterDetails/ClusterDetailsForm';
 
 describe('Create a new cluster with external partner integrations', () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -18,57 +17,60 @@ describe('Create a new cluster with external partner integrations', () => {
     // This test case is disabled intentionally because it requires tweaking the
     // props passed to the LibRouter in the app.
     it('The user cannot see the external partner integrations checkbox', () => {
-      // Disable somehow Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES.ASSISTED_INSTALLER_PLATFORM_OCI, then...
-      // ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().should('not.exist');
+      // Disable somehow Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES.ASSISTED_INSTALLER_PLATFORM_OCI, and then...
+      // ClusterDetailsForm.init().externalPartnerIntegrationsControl.findLabel().should('not.exist');
     });
   });
 
   context('When the feature is enabled:', () => {
     beforeEach(() => {
       NewClusterPage.visit();
+      ClusterDetailsForm.init();
     });
 
     it('The user can select the external partner integrations checkbox', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
     });
 
     it('There is a popover and helper text next to the checkbox label', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findPopoverButton().click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findPopoverContent();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findHelperText();
+      ClusterDetailsForm.externalPartnerIntegrationsField.findPopoverButton().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.findPopoverContent();
+      ClusterDetailsForm.externalPartnerIntegrationsField.findHelperText();
     });
 
     it('Selecting external partner integrations checkbox enables custom manifests as well', () => {
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
-      ClusterDetailsForm.customManifestsControl
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.customManifestsField
         .findCheckbox()
         .should('be.checked')
         .and('be.disabled');
     });
 
     it('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
-      clusterDetailsPage.inputOpenshiftVersion('4.13');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.13');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findCheckbox().should('not.be.checked');
     });
 
     it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
-      clusterDetailsPage.getStaticIpNetworkConfig().click();
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
-      clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
+      ClusterDetailsForm.hostsNetworkConfigurationField.findStaticIpRadioLabel().click();
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.hostsNetworkConfigurationField
+        .findStaticIpRadioButton()
+        .should('be.disabled')
+        .and('not.be.checked');
     });
 
     xit('The minimal ISO is presented by default', () => {
       // TODO(jkilzi): WIP...
-      // ClusterDetailsForm.clusterNameControl
+      // ClusterDetailsForm.clusterNameField
       //   .findInputField()
-      //   .scrollIntoView()
       //   .type(Cypress.env('CLUSTER_NAME'));
-      // ClusterDetailsForm.baseDomainControl.findInputField().scrollIntoView().type('redhat.com');
-      // ClusterDetailsForm.openshiftVersionControl.findInputField().scrollIntoView().type('redhat.com');
+      // ClusterDetailsForm.baseDomainField.findInputField().scrollIntoView().type('redhat.com');
+      // ClusterDetailsForm.openshiftVersionField.findInputField().scrollIntoView().type('redhat.com');
     });
   });
 });
