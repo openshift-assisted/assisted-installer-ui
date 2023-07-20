@@ -5,22 +5,27 @@ import { HostsNetworkConfigurationType } from '../../services/types';
 import { useField } from 'formik';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import RadioFieldWithTooltip from '../../../common/components/ui/formik/RadioFieldWithTooltip';
-import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
+import {
+  clusterExistsReason,
+  hostsNetworkConfigurationDisabledReason,
+} from '../featureSupportLevels/featureStateUtils';
 
 export interface HostsNetworkConfigurationControlGroupProps {
   clusterExists: boolean;
+  isDisabled: boolean;
 }
 
 export const HostsNetworkConfigurationControlGroup = ({
   clusterExists,
+  isDisabled = false,
 }: HostsNetworkConfigurationControlGroupProps) => {
   const GROUP_NAME = 'hostsNetworkConfigurationType';
   const clusterWizardContext = useClusterWizardContext();
   const [{ value }] = useField<HostsNetworkConfigurationType>(GROUP_NAME);
   const fieldId = getFieldId(GROUP_NAME, 'radio');
   const tooltipProps: TooltipProps = {
-    hidden: !clusterExists,
-    content: clusterExistsReason,
+    hidden: !clusterExists && !isDisabled,
+    content: !isDisabled ? clusterExistsReason : hostsNetworkConfigurationDisabledReason,
     position: 'top',
   };
 
@@ -41,14 +46,14 @@ export const HostsNetworkConfigurationControlGroup = ({
     >
       <RadioFieldWithTooltip
         name={GROUP_NAME}
-        isDisabled={clusterExists}
+        isDisabled={clusterExists || isDisabled}
         value={HostsNetworkConfigurationType.DHCP}
         label="DHCP only"
         tooltipProps={tooltipProps}
       />
       <RadioFieldWithTooltip
         name={GROUP_NAME}
-        isDisabled={clusterExists}
+        isDisabled={clusterExists || isDisabled}
         value={HostsNetworkConfigurationType.STATIC}
         label="Static IP, bridges, and bonds"
         tooltipProps={tooltipProps}
