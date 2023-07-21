@@ -1,8 +1,5 @@
-import { externalPlatformTypes } from '../../../fixtures/cluster/external-platform-types';
-import { clusterDetailsPage } from '../../../views/clusterDetails';
-import { commonActions } from '../../../views/common';
-import ClusterDetailsForm from '../../../views/forms/ClusterDetailsForm';
-import NewClusterPage from '../../../views/pages/NewClusterPage';
+import { NewClusterPage } from '../../../views/pages/NewClusterPage';
+import { ClusterDetailsForm } from '../../../views/forms/ClusterDetails/ClusterDetailsForm';
 
 describe('Create a new cluster with external partner integrations', () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -19,107 +16,61 @@ describe('Create a new cluster with external partner integrations', () => {
     // TODO(jkilzi): Find out how to mock the LibRouter store and features props.
     // This test case is disabled intentionally because it requires tweaking the
     // props passed to the LibRouter in the app.
-    it('The user cannot see the external partner integrations oracle option', () => {
-      // Disable somehow Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES.ASSISTED_INSTALLER_PLATFORM_OCI, then...
-      // ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().should('not.exist');
+    it('The user cannot see the external partner integrations checkbox', () => {
+      // Disable somehow Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES.ASSISTED_INSTALLER_PLATFORM_OCI, and then...
+      // ClusterDetailsForm.init().externalPartnerIntegrationsControl.findLabel().should('not.exist');
     });
   });
 
   context('When the feature is enabled:', () => {
     beforeEach(() => {
       NewClusterPage.visit();
+      ClusterDetailsForm.init();
     });
 
-    it('Should display correct items in the external platform integration dropdown', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownItems.each(
-        (item) => {
-          // Get the expected values from the externalPlatformTypes object
-          const platformType = item.parent().attr('id');
-          const { label, href } = externalPlatformTypes[platformType];
-
-          // Assert the label
-          cy.wrap(item).should('contain', label);
-        },
-      );
+    it('The user can select the external partner integrations checkbox', () => {
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
     });
 
-    it('Can select one external platform integration option and cluster is created well', () => {
-      clusterDetailsPage.inputClusterName();
-      clusterDetailsPage.inputBaseDnsDomain();
-      clusterDetailsPage.inputOpenshiftVersion();
-
-      clusterDetailsPage.inputPullSecret();
-
-      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl
-        .getPlatformIntegrationDropdownItemByLabel('Nutanix')
-        .click();
-      commonActions.verifyNextIsEnabled();
-      commonActions.toNextStepAfter('Cluster details');
-
-      cy.wait('@create-cluster').then(({ request }) => {
-        expect(request.body.platform.type.valueOf()).to.deep.equal('nutanix');
-      });
+    it('There is a popover and helper text next to the checkbox label', () => {
+      ClusterDetailsForm.externalPartnerIntegrationsField.findPopoverButton().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.findPopoverContent();
+      ClusterDetailsForm.externalPartnerIntegrationsField.findHelperText();
     });
 
-    it('External partner integrations with OCI is selected and enables custom manifests as well', () => {
-      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
-      ClusterDetailsForm.openshiftVersionControl
-        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.14.0-ec.3 - Developer preview release')
-        .click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl
-        .getPlatformIntegrationDropdownItemByLabel('Oracle')
-        .click();
-      ClusterDetailsForm.customManifestsControl
+    it('Selecting external partner integrations checkbox enables custom manifests as well', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.customManifestsField
         .findCheckbox()
         .should('be.checked')
         .and('be.disabled');
     });
 
-    //TODO (mortegag):  Make adaptations in code to adapt this change
-    it.skip('External partner integrations with OCI is unselected after OCP < v4.14 is selected', () => {
-      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
-      ClusterDetailsForm.openshiftVersionControl
-        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.14.0-ec.3 - Developer preview release')
-        .click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl
-        .getPlatformIntegrationDropdownItemByLabel('Oracle')
-        .click();
-      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
-      ClusterDetailsForm.openshiftVersionControl
-        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.13.0-rc.6 - Developer preview release')
-        .click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl
-        .getDropdownToggleText()
-        .contains('No platform integration');
+    it('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.13');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findCheckbox().should('not.be.checked');
     });
 
-    it("Hosts' Network Configuration control is disabled when external partner integration with OCI is selected", () => {
-      ClusterDetailsForm.openshiftVersionControl.openshiftVersionDropdownButton.click();
-      ClusterDetailsForm.openshiftVersionControl
-        .getOpenshiftVersionDropdownItemByLabel('OpenShift 4.14.0-ec.3 - Developer preview release')
-        .click();
-      clusterDetailsPage.getStaticIpNetworkConfig().click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.platformIntegrationDropdownButton.click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl
-        .getPlatformIntegrationDropdownItemByLabel('Oracle')
-        .click();
-      clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
+    it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
+      ClusterDetailsForm.hostsNetworkConfigurationField.findStaticIpRadioLabel().click();
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.hostsNetworkConfigurationField
+        .findStaticIpRadioButton()
+        .should('be.disabled')
+        .and('not.be.checked');
     });
 
     xit('The minimal ISO is presented by default', () => {
       // TODO(jkilzi): WIP...
-      // ClusterDetailsForm.clusterNameControl
+      // ClusterDetailsForm.clusterNameField
       //   .findInputField()
-      //   .scrollIntoView()
       //   .type(Cypress.env('CLUSTER_NAME'));
-      // ClusterDetailsForm.baseDomainControl.findInputField().scrollIntoView().type('redhat.com');
-      // ClusterDetailsForm.openshiftVersionControl.findInputField().scrollIntoView().type('redhat.com');
+      // ClusterDetailsForm.baseDomainField.findInputField().scrollIntoView().type('redhat.com');
+      // ClusterDetailsForm.openshiftVersionField.findInputField().scrollIntoView().type('redhat.com');
     });
-
-    //TODO (mortegag) : Add tests for options disabled and tooltips
   });
 });
