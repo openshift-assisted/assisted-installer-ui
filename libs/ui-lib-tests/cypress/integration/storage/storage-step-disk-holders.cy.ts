@@ -1,6 +1,6 @@
 import { commonActions } from '../../views/common';
 import { ValidateDiskHoldersParams, hostsTableSection } from '../../views/hostsTableSection';
-import { StoragePage } from '../../views/storagePage';
+import { StoragePage } from '../../views/pages/StoragePage';
 
 describe(`Assisted Installer Storage Step`, () => {
   let storagePage;
