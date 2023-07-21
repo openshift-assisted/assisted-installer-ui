@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { MouseEvent } from 'react';
 import {
   Button,
@@ -22,7 +23,6 @@ export type ExternalPlatformType = Extract<PlatformType, 'none' | 'nutanix' | 'o
 
 type ExternalPlatformDropdownProps = {
   showOciOption: boolean;
-  selectedPlatform: ExternalPlatformType;
   disabledOciTooltipContent: React.ReactNode;
   isOciDisabled: boolean;
   onChange: (selectedPlatform: ExternalPlatformType) => void;
@@ -61,16 +61,12 @@ export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatfor
 
 export const ExternalPlatformDropdown = ({
   showOciOption,
-  selectedPlatform,
   disabledOciTooltipContent,
   isOciDisabled,
   onChange,
   dropdownIsDisabled,
 }: ExternalPlatformDropdownProps) => {
   const [field, { value }, { setValue }] = useField<string>(INPUT_NAME);
-  const [currentPlatform, setCurrentPlatform] = React.useState(
-    externalPlatformTypes[selectedPlatform].label,
-  );
   const [isOpen, setOpen] = React.useState(false);
   const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {
     event.stopPropagation(); // Stop event propagation here
@@ -114,7 +110,6 @@ export const ExternalPlatformDropdown = ({
       const selectedPlatform = event?.currentTarget.id as ExternalPlatformType;
       setValue(selectedPlatform);
       setOpen(false);
-      setCurrentPlatform(externalPlatformTypes[selectedPlatform].label);
       onChange(selectedPlatform);
     },
     [setOpen, setValue, onChange],
@@ -129,10 +124,10 @@ export const ExternalPlatformDropdown = ({
         className="pf-u-w-100"
         isDisabled={dropdownIsDisabled}
       >
-        {currentPlatform || value}
+        {externalPlatformTypes[value as ExternalPlatformType].label}
       </DropdownToggle>
     ),
-    [dropdownIsDisabled, currentPlatform, value],
+    [dropdownIsDisabled, value],
   );
 
   return (

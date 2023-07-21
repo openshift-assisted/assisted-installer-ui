@@ -113,10 +113,15 @@ export const OcmClusterDetailsFormFields = ({
   }, []);
 
   React.useEffect(() => {
-    if (!oracleDropdownItemState?.isSupported) {
-      setFieldValue('platform', 'none');
+    if (clusterPlatform !== undefined) {
+      const platform = clusterPlatform === 'baremetal' ? 'none' : clusterPlatform;
+      setFieldValue('platform', platform);
+    } else {
+      if (!oracleDropdownItemState?.isSupported) {
+        setFieldValue('platform', 'none');
+      }
     }
-  }, [oracleDropdownItemState?.isSupported, setFieldValue]);
+  }, [clusterPlatform, setFieldValue, oracleDropdownItemState?.isSupported]);
 
   const handleExternalPartnerIntegrationsChange = React.useCallback(
     (selectedPlatform: ExternalPlatformType) => {
@@ -205,7 +210,6 @@ export const OcmClusterDetailsFormFields = ({
 
       <ExternalPlatformDropdown
         showOciOption={isOracleCloudPlatformIntegrationEnabled}
-        selectedPlatform={clusterPlatform === 'baremetal' ? 'none' : clusterPlatform || 'none'}
         disabledOciTooltipContent={oracleDropdownItemState?.disabledReason}
         isOciDisabled={oracleDropdownItemState?.isDisabled || false}
         onChange={handleExternalPartnerIntegrationsChange}
