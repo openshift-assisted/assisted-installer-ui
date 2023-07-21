@@ -4,6 +4,7 @@ import { CustomManifestsField } from './Fields/CustomManifestsField';
 import { ExternalPartnerIntegrationsField } from './Fields/ExternalPartnerIntegrationsField';
 import { HostsNetworkConfigurationField } from './Fields/HostsNetworkConfigurationField';
 import { OpenShiftVersionField } from './Fields/OpenShiftVersionField';
+import { PullSecretField } from './Fields/PullSecretField';
 
 export class ClusterDetailsForm {
   static readonly alias = `@${ClusterDetailsForm.name}`;
@@ -36,5 +37,9 @@ export class ClusterDetailsForm {
 
   static get hostsNetworkConfigurationField() {
     return HostsNetworkConfigurationField.init(ClusterDetailsForm.alias);
+  }
+
+  static get pullSecretField() {
+    return PullSecretField.init(ClusterDetailsForm.alias);
   }
 }
