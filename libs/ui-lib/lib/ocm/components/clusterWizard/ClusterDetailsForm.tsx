@@ -73,7 +73,8 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {
-        const resetPlatform = cluster.userManagedNetworking ? 'none' : values.platform;
+        const platform = values.platform === 'none' ? 'baremetal' : values.platform;
+        const resetPlatform = cluster.userManagedNetworking ? 'baremetal' : platform;
 
         const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
         await handleClusterUpdate(cluster.id, params);
