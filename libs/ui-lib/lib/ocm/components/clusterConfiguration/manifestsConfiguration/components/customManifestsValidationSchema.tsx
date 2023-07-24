@@ -16,7 +16,6 @@ export const getUniqueValidationSchema = Yup.string().test(
   UNIQUE_FOLDER_FILENAME,
   function (value: string) {
     const context = this.options.context as Yup.TestContext & { values?: ManifestFormData };
-    
     if (!context || !context.values) {
       return this.createError({
         message: 'Unexpected error: Yup test context should contain form values',
@@ -31,7 +30,7 @@ export const getUniqueValidationSchema = Yup.string().test(
 export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
   manifests: Yup.array<CustomManifestValues>().of(
     Yup.object().shape({
-      folder: Yup.mixed().required('Required').concat(getUniqueValidationSchema),
+      folder: Yup.mixed().required('Required'),
       filename: Yup.string()
         .required('Required')
         .min(1, 'Number of characters must be 1-255')
