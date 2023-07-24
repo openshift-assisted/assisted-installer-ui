@@ -4,7 +4,7 @@ import {
   FeaturesSupportsLevel,
 } from '../../components/featureSupportLevels/types';
 
-const NewFeatureSupportLevelsAPI = {
+const FeatureSupportLevelsAPI = {
   makeBaseURI() {
     return `/v2/support-levels`;
   },
@@ -14,7 +14,7 @@ const NewFeatureSupportLevelsAPI = {
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
     queryParams += cpuArchitecture ? `cpu_architecture=${cpuArchitecture}` : '';
     return clientWithoutConverter.get<FeaturesSupportsLevel>(
-      `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
+      `${FeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
     );
   },
 
@@ -22,9 +22,9 @@ const NewFeatureSupportLevelsAPI = {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
     return clientWithoutConverter.get<ArchitecturesSupportsLevel>(
-      `${NewFeatureSupportLevelsAPI.makeBaseURI()}/architectures${queryParams}`,
+      `${FeatureSupportLevelsAPI.makeBaseURI()}/architectures${queryParams}`,
     );
   },
 };
 
-export default NewFeatureSupportLevelsAPI;
+export default FeatureSupportLevelsAPI;

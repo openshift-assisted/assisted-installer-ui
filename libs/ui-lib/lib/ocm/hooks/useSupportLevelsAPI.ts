@@ -5,7 +5,7 @@ import {
   NewFeatureSupportLevelMap,
 } from '../../common/components/newFeatureSupportLevels';
 import { getApiErrorMessage, handleApiError } from '../api';
-import NewFeatureSupportLevelsAPI from '../services/apis/NewFeatureSupportLevelsAPI';
+import FeatureSupportLevelsAPI from '../services/apis/FeatureSupportLevelsAPI';
 
 type SupportLevelAPIResources = 'architectures' | 'features';
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'
@@ -27,7 +27,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   const fetchArchitecturesSupportLevels = React.useCallback(
     async (openshiftVersion: string) => {
       try {
-        const { data: architectures } = await NewFeatureSupportLevelsAPI.architecturesSupportLevel(
+        const { data: architectures } = await FeatureSupportLevelsAPI.architecturesSupportLevel(
           openshiftVersion,
         );
         setCpuArchitectures(architectures.architectures);
@@ -47,7 +47,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   const fetchFeaturesSupportLevels = React.useCallback(
     async (openshiftVersion: string, cpuArchitecture?: string) => {
       try {
-        const { data: features } = await NewFeatureSupportLevelsAPI.featuresSupportLevel(
+        const { data: features } = await FeatureSupportLevelsAPI.featuresSupportLevel(
           openshiftVersion,
           cpuArchitecture,
         );

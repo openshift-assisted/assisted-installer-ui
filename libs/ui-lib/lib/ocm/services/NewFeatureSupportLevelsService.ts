@@ -1,10 +1,10 @@
 import { getCpuArchitecture } from './CpuArchitectureService';
-import { NewFeatureSupportLevelsAPI } from './apis';
+import { FeatureSupportLevelsAPI } from './apis';
 
 const NewFeatureSupportLevelsService = {
   async getFeaturesSupportLevel(openshiftVersion: string, cpuArchitecture?: string) {
     const cpuArch = getCpuArchitecture(cpuArchitecture);
-    const { data: features } = await NewFeatureSupportLevelsAPI.featuresSupportLevel(
+    const { data: features } = await FeatureSupportLevelsAPI.featuresSupportLevel(
       openshiftVersion,
       cpuArch,
     );
