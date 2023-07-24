@@ -1,7 +1,7 @@
 import { getCpuArchitecture } from './CpuArchitectureService';
 import { FeatureSupportLevelsAPI } from './apis';
 
-const NewFeatureSupportLevelsService = {
+const FeatureSupportLevelsService = {
   async getFeaturesSupportLevel(openshiftVersion: string, cpuArchitecture?: string) {
     const cpuArch = getCpuArchitecture(cpuArchitecture);
     const { data: features } = await FeatureSupportLevelsAPI.featuresSupportLevel(
@@ -11,4 +11,4 @@ const NewFeatureSupportLevelsService = {
     return features;
   },
 };
-export default NewFeatureSupportLevelsService;
+export default FeatureSupportLevelsService;
