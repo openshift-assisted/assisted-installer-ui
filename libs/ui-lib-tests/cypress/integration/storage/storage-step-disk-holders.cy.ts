@@ -1,9 +1,9 @@
 import { commonActions } from '../../views/common';
 import { ValidateDiskHoldersParams, hostsTableSection } from '../../views/hostsTableSection';
-import { StoragePage } from '../../views/pages/StoragePage';
+import { StorageForm } from '../../views/forms/Storage/StorageForm';
 
 describe(`Assisted Installer Storage Step`, () => {
-  let storagePage;
+  let storageForm;
   const disks = [
     { name: 'vda' },
     { name: 'vdb' },
@@ -39,21 +39,21 @@ describe(`Assisted Installer Storage Step`, () => {
       commonActions.visitClusterDetailsPage();
       commonActions.startAtWizardStep('Storage');
 
-      storagePage = new StoragePage();
+      storageForm = new StorageForm();
     });
 
     it('Should display the correct alerts', () => {
-      storagePage.diskLimitationAlert.title.should(
+      storageForm.diskLimitationAlert.title.should(
         'contain.text',
         'Warning alert:Installation disk limitations',
       );
 
-      storagePage.diskLimitationAlert.description.find('li').then(($res) => {
+      storageForm.diskLimitationAlert.description.find('li').then(($res) => {
         expect($res).to.have.length(3);
         warningTexts.forEach((text, index) => expect($res[index]).to.contain(text));
       });
 
-      storagePage.diskFormattingAlert.title.should(
+      storageForm.diskFormattingAlert.title.should(
         'contain.text',
         'Warning alert:All bootable disks, except for read-only disks, will be formatted during installation. Make sure to back up any critical data before proceeding.',
       );
