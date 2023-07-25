@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { MouseEvent } from 'react';
 import {
   Button,

@@ -107,7 +107,6 @@ const ClusterDetailsService = {
     const hostsNetworkConfigurationType = infraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
-    // eslint-disable-next-line no-console
 
     const platform = cluster?.platform?.type === 'baremetal' ? 'none' : cluster?.platform?.type;
     return {
