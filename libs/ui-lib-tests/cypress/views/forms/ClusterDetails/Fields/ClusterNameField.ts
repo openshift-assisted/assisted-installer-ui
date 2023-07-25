@@ -1,5 +1,5 @@
 export class ClusterNameField {
-  static readonly alias = `@${ClusterNameField}`;
+  static readonly alias = `@${ClusterNameField.name}`;
   static readonly selector = '#form-control__form-input-name-field';
 
   static init(ancestorAlias?: string) {
@@ -8,8 +8,6 @@ export class ClusterNameField {
   }
 
   static findInputField() {
-    return cy.get(ClusterNameField.alias).findByRole('textbox', {
-      name: /cluster name/i,
-    });
+    return cy.get(ClusterNameField.alias).findByText(/cluster name/i);
   }
 }

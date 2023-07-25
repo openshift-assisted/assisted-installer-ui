@@ -1,5 +1,8 @@
 import { NewClusterPage } from '../../../views/pages/NewClusterPage';
 import { ClusterDetailsForm } from '../../../views/forms/ClusterDetails/ClusterDetailsForm';
+import { externalPlatformTypes } from '../../../fixtures/cluster/external-platform-types';
+import { commonActions } from '../../../views/common';
+import { pullSecret } from '../../../fixtures';
 
 describe('Create a new cluster with external partner integrations', () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -28,40 +31,66 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.init();
     });
 
-    it('The user can select the external partner integrations checkbox', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+    it('Should display correct items in the external platform integration dropdown', () => {
+      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItems().each((item) => {
+        // Get the expected values from the externalPlatformTypes object
+        const platformType = item.parent().attr('id');
+        const { label, href } = externalPlatformTypes[platformType];
+
+        // Assert the label
+        cy.wrap(item).should('contain', label);
+      });
     });
 
-    it('There is a popover and helper text next to the checkbox label', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsField.findPopoverButton().click();
-      ClusterDetailsForm.externalPartnerIntegrationsField.findPopoverContent();
-      ClusterDetailsForm.externalPartnerIntegrationsField.findHelperText();
-    });
-
-    it('Selecting external partner integrations checkbox enables custom manifests as well', () => {
+    it('Can select one external platform integration option and cluster is created well', () => {
+      ClusterDetailsForm.clusterNameField.findInputField().type(Cypress.env('CLUSTER_NAME'));
+      ClusterDetailsForm.baseDomainField.findInputField().type('redhat.com');
+      ClusterDetailsForm.pullSecretField.inputPullSecret(pullSecret);
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Nutanix');
+      commonActions.verifyNextIsEnabled();
+      commonActions.toNextStepAfter('Cluster details');
+
+      cy.wait('@create-cluster').then(({ request }) => {
+        expect(request.body.platform.type.valueOf()).to.deep.equal('nutanix');
+      });
+    });
+
+    it('Selecting oracle as external partner integration enables custom manifests as well', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
       ClusterDetailsForm.customManifestsField
         .findCheckbox()
         .should('be.checked')
         .and('be.disabled');
     });
 
-    it('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
+    it('Validate that oracle as external partner integration is unselected in dropdown after OCP < v4.14 is selected', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.13');
-      ClusterDetailsForm.externalPartnerIntegrationsField.findCheckbox().should('not.be.checked');
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItemSelected()
+        .contains('No platform integration');
     });
 
     it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
       ClusterDetailsForm.hostsNetworkConfigurationField.findStaticIpRadioLabel().click();
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsField.findLabel().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
       ClusterDetailsForm.hostsNetworkConfigurationField
         .findStaticIpRadioButton()
         .should('be.disabled')
         .and('not.be.checked');
+    });
+
+    it('Validate that oracle as external partner integration is unselected in dropdown when IBM/Z(s390x) architecture is selected', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
+      ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItemSelected()
+        .contains('No platform integration');
     });
 
     xit('The minimal ISO is presented by default', () => {

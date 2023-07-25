@@ -125,6 +125,29 @@ const featureSupportLevels = {
       EXTERNAL_PLATFORM_OCI: 'supported',
     },
   },
+  //TODO: add feature support levels for all cpu architectures
+  '4.14_s390x': {
+    features: {
+      CLUSTER_MANAGED_NETWORKING: 'unavailable',
+      CNV: 'unavailable',
+      CUSTOM_MANIFEST: 'supported',
+      DUAL_STACK: 'supported',
+      DUAL_STACK_VIPS: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'unavailable',
+      FULL_ISO: 'supported',
+      LSO: 'supported',
+      LVM: 'unavailable',
+      MCE: 'supported',
+      MINIMAL_ISO: 'unavailable',
+      NUTANIX_INTEGRATION: 'unavailable',
+      ODF: 'supported',
+      SINGLE_NODE_EXPANSION: 'supported',
+      SNO: 'supported',
+      USER_MANAGED_NETWORKING: 'supported',
+      VIP_AUTO_ALLOC: 'dev-preview',
+      VSPHERE_INTEGRATION: 'unavailable',
+    },
+  },
 };
 
 export { featureSupportLevels };

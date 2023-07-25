@@ -75,7 +75,7 @@ export const getClusterDetailsInitialValues = ({
     diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
     diskEncryption: cluster?.diskEncryption ?? {},
     cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
-    externalPartnerIntegrations: cluster?.platform?.type === 'oci',
+    platform: cluster?.platform?.type || 'none',
   };
 };
 

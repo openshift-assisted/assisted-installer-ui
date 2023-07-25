@@ -110,14 +110,14 @@ const isManagedNetworkingDisabled = ({
 };
 
 const isUserManagedNetworkingDisabled = (
-  isSupportedPlatformIntegrationNutanix: boolean,
+  isSupportedPlatformIntegrationNutanixOrVSphere: boolean,
   t: TFunction,
 ) => {
-  if (isSupportedPlatformIntegrationNutanix) {
+  if (isSupportedPlatformIntegrationNutanixOrVSphere) {
     return {
-      isUserManagementDisabled: isSupportedPlatformIntegrationNutanix,
+      isUserManagementDisabled: isSupportedPlatformIntegrationNutanixOrVSphere,
       userManagementDisabledReason: t(
-        'ai:User-Managed Networking is not supported when using Nutanix',
+        'ai:User-Managed Networking is not supported when using Nutanix or vSphere',
       ),
     };
   } else {
@@ -221,7 +221,8 @@ const NetworkConfiguration = ({
   }, [shouldUpdateAdvConf, toggleAdvConfiguration]);
 
   const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
-  const isSupportedPlatformIntegrationNutanix = supportedPlatformIntegration === 'nutanix';
+  const isSupportedPlatformIntegrationNutanixOrVSphere =
+    supportedPlatformIntegration === 'nutanix' || supportedPlatformIntegration === 'vsphere';
   const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
     () =>
       isManagedNetworkingDisabled({
@@ -233,8 +234,8 @@ const NetworkConfiguration = ({
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(
-    () => isUserManagedNetworkingDisabled(isSupportedPlatformIntegrationNutanix, t),
-    [isSupportedPlatformIntegrationNutanix, t],
+    () => isUserManagedNetworkingDisabled(isSupportedPlatformIntegrationNutanixOrVSphere, t),
+    [isSupportedPlatformIntegrationNutanixOrVSphere, t],
   );
 
   return (

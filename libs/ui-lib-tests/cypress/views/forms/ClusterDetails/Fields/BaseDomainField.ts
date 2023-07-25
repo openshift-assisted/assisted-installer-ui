@@ -1,5 +1,5 @@
 export class BaseDomainField {
-  static readonly alias = `${BaseDomainField.name}`;
+  static readonly alias = `@${BaseDomainField.name}`;
   static readonly selector = '#form-control__form-input-baseDnsDomain-field';
 
   static init(ancestorAlias: string) {
@@ -8,8 +8,6 @@ export class BaseDomainField {
   }
 
   static findInputField() {
-    return cy.get(BaseDomainField.alias).findByRole('textbox', {
-      name: /base domain/i,
-    });
+    return cy.get(BaseDomainField.alias).findByText(/base domain/i);
   }
 }

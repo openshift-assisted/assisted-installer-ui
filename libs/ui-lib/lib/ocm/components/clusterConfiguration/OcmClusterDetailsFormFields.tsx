@@ -15,12 +15,12 @@ import {
   StaticTextField,
   useFeature,
   getSupportedCpuArchitectures,
+  PlatformType,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   OcmCheckboxField,
-  OcmCheckboxFieldProps,
   OcmInputField,
   OcmRichInputField,
   OcmSelectField,
@@ -35,12 +35,10 @@ import CpuArchitectureDropdown, {
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
+import { ExternalPlatformDropdown, ExternalPlatformType } from './ExternalPlatformDropdown';
+import { useOracleDropdownItemState } from '../../hooks/useOracleDropdownItemState';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import {
-  ExternalPartnerIntegrationsCheckbox,
-  useExternalPartnerIntegrationsCheckboxState,
-} from './ExternalPartnerIntegrationsCheckbox';
-import { HostsNetworkConfigurationType } from '../../services';
+import { HostsNetworkConfigurationType } from '../../services/types';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -54,6 +52,7 @@ export type OcmClusterDetailsFormFieldsProps = {
   clusterExists: boolean;
   clusterCpuArchitecture?: string;
   clusterId?: string;
+  clusterPlatform?: PlatformType;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -78,6 +77,7 @@ export const OcmClusterDetailsFormFields = ({
   clusterExists,
   clusterCpuArchitecture,
   clusterId,
+  clusterPlatform,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -87,7 +87,7 @@ export const OcmClusterDetailsFormFields = ({
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
-  const { openshiftVersion, externalPartnerIntegrations } = values;
+  const { openshiftVersion, platform } = values;
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
@@ -103,9 +103,10 @@ export const OcmClusterDetailsFormFields = ({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const cpuArchitecture = (architectureData[values.cpuArchitecture] as CpuArchitectureItem).label;
-  const externalPartnerIntegrationsCheckboxState = useExternalPartnerIntegrationsCheckboxState(
+  const oracleDropdownItemState = useOracleDropdownItemState(
     clusterExists,
     featureSupportLevelData,
+    values.cpuArchitecture,
   );
 
   React.useEffect(() => {
@@ -113,19 +114,24 @@ export const OcmClusterDetailsFormFields = ({
   }, []);
 
   React.useEffect(() => {
-    if (!externalPartnerIntegrationsCheckboxState?.isSupported) {
-      setFieldValue('externalPartnerIntegrations', false);
+    if (clusterPlatform !== undefined) {
+      const platform = clusterPlatform === 'baremetal' ? 'none' : clusterPlatform;
+      setFieldValue('platform', platform);
+    } else {
+      if (!oracleDropdownItemState?.isSupported) {
+        setFieldValue('platform', 'none');
+      }
     }
-  }, [externalPartnerIntegrationsCheckboxState?.isSupported, setFieldValue]);
+  }, [clusterPlatform, setFieldValue, oracleDropdownItemState?.isSupported]);
 
-  const handleExternalPartnerIntegrationsChange = React.useCallback<
-    NonNullable<OcmCheckboxFieldProps['onChange']>
-  >(
-    (value: boolean, _event: React.FormEvent<HTMLInputElement>) => {
-      const checked = Boolean(value);
-      setFieldValue('addCustomManifest', checked, false);
-      clusterWizardContext.setAddCustomManifests(checked);
-      setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
+  const handleExternalPartnerIntegrationsChange = React.useCallback(
+    (selectedPlatform: ExternalPlatformType) => {
+      const isOracleSelected = selectedPlatform === 'oci';
+      if (isOracleSelected) {
+        setFieldValue('addCustomManifest', isOracleSelected, false);
+        clusterWizardContext.setAddCustomManifests(isOracleSelected);
+        setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
+      }
     },
     [clusterWizardContext, setFieldValue],
   );
@@ -203,33 +209,22 @@ export const OcmClusterDetailsFormFields = ({
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
-      {isOracleCloudPlatformIntegrationEnabled && externalPartnerIntegrationsCheckboxState && (
-        <ExternalPartnerIntegrationsCheckbox
-          disabledStateTooltipContent={externalPartnerIntegrationsCheckboxState.disabledReason}
-          popoverContent={
-            <p>
-              To integrate with an external partner (for example, Oracle Cloud), you'll need to
-              provide a custom manifest.
-            </p>
-          }
-          label={'External partner integrations'}
-          helperText={'Integrate with other platforms using custom manifests.'}
-          onChange={handleExternalPartnerIntegrationsChange}
-          isDisabled={externalPartnerIntegrationsCheckboxState.isDisabled}
-        />
-      )}
-
-      <CustomManifestCheckbox
-        clusterId={clusterId || ''}
-        isDisabled={externalPartnerIntegrations}
+      <ExternalPlatformDropdown
+        showOciOption={isOracleCloudPlatformIntegrationEnabled}
+        disabledOciTooltipContent={oracleDropdownItemState?.disabledReason}
+        isOciDisabled={oracleDropdownItemState?.isDisabled || false}
+        onChange={handleExternalPartnerIntegrationsChange}
+        dropdownIsDisabled={clusterPlatform === 'oci'}
       />
+
+      <CustomManifestCheckbox clusterId={clusterId || ''} isDisabled={platform === 'oci'} />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
         !isSingleClusterFeatureEnabled && (
           <HostsNetworkConfigurationControlGroup
             clusterExists={clusterExists}
-            isDisabled={externalPartnerIntegrations}
+            isDisabled={platform === 'oci'}
           />
         )
       }

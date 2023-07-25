@@ -7,7 +7,7 @@ import {
 
 export type ClusterDetailsUpdateParams = Pick<
   V2ClusterUpdateParams,
-  'name' | 'baseDnsDomain' | 'pullSecret'
+  'name' | 'baseDnsDomain' | 'pullSecret' | 'platform'
 >;
 
 export type ClusterCreateParamsWithStaticNetworking = ClusterCreateParams & {
@@ -21,6 +21,5 @@ export enum HostsNetworkConfigurationType {
 
 export type OcmClusterDetailsValues = ClusterDetailsValues & {
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
-  externalPartnerIntegrations: boolean;
   addCustomManifest: boolean;
 };
