@@ -568,7 +568,6 @@
   "ai:Pending input": "Pending input",
   "ai:Pending validations:": "Pending validations:",
   "ai:Platform network settings": "Platform network settings",
-  "ai:Please hold on till background checks are started.": "Wait until the background checks are started.",
   "ai:Please note that this version is not production-ready.": "Note that this version is not production-ready.",
   "ai:Please refer to the <2>OpenShift networking documentation</2> to configure your cluster's networking, including:": "Refer to the <2>OpenShift networking documentation</2> to configure your cluster's networking, including:",
   "ai:Please select a subnet. ({{hostSubnetLength}} available)": "Select a subnet. ({{hostSubnetLength}} available)",

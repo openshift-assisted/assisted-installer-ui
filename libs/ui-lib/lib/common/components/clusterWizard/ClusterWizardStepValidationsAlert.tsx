@@ -75,11 +75,6 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
 
   return (
     <>
-      {!validationsInfo && (
-        <Alert variant={AlertVariant.info} title="Cluster validations are initializing." isInline>
-          {t('ai:Please hold on till background checks are started.')}
-        </Alert>
-      )}
       {!isClusterReady && (
         <AlertGroup>
           {children}
