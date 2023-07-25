@@ -20,6 +20,7 @@ const CodeField = ({
   isDisabled,
   downloadFileName,
   dataTestid,
+  isReadOnly,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -61,6 +62,7 @@ const CodeField = ({
                 setValue(value, true);
               }
             }}
+            isReadOnly={isReadOnly}
           />
         </FormGroup>
       </StackItem>
