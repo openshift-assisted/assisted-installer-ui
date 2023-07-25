@@ -15,6 +15,7 @@ export interface OracleDropdownItemState {
 export const useOracleDropdownItemState = (
   hasExistentCluster: boolean,
   featureSupportLevelData: NewFeatureSupportLevelMap | null,
+  cpuArchitecture: string,
 ): OracleDropdownItemState | null => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   if (!featureSupportLevelData) {
@@ -30,7 +31,11 @@ export const useOracleDropdownItemState = (
   if (hasExistentCluster) {
     disabledReason = CLUSTER_EXISTS_REASON;
   } else if (!isSupported) {
-    disabledReason = featureSupportLevelContext.getFeatureDisabledReason(FEATURE_ID);
+    disabledReason = featureSupportLevelContext.getFeatureDisabledReason(
+      FEATURE_ID,
+      undefined,
+      cpuArchitecture,
+    );
   }
 
   return {

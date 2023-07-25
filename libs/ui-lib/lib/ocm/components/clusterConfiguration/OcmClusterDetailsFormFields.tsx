@@ -106,6 +106,7 @@ export const OcmClusterDetailsFormFields = ({
   const oracleDropdownItemState = useOracleDropdownItemState(
     clusterExists,
     featureSupportLevelData,
+    values.cpuArchitecture,
   );
 
   React.useEffect(() => {

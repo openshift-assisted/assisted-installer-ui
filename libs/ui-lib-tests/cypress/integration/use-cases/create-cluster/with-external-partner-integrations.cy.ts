@@ -84,6 +84,15 @@ describe('Create a new cluster with external partner integrations', () => {
         .and('not.be.checked');
     });
 
+    it('Validate that oracle as external partner integration is unselected in dropdown when IBM/Z(s390x) architecture is selected', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
+      ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItemSelected()
+        .contains('No platform integration');
+    });
+
     xit('The minimal ISO is presented by default', () => {
       // TODO(jkilzi): WIP...
       // ClusterDetailsForm.clusterNameField

@@ -140,6 +140,7 @@ export const getNewFeatureDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
+  cpuArchitecture?: string,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
@@ -164,7 +165,11 @@ export const getNewFeatureDisabledReason = (
       return 'Network management selection is not supported for ARM architecture with this version of OpenShift.';
     }
     case 'EXTERNAL_PLATFORM_OCI': {
-      return 'Integration with Oracle is available for OpenShift 4.14 and later versions.';
+      if (cpuArchitecture === 's390x') {
+        return "Can't set Oracle platform on s390x architecture";
+      } else {
+        return 'Integration with Oracle is available for OpenShift 4.14 and later versions.';
+      }
     }
     case 'MCE': {
       if (!isSupported) {

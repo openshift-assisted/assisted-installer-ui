@@ -5,6 +5,7 @@ import { ExternalPartnerIntegrationsField } from './Fields/ExternalPartnerIntegr
 import { HostsNetworkConfigurationField } from './Fields/HostsNetworkConfigurationField';
 import { OpenShiftVersionField } from './Fields/OpenShiftVersionField';
 import { PullSecretField } from './Fields/PullSecretField';
+import { CpuArchitectureField } from './Fields/CpuArchitectureField';
 
 export class ClusterDetailsForm {
   static readonly alias = `@${ClusterDetailsForm.name}`;
@@ -41,5 +42,9 @@ export class ClusterDetailsForm {
 
   static get pullSecretField() {
     return PullSecretField.init(ClusterDetailsForm.alias);
+  }
+
+  static get cpuArchitectureField() {
+    return CpuArchitectureField.init(ClusterDetailsForm.alias);
   }
 }

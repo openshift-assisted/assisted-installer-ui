@@ -21,6 +21,7 @@ export type NewFeatureSupportLevelData = {
   getFeatureDisabledReason(
     featureId: FeatureId,
     supportLevelData?: NewFeatureSupportLevelMap,
+    cpuArchitecture?: string,
   ): string | undefined;
   isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   activeFeatureConfiguration?: ActiveFeatureConfiguration;
