@@ -41,6 +41,25 @@ describe(`Assisted Installer Custom manifests step`, () => {
       });
     });
 
+    it('Validate that custom manifests names are unique', () => {
+      customManifestsPage.getStartFromScratch().click();
+      customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/manifest1.yaml`);
+      customManifestsPage.getLinkToAdd().should('be.enabled');
+      customManifestsPage.getLinkToAdd().click();
+      // Now we can add a new manifest
+      customManifestsPage.getFileName(1).type('manifest1.yaml');
+      customManifestsPage.fileUpload(1).attachFile(`custom-manifests/files/manifest1.yaml`);
+      customManifestsPage
+        .getFileNameError()
+        .should('contain.text', 'Ensure unique file names to avoid conflicts and errors.');
+      customManifestsPage
+        .getAlertTitle()
+        .should(
+          'contain.text',
+          'Custom manifests configuration contains missing or invalid fields',
+        );
+    });
+
     it('Can delete custom manifest', () => {
       utils.setLastWizardSignal('CUSTOM_MANIFEST_ADDED');
       commonActions.startAtWizardStep('Custom manifests');
