@@ -1,8 +1,8 @@
 import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
-import { Cluster, Host, HostUpdateParams, Interface, stringToJSON } from '../../api';
-import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
+import type { Cluster, Host, HostUpdateParams, Interface } from '../../api';
+import type { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';
 import { getDateTimeCell } from '../ui';
@@ -24,6 +24,7 @@ import {
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
 import { TFunction } from 'i18next';
+import { stringToJSON } from '../../utils';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {

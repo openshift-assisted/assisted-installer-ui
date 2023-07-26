@@ -2,7 +2,7 @@ import Humanize from 'humanize-plus';
 import { Disk, Inventory } from '../../api';
 import { DASH, OpticalDiskDriveType } from '../constants';
 import { HumanizedSortable } from '../ui/table/utils';
-import { fileSize } from './utils';
+import { fileSize } from '../../utils';
 
 export type HostRowHardwareInfo = {
   serialNumber: string;

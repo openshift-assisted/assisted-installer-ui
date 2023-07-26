@@ -1,9 +1,8 @@
-import camelCase from 'lodash-es/camelCase.js';
 import Axios, { AxiosError } from 'axios';
 import * as Sentry from '@sentry/browser';
 import pick from 'lodash-es/pick.js';
 import { Error as APIError, InfraError } from './types';
-import { getErrorMessage } from '../../common/utils';
+import { getErrorMessage } from '../utils';
 import { isAxiosError } from './axiosExtensions';
 import { isInOcm } from './axiosClient';
 
@@ -110,25 +109,6 @@ export const captureException = (
     //   ? console.error(message, error)
     //   : console.warn(message, error);
   }
-};
-
-export const stringToJSON = <T>(jsonString: string | undefined): T | undefined => {
-  let jsObject: T | undefined;
-  if (jsonString) {
-    try {
-      const camelCased = jsonString.replace(
-        /"([\w-]+)":/g,
-        (_match, offset: string) => `"${camelCase(offset)}":`,
-      );
-      jsObject = JSON.parse(camelCased) as T;
-    } catch (e) {
-      // console.error('Failed to parse api string', e, jsonString);
-    }
-  } else {
-    // console.info('Empty api string received.');
-  }
-
-  return jsObject;
 };
 
 export const removeProtocolFromURL = (url = '') => url.replace(/^(http|https):\/\//, '');

@@ -2,7 +2,7 @@ import lodashValues from 'lodash-es/values.js';
 import lodashKeys from 'lodash-es/keys.js';
 import reduce from 'lodash-es/reduce.js';
 
-import { Cluster, ClusterValidationId, Host, HostValidationId, stringToJSON } from '../../api';
+import type { Cluster, ClusterValidationId, Host, HostValidationId } from '../../api';
 import {
   ClusterWizardStepStatusDeterminationObject,
   ValidationGroup as ClusterValidationGroup,
@@ -16,6 +16,7 @@ import {
   ValidationsInfo,
   ValidationsInfo as HostValidationsInfo,
 } from '../../../common/types/hosts';
+import { stringToJSON } from '../../utils';
 
 export type WizardStepValidationMap = {
   cluster: {

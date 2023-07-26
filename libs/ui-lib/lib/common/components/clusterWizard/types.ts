@@ -1,4 +1,4 @@
-import { DiskEncryption, Host, Cluster, PlatformType } from '../../api';
+import type { DiskEncryption, Host, Cluster, PlatformType } from '../../api';
 
 import {
   ValidationGroup as ClusterValidationGroup,
