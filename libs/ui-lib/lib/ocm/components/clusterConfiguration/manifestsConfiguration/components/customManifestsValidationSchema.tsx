@@ -10,8 +10,7 @@ import {
 } from '../../../../../common/utils';
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 
-const UNIQUE_FOLDER_FILENAME =
-  'Ensure unique file names within each folder to avoid conflicts and errors.';
+const UNIQUE_FOLDER_FILENAME = 'Ensure unique file names to avoid conflicts and errors.';
 
 export const getUniqueValidationSchema = <FormValues,>(
   uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
@@ -38,7 +37,7 @@ export const getUniqueValidationSchema = <FormValues,>(
 };
 
 const getAllManifests: UniqueStringArrayExtractor<ManifestFormData> = (values: ManifestFormData) =>
-  values.manifests.map((manifest) => `${manifest.folder}_${manifest.filename}`);
+  values.manifests.map((manifest) => `${manifest.filename}`);
 
 export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
   manifests: Yup.array<CustomManifestValues>().of(
