@@ -37,7 +37,7 @@ export const getUniqueValidationSchema = <FormValues,>(
 };
 
 const getAllManifests: UniqueStringArrayExtractor<ManifestFormData> = (values: ManifestFormData) =>
-  values.manifests.map((manifest) => `${manifest.filename}`);
+  values.manifests.map((manifest) => manifest.filename);
 
 export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
   manifests: Yup.array<CustomManifestValues>().of(
