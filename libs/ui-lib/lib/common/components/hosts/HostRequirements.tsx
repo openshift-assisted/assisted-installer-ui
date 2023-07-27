@@ -1,8 +1,8 @@
 import { List, ListItem, TextContent } from '@patternfly/react-core';
 import * as React from 'react';
-import { fileSize } from './utils';
 import ExternalLink from '../ui/ExternalLink';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { fileSize } from '../../utils';
 
 type HWRequirements = {
   cpuCores?: number;

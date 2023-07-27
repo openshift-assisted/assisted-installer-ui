@@ -1,8 +1,9 @@
 import { Table, TableBody, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
-import { stringToJSON, Inventory, Host } from '../../api';
-import { getEnabledHosts, fileSize } from '../hosts';
+import type { Inventory, Host } from '../../api';
+import { getEnabledHosts } from '../hosts';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
+import { fileSize, stringToJSON } from '../../utils';
 
 const ReviewHostsInventory = ({ hosts = [] }: { hosts?: Host[] }) => {
   const rows = React.useMemo(() => {

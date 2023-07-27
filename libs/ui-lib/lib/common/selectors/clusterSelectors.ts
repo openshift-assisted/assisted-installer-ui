@@ -1,7 +1,8 @@
 import head from 'lodash-es/head.js';
 import { SupportedPlatformIntegrations, ValidationsInfo } from '../types';
-import { Cluster, Ip, stringToJSON } from '../api';
+import { Cluster, Ip } from '../api';
 import { ExposedOperatorName } from '../config';
+import { stringToJSON } from '../utils';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,

@@ -6,8 +6,9 @@ import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
 import { CustomManifestValues } from '../data/dataTypes';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
-import { PopoverIcon, fileSize } from '../../../../../common';
+import { PopoverIcon } from '../../../../../common';
 import { MAX_FILE_SIZE_BYTES } from '../../../../../common/configurations';
+import { fileSize } from '../../../../../common/utils';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename

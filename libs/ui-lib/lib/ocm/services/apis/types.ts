@@ -6,10 +6,3 @@ export type ClustersAPIGetPresignedOptions = {
   hostId?: string;
   logsType?: LogsType;
 };
-
-export type EventsAPIListOptions = {
-  clusterId?: string;
-  hostId?: string;
-  infraEnvId?: string;
-  categories?: string[];
-};

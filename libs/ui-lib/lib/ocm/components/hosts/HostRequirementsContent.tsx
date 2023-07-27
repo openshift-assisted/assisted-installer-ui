@@ -1,7 +1,8 @@
 import React from 'react';
 import { List, ListItem, Text, TextContent } from '@patternfly/react-core';
-import { Cluster, ErrorState, ExternalLink, LoadingState, fileSize } from '../../../common';
+import { Cluster, ErrorState, ExternalLink, LoadingState } from '../../../common';
 import { useClusterPreflightRequirements } from '../../hooks';
+import { fileSize } from '../../../common/utils';
 
 const DISK_WRITE_SPEED_LINK = 'https://access.redhat.com/solutions/4885641';
 
