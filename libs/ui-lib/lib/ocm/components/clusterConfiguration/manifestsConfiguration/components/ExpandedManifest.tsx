@@ -22,7 +22,12 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
   });
 
   return (
-    <ExpandableSection isDetached key={manifestIdx} isExpanded>
+    <ExpandableSection
+      isDetached
+      key={manifestIdx}
+      isExpanded
+      data-testid={`expanded-manifest-${manifestIdx}`}
+    >
       <Grid hasGutter span={12}>
         <GridItem span={6}>
           <TextInput

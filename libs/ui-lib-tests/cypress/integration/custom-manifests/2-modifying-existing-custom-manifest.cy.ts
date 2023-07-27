@@ -1,6 +1,6 @@
 import { commonActions } from '../../views/common';
 import { setLastWizardSignal } from '../../support/utils';
-import { customManifestsPage } from '../../views/customManifestsPage';
+import { CustomManifestsForm } from '../../views/forms';
 
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
@@ -45,31 +45,36 @@ describe(`Assisted Installer Custom manifests step`, () => {
 
   describe('Editing manifests', () => {
     it('Adding valid content to dummy manifest enables next button', () => {
-      customManifestsPage.getStartFromScratch().click();
-      customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/manifest1.yaml`);
+      CustomManifestsForm.initManifest(0);
+      CustomManifestsForm.expandedManifest(0)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/manifest1.yaml`);
       commonActions.verifyNextIsEnabled();
     });
 
     it('Cannot upload binary file into manifest content', () => {
-      customManifestsPage.getStartFromScratch().click();
-      customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/img.png`);
-      customManifestsPage
-        .getYamlContentError()
+      CustomManifestsForm.initManifest(0);
+      CustomManifestsForm.expandedManifest(0).fileName().clear().type('fdd');
+      CustomManifestsForm.expandedManifest(0)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/img.png`);
+      CustomManifestsForm.expandedManifest(0)
+        .fileUploadError()
         .should('contain.text', 'File type is not supported. File type must be yaml, yml or json.');
       commonActions.verifyNextIsDisabled();
     });
 
     it('Incorrect file name is shown as an error', () => {
-      customManifestsPage.getFileName(0).clear().type('test.txt');
-      customManifestsPage
-        .getFileNameError()
+      CustomManifestsForm.initManifest(0);
+      CustomManifestsForm.expandedManifest(0).fileName().clear().type('test.txt');
+      CustomManifestsForm.expandedManifest(0)
+        .fileNameError()
         .should('contain.text', 'Must have a yaml, yml or json extension and can not contain /.');
-      customManifestsPage
-        .getAlertTitle()
-        .should(
-          'contain.text',
-          'Custom manifests configuration contains missing or invalid fields',
-        );
+
+      CustomManifestsForm.validationAlert().should(
+        'contain.text',
+        'Custom manifests configuration contains missing or invalid fields',
+      );
       commonActions.verifyNextIsDisabled();
     });
   });
