@@ -1,5 +1,5 @@
 import { fakeClusterId } from '../cluster/base-cluster';
-import createHostInventory from './host-inventory';
+import { createHostInventory, createHostInventoryWithDiskHolders } from './host-inventory';
 
 const operatorValidations = [
   {
@@ -117,6 +117,14 @@ const workerMemory = 7179869184; // TODO
 
 const masterDisk = 17797418240; // 17.80 GB
 const workerDisk = 10476748240; // 10.48 GB
+
+const installationDiskIds = [
+  '/dev/disk/by-path/pci-0000:00:08.0', // LVM
+  '/dev/disk/by-path/pci-0000:00:09.0', // raid
+  '/dev/disk/by-path/ip-192.168.123.49:3260', //multipath
+  '/dev/disk/by-path/pci-0000:00:05.0-ata-3', // sr0
+  '/dev/disk/by-path/pci-0000:00:05.0-ata-3', // sr0
+];
 
 const hosts = [
   {
@@ -368,4 +376,17 @@ const hosts = [
   },
 ];
 
-export default hosts;
+const hostsWithDiskHolders = hosts.map((host, index) => ({
+  ...host,
+  inventory: JSON.stringify(
+    createHostInventoryWithDiskHolders(
+      index,
+      host['role'] === 'master' ? masterMemory : workerMemory,
+      host['role'] === 'master' ? masterDisk : workerDisk,
+    ),
+  ),
+  installation_disk_id: installationDiskIds[index],
+  skip_formatting_disks: false,
+}));
+
+export { hosts as storageHosts, hostsWithDiskHolders };

@@ -67,6 +67,9 @@ const getScenarioFixtureMapping = () => {
     case 'AI_STORAGE_CLUSTER':
       fixtureMapping = fixtures.createStorageFixtureMapping;
       break;
+    case 'AI_DISK_HOLDERS_CLUSTER':
+      fixtureMapping = fixtures.createDiskHoldersFixtureMapping;
+      break;
     case 'AI_CREATE_STATIC_IP':
       fixtureMapping = fixtures.createStaticIpFixtureMapping;
       break;
@@ -151,6 +154,11 @@ const setScenarioEnvVars = (activeScenario) => {
       break;
     case 'AI_STORAGE_CLUSTER':
       Cypress.env('CLUSTER_NAME', 'ai-e2e-storage');
+      Cypress.env('NUM_MASTERS', 3);
+      Cypress.env('NUM_WORKERS', 2);
+      break;
+    case 'AI_DISK_HOLDERS_CLUSTER':
+      Cypress.env('CLUSTER_NAME', 'ai-e2e-disk-holders');
       Cypress.env('NUM_MASTERS', 3);
       Cypress.env('NUM_WORKERS', 2);
       break;

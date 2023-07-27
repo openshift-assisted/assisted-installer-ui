@@ -1,5 +1,5 @@
 import { commonActions } from '../../../views/common';
-import OperatorsForm from '../../../views/forms/OperatorsForm';
+import OperatorsForm from '../../../views/forms/Operators/OperatorsForm';
 
 describe(`Create cluster with mce operator enabled`, () => {
   const setTestStartSignal = (activeSignal: string) => {
