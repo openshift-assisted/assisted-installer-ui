@@ -45,7 +45,10 @@ const ClusterDetailsService = {
       },
     };
 
-    if (params.cpuArchitecture === CpuArchitecture.ARM || params.platform?.type === 'oci') {
+    if (
+      !values.isCMNSupported &&
+      (params.cpuArchitecture === CpuArchitecture.ARM || params.platform?.type === 'oci')
+    ) {
       params.userManagedNetworking = true;
     }
 
@@ -115,6 +118,7 @@ const ClusterDetailsService = {
       hostsNetworkConfigurationType,
       addCustomManifest: false,
       platform: platform === undefined ? 'none' : platform,
+      isCMNSupported: true,
     };
   },
 };
