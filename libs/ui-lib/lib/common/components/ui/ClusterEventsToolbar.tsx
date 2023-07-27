@@ -20,12 +20,13 @@ import {
   TextInputTypes,
 } from '@patternfly/react-core';
 import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
-import { ClusterEventsFiltersType } from '../../types';
-import { Cluster, Event, Host, Inventory, stringToJSON } from '../../api';
+import type { ClusterEventsFiltersType } from '../../types';
+import type { Cluster, Event, Host, Inventory } from '../../api';
 import { EVENT_SEVERITIES } from '../../config';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { isSelectEventChecked } from './utils';
 import { TFunction } from 'i18next';
+import { stringToJSON } from '../../utils';
 
 export type SeverityCountsType = { [severity in Event['severity']]: number };
 

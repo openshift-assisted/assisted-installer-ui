@@ -19,7 +19,7 @@ import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
 } from '../../types/hosts';
-import { ClusterValidationId, HostValidationId, stringToJSON } from '../../api';
+import type { ClusterValidationId, HostValidationId } from '../../api';
 import { clusterValidationLabels, hostValidationLabels } from '../../config';
 import { getEnabledHosts } from '../hosts';
 import { findValidationFixStep } from './validationsInfoUtils';
@@ -31,7 +31,7 @@ import {
 } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
-import { getKeys } from '../../utils';
+import { getKeys, stringToJSON } from '../../utils';
 
 const AllValidationsPassed = () => {
   const { t } = useTranslation();

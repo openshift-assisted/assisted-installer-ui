@@ -8,7 +8,6 @@ import {
   Inventory,
   MachineNetwork,
   ServiceNetwork,
-  stringToJSON,
 } from '../../api';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
 import {
@@ -31,6 +30,7 @@ import {
   WithRequired,
 } from '../../types';
 import { getHostname } from '../hosts/utils';
+import { stringToJSON } from '../../utils';
 
 type VersionConfig = WithRequired<Pick<Cluster, 'openshiftVersion'>, 'openshiftVersion'> & {
   cpuArchitecture?: ClusterCpuArchitecture;

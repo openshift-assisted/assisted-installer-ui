@@ -11,18 +11,19 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Disk, Host, Interface, stringToJSON } from '../../api';
-import { ValidationsInfo } from '../../types/hosts';
-import { WithTestID } from '../../types';
+import type { Disk, Host, Interface } from '../../api';
+import type { ValidationsInfo } from '../../types/hosts';
+import type { WithTestID } from '../../types/index';
 import { DASH } from '../constants';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { getHardwareTypeText, getInventory } from './utils';
-import { ValidationInfoActionProps } from './HostValidationGroups';
+import type { ValidationInfoActionProps } from './HostValidationGroups';
 import NtpValidationStatus from './NtpValidationStatus';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import SectionTitle from '../ui/SectionTitle';
 import { OnDiskRoleType } from './DiskRole';
 import StorageDetail from '../storage/StorageDetail';
+import { stringToJSON } from '../../utils';
 
 type HostDetailProps = {
   host: Host;

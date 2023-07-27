@@ -1,6 +1,6 @@
 import { commonActions } from '../../views/common';
-import { customManifestsPage } from '../../views/customManifestsPage';
 import * as utils from '../../support/utils';
+import { CustomManifestsForm } from '../../views/forms';
 
 describe(`Assisted Installer Custom manifests step`, () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -10,25 +10,30 @@ describe(`Assisted Installer Custom manifests step`, () => {
     });
   };
 
-  before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST'));
-
-  beforeEach(() => {
-    setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST');
-    commonActions.visitClusterDetailsPage();
-  });
-
   describe('Custom Manifests actions', () => {
+    before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST'));
+
+    beforeEach(() => {
+      setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST');
+      commonActions.visitClusterDetailsPage();
+    });
+
     it('Can add new custom manifests', () => {
       // First make the incomplete dummy manifest valid
-      customManifestsPage.getStartFromScratch().click();
-      customManifestsPage.fileUpload(0).attachFile(`custom-manifests/files/manifest1.yaml`);
-      customManifestsPage.getLinkToAdd().should('be.enabled');
-      customManifestsPage.getLinkToAdd().click();
+      CustomManifestsForm.initManifest(0);
+      CustomManifestsForm.expandedManifest(0)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/manifest1.yaml`);
+      CustomManifestsForm.addManifest().should('be.enabled');
+      CustomManifestsForm.addManifest().click();
 
       // Now we can add a new manifest
-      customManifestsPage.getFileName(1).type('manifest2.yaml');
-      customManifestsPage.fileUpload(1).attachFile(`custom-manifests/files/manifest1.yaml`);
-      customManifestsPage.getLinkToAdd().should('be.enabled');
+      CustomManifestsForm.initManifest(1);
+      CustomManifestsForm.expandedManifest(1).fileName().type('manifest2.yaml');
+      CustomManifestsForm.expandedManifest(1)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/manifest1.yaml`);
+      CustomManifestsForm.addManifest().should('be.enabled');
 
       cy.wait('@create-manifest').then(({ request }) => {
         // Verify that the new manifest content is submitted correctly
@@ -40,20 +45,56 @@ describe(`Assisted Installer Custom manifests step`, () => {
         });
       });
     });
+  });
+
+  describe('Custom manifests actions #2', () => {
+    before(() => setTestStartSignal('CUSTOM_MANIFEST_ADDED'));
+
+    beforeEach(() => {
+      setTestStartSignal('CUSTOM_MANIFEST_ADDED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.startAtWizardStep('Custom manifests');
+    });
 
     it('Can delete custom manifest', () => {
       utils.setLastWizardSignal('CUSTOM_MANIFEST_ADDED');
       commonActions.startAtWizardStep('Custom manifests');
 
-      customManifestsPage.getLinkToAdd().should('be.enabled');
-      customManifestsPage.getLinkToAdd().click();
-      customManifestsPage.getFileName(1).type('manifest2.yaml');
-      customManifestsPage.fileUpload(1).attachFile(`custom-manifests/files/manifest1.yaml`);
-      customManifestsPage.getRemoveManifestButton(1).click();
-      customManifestsPage.getRemoveConfirmationButton().click();
+      CustomManifestsForm.addManifest().should('be.enabled');
+      CustomManifestsForm.addManifest().click();
+
+      CustomManifestsForm.initManifest(1);
+      CustomManifestsForm.expandedManifest(1).fileName().type('manifest2.yaml');
+      CustomManifestsForm.expandedManifest(1)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/manifest1.yaml`);
+      CustomManifestsForm.removeManifest(1).click();
+      CustomManifestsForm.getRemoveConfirmationButton().click();
       cy.wait('@delete-manifests').then(({ request }) => {
         expect(request.url).to.contain('folder=manifests&file_name=manifest2.yaml');
       });
+    });
+
+    it('Enforces unique file names for custom manifests', () => {
+      CustomManifestsForm.addManifest().click();
+      CustomManifestsForm.initManifest(1);
+      CustomManifestsForm.expandedManifest(1).fileName().type('manifest2.yaml');
+      CustomManifestsForm.expandedManifest(1)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/manifest1.yaml`);
+
+      CustomManifestsForm.addManifest().click();
+      CustomManifestsForm.initManifest(2);
+      CustomManifestsForm.expandedManifest(2).fileName().type('manifest2.yaml');
+
+      CustomManifestsForm.expandedManifest(2)
+        .fileNameError()
+        .should('contain.text', 'Ensure unique file names to avoid conflicts and errors.');
+
+      CustomManifestsForm.initManifest(0, true);
+      CustomManifestsForm.collapsedManifest(0).name();
+      CustomManifestsForm.initManifest(1, true);
+      CustomManifestsForm.collapsedManifest(1).error();
     });
   });
 });

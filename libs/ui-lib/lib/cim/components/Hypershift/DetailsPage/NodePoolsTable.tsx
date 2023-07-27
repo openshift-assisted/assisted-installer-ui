@@ -25,11 +25,11 @@ import AddNodePoolModal from '../modals/AddNodePoolModal';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 import RemoveNodePoolModal from '../modals/RemoveNodePoolModal';
 import NodePoolStatus from './NodePoolStatus';
-import { fileSize } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getNodepoolAgents } from '../utils';
 
 import './NodePoolsTable.css';
+import { fileSize } from '../../../../common/utils';
 
 type NodePoolsTableProps = {
   nodePools: NodePoolK8sResource[];

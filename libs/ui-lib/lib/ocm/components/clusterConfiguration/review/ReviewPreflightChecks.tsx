@@ -27,7 +27,6 @@ import {
   DetailItem,
   DetailList,
   HostsValidations,
-  stringToJSON,
 } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { useOpenshiftVersions } from '../../../hooks';
@@ -47,6 +46,7 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import { stringToJSON } from '../../../../common/utils';
 
 const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();

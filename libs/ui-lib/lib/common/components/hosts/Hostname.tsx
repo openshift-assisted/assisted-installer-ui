@@ -2,10 +2,11 @@ import React from 'react';
 import { Button, ButtonVariant, Flex, FlexItem, Popover } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import { Host, Inventory, stringToJSON } from '../../api';
+import type { Host, Inventory } from '../../api';
 import { getHostname } from './utils';
 import { DASH } from '../constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { stringToJSON } from '../../utils';
 
 type HostnameProps = {
   host: Host;

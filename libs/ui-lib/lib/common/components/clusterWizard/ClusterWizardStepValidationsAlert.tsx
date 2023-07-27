@@ -19,7 +19,7 @@ import {
   getWizardStepClusterValidationsInfo,
 } from './validationsInfoUtils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { stringToJSON } from '../../api';
+import { stringToJSON } from '../../utils';
 
 type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends string> = {
   currentStepId: ClusterWizardStepsType;

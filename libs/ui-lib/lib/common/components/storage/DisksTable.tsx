@@ -17,7 +17,8 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Disk, fileSize, Host, WithTestID } from '../../index';
+import type { Disk, Host } from '../../api/types';
+import type { WithTestID } from '../../types/index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
@@ -26,6 +27,7 @@ import FormatDiskCheckbox, {
   DiskFormattingType,
   isInDiskSkipFormattingList,
 } from '../hosts/FormatDiskCheckbox';
+import { fileSize } from '../../utils';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;

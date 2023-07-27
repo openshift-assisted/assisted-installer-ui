@@ -1,7 +1,7 @@
-import filesize from 'filesize.js';
 import Fuse from 'fuse.js';
 import { TFunction } from 'i18next';
-import { Host, Cluster, Inventory, stringToJSON } from '../../api';
+import type { Host, Cluster, Inventory } from '../../api/types';
+import { stringToJSON } from '../../utils';
 import { hostRoles, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
 import {
@@ -184,12 +184,6 @@ export const getHardwareTypeText = (inventory: Inventory, t: TFunction) => {
 
   return hardwareTypeText;
 };
-
-export const fileSize: typeof filesize = (...args) =>
-  filesize
-    .call(null, ...args)
-    .toUpperCase()
-    .replace(/I/, 'i');
 
 export const getInventory = (host: Host) => {
   const { inventory: inventoryString = '' } = host;
