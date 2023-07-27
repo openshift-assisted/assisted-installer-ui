@@ -6,12 +6,12 @@ import {
   Host,
   HostRole,
   Inventory,
-  stringToJSON,
   AlertsContextType,
   hostStatusOrder,
 } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 import { ClustersService } from '../../services';
+import { stringToJSON } from '../../../common/utils';
 
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
