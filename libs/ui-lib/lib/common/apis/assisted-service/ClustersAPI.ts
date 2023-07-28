@@ -20,7 +20,7 @@ import { AxiosResponse } from 'axios';
 
 let _getRequestAbortController = new AbortController();
 
-export type ClustersAPIGetPresignedOptions = {
+type ClustersAPIGetPresignedOptions = {
   clusterId: string;
   fileName: 'logs' | 'kubeconfig' | 'kubeconfig-noingress';
   hostId?: string;
