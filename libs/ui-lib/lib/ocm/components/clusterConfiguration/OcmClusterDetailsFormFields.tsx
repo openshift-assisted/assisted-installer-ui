@@ -138,13 +138,6 @@ export const OcmClusterDetailsFormFields = ({
   );
 
   React.useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(
-      featureSupportLevelContext.isFeatureSupported(
-        'CLUSTER_MANAGED_NETWORKING',
-        featureSupportLevelData ?? undefined,
-      ),
-    );
     setFieldValue(
       'isCMNSupported',
       featureSupportLevelContext.isFeatureSupported(
