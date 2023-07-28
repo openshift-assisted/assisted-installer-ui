@@ -10,7 +10,7 @@ import type {
 import { isInOcm, handleApiError, getApiErrorMessage } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { ClustersService } from '../../services';
-import ClustersAPI from '../../services/apis/ClustersAPI';
+import ClustersAPI from '../../../common/apis/assisted-service/ClustersAPI';
 import { stringToJSON } from '../../../common/utils';
 
 export const downloadHostInstallationLogs = async (
