@@ -5,4 +5,4 @@ export { default as ClustersAPI } from '../../../common/apis/assisted-service/Cl
 export { default as HostsAPI } from '../../../common/apis/assisted-service/HostsAPI';
 export { default as InfraEnvsAPI } from '../../../common/apis/assisted-service/InfraEnvsAPI';
 export { default as EventsAPI } from '../../../common/apis/assisted-service/EventsAPI';
-export { default as NewFeatureSupportLevelsAPI } from './NewFeatureSupportLevelsAPI';
+export { default as NewFeatureSupportLevelsAPI } from '../../../common/apis/assisted-service/NewFeatureSupportLevelsAPI';
