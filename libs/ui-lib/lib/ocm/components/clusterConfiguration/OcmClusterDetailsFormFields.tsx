@@ -39,6 +39,7 @@ import { ExternalPlatformDropdown, ExternalPlatformType } from './ExternalPlatfo
 import { useOracleDropdownItemState } from '../../hooks/useOracleDropdownItemState';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { HostsNetworkConfigurationType } from '../../services/types';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -108,7 +109,7 @@ export const OcmClusterDetailsFormFields = ({
     featureSupportLevelData,
     values.cpuArchitecture,
   );
-
+  const featureSupportLevelContext = useNewFeatureSupportLevel();
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
@@ -135,6 +136,17 @@ export const OcmClusterDetailsFormFields = ({
     },
     [clusterWizardContext, setFieldValue],
   );
+
+  React.useEffect(() => {
+    setFieldValue(
+      'isCMNSupported',
+      featureSupportLevelContext.isFeatureSupported(
+        'CLUSTER_MANAGED_NETWORKING',
+        featureSupportLevelData ?? undefined,
+      ),
+      false,
+    );
+  }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
   return (
     <Form id="wizard-cluster-details__form">
