@@ -1,7 +1,5 @@
-import {
-  NewFeatureSupportLevelMap,
-  useNewFeatureSupportLevel,
-} from '../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelContext';
+import type { NewFeatureSupportLevelMap } from '../../common/components/newFeatureSupportLevels';
+import { useNewFeatureSupportLevel } from '../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelContext';
 import { clusterExistsReason as CLUSTER_EXISTS_REASON } from '../components/featureSupportLevels/featureStateUtils';
 export const FEATURE_ID = 'EXTERNAL_PLATFORM_OCI';
 
