@@ -1,6 +1,6 @@
 import { Cluster, OcmCpuArchitecture, SupportedCpuArchitecture } from '../../../common';
 import { HostsNetworkConfigurationType } from '../../services';
-import { FeaturesSupportsLevel } from '../featureSupportLevels/types';
+import { FeaturesSupportsLevel } from '../../../common/components/featureSupportLevels/types';
 
 /* The type is reverse engineered.
    The OCM object contains additional data.
