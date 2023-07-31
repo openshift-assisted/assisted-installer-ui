@@ -1,31 +1,5 @@
 import React from 'react';
-
-import { CpuArchitecture, FeatureId } from '../../types';
-import { ArchitectureSupportLevelId, FeatureSupportLevelId, SupportLevel } from '../../api';
-
-export type NewFeatureSupportLevelMap = Record<FeatureSupportLevelId, SupportLevel>;
-export type ArchitectureSupportLevelMap = Record<ArchitectureSupportLevelId, SupportLevel>;
-
-export type ActiveFeatureConfiguration = {
-  underlyingCpuArchitecture: CpuArchitecture;
-  hasStaticIpNetworking: boolean;
-};
-
-export type NewFeatureSupportLevelData = {
-  getFeatureSupportLevels(): NewFeatureSupportLevelMap;
-  getFeatureSupportLevel(
-    featureId: FeatureId,
-    supportLevelData?: NewFeatureSupportLevelMap,
-  ): SupportLevel | undefined;
-  isFeatureDisabled(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
-  getFeatureDisabledReason(
-    featureId: FeatureId,
-    supportLevelData?: NewFeatureSupportLevelMap,
-    cpuArchitecture?: string,
-  ): string | undefined;
-  isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
-  activeFeatureConfiguration?: ActiveFeatureConfiguration;
-};
+import { NewFeatureSupportLevelData } from './types';
 
 const NewFeatureSupportLevelContext = React.createContext<NewFeatureSupportLevelData | null>(null);
 

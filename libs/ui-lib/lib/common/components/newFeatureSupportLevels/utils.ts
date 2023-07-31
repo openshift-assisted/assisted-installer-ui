@@ -1,9 +1,6 @@
 import { Cluster, SupportLevel } from '../../api';
 import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../types';
-import {
-  NewFeatureSupportLevelData,
-  NewFeatureSupportLevelMap,
-} from './NewFeatureSupportLevelContext';
+import type { NewFeatureSupportLevelData, NewFeatureSupportLevelMap } from './types';
 import { TFunction } from 'i18next';
 import { stringToJSON } from '../../utils';
 
