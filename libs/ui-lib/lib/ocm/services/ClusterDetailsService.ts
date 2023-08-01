@@ -57,6 +57,10 @@ const ClusterDetailsService = {
       params.tags = AI_UI_TAG;
     }
 
+    if (params.platform?.type === 'none') {
+      delete params.platform;
+    }
+
     return params;
   },
 
