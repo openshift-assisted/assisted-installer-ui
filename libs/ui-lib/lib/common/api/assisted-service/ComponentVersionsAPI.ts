@@ -1,5 +1,5 @@
-import { client } from '../../api';
-import { ListVersions } from '../../../common';
+import { client } from '../../api/axiosClient';
+import { ListVersions } from '../../../common/api/types';
 
 const ComponentVersionsAPI = {
   makeBaseURI() {

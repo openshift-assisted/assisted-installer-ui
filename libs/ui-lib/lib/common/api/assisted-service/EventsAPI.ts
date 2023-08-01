@@ -1,5 +1,5 @@
-import { EventList, V2Events } from '../../../common';
-import { client } from '../../api';
+import { EventList, V2Events } from '../../../common/api/types';
+import { client } from '../../api/axiosClient';
 
 let _getRequestAbortController = new AbortController();
 

@@ -28,7 +28,7 @@ import {
   deleteCluster,
   ClustersDispatch,
 } from '../../reducers/clusters/clustersSlice';
-import { handleApiError, getApiErrorMessage } from '../../api/utils';
+import { handleApiError, getApiErrorMessage } from '../../api';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';

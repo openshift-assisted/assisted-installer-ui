@@ -1,5 +1,5 @@
-import { Host, HostUpdateParams, InfraEnv } from '../../../common';
-import { client } from '../../api';
+import { Host, HostUpdateParams, InfraEnv } from '../../../common/api/types';
+import { client } from '../../api/axiosClient';
 import { AxiosResponse } from 'axios';
 import InfraEnvsAPI from './InfraEnvsAPI';
 
