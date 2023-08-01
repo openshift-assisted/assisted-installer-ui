@@ -28,10 +28,13 @@ describe(`Assisted Installer Multinode Cluster Installation`, () => {
 
       commonActions.getInfoAlert().should('not.exist');
       commonActions.toNextStepAfter('Cluster details');
-      cy.wait('@create-cluster');
-      cy.wait('@create-infra-env');
-      utils.setLastWizardSignal('CLUSTER_CREATED');
 
+      cy.wait('@create-cluster').then(({ request }) => {
+        expect(Object.keys(request.body)).not.to.contain('platform');
+      });
+      cy.wait('@create-infra-env');
+
+      utils.setLastWizardSignal('CLUSTER_CREATED');
       commonActions.toNextStepAfter('Operators');
     });
   });
