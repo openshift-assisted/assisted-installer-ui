@@ -18,7 +18,6 @@ import {
   selectIngressVip,
   serviceNetworksEqual,
 } from '../../../../common';
-import { getLimitedFeatureSupportLevels } from '../../../../common/components/newFeatureSupportLevels/utils';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -35,6 +34,7 @@ import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
+import { SupportedPlatformIntegrationType } from '../../../hooks/useClusterSupportedPlatforms';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -45,20 +45,7 @@ export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
     | 'serviceNetworksIpv4'
     | 'serviceNetworksDualstack'
   >;
-  hideManagedNetworking?: boolean;
 };
-
-const vmsAlert = (
-  <Alert
-    title="Your cluster will be subject to support limitations"
-    variant={AlertVariant.info}
-    isInline={true}
-    data-testid="networking-vms-alert"
-  >
-    Some or all of your discovered hosts are virtual machines, so selecting the cluster-managed
-    networking option will limit your installed cluster's support.
-  </Alert>
-);
 
 const isAdvNetworkConf = (
   cluster: Cluster,
@@ -75,57 +62,59 @@ const isAdvNetworkConf = (
     )
   );
 
-type IsManagedNetworkingDisabledFunctionParams = {
-  isDualStack: boolean;
-  isOracleCloudInfrastructure: boolean;
-  featureSupportLevelData: NewFeatureSupportLevelData;
-};
-
-const isManagedNetworkingDisabled = ({
-  isDualStack,
-  isOracleCloudInfrastructure,
-  featureSupportLevelData,
-}: IsManagedNetworkingDisabledFunctionParams) => {
+const getManagedNetworkingDisabledReason = (
+  isDualStack: boolean,
+  isOracleCloudInfrastructure: boolean,
+  featureSupportLevelData: NewFeatureSupportLevelData,
+) => {
   if (isOracleCloudInfrastructure) {
-    return {
-      isNetworkManagementDisabled: true,
-      networkManagementDisabledReason:
-        'Network management selection is not supported with Oracle Cloud Infrastructure',
-    };
+    return 'Network management selection is not supported with Oracle Cloud Infrastructure';
   } else if (isDualStack) {
-    return {
-      isNetworkManagementDisabled: true,
-      networkManagementDisabledReason:
-        'Network management selection is not supported with dual-stack',
-    };
+    return 'Network management selection is not supported with dual-stack';
   } else if (featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')) {
-    return {
-      isNetworkManagementDisabled: true,
-      networkManagementDisabledReason:
-        featureSupportLevelData.getFeatureDisabledReason('NETWORK_TYPE_SELECTION'),
-    };
-  } else {
-    return { isNetworkManagementDisabled: false, networkManagementDisabledReason: undefined };
+    return featureSupportLevelData.getFeatureDisabledReason('NETWORK_TYPE_SELECTION');
   }
 };
 
-const isUserManagedNetworkingDisabled = (
-  isSupportedPlatformIntegrationNutanixOrVSphere: boolean,
+const getUserManagedDisabledReason = (
+  supportedPlatformIntegration: SupportedPlatformIntegrationType,
   t: TFunction,
 ) => {
-  if (isSupportedPlatformIntegrationNutanixOrVSphere) {
-    return {
-      isUserManagementDisabled: isSupportedPlatformIntegrationNutanixOrVSphere,
-      userManagementDisabledReason: t(
-        'ai:User-Managed Networking is not supported when using Nutanix or vSphere',
-      ),
-    };
-  } else {
-    return {
-      isUserManagementDisabled: false,
-      userManagementDisabledReason: '',
-    };
+  if (['nutanix', 'vsphere'].includes(supportedPlatformIntegration)) {
+    return t('ai:User-Managed Networking is not supported when using Nutanix or vSphere');
   }
+};
+
+const getClusterManagedDisabledReason = (featureSupportLevelData: NewFeatureSupportLevelData) => {
+  if (!featureSupportLevelData.isFeatureSupported('CLUSTER_MANAGED_NETWORKING')) {
+    return featureSupportLevelData.getFeatureDisabledReason('CLUSTER_MANAGED_NETWORKING');
+  }
+};
+
+const getManagedNetworkingState = (
+  isDualStack: boolean,
+  isOracleCloudInfrastructure: boolean,
+  supportedPlatformIntegration: SupportedPlatformIntegrationType,
+  featureSupportLevelData: NewFeatureSupportLevelData,
+  t: TFunction,
+): {
+  isDisabled: boolean;
+  clusterManagedDisabledReason?: string;
+  userManagedDisabledReason?: string;
+} => {
+  const networkingReason = getManagedNetworkingDisabledReason(
+    isDualStack,
+    isOracleCloudInfrastructure,
+    featureSupportLevelData,
+  );
+  const cmnReason = getClusterManagedDisabledReason(featureSupportLevelData);
+  const umnReason = getUserManagedDisabledReason(supportedPlatformIntegration, t);
+
+  return {
+    isDisabled: !!(cmnReason || umnReason || networkingReason),
+    clusterManagedDisabledReason: cmnReason || networkingReason,
+    userManagedDisabledReason: umnReason || networkingReason,
+  };
 };
 
 const NetworkConfiguration = ({
@@ -133,29 +122,18 @@ const NetworkConfiguration = ({
   hostSubnets,
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
-  hideManagedNetworking,
 }: NetworkConfigurationProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
-  const { clusterFeatureSupportLevels } = React.useMemo(() => {
-    return {
-      clusterFeatureSupportLevels: getLimitedFeatureSupportLevels(
-        cluster,
-        featureSupportLevelData,
-        t,
-      ),
-    };
-  }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);
-  const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const shouldUpdateAdvConf = !isViewerMode && isDualStack && !isUserManagedNetworking;
-  const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
+  const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
   const isSDNSelectable = React.useMemo(() => {
     return canSelectNetworkTypeSDN(isSNOCluster, isDualStack);
   }, [isSNOCluster, isDualStack]);
@@ -171,12 +149,12 @@ const NetworkConfiguration = ({
       setFieldValue('ingressVips', [], false);
       setFieldValue('apiVips', [], false);
 
-      if (isMultiNodeCluster) {
+      if (!isSNOCluster) {
         setFieldValue('machineNetworks', [], false);
       }
     }
   }, [
-    isMultiNodeCluster,
+    isSNOCluster,
     isUserManagedNetworking,
     values.vipDhcpAllocation,
     setFieldValue,
@@ -215,51 +193,50 @@ const NetworkConfiguration = ({
   );
 
   React.useEffect(() => {
-    if (shouldUpdateAdvConf) {
+    if (!isViewerMode && isDualStack && !isUserManagedNetworking) {
       toggleAdvConfiguration(true);
     }
-  }, [shouldUpdateAdvConf, toggleAdvConfiguration]);
+  }, [isDualStack, isUserManagedNetworking, isViewerMode, toggleAdvConfiguration]);
 
-  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
-  const isSupportedPlatformIntegrationNutanixOrVSphere =
-    supportedPlatformIntegration === 'nutanix' || supportedPlatformIntegration === 'vsphere';
-  const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
+  const managedNetworkingState = React.useMemo(
     () =>
-      isManagedNetworkingDisabled({
+      getManagedNetworkingState(
         isDualStack,
-        isOracleCloudInfrastructure: cluster.platform?.type === 'oci',
+        cluster.platform?.type === 'oci',
+        supportedPlatformIntegration,
         featureSupportLevelData,
-      }),
-    [cluster.platform?.type, featureSupportLevelData, isDualStack],
-  );
-
-  const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(
-    () => isUserManagedNetworkingDisabled(isSupportedPlatformIntegrationNutanixOrVSphere, t),
-    [isSupportedPlatformIntegrationNutanixOrVSphere, t],
+        t,
+      ),
+    [isDualStack, cluster.platform?.type, supportedPlatformIntegration, featureSupportLevelData, t],
   );
 
   return (
     <Grid hasGutter>
-      {!hideManagedNetworking && (
-        <ManagedNetworkingControlGroup
-          disabled={isViewerMode || isNetworkManagementDisabled || isUserManagementDisabled}
-          tooltip={networkManagementDisabledReason}
-          tooltipUmnDisabled={userManagementDisabledReason}
-        />
-      )}
+      <ManagedNetworkingControlGroup
+        disabled={isViewerMode || managedNetworkingState.isDisabled}
+        tooltipCmnDisabled={managedNetworkingState.clusterManagedDisabledReason}
+        tooltipUmnDisabled={managedNetworkingState.userManagedDisabledReason}
+      />
 
       {isUserManagedNetworking && (
         <UserManagedNetworkingTextContent
-          shouldDisplayLoadBalancersBullet={isMultiNodeCluster}
+          shouldDisplayLoadBalancersBullet={!isSNOCluster}
           docVersion={cluster.openshiftVersion}
         />
       )}
 
       {!isUserManagedNetworking &&
-        !!clusterFeatureSupportLevels &&
-        (clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' ||
-          clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unavailable') &&
-        vmsAlert}
+        !featureSupportLevelData.isFeatureSupported('CLUSTER_MANAGED_NETWORKING_WITH_VMS') && (
+          <Alert
+            title="Your cluster will be subject to support limitations"
+            variant={AlertVariant.info}
+            isInline={true}
+            data-testid="networking-vms-alert"
+          >
+            Some or all of your discovered hosts are virtual machines, so selecting the
+            cluster-managed networking option will limit your installed cluster's support.
+          </Alert>
+        )}
 
       {(isSNOCluster || !isUserManagedNetworking) && (
         <StackTypeControlGroup
@@ -270,7 +247,7 @@ const NetworkConfiguration = ({
       )}
       <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
 
-      {!(isUserManagedNetworking && isMultiNodeCluster) && (
+      {!(isUserManagedNetworking && !isSNOCluster) && (
         <AvailableSubnetsControl
           clusterId={cluster.id}
           hostSubnets={hostSubnets}
