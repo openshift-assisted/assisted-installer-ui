@@ -6,7 +6,7 @@ import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api/types';
 import { isInOcm } from '../../api/axiosClient';
 import { getApiErrorMessage, handleApiError } from '../../api/utils';
-import ClustersAPI from '../../apis/assisted-service/ClustersAPI';
+import ClustersAPI from '../../api/assisted-service/ClustersAPI';
 import { AxiosResponseHeaders } from 'axios';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';

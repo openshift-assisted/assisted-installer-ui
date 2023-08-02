@@ -19,7 +19,7 @@ import {
 import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
 import { setAuthInterceptor } from '../../api';
-import clustersAPI from '../../../common/apis/assisted-service/ClustersAPI';
+import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',

@@ -17,10 +17,11 @@ const axiosCaseConverterOptions = {
 
 const getDefaultClient = (withoutConverter = false) => {
   const client = axios.create();
-  client.interceptors.request.use((cfg) => ({
-    ...cfg,
-    url: `${process.env.AIUI_APP_API_ROOT || ''}${cfg.url || ''}`,
-  }));
+  client.interceptors.request.use((cfg) => {
+    cfg.url = `${process.env.AIUI_APP_API_ROOT || ''}${cfg.url || ''}`;
+    return cfg;
+  });
+
   if (withoutConverter) {
     return client;
   } else {
@@ -34,10 +35,10 @@ let ocmClient: AxiosInstance | null;
 let isInOcm = false;
 
 const aiInterceptor = (client: AxiosInstance) => {
-  client.interceptors.request.use((cfg) => ({
-    ...cfg,
-    url: `${BASE_PATH}${cfg.url || ''}`,
-  }));
+  client.interceptors.request.use((cfg) => {
+    cfg.url = `${BASE_PATH}${cfg.url || ''}`;
+    return cfg;
+  });
   return client;
 };
 
