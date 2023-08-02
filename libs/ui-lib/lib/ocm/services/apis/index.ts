@@ -7,4 +7,4 @@ export {
   InfraEnvsAPI,
   EventsAPI,
   NewFeatureSupportLevelsAPI,
-} from '../../../common/apis/assisted-service/index';
+} from '../../../common/api/assisted-service/index';
