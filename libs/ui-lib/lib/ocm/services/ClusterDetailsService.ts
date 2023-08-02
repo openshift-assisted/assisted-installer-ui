@@ -112,13 +112,11 @@ const ClusterDetailsService = {
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
 
-    const platform = cluster?.platform?.type === 'baremetal' ? 'none' : cluster?.platform?.type;
     return {
       ...values,
       cpuArchitecture,
       hostsNetworkConfigurationType,
       addCustomManifest: false,
-      platform: platform === undefined ? 'none' : platform,
       isCMNSupported: true,
     };
   },

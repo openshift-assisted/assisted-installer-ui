@@ -35,7 +35,7 @@ import CpuArchitectureDropdown, {
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
-import { ExternalPlatformDropdown, ExternalPlatformType } from './ExternalPlatformDropdown';
+import { ExternalPlatformDropdown } from './ExternalPlatformDropdown';
 import { useOracleDropdownItemState } from '../../hooks/useOracleDropdownItemState';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { HostsNetworkConfigurationType } from '../../services/types';
@@ -110,15 +110,13 @@ export const OcmClusterDetailsFormFields = ({
     values.cpuArchitecture,
   );
   const featureSupportLevelContext = useNewFeatureSupportLevel();
+
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
 
   React.useEffect(() => {
-    if (clusterPlatform !== undefined) {
-      const platform = clusterPlatform === 'baremetal' ? 'none' : clusterPlatform;
-      setFieldValue('platform', platform);
-    } else {
+    if (clusterPlatform) {
       if (!oracleDropdownItemState?.isSupported) {
         setFieldValue('platform', 'none');
       }
@@ -126,7 +124,7 @@ export const OcmClusterDetailsFormFields = ({
   }, [clusterPlatform, setFieldValue, oracleDropdownItemState?.isSupported]);
 
   const handleExternalPartnerIntegrationsChange = React.useCallback(
-    (selectedPlatform: ExternalPlatformType) => {
+    (selectedPlatform: PlatformType) => {
       const isOracleSelected = selectedPlatform === 'oci';
       if (isOracleSelected) {
         setFieldValue('addCustomManifest', isOracleSelected, false);

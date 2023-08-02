@@ -18,13 +18,12 @@ import {
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
-export type ExternalPlatformType = Extract<PlatformType, 'none' | 'nutanix' | 'oci' | 'vsphere'>;
 
 type ExternalPlatformDropdownProps = {
   showOciOption: boolean;
   disabledOciTooltipContent: React.ReactNode;
   isOciDisabled: boolean;
-  onChange: (selectedPlatform: ExternalPlatformType) => void;
+  onChange: (selectedPlatform: PlatformType) => void;
   dropdownIsDisabled: boolean;
 };
 
@@ -34,8 +33,10 @@ export type ExternalPlatformInfo = {
   tooltip: string;
 };
 
-export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatformInfo> = {
-  none: {
+const getExternalPlatformTypes = (
+  initialValue: PlatformType,
+): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => ({
+  [initialValue === 'baremetal' ? 'baremetal' : 'none']: {
     label: 'No platform integration',
     href: '',
     tooltip: '',
@@ -56,7 +57,7 @@ export const externalPlatformTypes: Record<ExternalPlatformType, ExternalPlatfor
     href: VSPHERE_CONFIG_LINK,
     tooltip: '',
   },
-};
+});
 
 export const ExternalPlatformDropdown = ({
   showOciOption,
@@ -65,12 +66,15 @@ export const ExternalPlatformDropdown = ({
   onChange,
   dropdownIsDisabled,
 }: ExternalPlatformDropdownProps) => {
-  const [field, { value }, { setValue }] = useField<string>(INPUT_NAME);
+  const [field, { value, initialValue }, { setValue }] = useField<string>(INPUT_NAME);
   const [isOpen, setOpen] = React.useState(false);
   const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {
     event.stopPropagation(); // Stop event propagation here
     window.open(href, '_blank');
   };
+
+  const externalPlatformTypes = getExternalPlatformTypes(initialValue as PlatformType);
+
   const enabledItems = Object.keys(externalPlatformTypes)
     .filter((platformType) => {
       if (platformType === 'oci') {
@@ -79,9 +83,11 @@ export const ExternalPlatformDropdown = ({
       return true;
     })
     .map((platformType) => {
-      const { label, href, tooltip } = externalPlatformTypes[platformType as ExternalPlatformType];
       const isOracleDisabled = platformType === 'oci' && isOciDisabled;
-      const isHrefEmpty = href === '';
+      const { label, href, tooltip } = externalPlatformTypes[
+        platformType as PlatformType
+      ] as ExternalPlatformInfo;
+
       return (
         <DropdownItem
           key={platformType}
@@ -91,7 +97,7 @@ export const ExternalPlatformDropdown = ({
           tooltipProps={{ position: 'top-start' }}
         >
           {label}
-          {!isHrefEmpty && (
+          {!!href && (
             <Button
               variant={ButtonVariant.link}
               style={{ float: 'right' }}
@@ -106,7 +112,7 @@ export const ExternalPlatformDropdown = ({
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const selectedPlatform = event?.currentTarget.id as ExternalPlatformType;
+      const selectedPlatform = event?.currentTarget.id as PlatformType;
       setValue(selectedPlatform);
       setOpen(false);
       onChange(selectedPlatform);
@@ -123,10 +129,10 @@ export const ExternalPlatformDropdown = ({
         className="pf-u-w-100"
         isDisabled={dropdownIsDisabled}
       >
-        {externalPlatformTypes[value as ExternalPlatformType].label}
+        {externalPlatformTypes[value as PlatformType]?.label}
       </DropdownToggle>
     ),
-    [dropdownIsDisabled, value],
+    [dropdownIsDisabled, externalPlatformTypes, value],
   );
 
   return (
