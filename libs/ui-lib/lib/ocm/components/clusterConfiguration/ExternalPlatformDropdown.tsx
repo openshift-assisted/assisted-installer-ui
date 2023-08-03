@@ -96,16 +96,24 @@ export const ExternalPlatformDropdown = ({
           isAriaDisabled={isOracleDisabled}
           tooltipProps={{ position: 'top-start' }}
         >
-          {label}
-          {!!href && (
-            <Button
-              variant={ButtonVariant.link}
-              style={{ float: 'right' }}
-              onClick={(event) => handleClick(event, href)}
-            >
-              Learn more <i className="fas fa-external-link-alt" />
-            </Button>
-          )}
+          <Split>
+            <SplitItem>{label}</SplitItem>
+            {!!href && (
+              <>
+                <SplitItem isFilled />
+                <SplitItem>
+                  <Button
+                    variant={ButtonVariant.link}
+                    isInline
+                    style={{ float: 'right' }}
+                    onClick={(event) => handleClick(event, href)}
+                  >
+                    Learn more <i className="fas fa-external-link-alt" />
+                  </Button>
+                </SplitItem>
+              </>
+            )}
+          </Split>
         </DropdownItem>
       );
     });
