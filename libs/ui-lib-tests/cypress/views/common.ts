@@ -36,11 +36,13 @@ type Day1StaticIpSteps =
 
 type Day2Steps = 'Cluster details' | 'Generate Discovery ISO' | 'Download Discovery ISO';
 
+type Steps = Day1Steps | Day1StaticIpSteps | Day2Steps;
+
 export const commonActions = {
   getWizardStepNav: (stepName: string) => {
     return cy.get('.pf-c-wizard__nav-item').contains(stepName);
   },
-  startAtWizardStep: (step: string) => {
+  startAtWizardStep: (step: Steps) => {
     commonActions.getWizardStepNav(step).click();
     commonActions.verifyIsAtStep(step);
   },
