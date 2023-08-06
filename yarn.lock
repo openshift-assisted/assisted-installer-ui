@@ -461,6 +461,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@openshift-assisted/types@workspace:libs/types":
+  version: 0.0.0-use.local
+  resolution: "@openshift-assisted/types@workspace:libs/types"
+  dependencies:
+    "@types/js-yaml": ^4.0.1
+    js-yaml: ^4.1.0
+    sw2dts: ^2.6.3
+  languageName: unknown
+  linkType: soft
+
 "@openshift-assisted/ui-lib-tests@workspace:libs/ui-lib-tests":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/ui-lib-tests@workspace:libs/ui-lib-tests"
