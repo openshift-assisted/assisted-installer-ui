@@ -57,6 +57,10 @@ const ClusterDetailsService = {
       params.tags = AI_UI_TAG;
     }
 
+    if (params.platform?.type === 'none') {
+      delete params.platform;
+    }
+
     return params;
   },
 
@@ -108,13 +112,11 @@ const ClusterDetailsService = {
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
 
-    const platform = cluster?.platform?.type === 'baremetal' ? 'none' : cluster?.platform?.type;
     return {
       ...values,
       cpuArchitecture,
       hostsNetworkConfigurationType,
       addCustomManifest: false,
-      platform: platform === undefined ? 'none' : platform,
       isCMNSupported: true,
     };
   },

@@ -3,6 +3,7 @@ import { ClusterDetailsForm } from '../../../views/forms/ClusterDetails/ClusterD
 import { externalPlatformTypes } from '../../../fixtures/cluster/external-platform-types';
 import { commonActions } from '../../../views/common';
 import { pullSecret } from '../../../fixtures';
+import { clusterDetailsPage } from '../../../views/clusterDetails';
 
 describe('Create a new cluster with external partner integrations', () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -11,22 +12,11 @@ describe('Create a new cluster with external partner integrations', () => {
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
-
   before(() => setTestStartSignal(''));
-  beforeEach(() => setTestStartSignal(''));
 
-  xcontext('When the feature is disabled:', () => {
-    // TODO(jkilzi): Find out how to mock the LibRouter store and features props.
-    // This test case is disabled intentionally because it requires tweaking the
-    // props passed to the LibRouter in the app.
-    it('The user cannot see the external partner integrations checkbox', () => {
-      // Disable somehow Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES.ASSISTED_INSTALLER_PLATFORM_OCI, and then...
-      // ClusterDetailsForm.init().externalPartnerIntegrationsControl.findLabel().should('not.exist');
-    });
-  });
-
-  context('When the feature is enabled:', () => {
+  describe('When creating the cluster:', () => {
     beforeEach(() => {
+      setTestStartSignal('');
       NewClusterPage.visit();
       ClusterDetailsForm.init();
     });
@@ -92,14 +82,19 @@ describe('Create a new cluster with external partner integrations', () => {
         .findDropdownItemSelected()
         .contains('No platform integration');
     });
+  });
 
-    xit('The minimal ISO is presented by default', () => {
-      // TODO(jkilzi): WIP...
-      // ClusterDetailsForm.clusterNameField
-      //   .findInputField()
-      //   .type(Cypress.env('CLUSTER_NAME'));
-      // ClusterDetailsForm.baseDomainField.findInputField().scrollIntoView().type('redhat.com');
-      // ClusterDetailsForm.openshiftVersionField.findInputField().scrollIntoView().type('redhat.com');
+  describe('After the cluster is created', () => {
+    beforeEach(() => {
+      setTestStartSignal('CLUSTER_CREATED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.startAtWizardStep('Cluster details');
+    });
+
+    it('Shows external platform integrations as a static field', () => {
+      clusterDetailsPage
+        .getExternalPlatformIntegrationStaticField()
+        .should('have.text', 'No platform integration');
     });
   });
 });

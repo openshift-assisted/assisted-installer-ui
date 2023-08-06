@@ -123,4 +123,7 @@ export const clusterDetailsPage = {
   getCustomManifestCheckbox: () => {
     return cy.get('#form-input-addCustomManifest-field');
   },
+  getExternalPlatformIntegrationStaticField: () => {
+    return cy.get('#form-static-platform-field');
+  },
 };
