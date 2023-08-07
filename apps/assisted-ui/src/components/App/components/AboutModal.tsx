@@ -6,7 +6,7 @@ import {
   TextContent,
   ButtonVariant,
 } from '@patternfly/react-core';
-import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../../../config.js';
+import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../../../config';
 import redHatLogo from '../../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import {
   Services,
