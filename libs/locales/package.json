@@ -10,6 +10,22 @@
     "./ko/translation.json": "./lib/ko/translation.json",
     "./zh/translation.json": "./lib/zh/translation.json"
   },
+  "typesVersions": {
+    "*": {
+      "en/translation.json": [
+        "./lib/en/index.d.ts"
+      ],
+      "ja/translation.json": [
+        "./lib/ja/index.d.ts"
+      ],
+      "ko/translation.json": [
+        "./lib/ko/index.d.ts"
+      ],
+      "zh/translation.json": [
+        "./lib/zh/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib"
   ],

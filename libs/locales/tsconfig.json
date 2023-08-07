@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "rootDir": "lib"
+  },
+  "include": ["lib"]
+}
