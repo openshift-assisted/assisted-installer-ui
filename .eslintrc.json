@@ -45,6 +45,19 @@
       }
     },
     {
+      "files": ["libs/locales/lib/**/*.ts"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/locales",
+        "project": "tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
       "files": ["libs/ui-lib/lib/**/*.{ts,tsx}"],
       "parserOptions": {
