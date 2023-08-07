@@ -525,7 +525,6 @@ __metadata:
     prism-react-renderer: ^1.1.1
     react-error-boundary: ^3.1.4
     react-measure: ^2.5.2
-    sw2dts: ^2.6.3
     swr: ^2
     unique-names-generator: ^4.2.0
   peerDependencies:
