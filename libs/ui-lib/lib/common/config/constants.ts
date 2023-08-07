@@ -6,7 +6,7 @@ import { FeatureSupportLevelData } from '../components/featureSupportLevels/Feat
 import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
 // @ts-ignore
-import buildManifest from '../../../build/build.json'; // This file is generated at build-time.
+import buildManifest from '@openshift-assisted/ui-lib/package.json'; // This file is generated at build-time.
 
 export const getShortOpenshiftVersion = (ocpVersion?: string) =>
   ocpVersion?.split('.').slice(0, 2).join('.');
