@@ -32,8 +32,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "update-types:assisted-installer-service": "node scripts/update-assisted-installer-service-types.js",
-    "watch": "yarn run -T toolbox watch --dir=. 'yalc push --changed'"
+    "update:assisted-installer-service": "node scripts/update-assisted-installer-service-types.js"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.1",

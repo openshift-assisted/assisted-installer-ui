@@ -21,5 +21,13 @@
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },
   "include": ["lib"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["**/*.test.ts"],
+  "references": [
+    {
+      "path": "../types"
+    },
+    {
+      "path": "../locales"
+    }
+  ]
 }

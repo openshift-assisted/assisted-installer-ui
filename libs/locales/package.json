@@ -42,7 +42,6 @@
     "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
-    "watch": "yarn run -T toolbox watch --dir=lib 'yalc push --changed'",
     "process_new_strings": "scripts/process-new-strings.sh",
     "validate_translation_files": "scripts/validate-translation-files.sh"
   },

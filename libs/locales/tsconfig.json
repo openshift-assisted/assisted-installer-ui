@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "incremental": true,
+    "noEmit": false,
     "resolveJsonModule": true,
-    "noEmit": true,
-    "rootDir": "lib"
+    "rootDir": "lib",
+    "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },
-  "include": ["lib"]
+  "include": ["lib/**/*.ts", "lib/**/*.json"]
 }
