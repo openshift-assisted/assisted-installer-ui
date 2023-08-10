@@ -13,6 +13,8 @@ const withAssistedInstallerBasePath = (client: AxiosInstance): AxiosInstance => 
       } catch {
         cfg.url = `${basePath}${cfg.url}`;
       }
+    } else {
+      cfg.url = `${basePath}`;
     }
 
     return cfg;

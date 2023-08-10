@@ -14,21 +14,22 @@
   "typesVersions": {
     "*": {
       "en/translation.json": [
-        "./lib/en/index.d.ts"
+        "./@types/en.d.ts"
       ],
       "ja/translation.json": [
-        "./lib/ja/index.d.ts"
+        "./@types/ja.d.ts"
       ],
       "ko/translation.json": [
-        "./lib/ko/index.d.ts"
+        "./@types/ko.d.ts"
       ],
       "zh/translation.json": [
-        "./lib/zh/index.d.ts"
+        "./@types/zh.d.ts"
       ]
     }
   },
   "files": [
     "lib",
+    "@types",
     "tsconfig.json"
   ],
   "license": "Apache-2.0",

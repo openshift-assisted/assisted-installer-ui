@@ -4,8 +4,8 @@
     "incremental": true,
     "noEmit": false,
     "resolveJsonModule": true,
-    "rootDir": "lib",
+    "rootDirs": ["@types", "lib"],
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },
-  "include": ["lib/**/*.ts", "lib/**/*.json"]
+  "include": ["@types/*.d.ts", "lib/**/*.json"]
 }
