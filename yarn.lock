@@ -424,9 +424,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/eslint-config-assisted-ui@workspace:*, @openshift-assisted/eslint-config-assisted-ui@workspace:^, @openshift-assisted/eslint-config-assisted-ui@workspace:libs/eslint-config-assisted-ui":
+"@openshift-assisted/eslint-config-assisted-ui@workspace:*, @openshift-assisted/eslint-config-assisted-ui@workspace:^, @openshift-assisted/eslint-config-assisted-ui@workspace:tools/eslint-config-assisted-ui":
   version: 0.0.0-use.local
-  resolution: "@openshift-assisted/eslint-config-assisted-ui@workspace:libs/eslint-config-assisted-ui"
+  resolution: "@openshift-assisted/eslint-config-assisted-ui@workspace:tools/eslint-config-assisted-ui"
   dependencies:
     "@types/eslint": ^8
     "@typescript-eslint/eslint-plugin": ^5.54.1
@@ -447,9 +447,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/toolbox@workspace:*, @openshift-assisted/toolbox@workspace:libs/toolbox":
+"@openshift-assisted/toolbox@workspace:*, @openshift-assisted/toolbox@workspace:tools/toolbox":
   version: 0.0.0-use.local
-  resolution: "@openshift-assisted/toolbox@workspace:libs/toolbox"
+  resolution: "@openshift-assisted/toolbox@workspace:tools/toolbox"
   dependencies:
     "@tsconfig/recommended": ^1.0.2
     "@types/node": ^18.14.6

@@ -4,14 +4,19 @@
     "es6": true,
     "node": true
   },
-  "ignorePatterns": ["apps/*/build", "libs/*/build", "libs/*/@types"],
+  "ignorePatterns": ["apps/*/build", "libs/*/build", "tools/*/build"],
   "overrides": [
     {
       "env": {
         "browser": false
       },
       "extends": ["eslint:recommended", "prettier"],
-      "files": ["scripts/*.cjs", "apps/*/scripts/*.cjs", "libs/*/scripts/*.cjs"],
+      "files": [
+        "scripts/*.cjs",
+        "apps/*/scripts/*.cjs",
+        "libs/*/scripts/*.cjs",
+        "tools/*/scripts/*.cjs"
+      ],
       "rules": {
         "no-console": "off"
       }
@@ -21,7 +26,12 @@
         "browser": false
       },
       "extends": ["eslint:recommended", "prettier"],
-      "files": ["scripts/*.{js,mjs}", "apps/*/scripts/*.{js,mjs}", "libs/*/scripts/*.{js,mjs}"],
+      "files": [
+        "scripts/*.{js,mjs}",
+        "apps/*/scripts/*.{js,mjs}",
+        "libs/*/scripts/*.{js,mjs}",
+        "tools/*/scripts/*.{js,mjs}"
+      ],
       "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
@@ -35,7 +45,17 @@
         "browser": false
       },
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
-      "files": ["libs/toolbox/lib/**/*.ts"],
+      "files": ["tools/eslint-config-assisted-ui/lib/**/*.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "env": {
+        "browser": false
+      },
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "files": ["tools/toolbox/lib/**/*.ts"],
       "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
@@ -50,6 +70,19 @@
       "parserOptions": {
         "tsconfigRootDir": "libs/locales",
         "project": "tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["libs/types/lib/**/*.ts"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/types",
+        "project": "tsconfig.eslint.json",
         "sourceType": "module",
         "ecmaVersion": "latest"
       },
