@@ -7,6 +7,8 @@ interface Version {
 
 export const x86 = 'x86_64';
 export const arm64 = 'arm64';
+export const s390x = 's390x';
+export const ppc64le = 'ppc64le';
 
 const versions: Record<string, Version> = {
   '4.8': {
@@ -43,6 +45,11 @@ const versions: Record<string, Version> = {
   '4.13': {
     cpu_architectures: [x86, arm64],
     display_name: '4.13.0-rc.6',
+    support_level: 'beta',
+  },
+  '4.14': {
+    cpu_architectures: [x86, arm64, s390x, ppc64le],
+    display_name: '4.14.0-ec.3',
     support_level: 'beta',
   },
 };

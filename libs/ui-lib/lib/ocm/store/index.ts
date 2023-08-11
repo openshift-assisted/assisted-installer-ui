@@ -12,7 +12,7 @@ export const store = configureStore({
   preloadedState: {},
 });
 export type RootState = ReturnType<typeof store.getState>;
-export type DispatchDay1 = typeof store.dispatch;
+export type DispatchDay1 = (typeof store)['dispatch'];
 
 export const storeDay2 = configureStore({
   reducer: {
@@ -20,4 +20,4 @@ export const storeDay2 = configureStore({
   },
 });
 export type RootStateDay2 = ReturnType<typeof storeDay2.getState>;
-export type DispatchDay2 = typeof storeDay2.dispatch;
+export type DispatchDay2 = (typeof storeDay2)['dispatch'];

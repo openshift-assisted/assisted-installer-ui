@@ -5,7 +5,7 @@ import {
   NewFeatureSupportLevelMap,
 } from '../../common/components/newFeatureSupportLevels';
 import { getApiErrorMessage, handleApiError } from '../api';
-import NewFeatureSupportLevelsAPI from '../services/apis/NewFeatureSupportLevelsAPI';
+import NewFeatureSupportLevelsAPI from '../../common/api/assisted-service/NewFeatureSupportLevelsAPI';
 
 type SupportLevelAPIResources = 'architectures' | 'features';
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'

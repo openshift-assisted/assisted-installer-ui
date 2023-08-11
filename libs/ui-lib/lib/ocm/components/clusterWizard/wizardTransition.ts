@@ -5,7 +5,6 @@ import {
   getWizardStepClusterStatus,
   Host,
   HostValidationId,
-  stringToJSON,
   WizardStepsValidationMap,
   WizardStepValidationMap,
 } from '../../../common';
@@ -15,7 +14,7 @@ import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
 } from '../../../common/types/hosts';
-import { getKeys } from '../../../common/utils';
+import { getKeys, stringToJSON } from '../../../common/utils';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'

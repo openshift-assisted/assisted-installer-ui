@@ -33,7 +33,7 @@ import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { getApiErrorMessage } from '../../../ocm/api'; // eslint-disable-line no-restricted-imports
+import { getApiErrorMessage } from '../../api'; // eslint-disable-line no-restricted-imports
 
 import './MassChangeHostnameModal.css';
 

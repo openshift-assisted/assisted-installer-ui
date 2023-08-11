@@ -14,10 +14,18 @@ import {
   CreateManifestParams,
   UpdateManifestParams,
   Manifest,
-} from '../../../common/api/types';
+  LogsType,
+} from '../../api/types';
 import { AxiosResponse } from 'axios';
-import { ClustersAPIGetPresignedOptions } from './types';
+
 let _getRequestAbortController = new AbortController();
+
+type ClustersAPIGetPresignedOptions = {
+  clusterId: string;
+  fileName: 'logs' | 'kubeconfig' | 'kubeconfig-noingress';
+  hostId?: string;
+  logsType?: LogsType;
+};
 
 const ClustersAPI = {
   abortLastGetRequest() {

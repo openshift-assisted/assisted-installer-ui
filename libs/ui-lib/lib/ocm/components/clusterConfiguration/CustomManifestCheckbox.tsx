@@ -24,9 +24,9 @@ const Label = () => {
   );
 };
 
-type CustomManifestCheckboxProps = { clusterId: string };
+type CustomManifestCheckboxProps = { clusterId: string; isDisabled: boolean };
 
-const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
+const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckboxProps) => {
   const [{ name }, , { setValue }] = useField('addCustomManifest');
   const fieldId = getFieldId(name, 'input');
   const clusterWizardContext = useClusterWizardContext();
@@ -87,6 +87,7 @@ const CustomManifestCheckbox = ({ clusterId }: CustomManifestCheckboxProps) => {
           onChange={(checked: boolean) => onChanged(checked)}
           className="with-tooltip"
           isChecked={manifestsRemoved ? false : customManifestsActivated}
+          isDisabled={isDisabled}
         />
         <DeleteCustomManifestModal
           isOpen={isDeleteCustomManifestsOpen}

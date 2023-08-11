@@ -7,6 +7,7 @@ import {
   OpenshiftVersionOptionType,
   getClusterDetailsInitialValues,
   ClusterCpuArchitecture,
+  PlatformType,
 } from '../../common';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
@@ -39,13 +40,12 @@ const ClusterDetailsService = {
       baseDnsDomain: values.baseDnsDomain,
       cpuArchitecture: values.cpuArchitecture as ClusterCpuArchitecture,
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
+      platform: {
+        type: values.platform,
+      },
     };
 
-    if (values.externalPartnerIntegrations) {
-      params.platform = { type: 'oci' };
-    }
-
-    if (params.cpuArchitecture === CpuArchitecture.ARM || params.platform?.type === 'oci') {
+    if (!values.isCMNSupported) {
       params.userManagedNetworking = true;
     }
 
@@ -57,10 +57,17 @@ const ClusterDetailsService = {
       params.tags = AI_UI_TAG;
     }
 
+    if (params.platform?.type === 'none') {
+      delete params.platform;
+    }
+
     return params;
   },
 
-  getClusterUpdateParams(values: OcmClusterDetailsValues): ClusterDetailsUpdateParams {
+  getClusterUpdateParams(
+    values: OcmClusterDetailsValues,
+    platform: PlatformType,
+  ): ClusterDetailsUpdateParams {
     const params: ClusterDetailsUpdateParams = {
       name: values.name,
       baseDnsDomain: values.baseDnsDomain,
@@ -68,6 +75,12 @@ const ClusterDetailsService = {
 
     if (values.pullSecret) {
       params.pullSecret = values.pullSecret;
+    }
+
+    if (platform) {
+      params.platform = {
+        type: platform,
+      };
     }
 
     return params;
@@ -103,8 +116,8 @@ const ClusterDetailsService = {
       ...values,
       cpuArchitecture,
       hostsNetworkConfigurationType,
-      externalPartnerIntegrations: cluster?.platform?.type === 'oci',
       addCustomManifest: false,
+      isCMNSupported: true,
     };
   },
 };

@@ -103,13 +103,18 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const getDisabledReasonCallback = React.useCallback(
-    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
+    (
+      featureId: FeatureId,
+      supportLevelDataNew?: NewFeatureSupportLevelMap,
+      cpuArchitecture?: string,
+    ) => {
       const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
         featureId,
         cluster,
         activeFeatureConfiguration,
         isSupported,
+        cpuArchitecture,
       );
     },
     [isFeatureSupportedCallback, cluster, activeFeatureConfiguration],

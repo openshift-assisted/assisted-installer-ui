@@ -15,7 +15,6 @@ import { wizardStepsValidationsMap } from './wizardTransition';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ClusterPlatformIntegrationHint } from './ClusterPlatformIntegrationHint';
 import { onFetchEvents } from '../fetching/fetchEvents';
 
 type ClusterValidationSectionProps = {
@@ -47,12 +46,6 @@ const ValidationSection = ({
         <Alert variant={AlertVariant.danger} title={alertTitle || defaultAlertTitle} isInline>
           {_alertContent}
         </Alert>
-      )}
-      {currentStepId === 'host-discovery' && cluster && (
-        <ClusterPlatformIntegrationHint
-          clusterId={cluster.id}
-          platformType={cluster.platform?.type || 'none'}
-        />
       )}
 
       {cluster && (

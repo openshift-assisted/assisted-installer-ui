@@ -3,7 +3,7 @@ export const storagePage = {
     numMasters: number = Cypress.env('NUM_MASTERS'),
     numWorkers: number = Cypress.env('NUM_WORKERS'),
   ) => {
-    cy.get(Cypress.env('odfUsageDataLabel'))
+    cy.get('td[data-label="ODF Usage"]')
       .should('have.length', numMasters + numWorkers)
       .each((hostRole, idx) => {
         const isMaster = idx <= numMasters - 1;
@@ -18,7 +18,7 @@ export const storagePage = {
     numMasters: number = Cypress.env('NUM_MASTERS'),
     numWorkers: number = Cypress.env('NUM_WORKERS'),
   ) => {
-    cy.get(Cypress.env('diskNumberDataLabel'))
+    cy.get('td[data-label="Number of disks"]')
       .should('have.length', numMasters + numWorkers)
       .each((hostDisk) => {
         expect(hostDisk).to.contain('3');
@@ -28,7 +28,7 @@ export const storagePage = {
     return cy.get(`input[id="select-formatted-${hostId}-${indexSelect}"]`);
   },
   validateSkipFormattingDisks: (hostId: string, numDisks: number) => {
-    cy.get(Cypress.env('skipFormattingDataLabel')).should('have.length', numDisks);
+    cy.get("td[data-label='Format?']").should('have.length', numDisks);
     //Checking if checkboxes are checked/unchecked
     storagePage.getSkipFormattingCheckbox(hostId, 0).should('not.be.checked');
     storagePage.getSkipFormattingCheckbox(hostId, 1).should('be.checked');
@@ -39,17 +39,20 @@ export const storagePage = {
     storagePage.getSkipFormattingCheckbox(hostId, 2).should('be.disabled');
   },
   validateSkipFormattingWarning: () => {
-    cy.get('.pf-c-alert__title').should('contain.text', Cypress.env('skipFormattingWarningTitle'));
+    cy.get('.pf-c-alert__title').should(
+      'contain.text',
+      'There might be issues with the boot order',
+    );
     cy.get('.pf-c-alert__description').should(
       'contain.text',
-      Cypress.env('skipFormattingWarningDesc'),
+      'You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention might be required during OpenShift installation.',
     );
   },
   validateSkipFormattingIcon: (diskId: string) => {
     //If a disk is skip formatting validate that warning icon is shown
     cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within(
       (/* $diskRow */) => {
-        cy.get('[role="img"]').should('have.attr', 'fill', Cypress.env('warningIconFillColor'));
+        cy.get('[role="img"]').should('have.attr', 'fill', '#f0ab00');
       },
     );
   },

@@ -109,21 +109,14 @@ const CpuArchitectureDropdown = ({
       !isSelectedCpuArchitectureSupported &&
       selectedCpuArchitecture !== getDefaultCpuArchitecture()
     ) {
-      setValue(getDefaultCpuArchitecture());
       setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
       setOpen(false);
     }
     if (prevVersionRef.current !== openshiftVersion) {
       prevVersionRef.current = openshiftVersion;
     }
-  }, [
-    openshiftVersion,
-    setValue,
-    setOpen,
-    cpuArchitectures,
-    setCurrentCpuArch,
-    selectedCpuArchitecture,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openshiftVersion, selectedCpuArchitecture]);
 
   const toggle = React.useMemo(
     () => (

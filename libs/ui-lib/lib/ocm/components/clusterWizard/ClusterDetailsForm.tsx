@@ -73,7 +73,16 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {
-        const params = ClusterDetailsService.getClusterUpdateParams(values);
+        let resetPlatform = values.platform;
+        const clusterPlatform = cluster.platform?.type;
+        if (
+          values.platform === 'none' &&
+          clusterPlatform !== 'none' &&
+          clusterPlatform !== 'baremetal'
+        ) {
+          resetPlatform = 'baremetal';
+        }
+        const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
         await handleClusterUpdate(cluster.id, params);
         await handleCustomManifestsChange(cluster.id, clusterWizardContext.addCustomManifests);
       } else {

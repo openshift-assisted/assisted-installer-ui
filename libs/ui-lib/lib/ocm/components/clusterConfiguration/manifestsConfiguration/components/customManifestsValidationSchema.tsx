@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { UniqueStringArrayExtractor } from '../../staticIp/commonValidationSchemas';
 import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import {
   getMaxFileSizeMessage,
@@ -10,40 +9,28 @@ import {
 } from '../../../../../common/utils';
 const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
 
-const UNIQUE_FOLDER_FILENAME =
-  'Ensure unique file names within each folder to avoid conflicts and errors.';
+const UNIQUE_FOLDER_FILENAME = 'Ensure unique file names to avoid conflicts and errors.';
 
-export const getUniqueValidationSchema = <FormValues,>(
-  uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
-) => {
-  return Yup.string().test('unique', UNIQUE_FOLDER_FILENAME, function (value: string) {
-    const context = this.options.context as Yup.TestContext & { values?: FormValues };
+export const getUniqueValidationSchema = Yup.string().test(
+  'unique',
+  UNIQUE_FOLDER_FILENAME,
+  function (value: string) {
+    const context = this.options.context as Yup.TestContext & { values?: ManifestFormData };
     if (!context || !context.values) {
       return this.createError({
         message: 'Unexpected error: Yup test context should contain form values',
       });
     }
 
-    const values = uniqueStringArrayExtractor(context.values, this, value);
-
-    const setValues = new Set(values);
-
-    if (!values) {
-      return this.createError({
-        message: 'Unexpected error: Failed to get values to test uniqueness',
-      });
-    }
-    return values.length === setValues.size;
-  });
-};
-
-const getAllManifests: UniqueStringArrayExtractor<ManifestFormData> = (values: ManifestFormData) =>
-  values.manifests.map((manifest) => `${manifest.folder}_${manifest.filename}`);
+    const values = context.values.manifests.map((manifest) => manifest.filename);
+    return values.filter((path) => path === value).length === 1;
+  },
+);
 
 export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
   manifests: Yup.array<CustomManifestValues>().of(
     Yup.object().shape({
-      folder: Yup.mixed().required('Required').concat(getUniqueValidationSchema(getAllManifests)),
+      folder: Yup.mixed().required('Required'),
       filename: Yup.string()
         .required('Required')
         .min(1, 'Number of characters must be 1-255')
@@ -51,7 +38,7 @@ export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>
         .test('not-correct-filename', INCORRECT_FILENAME, (value: string) => {
           return validateFileName(value);
         })
-        .concat(getUniqueValidationSchema(getAllManifests)),
+        .concat(getUniqueValidationSchema),
       manifestYaml: Yup.string()
         .required('Required')
         .test('not-big-file', getMaxFileSizeMessage, validateFileSize)

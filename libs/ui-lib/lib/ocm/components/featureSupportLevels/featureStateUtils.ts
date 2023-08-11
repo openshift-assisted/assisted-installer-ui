@@ -140,6 +140,7 @@ export const getNewFeatureDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
+  cpuArchitecture?: string,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
@@ -160,11 +161,15 @@ export const getNewFeatureDisabledReason = (
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
     }
-    case 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING': {
-      return 'Network management selection is not supported for ARM architecture with this version of OpenShift.';
+    case 'CLUSTER_MANAGED_NETWORKING': {
+      return 'Cluster-managed networking is not supported for ARM architecture with this version of OpenShift.';
     }
     case 'EXTERNAL_PLATFORM_OCI': {
-      return 'Requires OpenShift v4.14 and above.';
+      if (cpuArchitecture === 's390x') {
+        return "Can't set Oracle platform on s390x architecture";
+      } else {
+        return 'Integration with Oracle is available for OpenShift 4.14 and later versions.';
+      }
     }
     case 'MCE': {
       if (!isSupported) {
@@ -182,3 +187,6 @@ export const getNewFeatureDisabledReason = (
 export const isFeatureSupportedAndAvailable = (supportLevel: SupportLevel | undefined): boolean => {
   return supportLevel !== 'unsupported' && supportLevel !== 'unavailable';
 };
+
+export const hostsNetworkConfigurationDisabledReason =
+  "DHCP only is the supported hosts' network configuration when external partner integrations is selected";

@@ -2,11 +2,10 @@ import React from 'react';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { SupportedPlatformType } from '../../../../common';
-
-import { integrationPlatformLinks } from '../../clusterWizard/ClusterPlatformIntegrationHint';
+import { ExternalPlatformLinks } from './constants';
 
 const PlatformIntegrationNote = ({ platformType }: { platformType: SupportedPlatformType }) => {
-  const integrationPlatformLink = integrationPlatformLinks[platformType];
+  const integrationPlatformLink = ExternalPlatformLinks[platformType];
   return (
     <p>
       <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your

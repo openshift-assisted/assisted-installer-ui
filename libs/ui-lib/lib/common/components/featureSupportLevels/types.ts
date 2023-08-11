@@ -1,7 +1,7 @@
 import {
   ArchitectureSupportLevelMap,
   NewFeatureSupportLevelMap,
-} from '../../../common/components/newFeatureSupportLevels';
+} from '../newFeatureSupportLevels/types';
 
 export interface ArchitecturesSupportsLevel {
   architectures: ArchitectureSupportLevelMap;

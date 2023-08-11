@@ -6,29 +6,29 @@ import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 export interface ManagedNetworkingControlGroupProps {
   disabled?: boolean;
-  tooltip?: string;
+  tooltipCmnDisabled?: string;
   tooltipUmnDisabled?: string;
 }
 
 const GROUP_NAME = 'managedNetworkingType';
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
-  tooltip,
+  tooltipCmnDisabled,
   tooltipUmnDisabled,
 }: ManagedNetworkingControlGroupProps) => {
-  const tooltipProps: TooltipProps = {
-    hidden: !tooltip || !disabled,
-    content: tooltip,
+  const { t } = useTranslation();
+  const tooltipPropsCmn: TooltipProps = {
+    hidden: !tooltipCmnDisabled || !disabled,
+    content: tooltipCmnDisabled,
     position: 'top',
   };
 
-  const { t } = useTranslation();
-
-  const tooltipPropsUmnDisabled: TooltipProps = {
+  const tooltipPropsUmn: TooltipProps = {
     hidden: !tooltipUmnDisabled || !disabled,
     content: tooltipUmnDisabled,
     position: 'top',
   };
+
   return (
     <FormGroup
       label={t('ai:Network Management')}
@@ -36,14 +36,14 @@ export const ManagedNetworkingControlGroup = ({
       isInline
     >
       <RadioFieldWithTooltip
-        tooltipProps={tooltipProps}
+        tooltipProps={tooltipPropsCmn}
         name={GROUP_NAME}
         isDisabled={disabled}
         value={'clusterManaged'}
         label={t('ai:Cluster-Managed Networking')}
       />
       <RadioFieldWithTooltip
-        tooltipProps={tooltipUmnDisabled ? tooltipPropsUmnDisabled : tooltipProps}
+        tooltipProps={tooltipPropsUmn}
         name={GROUP_NAME}
         isDisabled={disabled}
         value={'userManaged'}

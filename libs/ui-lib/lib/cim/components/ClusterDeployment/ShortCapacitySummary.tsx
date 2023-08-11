@@ -1,8 +1,8 @@
 import React from 'react';
-import { fileSize } from '../../../common';
 import { AgentK8sResource } from '../../types';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { fileSize } from '../../../common/utils';
 
 export const getTotalCompute = (selectedAgents: AgentK8sResource[], t: TFunction) => {
   const totals = selectedAgents.reduce(
