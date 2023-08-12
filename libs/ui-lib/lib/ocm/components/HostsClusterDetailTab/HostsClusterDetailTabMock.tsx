@@ -9,7 +9,6 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-
 import { HostsClusterDetailTabProps } from './types';
 import {
   OcmCpuArchitecture,
@@ -20,6 +19,9 @@ import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
 import { setAuthInterceptor } from '../../api';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
+
+// The following line is necessary in order to initialize the ocmClient in the mocked environment
+setAuthInterceptor((client) => client);
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',
@@ -56,9 +58,6 @@ const HostsClusterDetailTabMock: React.FC<
       try {
         await clustersAPI.get('day2flow-day1-ai-cluster-id');
         setIsMocked(true);
-
-        // Define the ocmClient for this mocked environment
-        setAuthInterceptor((client) => client);
       } catch (e) {
         setIsMocked(false);
       }
