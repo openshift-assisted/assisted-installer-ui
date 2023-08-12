@@ -51,6 +51,7 @@ export type FailingValidationsProps<S extends string> = {
   severity?: 'danger' | 'warning';
   wizardStepNames: { [key in S]: string };
   wizardStepsValidationsMap: WizardStepsValidationMap<S>;
+  host?: Host;
 };
 
 export type ValidationActionLinkProps<S extends string> = {

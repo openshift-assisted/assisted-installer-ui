@@ -1,3 +1,4 @@
+import { Host } from '../../../common';
 import {
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
@@ -68,6 +69,15 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   // TODO(mlibra): remove that container-images-available from soft validations and let backend drive it via disabling it.
   //   Depends on: https://issues.redhat.com/browse/MGMT-5265
   softValidationIds: ['ntp-synced', 'container-images-available'],
+  getPageURL: (host: Host, validationID: string) => {
+    if (validationID === 'ntp-synced') {
+      return {
+        url: `multicloud/infrastructure/environments/details/${host.infraEnvId || ''}`,
+        name: 'infrastructure environment',
+      };
+    }
+    return undefined;
+  },
 };
 
 const reviewStepValidationsMap: WizardStepValidationMap = {
