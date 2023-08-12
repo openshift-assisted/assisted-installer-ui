@@ -15,7 +15,8 @@
   },
   "rules": {
     "eqeqeq": ["error", "always"],
-    "indent": "off"
+    "indent": "off",
+    "no-debugger": "error"
   },
   "ignorePatterns": ["apps/*/build", "libs/*/build", "tools/*/build"],
   "overrides": [
