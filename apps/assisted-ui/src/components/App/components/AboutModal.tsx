@@ -8,14 +8,8 @@ import {
 } from '@patternfly/react-core';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../../../config';
 import redHatLogo from '../../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-import {
-  Services,
-  Api,
-  Constants,
-  DetailList,
-  DetailItem,
-  ListVersions,
-} from '@openshift-assisted/ui-lib/ocm';
+import { Services, Api, Constants, DetailList, DetailItem } from '@openshift-assisted/ui-lib/ocm';
+import { ListVersions } from '@openshift-assisted/types/assisted-installer-service';
 
 export const AboutModalButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

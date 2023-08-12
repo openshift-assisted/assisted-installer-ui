@@ -1,4 +1,8 @@
-import { HostStaticNetworkConfig, InfraEnv, InfraEnvUpdateParams } from '../../../../../common';
+import {
+  HostStaticNetworkConfig,
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 import Yup from 'yup';
 import { FormikErrors, FormikTouched } from 'formik';
 

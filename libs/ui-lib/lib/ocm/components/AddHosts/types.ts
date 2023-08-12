@@ -1,6 +1,7 @@
-import { Cluster, OcmCpuArchitecture, SupportedCpuArchitecture } from '../../../common';
+import { OcmCpuArchitecture, SupportedCpuArchitecture } from '../../../common';
 import { HostsNetworkConfigurationType } from '../../services';
 import { FeaturesSupportsLevel } from '../../../common/components/featureSupportLevels/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 /* The type is reverse engineered.
    The OCM object contains additional data.

@@ -1,4 +1,4 @@
-import { Cluster, SupportLevel } from '../../api';
+import { Cluster, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../types';
 import type { NewFeatureSupportLevelData, NewFeatureSupportLevelMap } from './types';
 import { TFunction } from 'i18next';

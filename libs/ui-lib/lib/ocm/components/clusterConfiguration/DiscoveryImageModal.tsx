@@ -1,21 +1,14 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
-import {
-  Cluster,
-  CpuArchitecture,
-  DownloadIso,
-  ErrorState,
-  isSNO,
-  ToolbarButton,
-} from '../../../common';
+import { CpuArchitecture, DownloadIso, ErrorState, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
-
 import './DiscoveryImageModal.css';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;

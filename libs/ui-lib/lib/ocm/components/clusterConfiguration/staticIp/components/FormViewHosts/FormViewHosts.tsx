@@ -8,7 +8,7 @@ import { getFormViewHostsValidationSchema } from './formViewHostsValidationSchem
 import { formViewHostsToInfraEnvField } from '../../data/formDataToInfraEnvField';
 import { getEmptyFormViewHostsValues } from '../../data/emptyData';
 import { getFormViewHostsValues, getFormViewNetworkWideValues } from '../../data/fromInfraEnv';
-import { InfraEnv } from '../../../../../../common/api';
+import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 export const FormViewHosts: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
   const [protocolType, setProtocolType] = React.useState<StaticProtocolType>();

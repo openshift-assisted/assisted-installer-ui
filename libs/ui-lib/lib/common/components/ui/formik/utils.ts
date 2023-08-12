@@ -5,7 +5,11 @@ import set from 'lodash-es/set.js';
 import groupBy from 'lodash-es/groupBy.js';
 import pickBy from 'lodash-es/pickBy.js';
 import { OpenshiftVersionOptionType } from '../../../types';
-import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api';
+import {
+  ClusterNetwork,
+  MachineNetwork,
+  ServiceNetwork,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { getKeys } from '../../../utils';
 
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {

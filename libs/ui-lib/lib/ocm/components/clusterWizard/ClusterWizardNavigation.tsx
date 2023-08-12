@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { WizardNav } from '@patternfly/react-core';
-import { Cluster } from '../../../common';
 import {
   canNextClusterDetails,
   canNextHostDiscovery,
@@ -12,6 +11,7 @@ import {
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { staticIpFormViewSubSteps, wizardStepNames } from './constants';
 import WizardNavItem from '../../../common/components/ui/WizardNavItem';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean => {
   if (!cluster) {

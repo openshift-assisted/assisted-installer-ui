@@ -1,17 +1,15 @@
 import * as React from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
-import {
-  ClusterCreateParams,
-  getFieldId,
-  HelperText,
-  SupportLevel,
-  useFeature,
-} from '../../../common';
+import { getFieldId, HelperText, useFeature } from '../../../common';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { CheckboxFieldProps } from '../../../common/components/ui/formik/types';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import {
+  ClusterCreateParams,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export interface OcmCheckboxProps extends CheckboxFieldProps {
   disabledReason?: string;

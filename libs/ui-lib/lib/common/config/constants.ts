@@ -1,6 +1,12 @@
 import { TFunction } from 'i18next';
 import { ValidationsInfo, HostRole } from '../types/hosts';
-import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
+import {
+  Cluster,
+  ClusterValidationId,
+  DiskRole,
+  Event,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
 import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
@@ -219,7 +225,7 @@ export const hostValidationFailureHints = (
 
 export const clusterValidationLabels = (
   t: TFunction,
-): { [key in ClusterValidationId]: string } => ({
+): { [key in ClusterValidationId]?: string } => ({
   'network-type-valid': t('ai:Valid network type'),
   'machine-cidr-defined': t('ai:Machine CIDR'),
   'cluster-cidr-defined': t('ai:Cluster CIDR'),

@@ -8,7 +8,8 @@
     "./en/translation.json": "./lib/en/translation.json",
     "./ja/translation.json": "./lib/ja/translation.json",
     "./ko/translation.json": "./lib/ko/translation.json",
-    "./zh/translation.json": "./lib/zh/translation.json"
+    "./zh/translation.json": "./lib/zh/translation.json",
+    "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
@@ -27,7 +28,8 @@
     }
   },
   "files": [
-    "lib"
+    "lib",
+    "tsconfig.json"
   ],
   "license": "Apache-2.0",
   "name": "@openshift-assisted/locales",

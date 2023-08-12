@@ -20,7 +20,6 @@ import {
   EmptyState,
   useAlerts,
   AlertsContextProvider,
-  Cluster,
 } from '../../../common';
 import ClustersTable from './ClustersTable';
 import {
@@ -34,6 +33,7 @@ import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClustersProps = RouteComponentProps;
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { getApiErrorMessage, handleApiError, getOcmClient } from '../api';
+import { getApiErrorMessage, handleApiError } from '../api';
 import { useAlerts } from '../../common';
-import { OcmClientRequestResponse } from '../types';
+import { AccessTokenAPI } from '../../common/api/accounts-management-service/access-token-api';
 
 export default function usePullSecret() {
   const [pullSecret, setPullSecret] = React.useState<string>();
@@ -9,13 +9,9 @@ export default function usePullSecret() {
 
   const getPullSecret = React.useCallback(async () => {
     try {
-      const ocmClient = getOcmClient();
-      if (ocmClient) {
-        const response: OcmClientRequestResponse = await ocmClient.post<string>(
-          '/api/accounts_mgmt/v1/access_token',
-        );
-        const data = response?.request?.response;
-        setPullSecret(data || ''); // unmarshalled response as a string
+      const accessTokenCfg = await AccessTokenAPI.fetchPullSecret();
+      if (accessTokenCfg) {
+        setPullSecret(JSON.stringify(accessTokenCfg)); // unmarshalled response as a string
       } else {
         setPullSecret('');
       }

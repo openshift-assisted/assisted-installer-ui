@@ -2,7 +2,7 @@ import React from 'react';
 import { ButtonVariant } from '@patternfly/react-core';
 import { EventsModalButton } from './eventsModal';
 import { MonitoringIcon } from '@patternfly/react-icons';
-import { Cluster } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 

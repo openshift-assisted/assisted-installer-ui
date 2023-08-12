@@ -3,10 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
-  Cluster,
   ClusterWizardStep,
   getFormikErrorFields,
-  MonitoredOperator,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_MCE,
@@ -24,6 +22,7 @@ import { ClustersService, OperatorsService } from '../../services';
 import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { canNextOperators } from './wizardTransition';
+import { Cluster, MonitoredOperator } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getOperatorsInitialValues = (
   monitoredOperators: MonitoredOperator[],

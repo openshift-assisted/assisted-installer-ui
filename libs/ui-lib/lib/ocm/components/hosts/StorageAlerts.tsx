@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
 import {
-  Cluster,
   FormatDiskWarning,
   getInventory,
   hasEnabledOperators,
-  Host,
   OPERATOR_NAME_ODF,
 } from '../../../common';
 import { isAddHostsCluster, isSomeDisksSkipFormatting } from '../clusters/utils';
 import OdfDisksManualFormattingHint from './OdfDisksManualFormattingHint';
 import { getDiskLimitation } from '../../../common/components/storage/DisksTable';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint =

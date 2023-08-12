@@ -5,7 +5,8 @@ import {
   ClusterImageSetK8sResource,
   ClusterVersionK8sResource,
 } from '../../types';
-import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
+import { OpenshiftVersionOptionType } from '../../../common';
+import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
   const match = /.+:(.*)-/gm.exec(releaseImage);

@@ -13,8 +13,6 @@ import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
 import {
-  Cluster,
-  InfraEnv,
   AssistedInstallerOCMPermissionTypesListType,
   useFeature,
   useAlerts,
@@ -22,6 +20,7 @@ import {
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
 import { ListManifestsExtended } from '../clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],

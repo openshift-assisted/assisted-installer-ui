@@ -1,7 +1,11 @@
 import React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
-import { Disk, DiskRole as DiskRoleValue, Host } from '../../api';
+import {
+  Disk,
+  DiskRole as DiskRoleValue,
+  Host,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { diskRoleLabels } from '../../config';
 import { useStateSafely } from '../../hooks';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

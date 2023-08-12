@@ -1,8 +1,9 @@
 import React from 'react';
-import { Cluster, CpuArchitecture, PresignedUrl } from '../../common';
+import { CpuArchitecture } from '../../common';
 import { InfraEnvsAPI } from '../services/apis';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
+import { Cluster, PresignedUrl } from '@openshift-assisted/types/assisted-installer-service';
 
 type ImgUrl = {
   url: PresignedUrl['url'];

@@ -2,8 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
-  Cluster,
-  V2ClusterUpdateParams,
   getFormikErrorFields,
   ClusterWizardStep,
   HostDiscoveryValues,
@@ -20,6 +18,10 @@ import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import {
+  Cluster,
+  V2ClusterUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();

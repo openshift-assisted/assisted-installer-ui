@@ -1,23 +1,39 @@
 {
   "name": "@openshift-assisted/types",
-  "versio": "1.0.0",
+  "version": "1.0.0",
   "packageManager": "yarn@3.4.1",
   "type": "module",
   "exports": {
-    "./assisted-installer-service": {
-      "types": "./assisted-installer-service.d.ts"
-    },
-    "./accounts-management-service": {
-      "types": "./accounts-management-service.d.ts"
+    "./assisted-installer-service": "./assisted-installer-service.d.ts",
+    "./accounts-management-service": "./accounts-management-service.d.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "./assisted-installer-service": [
+        "./assisted-installer-service.d.ts"
+      ],
+      "./accounts-management-service": [
+        "./accounts-management-service.d.ts"
+      ]
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/openshift-assisted/assisted-installer-ui.git",
     "directory": "libs/types"
   },
+  "files": [
+    "accounts-management-service.d.ts",
+    "assisted-installer-service.d.ts",
+    "tsconfig.json"
+  ],
   "scripts": {
-    "update-types:assisted-installer-service": "node scripts/update-assisted-installer-service-types.js"
+    "update-types:assisted-installer-service": "node scripts/update-assisted-installer-service-types.js",
+    "watch": "yarn run -T toolbox watch --dir=. 'yalc push --changed'"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.1",

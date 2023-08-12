@@ -16,15 +16,14 @@ import { TFunction } from 'i18next';
 import './OcmOperatorsProgressItem.css';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ClusterProgressItem from '../../../common/components/clusterDetail/ClusterProgressItem';
+import { operatorLabels, OperatorName } from '../../../common';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import {
   Cluster,
   MonitoredOperator,
   MonitoredOperatorsList,
-  operatorLabels,
-  OperatorName,
   OperatorStatus,
-} from '../../../common';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(

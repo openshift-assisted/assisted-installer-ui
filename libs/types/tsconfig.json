@@ -1,3 +1,7 @@
 {
-  "extends": "@tsconfig/recommended"
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "include": ["*.d.ts"]
 }

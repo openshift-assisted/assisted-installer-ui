@@ -13,7 +13,7 @@ import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../../config';
 import PopoverIcon from '../../ui/PopoverIcon';
 import { RadioField } from '../../ui/formik';
 import { TangServers } from './TangServers';
-import { DiskEncryption } from '../../../api';
+import { DiskEncryption } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 const DiskEncryptionModeTPMv2 = () => {

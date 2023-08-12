@@ -11,14 +11,16 @@ import {
   Button,
 } from '@patternfly/react-core';
 import {
-  Cluster,
-  V2ClusterUpdateParams,
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
   StatusErrorType,
 } from '../../../common';
 import { AlertFormikError } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import {
+  Cluster,
+  V2ClusterUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type AdditionalNTPSourcesFormProps = {
   additionalNtpSource: Cluster['additionalNtpSource'];
