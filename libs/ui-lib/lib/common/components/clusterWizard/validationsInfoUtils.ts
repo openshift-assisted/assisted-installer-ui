@@ -28,6 +28,15 @@ export type WizardStepValidationMap = {
     validationIds: HostValidationId[];
   };
   softValidationIds: (HostValidationId | ClusterValidationId)[];
+  getPageURL?: (
+    host: Host,
+    validationId: string,
+  ) =>
+    | {
+        url: string;
+        name: string;
+      }
+    | undefined;
 };
 
 export type WizardStepsValidationMap<T extends string> = {
