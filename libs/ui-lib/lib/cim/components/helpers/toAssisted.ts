@@ -63,6 +63,9 @@ export const getAIHosts = (
       progressStages: agentProgress?.progressStages,
       bootstrap: agent.status?.bootstrap,
       installationDiskId: agent.spec.installation_disk_id || agent.status?.installation_disk_id,
+      infraEnvId: `${agent.metadata?.namespace || ''}/${
+        agent.metadata?.labels?.['infraenvs.agent-install.openshift.io'] || ''
+      }`,
     };
   });
 
