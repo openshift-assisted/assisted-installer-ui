@@ -26,7 +26,7 @@ let isInOcm = false;
 let ocmClient: AxiosInstance | null;
 let client = applyCaseMiddleware(
   withAssistedInstallerBasePath(axios.create()),
-  // Prevents axios converter to change object keys from '4.7-fc2' to '4_7Fc2'
+  // Prevents the axios-case-converter from changing object keys from '4.7-fc2' to '4_7Fc2'
   {
     caseFunctions: {
       camel: (input: string) =>
@@ -38,13 +38,13 @@ let client = applyCaseMiddleware(
 );
 let clientWithoutCaseConverter = withAssistedInstallerBasePath(axios.create());
 
-const getOcmClient = () => ocmClient;
-
 export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => AxiosInstance) => {
   isInOcm = true;
   ocmClient = authInterceptor(axios.create());
+
+  // Instances of Axios with URL intercepted using Assisted-installer's base-path
   client = authInterceptor(client);
   clientWithoutCaseConverter = authInterceptor(clientWithoutCaseConverter);
 };
 
-export { client, getOcmClient, isInOcm, clientWithoutCaseConverter };
+export { client, ocmClient, isInOcm, clientWithoutCaseConverter };
