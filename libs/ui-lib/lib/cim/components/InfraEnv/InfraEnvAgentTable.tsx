@@ -172,7 +172,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         canEditHostname ? undefined : t('ai:Hostname cannot be changed for selected hosts.')
       }
     >
-      Change hostname
+      {t('ai:Change hostname')}
     </DropdownItem>,
     <MassApproveAction
       key="approve"

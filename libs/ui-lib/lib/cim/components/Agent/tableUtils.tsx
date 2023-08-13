@@ -492,7 +492,7 @@ export const useAgentsTable = (
       agentClusterInstalls,
     ],
   );
-  const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);
+  const actionResolver = React.useMemo(() => hostActionResolver({ t, ...actions }), [actions, t]);
   return [hosts, actions, actionResolver];
 };
 
