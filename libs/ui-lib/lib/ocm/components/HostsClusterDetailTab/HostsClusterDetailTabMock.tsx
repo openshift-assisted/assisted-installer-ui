@@ -17,11 +17,7 @@ import {
 } from '../../../common';
 import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
-import { setAuthInterceptor } from '../../api';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
-
-// The following line is necessary in order to initialize the ocmClient in the mocked environment
-setAuthInterceptor((client) => client);
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',
@@ -47,7 +43,7 @@ const getCluster = (type: string) => {
   }
 };
 
-const HostsClusterDetailTabMock: React.FC<
+export const HostsClusterDetailTabMock: React.FC<
   RouteComponentProps & HostsClusterDetailTabProps
 > = () => {
   const [tabShown, setTabShown] = React.useState<string>('');
@@ -105,5 +101,3 @@ const HostsClusterDetailTabMock: React.FC<
     </PageSection>
   );
 };
-
-export default HostsClusterDetailTabMock;
