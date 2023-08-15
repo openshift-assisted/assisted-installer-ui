@@ -11,6 +11,9 @@ import buildManifest from '../../../build/build.json'; // This file is generated
 export const getShortOpenshiftVersion = (ocpVersion?: string) =>
   ocpVersion?.split('.').slice(0, 2).join('.');
 
+export const ASSISTED_INSTALLER_DOCUMENTATION_LINK =
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/index';
+
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
