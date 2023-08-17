@@ -23,7 +23,7 @@ import {
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { TableVariant } from '@patternfly/react-table';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
@@ -46,7 +46,7 @@ export interface ClusterHostsTableProps {
 }
 
 const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
-  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
+  const { wizardPerPage, setWizardPerPage } = React.useContext(ClusterWizardContext) || {};
   const {
     onEditHost,
     onEditRole,
