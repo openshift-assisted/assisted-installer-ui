@@ -4,11 +4,8 @@ import {
   DropdownItem,
   DropdownSeparator,
   DropdownToggle,
-  Split,
-  SplitItem,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import { PopoverIcon } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';
 import { AddHostDropdownProps } from './types';
@@ -24,7 +21,6 @@ const AddHostDropdown = ({
   onCreateBMH,
   docVersion,
   onCreateBmcByYaml,
-  isBMPlatform,
 }: AddHostDropdownProps) => {
   const [addModalType, setAddModalType] = React.useState<ModalType>(undefined);
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
@@ -65,28 +61,7 @@ const AddHostDropdown = ({
             id="discovery-bmc"
             key="discovery-bmc"
             className="ai-discovery-bmc__group"
-            label={
-              <Split hasGutter>
-                <SplitItem>{t('ai:Baseboard Management Controller (BMC)')}</SplitItem>
-                <SplitItem>
-                  {!isBMPlatform && (
-                    <>
-                      {' '}
-                      <PopoverIcon
-                        noVerticalAlign
-                        bodyContent={
-                          <p>
-                            {t(
-                              `ai:To enable the host's baseboard management controller (BMC) on the hub cluster, deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type).`,
-                            )}
-                          </p>
-                        }
-                      />
-                    </>
-                  )}
-                </SplitItem>
-              </Split>
-            }
+            label={t('ai:Baseboard Management Controller (BMC)')}
           >
             <DropdownItem
               key="with-credentials"
@@ -95,7 +70,6 @@ const AddHostDropdown = ({
                 setAddModalType('bmc');
               }}
               description={t('ai:Discover a single host via Baseboard Management Controller')}
-              isDisabled={!isBMPlatform}
             >
               {t('ai:With BMC form')}
             </DropdownItem>
@@ -108,7 +82,6 @@ const AddHostDropdown = ({
               description={t(
                 'ai:Discover multiple hosts by providing yaml with Bare Metal Host definitions',
               )}
-              isDisabled={!isBMPlatform}
             >
               {t('ai:By uploading a YAML')}
             </DropdownItem>

@@ -730,7 +730,6 @@
   "ai:To add hosts to the cluster, generate a Discovery ISO.": "To add hosts to the cluster, generate a Discovery ISO.",
   "ai:To add hosts to the cluster, generate iPXE script.": "To add hosts to the cluster, generate iPXE script.",
   "ai:To configure for disconnected environments, <2>view documentation <1></1></2>": "To configure for disconnected environments, <2>view documentation <1></1></2>",
-  "ai:To enable the host's baseboard management controller (BMC) on the hub cluster, deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type).": "To enable the host's baseboard management controller (BMC) on the hub cluster, deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type).",
   "ai:To finish adding nodes to the cluster, approve the join request inside OpenShift Console's Nodes section.": "To finish adding nodes to the cluster, approve the join request inside OpenShift Console's Nodes section.",
   "ai:To see the status of the installation see the details page.": "To see the status of the installation see the details page.",
   "ai:To use static network configuration, follow the steps listed in the documentation.": "To use static network configuration, follow the steps listed in the documentation.",
