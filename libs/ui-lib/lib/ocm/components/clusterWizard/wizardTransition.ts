@@ -1,13 +1,11 @@
+import { Cluster, Host, HostValidationId } from '../../../common/api';
 import {
-  Cluster,
   findValidationStep,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
-  Host,
-  HostValidationId,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common';
+} from '../../../common/components/clusterWizard/validationsInfoUtils';
 import { Day2WizardStepsType } from '../AddHosts/day2Wizard/constants';
 import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import {
