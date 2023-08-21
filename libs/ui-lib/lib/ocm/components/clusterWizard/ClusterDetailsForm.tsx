@@ -145,11 +145,8 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, dirty, setFieldValue, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, dirty, errors, touched }) => {
         const errorFields = getFormikErrorFields(errors, touched);
-        const toggleRedHatDnsService = (checked: boolean) =>
-          setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
-
         const footer = (
           <ClusterWizardFooter
             cluster={cluster}
@@ -174,7 +171,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields
-                  toggleRedHatDnsService={toggleRedHatDnsService}
                   versions={ocpVersions}
                   forceOpenshiftVersion={cluster?.openshiftVersion}
                   isPullSecretSet={!!cluster?.pullSecretSet}
