@@ -182,6 +182,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                   clusterExists={!!cluster}
                   clusterCpuArchitecture={cluster?.cpuArchitecture as CpuArchitecture}
                   clusterId={cluster?.id}
+                  clusterPlatform={cluster?.platform?.type}
                 />
               </GridItem>
             </Grid>

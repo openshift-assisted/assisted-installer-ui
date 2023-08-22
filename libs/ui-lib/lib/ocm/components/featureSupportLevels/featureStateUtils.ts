@@ -134,6 +134,22 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
   return undefined;
 };
 
+const getOciDisabledReason = (
+  cluster: Cluster | undefined,
+  cpuArchitecture: string | undefined,
+  isSupported: boolean,
+) => {
+  if (cluster) {
+    return clusterExistsReason;
+  } else if (!isSupported) {
+    if (cpuArchitecture === CpuArchitecture.s390x || cpuArchitecture === CpuArchitecture.ppc64le) {
+      return `Integration with Oracle is not available with the selected CPU architecture.`;
+    } else {
+      return 'Integration with Oracle is available for OpenShift 4.14 and later versions.';
+    }
+  }
+};
+
 export const getNewFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
@@ -160,21 +176,25 @@ export const getNewFeatureDisabledReason = (
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
     }
-    case 'CLUSTER_MANAGED_NETWORKING': {
-      return 'Cluster-managed networking is not supported for ARM architecture with this version of OpenShift.';
+    case 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING': {
+      return 'Network management selection is not supported for ARM architecture with this version of OpenShift.';
     }
     case 'EXTERNAL_PLATFORM_OCI': {
-      if (cpuArchitecture === 's390x') {
-        return "Can't set Oracle platform on s390x architecture";
-      } else {
-        return 'Integration with Oracle is available for OpenShift 4.14 and later versions.';
-      }
+      return getOciDisabledReason(cluster, cpuArchitecture, isSupported);
     }
     case 'MCE': {
       if (!isSupported) {
         return 'Multicluster engine is not supported in this OpenShift version.';
-      } else {
-        return undefined;
+      }
+    }
+    case 'NUTANIX_INTEGRATION': {
+      if (!isSupported) {
+        return `Integration with Nutanix is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'VSPHERE_INTEGRATION': {
+      if (!isSupported) {
+        return `Integration with vSphere is not available with the selected CPU architecture.`;
       }
     }
     default: {
