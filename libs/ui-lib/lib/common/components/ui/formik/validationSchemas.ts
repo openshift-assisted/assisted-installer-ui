@@ -38,8 +38,8 @@ const CLUSTER_NAME_VALID_CHARS_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)$/;
-const DNS_NAME_REGEX_OCM = /^([a-z0-9]+(-[a-z0-9]+)*[.])+[a-z]{2,}$/;
+const BASE_DOMAIN_REGEX = /^[a-z\d][\-]*[a-z\d]+$/;
+const DNS_NAME_REGEX_OCM = /^([a-z\d]([\-]*[a-z\d]+)*\.)+[a-z\d]+[\-]*[a-z\d]+$/;
 
 const PROXY_DNS_REGEX =
   /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*$)/;
