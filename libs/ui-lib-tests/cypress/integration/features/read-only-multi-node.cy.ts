@@ -39,7 +39,6 @@ describe(`Assisted Installer Read Only Cluster`, () => {
       navbar.clickOnNavItem('Host discovery');
 
       // General controls
-      bareMetalDiscoveryPage.platformIntegration.getToggleSwitch().should('be.disabled');
       bareMetalDiscoveryPage.getAddHostsButton().should('not.exist');
 
       // Host Table actions

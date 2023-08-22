@@ -11,7 +11,7 @@ import {
   useAlerts,
   SupportedPlatformType,
 } from '../../common';
-import { APIErrorMixin } from '../api/types';
+import { APIErrorMixin } from '../../common/api/utils';
 
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | SupportedPlatformType;
 

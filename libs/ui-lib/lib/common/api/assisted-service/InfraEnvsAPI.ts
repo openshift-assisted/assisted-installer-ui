@@ -1,4 +1,4 @@
-import { client } from '../../api';
+import { client } from '../../api/axiosClient';
 import {
   InfraEnv,
   InfraEnvCreateParams,

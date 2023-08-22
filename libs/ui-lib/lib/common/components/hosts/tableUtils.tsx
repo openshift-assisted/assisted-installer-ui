@@ -1,8 +1,8 @@
 import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
-import { Cluster, Host, HostUpdateParams, Interface, stringToJSON } from '../../api';
-import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
+import type { Cluster, Host, HostUpdateParams, Interface } from '../../api';
+import type { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';
 import { getDateTimeCell } from '../ui';
@@ -24,6 +24,7 @@ import {
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
 import { TFunction } from 'i18next';
+import { stringToJSON } from '../../utils';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -365,6 +366,7 @@ const ActionTitle: React.FC<{ disabled: boolean; description?: string; title: st
 
 export const hostActionResolver =
   ({
+    t,
     onInstallHost,
     canInstallHost,
     onEditHost,
@@ -384,7 +386,7 @@ export const hostActionResolver =
     canEditBMH,
     canUnbindHost,
     onUnbindHost,
-  }: HostsTableActions): ActionsResolver<Host> =>
+  }: HostsTableActions & { t: TFunction }): ActionsResolver<Host> =>
   (host) => {
     const actions = [];
     if (host) {
@@ -404,7 +406,7 @@ export const hostActionResolver =
           if (typeof canEdit === 'boolean') {
             canEdit &&
               actions.push({
-                title: 'Change hostname',
+                title: t('ai:Change hostname'),
                 id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
                 onClick: () => onEditHost(host),
               });
@@ -412,7 +414,11 @@ export const hostActionResolver =
             const [enabled, reason] = canEdit;
             actions.push({
               title: (
-                <ActionTitle disabled={!enabled} description={reason} title="Change hostname" />
+                <ActionTitle
+                  disabled={!enabled}
+                  description={reason}
+                  title={t('ai:Change hostname')}
+                />
               ),
               id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
               onClick: () => onEditHost(host),
@@ -423,35 +429,35 @@ export const hostActionResolver =
       }
       if (onHostEnable && canEnable?.(host)) {
         actions.push({
-          title: 'Enable in cluster',
+          title: t('ai:Enable in cluster'),
           id: `button-enable-in-cluster-${hostname}`,
           onClick: () => onHostEnable(host),
         });
       }
       if (onHostDisable && canDisable?.(host)) {
         actions.push({
-          title: 'Disable in cluster',
+          title: t('ai:Disable in cluster'),
           id: `button-disable-in-cluster-${hostname}`,
           onClick: () => onHostDisable(host),
         });
       }
       if (onHostReset && canReset?.(host)) {
         actions.push({
-          title: 'Reset host',
+          title: t('ai:Reset host'),
           id: `button-reset-host-${hostname}`,
           onClick: () => onHostReset(host),
         });
       }
       if (onViewHostEvents) {
         actions.push({
-          title: 'View host events',
+          title: t('ai:View host events'),
           id: `button-view-host-events-${hostname}`,
           onClick: () => onViewHostEvents(host),
         });
       }
       if (onDownloadHostLogs && canDownloadHostLogs?.(host)) {
         actions.push({
-          title: 'Download host logs',
+          title: t('ai:Download host logs'),
           id: `button-download-host-installation-logs-${hostname}`,
           onClick: () => onDownloadHostLogs(host),
         });
@@ -462,14 +468,16 @@ export const hostActionResolver =
           if (typeof canDeleteHost === 'boolean') {
             canDeleteHost &&
               actions.push({
-                title: 'Remove host',
+                title: t('ai:Remove host'),
                 id: `button-delete-host-${hostname}`,
                 onClick: () => onDeleteHost(host),
               });
           } else {
             const [enabled, reason] = canDeleteHost;
             actions.push({
-              title: <ActionTitle disabled={!enabled} description={reason} title="Remove host" />,
+              title: (
+                <ActionTitle disabled={!enabled} description={reason} title={t('ai:Remove host')} />
+              ),
               id: `button-delete-host-${hostname}`,
               onClick: () => onDeleteHost(host),
               isDisabled: !enabled,
@@ -481,7 +489,9 @@ export const hostActionResolver =
         if (canEditBMH) {
           const [enabled, reason] = canEditBMH(host);
           actions.push({
-            title: <ActionTitle disabled={!enabled} description={reason} title="Edit BMC" />,
+            title: (
+              <ActionTitle disabled={!enabled} description={reason} title={t('ai:Edit BMC')} />
+            ),
             id: `button-edit-bmh-host-${hostname}`,
             onClick: () => onEditBMH(host),
             isDisabled: !enabled,
@@ -493,7 +503,11 @@ export const hostActionResolver =
         const [enabled, reason] = canUnbindHost(host);
         actions.push({
           title: (
-            <ActionTitle disabled={!enabled} description={reason} title="Remove from the cluster" />
+            <ActionTitle
+              disabled={!enabled}
+              description={reason}
+              title={t('ai:Remove from the cluster')}
+            />
           ),
           id: `button-unbind-host-${hostname}`,
           onClick: () => onUnbindHost(host),

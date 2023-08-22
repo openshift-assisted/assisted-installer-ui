@@ -1,7 +1,8 @@
+import filesize from 'filesize.js';
+import camelCase from 'lodash-es/camelCase.js';
 import isString from 'lodash-es/isString.js';
 import { load } from 'js-yaml';
 import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_OFFSET_FACTOR } from './configurations';
-import { fileSize } from './components/hosts/utils';
 
 export const FILENAME_REGEX = /^[^\/]*\.(yaml|yml|json)$/;
 export const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
@@ -52,6 +53,12 @@ export const validateFileSize = (value: string): boolean => {
   return contentFile.size <= MAX_FILE_SIZE_BYTES * MAX_FILE_SIZE_OFFSET_FACTOR;
 };
 
+export const fileSize: typeof filesize = (...args) =>
+  filesize
+    .call(null, ...args)
+    .toUpperCase()
+    .replace(/I/, 'i');
+
 export const getMaxFileSizeMessage = `File size is too big. The file size must be less than ${fileSize(
   MAX_FILE_SIZE_BYTES,
   0,
@@ -60,4 +67,23 @@ export const getMaxFileSizeMessage = `File size is too big. The file size must b
 
 export const validateFileName = (fileName: string) => {
   return new RegExp(FILENAME_REGEX).test(fileName || '');
+};
+
+export const stringToJSON = <T>(jsonString: string | undefined): T | undefined => {
+  let jsObject: T | undefined;
+  if (jsonString) {
+    try {
+      const camelCased = jsonString.replace(
+        /"([\w-]+)":/g,
+        (_match, offset: string) => `"${camelCase(offset)}":`,
+      );
+      jsObject = JSON.parse(camelCased) as T;
+    } catch (e) {
+      // console.error('Failed to parse api string', e, jsonString);
+    }
+  } else {
+    // console.info('Empty api string received.');
+  }
+
+  return jsObject;
 };

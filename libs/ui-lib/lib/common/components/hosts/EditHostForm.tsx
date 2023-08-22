@@ -115,7 +115,7 @@ const EditHostForm = ({
                 title={t('ai:This name will replace the original discovered hostname.')}
                 isInline
               />
-              <StaticTextField name="discoveredHostname" label="Discovered hostname">
+              <StaticTextField name="discoveredHostname" label={t('ai:Discovered hostname')}>
                 {hostname || ''}
               </StaticTextField>
               <RichInputField

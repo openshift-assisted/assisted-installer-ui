@@ -1,4 +1,4 @@
-import { DiskEncryption, Host, Cluster } from '../../api';
+import type { DiskEncryption, Host, Cluster, PlatformType } from '../../api';
 
 import {
   ValidationGroup as ClusterValidationGroup,
@@ -25,7 +25,7 @@ export type ClusterDetailsValues = {
   diskEncryptionTangServers: TangServer[];
   diskEncryption: DiskEncryption;
   cpuArchitecture: string;
-  externalPartnerIntegrations: boolean;
+  platform: PlatformType;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {

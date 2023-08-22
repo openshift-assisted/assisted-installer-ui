@@ -3,7 +3,7 @@ import { ValidationsInfo, HostRole } from '../types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
-import { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
+import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
 // @ts-ignore
 import buildManifest from '../../../build/build.json'; // This file is generated at build-time.

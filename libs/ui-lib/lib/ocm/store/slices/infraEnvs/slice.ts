@@ -7,7 +7,6 @@ const infraEnvsSlice = createSlice({
   name: 'infraEnvs',
   initialState: [] as InfraEnv[],
   reducers: {},
-  extraReducers: {},
 });
 
 export const infraEnvsActions = infraEnvsSlice.actions;

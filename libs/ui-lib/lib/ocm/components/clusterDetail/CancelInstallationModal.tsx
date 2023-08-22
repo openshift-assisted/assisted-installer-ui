@@ -8,7 +8,7 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';

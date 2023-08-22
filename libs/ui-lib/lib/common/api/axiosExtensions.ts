@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { hasProp, isNonNullObject } from '../../common/types';
+import { hasProp, isNonNullObject } from '../types/typescriptExtensions';
 
 // Implementation from Axios.isAxiosError v0.29.2, which is not available in OCM's version 0.17.x
 export function isAxiosError<T = unknown, D = unknown>(

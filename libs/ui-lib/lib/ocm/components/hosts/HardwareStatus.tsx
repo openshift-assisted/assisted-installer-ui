@@ -8,12 +8,12 @@ import {
   HostsTableActions,
   hostStatus,
   HostStatus,
-  stringToJSON,
 } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+import { stringToJSON } from '../../../common/utils';
 
 type HardwareStatusProps = {
   host: Host;

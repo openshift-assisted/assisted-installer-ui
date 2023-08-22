@@ -1,6 +1,9 @@
+import { NewClusterPage } from '../../../views/pages/NewClusterPage';
+import { ClusterDetailsForm } from '../../../views/forms/ClusterDetails/ClusterDetailsForm';
+import { externalPlatformTypes } from '../../../fixtures/cluster/external-platform-types';
+import { commonActions } from '../../../views/common';
+import { pullSecret } from '../../../fixtures';
 import { clusterDetailsPage } from '../../../views/clusterDetails';
-import ClusterDetailsForm from '../../../views/forms/ClusterDetailsForm';
-import NewClusterPage from '../../../views/pages/NewClusterPage';
 
 describe('Create a new cluster with external partner integrations', () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -9,66 +12,89 @@ describe('Create a new cluster with external partner integrations', () => {
       activeScenario: 'AI_CREATE_MULTINODE',
     });
   };
-
   before(() => setTestStartSignal(''));
-  beforeEach(() => setTestStartSignal(''));
 
-  xcontext('When the feature is disabled:', () => {
-    // TODO(jkilzi): Find out how to mock the LibRouter store and features props.
-    // This test case is disabled intentionally because it requires tweaking the
-    // props passed to the LibRouter in the app.
-    it('The user cannot see the external partner integrations checkbox', () => {
-      // Disable somehow Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES.ASSISTED_INSTALLER_PLATFORM_OCI, then...
-      // ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().should('not.exist');
-    });
-  });
-
-  context('When the feature is enabled:', () => {
+  describe('When creating the cluster:', () => {
     beforeEach(() => {
+      setTestStartSignal('');
       NewClusterPage.visit();
+      ClusterDetailsForm.init();
     });
 
-    it('The user can select the external partner integrations checkbox', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
+    it('Should display correct items in the external platform integration dropdown', () => {
+      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItems().each((item) => {
+        // Get the expected values from the externalPlatformTypes object
+        const platformType = item.parent().attr('id');
+        const { label, href } = externalPlatformTypes[platformType];
+
+        // Assert the label
+        cy.wrap(item).should('contain', label);
+      });
     });
 
-    it('There is a popover and helper text next to the checkbox label', () => {
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findPopoverButton().click();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findPopoverContent();
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findHelperText();
+    it('Can select one external platform integration option and cluster is created well', () => {
+      ClusterDetailsForm.clusterNameField.findInputField().type(Cypress.env('CLUSTER_NAME'));
+      ClusterDetailsForm.baseDomainField.findInputField().type('redhat.com');
+      ClusterDetailsForm.pullSecretField.inputPullSecret(pullSecret);
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Nutanix');
+      commonActions.verifyNextIsEnabled();
+      commonActions.toNextStepAfter('Cluster details');
+
+      cy.wait('@create-cluster').then(({ request }) => {
+        expect(request.body.platform.type.valueOf()).to.deep.equal('nutanix');
+      });
     });
 
-    it('Selecting external partner integrations checkbox enables custom manifests as well', () => {
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
-      ClusterDetailsForm.customManifestsControl
+    it('Selecting oracle as external partner integration enables custom manifests as well', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
+      ClusterDetailsForm.customManifestsField
         .findCheckbox()
         .should('be.checked')
         .and('be.disabled');
     });
 
-    it('External partner integrations checkbox is unselected after OCP < v4.14 is selected', () => {
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
-      clusterDetailsPage.inputOpenshiftVersion('4.13');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findCheckbox().should('not.be.checked');
+    it('Validate that oracle as external partner integration is unselected in dropdown after OCP < v4.14 is selected', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.13');
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItemSelected()
+        .contains('No platform integration');
     });
 
     it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
-      clusterDetailsPage.getStaticIpNetworkConfig().click();
-      clusterDetailsPage.inputOpenshiftVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsControl.findLabel().click();
-      clusterDetailsPage.getStaticIpNetworkConfig().should('be.disabled').and('not.be.checked');
+      ClusterDetailsForm.hostsNetworkConfigurationField.findStaticIpRadioLabel().click();
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
+      ClusterDetailsForm.hostsNetworkConfigurationField
+        .findStaticIpRadioButton()
+        .should('be.disabled')
+        .and('not.be.checked');
     });
 
-    xit('The minimal ISO is presented by default', () => {
-      // TODO(jkilzi): WIP...
-      // ClusterDetailsForm.clusterNameControl
-      //   .findInputField()
-      //   .scrollIntoView()
-      //   .type(Cypress.env('CLUSTER_NAME'));
-      // ClusterDetailsForm.baseDomainControl.findInputField().scrollIntoView().type('redhat.com');
-      // ClusterDetailsForm.openshiftVersionControl.findInputField().scrollIntoView().type('redhat.com');
+    it('Validate that oracle as external partner integration is unselected in dropdown when IBM/Z(s390x) architecture is selected', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
+      ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItemSelected()
+        .contains('No platform integration');
+    });
+  });
+
+  describe('After the cluster is created', () => {
+    beforeEach(() => {
+      setTestStartSignal('CLUSTER_CREATED');
+      commonActions.visitClusterDetailsPage();
+      commonActions.startAtWizardStep('Cluster details');
+    });
+
+    it('Shows external platform integrations as a static field', () => {
+      clusterDetailsPage
+        .getExternalPlatformIntegrationStaticField()
+        .should('have.text', 'No platform integration');
     });
   });
 });

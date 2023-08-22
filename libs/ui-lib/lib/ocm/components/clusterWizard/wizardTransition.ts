@@ -1,21 +1,18 @@
+import { Cluster, Host, HostValidationId } from '../../../common/api';
 import {
-  Cluster,
   findValidationStep,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
-  Host,
-  HostValidationId,
-  stringToJSON,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common';
+} from '../../../common/components/clusterWizard/validationsInfoUtils';
 import { Day2WizardStepsType } from '../AddHosts/day2Wizard/constants';
 import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
 } from '../../../common/types/hosts';
-import { getKeys } from '../../../common/utils';
+import { getKeys, stringToJSON } from '../../../common/utils';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
