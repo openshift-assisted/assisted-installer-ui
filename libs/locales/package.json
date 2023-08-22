@@ -44,7 +44,8 @@
   },
   "scripts": {
     "process_new_strings": "scripts/process-new-strings.sh",
-    "validate_translation_files": "scripts/validate-translation-files.sh"
+    "validate_translation_files": "scripts/validate-translation-files.sh",
+    "check_types": "yarn run -T tsc --noEmit"
   },
   "type": "module",
   "version": "1.0.0"

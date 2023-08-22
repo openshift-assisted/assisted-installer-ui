@@ -24,18 +24,18 @@
     "_build:ui-lib": "yarn workspace @openshift-assisted/ui-lib build",
     "_yalc:push": "bash -c \"for lib in ui-lib types locales; do yalc push --changed libs/\\${lib}; done\"",
     "build:all": "yarn workspaces foreach -v --topological-dev run build",
-    "check_circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
+    "check:circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
     "check:translation_files": "yarn workspace @openshift-assisted/locales run validate_translation_files",
-    "check_types:all": "yarn workspaces foreach -vp run check_types",
+    "check:types:all": "yarn workspaces foreach -vp run check_types",
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
     "format:all": "yarn prettier --cache --cache-strategy=content --check .",
     "lint:all": "yarn eslint --max-warnings 0 --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
-    "start": "yarn workspace @openshift-assisted/assisted-ui serve",
     "test:open:dev": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:dev",
     "test:open": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open",
     "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
     "test:unit": "yarn workspaces foreach -v run vitest",
-    "watch": "yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales 'yarn _build:ui-lib' 'yarn _yalc:push'"
+    "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
+    "start:watch_mode": "yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales 'yarn _build:ui-lib' 'yarn _yalc:push'"
   },
   "type": "module",
   "workspaces": [

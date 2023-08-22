@@ -32,7 +32,8 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "update:assisted-installer-service": "node scripts/update-assisted-installer-service-types.js"
+    "update:assisted-installer-service": "node scripts/update-assisted-installer-service-types.js",
+    "check_types": "yarn run -T tsc --noEmit"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.1",

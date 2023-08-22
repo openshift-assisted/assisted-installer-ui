@@ -44,14 +44,15 @@ between applications and libraries.
    yarn build:all
    ```
 5. Starting the project:
-   1. Watch mode (for developing integrations, see next section for more details)
+   1. <b id="watch-mode">Watch mode</b> (for developing integrations, see next section for more
+      details)
       ```bash
-      yarn watch
+      yarn start:watch_mode
       ```
-   2. Stand-alone mode (browse to http://localhost:5173/ using a
+   2. <b id="stand-alone-mode">Stand-alone mode</b> (browse to http://localhost:5173/ using a
       [modern web browser](https://caniuse.com/usage-table) after running this command).
       ```bash
-      yarn start
+      yarn start:assisted_ui
       ```
 
 ## Integrating with OCM (uhc-portal)
@@ -63,11 +64,11 @@ application you see at https://console.redhat.com/openshift.
 Use this setup if you want to test the `libs/ui-lib` integration with the uhc-portal. These steps
 apply for `libs/locales` as well.
 
-1. In one terminal run `libs/ui-lib` in watch mode.  
+1. In one terminal run the project in [watch mode](#watch-mode).  
    The script builds and publishes the `@openshift-assisted/ui-lib` and its workspace dependencies
-   to the local registry everytime you make a change.
+   to the local registry everytime you'll make a change.
    ```bash
-   yarn watch
+   yarn start:watch_mode
    ```
 2. Fork and clone the uhc-portal project
    ```bash
@@ -94,9 +95,9 @@ Management project (a.k.a. [stolostron/console](https://github.com/stolostron/co
 
 Follow these steps if you want to test the `libs/ui-lib` integration within `stolostron/console`.
 
-1. In one terminal run `libs/ui-lib` in watch mode.
+1. In one terminal run the project in [watch mode](#watch-mode).
    ```bash
-   yarn watch
+   yarn start:watch_mode
    ```
 2. Follow the stolostron/console
    [development setup guide](https://github.com/stolostron/console#running).
