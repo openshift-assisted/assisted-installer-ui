@@ -1,4 +1,3 @@
-import { Cluster, Host, HostValidationId } from '../../../common/api';
 import {
   findValidationStep,
   getAllClusterWizardSoftValidationIds,

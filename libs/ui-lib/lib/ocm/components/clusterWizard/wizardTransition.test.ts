@@ -1,7 +1,7 @@
 import { test, describe, expect } from 'vitest';
 import cloneDeep from 'lodash-es/cloneDeep';
 
-import { Cluster, Host, ValidationsInfo } from '../../../common';
+import { ValidationsInfo } from '../../../common';
 import {
   // ValidationGroup as HostValidationGroup,
   ValidationsInfo as HostValidationsInfo,
@@ -9,6 +9,7 @@ import {
 } from '../../../common/types/hosts';
 
 import { canNextClusterDetails, canNextHostDiscovery, canNextStorage } from './wizardTransition';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const clusterBase: Cluster = {
   kind: 'Cluster',
@@ -218,7 +219,6 @@ describe('OCM wizard transition of Cluster Details', () => {
   test('is disabled for a failing required validation', () => {
     const cluster: Cluster = cloneDeep(clusterBase);
     const validationInfo = cloneDeep(validationInfoClusterDetails);
-    // @ts-expect-error Known object content
     validationInfo.configuration[1].status = 'error';
     cluster.validationsInfo = JSON.stringify(validationInfo);
     expect(canNextClusterDetails({ cluster })).toBe(false);
@@ -227,7 +227,6 @@ describe('OCM wizard transition of Cluster Details', () => {
   test('is enabled when all required validations are successful', () => {
     const cluster: Cluster = cloneDeep(clusterBase);
     const validationInfo = cloneDeep(validationInfoClusterDetails);
-    // @ts-expect-error Known object content
     validationInfo.configuration[1].status = 'success';
     cluster.validationsInfo = JSON.stringify(validationInfo);
     expect(canNextClusterDetails({ cluster })).toBe(true);
@@ -310,7 +309,6 @@ describe('OCM wizard transition of Host Discovery', () => {
 
     cluster.hosts[0].status = 'insufficient';
 
-    // @ts-expect-error Known object content
     host0ValidationInfo.hardware[1].status = 'success';
     host0ValidationInfo.operators = host0FlatValidationHostsDiscovery;
     cluster.hosts[0].validationsInfo = JSON.stringify(host0ValidationInfo);
@@ -392,7 +390,6 @@ describe('OCM wizard transition of Storage', () => {
     cluster.validationsInfo = JSON.stringify(validationInfo);
     cluster.hosts = hosts;
     cluster.hosts[0].status = 'insufficient';
-    // @ts-expect-error Known object content
     host0ValidationInfo.hardware[1].status = 'success';
     host0ValidationInfo.operators = host0FlatValidation;
     cluster.hosts[0].validationsInfo = JSON.stringify(host0ValidationInfo);
