@@ -1,5 +1,6 @@
 import { test, describe, expect } from 'vitest';
 import {
+  baseDomainValidationSchema,
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
   ipBlockValidationSchema,
@@ -309,6 +310,53 @@ describe('validationSchemas', () => {
     await Promise.all(
       invalid.map((value) =>
         validationSchema.validate(value).then(
+          () => expect(value).toBe('should be rejected since it is invalid'),
+          () => counter++,
+        ),
+      ),
+    );
+
+    expect(counter).toBe(invalid.length);
+  });
+
+  test('baseDomainNameValidationSchema', async () => {
+    const valid = [
+      'a.com',
+      'co',
+      '1c',
+      '1-c',
+      '1--c',
+      'aaa',
+      'abc.def',
+      'a-aa.com',
+      'a--aa.com',
+      'aa.com.com.com.com',
+      'red.cat--rahul.com',
+    ];
+    const invalid = [
+      'a',
+      '-',
+      'a-',
+      '-aaa.com.',
+      'aaa-.com',
+      'a.c',
+      'aaa.c',
+      'DNSnamescancontainonlyalphabeticalcharactersa-znumericcharacters0-9theminussign-andtheperiod',
+      'DNSnamescancontainonlyalphabeticalcharactersa-znumericcharacters0-9theminussign-andtheperiod.com',
+    ];
+
+    await Promise.all(
+      valid.map((value) =>
+        baseDomainValidationSchema
+          .validate(value)
+          .catch(() => expect(value).toBe(`was rejected but is valid`)),
+      ),
+    );
+
+    let counter = 0;
+    await Promise.all(
+      invalid.map((value) =>
+        baseDomainValidationSchema.validate(value).then(
           () => expect(value).toBe('should be rejected since it is invalid'),
           () => counter++,
         ),
