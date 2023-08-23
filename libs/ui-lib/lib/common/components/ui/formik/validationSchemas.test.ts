@@ -343,6 +343,8 @@ describe('validationSchemas', () => {
       'aaa.c',
       'DNSnamescancontainonlyalphabeticalcharactersa-znumericcharacters0-9theminussign-andtheperiod',
       'DNSnamescancontainonlyalphabeticalcharactersa-znumericcharacters0-9theminussign-andtheperiod.com',
+      'iamnotavaliddnsdomain-iamnotavaliddnsdomain-iamnotavaliddnsdomain',
+      'aaaa--comaaaa.aaaa--comaaaa.aaaa--comaaaa',
     ];
 
     await Promise.all(
