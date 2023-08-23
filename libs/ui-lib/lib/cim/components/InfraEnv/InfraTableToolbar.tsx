@@ -16,10 +16,11 @@ import { FilterIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { HostStatus } from '../../../common/components/hosts/types';
 import { agentStatus } from '../helpers/agentStatus';
-import { Host, TableToolbar } from '../../../common';
+import { TableToolbar } from '../../../common';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { StatusCount } from '../Agent/tableUtils';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const getStatusesForFiler = (statuses: HostStatus<string>) => {
   const filterStatuses: {

@@ -13,5 +13,6 @@
     "@types/eslint": "^8"
   },
   "private": true,
+  "type": "commonjs",
   "version": "1.0.0"
 }

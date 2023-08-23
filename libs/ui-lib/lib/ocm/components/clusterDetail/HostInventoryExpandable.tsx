@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Cluster, hostStatus } from '../../../common';
+import { hostStatus } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { getMostSevereHostStatus } from './utils';
 import { ExpandableSection } from '@patternfly/react-core';
 import './HostInventoryExpandable.css';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type HostInventoryExpandableProps = {
   cluster: Cluster;

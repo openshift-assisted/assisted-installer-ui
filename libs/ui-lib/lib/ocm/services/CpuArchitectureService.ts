@@ -1,10 +1,10 @@
 import {
-  Cluster,
   CpuArchitecture,
   OcmCpuArchitecture,
   getDefaultCpuArchitecture,
   SupportedCpuArchitecture,
 } from '../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const mapOcmArchToCpuArchitecture = (
   ocmArch: OcmCpuArchitecture | string,

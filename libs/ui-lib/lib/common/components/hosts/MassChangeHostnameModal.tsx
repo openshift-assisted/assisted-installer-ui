@@ -29,7 +29,7 @@ import {
   ModalProgress,
   FORBIDDEN_HOSTNAMES,
 } from '../ui';
-import { Host } from '../../api';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

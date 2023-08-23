@@ -1,7 +1,8 @@
 import React from 'react';
-import { ManagedDomain, useAlerts } from '../../common';
+import { useAlerts } from '../../common';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ManagedDomainsAPI } from '../services/apis';
+import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 
 export default function useManagedDomains() {
   const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();

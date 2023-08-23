@@ -13,7 +13,7 @@ import {
 
 import { Formik } from 'formik';
 import { TFunction } from 'i18next';
-import { Host, Inventory } from '../../api';
+import { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import {
   richHostnameValidationSchema,
   RichInputField,

@@ -4,7 +4,7 @@ import { Checkbox, FormGroup } from '@patternfly/react-core';
 
 import { RenderIf } from '../ui/RenderIf';
 import { getFieldId, HelperText, TextAreaField, trimSshPublicKey, ExternalLink } from '../ui';
-import { Cluster } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { SSH_GENERATION_DOC_LINK } from '../../config';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

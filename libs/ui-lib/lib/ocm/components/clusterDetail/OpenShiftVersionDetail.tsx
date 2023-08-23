@@ -1,10 +1,11 @@
 import React from 'react';
-import { Cluster, getOpenshiftVersionText } from '../../../common';
+import { getOpenshiftVersionText } from '../../../common';
 import { useOpenshiftVersions } from '../../hooks';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const UnsupportedVersion = ({ version }: { version: string }) => {
   const { t } = useTranslation();

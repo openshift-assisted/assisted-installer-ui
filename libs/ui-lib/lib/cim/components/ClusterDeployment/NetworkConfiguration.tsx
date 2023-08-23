@@ -13,7 +13,6 @@ import {
 } from '../../../common/components/clusterWizard/networkingSteps';
 import {
   canSelectNetworkTypeSDN,
-  ClusterDefaultConfig,
   getDefaultNetworkType,
   isAdvNetworkConf,
   isSNO,
@@ -23,6 +22,7 @@ import {
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { NetworkTypeControlGroup } from '../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
+import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;

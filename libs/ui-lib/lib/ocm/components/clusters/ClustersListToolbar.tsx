@@ -20,7 +20,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
-import { Cluster, clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
+import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
 import { selectClustersUIState } from '../../selectors';
 import { ClustersDispatch, fetchClustersAsync } from '../../reducers/clusters';
@@ -28,6 +28,7 @@ import { routeBasePath } from '../../config';
 import omit from 'lodash-es/omit.js';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from clusterStatusLabels

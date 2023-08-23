@@ -11,7 +11,12 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
-import { HostStaticNetworkConfig, ImageType, InfraEnv, Proxy } from '../../../common/api';
+import {
+  HostStaticNetworkConfig,
+  ImageType,
+  InfraEnv,
+  Proxy,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   AlertFormikError,
   httpProxyValidationSchema,

@@ -1,8 +1,9 @@
 import React from 'react';
 import { List, ListItem, Text, TextContent } from '@patternfly/react-core';
-import { Cluster, ErrorState, ExternalLink, LoadingState } from '../../../common';
+import { ErrorState, ExternalLink, LoadingState } from '../../../common';
 import { useClusterPreflightRequirements } from '../../hooks';
 import { fileSize } from '../../../common/utils';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const DISK_WRITE_SPEED_LINK = 'https://access.redhat.com/solutions/4885641';
 

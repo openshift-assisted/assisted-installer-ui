@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { EmptyState, Host } from '../../../common';
+import { EmptyState } from '../../../common';
 import { AgentTableActions } from './types';
 import {
   AgentClusterInstallK8sResource,
@@ -19,6 +19,7 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 type ExpandComponentContextType = {
   onSetInstallationDiskId?: ClusterDeploymentHostsNetworkTableProps['onSetInstallationDiskId'];

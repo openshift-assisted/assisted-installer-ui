@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { ClusterCreateParams } from '../../api';
+import { ClusterCreateParams } from '@openshift-assisted/types/assisted-installer-service';
 import { PullSecretField, PullSecretInfo } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 

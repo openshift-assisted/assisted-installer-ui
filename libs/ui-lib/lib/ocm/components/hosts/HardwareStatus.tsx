@@ -4,7 +4,6 @@ import {
   areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
-  Host,
   HostsTableActions,
   hostStatus,
   HostStatus,
@@ -14,6 +13,7 @@ import { ValidationsInfo } from '../../../common/types/hosts';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { stringToJSON } from '../../../common/utils';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 type HardwareStatusProps = {
   host: Host;

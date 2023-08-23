@@ -1,4 +1,7 @@
-import { ClusterCreateParams, OpenshiftVersion } from '../api/types';
+import {
+  ClusterCreateParams,
+  OpenshiftVersion,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { CpuArchitecture } from './cpuArchitecture';
 
 export type OpenshiftVersionOptionType = {

@@ -2,7 +2,6 @@ import React from 'react';
 import { StackItem } from '@patternfly/react-core';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
-  Cluster,
   getFormikErrorFields,
   FormikAutoSave,
   ClusterWizardStep,
@@ -17,6 +16,7 @@ import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { canNextStorage } from './wizardTransition';
 import HostsStorageTable from '../hosts/HostsStorageTable';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const StorageForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();

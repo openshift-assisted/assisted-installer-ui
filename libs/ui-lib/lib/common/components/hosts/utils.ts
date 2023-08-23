@@ -1,6 +1,10 @@
 import Fuse from 'fuse.js';
 import { TFunction } from 'i18next';
-import type { Host, Cluster, Inventory } from '../../api/types';
+import type {
+  Host,
+  Cluster,
+  Inventory,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { stringToJSON } from '../../utils';
 import { hostRoles, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';

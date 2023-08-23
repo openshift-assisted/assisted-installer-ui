@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import { useStateSafely } from '../../../common/hooks';
 import {
   AddHostsContextProvider,
-  Cluster,
   CpuArchitecture,
   ErrorState,
   LoadingState,
@@ -25,6 +24,7 @@ import {
 } from './HostsClusterDetailTabContentErrors';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,

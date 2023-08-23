@@ -3,13 +3,13 @@ import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/r
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
-  Cluster,
   CpuArchitecture,
   FeatureId,
   getDefaultCpuArchitecture,
   getFieldId,
   SupportedCpuArchitecture,
 } from '../../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export type CpuArchitectureItem = {
   description: string;

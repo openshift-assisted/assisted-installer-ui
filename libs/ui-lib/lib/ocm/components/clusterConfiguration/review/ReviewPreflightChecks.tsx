@@ -21,13 +21,7 @@ import {
   global_warning_color_100 as warningColor,
 } from '@patternfly/react-tokens';
 
-import {
-  Cluster,
-  ClusterValidations,
-  DetailItem,
-  DetailList,
-  HostsValidations,
-} from '../../../../common';
+import { ClusterValidations, DetailItem, DetailList, HostsValidations } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { useOpenshiftVersions } from '../../../hooks';
 import { wizardStepNames } from '../../clusterWizard/constants';
@@ -47,6 +41,7 @@ import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/ty
 import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { stringToJSON } from '../../../../common/utils';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();

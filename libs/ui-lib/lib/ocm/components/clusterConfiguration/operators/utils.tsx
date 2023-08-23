@@ -1,10 +1,10 @@
 import {
   OPERATOR_NAME_LVM,
-  Cluster,
   FeatureSupportLevelData,
   ExposedOperatorName,
   OPERATOR_NAME_LVMS,
 } from '../../../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getActualLVMOperatorName = ({
   openshiftVersion,

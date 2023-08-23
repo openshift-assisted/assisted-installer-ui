@@ -1,4 +1,3 @@
-import { Cluster, Host, HostValidationId } from '../../../common/api';
 import {
   findValidationStep,
   getAllClusterWizardSoftValidationIds,
@@ -13,6 +12,11 @@ import {
   Validation as HostValidation,
 } from '../../../common/types/hosts';
 import { getKeys, stringToJSON } from '../../../common/utils';
+import {
+  Cluster,
+  Host,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'

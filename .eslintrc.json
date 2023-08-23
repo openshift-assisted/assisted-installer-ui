@@ -1,27 +1,51 @@
 {
+  "root": true,
   "env": {
     "browser": true,
     "es6": true,
     "node": true
   },
-  "ignorePatterns": ["apps/*/build", "libs/*/build", "libs/*/@types"],
+  "parserOptions": {
+    "project": [
+      "apps/*/tsconfig.json",
+      "apps/*/tsconfig.eslint.json",
+      "libs/*/tsconfig.json",
+      "libs/*/tsconfig.eslint.json"
+    ]
+  },
+  "rules": {
+    "eqeqeq": ["error", "always"],
+    "indent": "off",
+    "no-debugger": "error"
+  },
+  "ignorePatterns": ["apps/*/build", "libs/*/build", "tools/*/build"],
   "overrides": [
     {
+      "files": [
+        "scripts/*.cjs",
+        "apps/*/scripts/*.cjs",
+        "libs/*/scripts/*.cjs",
+        "tools/*/scripts/*.cjs"
+      ],
+      "extends": ["eslint:recommended", "prettier"],
       "env": {
         "browser": false
       },
-      "extends": ["eslint:recommended", "prettier"],
-      "files": ["scripts/*.cjs", "apps/*/scripts/*.cjs", "libs/*/scripts/*.cjs"],
       "rules": {
         "no-console": "off"
       }
     },
     {
+      "files": [
+        "scripts/*.{js,mjs}",
+        "apps/*/scripts/*.{js,mjs}",
+        "libs/*/scripts/*.{js,mjs}",
+        "tools/*/scripts/*.{js,mjs}"
+      ],
+      "extends": ["eslint:recommended", "prettier"],
       "env": {
         "browser": false
       },
-      "extends": ["eslint:recommended", "prettier"],
-      "files": ["scripts/*.{js,mjs}", "apps/*/scripts/*.{js,mjs}", "libs/*/scripts/*.{js,mjs}"],
       "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
@@ -31,11 +55,21 @@
       }
     },
     {
+      "files": ["tools/eslint-config-assisted-ui/lib/**/*.ts"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
       "env": {
         "browser": false
       },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["tools/toolbox/lib/**/*.ts"],
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
-      "files": ["libs/toolbox/lib/**/*.ts"],
+      "env": {
+        "browser": false
+      },
       "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
@@ -45,8 +79,34 @@
       }
     },
     {
+      "files": ["libs/locales/@types/**/*.d.ts"],
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/locales",
+        "project": "tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["libs/types/lib/**/*.ts"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/types",
+        "project": "tsconfig.eslint.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
       "files": ["libs/ui-lib/lib/**/*.{ts,tsx}"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
       "parserOptions": {
         "tsconfigRootDir": "libs/ui-lib",
         "project": "tsconfig.eslint.json"
@@ -68,11 +128,11 @@
       }
     },
     {
+      "files": ["apps/assisted-ui/vite.config.ts"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
       "env": {
         "browser": false
       },
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
-      "files": ["apps/assisted-ui/vite.config.ts"],
       "parserOptions": {
         "tsconfigRootDir": "apps/assisted-ui"
       },
@@ -81,8 +141,8 @@
       }
     },
     {
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui", "plugin:react/jsx-runtime"],
       "files": ["apps/assisted-ui/src/**/*.{ts,tsx}"],
+      "extends": ["@openshift-assisted/eslint-config-assisted-ui", "plugin:react/jsx-runtime"],
       "parserOptions": {
         "tsconfigRootDir": "apps/assisted-ui",
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true
@@ -106,18 +166,5 @@
         ]
       }
     }
-  ],
-  "parserOptions": {
-    "project": [
-      "apps/*/tsconfig.json",
-      "apps/*/tsconfig.eslint.json",
-      "libs/*/tsconfig.json",
-      "libs/*/tsconfig.eslint.json"
-    ]
-  },
-  "root": true,
-  "rules": {
-    "eqeqeq": ["error", "always"],
-    "indent": "off"
-  }
+  ]
 }

@@ -1,9 +1,9 @@
+import { ClusterDetailsValues } from '../../common';
 import {
   ClusterCreateParams,
-  ClusterDetailsValues,
   HostStaticNetworkConfig,
   V2ClusterUpdateParams,
-} from '../../common';
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type ClusterDetailsUpdateParams = Pick<
   V2ClusterUpdateParams,
