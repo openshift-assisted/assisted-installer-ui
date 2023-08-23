@@ -231,7 +231,6 @@ const ClusterEventsToolbar = ({
               customBadgeText={hostChips.length}
               isOpen={isHostExpanded}
               placeholderText={<Placeholder text="Hosts" />}
-              isDisabled={allHosts.length === 0}
               maxHeight={280}
               zIndex={600}
             >
