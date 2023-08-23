@@ -57,10 +57,8 @@ const CodeField = ({
             language={language}
             downloadFileName={downloadFileName}
             onCodeChange={(value) => {
-              if (value !== '') {
-                setTouched(true);
-                setValue(value, true);
-              }
+              setTouched(true);
+              setValue(value, true);
             }}
             isReadOnly={isReadOnly}
           />
