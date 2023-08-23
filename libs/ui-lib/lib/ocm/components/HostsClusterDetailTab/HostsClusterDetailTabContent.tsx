@@ -152,10 +152,10 @@ export const HostsClusterDetailTabContent = ({
   }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
   React.useEffect(() => {
-    const id = setTimeout(() => {
+    const id = setInterval(() => {
       void refreshCluster();
     }, POLLING_INTERVAL);
-    return () => clearTimeout(id);
+    return () => clearInterval(id);
   }, [refreshCluster]);
 
   if (error) {
