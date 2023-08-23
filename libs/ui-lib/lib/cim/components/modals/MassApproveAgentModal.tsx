@@ -14,12 +14,13 @@ import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { TableRow } from '../../../common/components/hosts/AITable';
-import { Host, ModalProgress } from '../../../common';
+import { ModalProgress } from '../../../common';
 import { agentStatus } from '../helpers/agentStatus';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;

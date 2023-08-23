@@ -1,6 +1,6 @@
 import React from 'react';
 import { hostRoles } from '../../config/constants';
-import { Host, HostUpdateParams } from '../../api';
+import { Host, HostUpdateParams } from '@openshift-assisted/types/assisted-installer-service';
 import { SimpleDropdown } from '../ui';
 import { useStateSafely } from '../../hooks';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

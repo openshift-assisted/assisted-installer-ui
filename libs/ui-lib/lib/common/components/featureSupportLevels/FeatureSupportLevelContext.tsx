@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 
 import { CpuArchitecture, FeatureId, FeatureIdToSupportLevel } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { SupportLevel } from '../../api/types';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ActiveFeatureConfiguration = {
   underlyingCpuArchitecture: CpuArchitecture;

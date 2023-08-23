@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonVariant, Flex, FlexItem, Popover } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import type { Host, Inventory } from '../../api';
+import type { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { getHostname } from './utils';
 import { DASH } from '../constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

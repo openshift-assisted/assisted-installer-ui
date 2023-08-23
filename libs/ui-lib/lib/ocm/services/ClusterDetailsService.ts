@@ -1,13 +1,9 @@
 import {
   AI_UI_TAG,
-  Cluster,
   CpuArchitecture,
-  InfraEnv,
-  ManagedDomain,
   OpenshiftVersionOptionType,
   getClusterDetailsInitialValues,
   ClusterCpuArchitecture,
-  PlatformType,
 } from '../../common';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
@@ -19,6 +15,12 @@ import {
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import { isInOcm } from '../api';
 import { getDefaultCpuArchitecture } from './CpuArchitectureService';
+import {
+  Cluster,
+  InfraEnv,
+  ManagedDomain,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
   const params = new URLSearchParams(urlSearchParams);
@@ -55,6 +57,10 @@ const ClusterDetailsService = {
 
     if (isInOcm) {
       params.tags = AI_UI_TAG;
+    }
+
+    if (params.platform?.type === 'none') {
+      delete params.platform;
     }
 
     return params;
@@ -108,13 +114,11 @@ const ClusterDetailsService = {
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
 
-    const platform = cluster?.platform?.type === 'baremetal' ? 'none' : cluster?.platform?.type;
     return {
       ...values,
       cpuArchitecture,
       hostsNetworkConfigurationType,
       addCustomManifest: false,
-      platform: platform === undefined ? 'none' : platform,
       isCMNSupported: true,
     };
   },

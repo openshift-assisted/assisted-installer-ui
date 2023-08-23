@@ -1,4 +1,8 @@
-import { Host, HostUpdateParams, InfraEnv } from '../../../common/api/types';
+import {
+  Host,
+  HostUpdateParams,
+  InfraEnv,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { client } from '../../api/axiosClient';
 import { AxiosResponse } from 'axios';
 import InfraEnvsAPI from './InfraEnvsAPI';

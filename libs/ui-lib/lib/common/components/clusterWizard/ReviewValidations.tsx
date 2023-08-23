@@ -19,7 +19,10 @@ import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
 } from '../../types/hosts';
-import type { ClusterValidationId, HostValidationId } from '../../api';
+import type {
+  ClusterValidationId,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { clusterValidationLabels, hostValidationLabels } from '../../config';
 import { getEnabledHosts } from '../hosts';
 import { findValidationFixStep } from './validationsInfoUtils';

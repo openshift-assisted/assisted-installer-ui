@@ -11,7 +11,7 @@ import {
   ListItem,
 } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
-import { Cluster } from '../../../common/api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ValidationsInfo,
   ValidationGroup as ClusterValidationGroup,

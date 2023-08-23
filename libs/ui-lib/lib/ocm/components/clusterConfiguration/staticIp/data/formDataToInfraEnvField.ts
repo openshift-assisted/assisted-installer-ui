@@ -1,5 +1,8 @@
 import { dump } from 'js-yaml';
-import { HostStaticNetworkConfig, InfraEnv } from '../../../../../common';
+import {
+  HostStaticNetworkConfig,
+  InfraEnv,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   ProtocolVersion,
   FormViewHost,

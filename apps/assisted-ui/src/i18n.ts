@@ -1,7 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import translation from '@openshift-assisted/locales/en/translation.json';
 
 const dateTimeFormatter = new Intl.DateTimeFormat('default', {

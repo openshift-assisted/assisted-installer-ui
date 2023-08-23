@@ -6,16 +6,15 @@ import {
   canDownloadKubeconfig,
   isSNO,
   isClusterPlatformTypeVM,
-  SupportedPlatformType,
-  Cluster,
 } from '../../../common';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
 import { isInOcm } from '../../api';
-import { integrationPlatformLinks } from '../clusterWizard/ClusterPlatformIntegrationHint';
+import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -38,7 +37,7 @@ const ClusterDetailStatusMessages = ({
   );
 
   const platformLink = isClusterPlatformTypeVM(cluster)
-    ? integrationPlatformLinks[cluster.platform?.type as SupportedPlatformType]
+    ? ExternalPlatformLinks[cluster.platform?.type as PlatformType]
     : '';
 
   return (

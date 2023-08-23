@@ -1,13 +1,15 @@
 <h1 align="center">
-  The Assisted Installer User Interface
+  Assisted Installer User Interface
 </h1>
 
 ## Documentation
 
-- [How to contribute](docs/CONTRIBUTING.md)
+- [Contributing](docs/CONTRIBUTING.md)
+- [Development](docs/DEVELOPMENT.md)
 - [I18N documentation](docs/I18N.md)
 - [Release process](docs/RELEASE_WORKFLOW.md)
 
 ## License
 
-This project is [Apache 2.0](LICENSE) licensed and accepts contributions via GitHub pull requests.
+This project is Apache-2.0 licensed, please read the [contributing](docs/CONTRIBUTING.md) section
+for more details.

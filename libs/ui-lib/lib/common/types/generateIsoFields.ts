@@ -1,4 +1,4 @@
-import { Cluster, InfraEnv } from '../api';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ProxyFieldsType = {
   enableProxy: boolean;

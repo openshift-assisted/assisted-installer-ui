@@ -1,12 +1,13 @@
 import React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
-import { Cluster, isSNO } from '../../../common';
+import { isSNO } from '../../../common';
 import { isAHostVM } from '../hosts/utils';
 import { isAddHostsCluster } from '../clusters/utils';
 import HostRequirementsContent from '../hosts/HostRequirementsContent';
 import HostsDiscoveryTroubleshootingInfoLinkWithModal from '../hosts/HostsDiscoveryTroubleshootingInfoLinkWithModal';
 import VMRebootConfigurationLinkWithModal from '../hosts/VMRebootConfigurationLinkWithModal';
 import InfoLinkWithModal from '../ui/InfoLinkWithModal';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
   const isVM = React.useMemo(() => isAHostVM(cluster.hosts || []), [cluster.hosts]);

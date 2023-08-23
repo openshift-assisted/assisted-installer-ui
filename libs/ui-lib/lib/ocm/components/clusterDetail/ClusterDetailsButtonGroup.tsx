@@ -1,12 +1,10 @@
 import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
 import {
-  Cluster,
   canDownloadClusterLogs,
   useAlerts,
   KubeconfigDownload,
   RenderIf,
-  Credentials,
   canOpenConsole,
 } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
@@ -15,6 +13,7 @@ import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
 import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
+import { Cluster, Credentials } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDetailsButtonGroupProps = {
   cluster: Cluster;

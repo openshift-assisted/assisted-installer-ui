@@ -2,14 +2,11 @@ import React from 'react';
 import { GridItem, Grid, Button } from '@patternfly/react-core';
 import { ArrayHelpers, FieldArray } from 'formik';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-import {
-  getFormikArrayItemFieldName,
-  MacInterfaceMap,
-  RemovableField,
-} from '../../../../../../common';
+import { getFormikArrayItemFieldName, RemovableField } from '../../../../../../common';
 import { OcmInputField } from '../../../../ui/OcmFormFields';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../../../../selectors';
+import { MacInterfaceMap } from '@openshift-assisted/types/assisted-installer-service';
 
 const AddMapping: React.FC<{
   onPush: ArrayHelpers['push'];

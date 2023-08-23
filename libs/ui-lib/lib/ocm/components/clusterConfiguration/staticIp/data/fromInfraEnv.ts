@@ -1,4 +1,7 @@
-import { HostStaticNetworkConfig, InfraEnv } from '../../../../../common';
+import {
+  HostStaticNetworkConfig,
+  InfraEnv,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { FORM_VIEW_PREFIX, getProtocolType, getYamlComments } from './nmstateYaml';
 import {
   StaticIpInfo,

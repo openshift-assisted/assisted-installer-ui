@@ -12,7 +12,7 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { Cluster } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types/events';
 import ViewClusterEventsButton from './ViewClusterEventsButton';
 

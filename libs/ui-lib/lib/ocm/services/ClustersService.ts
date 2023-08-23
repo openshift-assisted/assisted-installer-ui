@@ -1,15 +1,7 @@
 import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import {
-  AI_UI_TAG,
-  Cluster,
-  CreateManifestParams,
-  Host,
-  InfraEnvCreateParams,
-  UpdateManifestParams,
-  V2ClusterUpdateParams,
-} from '../../common';
+import { AI_UI_TAG } from '../../common';
 import { isInOcm } from '../api';
 import { ClusterCreateParamsWithStaticNetworking } from './types';
 import omit from 'lodash-es/omit.js';
@@ -17,6 +9,14 @@ import {
   CustomManifestValues,
   ListManifestsExtended,
 } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import {
+  Cluster,
+  CreateManifestParams,
+  Host,
+  InfraEnvCreateParams,
+  UpdateManifestParams,
+  V2ClusterUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
