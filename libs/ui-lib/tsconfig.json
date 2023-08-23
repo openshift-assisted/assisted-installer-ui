@@ -1,24 +1,33 @@
 {
-  "extends": "@tsconfig/recommended/tsconfig.json",
+  "extends": "@tsconfig/recommended",
   "compilerOptions": {
     "allowJs": false,
     "composite": true,
     "declaration": true,
-    "declarationDir": "@types",
+    "declarationDir": "build/@types",
     "declarationMap": true,
+    "importHelpers": true,
     "incremental": true,
     "jsx": "react",
     "lib": ["DOM", "DOM.Iterable", "ES2015"],
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noEmit": false,
     "noEmitOnError": true,
-    "outDir": "build",
+    "outDir": "build/cjs",
     "resolveJsonModule": true,
     "rootDir": "lib",
     "sourceMap": true,
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },
   "include": ["lib"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["**/*.test.ts"],
+  "references": [
+    {
+      "path": "../types"
+    },
+    {
+      "path": "../locales"
+    }
+  ]
 }

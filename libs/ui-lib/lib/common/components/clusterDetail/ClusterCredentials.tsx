@@ -1,6 +1,6 @@
 import React from 'react';
 import { GridItem, ClipboardCopy, clipboardCopyFunc, Button, Alert } from '@patternfly/react-core';
-import { Credentials, Cluster } from '../../api/types';
+import { Credentials, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';

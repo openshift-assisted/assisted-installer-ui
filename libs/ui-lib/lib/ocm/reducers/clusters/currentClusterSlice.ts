@@ -9,12 +9,7 @@ import {
   PayloadAction,
   ThunkDispatch,
 } from '@reduxjs/toolkit';
-import {
-  AssistedInstallerPermissionTypesListType,
-  Cluster,
-  Host,
-  ResourceUIState,
-} from '../../../common';
+import { AssistedInstallerPermissionTypesListType, ResourceUIState } from '../../../common';
 import {
   getApiErrorMessage,
   getApiErrorCode,
@@ -22,6 +17,7 @@ import {
   FETCH_ABORTED_ERROR_CODE,
 } from '../../api';
 import { ClustersService } from '../../services';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export type FetchErrorType = {
   code: string | number;

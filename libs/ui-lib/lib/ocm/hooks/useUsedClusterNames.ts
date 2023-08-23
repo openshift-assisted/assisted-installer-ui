@@ -1,7 +1,8 @@
 import React from 'react';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
-import { Cluster, useAlerts } from '../../common';
+import { useAlerts } from '../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export default function useUsedClusterNames(clusterId: Cluster['id']) {
   const [usedClusterNames, setUsedClusterNames] = React.useState<string[]>();

@@ -3,17 +3,13 @@ import { TextVariants, TextContent, Text, FormGroup, Grid } from '@patternfly/re
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Language } from '@patternfly/react-code-editor';
 import { useField } from 'formik';
-import {
-  getFieldId,
-  HostStaticNetworkConfig,
-  NMSTATE_EXAMPLES_LINK,
-  PopoverIcon,
-} from '../../../../../../common';
+import { getFieldId, NMSTATE_EXAMPLES_LINK, PopoverIcon } from '../../../../../../common';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import HostSummary from '../CollapsedHost';
 import { MacIpMapping } from './MacIpMapping';
 import { getEmptyYamlHost } from '../../data/emptyData';
 import { OcmCodeField } from '../../../../ui/OcmFormFields';
+import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
 
 const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
   const mapFieldName = `${fieldName}.macInterfaceMap`;

@@ -2,12 +2,12 @@ import React from 'react';
 import { List, ListItem } from '@patternfly/react-core';
 import { useClusterPreflightRequirements } from '../../../hooks';
 import {
-  HostTypeHardwareRequirements,
   ClusterOperatorProps,
   ErrorState,
   LoadingState,
   OPERATOR_NAME_LVM,
 } from '../../../../common';
+import { HostTypeHardwareRequirements } from '@openshift-assisted/types/assisted-installer-service';
 
 const LvmHostRequirements = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
   const { preflightRequirements, error, isLoading } = useClusterPreflightRequirements(clusterId);

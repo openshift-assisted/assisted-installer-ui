@@ -3,7 +3,6 @@ import { sortable, expandable, breakWord } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
 
 import {
-  Host,
   HostsTableActions,
   getInventory,
   getHostname,
@@ -27,6 +26,7 @@ import noop from 'lodash-es/noop.js';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { AgentMachineK8sResource } from '../Hypershift/types';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export const agentHostnameColumn = (
   t: TFunction,
@@ -493,7 +493,7 @@ export const useAgentsTable = (
       agentClusterInstalls,
     ],
   );
-  const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);
+  const actionResolver = React.useMemo(() => hostActionResolver({ t, ...actions }), [actions, t]);
   return [hosts, actions, actionResolver];
 };
 

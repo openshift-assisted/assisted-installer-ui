@@ -1,4 +1,4 @@
-import { clientWithoutConverter } from '../../api/axiosClient';
+import { clientWithoutCaseConverter } from '../../api/axiosClient';
 import {
   ArchitecturesSupportsLevel,
   FeaturesSupportsLevel,
@@ -13,7 +13,7 @@ const NewFeatureSupportLevelsAPI = {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
     queryParams += cpuArchitecture ? `cpu_architecture=${cpuArchitecture}` : '';
-    return clientWithoutConverter.get<FeaturesSupportsLevel>(
+    return clientWithoutCaseConverter.get<FeaturesSupportsLevel>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
     );
   },
@@ -21,7 +21,7 @@ const NewFeatureSupportLevelsAPI = {
   architecturesSupportLevel(openshiftVersion: string) {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
-    return clientWithoutConverter.get<ArchitecturesSupportsLevel>(
+    return clientWithoutCaseConverter.get<ArchitecturesSupportsLevel>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/architectures${queryParams}`,
     );
   },

@@ -1,4 +1,8 @@
-import { Host, HostRoleUpdateParams, HostValidationId } from '../api';
+import {
+  Host,
+  HostRoleUpdateParams,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type Validation = {
   id: HostValidationId;

@@ -1,10 +1,8 @@
 import React from 'react';
 import { GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
-  Cluster,
   DetailItem,
   DetailList,
-  DiskEncryption,
   getDefaultCpuArchitecture,
   isDualStack,
   NETWORK_TYPE_SDN,
@@ -19,6 +17,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import { Cluster, DiskEncryption } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterPropertiesProps = {
   cluster: Cluster;

@@ -1,5 +1,11 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
-import { Host, HostRole, HostStage, Inventory, Interface } from '../../../common';
+import {
+  Host,
+  HostRole,
+  HostStage,
+  Interface,
+  Inventory,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { StatusCondition } from './shared';
 

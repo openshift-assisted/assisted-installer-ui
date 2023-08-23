@@ -1,9 +1,8 @@
+import { HostDiscoveryValues, selectMastersMustRunWorkloads } from '../../common';
 import {
   Cluster,
   V2ClusterUpdateParams,
-  HostDiscoveryValues,
-  selectMastersMustRunWorkloads,
-} from '../../common';
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const HostDiscoveryService = {
   setSchedulableMasters(

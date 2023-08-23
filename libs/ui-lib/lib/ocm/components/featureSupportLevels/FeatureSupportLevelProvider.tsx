@@ -1,12 +1,9 @@
 import React, { PropsWithChildren } from 'react';
 import {
   ActiveFeatureConfiguration,
-  Cluster,
   CpuArchitecture,
   FeatureId,
   getDefaultCpuArchitecture,
-  SupportLevel,
-  SupportLevels,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
@@ -17,6 +14,11 @@ import {
   NewFeatureSupportLevelMap,
 } from '../../../common/components/newFeatureSupportLevels';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import {
+  Cluster,
+  SupportLevel,
+  SupportLevels,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;

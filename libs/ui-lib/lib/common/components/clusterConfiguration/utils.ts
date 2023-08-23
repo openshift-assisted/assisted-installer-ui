@@ -8,7 +8,7 @@ import {
   Inventory,
   MachineNetwork,
   ServiceNetwork,
-} from '../../api';
+} from '@openshift-assisted/types/assisted-installer-service';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
 import {
   selectClusterNetworkCIDR,

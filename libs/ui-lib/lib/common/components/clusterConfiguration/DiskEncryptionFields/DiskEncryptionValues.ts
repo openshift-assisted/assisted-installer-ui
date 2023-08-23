@@ -1,4 +1,4 @@
-import { DiskEncryption } from '../../../api';
+import { DiskEncryption } from '@openshift-assisted/types/assisted-installer-service';
 
 export type TangServer = {
   url: string;

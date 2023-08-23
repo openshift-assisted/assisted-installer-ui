@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextContent, TextVariants, Alert, Grid } from '@patternfly/react-core';
 
 import { CustomManifests } from './components/CustomManifests';
-import { Cluster } from '../../../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CustomManifestFormState } from './components/propTypes';
 
 export const CustomManifestsPage = ({

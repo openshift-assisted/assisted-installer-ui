@@ -6,9 +6,10 @@ import {
   AnyAction,
   Dispatch,
 } from '@reduxjs/toolkit';
-import { Cluster, ResourceUIState } from '../../../common';
+import { ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 import { handleApiError, isInOcm } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',

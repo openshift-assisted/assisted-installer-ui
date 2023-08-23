@@ -8,7 +8,7 @@ import {
   ListItem,
   Popover,
 } from '@patternfly/react-core';
-import { Disk } from '../../api';
+import { Disk } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type DiskLimitationsProps = {
