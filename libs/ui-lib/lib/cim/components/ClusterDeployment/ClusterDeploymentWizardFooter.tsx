@@ -10,7 +10,7 @@ import {
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import { ClusterWizardStepHostStatusDeterminationObject } from '../../../common/types/hosts';
 import { ValidationsInfo } from '../../../common/types/clusters';
-import { Cluster } from '../../../common/api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterWizardStepsType, wizardStepsValidationsMap } from './wizardTransition';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { AgentK8sResource } from '../../types/k8s/agent';

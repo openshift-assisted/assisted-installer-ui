@@ -2,9 +2,9 @@ import React from 'react';
 import { ListManifestsExtended } from '../data/dataTypes';
 import { CustomManifestsFormProps, CustomManifestFormState } from './propTypes';
 import { getFormViewManifestsValidationSchema } from './customManifestsValidationSchema';
-import { Cluster } from '../../../../../common';
 import { CustomManifestsForm } from './CustomManifestsForm';
 import { getEmptyFormViewManifestsValues, getFormViewManifestValues } from './utils';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const CustomManifests = ({
   cluster,

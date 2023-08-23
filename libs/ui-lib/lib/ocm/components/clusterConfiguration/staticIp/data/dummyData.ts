@@ -1,4 +1,7 @@
-import { HostStaticNetworkConfig, MacInterfaceMap } from '../../../../../common';
+import {
+  HostStaticNetworkConfig,
+  MacInterfaceMap,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ProtocolVersion, StaticIpInfo, StaticIpView } from './dataTypes';
 import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';

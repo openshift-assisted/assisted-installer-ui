@@ -3,7 +3,6 @@ import {
   FeatureSupportLevelsMap,
   FeatureIdToSupportLevel,
   FeatureId,
-  SupportLevel,
   FeatureSupportLevelContextProvider,
   FeatureSupportLevelData,
 } from '../../../common';
@@ -12,6 +11,7 @@ import { featureSupportLevelsACM } from '../../config/constants';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
 import { getOCPVersions, getVersionFromReleaseImage, getMajorMinorVersion } from '../helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ACMFeatureSupportLevelProvider = PropsWithChildren<{
   clusterImages: ClusterImageSetK8sResource[];

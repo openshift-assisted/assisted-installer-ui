@@ -8,11 +8,17 @@ describe(`Day2 flow`, () => {
       activeScenario: 'DAY2_FLOW',
     });
   };
-  before(() => setTestStartSignal('CLUSTER_FINISHED_INSTALLATION'));
+
+  before(() => {
+    setTestStartSignal('CLUSTER_FINISHED_INSTALLATION');
+  });
 
   beforeEach(() => {
     setTestStartSignal('CLUSTER_FINISHED_INSTALLATION');
     cy.visit('/day2-flow-mock');
+    cy.window().then((win) => {
+      win.__app__.OCM.setAuthInterceptor((client) => client);
+    });
   });
 
   describe('Add hosts tab - error states', () => {

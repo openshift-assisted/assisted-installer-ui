@@ -1,15 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  Cluster,
-  CpuArchitecture,
-  InfraEnv,
-  InfraEnvCreateParams,
-  InfraEnvUpdateParams,
-  WithRequired,
-} from '../../../../common';
+import { CpuArchitecture, WithRequired } from '../../../../common';
 import { InfraEnvsAPI } from '../../../services/apis';
 import { RootState } from '../../index';
 import { selectInfraEnvByCpuArchitecture } from './selectors';
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvCreateParams,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export const listInfraEnvsByClusterId = createAsyncThunk(
   'infraEnvs/listByClusterId',

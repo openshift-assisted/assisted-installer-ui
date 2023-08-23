@@ -1,4 +1,4 @@
-import { ArchitectureSupportLevelId } from '../api';
+import { ArchitectureSupportLevelId } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ClusterCpuArchitecture = 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 

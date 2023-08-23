@@ -12,9 +12,10 @@ import {
   InProgressIcon,
   BanIcon,
 } from '@patternfly/react-icons';
-import { Cluster, clusterStatusLabels, WithTestID } from '../../../common';
+import { clusterStatusLabels, WithTestID } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterStatusProps = {
   status: Cluster['status'];

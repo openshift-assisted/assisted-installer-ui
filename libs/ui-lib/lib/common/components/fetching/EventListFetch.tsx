@@ -1,7 +1,7 @@
 import React from 'react';
 import omit from 'lodash-es/omit.js';
 import { Pagination, PaginationVariant } from '@patternfly/react-core';
-import { EventList } from '../../api';
+import { EventList } from '@openshift-assisted/types/assisted-installer-service';
 import { EVENTS_POLLING_INTERVAL } from '../../config';
 import { ClusterEventsFiltersType, EventListFetchProps } from '../../types';
 import { useStateSafely } from '../../hooks';

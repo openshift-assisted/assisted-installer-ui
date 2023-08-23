@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import type { Disk, Host, Interface } from '../../api';
+import type { Disk, Host, Interface } from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo } from '../../types/hosts';
 import type { WithTestID } from '../../types/index';
 import { DASH } from '../constants';

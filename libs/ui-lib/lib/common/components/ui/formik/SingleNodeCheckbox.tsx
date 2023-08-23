@@ -7,7 +7,7 @@ import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
 import { FeatureSupportLevelBadge, useFeatureSupportLevel } from '../../featureSupportLevels';
-import { ClusterCreateParams } from '../../../api/types';
+import { ClusterCreateParams } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };

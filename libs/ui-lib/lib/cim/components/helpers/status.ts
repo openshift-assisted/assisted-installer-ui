@@ -3,7 +3,7 @@ import {
   AgentClusterInstallStatusCondition,
   AgentClusterInstallStatusConditionType,
 } from '../../types/k8s/agent-cluster-install';
-import { Cluster, Host } from '../../../common/api/types';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   AgentK8sResource,
   AgentStatusCondition,

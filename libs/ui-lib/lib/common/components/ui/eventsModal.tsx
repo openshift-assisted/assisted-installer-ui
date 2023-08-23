@@ -11,7 +11,7 @@ import {
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens';
 import { ToolbarButton } from './Toolbar';
-import { Cluster, Event } from '../../api';
+import { Cluster, Event } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
 import { EventListFetch } from '../fetching/EventListFetch';
 import ExternalLink from './ExternalLink';

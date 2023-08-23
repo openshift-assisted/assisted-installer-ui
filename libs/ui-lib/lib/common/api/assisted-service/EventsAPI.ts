@@ -1,4 +1,4 @@
-import { EventList, V2Events } from '../../../common/api/types';
+import { EventList, V2Events } from '@openshift-assisted/types/assisted-installer-service';
 import { client } from '../../api/axiosClient';
 
 let _getRequestAbortController = new AbortController();

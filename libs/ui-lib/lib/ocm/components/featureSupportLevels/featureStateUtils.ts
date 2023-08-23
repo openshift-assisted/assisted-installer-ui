@@ -1,14 +1,13 @@
 import {
   ActiveFeatureConfiguration,
-  Cluster,
   CpuArchitecture,
   FeatureId,
   isSNO,
   OperatorsValues,
-  SupportLevel,
   SupportedCpuArchitecture,
 } from '../../../common';
 import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
+import { Cluster, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Cluster, ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
+import { ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
@@ -11,6 +11,7 @@ import {
 import { StaticIpPage } from '../clusterConfiguration/staticIp/components/StaticIpPage';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const getInitialFormStateProps = () => {
   return {

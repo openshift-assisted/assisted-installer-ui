@@ -1,4 +1,8 @@
-import { ArchitectureSupportLevelId, FeatureSupportLevelId, SupportLevel } from '../../api/types';
+import {
+  ArchitectureSupportLevelId,
+  FeatureSupportLevelId,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { CpuArchitecture, FeatureId } from '../../types';
 
 export type NewFeatureSupportLevelMap = Record<FeatureSupportLevelId, SupportLevel>;

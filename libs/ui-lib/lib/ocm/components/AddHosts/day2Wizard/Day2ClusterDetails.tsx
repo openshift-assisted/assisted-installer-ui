@@ -2,7 +2,6 @@ import { Alert, Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
-  Cluster,
   ClusterCpuArchitecture,
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -11,8 +10,6 @@ import {
   ExternalLink,
   getSupportedCpuArchitectures,
   HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS,
-  InfraEnv,
-  InfraEnvCreateParams,
   LoadingState,
   SupportedCpuArchitecture,
   useFeature,
@@ -28,6 +25,11 @@ import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
 import { useOpenshiftVersions, usePullSecret } from '../../../hooks';
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvCreateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],

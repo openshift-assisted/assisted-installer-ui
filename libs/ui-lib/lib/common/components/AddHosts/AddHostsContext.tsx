@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export type AddHostsContextType = {
   cluster?: Cluster;

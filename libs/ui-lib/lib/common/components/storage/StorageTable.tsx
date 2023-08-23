@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Host, WithTestID } from '../../index';
+import { WithTestID } from '../../index';
 import { usePagination } from '../hosts/usePagination';
 import AITable, { AITableProps } from '../hosts/AITable';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const getHostId = (host: Host) => host.id;
 
