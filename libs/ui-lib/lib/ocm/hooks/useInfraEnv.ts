@@ -1,9 +1,14 @@
 import React from 'react';
 import { useInfraEnvId } from '.';
-import { Cluster, CpuArchitecture, InfraEnv, InfraEnvUpdateParams } from '../../common';
+import { CpuArchitecture } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
 import InfraEnvIdsCacheService from '../services/InfraEnvIdsCacheService';
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export default function useInfraEnv(
   clusterId: Cluster['id'],

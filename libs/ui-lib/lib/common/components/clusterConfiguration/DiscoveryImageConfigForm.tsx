@@ -12,7 +12,11 @@ import {
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
-import { ImageCreateParams, ImageType, Proxy } from '../../api';
+import {
+  ImageCreateParams,
+  ImageType,
+  Proxy,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   AlertFormikError,
   httpProxyValidationSchema,

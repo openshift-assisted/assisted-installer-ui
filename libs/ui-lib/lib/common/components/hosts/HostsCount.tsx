@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popover, Level, LevelItem } from '@patternfly/react-core';
-import { Cluster } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { getEnabledHostCount, getReadyHostCount, getTotalHostCount } from './utils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 

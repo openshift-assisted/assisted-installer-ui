@@ -6,7 +6,7 @@ import {
   ProgressMeasureLocation,
   ProgressVariant,
 } from '@patternfly/react-core';
-import { Cluster } from '../../api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { DetailItem, DetailList, getHumanizedDateTime } from '../ui';
 import { clusterStatusLabels } from '../../config';
 import './ClusterProgress.css';

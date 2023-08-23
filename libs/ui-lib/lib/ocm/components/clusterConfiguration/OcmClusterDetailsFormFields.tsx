@@ -6,7 +6,6 @@ import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurati
 import {
   ClusterDetailsValues,
   isSNO,
-  ManagedDomain,
   OpenshiftVersionOptionType,
   PullSecret,
   ocmClusterNameValidationMessages,
@@ -15,7 +14,6 @@ import {
   StaticTextField,
   useFeature,
   getSupportedCpuArchitectures,
-  PlatformType,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -41,6 +39,7 @@ import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { ExternalPlatformLabels } from './platformIntegration/constants';
+import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;

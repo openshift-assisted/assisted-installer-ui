@@ -17,7 +17,7 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import type { Disk, Host } from '../../api/types';
+import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';

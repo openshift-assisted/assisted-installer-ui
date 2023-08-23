@@ -1,5 +1,10 @@
 import React from 'react';
-import { Cluster, Disk, Host, HostUpdateParams } from '../../api';
+import {
+  Cluster,
+  Disk,
+  Host,
+  HostUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { OnDiskRoleType } from './DiskRole';

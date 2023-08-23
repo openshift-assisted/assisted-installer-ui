@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Cluster, ResourceUIState, POLLING_INTERVAL } from '../../../common';
+import { ResourceUIState, POLLING_INTERVAL } from '../../../common';
 import {
   fetchClusterAsync,
   cleanCluster,
@@ -10,6 +10,7 @@ import {
   ClusterDispatch,
 } from '../../reducers/clusters';
 import { selectCurrentClusterState } from '../../selectors';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
   if (uiState === ResourceUIState.POLLING_ERROR) {

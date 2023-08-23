@@ -1,5 +1,5 @@
 import React from 'react';
-import { SupportLevel } from '../../api';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { FeatureId, isPreviewSupportLevel } from '../../types';
 import { TechnologyPreview, DeveloperPreview } from '../ui/PreviewBadge';
 

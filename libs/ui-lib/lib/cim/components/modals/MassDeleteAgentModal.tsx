@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { sortable } from '@patternfly/react-table';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
 import {
-  Host,
   getHostname,
   getInventory,
   MassDeleteHostModal as CommonMassDeleteHostModal,
@@ -26,6 +25,7 @@ import { getBMHStatus, getAgentStatus } from '../helpers';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {

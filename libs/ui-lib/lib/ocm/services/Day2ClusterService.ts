@@ -1,8 +1,9 @@
 import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
-import { Cluster, CpuArchitecture, SupportedCpuArchitecture } from '../../common';
+import { CpuArchitecture, SupportedCpuArchitecture } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';

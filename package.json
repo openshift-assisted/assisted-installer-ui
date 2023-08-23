@@ -3,7 +3,6 @@
   "devDependencies": {
     "@openshift-assisted/toolbox": "workspace:*",
     "dpdm": "^3.12.0",
-    "env-cmd": "^10.1.0",
     "eslint": "^8.36.0",
     "prettier": "2.8.4",
     "rimraf": "^4.4.0",
@@ -22,18 +21,26 @@
     "@types/react-dom": "<17.0.30"
   },
   "scripts": {
+    "_build:ui-lib": "yarn workspace @openshift-assisted/ui-lib build",
+    "_yalc:push": "bash -c \"for lib in ui-lib types locales; do yalc push --changed libs/\\${lib}; done\"",
     "build:all": "yarn workspaces foreach -v --topological-dev run build",
-    "check_circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
-    "check_types:all": "yarn workspaces foreach -vp run check_types",
+    "check:circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
+    "check:translation_files": "yarn workspace @openshift-assisted/locales run validate_translation_files",
+    "check:types:all": "yarn workspaces foreach -vp run check_types",
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
     "format:all": "yarn prettier --cache --cache-strategy=content --check .",
     "lint:all": "yarn eslint --max-warnings 0 --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
-    "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
+    "test:open:dev": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:dev",
     "test:open": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open",
-    "test:unit": "yarn workspaces foreach -v run vitest"
+    "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
+    "test:unit": "yarn workspaces foreach -v run vitest",
+    "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
+    "start:watch_mode": "yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales 'yarn _build:ui-lib' 'yarn _yalc:push'"
   },
+  "type": "module",
   "workspaces": [
     "apps/*",
-    "libs/*"
+    "libs/*",
+    "tools/*"
   ]
 }

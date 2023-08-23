@@ -1,7 +1,6 @@
 import React from 'react';
 import { ExpandableSection } from '@patternfly/react-core';
 import {
-  Cluster,
   DetailItem,
   DetailList,
   hasEnabledOperators,
@@ -23,6 +22,7 @@ import {
 import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
 import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
 import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =

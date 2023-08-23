@@ -5,10 +5,8 @@ import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly
 import {
   AddHostsContextProvider,
   AlertsContextProvider,
-  Cluster,
   CpuArchitecture,
   ErrorState,
-  InfraEnv,
   ResourceUIState,
 } from '../../../common';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
@@ -33,6 +31,7 @@ import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 type MatchParams = {
   clusterId: string;

@@ -424,9 +424,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/eslint-config-assisted-ui@workspace:*, @openshift-assisted/eslint-config-assisted-ui@workspace:^, @openshift-assisted/eslint-config-assisted-ui@workspace:libs/eslint-config-assisted-ui":
+"@openshift-assisted/eslint-config-assisted-ui@workspace:*, @openshift-assisted/eslint-config-assisted-ui@workspace:^, @openshift-assisted/eslint-config-assisted-ui@workspace:tools/eslint-config-assisted-ui":
   version: 0.0.0-use.local
-  resolution: "@openshift-assisted/eslint-config-assisted-ui@workspace:libs/eslint-config-assisted-ui"
+  resolution: "@openshift-assisted/eslint-config-assisted-ui@workspace:tools/eslint-config-assisted-ui"
   dependencies:
     "@types/eslint": ^8
     "@typescript-eslint/eslint-plugin": ^5.54.1
@@ -439,7 +439,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/locales@workspace:*, @openshift-assisted/locales@workspace:libs/locales":
+"@openshift-assisted/locales@workspace:*, @openshift-assisted/locales@workspace:^, @openshift-assisted/locales@workspace:libs/locales":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/locales@workspace:libs/locales"
   dependencies:
@@ -447,9 +447,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/toolbox@workspace:*, @openshift-assisted/toolbox@workspace:libs/toolbox":
+"@openshift-assisted/toolbox@workspace:*, @openshift-assisted/toolbox@workspace:tools/toolbox":
   version: 0.0.0-use.local
-  resolution: "@openshift-assisted/toolbox@workspace:libs/toolbox"
+  resolution: "@openshift-assisted/toolbox@workspace:tools/toolbox"
   dependencies:
     "@tsconfig/recommended": ^1.0.2
     "@types/node": ^18.14.6
@@ -458,6 +458,16 @@ __metadata:
     zx: ^7.2.0
   bin:
     toolbox: ./build/main.js
+  languageName: unknown
+  linkType: soft
+
+"@openshift-assisted/types@workspace:^, @openshift-assisted/types@workspace:libs/types":
+  version: 0.0.0-use.local
+  resolution: "@openshift-assisted/types@workspace:libs/types"
+  dependencies:
+    "@types/js-yaml": ^4.0.1
+    js-yaml: ^4.1.0
+    sw2dts: ^2.6.3
   languageName: unknown
   linkType: soft
 
@@ -481,6 +491,8 @@ __metadata:
   resolution: "@openshift-assisted/ui-lib@workspace:libs/ui-lib"
   dependencies:
     "@openshift-assisted/eslint-config-assisted-ui": "workspace:^"
+    "@openshift-assisted/locales": "workspace:^"
+    "@openshift-assisted/types": "workspace:^"
     "@tsconfig/recommended": ^1.0.2
     "@types/file-saver": ^2.0.1
     "@types/human-date": ^1.4.0
@@ -515,8 +527,8 @@ __metadata:
     prism-react-renderer: ^1.1.1
     react-error-boundary: ^3.1.4
     react-measure: ^2.5.2
-    sw2dts: ^2.6.3
     swr: ^2
+    tslib: ^2.6.1
     unique-names-generator: ^4.2.0
   peerDependencies:
     "@openshift-console/dynamic-plugin-sdk": 0.0.3
@@ -1770,7 +1782,6 @@ __metadata:
   dependencies:
     "@openshift-assisted/toolbox": "workspace:*"
     dpdm: ^3.12.0
-    env-cmd: ^10.1.0
     eslint: ^8.36.0
     prettier: 2.8.4
     rimraf: ^4.4.0
@@ -2431,13 +2442,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "commander@npm:4.1.1"
-  checksum: d7b9913ff92cae20cb577a4ac6fcc121bd6223319e54a40f51a14740a681ad5c574fd29a57da478a5f234a6fa6c52cbf0b7c641353e03c648b1ae85ba670b977
-  languageName: node
-  linkType: hard
-
 "commander@npm:^6.2.1":
   version: 6.2.1
   resolution: "commander@npm:6.2.1"
@@ -3007,18 +3011,6 @@ __metadata:
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
-  languageName: node
-  linkType: hard
-
-"env-cmd@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "env-cmd@npm:10.1.0"
-  dependencies:
-    commander: ^4.0.0
-    cross-spawn: ^7.0.0
-  bin:
-    env-cmd: bin/env-cmd.js
-  checksum: efef55074250f14cfc0b80c98dd98f1f056a80e1f3c7db14097ceefdd2d56c766bbb83b54c22932112707f41b36ce2e923f8015d69e62a75c12d98640b972e75
   languageName: node
   linkType: hard
 
@@ -7744,6 +7736,13 @@ __metadata:
   version: 2.5.3
   resolution: "tslib@npm:2.5.3"
   checksum: 88902b309afaf83259131c1e13da1dceb0ad1682a213143a1346a649143924d78cf3760c448b84d796938fd76127183894f8d85cbb3bf9c4fddbfcc140c0003c
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "tslib@npm:2.6.1"
+  checksum: b0d176d176487905b66ae4d5856647df50e37beea7571c53b8d10ba9222c074b81f1410fb91da13debaf2cbc970663609068bdebafa844ea9d69b146527c38fe
   languageName: node
   linkType: hard
 

@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import {
-  Cluster,
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
   getDefaultNetworkType,
@@ -14,11 +13,14 @@ import {
   sshPublicKeyListValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
-  ClusterDefaultConfig,
-  ApiVip,
-  IngressVip,
   vipArrayValidationSchema,
 } from '../../../../common';
+import {
+  ApiVip,
+  Cluster,
+  ClusterDefaultConfig,
+  IngressVip,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,

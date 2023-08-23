@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
-import { Cluster } from '../../api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { isInOcm } from '../../api/axiosClient';
 import { getApiErrorMessage, handleApiError } from '../../api/utils';
 import ClustersAPI from '../../api/assisted-service/ClustersAPI';

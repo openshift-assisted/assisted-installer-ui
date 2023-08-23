@@ -3,15 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
-  Cluster,
-  ClusterDefaultConfig,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
   getFormikErrorFields,
   getHostSubnets,
   HostSubnets,
-  InfraEnv,
   IPV4_STACK,
   isSNO,
   LoadingState,
@@ -21,7 +18,6 @@ import {
   selectIngressVip,
   useAlerts,
   useFormikAutoSave,
-  V2ClusterUpdateParams,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -41,6 +37,12 @@ import { ClustersService } from '../../../services';
 import { setServerUpdateError, updateClusterBase } from '../../../reducers/clusters';
 import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
 import { useClusterSupportedPlatforms, usePullSecret } from '../../../hooks';
+import {
+  Cluster,
+  ClusterDefaultConfig,
+  InfraEnv,
+  V2ClusterUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;

@@ -1,4 +1,4 @@
-import { Cluster, Host, HostRole, MonitoredOperator, RenderIf } from '../../../common';
+import { RenderIf } from '../../../common';
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import {
@@ -6,6 +6,12 @@ import {
   HostInstallationWarning,
   HostsInstallationSuccess,
 } from './ProgressBarAlerts';
+import {
+  Cluster,
+  Host,
+  HostRole,
+  MonitoredOperator,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const hostsStatus = (hosts: Host[], hostRole: HostRole) => {
   const totalHosts = hosts.filter((host) => host.role && host.role === hostRole);

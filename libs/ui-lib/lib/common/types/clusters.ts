@@ -5,7 +5,7 @@ import {
   ClusterValidationId,
   PlatformType,
   ImageType,
-} from '../api';
+} from '@openshift-assisted/types/assisted-installer-service';
 import { Validation as HostValidation } from './hosts';
 export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;

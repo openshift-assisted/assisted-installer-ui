@@ -1,6 +1,6 @@
 import React from 'react';
 import { Checkbox, Tooltip } from '@patternfly/react-core';
-import { Disk, Host } from '../../api';
+import { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { trimCommaSeparatedList } from '../..';
 
 export type DiskFormattingType = (

@@ -2,12 +2,7 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useAlerts,
-  Cluster,
-  Disk,
-  DiskRole,
   EventsModal,
-  Host,
-  HostUpdateParams,
   AddHostsContext,
   MassChangeHostnameModal,
   getInventory,
@@ -55,6 +50,13 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import {
+  Cluster,
+  Disk,
+  DiskRole,
+  Host,
+  HostUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
