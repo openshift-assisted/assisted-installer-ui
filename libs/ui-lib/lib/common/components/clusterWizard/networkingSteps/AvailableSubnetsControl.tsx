@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, AlertActionLink, AlertVariant, Popover } from '@patternfly/react-core';
 import { HostSubnet, HostSubnets } from '../../../types/clusters';
-import { Cluster, Host } from '../../../api';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { SelectField } from '../../ui';
 import { NO_SUBNET_SET } from '../../../config';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';

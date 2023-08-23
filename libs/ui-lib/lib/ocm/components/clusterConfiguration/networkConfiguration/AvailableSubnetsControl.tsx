@@ -5,8 +5,6 @@ import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
 import {
-  Cluster,
-  MachineNetwork,
   HostSubnet,
   NetworkConfigurationValues,
   DUAL_STACK,
@@ -14,6 +12,7 @@ import {
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { SubnetsDropdown } from './SubnetsDropdown';
+import { Cluster, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);

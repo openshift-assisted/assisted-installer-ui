@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
-import { Host } from '../../api';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import AITable, {
   ExpandComponentProps,
   AITableProps,

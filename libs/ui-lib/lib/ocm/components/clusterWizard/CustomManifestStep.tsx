@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
+import { ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
@@ -8,6 +8,7 @@ import { CustomManifestsPage } from '../clusterConfiguration/manifestsConfigurat
 import { CustomManifestFormState } from '../clusterConfiguration/manifestsConfiguration/components/propTypes';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const getInitialFormStateProps = () => {
   return {

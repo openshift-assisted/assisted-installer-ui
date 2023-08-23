@@ -10,7 +10,7 @@ import {
 } from '../../../common/types';
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
-import { Cluster } from '../../../common/api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';

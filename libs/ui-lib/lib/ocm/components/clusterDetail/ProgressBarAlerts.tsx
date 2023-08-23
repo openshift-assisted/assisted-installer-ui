@@ -3,8 +3,6 @@ import { Alert, AlertActionLink, Text, TextContent } from '@patternfly/react-cor
 import { pluralize } from 'humanize-plus';
 import { TFunction } from 'i18next';
 import {
-  Cluster,
-  MonitoredOperator,
   RenderIf,
   toSentence,
   canDownloadClusterLogs,
@@ -21,6 +19,7 @@ import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
+import { Cluster, MonitoredOperator } from '@openshift-assisted/types/assisted-installer-service';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;

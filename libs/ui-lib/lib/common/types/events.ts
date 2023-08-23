@@ -1,4 +1,9 @@
-import { Cluster, Event, EventList, V2Events } from '../api';
+import {
+  Cluster,
+  Event,
+  EventList,
+  V2Events,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type EventsEntityKind = 'cluster' | 'host';
 

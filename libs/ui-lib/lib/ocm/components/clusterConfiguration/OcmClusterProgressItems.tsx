@@ -1,7 +1,6 @@
 import { Grid, GridItem } from '@patternfly/react-core';
 import React from 'react';
 import {
-  Cluster,
   EventListFetchProps,
   getEnabledHosts,
   RenderIf,
@@ -10,6 +9,7 @@ import {
 import { FinalizingProgress } from '../../../common/components/clusterDetail/FinalizingProgress';
 import { ProgressBarTexts } from '../../../common/components/clusterDetail/ProgressBarTexts';
 import OcmOperatorsProgressItem from './OcmOperatorProgressItem';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type OcmClusterProgressItemsProps = {
   cluster: Cluster;

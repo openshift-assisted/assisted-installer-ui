@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
-import { Cluster, ManagedDomain } from '../../api';
+import { Cluster, ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import {

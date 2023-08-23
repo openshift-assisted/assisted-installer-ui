@@ -9,7 +9,6 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-
 import { HostsClusterDetailTabProps } from './types';
 import {
   OcmCpuArchitecture,
@@ -18,7 +17,6 @@ import {
 } from '../../../common';
 import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
-import { setAuthInterceptor } from '../../api';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
 
 const clusterWithoutMetrics = {
@@ -45,7 +43,7 @@ const getCluster = (type: string) => {
   }
 };
 
-const HostsClusterDetailTabMock: React.FC<
+export const HostsClusterDetailTabMock: React.FC<
   RouteComponentProps & HostsClusterDetailTabProps
 > = () => {
   const [tabShown, setTabShown] = React.useState<string>('');
@@ -56,9 +54,6 @@ const HostsClusterDetailTabMock: React.FC<
       try {
         await clustersAPI.get('day2flow-day1-ai-cluster-id');
         setIsMocked(true);
-
-        // Define the ocmClient for this mocked environment
-        setAuthInterceptor((client) => client);
       } catch (e) {
         setIsMocked(false);
       }
@@ -106,5 +101,3 @@ const HostsClusterDetailTabMock: React.FC<
     </PageSection>
   );
 };
-
-export default HostsClusterDetailTabMock;

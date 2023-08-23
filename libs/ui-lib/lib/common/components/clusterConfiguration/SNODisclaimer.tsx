@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
 import { CheckboxField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { SupportLevel } from '../../api/types';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 type SNODisclaimerProps = {
   snoSupportLevel: SupportLevel;

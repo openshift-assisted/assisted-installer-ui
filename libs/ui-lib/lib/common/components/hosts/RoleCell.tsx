@@ -1,5 +1,5 @@
 import React from 'react';
-import { Host, HostUpdateParams } from '../../api';
+import { Host, HostUpdateParams } from '@openshift-assisted/types/assisted-installer-service';
 import RoleDropdown from './RoleDropdown';
 
 export type RoleCellProps = {

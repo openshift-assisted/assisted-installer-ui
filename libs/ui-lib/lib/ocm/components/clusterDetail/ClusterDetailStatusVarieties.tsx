@@ -1,11 +1,7 @@
 import React from 'react';
 import {
-  Cluster,
-  Credentials,
   selectOlmOperators,
   selectMonitoredOperators,
-  MonitoredOperator,
-  MonitoredOperatorsList,
   ClusterCredentials,
   hasEnabledOperators,
   OPERATOR_NAME_MCE,
@@ -15,6 +11,12 @@ import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 import { Grid } from '@patternfly/react-core';
 import { getErrorMessage } from '../../../common/utils';
+import {
+  Cluster,
+  Credentials,
+  MonitoredOperator,
+  MonitoredOperatorsList,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;

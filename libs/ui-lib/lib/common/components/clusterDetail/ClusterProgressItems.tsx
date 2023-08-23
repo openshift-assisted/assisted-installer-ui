@@ -5,7 +5,7 @@ import { ProgressBarTexts } from './ProgressBarTexts';
 import { FinalizingProgress } from './FinalizingProgress';
 import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
-import { Cluster } from '../../api';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types';
 import { selectOlmOperators } from '../../../common';
 

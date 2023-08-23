@@ -2,9 +2,10 @@ import React from 'react';
 import { Button, Checkbox, Modal, ModalVariant, Text, TextContent } from '@patternfly/react-core';
 
 import { useClusterStatusVarieties } from './ClusterDetailStatusVarieties';
-import { Cluster, KubeconfigDownload, ClusterCredentials } from '../../../common';
+import { KubeconfigDownload, ClusterCredentials } from '../../../common';
 
 import './RebootNodeZeroModal.css';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 // TODO(mlibra): Following will be reimplemented based on future decisions in https://issues.redhat.com/browse/AGENT-522
 export const RebootNodeZeroModal: React.FC<{ cluster: Cluster }> = ({ cluster }) => {

@@ -10,7 +10,7 @@ import {
   ListItem,
 } from '@patternfly/react-core';
 import { checkHostValidations, WizardStepsValidationMap } from './validationsInfoUtils';
-import { Cluster } from '../../api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { ClusterWizardStepHostStatusDeterminationObject } from '../../types/hosts';

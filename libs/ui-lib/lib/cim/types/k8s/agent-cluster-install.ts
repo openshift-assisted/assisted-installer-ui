@@ -1,5 +1,5 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
-import { Cluster } from '../../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../../common/types/clusters';
 import { StatusCondition } from './shared';
 

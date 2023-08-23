@@ -2,7 +2,12 @@ import lodashValues from 'lodash-es/values.js';
 import lodashKeys from 'lodash-es/keys.js';
 import reduce from 'lodash-es/reduce.js';
 
-import type { Cluster, ClusterValidationId, Host, HostValidationId } from '../../api';
+import type {
+  Cluster,
+  ClusterValidationId,
+  Host,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStepStatusDeterminationObject,
   ValidationGroup as ClusterValidationGroup,

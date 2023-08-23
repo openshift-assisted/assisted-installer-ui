@@ -15,7 +15,7 @@ import {
   UpdateManifestParams,
   Manifest,
   LogsType,
-} from '../../api/types';
+} from '@openshift-assisted/types/assisted-installer-service';
 import { AxiosResponse } from 'axios';
 
 let _getRequestAbortController = new AbortController();

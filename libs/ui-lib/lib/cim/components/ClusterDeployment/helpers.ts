@@ -1,7 +1,7 @@
 import mapKeys from 'lodash-es/mapKeys.js';
 import camelCase from 'lodash-es/camelCase.js';
 import uniq from 'lodash-es/uniq.js';
-import { EventList } from '../../../common/api/types';
+import { EventList } from '@openshift-assisted/types/assisted-installer-service';
 import {
   AgentClusterInstallK8sResource,
   InfraEnvK8sResource,

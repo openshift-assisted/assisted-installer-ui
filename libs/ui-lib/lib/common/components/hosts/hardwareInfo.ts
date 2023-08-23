@@ -1,5 +1,5 @@
 import Humanize from 'humanize-plus';
-import { Disk, Inventory } from '../../api';
+import { Disk, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { DASH, OpticalDiskDriveType } from '../constants';
 import { HumanizedSortable } from '../ui/table/utils';
 import { fileSize } from '../../utils';

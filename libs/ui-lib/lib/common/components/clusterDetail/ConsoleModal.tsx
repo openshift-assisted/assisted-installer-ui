@@ -8,11 +8,12 @@ import {
   ExpandableSection,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { Cluster, removeProtocolFromURL } from '../../api';
+import { removeProtocolFromURL } from '../../api';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { selectApiVip, selectIngressVip } from '../../selectors';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type WebConsoleHintProps = {
   cluster: Cluster;

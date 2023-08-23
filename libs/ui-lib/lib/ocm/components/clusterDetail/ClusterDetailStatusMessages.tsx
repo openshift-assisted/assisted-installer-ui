@@ -6,8 +6,6 @@ import {
   canDownloadKubeconfig,
   isSNO,
   isClusterPlatformTypeVM,
-  PlatformType,
-  Cluster,
 } from '../../../common';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
@@ -16,6 +14,7 @@ import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
 import { isInOcm } from '../../api';
 import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;

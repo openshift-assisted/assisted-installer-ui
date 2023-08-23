@@ -1,4 +1,4 @@
-import { Manifest } from '../../../../../common';
+import { Manifest } from '@openshift-assisted/types/assisted-installer-service';
 
 export type FormViewManifestFolder = 'manifests' | 'openshift';
 

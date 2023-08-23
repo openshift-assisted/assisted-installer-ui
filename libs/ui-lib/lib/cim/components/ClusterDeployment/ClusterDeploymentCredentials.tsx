@@ -1,11 +1,12 @@
 import React from 'react';
-import { ClusterCredentials, Credentials } from '../../../common';
+import { ClusterCredentials } from '../../../common';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getAICluster } from '../helpers/toAssisted';
 import { FetchSecret } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { Credentials } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDeploymentCredentialsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;

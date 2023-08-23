@@ -13,15 +13,17 @@ import {
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_SDN,
   NO_SUBNET_SET,
-  Cluster,
-  ClusterNetwork,
-  MachineNetwork,
-  ServiceNetwork,
 } from '../../../../common';
 import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmRadioField } from '../../ui/OcmFormFields';
+import {
+  Cluster,
+  ClusterNetwork,
+  MachineNetwork,
+  ServiceNetwork,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
