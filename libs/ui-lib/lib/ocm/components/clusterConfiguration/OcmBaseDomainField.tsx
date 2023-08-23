@@ -1,9 +1,10 @@
 import React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
-import { ClusterDetailsValues, HelperText, ManagedDomain, getFieldId } from '../../../common';
+import { ClusterDetailsValues, HelperText, getFieldId } from '../../../common';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
+import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 
 const INPUT_NAME = 'baseDnsDomain';
 const INPUT_LABEL = 'Base domain';
