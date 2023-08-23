@@ -1,7 +1,12 @@
 import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
-import type { Cluster, Host, HostUpdateParams, Interface } from '../../api';
+import type {
+  Cluster,
+  Host,
+  HostUpdateParams,
+  Interface,
+} from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';

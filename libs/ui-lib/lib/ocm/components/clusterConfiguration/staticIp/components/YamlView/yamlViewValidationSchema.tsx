@@ -1,10 +1,5 @@
 import * as Yup from 'yup';
-import {
-  ArrayElementType,
-  HostStaticNetworkConfig,
-  macAddressValidationSchema,
-  MacInterfaceMap,
-} from '../../../../../../common';
+import { ArrayElementType, macAddressValidationSchema } from '../../../../../../common';
 import { YamlViewValues } from '../../data/dataTypes';
 import {
   getUniqueValidationSchema,
@@ -16,6 +11,10 @@ import {
   validateFileSize,
   validateFileType,
 } from '../../../../../../common/utils';
+import {
+  HostStaticNetworkConfig,
+  MacInterfaceMap,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const requiredMsg = 'A value is required';
 

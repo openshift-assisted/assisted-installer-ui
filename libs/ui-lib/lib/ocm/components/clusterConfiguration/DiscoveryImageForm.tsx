@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
-import { Cluster, CpuArchitecture, ErrorState, LoadingState } from '../../../common';
+import { CpuArchitecture, ErrorState, LoadingState } from '../../../common';
 import { forceReload, setServerUpdateError, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
@@ -13,6 +13,7 @@ import {
 } from './OcmDiscoveryImageConfigForm';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectureService';
 import { usePullSecret } from '../../hooks';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;

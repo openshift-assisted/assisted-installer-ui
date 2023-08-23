@@ -7,8 +7,6 @@ import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPCo
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
-  Cluster,
-  ClusterDefaultConfig,
   clusterNetworksEqual,
   DUAL_STACK,
   HostSubnets,
@@ -35,6 +33,10 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
 import { SupportedPlatformIntegrationType } from '../../../hooks/useClusterSupportedPlatforms';
+import {
+  Cluster,
+  ClusterDefaultConfig,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;

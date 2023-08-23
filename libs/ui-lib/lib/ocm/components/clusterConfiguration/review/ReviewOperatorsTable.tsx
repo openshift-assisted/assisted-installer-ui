@@ -1,7 +1,6 @@
 import React from 'react';
 import { Table, TableVariant, TableBody } from '@patternfly/react-table';
 import {
-  Cluster,
   ExposedOperatorNames,
   hasEnabledOperators,
   genericTableRowKey,
@@ -9,6 +8,7 @@ import {
 } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();

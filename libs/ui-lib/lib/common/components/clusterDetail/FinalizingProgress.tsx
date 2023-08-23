@@ -1,4 +1,4 @@
-import { Cluster } from '../../api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types';
 import React from 'react';
 import { EventsModal } from '../ui';

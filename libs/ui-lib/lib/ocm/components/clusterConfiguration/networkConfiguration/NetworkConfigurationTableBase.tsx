@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
-import { Cluster, Host, HostsTableActions, selectSchedulableMasters } from '../../../../common';
+import { HostsTableActions, selectSchedulableMasters } from '../../../../common';
 import NetworkingStatus from '../../hosts/NetworkingStatus';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import {
@@ -19,6 +19,7 @@ import HostsTable from '../../../../common/components/hosts/HostsTable';
 import { ValidationsInfo } from '../../../../common/types/hosts';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { stringToJSON } from '../../../../common/utils';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],

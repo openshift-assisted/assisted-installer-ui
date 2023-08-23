@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { TFunction } from 'i18next';
 
 import {
-  Cluster,
   DASH,
   getDateTimeCell,
   getEnabledHostCount,
@@ -19,6 +18,7 @@ import {
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { routeBasePath } from '../config';
 import { RootState } from '../store';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;

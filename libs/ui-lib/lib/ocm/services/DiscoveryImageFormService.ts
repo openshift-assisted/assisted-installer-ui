@@ -4,7 +4,7 @@ import {
   Cluster,
   InfraEnv,
   ImageType,
-} from '../../common/api/types';
+} from '@openshift-assisted/types/assisted-installer-service';
 import { InfraEnvsAPI } from './apis';
 import ClustersService from './ClustersService';
 import { OcmDiscoveryImageFormValues } from '../components/clusterConfiguration/OcmDiscoveryImageConfigForm';

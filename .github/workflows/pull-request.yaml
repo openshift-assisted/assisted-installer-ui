@@ -73,7 +73,7 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - run: yarn build:all
-      - run: yarn check_circular_deps:all
+      - run: yarn check:circular_deps:all
   unit-tests:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'

@@ -1,5 +1,5 @@
 import { client } from '../../api/axiosClient';
-import { ListVersions } from '../../../common/api/types';
+import { ListVersions } from '@openshift-assisted/types/assisted-installer-service';
 
 const ComponentVersionsAPI = {
   makeBaseURI() {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button, DropdownItem, Stack, StackItem } from '@patternfly/react-core';
 import noop from 'lodash-es/noop.js';
 
-import { Host } from '../../../common/api/types';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   discoveryTypeColumn,
   agentStatusColumn,

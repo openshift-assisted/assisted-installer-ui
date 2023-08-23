@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Cluster, useAlerts, LoadingState, ClusterWizardStep, InfraEnv } from '../../../common';
+import { useAlerts, LoadingState, ClusterWizardStep } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
@@ -17,6 +17,7 @@ import {
   ClusterCreateParamsWithStaticNetworking,
 } from '../../services';
 import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;

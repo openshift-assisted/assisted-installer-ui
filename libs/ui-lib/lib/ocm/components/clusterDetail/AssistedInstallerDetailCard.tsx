@@ -6,7 +6,6 @@ import { OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
   AssistedInstallerOCMPermissionTypesListType,
-  Cluster,
   CpuArchitecture,
   ErrorState,
   FeatureGateContextProvider,
@@ -29,6 +28,7 @@ import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextP
 import { BackButton } from '../ui/Buttons/BackButton';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;

@@ -1,7 +1,5 @@
 import {
-  Cluster,
   OperatorsValues,
-  OperatorCreateParams,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_LSO,
@@ -11,6 +9,10 @@ import {
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import { getKeys } from '../../common/utils';
+import {
+  Cluster,
+  OperatorCreateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const hasActiveOperators = (values: OperatorsValues) => {
   return getKeys(values).some((operatorParam) => values[operatorParam]);

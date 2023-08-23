@@ -11,7 +11,7 @@ import {
   IngressVip,
   MachineNetwork,
   ServiceNetwork,
-} from '../../../api/types';
+} from '@openshift-assisted/types/assisted-installer-service';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../types/clusters';

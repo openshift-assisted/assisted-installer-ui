@@ -1,14 +1,13 @@
 import React from 'react';
-import {
-  Cluster,
-  CpuArchitecture,
-  ImportClusterParams,
-  OpenshiftVersion,
-  OpenshiftVersionOptionType,
-} from '../../common';
+import { CpuArchitecture, OpenshiftVersionOptionType } from '../../common';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 import { getKeys } from '../../common/utils';
+import {
+  Cluster,
+  ImportClusterParams,
+  OpenshiftVersion,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 type OpenShiftVersion = Cluster['openshiftVersion'];
 

@@ -8,10 +8,29 @@
     "./en/translation.json": "./lib/en/translation.json",
     "./ja/translation.json": "./lib/ja/translation.json",
     "./ko/translation.json": "./lib/ko/translation.json",
-    "./zh/translation.json": "./lib/zh/translation.json"
+    "./zh/translation.json": "./lib/zh/translation.json",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "en/translation.json": [
+        "./@types/en.d.ts"
+      ],
+      "ja/translation.json": [
+        "./@types/ja.d.ts"
+      ],
+      "ko/translation.json": [
+        "./@types/ko.d.ts"
+      ],
+      "zh/translation.json": [
+        "./@types/zh.d.ts"
+      ]
+    }
   },
   "files": [
-    "lib"
+    "lib",
+    "@types",
+    "tsconfig.json"
   ],
   "license": "Apache-2.0",
   "name": "@openshift-assisted/locales",
@@ -24,9 +43,9 @@
     "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
-    "watch": "yarn run -T toolbox watch --dir=lib 'yalc push --changed'",
     "process_new_strings": "scripts/process-new-strings.sh",
-    "validate_translation_files": "scripts/validate-translation-files.sh"
+    "validate_translation_files": "scripts/validate-translation-files.sh",
+    "check_types": "yarn run -T tsc --noEmit"
   },
   "type": "module",
   "version": "1.0.0"

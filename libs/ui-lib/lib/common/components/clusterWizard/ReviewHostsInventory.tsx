@@ -1,6 +1,6 @@
 import { Table, TableBody, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
-import type { Inventory, Host } from '../../api';
+import type { Inventory, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getEnabledHosts } from '../hosts';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { fileSize, stringToJSON } from '../../utils';

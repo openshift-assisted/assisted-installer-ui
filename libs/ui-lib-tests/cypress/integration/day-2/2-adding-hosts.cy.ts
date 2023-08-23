@@ -9,11 +9,16 @@ describe(`Assisted Installer Day2 flow`, () => {
     });
   };
 
-  before(() => setTestStartSignal('CREATED_DAY2_CLUSTER'));
+  before(() => {
+    setTestStartSignal('CREATED_DAY2_CLUSTER');
+  });
 
   beforeEach(() => {
     setTestStartSignal('CREATED_DAY2_CLUSTER');
     cy.visit('/day2-flow-mock');
+    cy.window().then((win) => {
+      win.__app__.OCM.setAuthInterceptor((client) => client);
+    });
     cy.findByRole('button', { name: 'Add hosts (With metrics)' }).click();
   });
 

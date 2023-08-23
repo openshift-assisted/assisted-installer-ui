@@ -7,15 +7,10 @@ import {
   TextContent,
   Text,
 } from '@patternfly/react-core';
-import {
-  Cluster,
-  getReportIssueLink,
-  canDownloadClusterLogs,
-  useAlerts,
-  toSentence,
-} from '../../../common';
+import { getReportIssueLink, canDownloadClusterLogs, useAlerts, toSentence } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
