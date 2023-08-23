@@ -4,7 +4,7 @@ import {
   InfraEnvCreateParams,
   PresignedUrl,
   InfraEnvUpdateParams,
-} from '../../../common';
+} from '@openshift-assisted/types/assisted-installer-service';
 import { AxiosResponse } from 'axios';
 
 let _getRequestAbortController = new AbortController();

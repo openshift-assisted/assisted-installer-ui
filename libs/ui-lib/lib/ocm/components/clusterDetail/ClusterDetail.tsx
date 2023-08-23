@@ -17,7 +17,7 @@ import {
   isSNO,
   useFeature,
 } from '../../../common';
-import { Cluster } from '../../../common/api/types';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { getClusterDetailId } from './utils';
 import { routeBasePath } from '../../config';

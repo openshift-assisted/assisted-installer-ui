@@ -1,10 +1,11 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { getInventory, Host } from '../../index';
+import { getInventory } from '../../index';
 import { OnDiskRoleType } from '../hosts/DiskRole';
 import { DiskFormattingType } from '../hosts/FormatDiskCheckbox';
 import { DisksTable } from './DisksTable';
 import SectionTitle from '../ui/SectionTitle';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 type StorageDetailProps = {
   host: Host;

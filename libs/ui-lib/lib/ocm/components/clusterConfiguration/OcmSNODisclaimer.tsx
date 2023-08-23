@@ -1,7 +1,8 @@
 import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
-import { CheckboxField, SupportLevel } from '../../../common';
+import { CheckboxField } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 type OcmSNODisclaimerProps = {
   snoSupportLevel: SupportLevel;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import noop from 'lodash-es/noop.js';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { Host } from '../../../common/api/types';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   discoveryTypeColumn,
   agentStatusColumn,

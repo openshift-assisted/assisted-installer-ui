@@ -12,7 +12,6 @@ import {
   ExternalLink,
   LVMS_LINK,
   OPERATOR_NAME_LVMS,
-  SupportLevel,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
@@ -20,6 +19,7 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 

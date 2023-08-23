@@ -17,10 +17,6 @@
   ],
   "type": "module",
   "name": "@openshift-assisted/toolbox",
-  "publishConfig": {
-    "access": "public"
-  },
-  "private": true,
   "repository": {
     "directory": "libs/toolbox",
     "type": "git",
@@ -31,5 +27,6 @@
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf build node_modules"
   },
+  "private": true,
   "version": "1.0.0"
 }

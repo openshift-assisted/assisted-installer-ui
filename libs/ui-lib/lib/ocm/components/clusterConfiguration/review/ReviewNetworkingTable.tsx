@@ -2,7 +2,6 @@ import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, TableBody } from '@patternfly/react-table';
 import React from 'react';
 import {
-  Cluster,
   genericTableRowKey,
   isDualStack,
   selectApiVip,
@@ -13,6 +12,7 @@ import {
   getStackTypeLabel,
   getNetworkType,
 } from '../../clusterDetail/ClusterProperties';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const dummyCells = ['', '', ''];
 

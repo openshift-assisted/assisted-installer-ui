@@ -1,4 +1,8 @@
-import { FeatureSupportLevel, FeatureSupportLevelId, SupportLevel } from '../api/types';
+import {
+  FeatureSupportLevel,
+  FeatureSupportLevelId,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ArrayElementType } from './typescriptExtensions';
 
 type Features = Required<ArrayElementType<FeatureSupportLevel['features']>>;

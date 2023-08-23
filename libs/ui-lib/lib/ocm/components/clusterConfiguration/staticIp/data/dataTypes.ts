@@ -1,4 +1,4 @@
-import { HostStaticNetworkConfig } from '../../../../../common';
+import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
 
 export enum StaticIpView {
   YAML = 'yaml',

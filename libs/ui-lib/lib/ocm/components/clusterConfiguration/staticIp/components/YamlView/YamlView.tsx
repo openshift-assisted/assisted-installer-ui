@@ -5,7 +5,7 @@ import { yamlViewValidationSchema } from './yamlViewValidationSchema';
 import { YamlViewValues } from '../../data/dataTypes';
 import { YamlViewFields } from './YamlViewFields';
 import { getEmptyYamlValues } from '../../data/emptyData';
-import { InfraEnv } from '../../../../../../common';
+import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { getYamlViewValues } from '../../data/fromInfraEnv';
 
 export const YamlView: React.FC<StaticIpViewProps> = ({ ...props }) => {

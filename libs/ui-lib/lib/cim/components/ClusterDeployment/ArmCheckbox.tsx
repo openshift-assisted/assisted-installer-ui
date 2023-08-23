@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import {
-  ClusterCreateParams,
   CpuArchitecture,
   getFieldId,
   HelperText,
@@ -14,6 +13,7 @@ import {
   useFeatureSupportLevel,
 } from '../../../common/components/featureSupportLevels';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { ClusterCreateParams } from '@openshift-assisted/types/assisted-installer-service';
 
 const Label = ({ version }: { version: string }) => {
   const { t } = useTranslation();

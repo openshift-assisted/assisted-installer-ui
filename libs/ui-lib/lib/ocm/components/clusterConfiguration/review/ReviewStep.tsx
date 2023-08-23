@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
-import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
+import { ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { getApiErrorMessage, handleApiError } from '../../../api';
 import { updateCluster } from '../../../reducers/clusters';
@@ -13,6 +13,7 @@ import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import ReviewPreflightChecks from './ReviewPreflightChecks';
 import ReviewSummary from './ReviewSummary';
 import './ReviewCluster.css';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const { addAlert } = useAlerts();

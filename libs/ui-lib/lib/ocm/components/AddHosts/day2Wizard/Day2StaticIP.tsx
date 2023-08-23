@@ -9,13 +9,7 @@ import {
   Button,
   ButtonVariant,
 } from '@patternfly/react-core';
-import {
-  ClusterWizardStep,
-  ErrorState,
-  InfraEnv,
-  InfraEnvUpdateParams,
-  LoadingState,
-} from '../../../../common';
+import { ClusterWizardStep, ErrorState, LoadingState } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
@@ -32,6 +26,10 @@ import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import Day2WizardFooter from './Day2WizardFooter';
+import {
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();

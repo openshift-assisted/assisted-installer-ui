@@ -5,7 +5,7 @@ import {
   ProgressMeasureLocation,
   ProgressSize,
 } from '@patternfly/react-core';
-import { Host } from '../../api';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getHostProgress, getHostProgressStages, getHostProgressStageNumber } from './utils';
 
 const getProgressVariant = (status: Host['status']) => {

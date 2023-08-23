@@ -1,14 +1,14 @@
 import { AxiosResponse } from 'axios';
-import {
-  Cluster,
-  CpuArchitecture,
-  HostStaticNetworkConfig,
-  InfraEnv,
-  InfraEnvCreateParams,
-} from '../../common';
+import { CpuArchitecture } from '../../common';
 import { InfraEnvsAPI } from './apis';
 import InfraEnvCache from './InfraEnvIdsCacheService';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
+import {
+  Cluster,
+  HostStaticNetworkConfig,
+  InfraEnv,
+  InfraEnvCreateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const InfraEnvsService = {
   async getInfraEnvId(

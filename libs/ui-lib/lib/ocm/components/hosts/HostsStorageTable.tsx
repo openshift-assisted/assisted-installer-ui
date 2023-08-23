@@ -12,8 +12,6 @@ import {
 } from '../../../common/components/storage/StorageUtils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
-  Cluster,
-  Host,
   hasEnabledOperators,
   isCompact,
   selectSchedulableMasters,
@@ -31,6 +29,7 @@ import {
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { hardwareStatusColumn } from './HardwareStatus';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();

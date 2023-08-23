@@ -2,7 +2,6 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {
-  Cluster,
   WizardFooter,
   WizardFooterGenericProps,
   Alerts,
@@ -16,6 +15,7 @@ import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;

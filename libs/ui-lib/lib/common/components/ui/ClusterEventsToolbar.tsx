@@ -21,7 +21,12 @@ import {
 } from '@patternfly/react-core';
 import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
 import type { ClusterEventsFiltersType } from '../../types';
-import type { Cluster, Event, Host, Inventory } from '../../api';
+import type {
+  Cluster,
+  Event,
+  Host,
+  Inventory,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { EVENT_SEVERITIES } from '../../config';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { isSelectEventChecked } from './utils';
@@ -231,7 +236,6 @@ const ClusterEventsToolbar = ({
               customBadgeText={hostChips.length}
               isOpen={isHostExpanded}
               placeholderText={<Placeholder text="Hosts" />}
-              isDisabled={allHosts.length === 0}
               maxHeight={280}
               zIndex={600}
             >

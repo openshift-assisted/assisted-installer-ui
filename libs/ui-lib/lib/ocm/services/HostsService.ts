@@ -1,4 +1,9 @@
-import { Disk, DiskRole, Host, HostUpdateParams } from '../../common';
+import {
+  Disk,
+  DiskRole,
+  Host,
+  HostUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { HostsAPI } from '../services/apis';
 
 const HostsService = {

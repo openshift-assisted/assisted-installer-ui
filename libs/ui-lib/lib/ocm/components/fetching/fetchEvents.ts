@@ -1,9 +1,9 @@
 import { AxiosError, AxiosResponseHeaders } from 'axios';
-import { EVENT_SEVERITIES, Event, EventListFetchProps } from '../../../common';
+import { EVENT_SEVERITIES, EventListFetchProps } from '../../../common';
 import { handleApiError } from '../../api';
 import { EventsAPI } from '../../services/apis';
 import { SeverityCountsType } from '../../../common/components/ui/ClusterEventsToolbar';
-
+import { Event } from '@openshift-assisted/types/assisted-installer-service';
 const parseHeaders = (headers: AxiosResponseHeaders) => {
   const severities: Record<Event['severity'], number> = {
     error: 0,

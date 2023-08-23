@@ -1,6 +1,6 @@
 import React from 'react';
-import { Host, Inventory, Cluster } from '../../../common';
 import { dialogsSlice } from '../../../common';
+import { Cluster, Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 
 const { openDialog: openDialogAction, closeDialog: closeDialogAction } = dialogsSlice.actions;
 const dialogsReducer = dialogsSlice.reducer;

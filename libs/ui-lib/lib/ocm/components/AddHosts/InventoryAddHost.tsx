@@ -2,10 +2,11 @@ import React from 'react';
 import { Text, TextContent, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import { Cluster, CpuArchitecture } from '../../../common';
+import { CpuArchitecture } from '../../../common';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';
 import Day2Wizard from './day2Wizard/Day2Wizard';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const InventoryAddHosts = ({
   cluster,
