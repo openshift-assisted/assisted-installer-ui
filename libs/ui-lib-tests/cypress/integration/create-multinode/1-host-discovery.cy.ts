@@ -9,12 +9,11 @@ import * as utils from '../../support/utils';
 const validateHostTableDetails = () => {
   Cypress.env('masterCPU', '8');
   Cypress.env('masterMemory', '33.20 GiB');
-  Cypress.env('masterDiskTotalSize', '12.88 GB');
 
-  hostsTableSection.validateHostCpuCores(3, 0);
-  hostsTableSection.validateHostDiskSize(3, 0);
-  hostsTableSection.validateHostMemory(3, 0);
-  hostsTableSection.validateHostRoles(3, 0);
+  hostsTableSection.validateHostCpuCores();
+  hostsTableSection.validateHostDiskSize(12.88, 0);
+  hostsTableSection.validateHostMemory();
+  hostsTableSection.validateHostRoles();
 };
 
 describe(`Assisted Installer Multinode Host discovery`, () => {
@@ -75,7 +74,7 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
       cy.wait(['@rename-host-1', '@rename-host-2', '@rename-host-3']).then(() => {
         utils.setLastWizardSignal('HOST_RENAMED_3');
         hostsTableSection.waitForHardwareStatus('Ready');
-        hostsTableSection.validateHostNames(3, 0, [
+        hostsTableSection.validateHostNames([
           `${hostPrefix}-1`,
           `${hostPrefix}-2`,
           `${hostPrefix}-3`,

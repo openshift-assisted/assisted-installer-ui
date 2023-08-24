@@ -1,4 +1,4 @@
-const createHostInventory = (id: number, memory: number, diskSpace: number) => {
+const createHostInventory = (id: number, memory: number, diskSpace: number = 0) => {
   const hostSeqId = id * 10; // To differentiate disks of each hosts
   return {
     bmc_address: '0.0.0.0',
@@ -370,8 +370,8 @@ const disksWithHolders = [
   },
 ];
 
-const createHostInventoryWithDiskHolders = (id: number, memory: number, diskSpace: number) => ({
-  ...createHostInventory(id, memory, diskSpace),
+const createHostInventoryWithDiskHolders = (id: number, memory: number) => ({
+  ...createHostInventory(id, memory),
   disks: disksWithHolders,
 });
 
