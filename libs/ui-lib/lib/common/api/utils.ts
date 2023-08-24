@@ -1,7 +1,10 @@
 import Axios, { AxiosError } from 'axios';
 import * as Sentry from '@sentry/browser';
 import pick from 'lodash-es/pick.js';
-import { Error as APIError, InfraError } from './types';
+import {
+  Error as APIError,
+  InfraError,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { getErrorMessage } from '../utils';
 import { isAxiosError } from './axiosExtensions';
 import { isInOcm } from './axiosClient';

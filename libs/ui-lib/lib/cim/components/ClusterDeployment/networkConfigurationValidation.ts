@@ -1,5 +1,8 @@
 import * as Yup from 'yup';
-import { Cluster, ClusterDefaultConfig } from '../../../common/api';
+import {
+  Cluster,
+  ClusterDefaultConfig,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { HostSubnets, NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   hostPrefixValidationSchema,

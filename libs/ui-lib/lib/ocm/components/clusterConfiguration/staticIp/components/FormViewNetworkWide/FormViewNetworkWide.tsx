@@ -7,7 +7,7 @@ import { networkWideToInfraEnvField } from '../../data/formDataToInfraEnvField';
 import { FormViewNetworkWideFields } from './FormViewNetworkWideFields';
 import { getFormData, getFormViewNetworkWideValues } from '../../data/fromInfraEnv';
 import { getEmptyNetworkWideConfigurations } from '../../data/emptyData';
-import { InfraEnv } from '../../../../../../common';
+import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
   const [formProps, setFormProps] = React.useState<StaticIpFormProps<FormViewNetworkWideValues>>();

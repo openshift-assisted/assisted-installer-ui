@@ -1,5 +1,5 @@
 import { client } from '../../api/axiosClient';
-import { ManagedDomain } from '../../../common/api/types';
+import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 
 const ManagedDomainsAPI = {
   makeBaseURI() {

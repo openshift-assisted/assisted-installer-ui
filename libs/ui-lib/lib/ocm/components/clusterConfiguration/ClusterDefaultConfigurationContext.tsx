@@ -1,6 +1,6 @@
 import pick from 'lodash-es/pick.js';
 import React, { PropsWithChildren, useContext, useEffect } from 'react';
-import { ClusterDefaultConfig } from '../../../common';
+import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
 import { ClustersAPI } from '../../services/apis';
 
 type State<T> = { status: 'idle' | 'loading' | 'succeeded' | 'failed'; data: T };

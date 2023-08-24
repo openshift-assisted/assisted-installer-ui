@@ -6,7 +6,7 @@ import {
 } from '@patternfly/react-tokens';
 import { PendingIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 
-import { Host, HostValidationId } from '../../api';
+import { Host, HostValidationId } from '@openshift-assisted/types/assisted-installer-service';
 import { Validation, ValidationsInfo } from '../../types/hosts';
 import {
   hostValidationFailureHints,

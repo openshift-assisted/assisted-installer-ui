@@ -13,7 +13,7 @@ import {
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
 
-import { Host } from '../../api';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/hosts';
 import { ExternalLink, getHumanizedDateTime } from '../ui';
 

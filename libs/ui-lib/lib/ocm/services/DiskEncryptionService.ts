@@ -1,4 +1,8 @@
-import { ClusterCreateParams, ClusterDetailsValues, DiskEncryption } from '../../common';
+import { ClusterDetailsValues } from '../../common';
+import {
+  ClusterCreateParams,
+  DiskEncryption,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const DiskEncryptionService = {
   diskEncryptionEnableOn(

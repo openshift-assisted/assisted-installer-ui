@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Cluster, InfraEnv, InfraEnvUpdateParams, LoadingState } from '../../../common';
+import { LoadingState } from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -11,6 +11,11 @@ import StaticIp from './StaticIp';
 import Operators from './Operators';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import CustomManifestStep from './CustomManifestStep';
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterWizardProps = {
   cluster: Cluster;

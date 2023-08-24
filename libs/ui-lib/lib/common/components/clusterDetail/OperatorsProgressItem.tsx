@@ -12,7 +12,12 @@ import {
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
 import { TFunction } from 'i18next';
-import { Cluster, MonitoredOperator, MonitoredOperatorsList, OperatorStatus } from '../../api';
+import {
+  Cluster,
+  MonitoredOperator,
+  MonitoredOperatorsList,
+  OperatorStatus,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { operatorLabelsCim, OperatorName } from '../../config';
 import ClusterProgressItem from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

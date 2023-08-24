@@ -1,4 +1,5 @@
-import { FeatureId, SupportLevel } from '../../common';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import { FeatureId } from '../../common';
 
 type FeatureConfig = {
   featureId: FeatureId;

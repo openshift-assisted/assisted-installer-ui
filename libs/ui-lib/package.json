@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@openshift-assisted/locales": "workspace:^",
+    "@openshift-assisted/types": "workspace:^",
     "axios-case-converter": "^0.11.1",
     "camel-case": "^4.1.2",
     "cidr-tools": "^4.3.0",
@@ -19,6 +21,7 @@
     "react-error-boundary": "^3.1.4",
     "react-measure": "^2.5.2",
     "swr": "^2",
+    "tslib": "^2.6.1",
     "unique-names-generator": "^4.2.0"
   },
   "description": "React component library for the Assisted Installer UI",
@@ -39,8 +42,7 @@
     "@types/react-router-dom": "^5.3.0",
     "@types/react-tagsinput": "^3.19.7",
     "@types/uuid": "^8.0.0",
-    "@types/yup": "^0.26.9",
-    "sw2dts": "^2.6.3"
+    "@types/yup": "^0.26.9"
   },
   "engines": {
     "node": ">=14"
@@ -48,24 +50,24 @@
   "exports": {
     ".": {
       "source": "./lib/index.ts",
-      "types": "./@types/index.d.ts",
-      "default": "./build/index.js"
+      "types": "./build/@types/index.d.ts",
+      "default": "./build/cjs/index.js"
     },
     "./cim": {
       "source": "./lib/cim/index.ts",
-      "types": "./@types/cim/index.d.ts",
-      "default": "./build/cim/index.js"
+      "types": "./build/@types/cim/index.d.ts",
+      "default": "./build/cjs/cim/index.js"
     },
     "./ocm": {
       "source": "./lib/ocm/index.ts",
-      "types": "./@types/ocm/index.d.ts",
-      "default": "./build/ocm/index.js"
-    }
+      "types": "./build/@types/ocm/index.d.ts",
+      "default": "./build/cjs/ocm/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "build",
-    "lib",
-    "@types"
+    "lib"
   ],
   "keywords": [
     "assisted-ui",
@@ -110,23 +112,19 @@
     "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
-    "build": "yarn run -T tsc --build --verbose && yarn copy:css && yarn codegen:build-manifest",
+    "build": "yarn run -T tsc --build --verbose && yarn copy:css",
     "check_circular_deps": "yarn run -T dpdm --warning false --tree false --exit-code circular:1 ./lib/index.ts",
     "check_types": "yarn run -T tsc --noEmit",
-    "clean": "yarn run -T rimraf node_modules build @types",
-    "copy:css": "rsync -Ruv lib/./**/*.css build",
-    "codegen:build-manifest": "yarn node scripts/generate-build-manifest.mjs",
-    "update-api": "scripts/update-api.sh lib/common/api/swagger.yaml lib/common/api/types.ts",
-    "watch": "yarn run -T toolbox watch --dir=lib 'yarn build' 'yarn yalc:push'",
-    "yalc:push": "yalc push --changed"
+    "clean": "yarn run -T rimraf node_modules build",
+    "copy:css": "rsync -Ruv lib/./**/*.css build/cjs"
   },
   "typesVersions": {
     "*": {
       "cim": [
-        "./@types/cim/index.d.ts"
+        "./build/@types/cim/index.d.ts"
       ],
       "ocm": [
-        "./@types/ocm/index.d.ts"
+        "./build/@types/ocm/index.d.ts"
       ]
     }
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Host, HostRole } from '../../api/types';
+import { Host, HostRole } from '@openshift-assisted/types/assisted-installer-service';
 import { CheckCircleIcon, ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';

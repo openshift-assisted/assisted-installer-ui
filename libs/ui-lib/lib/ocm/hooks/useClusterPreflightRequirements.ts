@@ -1,6 +1,9 @@
 import React from 'react';
 import { alertsSlice } from '../../common/reducers';
-import { Cluster, PreflightHardwareRequirements } from '../../common/api/types';
+import {
+  Cluster,
+  PreflightHardwareRequirements,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ClustersAPI } from '../services/apis';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { getErrorMessage } from '../../common/utils';

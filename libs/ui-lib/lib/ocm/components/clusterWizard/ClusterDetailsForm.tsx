@@ -5,13 +5,9 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
-  Cluster,
-  ClusterCreateParams,
-  ManagedDomain,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   getClusterDetailsValidationSchema,
-  InfraEnv,
   getRichTextValidation,
   CpuArchitecture,
 } from '../../../common';
@@ -29,6 +25,12 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import {
+  Cluster,
+  ClusterCreateParams,
+  InfraEnv,
+  ManagedDomain,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -145,11 +147,8 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, dirty, setFieldValue, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, dirty, errors, touched }) => {
         const errorFields = getFormikErrorFields(errors, touched);
-        const toggleRedHatDnsService = (checked: boolean) =>
-          setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
-
         const footer = (
           <ClusterWizardFooter
             cluster={cluster}
@@ -174,7 +173,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields
-                  toggleRedHatDnsService={toggleRedHatDnsService}
                   versions={ocpVersions}
                   forceOpenshiftVersion={cluster?.openshiftVersion}
                   isPullSecretSet={!!cluster?.pullSecretSet}

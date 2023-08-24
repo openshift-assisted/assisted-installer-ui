@@ -10,7 +10,7 @@ import {
 } from '@patternfly/react-core';
 
 import ModalProgress from '../ui/ModalProgress';
-import { Host } from '../../api';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getErrorMessage } from '../../utils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 

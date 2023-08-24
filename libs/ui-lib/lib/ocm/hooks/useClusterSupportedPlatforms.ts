@@ -4,7 +4,6 @@ import useSWR from 'swr';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
 import {
-  PlatformType,
   POLLING_INTERVAL,
   NonPlatformIntegrations,
   isClusterPlatformTypeVM,
@@ -12,6 +11,7 @@ import {
   SupportedPlatformType,
 } from '../../common';
 import { APIErrorMixin } from '../../common/api/utils';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | SupportedPlatformType;
 

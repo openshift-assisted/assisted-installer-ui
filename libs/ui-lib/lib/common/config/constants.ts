@@ -1,15 +1,24 @@
 import { TFunction } from 'i18next';
 import { ValidationsInfo, HostRole } from '../types/hosts';
-import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
+import {
+  Cluster,
+  ClusterValidationId,
+  DiskRole,
+  Event,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
 import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
 // @ts-ignore
-import buildManifest from '../../../build/build.json'; // This file is generated at build-time.
+import buildManifest from '@openshift-assisted/ui-lib/package.json'; // This file is generated at build-time.
 
 export const getShortOpenshiftVersion = (ocpVersion?: string) =>
   ocpVersion?.split('.').slice(0, 2).join('.');
+
+export const ASSISTED_INSTALLER_DOCUMENTATION_LINK =
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/index';
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
@@ -219,7 +228,7 @@ export const hostValidationFailureHints = (
 
 export const clusterValidationLabels = (
   t: TFunction,
-): { [key in ClusterValidationId]: string } => ({
+): { [key in ClusterValidationId]?: string } => ({
   'network-type-valid': t('ai:Valid network type'),
   'machine-cidr-defined': t('ai:Machine CIDR'),
   'cluster-cidr-defined': t('ai:Cluster CIDR'),

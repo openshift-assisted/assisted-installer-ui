@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
-import { Host, Inventory } from '../../api';
+import { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 import EditHostForm, { EditHostFormProps } from './EditHostForm';
 
 type EditHostModalProps = Pick<
@@ -22,11 +23,17 @@ const EditHostModal = ({
   onSave,
   onHostSaveError,
   getEditErrorMessage,
-}: EditHostModalProps) =>
-  host && inventory ? (
+}: EditHostModalProps) => {
+  const { t } = useTranslation();
+
+  if (!host || !inventory) {
+    return null;
+  }
+
+  return (
     <Modal
       aria-label="Change hostname dialog"
-      title="Change hostname"
+      title={t('ai:Change hostname')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
@@ -42,6 +49,7 @@ const EditHostModal = ({
         onHostSaveError={onHostSaveError}
       />
     </Modal>
-  ) : null;
+  );
+};
 
 export default EditHostModal;

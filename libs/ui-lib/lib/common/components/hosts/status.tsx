@@ -17,7 +17,7 @@ import {
   global_success_color_100 as okColor,
   chart_color_blue_300 as blueColor,
 } from '@patternfly/react-tokens';
-import { Host } from '../../api';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostStatus } from './types';
 
 export const hostStatus: HostStatus<Host['status'] | 'finalizing'> = Object.freeze({

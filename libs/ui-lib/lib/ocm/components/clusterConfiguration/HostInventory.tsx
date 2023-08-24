@@ -11,7 +11,6 @@ import {
 } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import {
-  Cluster,
   HostDiscoveryValues,
   PopoverIcon,
   useFeature,
@@ -24,6 +23,7 @@ import { DiscoveryImageModalButton } from './DiscoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const schedulableMastersTooltip =
   'Workloads must be run on control plane nodes when less than 5 hosts are discovered';

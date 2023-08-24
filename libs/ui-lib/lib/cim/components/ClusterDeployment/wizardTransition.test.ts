@@ -7,12 +7,12 @@ import {
   canNextFromHostSelectionStep,
   canNextFromNetworkingStep,
 } from './wizardTransition';
+import { ValidationGroup as ClusterValidationGroup } from '../../../common';
+import { ValidationGroup as HostValidationGroup } from '../../../common/types/hosts';
 import {
   ClusterValidationId,
   HostValidationId,
-  ValidationGroup as ClusterValidationGroup,
-} from '../../../common';
-import { ValidationGroup as HostValidationGroup } from '../../../common/types/hosts';
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const agentClusterInstallBase: AgentClusterInstallK8sResource = {
   apiVersion: 'foo-apiVersion',
@@ -121,18 +121,13 @@ describe('CIM wizardTransition calculation', () => {
     const agentClusterInstall = getAgentClusterInstall();
 
     expect(canNextFromHostSelectionStep(agentClusterInstall, [])).toBe(true);
-    // @ts-expect-error The object has just been built
     agentClusterInstall.status.validationsInfo.hostsData[3].status = 'disabled';
     expect(canNextFromHostSelectionStep(agentClusterInstall, [])).toBe(true);
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo.hostsData[3].status = 'pending';
     expect(canNextFromHostSelectionStep(agentClusterInstall, [])).toBe(false);
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo.hostsData[3].status = 'error';
     expect(canNextFromHostSelectionStep(agentClusterInstall, [])).toBe(false);
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo.hostsData[3].status = 'success';
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo?.hostsData.push({
       id: 'all-hosts-are-ready-to-install' /* Irrelevant for the wizard step */,
       status: 'error',
@@ -140,7 +135,6 @@ describe('CIM wizardTransition calculation', () => {
     });
     expect(canNextFromHostSelectionStep(agentClusterInstall, [])).toBe(true) /* Still true */;
     // removing required validation
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo.hostsData.splice(1, 1);
     expect(canNextFromHostSelectionStep(agentClusterInstall, [])).toBe(false);
     // revert the change
@@ -161,10 +155,8 @@ describe('CIM wizardTransition calculation', () => {
 
     const agents = getAgents();
     expect(canNextFromHostSelectionStep(agentClusterInstall, agents)).toBe(true);
-    // @ts-expect-error Known object content
     agents[0].status.validationsInfo.hardware[1].status = 'disabled';
     expect(canNextFromHostSelectionStep(agentClusterInstall, agents)).toBe(true);
-    // @ts-expect-error Known object content
     agents[0].status.validationsInfo.hardware[1].status = 'error';
     expect(canNextFromHostSelectionStep(agentClusterInstall, agents)).toBe(false);
   });
@@ -175,13 +167,11 @@ describe('CIM wizardTransition calculation', () => {
 
     // Whole "hardware" group must be of success
     expect(canNextFromHostSelectionStep(agentClusterInstall, agents)).toBe(true);
-    // @ts-expect-error Known object content
     agents[0].status.validationsInfo.hardware[3].status = 'error';
     expect(canNextFromHostSelectionStep(agentClusterInstall, agents)).toBe(false);
 
     const agentsWitNonMandatoryGroup = getAgents();
     // Adding irrelevant validation to a "non-mandatory" group (the infrastructure, only the "hardware" group is mandatory for this transition)
-    // @ts-expect-error Known object content
     agentsWitNonMandatoryGroup[0].status.validationsInfo.infrastructure = [
       {
         id: 'belongs-to-machine-cidr' /* Irrelevant for the step, so should be still passing */,
@@ -194,7 +184,6 @@ describe('CIM wizardTransition calculation', () => {
     );
 
     const agentsWithoutHardwareGroup = getAgents('hardware', []);
-    // @ts-expect-error Known object content
     agents[0].status.validationsInfo.hardware = undefined;
     expect(canNextFromHostSelectionStep(agentClusterInstall, agentsWithoutHardwareGroup)).toBe(
       false,
@@ -238,11 +227,9 @@ describe('CIM wizardTransitions', () => {
     expect(canNextFromNetworkingStep(agentClusterInstall, [])).toBe(true);
 
     // One validation from a mandatory group is failing
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo.network[0].status = 'error';
     expect(canNextFromNetworkingStep(agentClusterInstall, [])).toBe(false);
     // Revert
-    // @ts-expect-error Known object content
     agentClusterInstall.status.validationsInfo.network[0].status = 'success';
     expect(canNextFromNetworkingStep(agentClusterInstall, [])).toBe(true);
 
@@ -250,12 +237,10 @@ describe('CIM wizardTransitions', () => {
     expect(canNextFromNetworkingStep(agentClusterInstall, agents)).toBe(true);
 
     // The ntp-synced is set as soft-validation, so still passing
-    // @ts-expect-error Known object content
     agents[0].status.validationsInfo.network[0].status = 'error';
     expect(canNextFromNetworkingStep(agentClusterInstall, agents)).toBe(true);
 
     // The has-default-route is NOT set as soft-validation, so it should fail
-    // @ts-expect-error Known object content
     agents[0].status.validationsInfo.network[1].status = 'error';
     expect(canNextFromNetworkingStep(agentClusterInstall, agents)).toBe(false);
   });

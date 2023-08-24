@@ -1,11 +1,11 @@
 import {
   Cluster,
-  selectOlmOperators,
   LogsState,
   MonitoredOperator,
   MonitoredOperatorsList,
   OperatorCreateParams,
-} from '../../../common';
+} from '@openshift-assisted/types/assisted-installer-service';
+import { selectOlmOperators } from '../../../common';
 
 // The Day2 cluster
 export const isAddHostsCluster = (cluster: Cluster) => cluster.kind === 'AddHostsCluster';
