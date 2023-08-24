@@ -28,6 +28,9 @@ import FormatDiskCheckbox, {
   isInDiskSkipFormattingList,
 } from '../hosts/FormatDiskCheckbox';
 import { fileSize } from '../../utils';
+import { PopoverIcon } from '../ui';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
@@ -38,7 +41,7 @@ interface DisksTableProps extends WithTestID {
   updateDiskSkipFormatting?: DiskFormattingType;
 }
 
-const diskColumns = (showFormat: boolean) => [
+const diskColumns = (t: TFunction, showFormat: boolean) => [
   { title: 'Name' },
   { title: 'Role' },
   { title: 'Limitations' },
@@ -47,7 +50,13 @@ const diskColumns = (showFormat: boolean) => [
   { title: 'Size' },
   { title: 'Serial' },
   { title: 'Model' },
-  { title: 'WWN' },
+  {
+    title: (
+      <>
+        WWN <PopoverIcon bodyContent={t('ai:World Wide Name (WWN) is a unique disk identifier.')} />
+      </>
+    ),
+  },
 ];
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key as string;
@@ -145,8 +154,9 @@ const DisksTable = ({
   onDiskRole,
   updateDiskSkipFormatting,
 }: DisksTableProps) => {
+  const { t } = useTranslation();
   const isEditable = !!canEditDisks?.(host);
-  const diskColumnTitles = diskColumns(isEditable);
+  const diskColumnTitles = diskColumns(t, isEditable);
 
   const rows: IRow[] = disks
     .filter((disk) => disk.driveType !== 'LVM')

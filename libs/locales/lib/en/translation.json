@@ -799,6 +799,7 @@
   "ai:Worker Hosts Labels": "Worker Hosts Labels",
   "ai:Workers": "Workers",
   "ai:Workers: At least {{worker_cpu_cores}} CPU cores, {{worker_ram}} RAM, {{worker_disksize}} GB disk size for each worker ": "Workers: At least {{worker_cpu_cores}} CPU cores, {{worker_ram}} RAM, {{worker_disksize}} GB disk size for each worker ",
+  "ai:World Wide Name (WWN) is a unique disk identifier.": "World Wide Name (WWN) is a unique disk identifier.",
   "ai:x86_64": "x86_64",
   "ai:You are approving multiple hosts. All hosts listed below will be approved to join the infrastructure environment if you continue. Make sure that you expect and recognize the hosts before approving.": "You are approving multiple hosts. All hosts listed will be approved to join the infrastructure environment, if you continue. Make sure that you expect and recognize the hosts before approving.",
   "ai:You can either wait or investigate. A common issue can be misconfigured storage. Once you fix the issue, you can delete AgentServiceConfig to try again.": "You can either wait or investigate. A common issue can be misconfigured storage. After you fix the issue, delete AgentServiceConfig and try again.",
