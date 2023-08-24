@@ -27,14 +27,14 @@ jobs:
 
       - name: Lookup for workspaces to be published
         run: |
-          declare -a workspaces=()
-          for pkg in `ls -1 libs/*/package.json`; do
-            if [[ "$(jq '.publishConfig.access == "public"' ${pkg})" == "true" ]]; then
-              workspaces+=("${pkg:5:-13}")
+          declare -a LIBS=()
+          for pkg in libs/*/package.json; do
+            if [[ "$(jq '.publishConfig.access == "public"' "${pkg}")" = "true" ]]; then
+              LIBS+=("${pkg:5:-13}")
             fi
           done
-          (IFS=,; printf 'The following workspaces will be published: [%s]' "${workspaces[*]}")
-          echo "WORKSPACES=${workspaces}" >> $GITHUB_ENV
+          echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
+          (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 
       - name: Configuring git
         run: |
@@ -51,11 +51,13 @@ jobs:
 
       - name: Bump workspaces to ${{ github.ref_name }}
         run: |
-          for ws in "${WORKSPACES[@]}"; do
-            yarn workspace @openshift-assisted/${ws} version ${GITHUB_REF_NAME:1}
-            # The above command adds a `stableVersion` field after bumping. Removing it as it's buggy.
-            # See: https://github.com/yarnpkg/berry/issues/4328
-            echo "$(jq 'del(.stableVersion)' libs/${ws}/package.json)" > libs/${ws}/package.json
+          for LIB in $(echo ${LIBS}); do
+            echo Bumping @openshift-assisted/"${LIB}"
+            # The next command adds a `stableVersion` field after bumping.
+            # We need to remove it because it's buggy. See: https://github.com/yarnpkg/berry/issues/4328
+            yarn workspace @openshift-assisted/"${LIB}" version "${GITHUB_REF_NAME:1}"
+            jq 'del(.stableVersion)' libs/"${LIB}"/package.json > libs/"${LIB}"/package.tmp.json
+            mv libs/"${LIB}"/package.tmp.json libs/"${LIB}"/package.json
           done
 
       - name: Build
@@ -66,18 +68,24 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           yarn config set npmScopes.openshift-assisted.npmAuthToken $NPM_AUTH_TOKEN
-          for ws in "${WORKSPACES[@]}"; do
-            yarn workspace @openshift-assisted/${ws} npm publish
+          for LIB in $(echo ${LIBS}); do
+            printf 'Publishing @openshift-assisted/%s\n' "${LIB}"
+            yarn workspace @openshift-assisted/${LIB} npm publish
             # Verify the package has been published before publishing another one.
-            until yarn info @openshift-assisted/${ws} &> /dev/null; do
+            until [[ "$(yarn npm info @openshift-assisted/${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
+              printf '@openshift-assisted/%s has not ben published yet\n' "${LIB}"
               sleep ${{ vars.NPM_PUBLISH_DELAY }}
+              echo "Retrying..."
             done
           done
 
       - name: Update the repo
         run: |
-          git add libs/ui-lib/package.json libs/locales/package.json apps/assisted-ui/package.json
-          git commit -m 'Version ${{ github.ref_name }}'
-          git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
-          git push origin ${{ github.ref_name }} --force
+          for LIB in $(echo ${LIBS}); do
+            git add libs/"${LIB}"/package.json
+          done
+          git add apps/assisted-ui/package.json
+          git commit -m "Version ${GITHUB_REF_NAME}"
+          git tag -f -a ${GITHUB_REF_NAME} -m "${GITHUB_REF_NAME}"
+          git push origin ${GITHUB_REF_NAME} --force
           git push origin ${{ github.event.release.target_commitish }} --force

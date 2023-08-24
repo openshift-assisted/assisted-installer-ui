@@ -387,7 +387,6 @@ __metadata:
   resolution: "@openshift-assisted/assisted-ui@workspace:apps/assisted-ui"
   dependencies:
     "@openshift-assisted/eslint-config-assisted-ui": "workspace:*"
-    "@openshift-assisted/locales": "workspace:*"
     "@openshift-assisted/ui-lib": "workspace:*"
     "@openshift-console/dynamic-plugin-sdk": 0.0.3
     "@patternfly/patternfly": ^4.222.4
@@ -439,7 +438,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/locales@workspace:*, @openshift-assisted/locales@workspace:^, @openshift-assisted/locales@workspace:libs/locales":
+"@openshift-assisted/locales@workspace:*, @openshift-assisted/locales@workspace:libs/locales":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/locales@workspace:libs/locales"
   dependencies:
@@ -461,7 +460,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/types@workspace:^, @openshift-assisted/types@workspace:libs/types":
+"@openshift-assisted/types@workspace:*, @openshift-assisted/types@workspace:libs/types":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/types@workspace:libs/types"
   dependencies:
@@ -491,8 +490,8 @@ __metadata:
   resolution: "@openshift-assisted/ui-lib@workspace:libs/ui-lib"
   dependencies:
     "@openshift-assisted/eslint-config-assisted-ui": "workspace:^"
-    "@openshift-assisted/locales": "workspace:^"
-    "@openshift-assisted/types": "workspace:^"
+    "@openshift-assisted/locales": "workspace:*"
+    "@openshift-assisted/types": "workspace:*"
     "@tsconfig/recommended": ^1.0.2
     "@types/file-saver": ^2.0.1
     "@types/human-date": ^1.4.0
