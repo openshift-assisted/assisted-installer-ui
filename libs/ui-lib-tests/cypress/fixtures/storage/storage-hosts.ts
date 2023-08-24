@@ -382,7 +382,6 @@ const hostsWithDiskHolders = hosts.map((host, index) => ({
     createHostInventoryWithDiskHolders(
       index,
       host['role'] === 'master' ? masterMemory : workerMemory,
-      host['role'] === 'master' ? masterDisk : workerDisk,
     ),
   ),
   installation_disk_id: installationDiskIds[index],

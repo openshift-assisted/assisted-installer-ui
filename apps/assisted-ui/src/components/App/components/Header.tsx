@@ -3,7 +3,7 @@ import { Brand, PageHeader, PageHeaderTools, Button, ButtonVariant } from '@patt
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import upstreamLogo from '../../../images/metal3_facet-whitetext.png';
 import redhatLogo from '../../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-import AboutModalButton from './AboutModal.js';
+import AboutModalButton from './AboutModal';
 
 const { getProductBrandingCode, FEEDBACK_FORM_LINK } = Constants;
 

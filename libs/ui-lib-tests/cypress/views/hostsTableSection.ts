@@ -1,25 +1,21 @@
 export type ValidateDiskHoldersParams = { name: string; indented?: boolean; warning?: boolean }[];
 
+const numMasters = (): number => Cypress.env('NUM_MASTERS');
+const numWorkers = (): number => Cypress.env('NUM_WORKERS');
+
 export const hostsTableSection = {
-  validateHostNames: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-    hostNames = Cypress.env('requestedHostnames'),
-  ) => {
+  validateHostNames: (hostNames = Cypress.env('requestedHostnames')) => {
     cy.get('[data-testid=host-name]')
-      .should('have.length', numMasters + numWorkers)
+      .should('have.length', numMasters() + numWorkers())
       .each((hostName, idx) => {
         expect(hostName).to.contain(hostNames[idx]);
       });
   },
-  validateHostRoles: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-  ) => {
+  validateHostRoles: () => {
     cy.get('td[data-testid="host-role"]')
-      .should('have.length', numMasters + numWorkers)
+      .should('have.length', numMasters() + numWorkers())
       .each((hostRole, idx) => {
-        const isMaster = idx <= numMasters - 1;
+        const isMaster = idx <= numMasters() - 1;
         if (isMaster) {
           expect(hostRole).to.contain('Control plane node');
         } else {
@@ -27,14 +23,11 @@ export const hostsTableSection = {
         }
       });
   },
-  validateHostCpuCores: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-  ) => {
+  validateHostCpuCores: () => {
     cy.get('td[data-label="CPU Cores"]')
-      .should('have.length', numMasters + numWorkers)
+      .should('have.length', numMasters() + numWorkers())
       .each((hostCpuCores, idx) => {
-        const isMaster = idx <= numMasters - 1;
+        const isMaster = idx <= numMasters() - 1;
         if (isMaster) {
           expect(hostCpuCores).to.contain(Cypress.env('masterCPU'));
         } else {
@@ -42,14 +35,11 @@ export const hostsTableSection = {
         }
       });
   },
-  validateHostMemory: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-  ) => {
+  validateHostMemory: () => {
     cy.get('td[data-label="Memory"]')
-      .should('have.length', numMasters + numWorkers)
+      .should('have.length', numMasters() + numWorkers())
       .each((hostMemory, idx) => {
-        const isMaster = idx <= numMasters - 1;
+        const isMaster = idx <= numMasters() - 1;
         if (isMaster) {
           expect(hostMemory).to.contain(Cypress.env('masterMemory'));
         } else {
@@ -57,30 +47,25 @@ export const hostsTableSection = {
         }
       });
   },
-  validateHostDiskSize: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-  ) => {
+  validateHostDiskSize: (masterDiskTotalSize: number, workerDiskTotalSize: number) => {
     cy.get('td[data-label="Total storage"]')
-      .should('have.length', numMasters + numWorkers)
+      .should('have.length', numMasters() + numWorkers())
       .each((hostDisk, idx) => {
-        const isMaster = idx <= numMasters - 1;
+        const isMaster = idx <= numMasters() - 1;
         if (isMaster) {
-          expect(hostDisk).to.contain(Cypress.env('masterDiskTotalSize'));
+          expect(hostDisk).to.contain(`${masterDiskTotalSize} GB`);
         } else {
-          expect(hostDisk).to.contain(Cypress.env('workerDiskTotalSize'));
+          expect(hostDisk).to.contain(`${workerDiskTotalSize} GB`);
         }
       });
   },
-  waitForHardwareStatus: (
-    status,
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-    timeout = Cypress.env('HOST_READY_TIMEOUT'),
-  ) => {
+  waitForHardwareStatus: (status: string) => {
     // Start at index 2 here because of selector
-    for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-      cy.hostDetailSelector(i, 'Status', timeout).should('contain.text', status);
+    for (let i = 2; i <= numMasters() + numWorkers() + 1; i++) {
+      cy.hostDetailSelector(i, 'Status', Cypress.env('HOST_READY_TIMEOUT')).should(
+        'contain.text',
+        status,
+      );
     }
   },
   getHostDisksExpander: (hostIndex: number) => {

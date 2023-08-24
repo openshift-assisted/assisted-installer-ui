@@ -3,8 +3,6 @@ import { Stack, StackItem } from '@patternfly/react-core';
 import {
   ChangeHostnameAction,
   selectSchedulableMasters,
-  Cluster,
-  Host,
   isSNO,
   DeleteHostAction,
   TableToolbar,
@@ -30,6 +28,7 @@ import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
   <HostDetail

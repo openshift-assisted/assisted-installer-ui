@@ -8,7 +8,7 @@ import {
   SearchIcon,
 } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Event, EventList } from '../../api';
+import { Event, EventList } from '@openshift-assisted/types/assisted-installer-service';
 import { EmptyState } from './uiState';
 import { getHumanizedDateTime } from './utils';
 import { fitContent, noPadding } from './table';

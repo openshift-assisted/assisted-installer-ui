@@ -11,23 +11,21 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import {
-  Cluster,
   NetworkConfigurationValues,
   FormikStaticField,
   NETWORK_TYPE_SDN,
   selectMachineNetworkCIDR,
   getVipValidationsById,
   DUAL_STACK,
-  SupportLevel,
   PopoverIcon,
   selectApiVip,
   selectIngressVip,
-  Ip,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { Cluster, Ip, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 interface VipStaticValueProps {
   id?: string;

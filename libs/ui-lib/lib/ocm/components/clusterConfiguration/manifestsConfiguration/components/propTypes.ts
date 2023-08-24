@@ -1,6 +1,6 @@
 import { FormikErrors, FormikTouched } from 'formik';
 import Yup from 'yup';
-import { Cluster } from '../../../../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ManifestFormData, ListManifestsExtended } from '../data/dataTypes';
 
 export type CustomManifestFormState = {

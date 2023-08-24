@@ -1,6 +1,6 @@
 import { FeatureId, OpenshiftVersionOptionType } from '../../../common/types';
 import { TFunction } from 'i18next';
-import { SupportLevel } from '../../../common/api';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 const getClusterExistsReason = (t: TFunction) =>
   t('ai:This option is not editable after the draft cluster is created');

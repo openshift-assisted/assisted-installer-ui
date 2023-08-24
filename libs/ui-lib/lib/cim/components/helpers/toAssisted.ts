@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import { AgentK8sResource } from '../../types/k8s/agent';
-import { Cluster, Host, Inventory } from '../../../common/api/types';
+import { Cluster, Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getAgentStatus, getClusterStatus } from './status';

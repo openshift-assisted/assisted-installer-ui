@@ -24,7 +24,7 @@ import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import { Host } from '../../../common/api/types';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,

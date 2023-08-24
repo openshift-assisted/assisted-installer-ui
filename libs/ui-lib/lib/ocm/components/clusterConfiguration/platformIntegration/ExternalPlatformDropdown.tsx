@@ -11,12 +11,13 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { PlatformType, getFieldId } from '../../../../common';
+import { getFieldId } from '../../../../common';
 import {
   ExternalPlatformLabels,
   ExternalPlatformLinks,
   ExternalPlatformTooltips,
 } from './constants';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');

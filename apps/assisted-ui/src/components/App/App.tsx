@@ -1,11 +1,20 @@
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { Page } from '@patternfly/react-core';
-import { Features, Router as LibRouter, Store } from '@openshift-assisted/ui-lib/ocm';
-import Header from './components/Header.jsx';
-import BackgroundImage from './components/BackgroundImage.jsx';
-import '../../i18n.js';
+import * as OCM from '@openshift-assisted/ui-lib/ocm';
+import Header from './components/Header';
+import BackgroundImage from './components/BackgroundImage';
+import '../../i18n';
 
+const {
+  HostsClusterDetailTabMock: Day2AddHostsMock,
+  Router: LibRouter,
+  Features,
+  Store,
+  Config,
+} = OCM;
+window.__app__ = { OCM };
+const { routeBasePath } = Config;
 const { store } = Store;
 
 const App = () => (
@@ -18,9 +27,12 @@ const App = () => (
         isManagedSidebar
         defaultManagedSidebarIsOpen={false}
       >
-        <LibRouter features={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES} />
+        <LibRouter features={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES}>
+          <Route path={`${routeBasePath}/day2-flow-mock`} component={Day2AddHostsMock} />
+        </LibRouter>
       </Page>
     </BrowserRouter>
   </Provider>
 );
+
 export default App;

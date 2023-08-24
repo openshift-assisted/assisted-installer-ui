@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import { useStateSafely } from '../../../common/hooks';
 import {
   AddHostsContextProvider,
-  Cluster,
   CpuArchitecture,
   ErrorState,
   LoadingState,
@@ -16,7 +15,6 @@ import { isApiError } from '../../../common/api/utils';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
-import { ClusterWizardContextProvider } from '../clusterWizard';
 import {
   AddHostsApiError,
   ReloadFailedError,
@@ -25,6 +23,7 @@ import {
 } from './HostsClusterDetailTabContentErrors';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -33,7 +32,12 @@ export const HostsClusterDetailTabContent = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
-  const { getCpuArchitectures, normalizeClusterVersion } = useOpenshiftVersions();
+  const {
+    getCpuArchitectures,
+    normalizeClusterVersion,
+    loading: areOpenshiftVersionsLoading,
+  } = useOpenshiftVersions();
+
   const cpuArchitecturesByVersionImage = getCpuArchitectures(ocmCluster.openshift_version);
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -50,9 +54,10 @@ export const HostsClusterDetailTabContent = ({
   );
 
   React.useEffect(() => {
-    if (!isVisible && day2Cluster) {
+    if (!isVisible) {
       // the tab is not visible, stop polling
       setDay2Cluster(null);
+      return;
     }
     const day1ClusterHostCount = ocmCluster?.metrics?.nodes?.total || 0;
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
@@ -60,7 +65,7 @@ export const HostsClusterDetailTabContent = ({
       setError(<UnableToAddHostsError onTryAgain={handleClickTryAgainLink} />);
     }
 
-    if (isVisible && !day2Cluster && pullSecret) {
+    if (!areOpenshiftVersionsLoading && !day2Cluster && pullSecret) {
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
@@ -102,6 +107,7 @@ export const HostsClusterDetailTabContent = ({
             pullSecret,
             normalizedVersion,
           );
+
           const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
             day2Cluster,
             ocmCluster,
@@ -133,6 +139,7 @@ export const HostsClusterDetailTabContent = ({
     normalizeClusterVersion,
     handleClickTryAgainLink,
     cpuArchitecturesByVersionImage,
+    areOpenshiftVersionsLoading,
   ]);
 
   const refreshCluster = React.useCallback(async () => {
@@ -153,10 +160,10 @@ export const HostsClusterDetailTabContent = ({
   }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
   React.useEffect(() => {
-    const id = setTimeout(() => {
+    const id = setInterval(() => {
       void refreshCluster();
     }, POLLING_INTERVAL);
-    return () => clearTimeout(id);
+    return () => clearInterval(id);
   }, [refreshCluster]);
 
   if (error) {
@@ -174,22 +181,20 @@ export const HostsClusterDetailTabContent = ({
   }
 
   return (
-    <ClusterWizardContextProvider cluster={day2Cluster} infraEnv={infraEnv}>
-      <AddHostsContextProvider
+    <AddHostsContextProvider
+      cluster={day2Cluster}
+      resetCluster={refreshCluster}
+      ocpConsoleUrl={ocmCluster?.console?.url}
+      canEdit={ocmCluster.canEdit}
+    >
+      <NewFeatureSupportLevelProvider
+        loadingUi={<LoadingState />}
         cluster={day2Cluster}
-        resetCluster={refreshCluster}
-        ocpConsoleUrl={ocmCluster?.console?.url}
-        canEdit={ocmCluster.canEdit}
+        cpuArchitecture={infraEnv?.cpuArchitecture}
+        openshiftVersion={day2Cluster.openshiftVersion}
       >
-        <NewFeatureSupportLevelProvider
-          loadingUi={<LoadingState />}
-          cluster={day2Cluster}
-          cpuArchitecture={infraEnv?.cpuArchitecture}
-          openshiftVersion={day2Cluster.openshiftVersion}
-        >
-          <AddHosts />
-        </NewFeatureSupportLevelProvider>
-      </AddHostsContextProvider>
-    </ClusterWizardContextProvider>
+        <AddHosts />
+      </NewFeatureSupportLevelProvider>
+    </AddHostsContextProvider>
   );
 };

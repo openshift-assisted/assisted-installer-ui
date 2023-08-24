@@ -2,12 +2,7 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useAlerts,
-  Cluster,
-  Disk,
-  DiskRole,
   EventsModal,
-  Host,
-  HostUpdateParams,
   AddHostsContext,
   MassChangeHostnameModal,
   getInventory,
@@ -54,7 +49,14 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import {
+  Cluster,
+  Disk,
+  DiskRole,
+  Host,
+  HostUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -444,7 +446,7 @@ export const HostsTableModals = ({
   onAdditionalNtpSource,
   onUpdateDay2ApiVip,
 }: HostsTableModalsProps) => {
-  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
+  const { wizardPerPage, setWizardPerPage } = React.useContext(ClusterWizardContext) || {};
   const dispatch = useDispatch();
   const { resetCluster } = React.useContext(AddHostsContext);
   const { uiState } = useSelector(selectCurrentClusterState);

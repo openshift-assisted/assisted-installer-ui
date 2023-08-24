@@ -1,5 +1,5 @@
 import { AgentStatus } from './status';
-import { Host } from '../../../common/api/types';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { getAgentStatus } from './status';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';

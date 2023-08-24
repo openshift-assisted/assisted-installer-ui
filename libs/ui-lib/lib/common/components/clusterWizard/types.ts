@@ -1,4 +1,9 @@
-import type { DiskEncryption, Host, Cluster, PlatformType } from '../../api';
+import type {
+  DiskEncryption,
+  Host,
+  Cluster,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 import {
   ValidationGroup as ClusterValidationGroup,

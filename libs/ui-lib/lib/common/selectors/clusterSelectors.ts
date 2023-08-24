@@ -1,6 +1,6 @@
 import head from 'lodash-es/head.js';
 import { SupportedPlatformIntegrations, ValidationsInfo } from '../types';
-import { Cluster, Ip } from '../api';
+import { Cluster, Ip } from '@openshift-assisted/types/assisted-installer-service';
 import { ExposedOperatorName } from '../config';
 import { stringToJSON } from '../utils';
 

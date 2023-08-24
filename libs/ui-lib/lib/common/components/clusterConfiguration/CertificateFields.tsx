@@ -5,7 +5,7 @@ import { CheckboxField, HelperText, PopoverIcon } from '../ui';
 import { TrustedCertificateFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-import { InfraEnv } from '../../api';
+import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import CertificatesUploadField from '../ui/formik/CertificatesUploadField';
 import './CertificateFields.css';
 const FIELD_NAME = 'trustBundle';

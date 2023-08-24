@@ -18,11 +18,23 @@ jobs:
             echo "Expecting to be in a release branch, but we are in: ${{ github.event.release.target_commitish }}"
             exit 1
           fi
+
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
           ref: ${{ github.event.release.target_commitish }}
           fetch-depth: 0
+
+      - name: Lookup for workspaces to be published
+        run: |
+          declare -a workspaces=()
+          for pkg in `ls -1 libs/*/package.json`; do
+            if [[ "$(jq '.publishConfig.access == "public"' ${pkg})" == "true" ]]; then
+              workspaces+=("${pkg:5:-13}")
+            fi
+          done
+          (IFS=,; printf 'The following workspaces will be published: [%s]' "${workspaces[*]}")
+          echo "WORKSPACES=${workspaces}" >> $GITHUB_ENV
 
       - name: Configuring git
         run: |
@@ -39,8 +51,7 @@ jobs:
 
       - name: Bump workspaces to ${{ github.ref_name }}
         run: |
-          workspaces=(ui-lib locales)
-          for ws in "${workspaces[@]}"; do
+          for ws in "${WORKSPACES[@]}"; do
             yarn workspace @openshift-assisted/${ws} version ${GITHUB_REF_NAME:1}
             # The above command adds a `stableVersion` field after bumping. Removing it as it's buggy.
             # See: https://github.com/yarnpkg/berry/issues/4328
@@ -55,10 +66,13 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           yarn config set npmScopes.openshift-assisted.npmAuthToken $NPM_AUTH_TOKEN
-          yarn workspace @openshift-assisted/ui-lib npm publish
-          # Sleep ${{ vars.NPM_PUBLISH_DELAY }} in order to give time for processing the previously published package.
-          sleep ${{ vars.NPM_PUBLISH_DELAY }}
-          yarn workspace @openshift-assisted/locales npm publish
+          for ws in "${WORKSPACES[@]}"; do
+            yarn workspace @openshift-assisted/${ws} npm publish
+            # Verify the package has been published before publishing another one.
+            until yarn info @openshift-assisted/${ws} &> /dev/null; do
+              sleep ${{ vars.NPM_PUBLISH_DELAY }}
+            done
+          done
 
       - name: Update the repo
         run: |

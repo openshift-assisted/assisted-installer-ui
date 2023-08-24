@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Cluster, selectSchedulableMasters, Host, isSNO } from '../../../common';
+import { selectSchedulableMasters, isSNO } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import {
   discoveredAtColumn,
@@ -23,7 +23,8 @@ import {
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { TableVariant } from '@patternfly/react-table';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -45,7 +46,7 @@ export interface ClusterHostsTableProps {
 }
 
 const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
-  const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
+  const { wizardPerPage, setWizardPerPage } = React.useContext(ClusterWizardContext) || {};
   const {
     onEditHost,
     onEditRole,

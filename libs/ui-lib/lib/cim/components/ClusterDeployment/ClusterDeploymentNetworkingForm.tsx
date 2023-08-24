@@ -15,7 +15,6 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import {
-  ClusterDefaultConfig,
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
   getHostSubnets,
   SecurityFields,
@@ -36,6 +35,7 @@ import { useFormikContext } from 'formik';
 import { getGridSpans } from './helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
+import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
 
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;

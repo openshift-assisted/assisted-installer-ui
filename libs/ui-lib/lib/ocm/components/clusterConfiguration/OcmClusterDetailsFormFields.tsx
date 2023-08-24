@@ -6,7 +6,6 @@ import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurati
 import {
   ClusterDetailsValues,
   isSNO,
-  ManagedDomain,
   OpenshiftVersionOptionType,
   PullSecret,
   ocmClusterNameValidationMessages,
@@ -15,16 +14,10 @@ import {
   StaticTextField,
   useFeature,
   getSupportedCpuArchitectures,
-  PlatformType,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import {
-  OcmCheckboxField,
-  OcmInputField,
-  OcmRichInputField,
-  OcmSelectField,
-} from '../ui/OcmFormFields';
+import { OcmRichInputField } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 import CustomManifestCheckbox from './CustomManifestCheckbox';
@@ -32,6 +25,7 @@ import CpuArchitectureDropdown, {
   architectureData,
   CpuArchitectureItem,
 } from './CpuArchitectureDropdown';
+import { OcmBaseDomainField } from './OcmBaseDomainField';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
@@ -41,35 +35,22 @@ import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { ExternalPlatformLabels } from './platformIntegration/constants';
+import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
-  isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
   isOcm: boolean;
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
-  toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
   clusterExists: boolean;
   clusterCpuArchitecture?: string;
   clusterId?: string;
 };
 
-const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
-  <>
-    All DNS records must be subdomains of this base and include the cluster name. This cannot be
-    changed after cluster installation. The full cluster address will be: <br />
-    <strong>
-      {name || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
-    </strong>
-  </>
-);
-
 export const OcmClusterDetailsFormFields = ({
   managedDomains = [],
-  toggleRedHatDnsService,
-  isBaseDnsDomainDisabled,
   versions,
   isPullSecretSet,
   defaultPullSecret,
@@ -80,7 +61,7 @@ export const OcmClusterDetailsFormFields = ({
   clusterId,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
-  const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
+  const { highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
 
   const { t } = useTranslation();
@@ -152,35 +133,9 @@ export const OcmClusterDetailsFormFields = ({
         }
         maxLength={CLUSTER_NAME_MAX_LENGTH}
       />
-      {!!managedDomains.length && toggleRedHatDnsService && (
-        <OcmCheckboxField
-          name="useRedHatDnsService"
-          label="Use a temporary 60-day domain"
-          helperText="A base domain will be provided for temporary, non-production clusters."
-          onChange={toggleRedHatDnsService}
-        />
-      )}
-      {useRedHatDnsService ? (
-        <OcmSelectField
-          label="Base domain"
-          name="baseDnsDomain"
-          helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
-          options={managedDomains.map((d) => ({
-            label: `${d.domain || ''} (${d.provider || ''})`,
-            value: d.domain,
-          }))}
-          isRequired
-        />
-      ) : (
-        <OcmInputField
-          label="Base domain"
-          name="baseDnsDomain"
-          helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
-          placeholder="example.com"
-          isDisabled={isBaseDnsDomainDisabled || useRedHatDnsService}
-          isRequired
-        />
-      )}
+
+      <OcmBaseDomainField managedDomains={managedDomains} />
+
       {/* TODO(mlibra): For single-cluster: We will probably change this to just a static text */}
       {forceOpenshiftVersion ? (
         <OcmOpenShiftVersion
