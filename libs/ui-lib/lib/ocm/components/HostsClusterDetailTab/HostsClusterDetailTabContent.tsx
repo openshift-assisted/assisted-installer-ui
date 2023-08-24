@@ -32,7 +32,12 @@ export const HostsClusterDetailTabContent = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
-  const { getCpuArchitectures, normalizeClusterVersion } = useOpenshiftVersions();
+  const {
+    getCpuArchitectures,
+    normalizeClusterVersion,
+    loading: areOpenshiftVersionsLoading,
+  } = useOpenshiftVersions();
+
   const cpuArchitecturesByVersionImage = getCpuArchitectures(ocmCluster.openshift_version);
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -49,9 +54,10 @@ export const HostsClusterDetailTabContent = ({
   );
 
   React.useEffect(() => {
-    if (!isVisible && day2Cluster) {
+    if (!isVisible) {
       // the tab is not visible, stop polling
       setDay2Cluster(null);
+      return;
     }
     const day1ClusterHostCount = ocmCluster?.metrics?.nodes?.total || 0;
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
@@ -59,7 +65,7 @@ export const HostsClusterDetailTabContent = ({
       setError(<UnableToAddHostsError onTryAgain={handleClickTryAgainLink} />);
     }
 
-    if (isVisible && !day2Cluster && pullSecret) {
+    if (!areOpenshiftVersionsLoading && !day2Cluster && pullSecret) {
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
@@ -101,6 +107,7 @@ export const HostsClusterDetailTabContent = ({
             pullSecret,
             normalizedVersion,
           );
+
           const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
             day2Cluster,
             ocmCluster,
@@ -132,6 +139,7 @@ export const HostsClusterDetailTabContent = ({
     normalizeClusterVersion,
     handleClickTryAgainLink,
     cpuArchitecturesByVersionImage,
+    areOpenshiftVersionsLoading,
   ]);
 
   const refreshCluster = React.useCallback(async () => {

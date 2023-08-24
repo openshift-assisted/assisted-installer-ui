@@ -350,7 +350,12 @@ const addCustomManifestsIntercepts = () => {
 };
 
 const addPlatformFeatureIntercepts = () => {
-  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', fixtures.openShiftVersions);
+  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', (req) => {
+    req.reply({
+      body: fixtures.openShiftVersions,
+      delay: Cypress.env('OPENSHIFT_VERSIONS_DELAY') ? 3 * 1000 : 0,
+    });
+  }).as('openshift-versions');
 
   cy.intercept('GET', `/api/assisted-install/v2/support-levels/features*`, (req) => {
     // This request can also have cpu_architecture in the query, for now we always assume x86_64
