@@ -1,4 +1,4 @@
-import { Host } from '../../../common';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
