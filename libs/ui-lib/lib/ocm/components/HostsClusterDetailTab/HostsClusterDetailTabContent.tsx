@@ -15,7 +15,6 @@ import { isApiError } from '../../../common/api/utils';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
-import { ClusterWizardContextProvider } from '../clusterWizard';
 import {
   AddHostsApiError,
   ReloadFailedError,
@@ -182,22 +181,20 @@ export const HostsClusterDetailTabContent = ({
   }
 
   return (
-    <ClusterWizardContextProvider cluster={day2Cluster} infraEnv={infraEnv}>
-      <AddHostsContextProvider
+    <AddHostsContextProvider
+      cluster={day2Cluster}
+      resetCluster={refreshCluster}
+      ocpConsoleUrl={ocmCluster?.console?.url}
+      canEdit={ocmCluster.canEdit}
+    >
+      <NewFeatureSupportLevelProvider
+        loadingUi={<LoadingState />}
         cluster={day2Cluster}
-        resetCluster={refreshCluster}
-        ocpConsoleUrl={ocmCluster?.console?.url}
-        canEdit={ocmCluster.canEdit}
+        cpuArchitecture={infraEnv?.cpuArchitecture}
+        openshiftVersion={day2Cluster.openshiftVersion}
       >
-        <NewFeatureSupportLevelProvider
-          loadingUi={<LoadingState />}
-          cluster={day2Cluster}
-          cpuArchitecture={infraEnv?.cpuArchitecture}
-          openshiftVersion={day2Cluster.openshiftVersion}
-        >
-          <AddHosts />
-        </NewFeatureSupportLevelProvider>
-      </AddHostsContextProvider>
-    </ClusterWizardContextProvider>
+        <AddHosts />
+      </NewFeatureSupportLevelProvider>
+    </AddHostsContextProvider>
   );
 };

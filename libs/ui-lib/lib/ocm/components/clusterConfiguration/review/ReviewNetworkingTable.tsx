@@ -1,5 +1,5 @@
 import { Title } from '@patternfly/react-core';
-import { Table, TableVariant, TableBody } from '@patternfly/react-table';
+import { Table, TableVariant, TableBody, TableProps } from '@patternfly/react-table';
 import React from 'react';
 import {
   genericTableRowKey,
@@ -18,7 +18,7 @@ const dummyCells = ['', '', ''];
 
 export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
   const rows = React.useMemo(() => {
-    const networkRows = [
+    const networkRows: TableProps['rows'] = [
       {
         rowId: 'network-management',
         cells: [
@@ -39,7 +39,10 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       },
-      {
+    ];
+
+    !!cluster.machineNetworks?.length &&
+      networkRows.push({
         rowId: 'machine-networks-cidr',
         cells: [
           { title: 'Machine networks CIDR' },
@@ -54,8 +57,8 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           },
           isDualStack(cluster) && { title: 'Primary' },
         ],
-      },
-    ];
+      });
+
     cluster.apiVip &&
       networkRows.push({
         rowId: 'api-ip',
@@ -67,6 +70,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       });
+
     cluster.ingressVip &&
       networkRows.push({
         rowId: 'ingress-ip',
@@ -78,6 +82,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       });
+
     return networkRows;
   }, [cluster]);
 
