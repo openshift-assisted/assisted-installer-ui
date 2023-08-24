@@ -46,11 +46,9 @@ describe(`Assisted Installer Storage Step`, () => {
     });
 
     it('Should display the existing hosts storage details', () => {
-      Cypress.env('masterDiskTotalSize', '35.59 GB');
-      Cypress.env('workerDiskTotalSize', '20.95 GB');
       hostsTableSection.waitForHardwareStatus('Ready');
       hostsTableSection.validateHostRoles();
-      hostsTableSection.validateHostDiskSize();
+      hostsTableSection.validateHostDiskSize(35.59, 20.95);
       storagePage.validateNumberOfDisks();
     });
 
