@@ -20,9 +20,10 @@ export type SimpleHardwareInfo = {
 
 export const getMemoryCapacity = (inventory: Inventory): number =>
   inventory.memory?.physicalBytes || 0;
+
 export const getDiskCapacity = (inventory: Inventory): number =>
   inventory.disks
-    ?.filter((disk) => disk.driveType !== OpticalDiskDriveType)
+    ?.filter((disk) => disk.driveType !== OpticalDiskDriveType && !disk.holders)
     .reduce((diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0), 0) || 0;
 
 export const getHumanizedCpuClockSpeed = (inventory: Inventory) =>

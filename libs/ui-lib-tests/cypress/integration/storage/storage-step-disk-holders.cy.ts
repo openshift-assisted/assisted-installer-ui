@@ -59,6 +59,10 @@ describe(`Assisted Installer Storage Step`, () => {
       );
     });
 
+    it('Should calculate the total storage size correctly', () => {
+      hostsTableSection.validateHostDiskSize(51.52, 51.52);
+    });
+
     it('Should display the correct warning for LVM', () => {
       disks[1].warning = true;
 
