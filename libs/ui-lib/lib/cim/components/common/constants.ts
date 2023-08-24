@@ -19,3 +19,5 @@ export const getInfraEnvDocs = (docVersion: string) =>
   `https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#enable-cim`;
 
 export const BMH_HOSTNAME_ANNOTATION = 'bmac.agent-install.openshift.io/hostname';
+
+export const OCP_VERSION_MAJOR_MINOR = 'hive.openshift.io/version-major-minor';
