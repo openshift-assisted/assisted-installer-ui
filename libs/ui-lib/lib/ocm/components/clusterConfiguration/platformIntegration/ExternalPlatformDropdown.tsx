@@ -34,7 +34,6 @@ type ExternalPlatformDropdownProps = {
   onChange: (selectedPlatform: PlatformType) => void;
   cpuArchitecture?: string;
   clusterExists?: boolean;
-  clusterPlatform?: PlatformType;
   featureSupportLevelData?: NewFeatureSupportLevelMap | null;
 };
 
@@ -42,11 +41,14 @@ export type ExternalPlatformInfo = {
   label: string;
   href?: string;
   tooltip?: string;
-  featureId: string;
+  disabledReason?: string;
 };
 
 const getExternalPlatformTypes = (
   showOciOption: boolean,
+  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  featureSupportLevelData?: NewFeatureSupportLevelMap | null,
+  cpuArchitecture?: string,
 ): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => {
   const platforms = ['none', 'nutanix', showOciOption && 'oci', 'vsphere'] as PlatformType[];
 
@@ -57,7 +59,11 @@ const getExternalPlatformTypes = (
         label: ExternalPlatformLabels[platform],
         href: ExternalPlatformLinks[platform],
         tooltip: ExternalPlatformTooltips[platform],
-        featureId: ExternalPlaformIds[platform],
+        disabledReason: newFeatureSupportLevelContext.getFeatureDisabledReason(
+          ExternalPlaformIds[platform] as FeatureId,
+          featureSupportLevelData ?? undefined,
+          cpuArchitecture,
+        ),
       },
     }),
     {},
@@ -66,41 +72,24 @@ const getExternalPlatformTypes = (
 
 export const areAllExternalPlatformIntegrationDisabled = (
   externalPlatformTypes: Partial<{ [key in PlatformType]: ExternalPlatformInfo }>,
-  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
-  featureSupportLevelData?: NewFeatureSupportLevelMap | null,
-  cpuArchitecture?: string,
 ): boolean => {
-  // Check if isDisabled is true for all options
   return Object.values(externalPlatformTypes)
-    .filter((info) => info.featureId !== '')
-    .every(
-      (info) =>
-        newFeatureSupportLevelContext.getFeatureDisabledReason(
-          info.featureId as FeatureId,
-          featureSupportLevelData ?? undefined,
-          cpuArchitecture,
-        ) !== undefined,
-    );
+    .filter((info) => info.label !== 'No platform integration')
+    .every((info) => info.disabledReason !== undefined);
 };
 
 export const ExternalPlatformDropdown = ({
   showOciOption,
   onChange,
   cpuArchitecture,
-  clusterPlatform,
   featureSupportLevelData,
 }: ExternalPlatformDropdownProps) => {
   const [field, , { setValue }] = useField<string>(INPUT_NAME);
   const [isOpen, setOpen] = React.useState(false);
-  const defaultValue = React.useMemo(() => {
-    if (clusterPlatform !== undefined) {
-      const platform = clusterPlatform === 'baremetal' ? 'none' : clusterPlatform;
-      return platform;
-    } else {
-      return 'none';
-    }
-  }, [clusterPlatform]);
-  const [current, setCurrent] = React.useState<string>(defaultValue);
+  const [externalPlatformTypes, setExternalPlatformTypes] = React.useState<
+    Partial<{ [key in PlatformType]: ExternalPlatformInfo }>
+  >({});
+
   const tooltipDropdownDisabled = `Platform integration is not supported when ${
     cpuArchitecture || ''
   } is selected`;
@@ -110,62 +99,48 @@ export const ExternalPlatformDropdown = ({
     window.open(href, '_blank');
   };
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
-  const externalPlatformTypes = getExternalPlatformTypes(showOciOption);
-
-  const dropdownIsDisabled = React.useMemo(() => {
-    return areAllExternalPlatformIntegrationDisabled(
-      externalPlatformTypes,
+  React.useEffect(() => {
+    // Calculate updated externalPlatformTypes based on the dependencies
+    const updatedExternalPlatformTypes = getExternalPlatformTypes(
+      showOciOption,
       newFeatureSupportLevelContext,
       featureSupportLevelData,
       cpuArchitecture,
     );
-  }, [
-    externalPlatformTypes,
-    newFeatureSupportLevelContext,
-    featureSupportLevelData,
-    cpuArchitecture,
-  ]);
+
+    // Update the state with the new externalPlatformTypes
+    setExternalPlatformTypes(updatedExternalPlatformTypes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [featureSupportLevelData, cpuArchitecture]);
+
+  const dropdownIsDisabled = React.useMemo(() => {
+    return areAllExternalPlatformIntegrationDisabled(externalPlatformTypes);
+  }, [externalPlatformTypes]);
 
   React.useEffect(() => {
     let isCurrentValueDisabled = false;
 
-    if (current !== 'none') {
+    if (field.value !== 'none') {
       isCurrentValueDisabled =
-        newFeatureSupportLevelContext.getFeatureDisabledReason(
-          ExternalPlaformIds[current as PlatformType] as FeatureId,
-          featureSupportLevelData ?? undefined,
-          cpuArchitecture,
-        ) !== undefined;
+        externalPlatformTypes[field.value as PlatformType]?.disabledReason !== undefined;
     }
     if (dropdownIsDisabled || isCurrentValueDisabled) {
-      setCurrent('none');
       setValue('none');
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dropdownIsDisabled,
-    current,
-    newFeatureSupportLevelContext,
-    featureSupportLevelData,
-    cpuArchitecture,
-  ]);
+  }, [dropdownIsDisabled, externalPlatformTypes]);
 
   const enabledItems = Object.keys(externalPlatformTypes).map((platform) => {
-    const { label, href, tooltip, featureId } = externalPlatformTypes[
+    const { label, href, tooltip, disabledReason } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
-    const disabledReason = newFeatureSupportLevelContext.getFeatureDisabledReason(
-      featureId as FeatureId,
-      featureSupportLevelData ?? undefined,
-      cpuArchitecture,
-    );
-
     return (
       <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
         <Split>
           <SplitItem>
             <Tooltip
-              hidden={disabledReason === undefined}
+              hidden={disabledReason === undefined && tooltip === undefined}
               content={disabledReason !== undefined ? disabledReason : tooltip}
               position="top"
             >
@@ -196,7 +171,6 @@ export const ExternalPlatformDropdown = ({
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const selectedPlatform = event?.currentTarget.id as PlatformType;
       setValue(selectedPlatform);
-      setCurrent(selectedPlatform);
       setOpen(false);
       onChange(selectedPlatform);
     },
@@ -212,10 +186,10 @@ export const ExternalPlatformDropdown = ({
         className="pf-u-w-100"
         isDisabled={dropdownIsDisabled}
       >
-        {externalPlatformTypes[current as PlatformType]?.label}
+        {externalPlatformTypes[field.value as PlatformType]?.label}
       </DropdownToggle>
     ),
-    [externalPlatformTypes, current, dropdownIsDisabled],
+    [externalPlatformTypes, field, dropdownIsDisabled],
   );
 
   return (

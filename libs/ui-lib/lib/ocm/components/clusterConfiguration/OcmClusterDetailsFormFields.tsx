@@ -46,7 +46,6 @@ export type OcmClusterDetailsFormFieldsProps = {
   clusterExists: boolean;
   clusterCpuArchitecture?: string;
   clusterId?: string;
-  clusterPlatform?: PlatformType;
 };
 
 export const OcmClusterDetailsFormFields = ({
@@ -59,7 +58,6 @@ export const OcmClusterDetailsFormFields = ({
   clusterExists,
   clusterCpuArchitecture,
   clusterId,
-  clusterPlatform,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { highAvailabilityMode, useRedHatDnsService } = values;
@@ -173,9 +171,8 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
-          clusterPlatform={clusterPlatform}
           clusterExists={clusterExists}
-          cpuArchitecture={cpuArchitecture ?? values.cpuArchitecture}
+          cpuArchitecture={values.cpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData ?? undefined}
         />
