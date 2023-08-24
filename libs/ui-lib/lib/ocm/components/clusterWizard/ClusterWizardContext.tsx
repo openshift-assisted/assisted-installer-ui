@@ -17,7 +17,7 @@ export type ClusterWizardContextType = {
   setWizardPerPage: (perPage: number) => void;
 };
 
-const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);
+export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);
 
 export const useClusterWizardContext = () => {
   const context = React.useContext(ClusterWizardContext);
@@ -26,5 +26,3 @@ export const useClusterWizardContext = () => {
   }
   return context;
 };
-
-export default ClusterWizardContext;
