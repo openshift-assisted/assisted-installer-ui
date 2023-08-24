@@ -8,14 +8,12 @@ import {
   InputField,
   RadioField,
   RichInputField,
-  SelectField,
   SwitchField,
 } from '../../../common';
 import {
   CheckboxFieldProps,
   CodeFieldProps,
   RadioFieldProps,
-  SelectFieldProps,
   SwitchFieldProps,
 } from '../../../common/components/ui/formik/types';
 import { RichInputFieldPropsProps } from '../../../common/components/ui/formik/RichInputField';
@@ -47,8 +45,6 @@ export function RefFormFieldDisabler<T extends DisableableField>(
 // Formik Fields
 const OcmInputField = FormFieldDisabler<React.ComponentProps<typeof InputField>>(InputField);
 type OcmInputFieldProps = Parameters<typeof OcmInputField>[0];
-const OcmSelectField = FormFieldDisabler<SelectFieldProps>(SelectField);
-type OcmSelectFieldProps = Parameters<typeof OcmSelectField>[0];
 const OcmCheckboxField = FormFieldDisabler<CheckboxFieldProps>(CheckboxField);
 type OcmCheckboxFieldProps = Parameters<typeof OcmCheckboxField>[0];
 const OcmSwitchField = FormFieldDisabler<SwitchFieldProps>(SwitchField);
@@ -73,8 +69,6 @@ export {
   OcmInputFieldProps,
   OcmRichInputField,
   OcmRichInputFieldProps,
-  OcmSelectField,
-  OcmSelectFieldProps,
   OcmCheckbox,
   OcmCheckboxProps,
   OcmCheckboxField,
