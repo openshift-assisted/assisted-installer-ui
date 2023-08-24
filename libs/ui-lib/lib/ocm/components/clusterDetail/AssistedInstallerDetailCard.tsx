@@ -119,14 +119,12 @@ const AssistedInstallerDetailCard = ({
 
   const showWizard = ['insufficient', 'ready', 'pending-for-input'].includes(cluster.status);
 
-  const content = (
+  const content = showWizard ? (
     <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv} permissions={permissions}>
-      {showWizard ? (
-        <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
-      ) : (
-        <ClusterInstallationProgressCard cluster={cluster} />
-      )}
+      <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
     </ClusterWizardContextProvider>
+  ) : (
+    <ClusterInstallationProgressCard cluster={cluster} />
   );
 
   const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
