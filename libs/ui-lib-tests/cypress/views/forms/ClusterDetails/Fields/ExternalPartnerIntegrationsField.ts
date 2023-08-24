@@ -36,4 +36,8 @@ export class ExternalPartnerIntegrationsField {
       cy.findByRole('menuitem', { name: new RegExp(`${platform}`, 'i') }).click();
     });
   }
+
+  static isPatternflyDropdown() {
+    ExternalPartnerIntegrationsField.findDropdown().should('have.class', 'pf-c-dropdown');
+  }
 }

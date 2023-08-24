@@ -21,6 +21,10 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.init();
     });
 
+    it('External partner integrations field use Pattenfly Style', () => {
+      ClusterDetailsForm.externalPartnerIntegrationsField.isPatternflyDropdown();
+    });
+
     it('Should display correct items in the external platform integration dropdown', () => {
       ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItems().each((item) => {
         // Get the expected values from the externalPlatformTypes object

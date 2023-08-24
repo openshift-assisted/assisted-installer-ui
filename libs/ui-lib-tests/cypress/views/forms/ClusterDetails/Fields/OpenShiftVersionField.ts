@@ -24,4 +24,8 @@ export class OpenShiftVersionField {
       cy.findByRole('menuitem', { name: new RegExp(`openshift ${version}`, 'i') }).click();
     });
   }
+
+  static isPatternflyDropdown() {
+    OpenShiftVersionField.findDropdown().should('have.class', 'pf-c-dropdown');
+  }
 }

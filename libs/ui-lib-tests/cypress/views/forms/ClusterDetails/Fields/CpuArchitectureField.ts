@@ -22,4 +22,8 @@ export class CpuArchitectureField {
       cy.findByRole('menuitem', { name: new RegExp(`${cpuArch}`, 'i') }).click();
     });
   }
+
+  static isPatternflyDropdown() {
+    CpuArchitectureField.findDropdown().should('have.class', 'pf-c-dropdown');
+  }
 }
