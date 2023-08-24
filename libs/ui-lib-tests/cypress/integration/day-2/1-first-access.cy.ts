@@ -39,10 +39,14 @@ describe(`Day2 flow`, () => {
     });
 
     it('Creates a Day2 cluster when the cluster has metrics', () => {
+      Cypress.env('OPENSHIFT_VERSIONS_DELAY', true);
+
       cy.findByRole('button', { name: 'Add hosts (With metrics)' }).click();
-      cy.wait('@create-day2-cluster').then(({ request }) => {
+      cy.wait('@create-day2-cluster').then(() => {
         setLastWizardSignal('CREATED_DAY2_CLUSTER');
       });
+
+      cy.get('@create-day2-cluster.all').should('have.length', 1);
       cy.findByLabelText('Hosts table', { selector: '[role=grid]' }).should('be.visible');
     });
   });
