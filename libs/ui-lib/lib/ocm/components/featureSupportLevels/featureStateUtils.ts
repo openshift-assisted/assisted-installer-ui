@@ -134,14 +134,8 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
   return undefined;
 };
 
-const getOciDisabledReason = (
-  cluster: Cluster | undefined,
-  cpuArchitecture: string | undefined,
-  isSupported: boolean,
-) => {
-  if (cluster) {
-    return clusterExistsReason;
-  } else if (!isSupported) {
+const getOciDisabledReason = (cpuArchitecture: string | undefined, isSupported: boolean) => {
+  if (!isSupported) {
     if (cpuArchitecture === CpuArchitecture.s390x || cpuArchitecture === CpuArchitecture.ppc64le) {
       return `Integration with Oracle is not available with the selected CPU architecture.`;
     } else {
@@ -180,7 +174,7 @@ export const getNewFeatureDisabledReason = (
       return 'Cluster-managed networking is not supported for ARM architecture with this version of OpenShift.';
     }
     case 'EXTERNAL_PLATFORM_OCI': {
-      return getOciDisabledReason(cluster, cpuArchitecture, isSupported);
+      return getOciDisabledReason(cpuArchitecture, isSupported);
     }
     case 'MCE': {
       if (!isSupported) {
