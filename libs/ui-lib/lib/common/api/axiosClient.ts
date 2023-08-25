@@ -1,10 +1,10 @@
 import axios, { AxiosInstance } from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
 import { camelCase } from 'camel-case';
-
+const basePath = '/api/assisted-install';
 const withAssistedInstallerBasePath = (client: AxiosInstance): AxiosInstance => {
   // Conforms with basePath in swagger.json
-  const basePath = '/api/assisted-install';
+
   client.interceptors.request.use((cfg) => {
     if (cfg.url) {
       try {
@@ -36,7 +36,14 @@ let client = applyCaseMiddleware(
     },
   },
 );
-let clientWithoutCaseConverter = withAssistedInstallerBasePath(axios.create());
+const aiInterceptor = (client: AxiosInstance) => {
+  client.interceptors.request.use((cfg) => {
+    cfg.url = `${basePath}${cfg.url || ''}`;
+    return cfg;
+  });
+  return client;
+};
+let clientWithoutCaseConverter = axios.create();
 
 export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => AxiosInstance) => {
   isInOcm = true;
@@ -44,7 +51,7 @@ export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => A
 
   // Instances of Axios with URL intercepted using Assisted-installer's base-path
   client = authInterceptor(client);
-  clientWithoutCaseConverter = authInterceptor(clientWithoutCaseConverter);
+  clientWithoutCaseConverter = aiInterceptor(authInterceptor(clientWithoutCaseConverter));
 };
 
 export { client, ocmClient, isInOcm, clientWithoutCaseConverter };
