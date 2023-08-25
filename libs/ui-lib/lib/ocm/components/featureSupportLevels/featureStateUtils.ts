@@ -176,7 +176,7 @@ export const getNewFeatureDisabledReason = (
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
     }
-    case 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING': {
+    case 'CLUSTER_MANAGED_NETWORKING': {
       return 'Cluster-managed networking is not supported for ARM architecture with this version of OpenShift.';
     }
     case 'EXTERNAL_PLATFORM_OCI': {

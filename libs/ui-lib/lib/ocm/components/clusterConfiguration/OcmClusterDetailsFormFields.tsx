@@ -171,7 +171,6 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
-          clusterExists={clusterExists}
           cpuArchitecture={values.cpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData ?? undefined}

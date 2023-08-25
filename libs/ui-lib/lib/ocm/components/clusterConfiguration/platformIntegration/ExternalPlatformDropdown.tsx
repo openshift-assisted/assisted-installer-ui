@@ -33,7 +33,6 @@ type ExternalPlatformDropdownProps = {
   showOciOption: boolean;
   onChange: (selectedPlatform: PlatformType) => void;
   cpuArchitecture?: string;
-  clusterExists?: boolean;
   featureSupportLevelData?: NewFeatureSupportLevelMap | null;
 };
 
