@@ -104,6 +104,13 @@ const handleApiErrorInForm = (
   actions.setErrors(errors);
 };
 
+const updateAllFakeIds = (manifests: CustomManifestValues[]): CustomManifestValues[] => {
+  manifests.forEach((manifest) => {
+    manifest.fakeId = getManifestFakeId(manifest.folder, manifest.filename);
+  });
+  return manifests;
+};
+
 export const CustomManifestsForm = ({
   onFormStateChange,
   getEmptyValues,
@@ -212,7 +219,7 @@ export const CustomManifestsForm = ({
               filename: fileName || '',
               manifestYaml: '',
             };
-
+            values.manifests = updateAllFakeIds(values.manifests);
             return ClustersService.updateCustomManifest(
               existingManifest,
               updatedManifest,
