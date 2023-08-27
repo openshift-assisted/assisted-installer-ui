@@ -81,8 +81,8 @@ apply for `libs/locales` as well.
    yalc link @openshift-assisted/locales
    yalc link @openshift-assisted/types
    ```
-   **Note**: `yalc link` needs to be executed only after cloning or pulling new changes from the
-   uhc-portal. **Be aware that this command updates the project's `yarn.lock` file**.  
+   **Note**: `yalc link` needs to be executed following the `yarn install` command.  
+   **Be aware that this command updates the project's `package.json` and `yarn.lock` files**.  
    **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
 4. Now you can follow the uhc-portal's
    [README file](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md) in order
@@ -105,12 +105,14 @@ Follow these steps if you want to test the `libs/ui-lib` integration within `sto
    the following commands:
    ```bash
    cd frontend
-   yalc link @openshift-assisted/ui-lib
+   yalc add @openshift-assisted/ui-lib
    yalc link @openshift-assisted/locales
    yalc link @openshift-assisted/types
    ```
-   Note that these commands need to be re-executed every time the `npm install` is run in the
-   `frontend` directory.
+   **Note**: `yalc link` needs to be executed following the `npm install` command.  
+   **Be aware that this command updates the project's `package.json` and `package-lock.json`
+   files**.  
+   **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
 
 ## Updating the API types
 

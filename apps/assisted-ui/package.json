@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@openshift-assisted/locales": "workspace:*",
     "@openshift-assisted/ui-lib": "workspace:*",
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
     "@patternfly/patternfly": "^4.222.4",
