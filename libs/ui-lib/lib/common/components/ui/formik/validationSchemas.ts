@@ -397,7 +397,7 @@ export const dnsNameValidationSchema = Yup.string()
 
 export const baseDomainValidationSchema = Yup.string().test(
   'dns-name-label-length',
-  'Single label of the DNS name can not be longer than 63 character and can not contain spaces.',
+  'Every single host component in the base domain name cannot contain more than 63 characters and must not contain spaces.',
   (value: string) => {
     // Check if the value contains any spaces
     if (/\s/.test(value)) {
