@@ -633,7 +633,7 @@
   "ai:SNO is in a proof-of-concept stage and is not supported in any way.": "SNO 当前只为概念验证阶段，它不被支持。",
   "ai:SNO: One host is required with at least {{sno_cpu_cores}} CPU cores, {{snoRam}} of RAM, and {{sno_disksize}} GB of disk size storage.": "SNO：一个主机至少需要 {{sno_cpu_cores}} 个 CPU 内核、{{snoRam}} RAM 和 {{sno_disksize}} GB 磁盘存储。",
   "ai:Software-Defined Networking (SDN)": "软件定义型网络（SDN）",
-  "ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.": "无法为 SNO 集群或检测到 IPv6 时选择软件定义型网络（SDN）。",
+  "ai:Network type selection is not supported for SNO clusters or when IPv6 is detected.": "无法为 SNO 集群或检测到 IPv6 时选择软件定义型网络（SDN）。",
   "ai:Some details are not editable after the draft cluster was created.": "在草稿集群被创建后，一些详细信息将不能进行编辑。",
   "ai:Some hosts are in a warning state.": "有些主机处于警告状态。",
   "ai:Some hosts are in an error state.": "有些主机处于错误状态。",
