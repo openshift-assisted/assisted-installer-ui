@@ -173,7 +173,7 @@ export const OcmClusterDetailsFormFields = ({
           onChange={handleExternalPartnerIntegrationsChange}
           cpuArchitecture={values.cpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
-          featureSupportLevelData={featureSupportLevelData ?? undefined}
+          featureSupportLevelData={featureSupportLevelData}
         />
       )}
 

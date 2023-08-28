@@ -33,7 +33,7 @@ type ExternalPlatformDropdownProps = {
   showOciOption: boolean;
   onChange: (selectedPlatform: PlatformType) => void;
   cpuArchitecture?: string;
-  featureSupportLevelData?: NewFeatureSupportLevelMap | null;
+  featureSupportLevelData: NewFeatureSupportLevelMap | null;
 };
 
 export type ExternalPlatformInfo = {
