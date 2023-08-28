@@ -22,6 +22,7 @@ describe(`Assisted Installer Read Only Cluster`, () => {
 
   describe('Read Only cluster', () => {
     it('Should display the Cluster details page in viewer mode', () => {
+      commonActions.visitClusterDetailsPage();
       navbar.clickOnNavItem('Cluster details');
 
       clusterDetailsPage.getClusterNameField().should('be.disabled');
