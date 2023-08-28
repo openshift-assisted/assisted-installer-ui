@@ -332,6 +332,8 @@ describe('validationSchemas', () => {
       'a--aa.com',
       'aa.com.com.com.com',
       'red.cat--rahul.com',
+      '1234567890.1234567890.com1',
+      'aaaaaaaaaa.ccccccc.cccccc--cccccc.cc.dddd.dddd.ddd.cccccccccc',
     ];
     const invalid = [
       'a',
