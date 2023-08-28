@@ -59,9 +59,9 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
       ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.13');
-      ClusterDetailsForm.externalPartnerIntegrationsField
-        .findDropdownItemSelected()
-        .contains('No platform integration');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItemSelected(
+        'No platform integration',
+      );
     });
 
     it("Hosts' Network Configuration control is disabled when external partner integration is selected", () => {
@@ -78,9 +78,24 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
       ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
       ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItemSelected(
+        'No platform integration',
+      );
+    });
+
+    it('Validate that all dropdown is disabled in case we choose IBM/Z(s390x) architecture', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
       ClusterDetailsForm.externalPartnerIntegrationsField
-        .findDropdownItemSelected()
-        .contains('No platform integration');
+        .findDropdownToggle()
+        .should('be.disabled');
+    });
+
+    it('Validate that Nutanix option is disabled in case we choose OCP version 4.10', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.10');
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItem('Nutanix')
+        .should('have.class', 'pf-m-aria-disabled');
     });
   });
 

@@ -633,7 +633,7 @@
   "ai:SNO is in a proof-of-concept stage and is not supported in any way.": "SNO는 개념 증명 단계에 있으며 어떤 방식으로도 지원되지 않습니다.",
   "ai:SNO: One host is required with at least {{sno_cpu_cores}} CPU cores, {{snoRam}} of RAM, and {{sno_disksize}} GB of disk size storage.": "SNO: {{sno_cpu_cores}} CPU 코어, {{snoRam}} RAM 및 {{sno_disksize}} GB의 디스크 크기 스토리지를 사용하는 하나의 호스트가 필요합니다.",
   "ai:Software-Defined Networking (SDN)": "소프트웨어 정의 네트워킹(SDN)",
-  "ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.": "SNO 클러스터 또는 IPv6가 감지되면 소프트웨어 정의 네트워킹(SDN)을 선택할 수 없습니다.",
+  "ai:Network type selection is not supported for SNO clusters or when IPv6 is detected.": "SNO 클러스터 또는 IPv6가 감지되면 소프트웨어 정의 네트워킹(SDN)을 선택할 수 없습니다.",
   "ai:Some details are not editable after the draft cluster was created.": "클러스터 초안을 생성한 후에는 일부 세부 사항을 편집할 수 없습니다.",
   "ai:Some hosts are in a warning state.": "일부 호스트가 경고 상태에 있습니다.",
   "ai:Some hosts are in an error state.": "일부 호스트가 오류 상태에 있습니다.",
