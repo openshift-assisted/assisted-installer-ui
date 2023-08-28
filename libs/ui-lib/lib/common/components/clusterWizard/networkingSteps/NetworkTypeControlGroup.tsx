@@ -24,7 +24,7 @@ export const NetworkTypeControlGroup = ({
           <Tooltip
             hidden={isSDNSelectable}
             content={t(
-              'ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.',
+              'ai:Network type selection is not supported for SNO clusters or when IPv6 is detected.',
             )}
           >
             <RadioField
@@ -50,7 +50,7 @@ export const NetworkTypeControlGroup = ({
           <Tooltip
             hidden={isSDNSelectable}
             content={t(
-              'ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.',
+              'ai:Network type selection is not supported for SNO clusters or when IPv6 is detected.',
             )}
           >
             <RadioField

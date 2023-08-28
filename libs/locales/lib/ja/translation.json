@@ -633,7 +633,7 @@
   "ai:SNO is in a proof-of-concept stage and is not supported in any way.": "SNO は概念的な段階であり、いかなるサポートも行いません。",
   "ai:SNO: One host is required with at least {{sno_cpu_cores}} CPU cores, {{snoRam}} of RAM, and {{sno_disksize}} GB of disk size storage.": "SNO: 少なくとも {{sno_cpu_cores}} CPU コア、{{snoRam}} の RAM、および {{sno_disksize}} GB のディスクサイズストレージを持つ 1 台のホストが必要です。",
   "ai:Software-Defined Networking (SDN)": "ソフトウェア定義ネットワーク (SDN)",
-  "ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.": "SNO クラスターまたは IPv6 が検出された場合、Software-Defined Networking (SDN) は選択できません。",
+  "ai:Network type selection is not supported for SNO clusters or when IPv6 is detected.": "SNO クラスターまたは IPv6 が検出された場合、Software-Defined Networking (SDN) は選択できません。",
   "ai:Some details are not editable after the draft cluster was created.": "ドラフトクラスターが作成された後、一部の詳細情報は編集できません。",
   "ai:Some hosts are in a warning state.": "一部のホストは警告状態にあります。",
   "ai:Some hosts are in an error state.": "一部のホストはエラー状態にあります。",
