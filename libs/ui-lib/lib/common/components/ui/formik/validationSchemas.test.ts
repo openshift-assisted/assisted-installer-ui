@@ -320,34 +320,8 @@ describe('validationSchemas', () => {
   });
 
   test('baseDomainNameValidationSchema', async () => {
-    const valid = [
-      'a.com',
-      'co',
-      '1c',
-      '1-c',
-      '1--c',
-      'aaa',
-      'abc.def',
-      'a-aa.com',
-      'a--aa.com',
-      'aa.com.com.com.com',
-      'red.cat--rahul.com',
-      '1234567890.1234567890.com1',
-      'aaaaaaaaaa.ccccccc.cccccc--cccccc.cc.dddd.dddd.ddd.cccccccccc',
-    ];
-    const invalid = [
-      'a',
-      '-',
-      'a-',
-      '-aaa.com.',
-      'aaa-.com',
-      'a.c',
-      'aaa.c',
-      'DNSnamescancontainonlyalphabeticalcharactersa-znumericcharacters0-9theminussign-andtheperiod',
-      'DNSnamescancontainonlyalphabeticalcharactersa-znumericcharacters0-9theminussign-andtheperiod.com',
-      'iamnotavaliddnsdomain-iamnotavaliddnsdomain-iamnotavaliddnsdomain',
-      'aaaa--comaaaa.aaaa--comaaaa.aaaa--comaaaa',
-    ];
+    const valid = ['a.com', 'co', '1c'];
+    const invalid = ['a g', 'iamnotavaliddnsdomain-iamnotavaliddnsdomain-iamnotavaliddnsdomain'];
 
     await Promise.all(
       valid.map((value) =>

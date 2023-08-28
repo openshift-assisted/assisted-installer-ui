@@ -38,8 +38,6 @@ const CLUSTER_NAME_VALID_CHARS_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-const BASE_DOMAIN_REGEX = /^[a-z\d][\-]*[a-z\d]+$/;
-const DNS_NAME_REGEX_OCM = /^(([a-z\d]+[\-]*[a-z\d]+)\.)+[a-z\d]{2,63}$/;
 
 const PROXY_DNS_REGEX =
   /(^\.?([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*$)/;
@@ -397,27 +395,20 @@ export const dnsNameValidationSchema = Yup.string()
     excludeEmptyString: true,
   });
 
-export const validateBaseDomainName = (baseDomainName: string) => {
-  if (baseDomainName.match(BASE_DOMAIN_REGEX) && baseDomainName.length > 1) {
-    return true;
-  }
-  return !!baseDomainName.match(DNS_NAME_REGEX_OCM);
-};
+export const baseDomainValidationSchema = Yup.string().test(
+  'dns-name-label-length',
+  'Single label of the DNS name can not be longer than 63 character and can not contain spaces.',
+  (value: string) => {
+    // Check if the value contains any spaces
+    if (/\s/.test(value)) {
+      return false; // Value contains spaces, validation fails
+    }
 
-export const baseDomainValidationSchema = Yup.string()
-  .test(
-    'dns-name-label-length',
-    'Single label of the DNS name can not be longer than 63 characters.',
-    (value: string) => (value || '').split('.').every((label: string) => label.length <= 63),
-  )
-  .test(
-    'dns-name-validation',
-    '"${value}" is not valid. DNS base domains must have two characters after the dot and must not end in a special character.',
-    (value: string) => {
-      if (value === '') return true;
-      else return validateBaseDomainName(value);
-    },
-  );
+    // Check the label lengths
+    const labels = (value || '').split('.');
+    return labels.every((label: string) => label.length <= 63);
+  },
+);
 
 export const hostPrefixValidationSchema = (
   clusterNetworkCidr: NetworkConfigurationValues['clusterNetworkCidr'],
