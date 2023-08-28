@@ -321,7 +321,11 @@ describe('validationSchemas', () => {
 
   test('baseDomainNameValidationSchema', async () => {
     const valid = ['a.com', 'co', '1c'];
-    const invalid = ['a g', 'iamnotavaliddnsdomain-iamnotavaliddnsdomain-iamnotavaliddnsdomain'];
+    const invalid = [
+      '    ',
+      'a g',
+      'iamnotavaliddnsdomain-iamnotavaliddnsdomain-iamnotavaliddnsdomain',
+    ];
 
     await Promise.all(
       valid.map((value) =>
