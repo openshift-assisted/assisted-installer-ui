@@ -34,6 +34,7 @@ type ExternalPlatformDropdownProps = {
   onChange: (selectedPlatform: PlatformType) => void;
   cpuArchitecture?: string;
   featureSupportLevelData: NewFeatureSupportLevelMap | null;
+  isSNO: boolean;
 };
 
 export type ExternalPlatformInfo = {
@@ -43,8 +44,29 @@ export type ExternalPlatformInfo = {
   disabledReason?: string;
 };
 
+const getDisabledReasonForExternalPlatform = (
+  featureId: FeatureId,
+  isSNO: boolean,
+  isNutanixOrVsphere: boolean,
+  label: string,
+  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  featureSupportLevelData?: NewFeatureSupportLevelMap | null,
+  cpuArchitecture?: string,
+): string | undefined => {
+  if (!isSNO) {
+    return newFeatureSupportLevelContext.getFeatureDisabledReason(
+      featureId,
+      featureSupportLevelData ?? undefined,
+      cpuArchitecture,
+    );
+  } else if (isSNO && isNutanixOrVsphere) {
+    return `${label} integration is not supported for Single-Node OpenShift`;
+  }
+};
+
 const getExternalPlatformTypes = (
   showOciOption: boolean,
+  isSNO: boolean,
   newFeatureSupportLevelContext: NewFeatureSupportLevelData,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: string,
@@ -58,8 +80,12 @@ const getExternalPlatformTypes = (
         label: ExternalPlatformLabels[platform],
         href: ExternalPlatformLinks[platform],
         tooltip: ExternalPlatformTooltips[platform],
-        disabledReason: newFeatureSupportLevelContext.getFeatureDisabledReason(
+        disabledReason: getDisabledReasonForExternalPlatform(
           ExternalPlaformIds[platform] as FeatureId,
+          isSNO,
+          platform === 'nutanix' || platform === 'vsphere',
+          ExternalPlatformLabels[platform],
+          newFeatureSupportLevelContext,
           featureSupportLevelData ?? undefined,
           cpuArchitecture,
         ),
@@ -82,6 +108,7 @@ export const ExternalPlatformDropdown = ({
   onChange,
   cpuArchitecture,
   featureSupportLevelData,
+  isSNO,
 }: ExternalPlatformDropdownProps) => {
   const [field, , { setValue }] = useField<string>(INPUT_NAME);
   const [isOpen, setOpen] = React.useState(false);
@@ -102,6 +129,7 @@ export const ExternalPlatformDropdown = ({
     // Calculate updated externalPlatformTypes based on the dependencies
     const updatedExternalPlatformTypes = getExternalPlatformTypes(
       showOciOption,
+      isSNO,
       newFeatureSupportLevelContext,
       featureSupportLevelData,
       cpuArchitecture,
@@ -110,7 +138,7 @@ export const ExternalPlatformDropdown = ({
     // Update the state with the new externalPlatformTypes
     setExternalPlatformTypes(updatedExternalPlatformTypes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [featureSupportLevelData, cpuArchitecture]);
+  }, [featureSupportLevelData, cpuArchitecture, isSNO]);
 
   const dropdownIsDisabled = React.useMemo(() => {
     return areAllExternalPlatformIntegrationDisabled(externalPlatformTypes);
