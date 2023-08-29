@@ -104,13 +104,6 @@ const handleApiErrorInForm = (
   actions.setErrors(errors);
 };
 
-const updateAllFakeIds = (manifests: CustomManifestValues[]): CustomManifestValues[] => {
-  manifests.forEach((manifest) => {
-    manifest.fakeId = getManifestFakeId(manifest.folder, manifest.filename);
-  });
-  return manifests;
-};
-
 export const CustomManifestsForm = ({
   onFormStateChange,
   getEmptyValues,
@@ -144,18 +137,17 @@ export const CustomManifestsForm = ({
         });
       } else {
         customManifestsLocalRef.current?.forEach((customManifest) => {
-          const updatedManifest: CustomManifestValues | undefined = updatedManifests.find(
+          const updatedManifestFounded: CustomManifestValues | undefined = updatedManifests.find(
             (updatedManifest) =>
               getManifestFakeId(
                 customManifest.folder || 'manifests',
                 customManifest.fileName || '',
               ) === updatedManifest.fakeId || '',
           );
-
-          if (updatedManifest) {
-            customManifest.folder = updatedManifest.folder;
-            customManifest.fileName = updatedManifest.filename;
-            customManifest.yamlContent = updatedManifest.manifestYaml;
+          if (updatedManifestFounded) {
+            customManifest.folder = updatedManifestFounded.folder;
+            customManifest.fileName = updatedManifestFounded.filename;
+            customManifest.yamlContent = updatedManifestFounded.manifestYaml;
           }
         });
       }
@@ -219,7 +211,7 @@ export const CustomManifestsForm = ({
               filename: fileName || '',
               manifestYaml: '',
             };
-            values.manifests = updateAllFakeIds(values.manifests);
+
             return ClustersService.updateCustomManifest(
               existingManifest,
               updatedManifest,
