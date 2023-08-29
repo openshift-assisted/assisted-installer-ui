@@ -45,22 +45,20 @@ export type ExternalPlatformInfo = {
 };
 
 const getDisabledReasonForExternalPlatform = (
-  featureId: FeatureId,
   isSNO: boolean,
-  isNutanixOrVsphere: boolean,
-  label: string,
   newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  platform: PlatformType,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: string,
 ): string | undefined => {
   if (!isSNO) {
     return newFeatureSupportLevelContext.getFeatureDisabledReason(
-      featureId,
+      ExternalPlaformIds[platform] as FeatureId,
       featureSupportLevelData ?? undefined,
       cpuArchitecture,
     );
-  } else if (isSNO && isNutanixOrVsphere) {
-    return `${label} integration is not supported for Single-Node OpenShift`;
+  } else if (platform === 'nutanix' || platform === 'vsphere') {
+    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift`;
   }
 };
 
@@ -81,11 +79,9 @@ const getExternalPlatformTypes = (
         href: ExternalPlatformLinks[platform],
         tooltip: ExternalPlatformTooltips[platform],
         disabledReason: getDisabledReasonForExternalPlatform(
-          ExternalPlaformIds[platform] as FeatureId,
           isSNO,
-          platform === 'nutanix' || platform === 'vsphere',
-          ExternalPlatformLabels[platform],
           newFeatureSupportLevelContext,
+          platform,
           featureSupportLevelData ?? undefined,
           cpuArchitecture,
         ),
