@@ -6,7 +6,11 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
-import { AGENT_BMH_NAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
+import {
+  AGENT_BMH_NAME_LABEL_KEY,
+  BMH_HOSTNAME_ANNOTATION,
+  OCP_VERSION_MAJOR_MINOR,
+} from '../common/constants';
 import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
 import { getClusterDeploymentCpuArchitecture } from './clusterDeployment';
 
@@ -120,7 +124,9 @@ export const getAICluster = ({
   agents?: AgentK8sResource[];
   infraEnv?: InfraEnvK8sResource;
 }): Cluster => {
-  const installVersion = clusterDeployment.status?.installVersion;
+  const installVersion =
+    clusterDeployment.status?.installVersion ||
+    clusterDeployment.metadata?.labels?.[OCP_VERSION_MAJOR_MINOR];
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
   const aiCluster: Cluster = {
     id: clusterDeployment.metadata?.uid || '',

@@ -30,12 +30,11 @@ import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { useOpenshiftVersions } from '../../hooks';
 import { ExternalPlatformDropdown } from './platformIntegration/ExternalPlatformDropdown';
-import { useOracleDropdownItemState } from '../../hooks/useOracleDropdownItemState';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { ExternalPlatformLabels } from './platformIntegration/constants';
 import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -84,11 +83,7 @@ export const OcmClusterDetailsFormFields = ({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const cpuArchitecture = (architectureData[values.cpuArchitecture] as CpuArchitectureItem).label;
-  const oracleDropdownItemState = useOracleDropdownItemState(
-    clusterExists,
-    featureSupportLevelData,
-    values.cpuArchitecture,
-  );
+
   const featureSupportLevelContext = useNewFeatureSupportLevel();
 
   React.useEffect(() => {
@@ -175,10 +170,11 @@ export const OcmClusterDetailsFormFields = ({
         </StaticTextField>
       ) : (
         <ExternalPlatformDropdown
-          showOciOption={isOracleCloudPlatformIntegrationEnabled}
-          disabledOciTooltipContent={oracleDropdownItemState?.disabledReason}
-          isOciDisabled={oracleDropdownItemState?.isDisabled || false}
           onChange={handleExternalPartnerIntegrationsChange}
+          cpuArchitecture={values.cpuArchitecture}
+          showOciOption={isOracleCloudPlatformIntegrationEnabled}
+          featureSupportLevelData={featureSupportLevelData}
+          isSNO={isSNO({ highAvailabilityMode })}
         />
       )}
 
