@@ -14,6 +14,7 @@ import {
   InfraEnv,
   getRichTextValidation,
   CpuArchitecture,
+  useAlerts,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -69,7 +70,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const featureSupportLevels = useNewFeatureSupportLevel();
-
+  const { clearAlerts } = useAlerts();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {
@@ -106,6 +107,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       cluster?: Cluster,
     ): (() => void) => {
       if (isViewerMode || (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster }))) {
+        clearAlerts();
         return moveNext;
       }
 
@@ -113,7 +115,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         void submitForm();
       };
     },
-    [isViewerMode, moveNext],
+    [isViewerMode, moveNext, clearAlerts],
   );
 
   const initialValues = React.useMemo(
