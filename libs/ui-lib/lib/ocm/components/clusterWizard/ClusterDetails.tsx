@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useAlerts, LoadingState, ClusterWizardStep } from '../../../common';
+import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
@@ -34,9 +34,6 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const pullSecret = usePullSecret();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
   const { customManifests } = useClusterCustomManifests(cluster?.id || '', false);
-  React.useEffect(() => {
-    errorOCPVersions && addAlert(errorOCPVersions);
-  }, [errorOCPVersions, addAlert]);
 
   const handleClusterUpdate = React.useCallback(
     async (clusterId: Cluster['id'], params: ClusterDetailsUpdateParams) => {
@@ -92,14 +89,22 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     [clearAlerts, addAlert, dispatch, history, handleCustomManifestsChange],
   );
 
+  const navigation = <ClusterWizardNavigation cluster={cluster} />;
   if (pullSecret === undefined || !managedDomains || loadingOCPVersions || !usedClusterNames) {
     return (
-      <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />}>
+      <ClusterWizardStep navigation={navigation}>
         <LoadingState />
       </ClusterWizardStep>
     );
   }
-  const navigation = <ClusterWizardNavigation cluster={cluster} />;
+
+  if (!cluster && errorOCPVersions) {
+    return (
+      <ClusterWizardStep navigation={navigation}>
+        <ErrorState title="Failed to retrieve OpenShift versions" />
+      </ClusterWizardStep>
+    );
+  }
 
   return (
     <ClusterDetailsForm
