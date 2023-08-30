@@ -9,7 +9,7 @@ const withAssistedInstallerBasePath = (client: AxiosInstance): AxiosInstance => 
     if (cfg.url) {
       try {
         const url = new URL(cfg.url);
-        cfg.url = `${url.origin}${basePath}${url.pathname}${url.searchParams.toString()}`;
+        cfg.url = `${url.origin}${basePath}${url.pathname}${url.search}`;
       } catch {
         // This usually happens when the request is issued to a localhost endpoint.
         cfg.url = `${basePath}${cfg.url}`;
