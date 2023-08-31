@@ -4,7 +4,11 @@ import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { CpuArchitecture, ErrorState, LoadingState } from '../../../common';
-import { forceReload, setServerUpdateError, updateCluster } from '../../reducers/clusters';
+import {
+  forceReload,
+  setServerUpdateError,
+  updateCluster,
+} from '../../store/slices/current-cluster/slice';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
 import {

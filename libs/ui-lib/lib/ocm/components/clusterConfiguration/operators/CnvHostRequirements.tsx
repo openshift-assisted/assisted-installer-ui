@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { List, ListItem } from '@patternfly/react-core';
 import { useClusterPreflightRequirements } from '../../../hooks';
 import { ErrorState, LoadingState, OPERATOR_NAME_CNV, RenderIf } from '../../../../common';
-import { selectIsCurrentClusterSNO } from '../../../selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { selectIsCurrentClusterSNO } from '../../../store/slices/current-cluster/selectors';
 
 const CnvHostRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   const { preflightRequirements, error, isLoading } = useClusterPreflightRequirements(clusterId);

@@ -9,15 +9,16 @@ import {
   PayloadAction,
   ThunkDispatch,
 } from '@reduxjs/toolkit';
-import { AssistedInstallerPermissionTypesListType, ResourceUIState } from '../../../common';
-import {
-  getApiErrorMessage,
-  getApiErrorCode,
-  handleApiError,
-  FETCH_ABORTED_ERROR_CODE,
-} from '../../api';
-import { ClustersService } from '../../services';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  AssistedInstallerPermissionTypesListType,
+  FETCH_ABORTED_ERROR_CODE,
+  getApiErrorCode,
+  getApiErrorMessage,
+  handleApiError,
+  ResourceUIState,
+} from '../../../../common';
+import ClustersService from '../../../services/ClustersService';
 
 export type FetchErrorType = {
   code: string | number;
@@ -140,6 +141,7 @@ export const currentClusterSlice = createSlice({
   },
 });
 
+const { actions, reducer } = currentClusterSlice;
 export const {
   updateCluster,
   updateClusterBase,
@@ -149,5 +151,5 @@ export const {
   forceReload,
   cancelForceReload,
   updateClusterPermissions,
-} = currentClusterSlice.actions;
-export default currentClusterSlice.reducer;
+} = actions;
+export const currentClusterReducer = reducer;

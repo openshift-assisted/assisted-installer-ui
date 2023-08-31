@@ -4,12 +4,12 @@ import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternf
 import { ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { getApiErrorMessage, handleApiError } from '../../../api';
-import { updateCluster } from '../../../reducers/clusters';
+import { updateCluster } from '../../../store/slices/current-cluster/slice';
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
 import { ClustersService } from '../../../services';
 import { useStateSafely } from '../../../../common/hooks';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import ReviewPreflightChecks from './ReviewPreflightChecks';
 import ReviewSummary from './ReviewSummary';
 import './ReviewCluster.css';

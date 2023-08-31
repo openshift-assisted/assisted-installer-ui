@@ -2,11 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { ClusterOperatorProps, ClusterWizardStepHeader, useFeature } from '../../../common';
-import { selectIsCurrentClusterSNO } from '../../selectors';
 import CnvCheckbox from '../clusterConfiguration/operators/CnvCheckbox';
 import OdfCheckbox from '../clusterConfiguration/operators/OdfCheckbox';
 import LvmCheckbox from '../clusterConfiguration/operators/LvmCheckbox';
 import MceCheckbox from '../clusterConfiguration/operators/MceCheckbox';
+import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);

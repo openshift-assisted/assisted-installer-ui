@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { CpuArchitecture, WithRequired } from '../../../../common';
 import { InfraEnvsAPI } from '../../../services/apis';
-import { RootState } from '../../index';
+import { RootStateDay1 } from '../../store-day1';
 import { selectInfraEnvByCpuArchitecture } from './selectors';
 import {
   Cluster,
@@ -28,7 +28,7 @@ export const createInfraEnv = createAsyncThunk(
 );
 
 export const removeAllInfraEnvs = createAsyncThunk('infraEnvs/removeAll', async (_, thunkAPI) => {
-  const state = thunkAPI.getState() as RootState;
+  const state = thunkAPI.getState() as RootStateDay1;
   const infraEnvIds = state.infraEnvs.map((infraEnv) => infraEnv.id);
   const promises = [];
   for (const infraEnvId of infraEnvIds) {
@@ -49,7 +49,7 @@ export const updateInfraEnv = createAsyncThunk(
 export const getImageUrl = createAsyncThunk(
   'infraEnvs/getImageUrl',
   async (cpuArchitecture: CpuArchitecture, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
+    const state = thunkAPI.getState() as RootStateDay1;
     // In OCM there is no late-binding, therefore every cluster created through the UI
     // will have at least one infra-env bound to it and its cpuArchitecture initialized
     // by default (to x86_64).

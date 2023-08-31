@@ -21,7 +21,7 @@ import {
   selectApiVip,
   selectIngressVip,
 } from '../../../../common';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';

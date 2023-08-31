@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Must conform Unleash constants
-type AssistedInstallerFeatureType =
+export type AssistedInstallerFeatureType =
   | 'ASSISTED_INSTALLER_SNO_FEATURE'
   | 'ASSISTED_INSTALLER_OCS_FEATURE'
   | 'ASSISTED_INSTALLER_ODF_FEATURE'

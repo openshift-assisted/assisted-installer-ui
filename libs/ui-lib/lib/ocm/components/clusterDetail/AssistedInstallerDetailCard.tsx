@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
-import { store } from '../../store';
+import { storeDay1 } from '../../store';
 import { OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
@@ -158,7 +158,7 @@ const AssistedInstallerDetailCard = ({
 };
 
 const Wrapper = (props: AssistedInstallerDetailCardProps) => (
-  <Provider store={store}>
+  <Provider store={storeDay1}>
     <AlertsContextProvider>
       <AssistedInstallerDetailCard {...props} />
     </AlertsContextProvider>

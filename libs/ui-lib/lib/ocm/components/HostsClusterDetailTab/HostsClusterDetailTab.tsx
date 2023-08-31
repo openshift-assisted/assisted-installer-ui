@@ -4,17 +4,22 @@ import { AssistedUILibVersion } from '../ui';
 import { AlertsContextProvider, FeatureGateContextProvider } from '../../../common';
 import { HostsClusterDetailTabContent } from './HostsClusterDetailTabContent';
 import { HostsClusterDetailTabProps } from './types';
-import { store } from '../../store';
+import { storeDay1 } from '../../store';
+import { featureFlagsActions } from '../../store/slices/feature-flags/slice';
 
-const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => (
-  <Provider store={store}>
-    <AssistedUILibVersion />
-    <FeatureGateContextProvider features={props.allEnabledFeatures}>
-      <AlertsContextProvider>
-        <HostsClusterDetailTabContent {...props} />
-      </AlertsContextProvider>
-    </FeatureGateContextProvider>
-  </Provider>
-);
+const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => {
+  storeDay1.dispatch(featureFlagsActions.setFeatureFlags(props.allEnabledFeatures));
+
+  return (
+    <Provider store={storeDay1}>
+      <AssistedUILibVersion />
+      <FeatureGateContextProvider features={props.allEnabledFeatures}>
+        <AlertsContextProvider>
+          <HostsClusterDetailTabContent {...props} />
+        </AlertsContextProvider>
+      </FeatureGateContextProvider>
+    </Provider>
+  );
+};
 
 export default HostsClusterDetailTab;
