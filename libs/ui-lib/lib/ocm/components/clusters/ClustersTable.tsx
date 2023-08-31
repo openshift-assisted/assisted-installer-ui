@@ -17,10 +17,13 @@ import {
 } from '@patternfly/react-table';
 import { ClusterTableRows } from '../../../common/types/clusters';
 import DeleteClusterModal from './DeleteClusterModal';
-import { ClusterRowDataProps, getClusterTableStatusCell } from '../../selectors/clusters';
 import { clusterStatusLabels, rowSorter, HumanizedSortable } from '../../../common';
 import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import {
+  ClusterRowDataProps,
+  getClusterTableStatusCell,
+} from '../../store/slices/clusters/selectors';
 
 type DeleteClusterID = Pick<ClusterRowDataProps, 'id' | 'name'>;
 

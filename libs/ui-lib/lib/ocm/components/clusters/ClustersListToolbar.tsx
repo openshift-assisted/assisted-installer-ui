@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   Toolbar,
@@ -22,13 +21,14 @@ import {
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
-import { selectClustersUIState } from '../../selectors';
-import { ClustersDispatch, fetchClustersAsync } from '../../reducers/clusters';
+import { fetchClustersAsync } from '../../store/slices/clusters/slice';
 import { routeBasePath } from '../../config';
 import omit from 'lodash-es/omit.js';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useDispatchDay1, useSelectorDay1 } from '../../store';
+import { selectClustersUIState } from '../../store/slices/clusters/selectors';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from clusterStatusLabels
@@ -52,8 +52,8 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
 }) => {
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
   const history = useHistory();
-  const clustersUIState = useSelector(selectClustersUIState);
-  const dispatch = useDispatch<ClustersDispatch>();
+  const clustersUIState = useSelectorDay1(selectClustersUIState);
+  const dispatch = useDispatchDay1();
   const fetchClusters = React.useCallback(() => void dispatch(fetchClustersAsync()), [dispatch]);
 
   const onClearAllFilters: ToolbarProps['clearAllFilters'] = () => {

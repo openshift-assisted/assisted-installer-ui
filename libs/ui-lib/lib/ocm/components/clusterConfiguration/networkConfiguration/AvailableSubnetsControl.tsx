@@ -10,7 +10,7 @@ import {
   DUAL_STACK,
   NO_SUBNET_SET,
 } from '../../../../common';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { SubnetsDropdown } from './SubnetsDropdown';
 import { Cluster, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
 

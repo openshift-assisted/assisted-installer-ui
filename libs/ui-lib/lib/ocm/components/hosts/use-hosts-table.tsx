@@ -20,7 +20,7 @@ import {
   setServerUpdateError,
   updateCluster,
   updateHost,
-} from '../../reducers/clusters';
+} from '../../store/slices/current-cluster/slice';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -47,7 +47,6 @@ import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
 import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
 import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import {
@@ -57,6 +56,10 @@ import {
   Host,
   HostUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  selectCurrentClusterPermissionsState,
+  selectCurrentClusterState,
+} from '../../store/slices/current-cluster/selectors';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();

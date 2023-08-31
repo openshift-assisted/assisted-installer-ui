@@ -9,7 +9,7 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 import { getApiErrorMessage, handleApiError } from '../../api';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';

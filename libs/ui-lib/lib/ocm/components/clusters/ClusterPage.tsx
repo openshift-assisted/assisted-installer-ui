@@ -32,7 +32,7 @@ import { routeBasePath } from '../../config';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
-import { forceReload } from '../../reducers/clusters';
+import { forceReload } from '../../store/slices/current-cluster/slice';
 import { ClusterUiError } from './ClusterPageErrors';
 import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';

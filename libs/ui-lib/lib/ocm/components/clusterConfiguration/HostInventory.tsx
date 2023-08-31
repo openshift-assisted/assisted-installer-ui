@@ -22,7 +22,7 @@ import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './DiscoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import { OcmSwitchField } from '../ui/OcmFormFields';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const schedulableMastersTooltip =

@@ -16,7 +16,7 @@ import {
 } from '../../../../common';
 import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmRadioField } from '../../ui/OcmFormFields';
 import {
   Cluster,

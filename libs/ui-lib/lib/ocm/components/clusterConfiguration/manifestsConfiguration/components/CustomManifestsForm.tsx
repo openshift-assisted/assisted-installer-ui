@@ -13,7 +13,6 @@ import {
 } from 'formik';
 import isEqual from 'lodash-es/isEqual.js';
 import { ErrorState, LoadingState, useAlerts, useFormikAutoSave } from '../../../../../common';
-import { selectCurrentClusterPermissionsState } from '../../../../selectors';
 import { CustomManifestsFormProps } from './propTypes';
 import {
   CustomManifestValues,
@@ -27,6 +26,7 @@ import useClusterCustomManifests from '../../../../hooks/useClusterCustomManifes
 import { ClustersService } from '../../../../services';
 import { CustomManifestsArray } from './CustomManifestsArray';
 import { getManifestFakeId } from './utils';
+import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 
 const fieldName = 'manifests';
 
