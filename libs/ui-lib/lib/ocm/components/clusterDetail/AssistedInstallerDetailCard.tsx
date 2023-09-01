@@ -49,7 +49,7 @@ const LoadingCard = () => (
   </Card>
 );
 
-const ClusterLoadFailed = ({ clusterId }: { clusterId: Cluster['id'] }) => {
+const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; error?: string }) => {
   const fetchCluster = useFetchCluster(clusterId);
   return (
     <Card data-testid="ai-cluster-details-card">
@@ -63,6 +63,7 @@ const ClusterLoadFailed = ({ clusterId }: { clusterId: Cluster['id'] }) => {
           title="Failed to fetch the cluster"
           fetchData={fetchCluster}
           actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+          content={error}
         />
       </CardBody>
     </Card>
@@ -106,10 +107,11 @@ const AssistedInstallerDetailCard = ({
     pullSecret,
     cluster?.openshiftVersion,
   );
+
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
   } else if ((uiState === ResourceUIState.POLLING_ERROR && !cluster) || infraEnvError) {
-    return <ClusterLoadFailed clusterId={aiClusterId} />;
+    return <ClusterLoadFailed clusterId={aiClusterId} error={infraEnvError} />;
   }
 
   if (!cluster || !infraEnv || cluster.status === 'adding-hosts') {
