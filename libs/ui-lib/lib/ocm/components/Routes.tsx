@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
@@ -13,7 +13,9 @@ export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
   allEnabledFeatures,
   children,
 }) => {
-  storeDay1.dispatch(featureFlagsActions.setFeatureFlags(allEnabledFeatures));
+  useEffect(() => {
+    storeDay1.dispatch(featureFlagsActions.setFeatureFlags(allEnabledFeatures));
+  }, [allEnabledFeatures]);
 
   return (
     <Provider store={storeDay1}>
