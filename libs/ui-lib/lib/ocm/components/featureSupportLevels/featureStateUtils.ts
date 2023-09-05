@@ -57,12 +57,6 @@ const getSNODisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return '';
 };
 
-const getArmDisabledReason = (cluster: Cluster | undefined) => {
-  if (cluster) {
-    return clusterExistsReason;
-  } else return 'arm64 is not supported in this OpenShift version';
-};
-
 const getOdfDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
@@ -154,9 +148,6 @@ export const getNewFeatureDisabledReason = (
   switch (featureId) {
     case 'SNO': {
       return getSNODisabledReason(cluster, isSupported);
-    }
-    case 'ARM64_ARCHITECTURE': {
-      return getArmDisabledReason(cluster);
     }
     case 'CNV': {
       return getCnvDisabledReason(activeFeatureConfiguration, isSupported);

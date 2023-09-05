@@ -1,17 +1,20 @@
 import {
-  FeatureSupportLevel,
   FeatureSupportLevelId,
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ArrayElementType } from './typescriptExtensions';
 
-type Features = Required<ArrayElementType<FeatureSupportLevel['features']>>;
+type Features = Required<ArrayElementType<FeatureSupportLevelId>>;
 export type FeatureId =
   | FeatureSupportLevelId
   | Features['featureId']
   | 'ODF'
   | 'CNV'
-  | 'NETWORK_TYPE_SELECTION';
+  | 'NETWORK_TYPE_SELECTION'
+  | 'ARM64_ARCHITECTURE'
+  | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
+  | 'DUAL_STACK_NETWORKING'
+  | 'MULTIARCH_RELEASE_IMAGE';
 
 export type FeatureIdToSupportLevel = {
   [id in FeatureId]?: SupportLevel;
