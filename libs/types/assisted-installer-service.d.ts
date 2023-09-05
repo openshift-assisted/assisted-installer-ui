@@ -15,7 +15,6 @@ export interface ApiVip {
    */
   verification?: VipVerification;
 }
-
 export interface ApiVipConnectivityRequest {
   /**
    * URL address of the API.
@@ -34,7 +33,6 @@ export interface ApiVipConnectivityRequest {
    */
   ignitionEndpointToken?: string;
 }
-
 /**
  * The response from the day-2 agent's attempt to download the worker ignition file from the API machine config server of the target cluster.
  * Note - the name "API VIP connectivity" is old and misleading and is preserved for backwards compatibility.
@@ -58,23 +56,19 @@ export interface ApiVipConnectivityResponse {
    */
   ignition?: string;
 }
-
 export type ArchitectureSupportLevelId =
   | 'X86_64_ARCHITECTURE'
   | 'ARM64_ARCHITECTURE'
   | 'PPC64LE_ARCHITECTURE'
   | 'S390X_ARCHITECTURE'
   | 'MULTIARCH_RELEASE_IMAGE';
-
 export interface BindHostParams {
   clusterId: string; // uuid
 }
-
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
 }
-
 export interface Cluster {
   /**
    * Indicates the type of this object. Will be 'Cluster' if this is a complete object,
@@ -297,7 +291,7 @@ export interface Cluster {
   /**
    * swagger:ignore
    */
-  deletedAt?: unknown;
+  deletedAt?: any;
   /**
    * (DEPRECATED) Indicate if the networking is managed by the user.
    */
@@ -362,7 +356,6 @@ export interface Cluster {
    */
   tags?: string;
 }
-
 export interface ClusterCreateParams {
   /**
    * Name of the OpenShift cluster.
@@ -496,7 +489,6 @@ export interface ClusterCreateParams {
    */
   tags?: string;
 }
-
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
   clusterNetworkHostPrefix?: number;
@@ -512,7 +504,6 @@ export interface ClusterDefaultConfig {
    */
   forbiddenHostnames?: string[];
 }
-
 export interface ClusterHostRequirements {
   /**
    * Unique identifier of the host the requirements relate to.
@@ -531,7 +522,6 @@ export interface ClusterHostRequirements {
    */
   operators?: OperatorHostRequirements[];
 }
-
 export interface ClusterHostRequirementsDetails {
   /**
    * Required number of CPU cores
@@ -562,10 +552,8 @@ export interface ClusterHostRequirementsDetails {
    */
   tpmEnabledInBios?: boolean;
 }
-
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
-
 /**
  * A network from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
  */
@@ -583,14 +571,12 @@ export interface ClusterNetwork {
    */
   hostPrefix?: number;
 }
-
 export interface ClusterProgressInfo {
   totalPercentage?: number;
   preparingForInstallationStagePercentage?: number;
   installingStagePercentage?: number;
   finalizingStagePercentage?: number;
 }
-
 export type ClusterValidationId =
   | 'machine-cidr-defined'
   | 'cluster-cidr-defined'
@@ -616,7 +602,6 @@ export type ClusterValidationId =
   | 'mce-requirements-satisfied'
   | 'network-type-valid'
   | 'platform-requirements-satisfied';
-
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -624,33 +609,27 @@ export interface CompletionParams {
    * additional data from the cluster
    */
   data?: {
-    [name: string]: Record<string, unknown>;
+    [name: string]: {};
   };
 }
-
 export interface ConnectivityCheckHost {
   hostId?: string; // uuid
   nics?: ConnectivityCheckNic[];
 }
-
 export interface ConnectivityCheckNic {
   name?: string;
   mac?: string; // mac
   ipAddresses?: string /* ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$ */[];
 }
-
 export type ConnectivityCheckParams = ConnectivityCheckHost[];
-
 export interface ConnectivityRemoteHost {
   hostId?: string; // uuid
   l2Connectivity?: L2Connectivity[];
   l3Connectivity?: L3Connectivity[];
 }
-
 export interface ConnectivityReport {
   remoteHosts?: ConnectivityRemoteHost[];
 }
-
 export interface ContainerImageAvailability {
   /**
    * A fully qualified image name (FQIN).
@@ -670,7 +649,6 @@ export interface ContainerImageAvailability {
   downloadRate?: number;
   result?: ContainerImageAvailabilityResult;
 }
-
 export interface ContainerImageAvailabilityRequest {
   /**
    * Positive number represents a timeout in seconds for a pull operation.
@@ -681,19 +659,16 @@ export interface ContainerImageAvailabilityRequest {
    */
   images: string /* ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$ */[];
 }
-
 export interface ContainerImageAvailabilityResponse {
   /**
    * List of images that were checked.
    */
   images: ContainerImageAvailability[];
 }
-
 /**
  * Image availability result.
  */
 export type ContainerImageAvailabilityResult = 'success' | 'failure';
-
 export interface Cpu {
   count?: number;
   frequency?: number;
@@ -701,7 +676,6 @@ export interface Cpu {
   modelName?: string;
   architecture?: string;
 }
-
 export interface CreateManifestParams {
   /**
    * The folder that contains the files. Manifests can be placed in 'manifests' or 'openshift' directories.
@@ -716,13 +690,11 @@ export interface CreateManifestParams {
    */
   content: string;
 }
-
 export interface Credentials {
   username?: string;
   password?: string;
   consoleUrl?: string;
 }
-
 export interface DhcpAllocationRequest {
   /**
    * The network interface (NIC) to run the DHCP requests on.
@@ -745,7 +717,6 @@ export interface DhcpAllocationRequest {
    */
   ingressVipLease?: string;
 }
-
 export interface DhcpAllocationResponse {
   /**
    * The IPv4 address that was allocated by DHCP for the API virtual IP.
@@ -764,7 +735,6 @@ export interface DhcpAllocationResponse {
    */
   ingressVipLease?: string;
 }
-
 export interface Disk {
   /**
    * Determine the disk's unique identifier which is the by-id field if it exists and fallback to the by-path field otherwise
@@ -811,12 +781,10 @@ export interface Disk {
    */
   holders?: string;
 }
-
 export interface DiskConfigParams {
   id: string;
   role?: DiskRole;
 }
-
 export interface DiskEncryption {
   /**
    * Enable/disable disk encryption on master nodes, worker nodes, or all nodes.
@@ -833,15 +801,12 @@ export interface DiskEncryption {
    */
   tangServers?: string;
 }
-
 export interface DiskInfo {
   id?: string; // uuid
   path?: string;
   diskSpeed?: DiskSpeed;
 }
-
 export type DiskRole = 'none' | 'install';
-
 /**
  * Allows an addition or removal of a host disk from the host's skipFormattingDisks list
  */
@@ -855,20 +820,17 @@ export interface DiskSkipFormattingParams {
    */
   skipFormatting: boolean;
 }
-
 export interface DiskSpeed {
   tested?: boolean;
   exitCode?: number;
   speedMs?: number;
 }
-
 export interface DiskSpeedCheckRequest {
   /**
    * --filename argument for fio (expects a file or a block device path).
    */
   path: string;
 }
-
 export interface DiskSpeedCheckResponse {
   /**
    * The 99th percentile of fdatasync durations in milliseconds.
@@ -879,7 +841,6 @@ export interface DiskSpeedCheckResponse {
    */
   path?: string;
 }
-
 export interface DomainResolutionRequest {
   domains: {
     /**
@@ -888,7 +849,6 @@ export interface DomainResolutionRequest {
     domainName: string; // ^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}[.]?$
   }[];
 }
-
 export interface DomainResolutionResponse {
   resolutions: {
     /**
@@ -905,7 +865,6 @@ export interface DomainResolutionResponse {
     ipv6Addresses?: string /* ipv6 */[];
   }[];
 }
-
 /**
  * Information sent to the agent for downloading artifacts to boot a host into discovery.
  */
@@ -928,7 +887,6 @@ export interface DownloadBootArtifactsRequest {
    */
   hostFsMountDir: string;
 }
-
 export type DriveType =
   | 'Unknown'
   | 'HDD'
@@ -944,7 +902,6 @@ export type DriveType =
   | 'ECKD'
   | 'ECKD (ESE)'
   | 'FBA';
-
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -967,7 +924,6 @@ export interface Error {
    */
   reason: string;
 }
-
 export interface Event {
   /**
    * Event Name.
@@ -998,52 +954,7 @@ export interface Event {
    */
   props?: string;
 }
-
 export type EventList = Event[];
-
-/**
- * (DEPRECATED) List of features attached to openshift version
- */
-export interface FeatureSupportLevel {
-  /**
-   * Version of the OpenShift cluster.
-   */
-  openshiftVersion?: string;
-  features?: {
-    /**
-     * (DEPRECATED) The ID of the feature
-     */
-    featureId:
-      | 'ADDITIONAL_NTP_SOURCE'
-      | 'REQUESTED_HOSTNAME'
-      | 'PROXY'
-      | 'SNO'
-      | 'DAY2_HOSTS'
-      | 'VIP_AUTO_ALLOC'
-      | 'DISK_SELECTION'
-      | 'OVN_NETWORK_TYPE'
-      | 'SDN_NETWORK_TYPE'
-      | 'PLATFORM_SELECTION'
-      | 'SCHEDULABLE_MASTERS'
-      | 'AUTO_ASSIGN_ROLE'
-      | 'CUSTOM_MANIFEST'
-      | 'DISK_ENCRYPTION'
-      | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
-      | 'ARM64_ARCHITECTURE'
-      | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
-      | 'PPC64LE_ARCHITECTURE'
-      | 'S390X_ARCHITECTURE'
-      | 'SINGLE_NODE_EXPANSION'
-      | 'LVM'
-      | 'DUAL_STACK_NETWORKING'
-      | 'MULTIARCH_RELEASE_IMAGE'
-      | 'NUTANIX_INTEGRATION'
-      | 'DUAL_STACK_VIPS'
-      | 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE';
-    supportLevel: SupportLevel;
-  }[];
-}
-
 export type FeatureSupportLevelId =
   | 'SNO'
   | 'VIP_AUTO_ALLOC'
@@ -1055,6 +966,8 @@ export type FeatureSupportLevelId =
   | 'CNV'
   | 'MCE'
   | 'NUTANIX_INTEGRATION'
+  | 'BAREMETAL_PLATFORM'
+  | 'NONE_PLATFORM'
   | 'VSPHERE_INTEGRATION'
   | 'DUAL_STACK_VIPS'
   | 'CLUSTER_MANAGED_NETWORKING'
@@ -1062,22 +975,16 @@ export type FeatureSupportLevelId =
   | 'MINIMAL_ISO'
   | 'FULL_ISO'
   | 'EXTERNAL_PLATFORM_OCI'
-  | 'DUAL_STACK';
-/**
- * (DEPRECATED) List of objects that containing a list of feature-support level and attached to openshift-version
- */
-export type FeatureSupportLevels = FeatureSupportLevel[];
+  | 'DUAL_STACK'
+  | 'PLATFORM_MANAGED_NETWORKING';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
   string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
-
 export interface FreeNetworkAddresses {
   network?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   freeAddresses?: string /* ipv4 */[];
 }
-
 export type FreeNetworksAddresses = FreeNetworkAddresses[];
-
 export interface Gpu {
   /**
    * The name of the device vendor (for example "Intel Corporation")
@@ -1100,7 +1007,6 @@ export interface Gpu {
    */
   address?: string;
 }
-
 export interface Host {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
@@ -1228,7 +1134,7 @@ export interface Host {
   /**
    * swagger:ignore
    */
-  deletedAt?: unknown;
+  deletedAt?: any;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -1271,28 +1177,22 @@ export interface Host {
    */
   skipFormattingDisks?: string;
 }
-
 export interface HostCreateParams {
   hostId: string; // uuid
   discoveryAgentVersion?: string;
 }
-
 export interface HostIgnitionParams {
   config?: string;
 }
-
 export type HostList = Host[];
-
 export interface HostNetwork {
   cidr?: string;
   hostIds?: string /* uuid */[];
 }
-
 export interface HostProgress {
   currentStage?: HostStage;
   progressInfo?: string;
 }
-
 export interface HostProgressInfo {
   installationPercentage?: number;
   currentStage?: HostStage;
@@ -1306,7 +1206,6 @@ export interface HostProgressInfo {
    */
   stageUpdatedAt?: string; // date-time
 }
-
 export interface HostRegistrationResponse {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
@@ -1434,7 +1333,7 @@ export interface HostRegistrationResponse {
   /**
    * swagger:ignore
    */
-  deletedAt?: unknown;
+  deletedAt?: any;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -1488,7 +1387,6 @@ export interface HostRegistrationResponse {
     retrySeconds?: number;
   };
 }
-
 export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
 export type HostStage =
@@ -1504,7 +1402,6 @@ export type HostStage =
   | 'Joined'
   | 'Done'
   | 'Failed';
-
 export interface HostStaticNetworkConfig {
   /**
    * yaml string that can be processed by nmstate
@@ -1515,7 +1412,6 @@ export interface HostStaticNetworkConfig {
    */
   macInterfaceMap?: MacInterfaceMap;
 }
-
 export interface HostTypeHardwareRequirements {
   /**
    * Host requirements that can be quantified
@@ -1526,7 +1422,6 @@ export interface HostTypeHardwareRequirements {
    */
   qualitative?: string[];
 }
-
 export interface HostTypeHardwareRequirementsWrapper {
   /**
    * Requirements towards a worker node
@@ -1537,7 +1432,6 @@ export interface HostTypeHardwareRequirementsWrapper {
    */
   master?: HostTypeHardwareRequirements;
 }
-
 export interface HostUpdateParams {
   hostRole?: 'auto-assign' | 'master' | 'worker';
   hostName?: string;
@@ -1556,7 +1450,6 @@ export interface HostUpdateParams {
    */
   nodeLabels?: NodeLabelParams[];
 }
-
 export type HostValidationId =
   | 'connected'
   | 'media-connected'
@@ -1599,7 +1492,6 @@ export type HostValidationId =
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk'
   | 'no-ip-collisions-in-network';
-
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1613,7 +1505,6 @@ export interface IgnitionEndpoint {
    */
   caCertificate?: string;
 }
-
 export interface IgnoredValidations {
   /**
    * JSON-formatted list of cluster validation IDs that will be ignored for all hosts that belong to this cluster. It may also contain a list with a single string "all" to ignore all cluster validations. Some validations cannot be ignored.
@@ -1624,7 +1515,6 @@ export interface IgnoredValidations {
    */
   'host-validation-ids'?: string; // string
 }
-
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1636,7 +1526,6 @@ export interface ImageCreateParams {
    */
   imageType?: ImageType;
 }
-
 export interface ImageInfo {
   /**
    * SSH public key for debugging the installation.
@@ -1656,9 +1545,7 @@ export interface ImageInfo {
   staticNetworkConfig?: string;
   type?: ImageType;
 }
-
 export type ImageType = 'full-iso' | 'minimal-iso';
-
 export interface ImportClusterParams {
   /**
    * OpenShift cluster name.
@@ -1677,7 +1564,6 @@ export interface ImportClusterParams {
    */
   openshiftClusterId: string; // uuid
 }
-
 export interface InfraEnv {
   /**
    * Indicates the type of this object.
@@ -1756,7 +1642,6 @@ export interface InfraEnv {
    */
   additionalTrustBundle?: string;
 }
-
 export interface InfraEnvCreateParams {
   /**
    * Name of the infra-env.
@@ -1802,9 +1687,7 @@ export interface InfraEnvCreateParams {
    */
   additionalTrustBundle?: string;
 }
-
 export type InfraEnvList = InfraEnv[];
-
 export interface InfraEnvUpdateParams {
   proxy?: Proxy;
   /**
@@ -1831,7 +1714,6 @@ export interface InfraEnvUpdateParams {
    */
   additionalTrustBundle?: string;
 }
-
 export interface InfraError {
   /**
    * Numeric identifier of the error.
@@ -1842,9 +1724,7 @@ export interface InfraError {
    */
   message: string;
 }
-
 export type IngressCertParams = string;
-
 /**
  * The virtual IP used for cluster ingress traffic.
  */
@@ -1862,7 +1742,6 @@ export interface IngressVip {
    */
   verification?: VipVerification;
 }
-
 export interface InstallCmdRequest {
   /**
    * Cluster id
@@ -1929,7 +1808,6 @@ export interface InstallCmdRequest {
    */
   skipInstallationDiskCleanup?: boolean;
 }
-
 export interface InstallerArgsParams {
   /**
    * List of additional arguments passed to coreos-installer
@@ -1938,7 +1816,6 @@ export interface InstallerArgsParams {
    */
   args?: string[];
 }
-
 export interface Interface {
   ipv6Addresses?: string[];
   vendor?: string;
@@ -1954,7 +1831,6 @@ export interface Interface {
   speedMbps?: number;
   type?: string;
 }
-
 export interface Inventory {
   hostname?: string;
   bmcAddress?: string;
@@ -1969,14 +1845,12 @@ export interface Inventory {
   routes?: Route[];
   tpmVersion?: 'none' | '1.2' | '2.0';
 }
-
 export interface IoPerf {
   /**
    * 99th percentile of fsync duration in milliseconds
    */
   syncDuration?: number;
 }
-
 export type Ip = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
 /**
  * pair of [operation, argument] specifying the argument and what operation should be applied on it.
@@ -1997,12 +1871,10 @@ export interface KernelArgument {
    */
   value?: string; // ^(?:(?:[^ \t\n\r"]+)|(?:"[^"]*"))+$
 }
-
 /**
  * List of kernel arugment objects that define the operations and values to be applied.
  */
 export type KernelArguments = KernelArgument[];
-
 export interface L2Connectivity {
   outgoingNic?: string;
   outgoingIpAddress?: string;
@@ -2010,7 +1882,6 @@ export interface L2Connectivity {
   remoteMac?: string;
   successful?: boolean;
 }
-
 export interface L3Connectivity {
   outgoingNic?: string;
   remoteIpAddress?: string;
@@ -2024,15 +1895,12 @@ export interface L3Connectivity {
    */
   packetLossPercentage?: number; // double
 }
-
 export type ListManagedDomains = ManagedDomain[];
 export type ListManifests = Manifest[];
-
 export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
 }
-
 export interface LogsGatherCmdRequest {
   /**
    * Cluster id
@@ -2059,14 +1927,12 @@ export interface LogsGatherCmdRequest {
    */
   masterIps?: string /* ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$ */[];
 }
-
 export interface LogsProgressParams {
   /**
    * The state of collecting logs.
    */
   logsState: LogsState;
 }
-
 export type LogsState = 'requested' | 'collecting' | 'completed' | 'timeout' | '';
 export type LogsType = 'host' | 'controller' | 'all' | '';
 export type MacInterfaceMap = {
@@ -2079,7 +1945,6 @@ export type MacInterfaceMap = {
    */
   logicalNicName?: string;
 }[];
-
 /**
  * A network that all hosts belonging to the cluster should have an interface with IP address in. The VIPs (if exist) belong to this network.
  */
@@ -2093,12 +1958,10 @@ export interface MachineNetwork {
    */
   cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
 }
-
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
 }
-
 export interface Manifest {
   /**
    * The folder that contains the files. Manifests can be placed in 'manifests' or 'openshift' directories.
@@ -2109,7 +1972,6 @@ export interface Manifest {
    */
   fileName?: string;
 }
-
 export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
@@ -2118,9 +1980,7 @@ export interface Memory {
    */
   physicalBytesMethod?: MemoryMethod;
 }
-
 export type MemoryMethod = 'dmidecode' | 'ghw' | 'meminfo';
-
 export interface MonitoredOperator {
   /**
    * The cluster that this operator is associated with.
@@ -2161,9 +2021,7 @@ export interface MonitoredOperator {
    */
   statusUpdatedAt?: string; // date-time
 }
-
 export type MonitoredOperatorsList = MonitoredOperator[];
-
 export interface NextStepCmdRequest {
   /**
    * Infra env id
@@ -2178,7 +2036,6 @@ export interface NextStepCmdRequest {
    */
   agentVersion: string; // ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$
 }
-
 export interface NodeLabelParams {
   /**
    * The key for the label's key-value pair.
@@ -2189,7 +2046,6 @@ export interface NodeLabelParams {
    */
   value: string;
 }
-
 export interface NtpSource {
   /**
    * NTP source name or IP.
@@ -2200,18 +2056,15 @@ export interface NtpSource {
    */
   sourceState?: SourceState;
 }
-
 export interface NtpSynchronizationRequest {
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   ntpSource: string;
 }
-
 export interface NtpSynchronizationResponse {
   ntpSources?: NtpSource[];
 }
-
 export interface OpenshiftVersion {
   /**
    * Name of the version to be presented to the user.
@@ -2230,11 +2083,9 @@ export interface OpenshiftVersion {
    */
   cpuArchitectures: string[];
 }
-
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
 }
-
 export interface OperatorCreateParams {
   name?: string;
   /**
@@ -2242,7 +2093,6 @@ export interface OperatorCreateParams {
    */
   properties?: string;
 }
-
 export interface OperatorHardwareRequirements {
   /**
    * Unique name of the operator. Corresponds to name property of the monitored-operator, i.e. "lso", "cnv", etc.
@@ -2254,7 +2104,6 @@ export interface OperatorHardwareRequirements {
   dependencies?: string[];
   requirements?: HostTypeHardwareRequirementsWrapper;
 }
-
 export interface OperatorHostRequirements {
   /**
    * Name of the operator
@@ -2265,7 +2114,6 @@ export interface OperatorHostRequirements {
    */
   requirements?: ClusterHostRequirementsDetails;
 }
-
 export interface OperatorMonitorReport {
   /**
    * Unique name of the operator.
@@ -2281,9 +2129,7 @@ export interface OperatorMonitorReport {
    */
   statusInfo?: string;
 }
-
 export type OperatorProperties = OperatorProperty[];
-
 export interface OperatorProperty {
   /**
    * Name of the property
@@ -2310,7 +2156,6 @@ export interface OperatorProperty {
    */
   defaultValue?: string;
 }
-
 /**
  * Represents the operator state.
  */
@@ -2319,7 +2164,6 @@ export type OperatorStatus = 'failed' | 'progressing' | 'available';
  * Kind of operator. Different types are monitored by the service differently.
  */
 export type OperatorType = 'builtin' | 'olm';
-
 export interface OsImage {
   /**
    * Version of the operating system image
@@ -2340,9 +2184,7 @@ export interface OsImage {
    */
   version: string;
 }
-
 export type OsImages = OsImage[];
-
 /**
  * The configuration for the specific platform upon which to perform the installation.
  */
@@ -2354,9 +2196,7 @@ export interface Platform {
    */
   readonly isExternal?: boolean;
 }
-
 export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'oci';
-
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -2367,7 +2207,6 @@ export interface PreflightHardwareRequirements {
    */
   ocp?: HostTypeHardwareRequirementsWrapper;
 }
-
 export interface PresignedUrl {
   /**
    * Pre-signed URL for downloading the infra-env discovery image.
@@ -2378,7 +2217,6 @@ export interface PresignedUrl {
    */
   expiresAt?: string; // date-time
 }
-
 export interface Proxy {
   /**
    * A proxy URL to use for creating HTTP connections outside the cluster.
@@ -2397,7 +2235,6 @@ export interface Proxy {
    */
   noProxy?: string;
 }
-
 /**
  * Information sent to the agent for rebooting a host into discovery.
  */
@@ -2408,7 +2245,6 @@ export interface RebootForReclaimRequest {
    */
   hostFsMountDir: string;
 }
-
 export interface ReleaseImage {
   /**
    * Version of the OpenShift cluster.
@@ -2439,9 +2275,7 @@ export interface ReleaseImage {
    */
   supportLevel?: 'beta' | 'production' | 'maintenance';
 }
-
 export type ReleaseImages = ReleaseImage[];
-
 export interface Route {
   /**
    * Interface to which packets for this route will be sent
@@ -2464,7 +2298,6 @@ export interface Route {
    */
   metric?: number; // int32
 }
-
 /**
  * IP address block for service IP blocks.
  */
@@ -2478,7 +2311,6 @@ export interface ServiceNetwork {
    */
   cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
 }
-
 export type SourceState =
   | 'synced'
   | 'combined'
@@ -2486,13 +2318,11 @@ export type SourceState =
   | 'error'
   | 'variable'
   | 'unreachable';
-
 export interface Step {
   stepType?: StepType;
   stepId?: string;
   args?: string[];
 }
-
 export interface StepReply {
   stepType?: StepType;
   stepId?: string;
@@ -2500,7 +2330,6 @@ export interface StepReply {
   output?: string;
   error?: string;
 }
-
 export type StepType =
   | 'connectivity-check'
   | 'execute'
@@ -2521,7 +2350,6 @@ export type StepType =
   | 'download-boot-artifacts'
   | 'reboot-for-reclaim'
   | 'verify-vips';
-
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -2530,7 +2358,6 @@ export interface Steps {
   postStepAction?: 'exit' | 'continue';
   instructions?: Step[];
 }
-
 export type StepsReply = StepReply[];
 export type Subnet = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
 export type SupportLevel =
@@ -2539,14 +2366,12 @@ export type SupportLevel =
   | 'tech-preview'
   | 'dev-preview'
   | 'unavailable';
-
 /**
  * Map of feature ID or CPU architecture alongside their support level
  */
 export interface SupportLevels {
   [name: string]: SupportLevel;
 }
-
 export interface SystemVendor {
   serialNumber?: string;
   productName?: string;
@@ -2556,14 +2381,12 @@ export interface SystemVendor {
    */
   virtual?: boolean;
 }
-
 export interface TangConnectivityRequest {
   /**
    * JSON-formatted string containing additional information regarding tang's configuration
    */
   tangServers: string;
 }
-
 export interface TangConnectivityResponse {
   /**
    * Tang check result.
@@ -2584,7 +2407,6 @@ export interface TangConnectivityResponse {
     }[];
   }[];
 }
-
 export interface UpdateManifestParams {
   /**
    * The folder for the manifest to modify.
@@ -2607,7 +2429,6 @@ export interface UpdateManifestParams {
    */
   updatedContent?: string;
 }
-
 export interface UpgradeAgentRequest {
   /**
    * Full image reference of the image that the agent should upgrade to, for example
@@ -2616,7 +2437,6 @@ export interface UpgradeAgentRequest {
    */
   agentImage?: string;
 }
-
 export interface UpgradeAgentResponse {
   /**
    * Full image reference of the image that the agent has upgraded to, for example
@@ -2626,12 +2446,10 @@ export interface UpgradeAgentResponse {
   agentImage?: string;
   result?: UpgradeAgentResult;
 }
-
 /**
  * Agent upgrade result.
  */
 export type UpgradeAgentResult = 'success' | 'failure';
-
 export interface Usage {
   /**
    * Unique idenftifier of the feature
@@ -2645,10 +2463,9 @@ export interface Usage {
    * additional properties of the feature
    */
   data?: {
-    [name: string]: Record<string, unknown>;
+    [name: string]: {};
   };
 }
-
 export interface V2ClusterUpdateParams {
   /**
    * OpenShift cluster name.
@@ -2772,7 +2589,6 @@ export interface V2ClusterUpdateParams {
    */
   tags?: string;
 }
-
 export interface V2Events {
   clusterId?: string;
   hostId?: string;
@@ -2787,21 +2603,18 @@ export interface V2Events {
   clusterLevel?: boolean;
   categories?: string[];
 }
-
 export interface V2InfraEnvs {
   clusterId?: string;
   owner?: string;
 }
-
 export interface V2SupportLevelsArchitectures {
   openshiftVersion: string;
 }
-
 export interface V2SupportLevelsFeatures {
   openshiftVersion: string;
   cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'oci';
 }
-
 /**
  * Single VIP verification result.
  */
@@ -2810,7 +2623,6 @@ export interface VerifiedVip {
   vipType?: VipType;
   verification?: VipVerification;
 }
-
 /**
  * Request to verify single vip.
  */
@@ -2818,7 +2630,6 @@ export interface VerifyVip {
   vip?: Ip; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
   vipType?: VipType;
 }
-
 /**
  * list of vips to be verified.
  */
@@ -2827,7 +2638,6 @@ export type VerifyVipsRequest = VerifyVip[];
  * list of verified vips.
  */
 export type VerifyVipsResponse = VerifiedVip[];
-
 export interface VersionedHostRequirements {
   /**
    * Version of the component for which requirements are defined
@@ -2850,11 +2660,9 @@ export interface VersionedHostRequirements {
    */
   'edge-worker'?: ClusterHostRequirementsDetails;
 }
-
 export interface Versions {
   [name: string]: string;
 }
-
 /**
  * The vip type.
  */
