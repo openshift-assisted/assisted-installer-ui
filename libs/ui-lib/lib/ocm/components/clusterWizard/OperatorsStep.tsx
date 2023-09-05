@@ -10,7 +10,6 @@ import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/se
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
-  const isOpenshiftDataFoundationEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE') && !isSNO;
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
 
   return (
@@ -26,16 +25,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       <StackItem>
         <MceCheckbox />
       </StackItem>
-      {isOpenshiftDataFoundationEnabled && (
-        <StackItem>
-          <OdfCheckbox />
-        </StackItem>
-      )}
-      {isSNO && (
-        <StackItem>
-          <LvmCheckbox {...props} />
-        </StackItem>
-      )}
+      <StackItem>{isSNO ? <LvmCheckbox {...props} /> : <OdfCheckbox />}</StackItem>
     </Stack>
   );
 };
