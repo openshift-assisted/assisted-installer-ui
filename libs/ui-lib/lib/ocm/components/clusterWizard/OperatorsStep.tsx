@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { ClusterOperatorProps, ClusterWizardStepHeader, useFeature } from '../../../common';
+import { ClusterOperatorProps, ClusterWizardStepHeader } from '../../../common';
 import CnvCheckbox from '../clusterConfiguration/operators/CnvCheckbox';
 import OdfCheckbox from '../clusterConfiguration/operators/OdfCheckbox';
 import LvmCheckbox from '../clusterConfiguration/operators/LvmCheckbox';
@@ -10,18 +10,15 @@ import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/se
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
-  const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
 
   return (
     <Stack hasGutter data-testid={'operators-form'}>
       <StackItem>
         <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
       </StackItem>
-      {isContainerNativeVirtualizationEnabled && (
-        <StackItem>
-          <CnvCheckbox {...props} />
-        </StackItem>
-      )}
+      <StackItem>
+        <CnvCheckbox {...props} />
+      </StackItem>
       <StackItem>
         <MceCheckbox />
       </StackItem>
