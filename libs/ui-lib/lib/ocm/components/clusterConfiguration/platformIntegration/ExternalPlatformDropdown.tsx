@@ -30,7 +30,6 @@ const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
 
 type ExternalPlatformDropdownProps = {
-  showOciOption: boolean;
   onChange: (selectedPlatform: PlatformType) => void;
   cpuArchitecture?: string;
   featureSupportLevelData: NewFeatureSupportLevelMap | null;
@@ -63,13 +62,12 @@ const getDisabledReasonForExternalPlatform = (
 };
 
 const getExternalPlatformTypes = (
-  showOciOption: boolean,
   isSNO: boolean,
   newFeatureSupportLevelContext: NewFeatureSupportLevelData,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: string,
 ): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => {
-  const platforms = ['none', 'nutanix', showOciOption && 'oci', 'vsphere'] as PlatformType[];
+  const platforms = ['none', 'nutanix', 'oci', 'vsphere'] as PlatformType[];
 
   return platforms.filter(Boolean).reduce(
     (a, platform) => ({
@@ -100,7 +98,6 @@ export const areAllExternalPlatformIntegrationDisabled = (
 };
 
 export const ExternalPlatformDropdown = ({
-  showOciOption,
   onChange,
   cpuArchitecture,
   featureSupportLevelData,
@@ -124,7 +121,6 @@ export const ExternalPlatformDropdown = ({
   React.useEffect(() => {
     // Calculate updated externalPlatformTypes based on the dependencies
     const updatedExternalPlatformTypes = getExternalPlatformTypes(
-      showOciOption,
       isSNO,
       newFeatureSupportLevelContext,
       featureSupportLevelData,
