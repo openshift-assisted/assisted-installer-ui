@@ -2,7 +2,6 @@ import React from 'react';
 
 // Must conform Unleash constants
 export type AssistedInstallerFeatureType =
-  | 'ASSISTED_INSTALLER_SNO_FEATURE'
   | 'ASSISTED_INSTALLER_OCS_FEATURE'
   | 'ASSISTED_INSTALLER_ODF_FEATURE'
   | 'ASSISTED_INSTALLER_CNV_FEATURE'
@@ -24,7 +23,6 @@ export type AssistedInstallerPermissionTypesListType = {
 
 // Hardcoded for ACM
 export const ACM_ENABLED_FEATURES: FeatureListType = {
-  ASSISTED_INSTALLER_SNO_FEATURE: true,
   ASSISTED_INSTALLER_OCS_FEATURE: false,
   ASSISTED_INSTALLER_ODF_FEATURE: false,
   ASSISTED_INSTALLER_CNV_FEATURE: false,
@@ -34,7 +32,6 @@ export const ACM_ENABLED_FEATURES: FeatureListType = {
 
 // Hardcoded outside OCM
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
-  ASSISTED_INSTALLER_SNO_FEATURE: true,
   ASSISTED_INSTALLER_OCS_FEATURE: true,
   ASSISTED_INSTALLER_ODF_FEATURE: true,
   ASSISTED_INSTALLER_CNV_FEATURE: true,
