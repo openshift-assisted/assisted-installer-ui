@@ -47,6 +47,7 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
           cluster={cluster}
           cpuArchitecture={infraEnv?.cpuArchitecture}
           openshiftVersion={cluster.openshiftVersion}
+          platformType={cluster.platform?.type}
         >
           <Grid className="pf-u-mt-md">
             <ClusterProperties cluster={cluster} externalMode />

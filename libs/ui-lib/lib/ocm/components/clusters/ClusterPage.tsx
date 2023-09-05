@@ -197,6 +197,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
                   cluster={cluster}
                   cpuArchitecture={infraEnv.cpuArchitecture}
                   openshiftVersion={cluster.openshiftVersion}
+                  platformType={cluster.platform?.type}
                 >
                   {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
                 <RebootNodeZeroModal cluster={cluster} />

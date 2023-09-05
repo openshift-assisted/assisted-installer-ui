@@ -1,8 +1,7 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { TFunction } from 'i18next';
 import { useSelector } from 'react-redux';
-import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
+import { Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
   canBeDualStack,
@@ -23,16 +22,13 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
-import { useClusterSupportedPlatforms } from '../../../hooks';
 import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
-import { SupportedPlatformIntegrationType } from '../../../hooks/useClusterSupportedPlatforms';
 import {
   Cluster,
   ClusterDefaultConfig,
@@ -78,44 +74,44 @@ const getManagedNetworkingDisabledReason = (
   }
 };
 
-const getUserManagedDisabledReason = (
-  supportedPlatformIntegration: SupportedPlatformIntegrationType,
-  t: TFunction,
+const getPlatformManagedNetworkingDisabledReason = (
+  featureSupportLevelData: NewFeatureSupportLevelData,
+  platformType: string,
 ) => {
-  if (['nutanix', 'vsphere'].includes(supportedPlatformIntegration)) {
-    return t('ai:User-Managed Networking is not supported when using Nutanix or vSphere');
-  }
-};
-
-const getClusterManagedDisabledReason = (featureSupportLevelData: NewFeatureSupportLevelData) => {
-  if (!featureSupportLevelData.isFeatureSupported('CLUSTER_MANAGED_NETWORKING')) {
-    return featureSupportLevelData.getFeatureDisabledReason('CLUSTER_MANAGED_NETWORKING');
+  if (!featureSupportLevelData.isFeatureSupported('PLATFORM_MANAGED_NETWORKING')) {
+    return featureSupportLevelData.getFeatureDisabledReason(
+      'PLATFORM_MANAGED_NETWORKING',
+      undefined,
+      undefined,
+      platformType,
+    );
   }
 };
 
 const getManagedNetworkingState = (
   isDualStack: boolean,
-  isOracleCloudInfrastructure: boolean,
-  supportedPlatformIntegration: SupportedPlatformIntegrationType,
   featureSupportLevelData: NewFeatureSupportLevelData,
-  t: TFunction,
+  platformType: string,
 ): {
   isDisabled: boolean;
   clusterManagedDisabledReason?: string;
   userManagedDisabledReason?: string;
 } => {
+  const isOracleCloudInfrastructure = platformType === 'oci';
   const networkingReason = getManagedNetworkingDisabledReason(
     isDualStack,
     isOracleCloudInfrastructure,
     featureSupportLevelData,
   );
-  const cmnReason = getClusterManagedDisabledReason(featureSupportLevelData);
-  const umnReason = getUserManagedDisabledReason(supportedPlatformIntegration, t);
+  const platformReason = getPlatformManagedNetworkingDisabledReason(
+    featureSupportLevelData,
+    platformType,
+  );
 
   return {
-    isDisabled: !!(cmnReason || umnReason || networkingReason),
-    clusterManagedDisabledReason: cmnReason || networkingReason,
-    userManagedDisabledReason: umnReason || networkingReason,
+    isDisabled: !!(platformReason || networkingReason),
+    clusterManagedDisabledReason: networkingReason,
+    userManagedDisabledReason: platformReason || networkingReason,
   };
 };
 
@@ -125,9 +121,7 @@ const NetworkConfiguration = ({
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
 }: NetworkConfigurationProps) => {
-  const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
-  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
@@ -202,14 +196,8 @@ const NetworkConfiguration = ({
 
   const managedNetworkingState = React.useMemo(
     () =>
-      getManagedNetworkingState(
-        isDualStack,
-        cluster.platform?.type === 'oci',
-        supportedPlatformIntegration,
-        featureSupportLevelData,
-        t,
-      ),
-    [isDualStack, cluster.platform?.type, supportedPlatformIntegration, featureSupportLevelData, t],
+      getManagedNetworkingState(isDualStack, featureSupportLevelData, cluster.platform?.type || ''),
+    [isDualStack, cluster.platform?.type, featureSupportLevelData],
   );
 
   return (

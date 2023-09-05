@@ -18,6 +18,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   resourceKind: T,
   openshiftVersion?: string,
   cpuArchitecture?: string,
+  platformType?: string,
 ): UseSupportLevelAPIResponse<T> | null {
   const [cpuArchitectures, setCpuArchitectures] =
     React.useState<ArchitectureSupportLevelMap | null>(null);
@@ -45,11 +46,12 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   );
 
   const fetchFeaturesSupportLevels = React.useCallback(
-    async (openshiftVersion: string, cpuArchitecture?: string) => {
+    async (openshiftVersion: string, cpuArchitecture?: string, platformType?: string) => {
       try {
         const { data: features } = await NewFeatureSupportLevelsAPI.featuresSupportLevel(
           openshiftVersion,
           cpuArchitecture,
+          platformType,
         );
         setFeatures(features.features);
       } catch (e) {
@@ -70,7 +72,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
       if (resourceKind === 'architectures') {
         void fetchArchitecturesSupportLevels(openshiftVersion);
       } else {
-        void fetchFeaturesSupportLevels(openshiftVersion, cpuArchitecture);
+        void fetchFeaturesSupportLevels(openshiftVersion, cpuArchitecture, platformType);
       }
     }
   }, [
@@ -79,6 +81,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
     fetchArchitecturesSupportLevels,
     fetchFeaturesSupportLevels,
     resourceKind,
+    platformType,
   ]);
 
   if (resourceKind === 'architectures') {
