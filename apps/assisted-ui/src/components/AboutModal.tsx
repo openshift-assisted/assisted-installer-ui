@@ -34,7 +34,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
   const getUIVersion = () => {
     const link =
-      typeof IMAGE_REPO === 'string' ? (
+      typeof IMAGE_REPO !== 'undefined' ? (
         <a
           target="_blank"
           rel="noopener noreferrer"
