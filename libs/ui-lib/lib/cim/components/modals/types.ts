@@ -32,6 +32,7 @@ export type AddBmcHostModalProps = Pick<
 > & {
   isOpen: boolean;
   docVersion: string;
+  provisioningConfigError?: unknown;
 };
 
 export type EditBMHModalProps = Pick<
@@ -70,4 +71,5 @@ export type UploadActionModalProps = {
   isEdit?: boolean;
   docVersion: string;
   infraEnv: InfraEnvK8sResource;
+  provisioningConfigError?: unknown;
 };
