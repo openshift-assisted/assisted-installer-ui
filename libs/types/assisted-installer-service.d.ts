@@ -291,7 +291,7 @@ export interface Cluster {
   /**
    * swagger:ignore
    */
-  deletedAt?: any;
+  deletedAt?: unknown;
   /**
    * (DEPRECATED) Indicate if the networking is managed by the user.
    */
@@ -609,7 +609,7 @@ export interface CompletionParams {
    * additional data from the cluster
    */
   data?: {
-    [name: string]: {};
+    [name: string]: Record<string, unknown>;
   };
 }
 export interface ConnectivityCheckHost {
@@ -1134,7 +1134,7 @@ export interface Host {
   /**
    * swagger:ignore
    */
-  deletedAt?: any;
+  deletedAt?: unknown;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -1333,7 +1333,7 @@ export interface HostRegistrationResponse {
   /**
    * swagger:ignore
    */
-  deletedAt?: any;
+  deletedAt?: unknown;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -2463,7 +2463,7 @@ export interface Usage {
    * additional properties of the feature
    */
   data?: {
-    [name: string]: {};
+    [name: string]: Record<string, unknown>;
   };
 }
 export interface V2ClusterUpdateParams {
