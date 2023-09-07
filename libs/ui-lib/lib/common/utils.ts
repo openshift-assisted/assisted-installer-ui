@@ -1,7 +1,7 @@
 import filesize from 'filesize.js';
 import camelCase from 'lodash-es/camelCase.js';
 import isString from 'lodash-es/isString.js';
-import { load } from 'js-yaml';
+import { loadAll } from 'js-yaml';
 import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_OFFSET_FACTOR } from './configurations';
 
 export const FILENAME_REGEX = /^[^\/]*\.(yaml|yml|json)$/;
@@ -32,7 +32,7 @@ export const validateFileType = (value: string) => {
 
 export const isStringValidYAML = (input: string): boolean => {
   try {
-    load(input);
+    loadAll(input);
     return true;
   } catch {
     return false;
