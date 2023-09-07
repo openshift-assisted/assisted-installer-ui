@@ -77,5 +77,13 @@ describe(`Assisted Installer Custom manifests step`, () => {
       );
       commonActions.verifyNextIsDisabled();
     });
+
+    it('Adding multi-yaml file to dummy manifest enables next button', () => {
+      CustomManifestsForm.initManifest(0);
+      CustomManifestsForm.expandedManifest(0)
+        .fileUpload()
+        .attachFile(`custom-manifests/files/manifest_multiple.yaml`);
+      commonActions.verifyNextIsEnabled();
+    });
   });
 });
