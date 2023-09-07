@@ -12,7 +12,7 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { FeatureId, PlatformType, getFieldId } from '../../../../common';
+import { DeveloperPreview, FeatureId, PlatformType, getFieldId } from '../../../../common';
 import {
   ExternalPlaformIds,
   ExternalPlatformLabels,
@@ -142,7 +142,10 @@ export const ExternalPlatformDropdown = ({
               content={disabledReason !== undefined ? disabledReason : tooltip}
               position="top"
             >
-              <div>{label}</div>
+              <div>
+                {label}
+                {platform === 'oci' && <DeveloperPreview testId={'oci-support-level`'} />}
+              </div>
             </Tooltip>
           </SplitItem>
           {!!href && (
