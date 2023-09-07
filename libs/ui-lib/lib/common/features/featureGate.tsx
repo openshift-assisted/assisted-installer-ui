@@ -3,7 +3,8 @@ import React from 'react';
 // Must conform Unleash constants
 export type AssistedInstallerFeatureType =
   | 'ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE'
-  | 'ASSISTED_INSTALLER_MULTIARCH_SUPPORTED';
+  | 'ASSISTED_INSTALLER_MULTIARCH_SUPPORTED'
+  | 'ASSISTED_INSTALLER_PLATFORM_OCI';
 
 export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
@@ -28,6 +29,7 @@ export const ACM_ENABLED_FEATURES: FeatureListType = {
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: false,
   ASSISTED_INSTALLER_MULTIARCH_SUPPORTED: true,
+  ASSISTED_INSTALLER_PLATFORM_OCI: true,
 };
 
 export type FeatureGateContextType = {
