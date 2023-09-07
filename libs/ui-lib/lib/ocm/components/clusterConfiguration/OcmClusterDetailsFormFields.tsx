@@ -219,6 +219,7 @@ export const OcmClusterDetailsFormFields = ({
           cpuArchitecture={values.cpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData}
+          isSNO={isSNO({ highAvailabilityMode })}
         />
       )}
 

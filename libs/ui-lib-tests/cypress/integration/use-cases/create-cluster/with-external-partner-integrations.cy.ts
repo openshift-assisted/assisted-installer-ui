@@ -97,6 +97,13 @@ describe('Create a new cluster with external partner integrations', () => {
         .findDropdownItem('Nutanix')
         .should('have.class', 'pf-m-aria-disabled');
     });
+
+    it('Validate that Nutanix option is disabled when we choose SNO option', () => {
+      ClusterDetailsForm.snoField.findCheckbox().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownItem('Nutanix')
+        .should('have.class', 'pf-m-aria-disabled');
+    });
   });
 
   describe('After the cluster is created', () => {
