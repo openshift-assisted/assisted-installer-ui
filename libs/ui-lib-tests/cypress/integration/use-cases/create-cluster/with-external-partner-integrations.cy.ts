@@ -104,6 +104,14 @@ describe('Create a new cluster with external partner integrations', () => {
         .findDropdownItem('Nutanix')
         .should('have.class', 'pf-m-aria-disabled');
     });
+    it('Validate that all dropdown is disabled in case we choose IBM/Z(s390x) architecture + SNO', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
+      ClusterDetailsForm.snoField.findCheckbox().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findDropdownToggle()
+        .should('be.disabled');
+    });
   });
 
   describe('After the cluster is created', () => {
