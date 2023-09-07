@@ -19,8 +19,14 @@ export class ExternalPartnerIntegrationsField {
     return cy.get(ExternalPartnerIntegrationsField.alias).find('#form-input-platform-field');
   }
 
-  static findDropdownItemSelected() {
-    return ExternalPartnerIntegrationsField.findDropdown().find('.pf-c-dropdown__toggle-text');
+  static findDropdownToggle() {
+    return ExternalPartnerIntegrationsField.findDropdown().find(
+      '[data-ouia-component-type="PF4/DropdownToggle"]',
+    );
+  }
+
+  static findDropdownItemSelected(item: string) {
+    return ExternalPartnerIntegrationsField.findDropdown().findByText(item);
   }
 
   static findDropdownItems() {
@@ -28,6 +34,11 @@ export class ExternalPartnerIntegrationsField {
     return ExternalPartnerIntegrationsField.findDropdown().find(
       '.pf-c-dropdown__menu [role="menuitem"]',
     );
+  }
+
+  static findDropdownItem(platform: string) {
+    ExternalPartnerIntegrationsField.findDropdown().click();
+    return cy.findByRole('menuitem', { name: new RegExp(`${platform}`, 'i') });
   }
 
   static selectPlatform(platform: string) {
