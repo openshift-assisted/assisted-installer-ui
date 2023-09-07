@@ -12,7 +12,8 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { DeveloperPreview, FeatureId, getFieldId } from '../../../../common';
+import { CpuArchitecture, DeveloperPreview, FeatureId, getFieldId } from '../../../../common';
+
 import {
   ExternalPlaformIds,
   ExternalPlatformLabels,
@@ -58,7 +59,12 @@ const getDisabledReasonForExternalPlatform = (
       cpuArchitecture,
     );
   } else if (platform === 'nutanix' || platform === 'vsphere') {
-    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift`;
+    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift.`;
+  } else if (
+    cpuArchitecture === CpuArchitecture.ppc64le ||
+    cpuArchitecture === CpuArchitecture.s390x
+  ) {
+    return `Plaform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
   }
 };
 
@@ -149,6 +155,7 @@ export const ExternalPlatformDropdown = ({
     }
     if (dropdownIsDisabled || isCurrentValueDisabled) {
       setValue('none');
+      onChange('none');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
