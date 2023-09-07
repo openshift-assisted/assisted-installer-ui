@@ -26,7 +26,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { hardwareStatusColumn } from './HardwareStatus';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import { useSelector } from 'react-redux';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 

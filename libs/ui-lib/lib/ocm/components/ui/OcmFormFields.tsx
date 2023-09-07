@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox, CheckboxProps, Radio, RadioProps } from '@patternfly/react-core';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import {
   CheckboxField,
   CodeField,

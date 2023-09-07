@@ -24,7 +24,7 @@ import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useClusterSupportedPlatforms } from '../../../hooks';

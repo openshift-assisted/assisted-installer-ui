@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../../store';
+import { storeDay1 } from '../../store';
 import { useSelector } from 'react-redux';
 
 import {
@@ -10,11 +10,11 @@ import {
   FeatureListType,
 } from '../../../common';
 import ClusterProperties from './ClusterProperties';
-import { selectCurrentClusterState } from '../../selectors';
 import { Grid } from '@patternfly/react-core';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { usePullSecret } from '../../hooks';
+import { selectCurrentClusterState } from '../../store/slices/current-cluster/selectors';
 
 type AssistedInstallerExtraDetailCardProps = {
   allEnabledFeatures: FeatureListType;
@@ -58,7 +58,7 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
 };
 
 const Wrapper: React.FC<AssistedInstallerExtraDetailCardProps> = (props) => (
-  <Provider store={store}>
+  <Provider store={storeDay1}>
     <AlertsContextProvider>
       <AssistedInstallerExtraDetailCard {...props} />
     </AlertsContextProvider>

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
-import { useFeature } from '../../../features';
 import { OpenshiftVersionOptionType } from '../../../types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
@@ -21,7 +20,6 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   const {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
-  const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
   const featureSupportLevelContext = useFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
@@ -54,7 +52,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
     prevVersionRef.current = openshiftVersion;
   }, [openshiftVersion, onChanged, featureSupportLevelContext]);
 
-  if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
+  if (isSupportedVersionAvailable) {
     return (
       <FormGroup isInline fieldId={fieldId}>
         <Tooltip hidden={!disabledReason} content={disabledReason}>

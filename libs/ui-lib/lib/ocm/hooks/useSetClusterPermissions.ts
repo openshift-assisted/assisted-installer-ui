@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { AssistedInstallerOCMPermissionTypesListType } from '../../common';
 import { ExtendedCluster, getBasePermissions, ocmPermissionsToAIPermissions } from '../config';
-import { updateClusterPermissions } from '../reducers/clusters';
+import { updateClusterPermissions } from '../store/slices/current-cluster/slice';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export default function useSetClusterPermissions() {

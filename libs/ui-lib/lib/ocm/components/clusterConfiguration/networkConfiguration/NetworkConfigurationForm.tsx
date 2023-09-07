@@ -26,7 +26,7 @@ import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
@@ -34,7 +34,10 @@ import {
 import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
 import { ClustersService } from '../../../services';
-import { setServerUpdateError, updateClusterBase } from '../../../reducers/clusters';
+import {
+  setServerUpdateError,
+  updateClusterBase,
+} from '../../../store/slices/current-cluster/slice';
 import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
 import { useClusterSupportedPlatforms, usePullSecret } from '../../../hooks';
 import {
