@@ -1,27 +1,25 @@
 import React from 'react';
 import { createSelector } from '@reduxjs/toolkit';
-import { IRow, IRowData } from '@patternfly/react-table';
+import type { IRow, IRowData } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
-import { TFunction } from 'i18next';
-
+import type { TFunction } from 'i18next';
 import {
   DASH,
   getDateTimeCell,
   getEnabledHostCount,
   getOpenshiftVersionText,
   getTotalHostCount,
-  ClusterTableRows,
   HostsCount,
-  HumanizedSortable,
   ResourceUIState,
-} from '../../common';
-import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
-import { routeBasePath } from '../config';
-import { RootState } from '../store';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+} from '../../../../common';
+import type { ClusterTableRows, HumanizedSortable } from '../../../../common';
+import ClusterStatus, { getClusterStatusText } from '../../../components/clusters/ClusterStatus';
+import { routeBasePath } from '../../../config';
+import { RootStateDay1 } from '../../store-day1';
+import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
-const selectClusters = (state: RootState) => state.clusters.data;
-const clustersUIState = (state: RootState) => state.clusters.uiState;
+const selectClusters = (state: RootStateDay1) => state.clusters.data;
+const clustersUIState = (state: RootStateDay1) => state.clusters.uiState;
 
 export const selectClustersUIState = createSelector(
   [selectClusters, clustersUIState],

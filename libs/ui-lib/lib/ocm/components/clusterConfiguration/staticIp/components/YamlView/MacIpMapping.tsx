@@ -5,8 +5,8 @@ import { PlusCircleIcon } from '@patternfly/react-icons';
 import { getFormikArrayItemFieldName, RemovableField } from '../../../../../../common';
 import { OcmInputField } from '../../../../ui/OcmFormFields';
 import { useSelector } from 'react-redux';
-import { selectCurrentClusterPermissionsState } from '../../../../../selectors';
 import { MacInterfaceMap } from '@openshift-assisted/types/assisted-installer-service';
+import { selectCurrentClusterPermissionsState } from '../../../../../store/slices/current-cluster/selectors';
 
 const AddMapping: React.FC<{
   onPush: ArrayHelpers['push'];

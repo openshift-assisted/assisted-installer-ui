@@ -10,8 +10,8 @@ import {
 } from '../clusterConfiguration/staticIp/components/propTypes';
 import { StaticIpPage } from '../clusterConfiguration/staticIp/components/StaticIpPage';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 
 const getInitialFormStateProps = () => {
   return {

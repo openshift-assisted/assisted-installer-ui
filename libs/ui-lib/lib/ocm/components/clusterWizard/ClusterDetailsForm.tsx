@@ -23,7 +23,7 @@ import {
 } from '../../services';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import {

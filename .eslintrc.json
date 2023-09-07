@@ -92,7 +92,7 @@
       }
     },
     {
-      "files": ["libs/types/lib/**/*.ts"],
+      "files": ["libs/types/**/*.d.ts"],
       "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
       "parserOptions": {
         "tsconfigRootDir": "libs/types",
