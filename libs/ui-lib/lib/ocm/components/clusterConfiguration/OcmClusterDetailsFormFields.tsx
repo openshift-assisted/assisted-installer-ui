@@ -85,7 +85,6 @@ export const OcmClusterDetailsFormFields = ({
   const { t } = useTranslation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
-  const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
   const { openshiftVersion, platform } = values;
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
@@ -217,7 +216,6 @@ export const OcmClusterDetailsFormFields = ({
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
           cpuArchitecture={values.cpuArchitecture}
-          showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData}
           isSNO={isSNO({ highAvailabilityMode })}
         />

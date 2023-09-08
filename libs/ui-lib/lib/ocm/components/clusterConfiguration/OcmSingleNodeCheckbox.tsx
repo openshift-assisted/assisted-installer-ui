@@ -1,13 +1,7 @@
 import * as React from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
-import {
-  ClusterCreateParams,
-  getFieldId,
-  HelperText,
-  SupportLevel,
-  useFeature,
-} from '../../../common';
+import { ClusterCreateParams, getFieldId, HelperText, SupportLevel } from '../../../common';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { CheckboxFieldProps } from '../../../common/components/ui/formik/types';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -30,7 +24,6 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
   const {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
-  const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
@@ -63,7 +56,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
     prevIsDisabled.current = props.isDisabled;
   }, [props.isDisabled, setValue, onChanged]);
 
-  if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
+  if (isSupportedVersionAvailable) {
     return (
       <FormGroup id={`form-control__${fieldId}`} isInline fieldId={fieldId}>
         <Tooltip hidden={!disabledReason} content={disabledReason}>
