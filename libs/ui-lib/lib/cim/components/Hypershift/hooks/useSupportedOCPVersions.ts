@@ -13,7 +13,7 @@ export const useSupportedOCPVersions = (
   supportedVersionsCM?: ConfigMapK8sResource,
 ) => {
   return React.useMemo(() => {
-    const ocpVersions = getOCPVersions(clusterImages);
+    const ocpVersions = getOCPVersions(clusterImages, false);
     const supportedVersionsString = supportedVersionsCM?.data?.['supported-versions'];
     if (supportedVersionsString) {
       try {

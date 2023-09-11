@@ -12,12 +12,14 @@ type DetailsFormBodyProps = {
   clusterImages: ClusterImageSetK8sResource[];
   onValuesChanged: (values: ClusterDetailsValues, initRender: boolean) => void;
   extensionAfter: ClusterDetailsFormFieldsProps['extensionAfter'];
+  isNutanix?: boolean;
 };
 
 const DetailsFormBody: React.FC<DetailsFormBodyProps> = ({
   onValuesChanged,
   clusterImages,
   extensionAfter,
+  isNutanix,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const initRenderRef = React.useRef(true);
@@ -27,7 +29,11 @@ const DetailsFormBody: React.FC<DetailsFormBodyProps> = ({
   }, []);
 
   return (
-    <ClusterDeploymentDetailsForm clusterImages={clusterImages} extensionAfter={extensionAfter} />
+    <ClusterDeploymentDetailsForm
+      clusterImages={clusterImages}
+      extensionAfter={extensionAfter}
+      isNutanix={isNutanix}
+    />
   );
 };
 
@@ -45,6 +51,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterImages,
     usedClusterNames,
+    isNutanix: !!rest.isNutanix,
   });
   return (
     <Formik

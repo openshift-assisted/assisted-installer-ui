@@ -53,6 +53,7 @@ type ClusterDeploymentNetworkingFormProps = {
   onEditHost: AgentTableActions['onEditHost'];
   onEditRole: AgentTableActions['onEditRole'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
+  isNutanix: boolean;
 };
 
 const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormProps> = ({
@@ -68,6 +69,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   onEditHost,
   onEditRole,
   onSetInstallationDiskId,
+  isNutanix,
 }) => {
   const { values, touched, setFieldValue, setFieldTouched } =
     useFormikContext<ClusterDeploymentNetworkingValues>();
@@ -139,7 +141,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
                 hostSubnets={hostSubnets}
                 isVipDhcpAllocationDisabled
                 defaultNetworkSettings={defaultNetworkSettings}
-                hideManagedNetworking={getIsSNOCluster(agentClusterInstall)}
+                hideManagedNetworking={getIsSNOCluster(agentClusterInstall) || isNutanix}
               />
             </GridItem>
           </Grid>
