@@ -19,12 +19,7 @@ import {
   PlatformType,
   getFieldId,
 } from '../../../../common';
-import {
-  ExternalPlaformIds,
-  ExternalPlatformLabels,
-  ExternalPlatformLinks,
-  ExternalPlatformTooltips,
-} from './constants';
+import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
 import {
   NewFeatureSupportLevelData,
   NewFeatureSupportLevelMap,
@@ -45,7 +40,6 @@ type ExternalPlatformDropdownProps = {
 export type ExternalPlatformInfo = {
   label: string;
   href?: string;
-  tooltip?: string;
   disabledReason?: string;
 };
 
@@ -87,7 +81,6 @@ const getExternalPlatformTypes = (
       [platform]: {
         label: ExternalPlatformLabels[platform],
         href: ExternalPlatformLinks[platform],
-        tooltip: ExternalPlatformTooltips[platform],
         disabledReason: getDisabledReasonForExternalPlatform(
           isSNO,
           newFeatureSupportLevelContext,
@@ -166,18 +159,14 @@ export const ExternalPlatformDropdown = ({
   }, [dropdownIsDisabled, externalPlatformTypes]);
 
   const enabledItems = Object.keys(externalPlatformTypes).map((platform) => {
-    const { label, href, tooltip, disabledReason } = externalPlatformTypes[
+    const { label, href, disabledReason } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
     return (
       <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
         <Split>
           <SplitItem>
-            <Tooltip
-              hidden={disabledReason === undefined && tooltip === undefined}
-              content={disabledReason !== undefined ? disabledReason : tooltip}
-              position="top"
-            >
+            <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
               <div>
                 {label}
                 {platform === 'oci' && <DeveloperPreview testId={'oci-support-level`'} />}
