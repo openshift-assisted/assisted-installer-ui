@@ -14,10 +14,6 @@ export const ExternalPlatformLinks: Partial<{ [key in PlatformType]: string }> =
   vsphere: VSPHERE_CONFIG_LINK,
 };
 
-export const ExternalPlatformTooltips: Partial<{ [key in PlatformType]: string }> = {
-  oci: "To integrate with an external partner (for example, Oracle Cloud), you'll need to provide a custom manifest.",
-};
-
 export const ExternalPlaformIds: { [key in PlatformType]: string } = {
   baremetal: '',
   none: '',
