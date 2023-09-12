@@ -5,7 +5,7 @@ export const ExternalPlatformLabels: { [key in PlatformType]: string } = {
   baremetal: 'No platform integration',
   none: 'No platform integration',
   nutanix: 'Nutanix',
-  oci: 'Oracle  (Requires a custom manifest)',
+  oci: 'Oracle Cloud Infrastructure (Requires a custom manifest)',
   vsphere: 'vSphere',
 };
 

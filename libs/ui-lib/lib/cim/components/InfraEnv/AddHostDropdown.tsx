@@ -2,19 +2,40 @@ import {
   Dropdown,
   DropdownGroup,
   DropdownItem,
+  DropdownItemProps,
   DropdownSeparator,
   DropdownToggle,
   Split,
   SplitItem,
+  Spinner,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import { PopoverIcon } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';
 import { AddHostDropdownProps } from './types';
 import './AddHostDropdown.css';
+import { PopoverIcon } from '../../../common';
+import { Trans } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
+
+const DropdownItemWithLoading = (
+  props: DropdownItemProps & { isLoading: boolean; label: string },
+) => {
+  return (
+    <DropdownItem {...props} isDisabled={props.isDisabled || props.isLoading}>
+      <Split hasGutter>
+        <SplitItem>{props.label}</SplitItem>
+        {props.isLoading && (
+          <SplitItem>
+            <Spinner size="sm" />
+          </SplitItem>
+        )}
+      </Split>
+    </DropdownItem>
+  );
+};
 
 const AddHostDropdown = ({
   infraEnv,
@@ -24,10 +45,12 @@ const AddHostDropdown = ({
   onCreateBMH,
   docVersion,
   onCreateBmcByYaml,
-  isBMPlatform,
+  provisioningConfigResult,
 }: AddHostDropdownProps) => {
   const [addModalType, setAddModalType] = React.useState<ModalType>(undefined);
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
+  const [provisioningConfig, provisioningConfigLoaded, provisioningConfigError] =
+    provisioningConfigResult;
   const { t } = useTranslation();
   return (
     <>
@@ -69,17 +92,19 @@ const AddHostDropdown = ({
               <Split hasGutter>
                 <SplitItem>{t('ai:Baseboard Management Controller (BMC)')}</SplitItem>
                 <SplitItem>
-                  {!isBMPlatform && (
+                  {!provisioningConfig && (
                     <>
                       {' '}
                       <PopoverIcon
                         noVerticalAlign
                         bodyContent={
-                          <p>
-                            {t(
-                              `ai:To enable the host's baseboard management controller (BMC) on the hub cluster, deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type).`,
-                            )}
-                          </p>
+                          <Trans t={t}>
+                            ai:To enable the host's baseboard management controller (BMC) on the hub
+                            cluster, you must first{' '}
+                            <Link to="/k8s/cluster/metal3.io~v1alpha1~Provisioning/~new">
+                              create a provisioning configuration.
+                            </Link>
+                          </Trans>
                         }
                       />
                     </>
@@ -88,18 +113,18 @@ const AddHostDropdown = ({
               </Split>
             }
           >
-            <DropdownItem
+            <DropdownItemWithLoading
               key="with-credentials"
               onClick={() => {
                 setIsKebabOpen(false);
                 setAddModalType('bmc');
               }}
               description={t('ai:Discover a single host via Baseboard Management Controller')}
-              isDisabled={!isBMPlatform}
-            >
-              {t('ai:With BMC form')}
-            </DropdownItem>
-            <DropdownItem
+              label={t('ai:With BMC form')}
+              isLoading={!provisioningConfigLoaded}
+              isDisabled={!provisioningConfig && !provisioningConfigError}
+            />
+            <DropdownItemWithLoading
               key="upload-yaml"
               onClick={() => {
                 setIsKebabOpen(false);
@@ -108,10 +133,10 @@ const AddHostDropdown = ({
               description={t(
                 'ai:Discover multiple hosts by providing yaml with Bare Metal Host definitions',
               )}
-              isDisabled={!isBMPlatform}
-            >
-              {t('ai:By uploading a YAML')}
-            </DropdownItem>
+              label={t('ai:By uploading a YAML')}
+              isLoading={!provisioningConfigLoaded}
+              isDisabled={!provisioningConfig && !provisioningConfigError}
+            />
           </DropdownGroup>,
         ]}
         position={'right'}
@@ -145,6 +170,7 @@ const AddHostDropdown = ({
           onCreateBMH={onCreateBMH}
           usedHostnames={usedHostnames}
           docVersion={docVersion}
+          provisioningConfigError={provisioningConfigError}
         />
       )}
       {addModalType === 'yaml' && (
@@ -154,6 +180,7 @@ const AddHostDropdown = ({
           onClose={() => setAddModalType(undefined)}
           onCreateBmcByYaml={onCreateBmcByYaml}
           docVersion={docVersion}
+          provisioningConfigError={provisioningConfigError}
         />
       )}
     </>

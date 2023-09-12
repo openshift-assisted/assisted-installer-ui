@@ -68,6 +68,7 @@ const FailingValidation = <S extends string>({
   setCurrentStepId,
   wizardStepNames,
   wizardStepsValidationsMap,
+  host,
 }: FailingValidationsProps<S>) => {
   const { t } = useTranslation();
 
@@ -88,7 +89,16 @@ const FailingValidation = <S extends string>({
     // no sooner step, so the user can not do anything about it ...
     fix = t('ai:Please wait till all checks are finished.');
   } else if (step) {
-    fix = (
+    const pageURL = host
+      ? wizardStepsValidationsMap[step].getPageURL?.(host, validation.id)
+      : undefined;
+    fix = pageURL ? (
+      <>
+        <Trans t={t}>
+          ai:It can be fixed in the <a href={pageURL.url}>{pageURL.name}</a> page.
+        </Trans>
+      </>
+    ) : (
       <>
         <Trans t={t}>
           ai:It can be fixed in the{' '}
@@ -196,6 +206,7 @@ export const HostsValidations = <S extends string, V extends string[]>({
               <FailingValidation<S>
                 key={validationId}
                 validation={validation}
+                host={host}
                 hostGroup={group}
                 severity={severity}
                 setCurrentStepId={setCurrentStepId}

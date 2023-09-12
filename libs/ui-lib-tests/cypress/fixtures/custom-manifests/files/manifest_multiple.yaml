@@ -1,0 +1,19 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-openshift-machineconfig-master-kargs
+spec:
+  kernelArguments:
+    - loglevel=7
+---
+apiVersion: machineconfiguration.openshift.io/v2
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 98-openshift-machineconfig-master-kargs
+spec:
+  kernelArguments:
+    - loglevel=5

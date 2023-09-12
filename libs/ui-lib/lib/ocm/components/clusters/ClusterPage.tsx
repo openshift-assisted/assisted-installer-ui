@@ -1,21 +1,12 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
 import {
-  PageSection,
-  PageSectionVariants,
-  Split,
-  SplitItem,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
-import {
-  ASSISTED_INSTALLER_DOCUMENTATION_LINK,
   AddHostsContextProvider,
   AlertsContextProvider,
   CpuArchitecture,
   ErrorState,
-  ExternalLink,
   ResourceUIState,
 } from '../../../common';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
@@ -41,6 +32,7 @@ import { BackButton } from '../ui/Buttons/BackButton';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 
 type MatchParams = {
   clusterId: string;
@@ -113,23 +105,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
           {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
           {showBreadcrumbs && (
             <PageSection variant={PageSectionVariants.light}>
-              <TextContent>
-                <Text component="h1" className="pf-u-display-inline">
-                  Install OpenShift with the Assisted Installer
-                </Text>
-                <Split hasGutter>
-                  <SplitItem>
-                    <ExternalLink href={ASSISTED_INSTALLER_DOCUMENTATION_LINK}>
-                      Assisted Installer documentation
-                    </ExternalLink>
-                  </SplitItem>
-                  <SplitItem>
-                    <Text component="a" data-testid="whats-new-link">
-                      What's new in Assisted Installer?
-                    </Text>
-                  </SplitItem>
-                </Split>
-              </TextContent>
+              <AssistedInstallerHeader />
             </PageSection>
           )}
 
