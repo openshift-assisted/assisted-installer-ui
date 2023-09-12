@@ -1,5 +1,5 @@
 {
-  "name": "@openshift-assisted/eslint-config-assisted-ui",
+  "name": "@openshift-assisted/eslint-config",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
@@ -13,6 +13,5 @@
     "@types/eslint": "^8"
   },
   "private": true,
-  "type": "commonjs",
   "version": "1.0.0"
 }

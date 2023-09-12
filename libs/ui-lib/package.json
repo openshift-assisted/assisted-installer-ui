@@ -26,7 +26,6 @@
   },
   "description": "React component library for the Assisted Installer UI",
   "devDependencies": {
-    "@openshift-assisted/eslint-config-assisted-ui": "workspace:^",
     "@tsconfig/recommended": "^1.0.2",
     "@types/file-saver": "^2.0.1",
     "@types/human-date": "^1.4.0",
