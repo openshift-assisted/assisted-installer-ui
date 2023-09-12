@@ -14,6 +14,7 @@ import {
   StaticTextField,
   useFeature,
   getSupportedCpuArchitectures,
+  SupportedCpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -171,7 +172,7 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
-          cpuArchitecture={values.cpuArchitecture}
+          cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData}
           isSNO={isSNO({ highAvailabilityMode })}

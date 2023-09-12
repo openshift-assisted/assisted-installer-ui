@@ -7,7 +7,12 @@ import {
   SupportedCpuArchitecture,
 } from '../../../common';
 import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
-import { Cluster, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  PlatformType,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
+import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -143,8 +148,8 @@ export const getNewFeatureDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
-  cpuArchitecture?: string,
-  platformType?: string,
+  cpuArchitecture?: SupportedCpuArchitecture,
+  platformType?: PlatformType,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
@@ -184,8 +189,8 @@ export const getNewFeatureDisabledReason = (
       }
     }
     case 'PLATFORM_MANAGED_NETWORKING': {
-      if (!isSupported) {
-        return `User-Managed Networking is not supported when using ${platformType || ''}`;
+      if (!isSupported && platformType) {
+        return `User-Managed Networking is not supported when using ${ExternalPlatformLabels[platformType]}`;
       }
     }
     default: {

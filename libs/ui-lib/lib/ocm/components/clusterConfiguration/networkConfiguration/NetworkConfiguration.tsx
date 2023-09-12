@@ -32,6 +32,7 @@ import {
 import {
   Cluster,
   ClusterDefaultConfig,
+  PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
@@ -76,7 +77,7 @@ const getManagedNetworkingDisabledReason = (
 
 const getPlatformManagedNetworkingDisabledReason = (
   featureSupportLevelData: NewFeatureSupportLevelData,
-  platformType: string,
+  platformType?: PlatformType,
 ) => {
   if (!featureSupportLevelData.isFeatureSupported('PLATFORM_MANAGED_NETWORKING')) {
     return featureSupportLevelData.getFeatureDisabledReason(
@@ -91,7 +92,7 @@ const getPlatformManagedNetworkingDisabledReason = (
 const getManagedNetworkingState = (
   isDualStack: boolean,
   featureSupportLevelData: NewFeatureSupportLevelData,
-  platformType: string,
+  platformType?: PlatformType,
 ): {
   isDisabled: boolean;
   clusterManagedDisabledReason?: string;
@@ -195,8 +196,7 @@ const NetworkConfiguration = ({
   }, [isDualStack, isUserManagedNetworking, isViewerMode, toggleAdvConfiguration]);
 
   const managedNetworkingState = React.useMemo(
-    () =>
-      getManagedNetworkingState(isDualStack, featureSupportLevelData, cluster.platform?.type || ''),
+    () => getManagedNetworkingState(isDualStack, featureSupportLevelData, cluster.platform?.type),
     [isDualStack, cluster.platform?.type, featureSupportLevelData],
   );
 

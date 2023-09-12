@@ -3,6 +3,7 @@ import {
   ActiveFeatureConfiguration,
   CpuArchitecture,
   FeatureId,
+  SupportedCpuArchitecture,
   getDefaultCpuArchitecture,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
@@ -16,6 +17,7 @@ import {
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import {
   Cluster,
+  PlatformType,
   SupportLevel,
   SupportLevels,
 } from '@openshift-assisted/types/assisted-installer-service';
@@ -115,8 +117,8 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     (
       featureId: FeatureId,
       supportLevelDataNew?: NewFeatureSupportLevelMap,
-      cpuArchitecture?: string,
-      platformType?: string,
+      cpuArchitecture?: SupportedCpuArchitecture,
+      platformType?: PlatformType,
     ) => {
       const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
