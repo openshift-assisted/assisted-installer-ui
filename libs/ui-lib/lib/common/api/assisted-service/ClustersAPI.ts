@@ -7,7 +7,6 @@ import {
   Credentials,
   Host,
   ImportClusterParams,
-  PlatformType,
   PreflightHardwareRequirements,
   PresignedUrl,
   ListManifests,
@@ -60,10 +59,6 @@ const ClustersAPI = {
 
   makeDownloadsFilesPresignedBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeDownloadsBaseURI(clusterId)}/files-presigned`;
-  },
-
-  makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
-    return `${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`;
   },
 
   makeActionsBaseURI(clusterId: string) {
@@ -124,10 +119,6 @@ const ClustersAPI = {
     return client.get<Cluster>(`${ClustersAPI.makeBaseURI(clusterId)}`, {
       signal: _getRequestAbortController.signal,
     });
-  },
-
-  getSupportedPlatforms(clusterId: Cluster['id']) {
-    return client.get<PlatformType[]>(`${ClustersAPI.makeSupportedPlatformsBaseURI(clusterId)}`);
   },
 
   getPreflightRequirements(clusterId: Cluster['id']) {
