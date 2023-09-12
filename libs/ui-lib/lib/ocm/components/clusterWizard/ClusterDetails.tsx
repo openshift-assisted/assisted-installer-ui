@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
-import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
+import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
 import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';

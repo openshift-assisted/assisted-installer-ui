@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { ResourceUIState, POLLING_INTERVAL } from '../../../common';
 import {
   fetchClusterAsync,
@@ -7,10 +6,10 @@ import {
   forceReload,
   cancelForceReload,
   FetchErrorType,
-  ClusterDispatch,
-} from '../../reducers/clusters';
-import { selectCurrentClusterState } from '../../selectors';
+} from '../../store/slices/current-cluster/slice';
+import { selectCurrentClusterState } from '../../store/slices/current-cluster/selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useDispatchDay1, useSelectorDay1 } from '../../store';
 
 const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
   if (uiState === ResourceUIState.POLLING_ERROR) {
@@ -24,7 +23,7 @@ const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
 };
 
 export const useFetchCluster = (clusterId: string) => {
-  const dispatch = useDispatch<ClusterDispatch>();
+  const dispatch = useDispatchDay1();
   return React.useCallback(() => {
     if (clusterId) {
       void dispatch(fetchClusterAsync(clusterId));
@@ -39,8 +38,9 @@ export const useClusterPolling = (
   uiState: ResourceUIState;
   errorDetail: FetchErrorType | undefined;
 } => {
-  const { isReloadScheduled, uiState, data, errorDetail } = useSelector(selectCurrentClusterState);
-  const dispatch = useDispatch();
+  const { isReloadScheduled, uiState, data, errorDetail } =
+    useSelectorDay1(selectCurrentClusterState);
+  const dispatch = useDispatchDay1();
   const fetchCluster = useFetchCluster(clusterId);
   const hasClusterData = !!data;
 

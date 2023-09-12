@@ -16,11 +16,11 @@ import { FieldArray, FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import { getFormikArrayItemFieldName, LoadingState } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
-import {
-  selectIsCurrentClusterSNO,
-  selectCurrentClusterPermissionsState,
-} from '../../../../selectors';
 import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  selectCurrentClusterPermissionsState,
+  selectIsCurrentClusterSNO,
+} from '../../../../store/slices/current-cluster/selectors';
 
 const fieldName = 'hosts';
 

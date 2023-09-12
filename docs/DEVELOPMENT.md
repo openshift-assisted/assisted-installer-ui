@@ -7,21 +7,17 @@ between applications and libraries.
 
 1. A Linux distro, like Fedora.
 2. [NodeJS](https://nodejs.org/en) > v14, or newer LTS version.
-3. [Yarn](https://yarnpkg.com/getting-started/install)
+3. [Yarn](https://yarnpkg.com/getting-started/install) (this project uses Yarn v3)
 4. This project uses `rsync` in order to synchronize .css files in one of its build steps.
 5. A back-end API to connect to. Please see instructions in
    [assisted-test-infra](https://github.com/openshift/assisted-test-infra).
-6. Install [yalc](https://github.com/wclr/yalc#installation) (it simulates local package registry).
+6. [yalc](https://github.com/wclr/yalc#installation) (simulates a local package registry).
    ```bash
-   # with yarn:
-   yarn global add yalc
-   ```
-   ```bash
-   # or with npm:
+   # We recommend using npm in order to get the package installed globally:
    npm i -g yalc
    ```
    ```bash
-   # then verify the command works as expected
+   # Now, from a directory outside the project, verify the command works as expected
    yalc --version
    ```
 

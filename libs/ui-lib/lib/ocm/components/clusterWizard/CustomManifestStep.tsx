@@ -7,8 +7,8 @@ import { WithErrorBoundary } from '../../../common/components/ErrorHandling/With
 import { CustomManifestsPage } from '../clusterConfiguration/manifestsConfiguration/CustomManifestsPage';
 import { CustomManifestFormState } from '../clusterConfiguration/manifestsConfiguration/components/propTypes';
 import { useSelector } from 'react-redux';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 
 const getInitialFormStateProps = () => {
   return {

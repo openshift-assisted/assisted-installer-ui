@@ -6,9 +6,9 @@ import {
   AnyAction,
   Dispatch,
 } from '@reduxjs/toolkit';
-import { ResourceUIState } from '../../../common';
-import { ClustersAPI } from '../../services/apis';
-import { handleApiError, isInOcm } from '../../api';
+import { ResourceUIState } from '../../../../common';
+import { ClustersAPI } from '../../../services/apis';
+import { handleApiError, isInOcm } from '../../../api';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
@@ -60,5 +60,6 @@ export const clustersSlice = createSlice({
   },
 });
 
-export const { deleteCluster } = clustersSlice.actions;
-export default clustersSlice.reducer;
+const { actions, reducer } = clustersSlice;
+export const { deleteCluster } = actions;
+export const clustersReducer = reducer;

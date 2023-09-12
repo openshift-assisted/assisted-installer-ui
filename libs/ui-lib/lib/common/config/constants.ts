@@ -10,9 +10,7 @@ import {
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
 import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
-// @ts-ignore
-import buildManifest from '@openshift-assisted/ui-lib/package.json'; // This file is generated at build-time.
+import buildManifest from '@openshift-assisted/ui-lib/package.json';
 
 export const getShortOpenshiftVersion = (ocpVersion?: string) =>
   ocpVersion?.split('.').slice(0, 2).join('.');

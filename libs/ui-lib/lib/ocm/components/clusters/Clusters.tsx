@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   Button,
@@ -10,8 +9,6 @@ import {
   PageSection,
 } from '@patternfly/react-core';
 import { AddCircleOIcon } from '@patternfly/react-icons';
-
-import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
 import {
   ResourceUIState,
   Alerts,
@@ -22,11 +19,7 @@ import {
   AlertsContextProvider,
 } from '../../../common';
 import ClustersTable from './ClustersTable';
-import {
-  fetchClustersAsync,
-  deleteCluster,
-  ClustersDispatch,
-} from '../../reducers/clusters/clustersSlice';
+import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
 import { handleApiError, getApiErrorMessage } from '../../api';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
@@ -34,6 +27,11 @@ import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useSelectorDay1, useDispatchDay1 } from '../../store';
+import {
+  selectClustersUIState,
+  selectClusterTableRows,
+} from '../../store/slices/clusters/selectors';
 
 type ClustersProps = RouteComponentProps;
 
@@ -41,13 +39,13 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const { LOADING, EMPTY, POLLING_ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
-  const clusterRows = useSelector(selectClusterTableRows(t));
-  const clustersUIState = useSelector(selectClustersUIState);
+  const clusterRows = useSelectorDay1(selectClusterTableRows(t));
+  const clustersUIState = useSelectorDay1(selectClustersUIState);
   const uiState = React.useRef(clustersUIState);
   if (clustersUIState !== RELOADING) {
     uiState.current = clustersUIState;
   }
-  const dispatch = useDispatch<ClustersDispatch>();
+  const dispatch = useDispatchDay1();
   const deleteClusterAsync = React.useCallback(
     async (clusterId: Cluster['id']) => {
       try {
