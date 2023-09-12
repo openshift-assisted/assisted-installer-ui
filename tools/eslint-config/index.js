@@ -31,6 +31,17 @@ module.exports = {
     'import/default': 'off',
     'import/no-named-as-default-member': 'off',
     'no-console': 'error',
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: 'lodash',
+            message: 'Import from "lodash-es/<module>.js" instead.',
+          },
+        ],
+      },
+    ],
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -67,17 +78,6 @@ module.exports = {
     '@typescript-eslint/no-unsafe-return': 'error',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/restrict-template-expressions': 'error',
-    'no-restricted-imports': [
-      'error',
-      {
-        paths: [
-          {
-            name: 'lodash',
-            message: 'Import from "lodash-es/<module>.js" instead.',
-          },
-        ],
-      },
-    ],
     'react-hooks/rules-of-hooks': 'error',
     'react/self-closing-comp': 'error',
     'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
