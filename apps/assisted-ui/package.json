@@ -29,7 +29,6 @@
   },
   "description": "A stand-alone web UI for the Assisted Installer",
   "devDependencies": {
-    "@openshift-assisted/eslint-config-assisted-ui": "workspace:*",
     "@tsconfig/vite-react": "^1.0.1",
     "@types/react": "<17.0.30",
     "@types/react-dom": "<17.0.30",

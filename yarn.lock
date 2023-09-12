@@ -386,7 +386,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/assisted-ui@workspace:apps/assisted-ui"
   dependencies:
-    "@openshift-assisted/eslint-config-assisted-ui": "workspace:*"
     "@openshift-assisted/ui-lib": "workspace:*"
     "@openshift-console/dynamic-plugin-sdk": 0.0.3
     "@patternfly/patternfly": ^4.222.4
@@ -423,9 +422,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/eslint-config-assisted-ui@workspace:*, @openshift-assisted/eslint-config-assisted-ui@workspace:^, @openshift-assisted/eslint-config-assisted-ui@workspace:tools/eslint-config-assisted-ui":
+"@openshift-assisted/eslint-config@workspace:tools/eslint-config":
   version: 0.0.0-use.local
-  resolution: "@openshift-assisted/eslint-config-assisted-ui@workspace:tools/eslint-config-assisted-ui"
+  resolution: "@openshift-assisted/eslint-config@workspace:tools/eslint-config"
   dependencies:
     "@types/eslint": ^8
     "@typescript-eslint/eslint-plugin": ^5.54.1
@@ -489,7 +488,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/ui-lib@workspace:libs/ui-lib"
   dependencies:
-    "@openshift-assisted/eslint-config-assisted-ui": "workspace:^"
     "@openshift-assisted/locales": "workspace:*"
     "@openshift-assisted/types": "workspace:*"
     "@tsconfig/recommended": ^1.0.2
