@@ -40,7 +40,7 @@ import { captureException } from '../../../sentry';
 import { ClustersService } from '../../../services';
 import { setServerUpdateError, updateClusterBase } from '../../../reducers/clusters';
 import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
-import { useClusterSupportedPlatforms, usePullSecret } from '../../../hooks';
+import { usePullSecret } from '../../../hooks';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -61,13 +61,12 @@ const NetworkConfigurationForm: React.FC<{
     useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
-  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
 
   // DHCP allocation is currently not supported for Nutanix hosts
   // https://issues.redhat.com/browse/MGMT-12382
   const isHostsPlatformTypeNutanix = React.useMemo(
-    () => supportedPlatformIntegration === 'nutanix',
-    [supportedPlatformIntegration],
+    () => cluster.platform?.type === 'nutanix',
+    [cluster.platform],
   );
 
   React.useEffect(() => {
