@@ -26,6 +26,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   onAutoSelectChange,
   onHostSelect,
   onSetInstallationDiskId,
+  isNutanix,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { autoSelectHosts } = values;
@@ -35,18 +36,19 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   const cdNamespace = clusterDeployment?.metadata?.namespace;
   const cpuArchitecture = getClusterDeploymentCpuArchitecture(clusterDeployment);
 
-  const availableAgents = React.useMemo(
-    () =>
-      getAgentsForSelection(agents).filter(
-        (agent) =>
-          (agent.spec.clusterDeploymentName?.name === cdName &&
-            agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
-          (!agent.spec.clusterDeploymentName?.name &&
-            !agent.spec.clusterDeploymentName?.namespace &&
-            agent.status?.inventory.cpu?.architecture === cpuArchitecture),
-      ),
-    [agents, cdNamespace, cdName, cpuArchitecture],
-  );
+  const availableAgents = React.useMemo(() => {
+    const filtered = getAgentsForSelection(agents).filter(
+      (agent) =>
+        (agent.spec.clusterDeploymentName?.name === cdName &&
+          agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
+        (!agent.spec.clusterDeploymentName?.name &&
+          !agent.spec.clusterDeploymentName?.namespace &&
+          agent.status?.inventory.cpu?.architecture === cpuArchitecture),
+    );
+    return isNutanix
+      ? filtered.filter((a) => a.status?.inventory?.systemVendor?.manufacturer === 'Nutanix')
+      : filtered;
+  }, [agents, cdNamespace, cdName, cpuArchitecture, isNutanix]);
   const { t } = useTranslation();
   return (
     <Grid hasGutter>

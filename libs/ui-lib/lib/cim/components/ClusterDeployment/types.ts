@@ -87,6 +87,7 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;
   onClose: () => void;
   isPreviewOpen: boolean;
+  isNutanix: boolean;
 };
 
 export type ClusterDeploymentDetailsNetworkingProps = Pick<
@@ -100,6 +101,7 @@ export type ClusterDeploymentDetailsNetworkingProps = Pick<
   onClose: () => void;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   isPreviewOpen: boolean;
+  isNutanix: boolean;
 };
 
 export type AgentSelectorChangeProps = {
@@ -163,6 +165,7 @@ export type ClusterDeploymentWizardProps = {
   docVersion: string; // ACM version
   onCreateBmcByYaml: UploadActionModalProps['onCreateBmcByYaml'];
   provisioningConfigResult: ProvisioningConfigResult;
+  isNutanix: boolean;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -176,6 +179,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onAutoSelectChange: VoidFunction;
   onHostSelect: VoidFunction;
+  isNutanix: boolean;
 };
 
 export type InfraEnvAgentTableProps = Pick<
