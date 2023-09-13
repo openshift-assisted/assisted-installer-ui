@@ -21,6 +21,7 @@ export type ClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
   extensionAfter?: { [key: string]: React.ReactElement };
   versions: OpenshiftVersionOptionType[];
+  isNutanix?: boolean;
 };
 
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -46,6 +47,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   versions,
   forceOpenshiftVersion,
   extensionAfter,
+  isNutanix,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode } = values;
@@ -99,8 +101,12 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       ) : (
         <OpenShiftVersionSelect versions={versions} />
       )}
-      <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
-      <ArmCheckbox versions={versions} />
+      {!isNutanix && (
+        <>
+          <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
+          <ArmCheckbox versions={versions} />
+        </>
+      )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
