@@ -14,6 +14,7 @@ type ClusterDeploymentDetailsFormProps = {
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   extensionAfter?: ClusterDetailsFormFieldsProps['extensionAfter'];
+  isNutanix?: boolean;
 };
 
 const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
@@ -21,8 +22,12 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   clusterDeployment,
   clusterImages,
   extensionAfter,
+  isNutanix,
 }) => {
-  const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
+  const ocpVersions = React.useMemo(
+    () => getOCPVersions(clusterImages, isNutanix),
+    [clusterImages, isNutanix],
+  );
   const forceOpenshiftVersion = agentClusterInstall
     ? getSelectedVersion(clusterImages, agentClusterInstall)
     : undefined;
@@ -45,6 +50,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           isEditFlow={isEditFlow}
           forceOpenshiftVersion={forceOpenshiftVersion}
           extensionAfter={extensionAfter}
+          isNutanix={isNutanix}
         />
       </StackItem>
     </Stack>

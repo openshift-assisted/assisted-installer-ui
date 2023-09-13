@@ -36,6 +36,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   fetchKlusterletAddonConfig,
   onSaveISOParams,
   onCreateBMH,
+  isNutanix,
   ...rest
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
@@ -70,6 +71,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               aiConfigMap={aiConfigMap}
               onEditRole={hostActions.onEditRole}
               onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
+              isNutanix={isNutanix}
             />
           );
         }
@@ -115,6 +117,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             fetchInfraEnv={fetchInfraEnv}
             isPreviewOpen={isPreviewOpen}
             onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
+            isNutanix={isNutanix}
           />
         );
       case 'review':
@@ -142,6 +145,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onClose={onClose}
             isPreviewOpen={isPreviewOpen}
             infraEnv={infraEnv}
+            isNutanix={isNutanix}
           />
         );
     }
