@@ -32,6 +32,7 @@ import {
 import {
   Cluster,
   ClusterDefaultConfig,
+  PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
@@ -74,7 +75,13 @@ const getManagedNetworkingDisabledReason = (
   }
 };
 
-const getUserManagedDisabledReason = (featureSupportLevelData: NewFeatureSupportLevelData) => {
+const getUserManagedDisabledReason = (
+  featureSupportLevelData: NewFeatureSupportLevelData,
+  platformType?: PlatformType,
+) => {
+  if (platformType === 'nutanix' || platformType === 'vsphere') {
+    return 'User-Managed Networking is not supported when using Nutanix or vSphere';
+  }
   if (!featureSupportLevelData.isFeatureSupported('USER_MANAGED_NETWORKING')) {
     return featureSupportLevelData.getFeatureDisabledReason('USER_MANAGED_NETWORKING');
   }
@@ -90,6 +97,7 @@ const getManagedNetworkingState = (
   isDualStack: boolean,
   isOracleCloudInfrastructure: boolean,
   featureSupportLevelData: NewFeatureSupportLevelData,
+  platformType?: PlatformType,
 ): {
   isDisabled: boolean;
   clusterManagedDisabledReason?: string;
@@ -101,7 +109,7 @@ const getManagedNetworkingState = (
     featureSupportLevelData,
   );
   const cmnReason = getClusterManagedDisabledReason(featureSupportLevelData);
-  const umnReason = getUserManagedDisabledReason(featureSupportLevelData);
+  const umnReason = getUserManagedDisabledReason(featureSupportLevelData, platformType);
 
   return {
     isDisabled: !!(cmnReason || umnReason || networkingReason),
@@ -195,6 +203,7 @@ const NetworkConfiguration = ({
         isDualStack,
         cluster.platform?.type === 'oci',
         featureSupportLevelData,
+        cluster.platform?.type,
       ),
     [isDualStack, cluster.platform?.type, featureSupportLevelData],
   );
