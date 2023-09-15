@@ -16,7 +16,8 @@
   "rules": {
     "eqeqeq": ["error", "always"],
     "indent": "off",
-    "no-debugger": "error"
+    "no-debugger": "error",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
   },
   "ignorePatterns": ["apps/*/build", "libs/*/build", "tools/*/build"],
   "overrides": [
@@ -55,8 +56,7 @@
       }
     },
     {
-      "files": ["tools/eslint-config-assisted-ui/lib/**/*.ts"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "files": ["tools/eslint-config/**/*.js"],
       "env": {
         "browser": false
       },
@@ -66,7 +66,7 @@
     },
     {
       "files": ["tools/toolbox/lib/**/*.ts"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "extends": ["@openshift-assisted/eslint-config"],
       "env": {
         "browser": false
       },
@@ -80,7 +80,7 @@
     },
     {
       "files": ["libs/locales/@types/**/*.d.ts"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "extends": ["@openshift-assisted/eslint-config"],
       "parserOptions": {
         "tsconfigRootDir": "libs/locales",
         "project": "tsconfig.json",
@@ -92,8 +92,8 @@
       }
     },
     {
-      "files": ["libs/types/lib/**/*.ts"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "files": ["libs/types/**/*.d.ts"],
+      "extends": ["@openshift-assisted/eslint-config"],
       "parserOptions": {
         "tsconfigRootDir": "libs/types",
         "project": "tsconfig.eslint.json",
@@ -106,7 +106,7 @@
     },
     {
       "files": ["libs/ui-lib/lib/**/*.{ts,tsx}"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "extends": ["@openshift-assisted/eslint-config"],
       "parserOptions": {
         "tsconfigRootDir": "libs/ui-lib",
         "project": "tsconfig.eslint.json"
@@ -129,7 +129,7 @@
     },
     {
       "files": ["apps/assisted-ui/vite.config.ts"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui"],
+      "extends": ["@openshift-assisted/eslint-config"],
       "env": {
         "browser": false
       },
@@ -142,7 +142,7 @@
     },
     {
       "files": ["apps/assisted-ui/src/**/*.{ts,tsx}"],
-      "extends": ["@openshift-assisted/eslint-config-assisted-ui", "plugin:react/jsx-runtime"],
+      "extends": ["@openshift-assisted/eslint-config", "plugin:react/jsx-runtime"],
       "parserOptions": {
         "tsconfigRootDir": "apps/assisted-ui",
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true

@@ -36,9 +36,16 @@ const getSupportLevelFromChannel = (
 
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
+  isNutanix?: boolean | undefined,
 ): OpenshiftVersionOptionType[] => {
   const versions = clusterImageSets
-    .filter((clusterImageSet) => clusterImageSet.metadata?.labels?.visible !== 'false')
+    .filter((clusterImageSet) => {
+      let supportedPlatform = true;
+      if (isNutanix && clusterImageSet.spec?.releaseImage) {
+        supportedPlatform = clusterImageSet.spec.releaseImage.endsWith('-x86_64');
+      }
+      return supportedPlatform && clusterImageSet.metadata?.labels?.visible !== 'false';
+    })
     .map((clusterImageSet): OpenshiftVersionOptionType => {
       const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
       return {

@@ -106,6 +106,4 @@ export const OcmBaseDomainField = ({ managedDomains }: { managedDomains: Managed
       </FormGroup>
     </>
   );
-
-  return <></>;
 };

@@ -26,7 +26,8 @@ type Day1Steps =
   | 'Storage'
   | 'Networking'
   | 'Review and create'
-  | 'Operators';
+  | 'Operators'
+  | 'Custom manifests';
 
 type Day1StaticIpSteps =
   | 'Cluster details'

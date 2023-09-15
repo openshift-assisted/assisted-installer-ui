@@ -15,7 +15,7 @@ import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { BMCFormProps } from '../Agent/types';
 import { AgentMachineK8sResource } from '../Hypershift/types';
-import { AddHostDropdownProps } from '../InfraEnv/types';
+import { AddHostDropdownProps, ProvisioningConfigResult } from '../InfraEnv/types';
 import { AddHostModalProps, EditBMHModalProps, UploadActionModalProps } from '../modals/types';
 
 export type EditAgentModalProps = {
@@ -87,6 +87,7 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;
   onClose: () => void;
   isPreviewOpen: boolean;
+  isNutanix: boolean;
 };
 
 export type ClusterDeploymentDetailsNetworkingProps = Pick<
@@ -100,6 +101,7 @@ export type ClusterDeploymentDetailsNetworkingProps = Pick<
   onClose: () => void;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   isPreviewOpen: boolean;
+  isNutanix: boolean;
 };
 
 export type AgentSelectorChangeProps = {
@@ -153,7 +155,6 @@ export type ClusterDeploymentWizardProps = {
   setPreviewOpen: (open: boolean) => void;
   fetchManagedClusters: () => Promise<K8sResourceCommon[]>;
   fetchKlusterletAddonConfig: () => Promise<K8sResourceCommon[]>;
-  isBMPlatform: boolean;
   onSaveAgent: EditAgentModalProps['onSave'];
   onSaveBMH: EditBMHModalProps['onEdit'];
   onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
@@ -163,6 +164,8 @@ export type ClusterDeploymentWizardProps = {
   onCreateBMH?: BMCFormProps['onCreateBMH'];
   docVersion: string; // ACM version
   onCreateBmcByYaml: UploadActionModalProps['onCreateBmcByYaml'];
+  provisioningConfigResult: ProvisioningConfigResult;
+  isNutanix: boolean;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -176,6 +179,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onAutoSelectChange: VoidFunction;
   onHostSelect: VoidFunction;
+  isNutanix: boolean;
 };
 
 export type InfraEnvAgentTableProps = Pick<
@@ -195,7 +199,6 @@ export type InfraEnvAgentTableProps = Pick<
   ) => Promise<BareMetalHostK8sResource>;
   // eslint-disable-next-line
   onMassDeleteHost: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
-  isBMPlatform: boolean;
   agentClusterInstalls: AgentClusterInstallK8sResource[];
 };
 
