@@ -3,7 +3,11 @@ import { ClustersAPI } from './apis';
 import { CpuArchitecture, SupportedCpuArchitecture } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  Platform,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
@@ -28,6 +32,16 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
     // can be ignored, the error type has been set already
   }
   return { apiVipDnsname, errorType: apiVipDnsname ? '' : urlType };
+};
+
+export const mapCloudProviderToPlatformType = (
+  cloud_provider: { kind: string; id: string } | undefined,
+) => {
+  const platformType = cloud_provider?.id === 'external' ? 'oci' : cloud_provider?.id;
+  const platform: Platform = {
+    type: (platformType as PlatformType) || 'baremetal',
+  };
+  return platform;
 };
 
 const Day2ClusterService = {
@@ -117,6 +131,7 @@ const Day2ClusterService = {
         // The field "cpu_architecture" is calculated based on the existing hosts' architecture
         // It can be a specific architecture, or "multi" if hosts from several architectures have been discovered
         cpuArchitecture: mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture),
+        platform: mapCloudProviderToPlatformType(ocmCluster.cloud_provider),
       };
     }
     return treakedCluster;
