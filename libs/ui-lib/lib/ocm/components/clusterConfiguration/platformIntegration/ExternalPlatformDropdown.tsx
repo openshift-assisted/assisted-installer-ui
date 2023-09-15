@@ -12,13 +12,8 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { FeatureId, getFieldId } from '../../../../common';
-import {
-  ExternalPlaformIds,
-  ExternalPlatformLabels,
-  ExternalPlatformLinks,
-  ExternalPlatformTooltips,
-} from './constants';
+import { CpuArchitecture, DeveloperPreview, FeatureId, getFieldId } from '../../../../common';
+import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
 import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import {
   NewFeatureSupportLevelData,
@@ -40,7 +35,6 @@ type ExternalPlatformDropdownProps = {
 export type ExternalPlatformInfo = {
   label: string;
   href?: string;
-  tooltip?: string;
   disabledReason?: string;
 };
 
@@ -58,7 +52,12 @@ const getDisabledReasonForExternalPlatform = (
       cpuArchitecture,
     );
   } else if (platform === 'nutanix' || platform === 'vsphere') {
-    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift`;
+    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift.`;
+  } else if (
+    cpuArchitecture === CpuArchitecture.ppc64le ||
+    cpuArchitecture === CpuArchitecture.s390x
+  ) {
+    return `Plaform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
   }
 };
 
@@ -77,7 +76,6 @@ const getExternalPlatformTypes = (
       [platform]: {
         label: ExternalPlatformLabels[platform],
         href: ExternalPlatformLinks[platform],
-        tooltip: ExternalPlatformTooltips[platform],
         disabledReason: getDisabledReasonForExternalPlatform(
           isSNO,
           newFeatureSupportLevelContext,
@@ -149,25 +147,25 @@ export const ExternalPlatformDropdown = ({
     }
     if (dropdownIsDisabled || isCurrentValueDisabled) {
       setValue('none');
+      onChange('none');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dropdownIsDisabled, externalPlatformTypes]);
 
   const enabledItems = Object.keys(externalPlatformTypes).map((platform) => {
-    const { label, href, tooltip, disabledReason } = externalPlatformTypes[
+    const { label, href, disabledReason } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
     return (
       <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
         <Split>
           <SplitItem>
-            <Tooltip
-              hidden={disabledReason === undefined && tooltip === undefined}
-              content={disabledReason !== undefined ? disabledReason : tooltip}
-              position="top"
-            >
-              <div>{label}</div>
+            <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
+              <div>
+                {label}
+                {platform === 'oci' && <DeveloperPreview testId={'oci-support-level`'} />}
+              </div>
             </Tooltip>
           </SplitItem>
           {!!href && (

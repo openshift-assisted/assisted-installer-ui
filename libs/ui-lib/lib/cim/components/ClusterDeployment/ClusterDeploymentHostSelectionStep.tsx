@@ -140,6 +140,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   aiConfigMap,
   onEditRole: onEditRoleInit,
   onSetInstallationDiskId,
+  isNutanix,
 }) => {
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
@@ -279,6 +280,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
             onSetInstallationDiskId={onSetInstallationDiskId}
             onAutoSelectChange={onAutoSelectChange}
             onHostSelect={onHostSelect}
+            isNutanix={isNutanix}
           />
         </GridItem>
       </Grid>

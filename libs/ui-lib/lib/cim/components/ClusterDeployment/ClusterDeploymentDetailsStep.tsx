@@ -36,6 +36,7 @@ type UseDetailsFormikArgs = {
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
   infraEnv?: InfraEnvK8sResource;
+  isNutanix: boolean;
 };
 
 export const useDetailsFormik = ({
@@ -45,10 +46,11 @@ export const useDetailsFormik = ({
   clusterImages,
   usedClusterNames,
   infraEnv,
+  isNutanix,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
   const { t } = useTranslation();
   const featureSupportLevels = useFeatureSupportLevel();
-  const ocpVersions = getOCPVersions(clusterImages);
+  const ocpVersions = getOCPVersions(clusterImages, isNutanix);
   const cluster = React.useMemo(
     () =>
       clusterDeployment && agentClusterInstall
@@ -98,6 +100,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   onClose,
   isPreviewOpen,
   infraEnv,
+  isNutanix,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -109,6 +112,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     clusterImages,
     usedClusterNames,
     infraEnv,
+    isNutanix,
   });
   const next = () =>
     isCIMFlow(clusterDeployment)
@@ -165,6 +169,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
                   agentClusterInstall={agentClusterInstall}
                   clusterDeployment={clusterDeployment}
                   clusterImages={clusterImages}
+                  isNutanix={isNutanix}
                 />
               </GridItem>
             </Grid>
