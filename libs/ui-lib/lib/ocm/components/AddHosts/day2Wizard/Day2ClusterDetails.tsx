@@ -246,10 +246,11 @@ const Day2ClusterDetails = () => {
                     </Alert>
                   </GridItem>
                 )}
-
-                <GridItem>
-                  <Day2HostStaticIpConfigurations />
-                </GridItem>
+                {day2Cluster.platform?.type !== 'oci' && (
+                  <GridItem>
+                    <Day2HostStaticIpConfigurations />
+                  </GridItem>
+                )}
               </Grid>
             </Form>
           </ClusterWizardStep>
