@@ -4,16 +4,18 @@ import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
   CpuArchitecture,
-  FeatureId,
   getDefaultCpuArchitecture,
   getFieldId,
   SupportedCpuArchitecture,
 } from '../../../common';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  ArchitectureSupportLevelId,
+  Cluster,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export type CpuArchitectureItem = {
   description: string;
-  featureSupportLevelId?: FeatureId;
+  featureSupportLevelId?: ArchitectureSupportLevelId;
   label: string;
 };
 
