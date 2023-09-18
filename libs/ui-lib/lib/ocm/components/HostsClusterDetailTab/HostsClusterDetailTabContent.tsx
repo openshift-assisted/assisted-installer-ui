@@ -192,6 +192,7 @@ export const HostsClusterDetailTabContent = ({
         cluster={day2Cluster}
         cpuArchitecture={infraEnv?.cpuArchitecture}
         openshiftVersion={day2Cluster.openshiftVersion}
+        platformType={day2Cluster.platform?.type}
       >
         <AddHosts />
       </NewFeatureSupportLevelProvider>

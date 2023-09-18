@@ -144,6 +144,7 @@ const AssistedInstallerDetailCard = ({
                 cluster={cluster}
                 cpuArchitecture={infraEnv.cpuArchitecture}
                 openshiftVersion={cluster.openshiftVersion}
+                platformType={cluster.platform?.type}
               >
                 {content}
               </NewFeatureSupportLevelProvider>

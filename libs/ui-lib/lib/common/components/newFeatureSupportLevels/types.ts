@@ -24,6 +24,7 @@ export type NewFeatureSupportLevelData = {
     featureId: FeatureId,
     supportLevelData?: NewFeatureSupportLevelMap,
     cpuArchitecture?: string,
+    platformType?: string,
   ): string | undefined;
   isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   activeFeatureConfiguration?: ActiveFeatureConfiguration;

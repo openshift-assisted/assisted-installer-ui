@@ -150,6 +150,7 @@ export const getNewFeatureDisabledReason = (
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
   cpuArchitecture?: string,
+  platformType?: string,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
@@ -189,6 +190,11 @@ export const getNewFeatureDisabledReason = (
     case 'VSPHERE_INTEGRATION': {
       if (!isSupported) {
         return `Integration with vSphere is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'PLATFORM_MANAGED_NETWORKING': {
+      if (!isSupported) {
+        return `User-Managed Networking is not supported when using ${platformType || ''}`;
       }
     }
     default: {

@@ -26,6 +26,7 @@ export type NewSupportLevelProviderProps = PropsWithChildren<{
   loadingUi: React.ReactNode;
   cluster?: Cluster;
   cpuArchitecture?: string;
+  platformType?: string;
 }>;
 
 export const getFeatureSupported = (featureSupportLevels: SupportLevels, featureId: FeatureId) => {
@@ -38,6 +39,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   loadingUi,
   cpuArchitecture,
   openshiftVersion,
+  platformType,
 }) => {
   const { loading: loadingOCPVersions } = useOpenshiftVersions();
   const pullSecret = usePullSecret();
@@ -50,7 +52,12 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     pullSecret,
     cluster?.openshiftVersion,
   );
-  const featureSupportLevels = useSupportLevelsAPI('features', openshiftVersion, cpuArchitecture);
+  const featureSupportLevels = useSupportLevelsAPI(
+    'features',
+    openshiftVersion,
+    cpuArchitecture,
+    platformType,
+  );
 
   const supportLevelData = React.useMemo<NewFeatureSupportLevelMap>(() => {
     if (!featureSupportLevels) {
@@ -109,6 +116,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
       featureId: FeatureId,
       supportLevelDataNew?: NewFeatureSupportLevelMap,
       cpuArchitecture?: string,
+      platformType?: string,
     ) => {
       const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
@@ -117,6 +125,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
         activeFeatureConfiguration,
         isSupported,
         cpuArchitecture,
+        platformType,
       );
     },
     [isFeatureSupportedCallback, cluster, activeFeatureConfiguration],
