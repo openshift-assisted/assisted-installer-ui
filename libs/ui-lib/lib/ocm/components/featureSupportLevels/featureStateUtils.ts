@@ -7,7 +7,11 @@ import {
   SupportedCpuArchitecture,
 } from '../../../common';
 import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
-import { Cluster, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  PlatformType,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -149,8 +153,8 @@ export const getNewFeatureDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
-  cpuArchitecture?: string,
-  platformType?: string,
+  cpuArchitecture?: SupportedCpuArchitecture,
+  platformType?: PlatformType,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
