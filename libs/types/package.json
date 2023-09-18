@@ -27,6 +27,7 @@
   },
   "files": [
     "accounts-management-service.d.ts",
+    "authorization-service.d.ts",
     "assisted-installer-service.d.ts",
     "tsconfig.json"
   ],
