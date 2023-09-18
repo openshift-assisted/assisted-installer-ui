@@ -11,8 +11,8 @@ export type ClusterWizardContextType = {
   wizardStepIds: ClusterWizardStepsType[];
   onUpdateStaticIpView(view: StaticIpView): void;
   onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
-  setAddCustomManifests(addCustomManifest: boolean): void;
-  addCustomManifests: boolean;
+  setCustomManifestsStep(addCustomManifest: boolean): void;
+  customManifestsStep: boolean;
   wizardPerPage: number;
   setWizardPerPage: (perPage: number) => void;
 };

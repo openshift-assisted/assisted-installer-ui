@@ -35,7 +35,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
   const [manifestsRemoved, setManifestsRemoved] = React.useState(false);
   const cleanCustomManifests = React.useCallback(() => {
     setValue(false);
-    clusterWizardContext.setAddCustomManifests(false);
+    clusterWizardContext.setCustomManifestsStep(false);
     setDeleteCustomManifestsOpen(false);
     setManifestsRemoved(true);
     //if cluster exists remove existing cluster manifests
@@ -46,30 +46,20 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
 
   const onChanged = React.useCallback(
     (checked: boolean) => {
-      if (!checked) {
-        //For new clusters is not necessary to show the delete modal
-        if (clusterId) setDeleteCustomManifestsOpen(true);
-        else {
-          cleanCustomManifests();
-        }
-      } else {
-        setValue(checked);
-        setManifestsRemoved(false);
-        clusterWizardContext.setAddCustomManifests(checked);
-      }
+      clusterWizardContext.setCustomManifestsStep(checked);
     },
     [setValue, clusterWizardContext, setDeleteCustomManifestsOpen, cleanCustomManifests, clusterId],
   );
 
   const onClose = React.useCallback(() => {
     setValue(true);
-    clusterWizardContext.setAddCustomManifests(true);
+    clusterWizardContext.setCustomManifestsStep(true);
     setDeleteCustomManifestsOpen(false);
     setManifestsRemoved(false);
   }, [clusterWizardContext, setValue]);
 
   const customManifestsActivated =
-    clusterWizardContext.addCustomManifests || (customManifests && customManifests.length > 0);
+    clusterWizardContext.customManifestsStep || (customManifests && customManifests.length > 0);
   return (
     <>
       <FormGroup id={`form-control__${fieldId}`} isInline fieldId={fieldId}>

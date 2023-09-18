@@ -52,7 +52,7 @@ const removeStepFromClusterWizard = (
 const getWizardStepIds = (
   wizardStepIds: ClusterWizardStepsType[] | undefined,
   staticIpView?: StaticIpView | 'dhcp-selected',
-  addCustomManifests?: boolean,
+  customManifestsStep?: boolean,
   isSingleClusterFeatureEnabled?: boolean,
 ): ClusterWizardStepsType[] => {
   let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
@@ -66,7 +66,7 @@ const getWizardStepIds = (
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
   }
 
-  if (addCustomManifests) {
+  if (customManifestsStep) {
     stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['custom-manifests']);
   } else {
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
@@ -97,7 +97,7 @@ const ClusterWizardContextProvider = ({
 }>) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
-  const [addCustomManifests, setAddCustomManifests] = React.useState<boolean>(false);
+  const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
   const { customManifests } = useClusterCustomManifests(cluster?.id || '', true);
   const setClusterPermissions = useSetClusterPermissions();
@@ -134,7 +134,7 @@ const ClusterWizardContextProvider = ({
 
     setWizardStepIds(firstStepIds);
     setClusterPermissions(cluster, permissions);
-    setAddCustomManifests(hasManifests);
+    setCustomManifestsStep(hasManifests);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customManifests]);
 
@@ -152,7 +152,7 @@ const ClusterWizardContextProvider = ({
       const newStepIds = getWizardStepIds(
         wizardStepIds,
         staticIpInfo.view,
-        addCustomManifests,
+        customManifestsStep,
         isSingleClusterFeatureEnabled,
       );
       setWizardStepIds(newStepIds);
@@ -165,8 +165,8 @@ const ClusterWizardContextProvider = ({
       setCurrentStepId(stepId);
     };
 
-    const onSetAddCustomManifests = (addCustomManifest: boolean) => {
-      setAddCustomManifests(addCustomManifest);
+    const onSetAddCustomManifestsStep = (addCustomManifest: boolean) => {
+      setCustomManifestsStep(addCustomManifest);
       setWizardStepIds(
         getWizardStepIds(
           wizardStepIds,
@@ -199,7 +199,7 @@ const ClusterWizardContextProvider = ({
           setCurrentStepId('static-ip-network-wide-configurations');
         }
         setWizardStepIds(
-          getWizardStepIds(wizardStepIds, view, addCustomManifests, isSingleClusterFeatureEnabled),
+          getWizardStepIds(wizardStepIds, view, customManifestsStep, isSingleClusterFeatureEnabled),
         );
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
@@ -208,7 +208,7 @@ const ClusterWizardContextProvider = ({
             getWizardStepIds(
               wizardStepIds,
               StaticIpView.FORM,
-              addCustomManifests,
+              customManifestsStep,
               isSingleClusterFeatureEnabled,
             ),
           );
@@ -217,7 +217,7 @@ const ClusterWizardContextProvider = ({
             getWizardStepIds(
               wizardStepIds,
               'dhcp-selected',
-              addCustomManifests,
+              customManifestsStep,
               isSingleClusterFeatureEnabled,
             ),
           );
@@ -226,9 +226,8 @@ const ClusterWizardContextProvider = ({
       wizardStepIds,
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
-      addCustomManifests,
-      setAddCustomManifests: onSetAddCustomManifests,
-      customManifests,
+      customManifestsStep,
+      setCustomManifestsStep: onSetAddCustomManifestsStep,
       wizardPerPage,
       setWizardPerPage,
     };
@@ -236,15 +235,16 @@ const ClusterWizardContextProvider = ({
     wizardStepIds,
     currentStepId,
     infraEnv,
-    addCustomManifests,
-    customManifests,
+    customManifestsStep,
     wizardPerPage,
     isSingleClusterFeatureEnabled,
     clearAlerts,
   ]);
+
   if (!contextValue) {
     return null;
   }
+
   return (
     <>
       <ClusterWizardContext.Provider value={contextValue}>{children}</ClusterWizardContext.Provider>
