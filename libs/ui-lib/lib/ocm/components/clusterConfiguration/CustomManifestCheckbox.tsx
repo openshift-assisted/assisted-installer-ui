@@ -5,8 +5,9 @@ import { getFieldId, HelperText, PopoverIcon } from '../../../common';
 import { OcmCheckbox } from '../ui/OcmFormFields';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import DeleteCustomManifestModal from './manifestsConfiguration/DeleteCustomManifestModal';
-import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
 import { ClustersService } from '../../services';
+import { ClustersAPI } from '../../services/apis';
+import { useUISettings } from '../../hooks';
 
 const Label = () => {
   return (
@@ -27,39 +28,44 @@ const Label = () => {
 type CustomManifestCheckboxProps = { clusterId: string; isDisabled: boolean };
 
 const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckboxProps) => {
-  const [{ name }, , { setValue }] = useField('addCustomManifest');
+  const [{ name }, { value }, { setValue }] = useField('addCustomManifest');
   const fieldId = getFieldId(name, 'input');
   const clusterWizardContext = useClusterWizardContext();
-  const { customManifests } = useClusterCustomManifests(clusterId, false);
+  const { updateUISettings } = useUISettings(clusterId);
+  const { uiSettings } = useUISettings(clusterId);
   const [isDeleteCustomManifestsOpen, setDeleteCustomManifestsOpen] = React.useState(false);
-  const [manifestsRemoved, setManifestsRemoved] = React.useState(false);
-  const cleanCustomManifests = React.useCallback(() => {
+
+  const cleanCustomManifests = React.useCallback(async () => {
+    const { data: manifests } = await ClustersAPI.getManifests(clusterId);
+    void ClustersService.removeClusterManifests(manifests, clusterId);
+
     setValue(false);
     clusterWizardContext.setCustomManifestsStep(false);
     setDeleteCustomManifestsOpen(false);
-    setManifestsRemoved(true);
-    //if cluster exists remove existing cluster manifests
-    if (clusterId && customManifests) {
-      void ClustersService.removeClusterManifests(customManifests, clusterId);
-    }
-  }, [clusterWizardContext, setValue, clusterId, customManifests]);
+    await updateUISettings({
+      addCustomManifests: false,
+      customManifestsAdded: false,
+    });
+  }, [clusterWizardContext, setValue, clusterId]);
 
-  const onChanged = React.useCallback(
+  const onChange = React.useCallback(
     (checked: boolean) => {
+      if (!checked && uiSettings?.customManifestsAdded) {
+        setDeleteCustomManifestsOpen(true);
+      }
+
+      setValue(checked);
       clusterWizardContext.setCustomManifestsStep(checked);
     },
-    [setValue, clusterWizardContext, setDeleteCustomManifestsOpen, cleanCustomManifests, clusterId],
+    [setValue, clusterWizardContext, setDeleteCustomManifestsOpen, clusterId],
   );
 
   const onClose = React.useCallback(() => {
     setValue(true);
     clusterWizardContext.setCustomManifestsStep(true);
     setDeleteCustomManifestsOpen(false);
-    setManifestsRemoved(false);
   }, [clusterWizardContext, setValue]);
 
-  const customManifestsActivated =
-    clusterWizardContext.customManifestsStep || (customManifests && customManifests.length > 0);
   return (
     <>
       <FormGroup id={`form-control__${fieldId}`} isInline fieldId={fieldId}>
@@ -74,18 +80,18 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
               the cluster.
             </HelperText>
           }
-          onChange={(checked: boolean) => onChanged(checked)}
+          onChange={(checked: boolean) => onChange(checked)}
           className="with-tooltip"
-          isChecked={manifestsRemoved ? false : customManifestsActivated}
+          isChecked={value}
           isDisabled={isDisabled}
         />
         <DeleteCustomManifestModal
           isOpen={isDeleteCustomManifestsOpen}
           onClose={onClose}
-          onDelete={() => cleanCustomManifests()}
+          onDelete={cleanCustomManifests}
         />
       </FormGroup>
-      {customManifestsActivated && (
+      {value && (
         <Alert isInline variant="info" title={'This is an advanced configuration feature.'}>
           Custom manifests will be added to the wizard as a new step.
         </Alert>
