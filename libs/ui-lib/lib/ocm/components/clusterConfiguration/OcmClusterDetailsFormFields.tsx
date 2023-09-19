@@ -75,7 +75,7 @@ export const OcmClusterDetailsFormFields = ({
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
-    values.cpuArchitecture,
+    values.cpuArchitecture as SupportedCpuArchitecture,
   );
   const cpuArchitectures = React.useMemo(
     () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),

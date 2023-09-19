@@ -27,8 +27,8 @@ export type NewSupportLevelProviderProps = PropsWithChildren<{
   openshiftVersion?: string;
   loadingUi: React.ReactNode;
   cluster?: Cluster;
-  cpuArchitecture?: string;
-  platformType?: string;
+  cpuArchitecture?: CpuArchitecture;
+  platformType?: PlatformType;
 }>;
 
 export const getFeatureSupported = (featureSupportLevels: SupportLevels, featureId: FeatureId) => {

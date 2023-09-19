@@ -171,7 +171,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
                 <NewFeatureSupportLevelProvider
                   loadingUi={<ClusterLoading />}
                   cluster={cluster}
-                  cpuArchitecture={infraEnv.cpuArchitecture}
+                  cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
                   openshiftVersion={cluster.openshiftVersion}
                   platformType={cluster.platform?.type}
                 >

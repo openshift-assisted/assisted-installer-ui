@@ -1,11 +1,12 @@
 import React from 'react';
-import { useAlerts } from '../../common';
+import { CpuArchitecture, useAlerts } from '../../common';
 import {
   ArchitectureSupportLevelMap,
   NewFeatureSupportLevelMap,
 } from '../../common/components/newFeatureSupportLevels';
 import { getApiErrorMessage, handleApiError } from '../api';
 import NewFeatureSupportLevelsAPI from '../../common/api/assisted-service/NewFeatureSupportLevelsAPI';
+import { PlatformType } from '@openshift-assisted/types/./assisted-installer-service';
 
 type SupportLevelAPIResources = 'architectures' | 'features';
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'
@@ -17,8 +18,8 @@ type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 
 export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   resourceKind: T,
   openshiftVersion?: string,
-  cpuArchitecture?: string,
-  platformType?: string,
+  cpuArchitecture?: CpuArchitecture,
+  platformType?: PlatformType,
 ): UseSupportLevelAPIResponse<T> | null {
   const [cpuArchitectures, setCpuArchitectures] =
     React.useState<ArchitectureSupportLevelMap | null>(null);
@@ -46,7 +47,11 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   );
 
   const fetchFeaturesSupportLevels = React.useCallback(
-    async (openshiftVersion: string, cpuArchitecture?: string, platformType?: string) => {
+    async (
+      openshiftVersion: string,
+      cpuArchitecture?: CpuArchitecture,
+      platformType?: PlatformType,
+    ) => {
       try {
         const { data: features } = await NewFeatureSupportLevelsAPI.featuresSupportLevel(
           openshiftVersion,

@@ -45,7 +45,7 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
         <NewFeatureSupportLevelProvider
           loadingUi={<div />}
           cluster={cluster}
-          cpuArchitecture={infraEnv?.cpuArchitecture}
+          cpuArchitecture={infraEnv?.cpuArchitecture as CpuArchitecture}
           openshiftVersion={cluster.openshiftVersion}
           platformType={cluster.platform?.type}
         >
