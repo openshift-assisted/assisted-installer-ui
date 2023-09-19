@@ -115,7 +115,7 @@ export const bareMetalDiscoveryPage = {
       .should('contain.text', 'M168');
   },
   clickSaveEditHostsForm: () => {
-    cy.get(Cypress.env('submitButton')).click();
+    cy.get('button[type=submit]').click();
     cy.get('.pf-c-popover__content').should('not.exist');
   },
   clickCancelInFormFooter: () => {
