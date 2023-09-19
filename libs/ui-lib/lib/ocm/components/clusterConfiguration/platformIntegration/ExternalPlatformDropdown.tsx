@@ -12,7 +12,13 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { CpuArchitecture, DeveloperPreview, FeatureId, getFieldId } from '../../../../common';
+import {
+  CpuArchitecture,
+  DeveloperPreview,
+  FeatureId,
+  SupportedCpuArchitecture,
+  getFieldId,
+} from '../../../../common';
 import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
 import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import {
@@ -20,6 +26,7 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
+import { architectureData } from '../CpuArchitectureDropdown';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
@@ -27,7 +34,7 @@ const fieldId = getFieldId(INPUT_NAME, 'input');
 type ExternalPlatformDropdownProps = {
   showOciOption: boolean;
   onChange: (selectedPlatform: PlatformType) => void;
-  cpuArchitecture?: string;
+  cpuArchitecture?: SupportedCpuArchitecture;
   featureSupportLevelData: NewFeatureSupportLevelMap | null;
   isSNO: boolean;
 };
@@ -43,7 +50,7 @@ const getDisabledReasonForExternalPlatform = (
   newFeatureSupportLevelContext: NewFeatureSupportLevelData,
   platform: PlatformType,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
-  cpuArchitecture?: string,
+  cpuArchitecture?: SupportedCpuArchitecture,
 ): string | undefined => {
   if (!isSNO) {
     return newFeatureSupportLevelContext.getFeatureDisabledReason(
@@ -66,7 +73,7 @@ const getExternalPlatformTypes = (
   isSNO: boolean,
   newFeatureSupportLevelContext: NewFeatureSupportLevelData,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
-  cpuArchitecture?: string,
+  cpuArchitecture?: SupportedCpuArchitecture,
 ): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => {
   const platforms = ['none', 'nutanix', showOciOption && 'oci', 'vsphere'] as PlatformType[];
 
@@ -111,7 +118,7 @@ export const ExternalPlatformDropdown = ({
   >({});
 
   const tooltipDropdownDisabled = `Platform integration is not supported when ${
-    cpuArchitecture || ''
+    cpuArchitecture ? architectureData[cpuArchitecture].label : ''
   } is selected`;
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {

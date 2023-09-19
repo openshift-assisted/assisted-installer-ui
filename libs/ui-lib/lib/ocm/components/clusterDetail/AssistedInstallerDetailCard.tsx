@@ -140,8 +140,9 @@ const AssistedInstallerDetailCard = ({
               <NewFeatureSupportLevelProvider
                 loadingUi={<LoadingCard />}
                 cluster={cluster}
-                cpuArchitecture={infraEnv.cpuArchitecture}
+                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
                 openshiftVersion={cluster.openshiftVersion}
+                platformType={cluster.platform?.type}
               >
                 {content}
               </NewFeatureSupportLevelProvider>
