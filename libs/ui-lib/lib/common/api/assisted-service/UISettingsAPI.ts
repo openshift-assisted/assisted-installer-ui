@@ -13,11 +13,11 @@ const UISettingsAPI = {
   },
 
   get(clusterId?: Cluster['id']) {
-    return client.get(UISettingsAPI.makeBaseURI(clusterId));
+    return client.get<string>(UISettingsAPI.makeBaseURI(clusterId));
   },
 
   put(clusterId: Cluster['id'], data: string) {
-    return client.put(UISettingsAPI.makeBaseURI(clusterId), data, config);
+    return client.put<string>(UISettingsAPI.makeBaseURI(clusterId), data, config);
   },
 };
 

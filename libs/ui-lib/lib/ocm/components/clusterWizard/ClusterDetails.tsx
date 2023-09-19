@@ -15,6 +15,7 @@ import {
   ClusterDetailsUpdateParams,
   ClustersService,
   ClusterCreateParamsWithStaticNetworking,
+  UISettingService,
 } from '../../services';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -47,7 +48,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           cluster?.tags,
           params,
         );
-        clusterWizardContext.updateUISettings({ addCustomManifests });
+        await clusterWizardContext.updateUISettings({ addCustomManifests });
         dispatch(updateCluster(updatedCluster));
 
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
@@ -69,7 +70,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       try {
         const cluster = await ClustersService.create(params);
         history.push(`${routeBasePath}/clusters/${cluster.id}`, ClusterWizardFlowStateNew);
-        await clusterWizardContext.updateUISettings({ addCustomManifests });
+        await UISettingService.update(cluster.id, { addCustomManifests });
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
@@ -79,7 +80,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, addAlert, dispatch, history],
+    [clearAlerts, history, addAlert, dispatch],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;

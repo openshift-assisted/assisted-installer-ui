@@ -15,7 +15,7 @@ export type ClusterWizardContextType = {
   customManifestsStep: boolean;
   wizardPerPage: number;
   setWizardPerPage: (perPage: number) => void;
-  updateUISettings: (data: UISettingsValues) => void;
+  updateUISettings: (data: UISettingsValues) => Promise<void>;
   uiSettings?: UISettingsValues;
 };
 

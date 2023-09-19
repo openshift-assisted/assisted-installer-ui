@@ -248,11 +248,11 @@ export const CustomManifestsForm = ({
       }
     },
     [
-      addAlert,
       clearAlerts,
       cluster,
-      customManifestsLocalRef,
+      updateUISettings,
       updateCustomManifestsLocal,
+      addAlert,
       removeCustomManifestFromLocal,
     ],
   );

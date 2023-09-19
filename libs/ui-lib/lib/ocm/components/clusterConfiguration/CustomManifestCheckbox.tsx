@@ -27,7 +27,7 @@ const Label = () => {
 type CustomManifestCheckboxProps = { clusterId: string; isDisabled: boolean };
 
 const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckboxProps) => {
-  const [{ name }, { value }, { setValue }] = useField('addCustomManifest');
+  const [{ name }, { value }, { setValue }] = useField<boolean>('addCustomManifest');
   const fieldId = getFieldId(name, 'input');
   const clusterWizardContext = useClusterWizardContext();
   const [isDeleteCustomManifestsOpen, setDeleteCustomManifestsOpen] = React.useState(false);
@@ -54,7 +54,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
       setValue(checked);
       clusterWizardContext.setCustomManifestsStep(checked);
     },
-    [setValue, clusterWizardContext, setDeleteCustomManifestsOpen, clusterId],
+    [setValue, clusterWizardContext, setDeleteCustomManifestsOpen],
   );
 
   const onClose = React.useCallback(() => {
@@ -85,7 +85,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
         <DeleteCustomManifestModal
           isOpen={isDeleteCustomManifestsOpen}
           onClose={onClose}
-          onDelete={cleanCustomManifests}
+          onDelete={() => void cleanCustomManifests()}
         />
       </FormGroup>
       {value && (
