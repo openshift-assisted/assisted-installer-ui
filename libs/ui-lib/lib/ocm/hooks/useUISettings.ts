@@ -17,25 +17,27 @@ const useUISettings = (clusterId?: Cluster['id']) => {
         }
       }
     },
-    [uiSettings],
+    [clusterId, uiSettings],
   );
 
-  const fetchUISettings = async () => {
-    try {
-      if (clusterId) {
-        const settings = await UISettingService.fetch(clusterId);
-        setUISettings(settings);
-      }
-    } catch (e) {
-      // todo
-    }
-  };
-
   React.useEffect(() => {
+    const fetchUISettings = async () => {
+      try {
+        if (clusterId) {
+          const settings = await UISettingService.fetch(clusterId);
+          setUISettings(settings);
+        } else {
+          setUISettings({});
+        }
+      } catch (e) {
+        // todo
+      }
+    };
+
     if (!uiSettings) {
       void fetchUISettings();
     }
-  }, [uiSettings]);
+  }, [clusterId, setUISettings, uiSettings]);
 
   const returnValue = React.useMemo(
     () => ({ uiSettings, updateUISettings }),
