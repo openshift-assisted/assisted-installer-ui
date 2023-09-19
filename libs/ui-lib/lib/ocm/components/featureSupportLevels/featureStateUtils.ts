@@ -10,6 +10,7 @@ import {
   PlatformType,
 } from '../../../common';
 import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
+import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
@@ -174,7 +175,9 @@ export const getNewFeatureDisabledReason = (
       return getNetworkTypeSelectionDisabledReason(cluster);
     }
     case 'CLUSTER_MANAGED_NETWORKING': {
-      return 'Cluster-managed networking is not supported for ARM architecture with this version of OpenShift.';
+      return `Cluster-managed networking is not supported when using ${
+        platformType ? ExternalPlatformLabels[platformType] : ''
+      }`;
     }
     case 'EXTERNAL_PLATFORM_OCI': {
       return getOciDisabledReason(cpuArchitecture, isSupported);
@@ -194,9 +197,11 @@ export const getNewFeatureDisabledReason = (
         return `Integration with vSphere is not available with the selected CPU architecture.`;
       }
     }
-    case 'PLATFORM_MANAGED_NETWORKING': {
+    case 'USER_MANAGED_NETWORKING': {
       if (!isSupported) {
-        return `User-Managed Networking is not supported when using ${platformType || ''}`;
+        return `User-Managed Networking is not supported when using ${
+          platformType ? ExternalPlatformLabels[platformType] : ''
+        }`;
       }
     }
     default: {
