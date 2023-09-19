@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
-import { usePullSecret, useUISettings } from '../../hooks';
+import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -32,7 +32,6 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
   const pullSecret = usePullSecret();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
-  const { updateUISettings } = useUISettings(cluster?.id);
 
   const handleClusterUpdate = React.useCallback(
     async (
@@ -48,7 +47,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           cluster?.tags,
           params,
         );
-        updateUISettings({ addCustomManifests });
+        clusterWizardContext.updateUISettings({ addCustomManifests });
         dispatch(updateCluster(updatedCluster));
 
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
@@ -70,7 +69,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       try {
         const cluster = await ClustersService.create(params);
         history.push(`${routeBasePath}/clusters/${cluster.id}`, ClusterWizardFlowStateNew);
-        await updateUISettings({ addCustomManifests });
+        await clusterWizardContext.updateUISettings({ addCustomManifests });
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),

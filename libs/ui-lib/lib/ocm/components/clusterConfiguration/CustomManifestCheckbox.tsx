@@ -7,7 +7,6 @@ import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import DeleteCustomManifestModal from './manifestsConfiguration/DeleteCustomManifestModal';
 import { ClustersService } from '../../services';
 import { ClustersAPI } from '../../services/apis';
-import { useUISettings } from '../../hooks';
 
 const Label = () => {
   return (
@@ -31,8 +30,6 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
   const [{ name }, { value }, { setValue }] = useField('addCustomManifest');
   const fieldId = getFieldId(name, 'input');
   const clusterWizardContext = useClusterWizardContext();
-  const { updateUISettings } = useUISettings(clusterId);
-  const { uiSettings } = useUISettings(clusterId);
   const [isDeleteCustomManifestsOpen, setDeleteCustomManifestsOpen] = React.useState(false);
 
   const cleanCustomManifests = React.useCallback(async () => {
@@ -42,7 +39,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
     setValue(false);
     clusterWizardContext.setCustomManifestsStep(false);
     setDeleteCustomManifestsOpen(false);
-    await updateUISettings({
+    await clusterWizardContext.updateUISettings({
       addCustomManifests: false,
       customManifestsAdded: false,
     });
@@ -50,7 +47,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
 
   const onChange = React.useCallback(
     (checked: boolean) => {
-      if (!checked && uiSettings?.customManifestsAdded) {
+      if (!checked && clusterWizardContext.uiSettings?.customManifestsAdded) {
         setDeleteCustomManifestsOpen(true);
       }
 

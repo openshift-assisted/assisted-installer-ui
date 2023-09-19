@@ -1,5 +1,5 @@
 import React from 'react';
-import { HostsNetworkConfigurationType } from '../../services';
+import { HostsNetworkConfigurationType, UISettingsValues } from '../../services';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { ClusterWizardStepsType } from './wizardTransition';
 
@@ -15,6 +15,8 @@ export type ClusterWizardContextType = {
   customManifestsStep: boolean;
   wizardPerPage: number;
   setWizardPerPage: (perPage: number) => void;
+  updateUISettings: (data: UISettingsValues) => void;
+  uiSettings?: UISettingsValues;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

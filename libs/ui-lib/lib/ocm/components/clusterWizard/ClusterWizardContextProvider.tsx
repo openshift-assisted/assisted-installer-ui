@@ -18,9 +18,8 @@ import {
   useAlerts,
 } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
-import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
-import { ListManifestsExtended } from '../clusterConfiguration/manifestsConfiguration/data/dataTypes';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { useUISettings } from '../../hooks';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -79,12 +78,6 @@ const getWizardStepIds = (
   return stepsCopy;
 };
 
-const validateIfCustomsManifestsNeedToBeFilled = (
-  customManifests: ListManifestsExtended | undefined,
-): boolean => {
-  return (customManifests || []).some((customManifest) => customManifest.yamlContent === '');
-};
-
 const ClusterWizardContextProvider = ({
   children,
   cluster,
@@ -95,48 +88,54 @@ const ClusterWizardContextProvider = ({
   infraEnv?: InfraEnv;
   permissions?: AssistedInstallerOCMPermissionTypesListType;
 }>) => {
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
+  const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
-  const { customManifests } = useClusterCustomManifests(cluster?.id || '', true);
-  const setClusterPermissions = useSetClusterPermissions();
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const { uiSettings, updateUISettings } = useUISettings(cluster?.id);
   const { clearAlerts } = useAlerts();
-  const [wizardPerPage, setWizardPerPage] = React.useState(10);
+  const setClusterPermissions = useSetClusterPermissions();
 
   React.useEffect(() => {
-    const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-    const customManifestsStepNeedsToBeFilled =
-      validateIfCustomsManifestsNeedToBeFilled(customManifests);
-    const hasManifests = (customManifests || []).length > 0;
-    const requiredStepId = getClusterWizardFirstStep(
-      locationState,
-      staticIpInfo,
-      cluster?.status,
-      cluster?.hosts,
-      isSingleClusterFeatureEnabled,
-      customManifestsStepNeedsToBeFilled,
-    );
-    const firstStepIds = getWizardStepIds(
-      wizardStepIds,
-      staticIpInfo?.view,
-      hasManifests,
-      isSingleClusterFeatureEnabled,
-    );
-    // Only move step if there is still none, or the user is at a forbidden step
-    const shouldMoveStep =
-      !currentStepId ||
-      (customManifestsStepNeedsToBeFilled && isStepAfter(currentStepId, requiredStepId));
-    if (shouldMoveStep) {
-      setCurrentStepId(requiredStepId);
+    if (!!uiSettings) {
+      const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
+      const customManifestsStepNeedsToBeFilled = !!(
+        uiSettings?.addCustomManifests && !uiSettings?.customManifestsAdded
+      );
+
+      const requiredStepId = getClusterWizardFirstStep(
+        locationState,
+        staticIpInfo,
+        cluster?.status,
+        cluster?.hosts,
+        isSingleClusterFeatureEnabled,
+        customManifestsStepNeedsToBeFilled,
+      );
+
+      const firstStepIds = getWizardStepIds(
+        wizardStepIds,
+        staticIpInfo?.view,
+        !!uiSettings?.addCustomManifests,
+        isSingleClusterFeatureEnabled,
+      );
+
+      // Only move step if there is still none, or the user is at a forbidden step
+      if (
+        !currentStepId ||
+        (customManifestsStepNeedsToBeFilled && isStepAfter(currentStepId, requiredStepId))
+      ) {
+        setCurrentStepId(requiredStepId);
+      }
+
+      setWizardStepIds(firstStepIds);
+      setClusterPermissions(cluster, permissions);
+      setCustomManifestsStep(!!uiSettings?.addCustomManifests);
     }
 
-    setWizardStepIds(firstStepIds);
-    setClusterPermissions(cluster, permissions);
-    setCustomManifestsStep(hasManifests);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customManifests]);
+  }, [uiSettings]);
 
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
@@ -230,6 +229,8 @@ const ClusterWizardContextProvider = ({
       setCustomManifestsStep: onSetAddCustomManifestsStep,
       wizardPerPage,
       setWizardPerPage,
+      uiSettings,
+      updateUISettings,
     };
   }, [
     wizardStepIds,
@@ -239,6 +240,8 @@ const ClusterWizardContextProvider = ({
     wizardPerPage,
     isSingleClusterFeatureEnabled,
     clearAlerts,
+    uiSettings,
+    updateUISettings,
   ]);
 
   if (!contextValue) {
