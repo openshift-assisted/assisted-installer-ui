@@ -16,6 +16,7 @@ import {
   useFeature,
   getSupportedCpuArchitectures,
   PlatformType,
+  SupportedCpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -93,7 +94,7 @@ export const OcmClusterDetailsFormFields = ({
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
-    values.cpuArchitecture,
+    values.cpuArchitecture as SupportedCpuArchitecture,
   );
   const cpuArchitectures = React.useMemo(
     () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),
@@ -216,7 +217,7 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
-          cpuArchitecture={values.cpuArchitecture}
+          cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData}
           isSNO={isSNO({ highAvailabilityMode })}

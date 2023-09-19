@@ -7,6 +7,7 @@ import {
   OperatorsValues,
   SupportLevel,
   SupportedCpuArchitecture,
+  PlatformType,
 } from '../../../common';
 import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
 
@@ -150,7 +151,8 @@ export const getNewFeatureDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
-  cpuArchitecture?: string,
+  cpuArchitecture?: SupportedCpuArchitecture,
+  platformType?: PlatformType,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
@@ -190,6 +192,11 @@ export const getNewFeatureDisabledReason = (
     case 'VSPHERE_INTEGRATION': {
       if (!isSupported) {
         return `Integration with vSphere is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'PLATFORM_MANAGED_NETWORKING': {
+      if (!isSupported) {
+        return `User-Managed Networking is not supported when using ${platformType || ''}`;
       }
     }
     default: {

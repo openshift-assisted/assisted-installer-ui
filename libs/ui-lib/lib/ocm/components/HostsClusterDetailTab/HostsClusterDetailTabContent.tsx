@@ -7,6 +7,7 @@ import {
   ErrorState,
   LoadingState,
   POLLING_INTERVAL,
+  SupportedCpuArchitecture,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
@@ -184,7 +185,7 @@ export const HostsClusterDetailTabContent = ({
         <NewFeatureSupportLevelProvider
           loadingUi={<LoadingState />}
           cluster={day2Cluster}
-          cpuArchitecture={infraEnv?.cpuArchitecture}
+          cpuArchitecture={infraEnv?.cpuArchitecture as SupportedCpuArchitecture}
           openshiftVersion={day2Cluster.openshiftVersion}
         >
           <AddHosts />

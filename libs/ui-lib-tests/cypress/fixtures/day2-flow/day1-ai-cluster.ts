@@ -34,7 +34,7 @@ const aiCluster = {
   email_domain: 'redhat.com',
   enabled_host_count: 3,
   feature_usage:
-    '{"Additional NTP Source":{"data":{"source_count":1},"id":"ADDITIONAL_NTP_SOURCE","name":"Additional NTP Source"},"Cluster managed networking with VMs":{"data":{"VM Hosts":["bda910cc-324e-4396-8c4d-59d972859d01","68c3e3ac-3d88-47e8-81de-1d047b8f79fc","a8e1a572-2136-4ea9-9327-a2f3ed0bc862"]},"id":"CLUSTER_MANAGED_NETWORKING_WITH_VMS","name":"Cluster managed networking with VMs"},"Hyperthreading":{"data":{"hyperthreading_enabled":"all"},"id":"HYPERTHREADING","name":"Hyperthreading"},"OVN network type":{"id":"OVN_NETWORK_TYPE","name":"OVN network type"},"Requested hostname":{"data":{"host_count":1},"id":"REQUESTED_HOSTNAME","name":"Requested hostname"}}',
+    '{"Additional NTP Source":{"data":{"source_count":1},"id":"ADDITIONAL_NTP_SOURCE","name":"Additional NTP Source"},"Hyperthreading":{"data":{"hyperthreading_enabled":"all"},"id":"HYPERTHREADING","name":"Hyperthreading"},"OVN network type":{"id":"OVN_NETWORK_TYPE","name":"OVN network type"},"Requested hostname":{"data":{"host_count":1},"id":"REQUESTED_HOSTNAME","name":"Requested hostname"}}',
   high_availability_mode: 'Full',
   host_networks: [
     {

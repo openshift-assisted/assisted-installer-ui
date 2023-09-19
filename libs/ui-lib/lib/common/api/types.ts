@@ -600,7 +600,8 @@ export type ClusterValidationId =
   | 'cnv-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
-  | 'network-type-valid';
+  | 'network-type-valid'
+  | 'platform-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -841,12 +842,7 @@ export interface DiskSpeedCheckResponse {
   path?: string;
 }
 export interface DomainResolutionRequest {
-  domains: {
-    /**
-     * The domain name that should be resolved
-     */
-    domainName: string; // ^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}[.]?$
-  }[];
+  domains: Record<string, unknown>[];
 }
 export interface DomainResolutionResponse {
   resolutions: {
@@ -897,7 +893,10 @@ export type DriveType =
   | 'iSCSI'
   | 'FC'
   | 'LVM'
-  | 'RAID';
+  | 'RAID'
+  | 'ECKD'
+  | 'ECKD (ESE)'
+  | 'FBA';
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -951,48 +950,6 @@ export interface Event {
   props?: string;
 }
 export type EventList = Event[];
-/**
- * (DEPRECATED) List of features attached to openshift version
- */
-export interface FeatureSupportLevel {
-  /**
-   * Version of the OpenShift cluster.
-   */
-  openshiftVersion?: string;
-  features?: {
-    /**
-     * (DEPRECATED) The ID of the feature
-     */
-    featureId:
-      | 'ADDITIONAL_NTP_SOURCE'
-      | 'REQUESTED_HOSTNAME'
-      | 'PROXY'
-      | 'SNO'
-      | 'DAY2_HOSTS'
-      | 'VIP_AUTO_ALLOC'
-      | 'DISK_SELECTION'
-      | 'OVN_NETWORK_TYPE'
-      | 'SDN_NETWORK_TYPE'
-      | 'PLATFORM_SELECTION'
-      | 'SCHEDULABLE_MASTERS'
-      | 'AUTO_ASSIGN_ROLE'
-      | 'CUSTOM_MANIFEST'
-      | 'DISK_ENCRYPTION'
-      | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
-      | 'ARM64_ARCHITECTURE'
-      | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
-      | 'PPC64LE_ARCHITECTURE'
-      | 'S390X_ARCHITECTURE'
-      | 'SINGLE_NODE_EXPANSION'
-      | 'LVM'
-      | 'DUAL_STACK_NETWORKING'
-      | 'MULTIARCH_RELEASE_IMAGE'
-      | 'NUTANIX_INTEGRATION'
-      | 'DUAL_STACK_VIPS'
-      | 'USER_MANAGED_NETWORKING_WITH_MULTI_NODE';
-    supportLevel: SupportLevel;
-  }[];
-}
 export type FeatureSupportLevelId =
   | 'SNO'
   | 'VIP_AUTO_ALLOC'
@@ -1004,17 +961,17 @@ export type FeatureSupportLevelId =
   | 'CNV'
   | 'MCE'
   | 'NUTANIX_INTEGRATION'
+  | 'BAREMETAL_PLATFORM'
+  | 'NONE_PLATFORM'
   | 'VSPHERE_INTEGRATION'
   | 'DUAL_STACK_VIPS'
   | 'CLUSTER_MANAGED_NETWORKING'
   | 'USER_MANAGED_NETWORKING'
   | 'MINIMAL_ISO'
   | 'FULL_ISO'
-  | 'EXTERNAL_PLATFORM_OCI';
-/**
- * (DEPRECATED) List of objects that containing a list of feature-support level and attached to openshift-version
- */
-export type FeatureSupportLevels = FeatureSupportLevel[];
+  | 'EXTERNAL_PLATFORM_OCI'
+  | 'DUAL_STACK'
+  | 'PLATFORM_MANAGED_NETWORKING';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
   string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
@@ -2650,6 +2607,7 @@ export interface V2SupportLevelsArchitectures {
 export interface V2SupportLevelsFeatures {
   openshiftVersion: string;
   cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'oci';
 }
 /**
  * Single VIP verification result.

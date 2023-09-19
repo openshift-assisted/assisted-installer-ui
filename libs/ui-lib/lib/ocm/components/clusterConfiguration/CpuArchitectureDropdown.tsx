@@ -3,9 +3,9 @@ import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/r
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
+  ArchitectureSupportLevelId,
   Cluster,
   CpuArchitecture,
-  FeatureId,
   getDefaultCpuArchitecture,
   getFieldId,
   SupportedCpuArchitecture,
@@ -13,7 +13,7 @@ import {
 
 export type CpuArchitectureItem = {
   description: string;
-  featureSupportLevelId?: FeatureId;
+  featureSupportLevelId?: ArchitectureSupportLevelId;
   label: string;
 };
 

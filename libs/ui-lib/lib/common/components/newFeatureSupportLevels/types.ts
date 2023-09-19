@@ -1,5 +1,10 @@
-import { ArchitectureSupportLevelId, FeatureSupportLevelId, SupportLevel } from '../../api/types';
-import { CpuArchitecture, FeatureId } from '../../types';
+import {
+  ArchitectureSupportLevelId,
+  FeatureSupportLevelId,
+  PlatformType,
+  SupportLevel,
+} from '../../api/types';
+import { CpuArchitecture, FeatureId, SupportedCpuArchitecture } from '../../types';
 
 export type NewFeatureSupportLevelMap = Record<FeatureSupportLevelId, SupportLevel>;
 export type ArchitectureSupportLevelMap = Record<ArchitectureSupportLevelId, SupportLevel>;
@@ -19,7 +24,8 @@ export type NewFeatureSupportLevelData = {
   getFeatureDisabledReason(
     featureId: FeatureId,
     supportLevelData?: NewFeatureSupportLevelMap,
-    cpuArchitecture?: string,
+    cpuArchitecture?: SupportedCpuArchitecture,
+    platformType?: PlatformType,
   ): string | undefined;
   isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   activeFeatureConfiguration?: ActiveFeatureConfiguration;
