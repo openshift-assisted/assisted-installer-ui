@@ -27,10 +27,10 @@ import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
-import { OCP_STATIC_IP_DOC } from '../../config/constants';
+import { getOCPStaticIPDocLink } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-export const StaticIPInfo: React.FC = () => {
+export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
   const { t } = useTranslation();
   return (
     <Alert
@@ -45,7 +45,7 @@ export const StaticIPInfo: React.FC = () => {
         icon={<ExternalLinkAltIcon />}
         iconPosition="right"
         isInline
-        onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+        onClick={() => window.open(getOCPStaticIPDocLink(docVersion), '_blank', 'noopener')}
       >
         {t('ai:View documentation')}
       </Button>
@@ -77,6 +77,7 @@ type DiscoveryImageConfigFormProps = Proxy & {
   imageType?: ImageType;
   isIPXE?: boolean;
   allowEmpty?: boolean;
+  docVersion: string;
 };
 
 export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> = ({
@@ -91,6 +92,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
   hasDHCP,
   isIPXE,
   allowEmpty,
+  docVersion,
 }) => {
   const initialValues: DiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -127,7 +129,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 </StackItem>
                 {hasDHCP === false && (
                   <StackItem>
-                    <StaticIPInfo />
+                    <StaticIPInfo docVersion={docVersion} />
                   </StackItem>
                 )}
                 <StackItem>
