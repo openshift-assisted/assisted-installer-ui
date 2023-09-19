@@ -93,14 +93,7 @@ export const LimitedSupportedCluster = ({
       <>
         <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
         &nbsp;Your cluster will be subject to support limitations because it includes:
-        <TextList>
-          {getPreviewFeatureList(clusterFeatureSupportLevels)}
-          {clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' && (
-            <TextListItem>
-              Cluster-managed networking with some or all discovered hosts as virtual machines
-            </TextListItem>
-          )}
-        </TextList>
+        <TextList>{getPreviewFeatureList(clusterFeatureSupportLevels)}</TextList>
       </>
     )}
   </TextContent>
