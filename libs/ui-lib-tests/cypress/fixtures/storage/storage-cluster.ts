@@ -1,19 +1,6 @@
 import { fakeClusterId } from '../cluster/base-cluster';
 
 const featureUsage = {
-  'Cluster managed networking with VMs': {
-    data: {
-      'VM Hosts': [
-        'bb566d48-9b73-4047-9d4c-ae08618a5ed1',
-        'cf2f3477-896f-40be-876a-b2ac3f2a838c',
-        '55a258b2-687d-48de-9549-8e9b5b63cd9e',
-        'c2839ec2-3a70-421a-8a6a-a537aa4df609',
-        '04ce1396-404e-4967-814c-c10f163dd35a',
-      ],
-    },
-    id: 'CLUSTER_MANAGED_NETWORKING_WITH_VMS',
-    name: 'Cluster managed networking with VMs',
-  },
   LSO: {
     id: 'LSO',
     name: 'LSO',
