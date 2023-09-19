@@ -10,12 +10,15 @@ const NewFeatureSupportLevelsAPI = {
   },
 
   featuresSupportLevel(openshiftVersion: string, cpuArchitecture?: string, platformType?: string) {
-    let queryParams = '?';
-    queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
-    queryParams += cpuArchitecture ? `cpu_architecture=${cpuArchitecture}&` : '';
-    queryParams += platformType ? `platform_type=${platformType}` : '';
     return clientWithoutCaseConverter.get<FeaturesSupportsLevel>(
-      `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
+      `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features`,
+      {
+        params: {
+          openshift_version: openshiftVersion,
+          cpu_architecture: cpuArchitecture,
+          platform_type: platformType,
+        },
+      },
     );
   },
 
