@@ -367,8 +367,8 @@ export const operatorLabels = (
   };
 };
 
-export const OCP_STATIC_IP_DOC =
-  'https://docs.openshift.com/container-platform/latest/scalability_and_performance/ztp-deploying-disconnected.html#ztp-configuring-a-static-ip_ztp-deploying-disconnected';
+export const getOCPStaticIPDocLink = (docVersion = '2.8') =>
+  `https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#on-prem-creating-your-cluster-with-the-cli-nmstateconfig`;
 
 export const AI_UI_TAG = 'ui_ocm';
 
