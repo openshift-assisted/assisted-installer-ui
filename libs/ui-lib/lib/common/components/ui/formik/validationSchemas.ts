@@ -226,15 +226,25 @@ export const vipRangeValidationSchema = (
     },
   );
 
-const vipUniqueValidationSchema = ({ ingressVips, apiVips }: NetworkConfigurationValues) =>
+const vipUniqueValidationSchema = (
+  { ingressVips, apiVips, apiVip, ingressVip }: NetworkConfigurationValues,
+  useIPArray: boolean,
+) =>
   Yup.string().test(
     'vip-uniqueness-validation',
     'The Ingress and API IP addresses cannot be the same.',
     (value) => {
-      if (!value || ingressVips?.length === 0 || apiVips?.length === 0) {
-        return true;
+      if (useIPArray) {
+        if (!value || ingressVips?.length === 0 || apiVips?.length === 0) {
+          return true;
+        }
+        return selectApiVip({ apiVips }) !== selectIngressVip({ ingressVips });
+      } else {
+        if (!value) {
+          return true;
+        }
+        return apiVip !== ingressVip;
       }
-      return selectApiVip({ apiVips }) !== selectIngressVip({ ingressVips });
     },
   );
 
@@ -276,7 +286,7 @@ export const vipValidationSchema = (
       !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
     then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
       .concat(vipRangeValidationSchema(hostSubnets, values, true))
-      .concat(vipUniqueValidationSchema(values))
+      .concat(vipUniqueValidationSchema(values, false))
       .when('hostSubnet', {
         is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
         then: Yup.string().required('Required. Please provide an IP address'),
@@ -295,7 +305,7 @@ export const vipNoSuffixValidationSchema = (
       .concat(ipNoSuffixValidationSchema)
       .concat(vipRangeValidationSchema(hostSubnets, values, false))
       .concat(vipBroadcastValidationSchema(values))
-      .concat(vipUniqueValidationSchema(values))
+      .concat(vipUniqueValidationSchema(values, true))
       .when('hostSubnet', {
         is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
         then: Yup.string().required('Required. Please provide an IP address'),
