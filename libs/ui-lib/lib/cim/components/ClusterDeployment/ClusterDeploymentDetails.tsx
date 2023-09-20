@@ -19,7 +19,7 @@ import {
 } from '../../types';
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import { shouldShowClusterCredentials, shouldShowClusterInstallationProgress } from './helpers';
-import { EventsModalButton } from '../../../common/components/ui/eventsModal';
+import { EventsModal } from '../../../common/components/ui/eventsModal';
 import ClusterDeploymentDetailsTable from './ClusterDeploymentDetailsTable';
 import { FetchSecret } from './types';
 import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
@@ -45,6 +45,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   const [progressCardExpanded, setProgressCardExpanded] = React.useState(true);
   const [inventoryCardExpanded, setInventoryCardExpanded] = React.useState(true);
   const [detailsCardExpanded, setDetailsCardExpanded] = React.useState(true);
+  const [isEventsModalOpen, setIsEventsModalOpen] = React.useState(false);
 
   const clusterAgents = agents.filter(
     (a) =>
@@ -60,120 +61,129 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   );
   const { t } = useTranslation();
   return (
-    <Stack hasGutter>
-      {shouldShowClusterInstallationProgress(agentClusterInstall) && (
+    <>
+      <Stack hasGutter>
+        {shouldShowClusterInstallationProgress(agentClusterInstall) && (
+          <StackItem>
+            <Card id="cluster-installation-progress-card" isExpanded={progressCardExpanded}>
+              <CardHeader
+                onExpand={() => setProgressCardExpanded(!progressCardExpanded)}
+                toggleButtonProps={{
+                  id: 'progress-card-toggle-button',
+                  'aria-label': 'Cluster installation process',
+                  'aria-labelledby': 'titleId progress-card-toggle-button',
+                  'aria-expanded': progressCardExpanded,
+                }}
+              >
+                <CardTitle id="titleId">{t('ai:Cluster installation process')}</CardTitle>
+              </CardHeader>
+              <CardExpandableContent>
+                <CardBody>
+                  <Stack hasGutter>
+                    {shouldShowClusterCredentials(agentClusterInstall) && (
+                      <StackItem>
+                        <ClusterDeploymentCredentials
+                          clusterDeployment={clusterDeployment}
+                          agentClusterInstall={agentClusterInstall}
+                          agents={clusterAgents}
+                          fetchSecret={fetchSecret}
+                          consoleUrl={getConsoleUrl(clusterDeployment)}
+                        />
+                      </StackItem>
+                    )}
+                    <StackItem>
+                      <ClusterDeploymentKubeconfigDownload
+                        clusterDeployment={clusterDeployment}
+                        agentClusterInstall={agentClusterInstall}
+                        fetchSecret={fetchSecret}
+                      />{' '}
+                      <Button
+                        id="cluster-events-button"
+                        variant={ButtonVariant.link}
+                        style={{ textAlign: 'right' }}
+                        onClick={() => setIsEventsModalOpen(true)}
+                      >
+                        {t('ai:View cluster events')}
+                      </Button>
+                    </StackItem>
+                  </Stack>
+                </CardBody>
+              </CardExpandableContent>
+            </Card>
+          </StackItem>
+        )}
         <StackItem>
-          <Card id="cluster-installation-progress-card" isExpanded={progressCardExpanded}>
+          <Card id="cluster-inventory-card" isExpanded={inventoryCardExpanded}>
             <CardHeader
-              onExpand={() => setProgressCardExpanded(!progressCardExpanded)}
+              onExpand={() => setInventoryCardExpanded(!inventoryCardExpanded)}
               toggleButtonProps={{
-                id: 'progress-card-toggle-button',
-                'aria-label': 'Cluster installation process',
-                'aria-labelledby': 'titleId progress-card-toggle-button',
-                'aria-expanded': progressCardExpanded,
+                id: 'inventory-card-toggle-button',
+                'aria-label': 'Hosts inventory',
+                'aria-labelledby': 'titleId inventory-card-toggle-button',
+                'aria-expanded': inventoryCardExpanded,
               }}
             >
-              <CardTitle id="titleId">{t('ai:Cluster installation process')}</CardTitle>
+              <CardTitle id="titleId">{t('ai:Hosts inventory')}</CardTitle>
             </CardHeader>
             <CardExpandableContent>
               <CardBody>
-                <Stack hasGutter>
-                  {shouldShowClusterCredentials(agentClusterInstall) && (
-                    <StackItem>
-                      <ClusterDeploymentCredentials
-                        clusterDeployment={clusterDeployment}
-                        agentClusterInstall={agentClusterInstall}
-                        agents={clusterAgents}
-                        fetchSecret={fetchSecret}
-                        consoleUrl={getConsoleUrl(clusterDeployment)}
-                      />
-                    </StackItem>
-                  )}
-                  <StackItem>
-                    <ClusterDeploymentKubeconfigDownload
-                      clusterDeployment={clusterDeployment}
-                      agentClusterInstall={agentClusterInstall}
-                      fetchSecret={fetchSecret}
-                    />{' '}
-                    <EventsModalButton
-                      id="cluster-events-button"
-                      entityKind="cluster"
-                      cluster={cluster}
-                      title={t('ai:Cluster Events')}
-                      variant={ButtonVariant.link}
-                      style={{ textAlign: 'right' }}
-                      onFetchEvents={onFetchEvents}
-                      ButtonComponent={Button}
-                      disablePagination
-                    >
-                      {t('ai:View cluster events')}
-                    </EventsModalButton>
-                  </StackItem>
-                </Stack>
+                <ClusterDeploymentDetailsTable
+                  agents={clusterAgents}
+                  agentClusterInstall={agentClusterInstall}
+                />
               </CardBody>
             </CardExpandableContent>
           </Card>
         </StackItem>
+        <StackItem>
+          <Card id="cluster-details-card" isExpanded={detailsCardExpanded}>
+            <CardHeader
+              onExpand={() => setDetailsCardExpanded(!detailsCardExpanded)}
+              toggleButtonProps={{
+                id: 'details-card-toggle-button',
+                'aria-label': 'Details',
+                'aria-labelledby': 'titleId details-card-toggle-button',
+                'aria-expanded': detailsCardExpanded,
+              }}
+            >
+              <CardTitle id="titleId">{t('ai:Details')}</CardTitle>
+            </CardHeader>
+            <CardExpandableContent>
+              <CardBody>
+                <ClusterPropertiesList
+                  leftItems={[
+                    clusterProperties.name,
+                    clusterProperties.openshiftVersion,
+                    clusterProperties.clusterId,
+                    clusterProperties.installedTimestamp,
+                    clusterProperties.baseDnsDomain,
+                  ]}
+                  rightItems={[
+                    clusterProperties.apiVip,
+                    clusterProperties.ingressVip,
+                    clusterProperties.clusterNetworkCidr,
+                    clusterProperties.clusterNetworkHostPrefix,
+                    clusterProperties.serviceNetworkCidr,
+                  ]}
+                />
+              </CardBody>
+            </CardExpandableContent>
+          </Card>
+        </StackItem>
+      </Stack>
+      {isEventsModalOpen && (
+        <EventsModal
+          entityKind="cluster"
+          cluster={cluster}
+          title={t('ai:Cluster Events')}
+          onFetchEvents={onFetchEvents}
+          hostId={undefined}
+          disablePagination
+          isOpen
+          onClose={() => setIsEventsModalOpen(false)}
+        />
       )}
-      <StackItem>
-        <Card id="cluster-inventory-card" isExpanded={inventoryCardExpanded}>
-          <CardHeader
-            onExpand={() => setInventoryCardExpanded(!inventoryCardExpanded)}
-            toggleButtonProps={{
-              id: 'inventory-card-toggle-button',
-              'aria-label': 'Hosts inventory',
-              'aria-labelledby': 'titleId inventory-card-toggle-button',
-              'aria-expanded': inventoryCardExpanded,
-            }}
-          >
-            <CardTitle id="titleId">{t('ai:Hosts inventory')}</CardTitle>
-          </CardHeader>
-          <CardExpandableContent>
-            <CardBody>
-              <ClusterDeploymentDetailsTable
-                agents={clusterAgents}
-                agentClusterInstall={agentClusterInstall}
-              />
-            </CardBody>
-          </CardExpandableContent>
-        </Card>
-      </StackItem>
-      <StackItem>
-        <Card id="cluster-details-card" isExpanded={detailsCardExpanded}>
-          <CardHeader
-            onExpand={() => setDetailsCardExpanded(!detailsCardExpanded)}
-            toggleButtonProps={{
-              id: 'details-card-toggle-button',
-              'aria-label': 'Details',
-              'aria-labelledby': 'titleId details-card-toggle-button',
-              'aria-expanded': detailsCardExpanded,
-            }}
-          >
-            <CardTitle id="titleId">{t('ai:Details')}</CardTitle>
-          </CardHeader>
-          <CardExpandableContent>
-            <CardBody>
-              <ClusterPropertiesList
-                leftItems={[
-                  clusterProperties.name,
-                  clusterProperties.openshiftVersion,
-                  clusterProperties.clusterId,
-                  clusterProperties.installedTimestamp,
-                  clusterProperties.baseDnsDomain,
-                ]}
-                rightItems={[
-                  clusterProperties.apiVip,
-                  clusterProperties.ingressVip,
-                  clusterProperties.clusterNetworkCidr,
-                  clusterProperties.clusterNetworkHostPrefix,
-                  clusterProperties.serviceNetworkCidr,
-                ]}
-              />
-            </CardBody>
-          </CardExpandableContent>
-        </Card>
-      </StackItem>
-    </Stack>
+    </>
   );
 };
 
