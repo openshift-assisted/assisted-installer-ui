@@ -8,11 +8,11 @@ const config = {
 };
 
 const UISettingsAPI = {
-  makeBaseURI(clusterId?: Cluster['id']) {
+  makeBaseURI(clusterId: Cluster['id']) {
     return `/v2/clusters/${clusterId ? clusterId : ''}/ui-settings`;
   },
 
-  get(clusterId?: Cluster['id']) {
+  get(clusterId: Cluster['id']) {
     return client.get<string>(UISettingsAPI.makeBaseURI(clusterId));
   },
 
