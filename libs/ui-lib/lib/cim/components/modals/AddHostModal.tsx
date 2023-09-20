@@ -74,6 +74,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
             hasDHCP={hasDHCP}
             isIPXE={isIPXE}
             allowEmpty
+            docVersion={docVersion}
           />
         )}
         {dialogType === 'download' && (
@@ -90,6 +91,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
                 infraEnv={infraEnv}
                 onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
                 hasDHCP={hasDHCP}
+                docVersion={docVersion}
               />
             )}
           </>
@@ -104,11 +106,13 @@ const GeneratingIsoDownload = ({
   onClose,
   onReset,
   hasDHCP,
+  docVersion,
 }: {
   infraEnv: InfraEnvK8sResource;
   onClose: VoidFunction;
   onReset?: VoidFunction;
   hasDHCP: boolean;
+  docVersion: string;
 }) => {
   const { t } = useTranslation();
   return infraEnv.status?.isoDownloadURL ? (
@@ -117,6 +121,7 @@ const GeneratingIsoDownload = ({
       downloadUrl={infraEnv.status.isoDownloadURL}
       onReset={onReset}
       hasDHCP={hasDHCP}
+      docVersion={docVersion}
     />
   ) : (
     <EmptyState>

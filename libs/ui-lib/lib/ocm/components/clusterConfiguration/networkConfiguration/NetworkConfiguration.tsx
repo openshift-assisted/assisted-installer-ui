@@ -1,12 +1,13 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
-import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
+import { Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
   clusterNetworksEqual,
+  CpuArchitecture,
   DUAL_STACK,
   HostSubnets,
   isSNO,
@@ -27,12 +28,15 @@ import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import {
   NewFeatureSupportLevelData,
+  NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
 import {
   Cluster,
   ClusterDefaultConfig,
+  PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
+import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -74,15 +78,30 @@ const getManagedNetworkingDisabledReason = (
   }
 };
 
-const getUserManagedDisabledReason = (featureSupportLevelData: NewFeatureSupportLevelData) => {
-  if (!featureSupportLevelData.isFeatureSupported('USER_MANAGED_NETWORKING')) {
-    return featureSupportLevelData.getFeatureDisabledReason('USER_MANAGED_NETWORKING');
+const getUserManagedDisabledReason = (
+  featureSupportLevelContext: NewFeatureSupportLevelData,
+  platformType?: PlatformType,
+  featureSupportLevelMap?: NewFeatureSupportLevelMap | null,
+) => {
+  if (!featureSupportLevelContext.isFeatureSupported('USER_MANAGED_NETWORKING')) {
+    return featureSupportLevelContext.getFeatureDisabledReason(
+      'USER_MANAGED_NETWORKING',
+      featureSupportLevelMap ?? undefined,
+      undefined,
+      platformType,
+    );
   }
 };
 
-const getClusterManagedDisabledReason = (featureSupportLevelData: NewFeatureSupportLevelData) => {
-  if (!featureSupportLevelData.isFeatureSupported('CLUSTER_MANAGED_NETWORKING')) {
-    return featureSupportLevelData.getFeatureDisabledReason('CLUSTER_MANAGED_NETWORKING');
+const getClusterManagedDisabledReason = (
+  featureSupportLevelContext: NewFeatureSupportLevelData,
+  featureSupportLevelMap?: NewFeatureSupportLevelMap | null,
+) => {
+  if (!featureSupportLevelContext.isFeatureSupported('CLUSTER_MANAGED_NETWORKING')) {
+    return featureSupportLevelContext.getFeatureDisabledReason(
+      'CLUSTER_MANAGED_NETWORKING',
+      featureSupportLevelMap ?? undefined,
+    );
   }
 };
 
@@ -90,6 +109,8 @@ const getManagedNetworkingState = (
   isDualStack: boolean,
   isOracleCloudInfrastructure: boolean,
   featureSupportLevelData: NewFeatureSupportLevelData,
+  platformType?: PlatformType,
+  featureSupportLevelMap?: NewFeatureSupportLevelMap | null,
 ): {
   isDisabled: boolean;
   clusterManagedDisabledReason?: string;
@@ -100,8 +121,15 @@ const getManagedNetworkingState = (
     isOracleCloudInfrastructure,
     featureSupportLevelData,
   );
-  const cmnReason = getClusterManagedDisabledReason(featureSupportLevelData);
-  const umnReason = getUserManagedDisabledReason(featureSupportLevelData);
+  const cmnReason = getClusterManagedDisabledReason(
+    featureSupportLevelData,
+    featureSupportLevelMap,
+  );
+  const umnReason = getUserManagedDisabledReason(
+    featureSupportLevelData,
+    platformType,
+    featureSupportLevelMap,
+  );
 
   return {
     isDisabled: !!(cmnReason || umnReason || networkingReason),
@@ -116,7 +144,13 @@ const NetworkConfiguration = ({
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
 }: NetworkConfigurationProps) => {
-  const featureSupportLevelData = useNewFeatureSupportLevel();
+  const featureSupportLevelContext = useNewFeatureSupportLevel();
+  const featureSupportLevelData = useSupportLevelsAPI(
+    'features',
+    cluster.openshiftVersion,
+    cluster.cpuArchitecture as CpuArchitecture,
+    cluster.platform?.type,
+  );
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
@@ -194,9 +228,11 @@ const NetworkConfiguration = ({
       getManagedNetworkingState(
         isDualStack,
         cluster.platform?.type === 'oci',
+        featureSupportLevelContext,
+        cluster.platform?.type,
         featureSupportLevelData,
       ),
-    [isDualStack, cluster.platform?.type, featureSupportLevelData],
+    [isDualStack, cluster.platform?.type, featureSupportLevelContext, featureSupportLevelData],
   );
 
   return (
@@ -213,19 +249,6 @@ const NetworkConfiguration = ({
           docVersion={cluster.openshiftVersion}
         />
       )}
-
-      {!isUserManagedNetworking &&
-        !featureSupportLevelData.isFeatureSupported('CLUSTER_MANAGED_NETWORKING_WITH_VMS') && (
-          <Alert
-            title="Your cluster will be subject to support limitations"
-            variant={AlertVariant.info}
-            isInline={true}
-            data-testid="networking-vms-alert"
-          >
-            Some or all of your discovered hosts are virtual machines, so selecting the
-            cluster-managed networking option will limit your installed cluster's support.
-          </Alert>
-        )}
 
       {(isSNOCluster || !isUserManagedNetworking) && (
         <StackTypeControlGroup
@@ -255,7 +278,7 @@ const NetworkConfiguration = ({
         <VirtualIPControlGroup
           cluster={cluster}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
-          supportLevel={featureSupportLevelData.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
+          supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
         />
       )}
 
