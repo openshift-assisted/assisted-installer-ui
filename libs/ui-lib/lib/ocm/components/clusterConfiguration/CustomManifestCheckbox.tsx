@@ -77,7 +77,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
               the cluster.
             </HelperText>
           }
-          onChange={(checked: boolean) => onChange(checked)}
+          onChange={onChange}
           className="with-tooltip"
           isChecked={value}
           isDisabled={isDisabled}

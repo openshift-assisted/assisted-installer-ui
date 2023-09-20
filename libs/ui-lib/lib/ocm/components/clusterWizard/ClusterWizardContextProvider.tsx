@@ -20,6 +20,7 @@ import {
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { useUISettings } from '../../hooks';
+import { AlertVariant } from '@patternfly/react-core';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -94,13 +95,19 @@ const ClusterWizardContextProvider = ({
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
-  const { uiSettings, updateUISettings } = useUISettings(cluster?.id);
-  const { clearAlerts } = useAlerts();
+  const {
+    uiSettings,
+    updateUISettings,
+    loading: UISettingsLoading,
+    error: UISettingsError,
+  } = useUISettings(cluster?.id);
+  const { clearAlerts, addAlert, alerts } = useAlerts();
   const setClusterPermissions = useSetClusterPermissions();
 
   React.useEffect(() => {
-    if (!!uiSettings) {
+    if (!UISettingsLoading) {
       const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
+      const customManifestsStepEnabled = !!uiSettings?.addCustomManifests;
       const customManifestsStepNeedsToBeFilled = !!(
         uiSettings?.addCustomManifests && !uiSettings?.customManifestsAdded
       );
@@ -117,7 +124,7 @@ const ClusterWizardContextProvider = ({
       const firstStepIds = getWizardStepIds(
         wizardStepIds,
         staticIpInfo?.view,
-        !!uiSettings?.addCustomManifests,
+        customManifestsStepEnabled,
         isSingleClusterFeatureEnabled,
       );
 
@@ -134,8 +141,19 @@ const ClusterWizardContextProvider = ({
       setCustomManifestsStep(!!uiSettings?.addCustomManifests);
     }
 
+    if (
+      !!UISettingsError &&
+      !alerts.some((alert) => alert.title === "Couldn't retrieve UI settings")
+    ) {
+      addAlert({
+        title: "Couldn't retrieve UI settings",
+        message: UISettingsError,
+        variant: AlertVariant.warning,
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uiSettings]);
+  }, [uiSettings, UISettingsLoading, UISettingsError]);
 
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
