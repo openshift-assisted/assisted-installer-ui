@@ -23,6 +23,7 @@ export type DownloadISOProps = {
   downloadUrl?: string;
   onClose: () => void;
   onReset?: () => void;
+  docVersion?: string;
 };
 
 const DownloadIso = ({
@@ -32,6 +33,7 @@ const DownloadIso = ({
   onReset,
   hasDHCP,
   isSNO = false,
+  docVersion,
 }: DownloadISOProps) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl || ''}'`;
   const { t } = useTranslation();
@@ -53,7 +55,7 @@ const DownloadIso = ({
           </StackItem>
           {hasDHCP === false && (
             <StackItem>
-              <StaticIPInfo />
+              <StaticIPInfo docVersion={docVersion} />
             </StackItem>
           )}
           <StackItem>
