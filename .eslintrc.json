@@ -105,6 +105,19 @@
       }
     },
     {
+      "files": ["libs/sdks/**/*.ts"],
+      "extends": ["@openshift-assisted/eslint-config"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/sdks",
+        "project": "tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
       "files": ["libs/ui-lib/lib/**/*.{ts,tsx}"],
       "extends": ["@openshift-assisted/eslint-config"],
       "parserOptions": {

@@ -1,0 +1,4 @@
+assisted-installer-service/**/*.{js,map,d.ts}
+accounts-management-service/**/*.{js,map,d.ts}
+authorization-service/**/*.{js,map,d.ts}
+node_modules
