@@ -36,6 +36,7 @@ type HostDetailProps = {
     hostId: Host['id'],
     diskId: Disk['id'],
   ) => Promise<unknown>;
+  hideStorage?: boolean;
 };
 
 type SectionColumnProps = {
@@ -115,6 +116,7 @@ export const HostDetail = ({
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
   updateDiskSkipFormatting,
+  hideStorage,
 }: HostDetailProps) => {
   const { t } = useTranslation();
   const { id, validationsInfo: hostValidationsInfo } = host;
@@ -205,7 +207,7 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      {onDiskRole && canEditDisks && (
+      {!hideStorage && (
         <StorageDetail
           host={host}
           onDiskRole={onDiskRole}
