@@ -48,5 +48,5 @@
     "check_types": "yarn run -T tsc --noEmit"
   },
   "type": "module",
-  "version": "2.9.7-cim"
+  "version": "2.9.8-cim"
 }
