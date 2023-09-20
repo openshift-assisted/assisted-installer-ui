@@ -2,7 +2,7 @@ import { AgentK8sResource } from '../../../types';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 
 const CLUSTER_NAME_LABEL = 'cluster.x-k8s.io/cluster-name';
-const NODEPOOL_NAME_ANNOTATION = 'cluster.x-k8s.io/cloned-from-name';
+const NODEPOOL_NAME_ANNOTATION = 'hypershift.openshift.io/nodePool';
 
 export const getNodepoolAgents = (
   nodePool: NodePoolK8sResource,
@@ -16,7 +16,8 @@ export const getNodepoolAgents = (
         am.metadata?.namespace ===
           `${hostedCluster.metadata?.namespace || ''}-${hostedCluster.metadata?.name || ''}` &&
         am.metadata?.labels?.[CLUSTER_NAME_LABEL] === hostedCluster.spec.infraID &&
-        am.metadata?.annotations?.[NODEPOOL_NAME_ANNOTATION] === nodePool.metadata?.name &&
+        am.metadata?.annotations?.[NODEPOOL_NAME_ANNOTATION] ===
+          `${nodePool.metadata?.namespace || ''}/${nodePool.metadata?.name || ''}` &&
         am.status?.agentRef?.name &&
         am.status?.agentRef?.namespace,
     )
