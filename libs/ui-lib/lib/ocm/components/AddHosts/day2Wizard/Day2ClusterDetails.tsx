@@ -227,6 +227,7 @@ const Day2ClusterDetails = () => {
                     day1CpuArchitecture={initialValues.cpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
                     onChange={(value) => handleChangeCpuArchitectureDropdown(value, initialValues)}
+                    platformType={day2Cluster.platform?.type}
                   />
                 </GridItem>
                 {isAlternativeCpuSelected && (
