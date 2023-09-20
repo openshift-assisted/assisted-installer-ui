@@ -10,7 +10,7 @@ import {
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
+import { calculateClusterDateDiff } from '../../../common/services/DateAndTime';
 import { isInOcm } from '../../api';
 import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
