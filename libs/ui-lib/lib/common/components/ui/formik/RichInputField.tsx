@@ -99,7 +99,8 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
       validate,
     });
     const fieldId = getFieldId(props.name, 'input', idPostfix);
-    const isValid = !touched || !error?.length;
+    const isValid = !(touched && error?.length);
+
     return (
       <FormGroup
         id={`form-control__${fieldId}`}
@@ -133,7 +134,10 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               onChange && onChange(event);
             }}
             className="rich-input__text"
-            onBlur={() => setPopoverOpen(false)}
+            onBlur={() => {
+              setTouched(true, false);
+              setPopoverOpen(false);
+            }}
           />
           <Popover
             isVisible={popoverOpen}
