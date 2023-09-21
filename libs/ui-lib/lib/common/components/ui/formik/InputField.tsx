@@ -29,7 +29,6 @@ const InputField: React.FC<
       idPostfix,
       children,
       noDefaultOnChange,
-      inputError,
       description,
       labelInfo,
       showErrorMessage = true,
@@ -37,15 +36,15 @@ const InputField: React.FC<
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
-    const [field] = useField({
+    const [field, { error, touched }] = useField({
       name: props.name,
       validate,
     });
 
     const fieldId = getFieldId(props.name, 'input', idPostfix);
-    const errorMessage = useFieldErrorMsg({ name: props.name, inputError, validate });
+    const errorMessage = useFieldErrorMsg({ name: props.name, inputError: error, validate });
     const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
-    const isValid = !errorMessage;
+    const isValid = !(touched && error);
 
     return (
       <Stack id={`form-control__${fieldId}`}>
@@ -88,7 +87,7 @@ const InputField: React.FC<
           </FormGroup>
         </StackItem>
         <StackItem>
-          {showErrorMessage && errorMessage && (
+          {showErrorMessage && !isValid && (
             <HelperText fieldId={fieldId} isError>
               {errorMessage}
             </HelperText>
