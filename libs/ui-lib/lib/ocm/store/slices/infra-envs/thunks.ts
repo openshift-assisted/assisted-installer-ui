@@ -19,7 +19,7 @@ export const listInfraEnvsByClusterId = createAsyncThunk(
 );
 
 export const createInfraEnv = createAsyncThunk(
-  '',
+  'infraEnvs/createInfraEnv',
   async (params: WithRequired<InfraEnvCreateParams, 'clusterId'>) => {
     const { data: infraEnv } = await InfraEnvsAPI.register(params);
     // dispatch({ type: 'currentCluster/updateStaticNetworkConfig' payload: infraEnv.staticNetworkConfig });

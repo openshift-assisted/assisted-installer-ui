@@ -3,7 +3,6 @@ import { clustersReducer } from './slices/clusters/slice';
 import { currentClusterReducer } from './slices/current-cluster/slice';
 import { infraEnvsReducer } from './slices/infra-envs/slice';
 import { featureFlagsReducer } from './slices/feature-flags/slice';
-import { STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../common';
 
 export const storeDay1 = configureStore({
   devTools: {
@@ -14,9 +13,6 @@ export const storeDay1 = configureStore({
     currentCluster: currentClusterReducer,
     infraEnvs: infraEnvsReducer,
     featureFlags: featureFlagsReducer,
-  },
-  preloadedState: {
-    featureFlags: STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
   },
 });
 export type RootStateDay1 = ReturnType<typeof storeDay1.getState>;

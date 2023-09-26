@@ -620,6 +620,7 @@ __metadata:
   dependencies:
     "@openshift-assisted/locales": "workspace:*"
     "@openshift-assisted/types": "workspace:*"
+    "@redhat-cloud-services/types": ^1.0.1
     "@tsconfig/recommended": ^1.0.2
     "@types/file-saver": ^2.0.1
     "@types/human-date": ^1.4.0
@@ -813,6 +814,13 @@ __metadata:
   version: 4.94.7
   resolution: "@patternfly/react-tokens@npm:4.94.7"
   checksum: 726fe4d9edd996b228f02c02586e51969af72b846f8b14fa3090f476bb831bd8a12f8530d51baafe9d5aa21fb007553b57e2d96da5f3b03f6f9e174e5d640af9
+  languageName: node
+  linkType: hard
+
+"@redhat-cloud-services/types@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "@redhat-cloud-services/types@npm:1.0.2"
+  checksum: 3dc10eb4e0ccf6cda9b5c1e10015139b7d243773b874e0686ed0294e8abb8f605f560f197233b5ffedfe7e58968cd6f80e59acf0b7d700e5512521b8b9fa01a8
   languageName: node
   linkType: hard
 

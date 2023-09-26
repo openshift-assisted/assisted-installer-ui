@@ -7,7 +7,6 @@ export const selectFeatureFlagsSlice = (state: RootStateDay1) => state.featureFl
 export const isFeatureEnabled = createSelector(
   [selectFeatureFlagsSlice, (_, feature: AssistedInstallerFeatureType) => feature],
   (featureFlags, feature) => {
-    // Configured via Unleash in the OCM
-    return !!featureFlags[feature];
+    return !!featureFlags.data[feature];
   },
 );
