@@ -24,3 +24,8 @@ export type OcmClusterDetailsValues = ClusterDetailsValues & {
   addCustomManifest: boolean;
   isCMNSupported: boolean;
 };
+
+export type UISettingsValues = {
+  addCustomManifests?: boolean;
+  customManifestsAdded?: boolean;
+};

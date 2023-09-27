@@ -26,16 +26,12 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
       commonActions
         .getInfoAlert()
         .should('contain.text', 'This is an advanced configuration feature.');
+
       commonActions.getWizardStepNav('Custom manifests').should('exist');
 
-      commonActions.toNextStepAfter('Cluster details');
-
-      cy.wait('@create-manifest').then(({ request }) => {
-        expect(request.body).to.deep.equal({
-          folder: 'manifests',
-          file_name: 'manifest1.yaml',
-          content: '',
-        });
+      commonActions.getNextButton().click();
+      cy.wait('@update-ui-settings').then(({ request }) => {
+        expect(request.body).to.deep.equal('AI_UI:{"addCustomManifests":true}');
       });
     });
   });

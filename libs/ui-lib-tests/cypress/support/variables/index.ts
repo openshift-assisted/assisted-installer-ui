@@ -1,4 +1,3 @@
-import './common';
 import './cluster-list';
 import './cluster-details';
 import './host-discovery';
