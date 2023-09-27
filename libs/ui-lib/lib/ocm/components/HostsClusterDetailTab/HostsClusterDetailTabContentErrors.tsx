@@ -19,20 +19,6 @@ const UnableToAddHostsError = ({ onTryAgain }: TryAgainProps) => {
   );
 };
 
-const UnsupportedVersionError = ({ version, onTryAgain }: { version: string } & TryAgainProps) => {
-  return (
-    <>
-      Unsupported OpenShift cluster version: {version || 'N/A'}.
-      <br />
-      Check your connection and{' '}
-      <Button variant={'link'} isInline onClick={onTryAgain}>
-        try again
-      </Button>
-      .
-    </>
-  );
-};
-
 const ReloadFailedError = ({ onTryAgain }: TryAgainProps) => {
   return (
     <>
@@ -63,4 +49,4 @@ const AddHostsApiError = ({ isImport, onTryAgain }: { isImport: boolean } & TryA
   );
 };
 
-export { AddHostsApiError, UnsupportedVersionError, UnableToAddHostsError, ReloadFailedError };
+export { AddHostsApiError, UnableToAddHostsError, ReloadFailedError };
