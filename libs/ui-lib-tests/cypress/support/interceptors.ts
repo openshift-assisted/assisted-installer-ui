@@ -131,6 +131,16 @@ const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
   req.reply(sendContent ? fixtureMapping.manifestContent : '');
 };
 
+const mockUISettingsResponse: HttpRequestInterceptor = (req) => {
+  if (hasWizardSignal('CUSTOM_MANIFEST_ADDED')) {
+    req.reply('AI_UI:{"addCustomManifests":true,"customManifestsAdded":true}');
+  } else if (hasWizardSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED')) {
+    req.reply('AI_UI:{"addCustomManifests":true}');
+  } else {
+    req.reply('""');
+  }
+};
+
 const setScenarioEnvVars = (activeScenario) => {
   Cypress.env('AI_SCENARIO', activeScenario);
   Cypress.env('ASSISTED_SNO_DEPLOYMENT', false);
@@ -201,6 +211,9 @@ const addClusterPatchAndDetailsIntercepts = () => {
       mockClusterResponse(req);
     }
   });
+
+  cy.intercept('GET', `${clusterApiPath}/ui-settings`, mockUISettingsResponse).as('ui-settings');
+  cy.intercept('PUT', `${clusterApiPath}/ui-settings`, '""').as('update-ui-settings');
 };
 
 const addDay1InfraEnvIntercepts = () => {

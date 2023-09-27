@@ -18,9 +18,9 @@ import {
   useAlerts,
 } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
-import useClusterCustomManifests from '../../hooks/useClusterCustomManifests';
-import { ListManifestsExtended } from '../clusterConfiguration/manifestsConfiguration/data/dataTypes';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { useUISettings } from '../../hooks';
+import { AlertVariant } from '@patternfly/react-core';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -52,7 +52,7 @@ const removeStepFromClusterWizard = (
 const getWizardStepIds = (
   wizardStepIds: ClusterWizardStepsType[] | undefined,
   staticIpView?: StaticIpView | 'dhcp-selected',
-  addCustomManifests?: boolean,
+  customManifestsStep?: boolean,
   isSingleClusterFeatureEnabled?: boolean,
 ): ClusterWizardStepsType[] => {
   let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
@@ -66,7 +66,7 @@ const getWizardStepIds = (
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
   }
 
-  if (addCustomManifests) {
+  if (customManifestsStep) {
     stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['custom-manifests']);
   } else {
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
@@ -79,12 +79,6 @@ const getWizardStepIds = (
   return stepsCopy;
 };
 
-const validateIfCustomsManifestsNeedToBeFilled = (
-  customManifests: ListManifestsExtended | undefined,
-): boolean => {
-  return (customManifests || []).some((customManifest) => customManifest.yamlContent === '');
-};
-
 const ClusterWizardContextProvider = ({
   children,
   cluster,
@@ -95,48 +89,71 @@ const ClusterWizardContextProvider = ({
   infraEnv?: InfraEnv;
   permissions?: AssistedInstallerOCMPermissionTypesListType;
 }>) => {
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
-  const [addCustomManifests, setAddCustomManifests] = React.useState<boolean>(false);
-  const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
-  const { customManifests } = useClusterCustomManifests(cluster?.id || '', true);
-  const setClusterPermissions = useSetClusterPermissions();
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const { clearAlerts } = useAlerts();
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
+  const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
+  const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
+  const {
+    uiSettings,
+    updateUISettings,
+    loading: UISettingsLoading,
+    error: UISettingsError,
+  } = useUISettings(cluster?.id);
+  const { clearAlerts, addAlert, alerts } = useAlerts();
+  const setClusterPermissions = useSetClusterPermissions();
 
   React.useEffect(() => {
-    const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-    const customManifestsStepNeedsToBeFilled =
-      validateIfCustomsManifestsNeedToBeFilled(customManifests);
-    const hasManifests = (customManifests || []).length > 0;
-    const requiredStepId = getClusterWizardFirstStep(
-      locationState,
-      staticIpInfo,
-      cluster?.status,
-      cluster?.hosts,
-      isSingleClusterFeatureEnabled,
-      customManifestsStepNeedsToBeFilled,
-    );
-    const firstStepIds = getWizardStepIds(
-      wizardStepIds,
-      staticIpInfo?.view,
-      hasManifests,
-      isSingleClusterFeatureEnabled,
-    );
-    // Only move step if there is still none, or the user is at a forbidden step
-    const shouldMoveStep =
-      !currentStepId ||
-      (customManifestsStepNeedsToBeFilled && isStepAfter(currentStepId, requiredStepId));
-    if (shouldMoveStep) {
-      setCurrentStepId(requiredStepId);
+    if (!UISettingsLoading) {
+      const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
+      const customManifestsStepEnabled = !!uiSettings?.addCustomManifests;
+      const customManifestsStepNeedsToBeFilled = !!(
+        uiSettings?.addCustomManifests && !uiSettings?.customManifestsAdded
+      );
+
+      const requiredStepId = getClusterWizardFirstStep(
+        locationState,
+        staticIpInfo,
+        cluster?.status,
+        cluster?.hosts,
+        isSingleClusterFeatureEnabled,
+        customManifestsStepNeedsToBeFilled,
+      );
+
+      const firstStepIds = getWizardStepIds(
+        wizardStepIds,
+        staticIpInfo?.view,
+        customManifestsStepEnabled,
+        isSingleClusterFeatureEnabled,
+      );
+
+      // Only move step if there is still none, or the user is at a forbidden step
+      if (
+        !currentStepId ||
+        (customManifestsStepNeedsToBeFilled && isStepAfter(currentStepId, requiredStepId))
+      ) {
+        setCurrentStepId(requiredStepId);
+      }
+
+      setWizardStepIds(firstStepIds);
+      setClusterPermissions(cluster, permissions);
+      setCustomManifestsStep(!!uiSettings?.addCustomManifests);
     }
 
-    setWizardStepIds(firstStepIds);
-    setClusterPermissions(cluster, permissions);
-    setAddCustomManifests(hasManifests);
+    if (
+      !!UISettingsError &&
+      !alerts.some((alert) => alert.title === "Couldn't retrieve UI settings")
+    ) {
+      addAlert({
+        title: "Couldn't retrieve UI settings",
+        message: UISettingsError,
+        variant: AlertVariant.warning,
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customManifests]);
+  }, [uiSettings, UISettingsLoading, UISettingsError]);
 
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
@@ -152,7 +169,7 @@ const ClusterWizardContextProvider = ({
       const newStepIds = getWizardStepIds(
         wizardStepIds,
         staticIpInfo.view,
-        addCustomManifests,
+        customManifestsStep,
         isSingleClusterFeatureEnabled,
       );
       setWizardStepIds(newStepIds);
@@ -165,8 +182,8 @@ const ClusterWizardContextProvider = ({
       setCurrentStepId(stepId);
     };
 
-    const onSetAddCustomManifests = (addCustomManifest: boolean) => {
-      setAddCustomManifests(addCustomManifest);
+    const onSetAddCustomManifestsStep = (addCustomManifest: boolean) => {
+      setCustomManifestsStep(addCustomManifest);
       setWizardStepIds(
         getWizardStepIds(
           wizardStepIds,
@@ -199,7 +216,7 @@ const ClusterWizardContextProvider = ({
           setCurrentStepId('static-ip-network-wide-configurations');
         }
         setWizardStepIds(
-          getWizardStepIds(wizardStepIds, view, addCustomManifests, isSingleClusterFeatureEnabled),
+          getWizardStepIds(wizardStepIds, view, customManifestsStep, isSingleClusterFeatureEnabled),
         );
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
@@ -208,7 +225,7 @@ const ClusterWizardContextProvider = ({
             getWizardStepIds(
               wizardStepIds,
               StaticIpView.FORM,
-              addCustomManifests,
+              customManifestsStep,
               isSingleClusterFeatureEnabled,
             ),
           );
@@ -217,7 +234,7 @@ const ClusterWizardContextProvider = ({
             getWizardStepIds(
               wizardStepIds,
               'dhcp-selected',
-              addCustomManifests,
+              customManifestsStep,
               isSingleClusterFeatureEnabled,
             ),
           );
@@ -226,25 +243,29 @@ const ClusterWizardContextProvider = ({
       wizardStepIds,
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
-      addCustomManifests,
-      setAddCustomManifests: onSetAddCustomManifests,
-      customManifests,
+      customManifestsStep,
+      setCustomManifestsStep: onSetAddCustomManifestsStep,
       wizardPerPage,
       setWizardPerPage,
+      uiSettings,
+      updateUISettings,
     };
   }, [
     wizardStepIds,
     currentStepId,
     infraEnv,
-    addCustomManifests,
-    customManifests,
+    customManifestsStep,
     wizardPerPage,
     isSingleClusterFeatureEnabled,
     clearAlerts,
+    uiSettings,
+    updateUISettings,
   ]);
+
   if (!contextValue) {
     return null;
   }
+
   return (
     <>
       <ClusterWizardContext.Provider value={contextValue}>{children}</ClusterWizardContext.Provider>
