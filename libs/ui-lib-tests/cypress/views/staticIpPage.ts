@@ -57,7 +57,7 @@ export const staticIpPage = {
       );
     },
     fileUpload: () => {
-      return cy.get(Cypress.env('inputTypeFile'));
+      return cy.get('input[type="file"]');
     },
     macAddress: (host: number = 0, index: number = 0) => {
       return cy.get(`[data-testid=mac-address-${host}-${index}]`);

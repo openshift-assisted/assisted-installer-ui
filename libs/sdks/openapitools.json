@@ -1,0 +1,69 @@
+{
+  "$schema": "../../node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.0.0",
+    "generators": {
+      "prod:assisted-installer-service": {
+        "output": "#{cwd}/assisted-installer-service",
+        "inputSpec": "https://converter.swagger.io/api/convert?url=https%3A%2F%2Fapi.openshift.com%2Fapi%2Fassisted-install%2Fv2%2Fopenapi",
+        "generatorName": "typescript-axios",
+        "minimalUpdate": true,
+        "generateAliasAsModel": true,
+        "apiPackage": "apis",
+        "modelPackage": "models",
+        "modelNameMappings": {
+          "error": "ApiError"
+        },
+        "additionalProperties": {
+          "snapshot": true,
+          "sortModelPropertiesByRequiredFlag": true,
+          "sortParamsByRequiredFlag": true,
+          "stringEnums": true,
+          "useSingleRequestParameter": true,
+          "withSeparateModelsAndApi": true
+        }
+      },
+      "prod:accounts-management-service": {
+        "output": "#{cwd}/accounts-management-service",
+        "inputSpec": "https://api.openshift.com/api/accounts_mgmt/v1/openapi",
+        "generatorName": "typescript-axios",
+        "minimalUpdate": true,
+        "generateAliasAsModel": true,
+        "apiPackage": "apis",
+        "modelPackage": "models",
+        "modelNameMappings": {
+          "error": "ApiError"
+        },
+        "additionalProperties": {
+          "snapshot": true,
+          "sortModelPropertiesByRequiredFlag": true,
+          "sortParamsByRequiredFlag": true,
+          "stringEnums": true,
+          "useSingleRequestParameter": true,
+          "withSeparateModelsAndApi": true
+        }
+      },
+      "prod:authorization-service": {
+        "output": "#{cwd}/authorization-service",
+        "inputSpec": "https://api.openshift.com/api/authorizations/v1/openapi",
+        "generatorName": "typescript-axios",
+        "minimalUpdate": true,
+        "generateAliasAsModel": true,
+        "apiPackage": "apis",
+        "modelPackage": "models",
+        "modelNameMappings": {
+          "error": "ApiError"
+        },
+        "additionalProperties": {
+          "snapshot": true,
+          "sortModelPropertiesByRequiredFlag": true,
+          "sortParamsByRequiredFlag": true,
+          "stringEnums": true,
+          "useSingleRequestParameter": true,
+          "withSeparateModelsAndApi": true
+        }
+      }
+    }
+  }
+}

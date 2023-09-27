@@ -7,7 +7,7 @@ import {
   LoadingState,
   POLLING_INTERVAL,
 } from '../../../common';
-import { useOpenshiftVersions, usePullSecret } from '../../hooks';
+import { usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
 import Day2ClusterService, { getApiVipDnsName } from '../../services/Day2ClusterService';
 import { handleApiError } from '../../api';
@@ -19,7 +19,6 @@ import {
   AddHostsApiError,
   ReloadFailedError,
   UnableToAddHostsError,
-  UnsupportedVersionError,
 } from './HostsClusterDetailTabContentErrors';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
@@ -32,13 +31,7 @@ export const HostsClusterDetailTabContent = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
-  const {
-    getCpuArchitectures,
-    normalizeClusterVersion,
-    loading: areOpenshiftVersionsLoading,
-  } = useOpenshiftVersions();
 
-  const cpuArchitecturesByVersionImage = getCpuArchitectures(ocmCluster.openshift_version);
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
     setDay2Cluster(null);
@@ -65,18 +58,7 @@ export const HostsClusterDetailTabContent = ({
       setError(<UnableToAddHostsError onTryAgain={handleClickTryAgainLink} />);
     }
 
-    if (!areOpenshiftVersionsLoading && !day2Cluster && pullSecret) {
-      const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
-      if (!normalizedVersion) {
-        setError(
-          <UnsupportedVersionError
-            version={ocmCluster.openshift_version}
-            onTryAgain={handleClickTryAgainLink}
-          />,
-        );
-        return;
-      }
-
+    if (!day2Cluster && pullSecret) {
       const { apiVipDnsname, errorType } = getApiVipDnsName(ocmCluster);
       if (errorType) {
         const wrongUrlMessage =
@@ -102,11 +84,7 @@ export const HostsClusterDetailTabContent = ({
 
       const loadDay2Cluster = async () => {
         try {
-          const day2Cluster = await Day2ClusterService.fetchCluster(
-            ocmCluster,
-            pullSecret,
-            normalizedVersion,
-          );
+          const day2Cluster = await Day2ClusterService.fetchCluster(ocmCluster, pullSecret);
 
           const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
             day2Cluster,
@@ -130,17 +108,7 @@ export const HostsClusterDetailTabContent = ({
 
       void loadDay2Cluster();
     }
-  }, [
-    ocmCluster,
-    pullSecret,
-    day2Cluster,
-    setDay2Cluster,
-    isVisible,
-    normalizeClusterVersion,
-    handleClickTryAgainLink,
-    cpuArchitecturesByVersionImage,
-    areOpenshiftVersionsLoading,
-  ]);
+  }, [ocmCluster, pullSecret, day2Cluster, setDay2Cluster, isVisible, handleClickTryAgainLink]);
 
   const refreshCluster = React.useCallback(async () => {
     if (!day2Cluster?.id) {
