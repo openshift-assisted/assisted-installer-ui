@@ -27,7 +27,7 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { ExternalPlaformIds } from './platformIntegration/constants';
+import { ExternalPlaformIds, ExternalPlatformLabels } from './platformIntegration/constants';
 
 export type CpuArchitectureItem = {
   description: string;
@@ -107,7 +107,7 @@ const CpuArchitectureDropdown = ({
     if (cpuArchitectures !== undefined) {
       return cpuArchitectures.map((cpuArch) => {
         let isCpuSupported = true;
-        if (supportLevelDataForAllCpuArchs !== null) {
+        if (supportLevelDataForAllCpuArchs) {
           const featureSupportLevelData = supportLevelDataForAllCpuArchs[
             cpuArch
           ] as NewFeatureSupportLevelMap;
@@ -117,7 +117,9 @@ const CpuArchitectureDropdown = ({
           );
         }
 
-        const disabledReason = `This CPU architecture is not supported with ${platformType || ''}.`;
+        const disabledReason = `This cluster is using the  ${
+          platformType ? ExternalPlatformLabels[platformType] : ''
+        } platform which doesn't allow this CPU architecture.`;
         return (
           <DropdownItem
             key={cpuArch}
