@@ -31,7 +31,6 @@ import {
   RadioField,
   PopoverIcon,
   pullSecretValidationSchema,
-  OCP_STATIC_IP_DOC,
   CheckboxField,
   AdditionalNTPSourcesField,
   richNameValidationSchema,
@@ -42,6 +41,7 @@ import {
   locationValidationMessages,
   ntpSourceValidationSchema,
   CpuArchitecture,
+  getOCPStaticIPDocLink,
 } from '../../../common';
 
 import './infra-env.css';
@@ -118,6 +118,7 @@ type InfraEnvFormProps = {
   onValuesChanged?: (values: EnvironmentStepFormValues) => void;
   pullSecret?: string;
   sshPublicKey?: string;
+  docVersion: string;
 };
 
 const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
@@ -125,6 +126,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
   children,
   pullSecret,
   sshPublicKey,
+  docVersion,
 }) => {
   const { values, setFieldValue } = useFormikContext<EnvironmentStepFormValues>();
   const { t } = useTranslation();
@@ -194,7 +196,13 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
                                 icon={<ExternalLinkAltIcon />}
                                 iconPosition="right"
                                 isInline
-                                onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+                                onClick={() =>
+                                  window.open(
+                                    getOCPStaticIPDocLink(docVersion),
+                                    '_blank',
+                                    'noopener',
+                                  )
+                                }
                               >
                                 {t('ai:View documentation')}
                               </Button>
@@ -282,6 +290,7 @@ type InfraEnvFormPageProps = InfraEnvFormProps & {
   formRef: React.Ref<FormikProps<EnvironmentStepFormValues>>;
   pullSecret?: string;
   sshPublicKey?: string;
+  docVersion: string;
 };
 
 export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
