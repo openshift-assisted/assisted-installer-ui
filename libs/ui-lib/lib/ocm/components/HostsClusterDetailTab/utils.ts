@@ -38,11 +38,10 @@ const makeState = (
 
 export const getAddHostsTabState = (cluster: OcmClusterType): AddHostsTabState => {
   const isClusterStateReady = /ready|installed/.test(cluster.state);
-  const wasInstalledUsingAssistedInstaller = cluster.product?.id === 'OCP-AssistedInstall';
   // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
   const day1ClusterHostCount = cluster.metrics?.nodes?.total || 0;
 
-  if (isClusterStateReady && wasInstalledUsingAssistedInstaller) {
+  if (isClusterStateReady) {
     let tabState = makeState('visible');
     if (day1ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
       // The cluster has metrics etc., but it's an SNO with an OpenshiftVersion that doesn't support Day2 flow
