@@ -2,9 +2,9 @@ export interface StateSliceMeta {
   /** @default idle */
   status: 'idle' | 'pending' | 'fulfilled' | 'rejected';
   /** @default null */
-  currentRequestId?: string | null;
-  /** @default null */
   updatedAt?: string | null;
+  /** @default null */
+  currentRequestId?: string | null;
 }
 
 export interface StateSlice<D = unknown, E = unknown> {

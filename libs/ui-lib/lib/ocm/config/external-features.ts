@@ -1,5 +1,5 @@
-import { AsyncFeatureStatus } from './async-feature-status';
-import { CapabilitiesService } from '../../../services/capabilities-service';
+import { AsyncFeatureStatus } from '../store/slices/feature-flags/types/async-feature-status';
+import { CapabilitiesService } from '../services/capabilities-service';
 
 export const externalFeatures: AsyncFeatureStatus[] = [
   {

@@ -1,22 +1,25 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureListType, STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../../../common';
-import { detectFeatures } from './thunks';
-import { StateSliceWithMeta } from '../types/state-slice';
-import { FeatureStatus } from './feature-status';
+import type { PayloadAction, SerializedError } from '@reduxjs/toolkit';
+import type { StateSliceWithMeta } from '../../types/state-slice';
+import type { FeatureStatus } from './types/feature-status';
+import type { FeatureListType } from '../../../../common/features/featureGate';
+import { createSlice } from '@reduxjs/toolkit';
+import { detectFeatures, updateMeta } from './thunks';
+import { STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../../../common/features/featureGate';
+
+export type FeatureFlagsState = StateSliceWithMeta<FeatureListType, SerializedError | null>;
 
 const featureFlagsSlice = createSlice({
   name: 'featureFlags',
-  initialState: (): StateSliceWithMeta<FeatureListType, Error | null> => {
-    return {
+  initialState: () =>
+    ({
       data: STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
       error: null,
       meta: {
         status: 'idle',
-        currentRequestId: null,
         updatedAt: null,
+        currentRequestId: null,
       },
-    };
-  },
+    } as FeatureFlagsState),
   reducers: {
     setFeatureFlag: (state, action: PayloadAction<FeatureStatus>) => {
       state.data[action.payload.name] = action.payload.isEnabled;
@@ -26,29 +29,24 @@ const featureFlagsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(detectFeatures.pending, (draftState, action) => {
-      if (/idle|fulfilled|rejected/.test(draftState.meta.status)) {
-        draftState.meta.status = action.meta.requestStatus;
-        draftState.meta.currentRequestId = action.meta.requestId;
-        draftState.meta.updatedAt = new Date().toUTCString();
+    builder.addCase(detectFeatures.pending, (state, action) => {
+      if (/idle|fulfilled|rejected/.test(state.meta.status)) {
+        updateMeta(state, action);
       }
-      return draftState;
+      return state;
     });
-    builder.addCase(detectFeatures.fulfilled, (draftState, action) => {
-      if (/pending/.test(draftState.meta.status)) {
-        draftState.meta.status = action.meta.requestStatus;
-        draftState.meta.currentRequestId = action.meta.requestId;
-        draftState.meta.updatedAt = new Date().toUTCString();
+    builder.addCase(detectFeatures.fulfilled, (state, action) => {
+      if (/pending/.test(state.meta.status)) {
+        updateMeta(state, action);
       }
-      return draftState;
+      return state;
     });
-    builder.addCase(detectFeatures.rejected, (draftState, action) => {
-      if (/pending/.test(draftState.meta.status)) {
-        draftState.meta.status = action.meta.requestStatus;
-        draftState.meta.currentRequestId = action.meta.requestId;
-        draftState.meta.updatedAt = new Date().toUTCString();
+    builder.addCase(detectFeatures.rejected, (state, action) => {
+      if (/pending/.test(state.meta.status)) {
+        updateMeta(state, action);
+        state.error = action.error;
       }
-      return draftState;
+      return state;
     });
   },
 });

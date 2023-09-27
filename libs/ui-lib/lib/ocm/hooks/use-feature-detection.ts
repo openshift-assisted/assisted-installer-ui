@@ -1,26 +1,29 @@
-import { useEffect } from 'react';
-import { storeDay1 } from '../store';
+import type { FeatureListType } from '../../common/features/featureGate';
 import { detectFeatures } from '../store/slices/feature-flags/thunks';
-import { FeatureListType } from '../../common';
+import { storeDay1 } from '../store/store-day1';
+import { useEffect } from 'react';
 
-function omitNonAssistedInstallerKeys(features: FeatureListType | null) {
-  let result: FeatureListType | null = null;
-  if (features !== null) {
-    result = {};
-    for (const [k, v] of Object.entries(features)) {
-      if (k.startsWith('ASSISTED_INSTALLER')) {
-        result[k as keyof FeatureListType] = v;
-      }
-    }
+function toAssistedInstallerFeaturesOnly(
+  accumulator: FeatureListType,
+  currentValue: [string, boolean],
+): FeatureListType {
+  const [k, v] = currentValue;
+  if (k.startsWith('ASSISTED_INSTALLER')) {
+    accumulator[k as keyof FeatureListType] = v;
   }
 
-  return result;
+  return accumulator;
 }
 
-export function useFeatureDetection(overrides: FeatureListType | null = null) {
+export function useFeatureDetection<T extends FeatureListType>(overrides: T | null = null) {
   useEffect(() => {
+    let features: FeatureListType | null = null;
     if (overrides !== null) {
-      void storeDay1.dispatch(detectFeatures(omitNonAssistedInstallerKeys(overrides)));
+      features = Object.entries(overrides).reduce(
+        toAssistedInstallerFeaturesOnly,
+        {} as FeatureListType,
+      );
     }
+    void storeDay1.dispatch(detectFeatures(features));
   }, [overrides]);
 }
