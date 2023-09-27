@@ -14,6 +14,7 @@ import {
   StaticTextField,
   useFeature,
   getSupportedCpuArchitectures,
+  SupportedCpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -74,7 +75,7 @@ export const OcmClusterDetailsFormFields = ({
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
-    values.cpuArchitecture,
+    values.cpuArchitecture as SupportedCpuArchitecture,
   );
   const cpuArchitectures = React.useMemo(
     () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),
@@ -95,7 +96,7 @@ export const OcmClusterDetailsFormFields = ({
       const isOracleSelected = selectedPlatform === 'oci';
       if (isOracleSelected) {
         setFieldValue('addCustomManifest', isOracleSelected, false);
-        clusterWizardContext.setAddCustomManifests(isOracleSelected);
+        clusterWizardContext.setCustomManifestsStep(isOracleSelected);
         setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
       }
     },
@@ -129,7 +130,7 @@ export const OcmClusterDetailsFormFields = ({
         maxLength={CLUSTER_NAME_MAX_LENGTH}
       />
 
-      <OcmBaseDomainField managedDomains={managedDomains} />
+      <OcmBaseDomainField managedDomains={managedDomains} clusterExists={clusterExists} />
 
       {/* TODO(mlibra): For single-cluster: We will probably change this to just a static text */}
       {forceOpenshiftVersion ? (
@@ -171,7 +172,7 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
-          cpuArchitecture={values.cpuArchitecture}
+          cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
           showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData}
           isSNO={isSNO({ highAvailabilityMode })}

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import { ClusterDetailsValues, HelperText, getFieldId } from '../../../common';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
+import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
 
 const INPUT_NAME = 'baseDnsDomain';
 const INPUT_LABEL = 'Base domain';
@@ -21,15 +22,22 @@ export const BaseDnsHelperText = ({
   baseDnsDomain?: string;
 }) => (
   <HelperText fieldId={fieldId}>
-    All DNS records must be subdomains of this base and include the cluster name. This cannot be
-    changed after cluster installation. The full cluster address will be: <br />
+    Enter the name of your local host [localhost] or [localhost.com]. This cannot be changed after
+    creation. All DNS records must include the cluster name and be subdomains of the base you enter.
+    The full cluster address will be: <br />
     <strong>
-      {name || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
+      {name || '[Cluster Name]'}.{baseDnsDomain || '[localhost.com]'}
     </strong>
   </HelperText>
 );
 
-export const OcmBaseDomainField = ({ managedDomains }: { managedDomains: ManagedDomain[] }) => {
+export const OcmBaseDomainField = ({
+  managedDomains,
+  clusterExists,
+}: {
+  managedDomains: ManagedDomain[];
+  clusterExists: boolean;
+}) => {
   const [, { value }, { setValue }] = useField<string>(INPUT_NAME);
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, useRedHatDnsService } = values;
@@ -72,12 +80,15 @@ export const OcmBaseDomainField = ({ managedDomains }: { managedDomains: Managed
   return (
     <>
       {!!managedDomains.length && toggleRedHatDnsService && (
-        <OcmCheckboxField
-          name="useRedHatDnsService"
-          label="Use a temporary 60-day domain"
-          helperText="A base domain will be provided for temporary, non-production clusters."
-          onChange={toggleRedHatDnsService}
-        />
+        <Tooltip content={clusterExistsReason} hidden={!clusterExists}>
+          <OcmCheckboxField
+            name="useRedHatDnsService"
+            label="Use a temporary 60-day domain"
+            helperText="A base domain will be provided for temporary, non-production clusters."
+            onChange={toggleRedHatDnsService}
+            isDisabled={clusterExists}
+          />
+        </Tooltip>
       )}
       <FormGroup
         id={`form-control__${fieldId}`}
@@ -98,7 +109,7 @@ export const OcmBaseDomainField = ({ managedDomains }: { managedDomains: Managed
         ) : (
           <OcmInputField
             name={INPUT_NAME}
-            placeholder="example.com"
+            placeholder="localhost.com"
             isDisabled={useRedHatDnsService}
             isRequired
           />

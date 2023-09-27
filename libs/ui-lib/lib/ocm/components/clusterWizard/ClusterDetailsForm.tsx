@@ -46,9 +46,6 @@ type ClusterDetailsFormProps = {
   handleClusterUpdate: (
     clusterId: Cluster['id'],
     params: ClusterDetailsUpdateParams,
-  ) => Promise<void>;
-  handleCustomManifestsChange: (
-    clusterId: Cluster['id'],
     addCustomManifests: boolean,
   ) => Promise<void>;
 };
@@ -64,7 +61,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     moveNext,
     handleClusterUpdate,
     handleClusterCreate,
-    handleCustomManifestsChange,
     navigation,
   } = props;
 
@@ -73,6 +69,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const featureSupportLevels = useNewFeatureSupportLevel();
   const { clearAlerts } = useAlerts();
+
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {
@@ -86,20 +83,13 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
           resetPlatform = 'baremetal';
         }
         const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
-        await handleClusterUpdate(cluster.id, params);
-        await handleCustomManifestsChange(cluster.id, clusterWizardContext.addCustomManifests);
+        await handleClusterUpdate(cluster.id, params, values.addCustomManifest);
       } else {
         const params = ClusterDetailsService.getClusterCreateParams(values);
-        await handleClusterCreate(params, clusterWizardContext.addCustomManifests);
+        await handleClusterCreate(params, values.addCustomManifest);
       }
     },
-    [
-      cluster,
-      handleClusterCreate,
-      handleClusterUpdate,
-      handleCustomManifestsChange,
-      clusterWizardContext.addCustomManifests,
-    ],
+    [cluster, handleClusterCreate, handleClusterUpdate],
   );
 
   const handleOnNext = React.useCallback(
@@ -129,8 +119,17 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         managedDomains,
         ocpVersions,
         urlSearchParams: search,
+        addCustomManifests: clusterWizardContext.customManifestsStep,
       }),
-    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
+    [
+      infraEnv,
+      cluster,
+      pullSecret,
+      managedDomains,
+      ocpVersions,
+      search,
+      clusterWizardContext.customManifestsStep,
+    ],
   );
 
   const { t } = useTranslation();

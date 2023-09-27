@@ -27,6 +27,7 @@ import { ClustersService } from '../../../../services';
 import { CustomManifestsArray } from './CustomManifestsArray';
 import { getManifestFakeId } from './utils';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
+import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
 
 const fieldName = 'manifests';
 
@@ -116,6 +117,7 @@ export const CustomManifestsForm = ({
   const { addAlert, clearAlerts } = useAlerts();
   const { customManifests, isLoading, error } = useClusterCustomManifests(cluster.id || '', true);
   const customManifestsLocalRef = React.useRef<ListManifestsExtended | undefined>();
+  const { updateUISettings } = useClusterWizardContext();
 
   React.useEffect(() => {
     if (customManifests) {
@@ -220,6 +222,7 @@ export const CustomManifestsForm = ({
             );
           });
           await Promise.all(manifestsRequests);
+
           if (newManifestsToCreate.length > 0) {
             await ClustersService.createClusterManifests(newManifestsToCreate, cluster?.id);
             updateCustomManifestsLocal(newManifestsToCreate, true);
@@ -228,6 +231,7 @@ export const CustomManifestsForm = ({
           if (customManifestsLocalRef.current && manifestsThatExists.length > 0) {
             updateCustomManifestsLocal(manifestsThatExists, false);
           }
+          await updateUISettings({ customManifestsAdded: true });
         } catch (e) {
           handleApiErrorInForm(manifests, manifestsThatExists, actions);
           handleApiError(e, () =>
@@ -244,11 +248,11 @@ export const CustomManifestsForm = ({
       }
     },
     [
-      addAlert,
       clearAlerts,
       cluster,
-      customManifestsLocalRef,
+      updateUISettings,
       updateCustomManifestsLocal,
+      addAlert,
       removeCustomManifestFromLocal,
     ],
   );
