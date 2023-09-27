@@ -152,7 +152,7 @@ const getValidationSchema = (usedHostnames: string[], origHostname: string, t: T
   return Yup.object({
     name: Yup.string().required(t('ai:Required field')),
     hostname: richNameValidationSchema(t, usedHostnames, origHostname),
-    bmcAddress: bmcAddressValidationSchema(t).required(t('ai:Required field')),
+    bmcAddress: bmcAddressValidationSchema(t),
     username: Yup.string().required(t('ai:Required field')),
     password: Yup.string().required(t('ai:Required field')),
     bootMACAddress: macAddressValidationSchema,
@@ -278,7 +278,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 name="bootMACAddress"
                 placeholder={t('ai:Enter an address')}
                 description={t(
-                  "ai:The MAC address of the host's network connected NIC that wll be used to provision the host.",
+                  "ai:The MAC address of the host's network connected NIC that will be used to provision the host. Required for libvirt VMs driven by vbmc.",
                 )}
               />
               <InputField
