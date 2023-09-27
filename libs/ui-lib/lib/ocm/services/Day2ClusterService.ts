@@ -34,10 +34,8 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   return { apiVipDnsname, errorType: apiVipDnsname ? '' : urlType };
 };
 
-export const mapCloudProviderToPlatformType = (
-  cloud_provider: { kind: string; id: string } | undefined,
-) => {
-  const platformType = cloud_provider?.id === 'external' ? 'oci' : cloud_provider?.id;
+export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
+  const platformType = cloudProviderId === 'external' ? 'oci' : cloudProviderId;
   const platform: Platform = {
     type: (platformType as PlatformType) || 'baremetal',
   };
@@ -131,7 +129,7 @@ const Day2ClusterService = {
         // The field "cpu_architecture" is calculated based on the existing hosts' architecture
         // It can be a specific architecture, or "multi" if hosts from several architectures have been discovered
         cpuArchitecture: mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture),
-        platform: mapCloudProviderToPlatformType(ocmCluster.cloud_provider),
+        platform: mapCloudProviderToPlatformType(ocmCluster.cloud_provider?.id),
       };
     }
     return treakedCluster;

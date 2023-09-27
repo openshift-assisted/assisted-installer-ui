@@ -1,5 +1,13 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  FormGroup,
+  Split,
+  SplitItem,
+  Tooltip,
+} from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
@@ -14,7 +22,10 @@ import {
   Cluster,
   PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import {
+  NewFeatureSupportLevelMap,
+  useNewFeatureSupportLevel,
+} from '../../../common/components/newFeatureSupportLevels';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { ExternalPlaformIds } from './platformIntegration/constants';
 
@@ -96,25 +107,32 @@ const CpuArchitectureDropdown = ({
     if (cpuArchitectures !== undefined) {
       return cpuArchitectures.map((cpuArch) => {
         let isCpuSupported = true;
-        if (supportLevelDataForAllCpuArchs) {
-          const featureSupportLevelData = supportLevelDataForAllCpuArchs[cpuArch];
+        if (supportLevelDataForAllCpuArchs !== null) {
+          const featureSupportLevelData = supportLevelDataForAllCpuArchs[
+            cpuArch
+          ] as NewFeatureSupportLevelMap;
           isCpuSupported = newFeatureSupportLevelContext.isFeatureSupported(
             ExternalPlaformIds[platformType ? platformType : 'baremetal'] as FeatureId,
             featureSupportLevelData ?? undefined,
           );
         }
 
-        // Determine whether the item should be disabled or not based on the support level.
-        const isDisabled = !isCpuSupported;
-
+        const disabledReason = `This CPU architecture is not supported with ${platformType || ''}.`;
         return (
           <DropdownItem
             key={cpuArch}
             id={cpuArch}
             description={cpuArch ? architectureData[cpuArch].description : ''}
-            isDisabled={isDisabled}
+            isAriaDisabled={!isCpuSupported}
           >
-            {cpuArch ? architectureData[cpuArch].label : ''}
+            <Split>
+              <SplitItem>
+                <Tooltip hidden={isCpuSupported} content={disabledReason} position="top">
+                  <div>{cpuArch ? architectureData[cpuArch].label : ''}</div>
+                </Tooltip>
+              </SplitItem>
+              <SplitItem isFilled />
+            </Split>
           </DropdownItem>
         );
       });
