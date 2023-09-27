@@ -63,6 +63,26 @@
           "useSingleRequestParameter": true,
           "withSeparateModelsAndApi": true
         }
+      },
+      "prod:clusters-management-service": {
+        "output": "#{cwd}/clusters-management-service",
+        "inputSpec": "https://api.openshift.com/api/clusters_mgmt/v1/openapi",
+        "generatorName": "typescript-axios",
+        "minimalUpdate": true,
+        "generateAliasAsModel": true,
+        "apiPackage": "apis",
+        "modelPackage": "models",
+        "modelNameMappings": {
+          "error": "ApiError"
+        },
+        "additionalProperties": {
+          "snapshot": true,
+          "sortModelPropertiesByRequiredFlag": true,
+          "sortParamsByRequiredFlag": true,
+          "stringEnums": true,
+          "useSingleRequestParameter": true,
+          "withSeparateModelsAndApi": true
+        }
       }
     }
   }

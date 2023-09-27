@@ -31,7 +31,8 @@
     "generate-sdk:all": "openapi-generator-cli generate",
     "generate-sdk:production:assisted-installer-service": "openapi-generator-cli generate --generator-key prod:assisted-installer-service",
     "generate-sdk:production:accounts-management-service": "openapi-generator-cli generate --generator-key prod:accounts-management-service",
-    "generate-sdk:production:authorization-service": "openapi-generator-cli generate --generator-key prod:authorization-service"
+    "generate-sdk:production:authorization-service": "openapi-generator-cli generate --generator-key prod:authorization-service",
+    "generate-sdk:production:clusters-management-service": "openapi-generator-cli generate --generator-key prod:clusters-management-service"
   },
   "publishConfig": {
     "access": "public"
@@ -40,7 +41,9 @@
     "accounts-management-service/**/*.js",
     "accounts-management-service/**/*.d.ts",
     "assisted-installer-service/**/*.js",
-    "authorization-service/**/*.js"
+    "authorization-service/**/*.js",
+    "clusters-management-service/**/*.js",
+    "clusters-management-service/**/*.d.ts"
   ],
   "type": "module"
 }
