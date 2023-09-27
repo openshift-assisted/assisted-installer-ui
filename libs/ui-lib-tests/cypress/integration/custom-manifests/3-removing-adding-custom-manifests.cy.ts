@@ -11,10 +11,10 @@ describe(`Assisted Installer Custom manifests step`, () => {
   };
 
   describe('Custom Manifests actions', () => {
-    before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST'));
+    before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED'));
 
     beforeEach(() => {
-      setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST');
+      setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
       commonActions.visitClusterDetailsPage();
     });
 

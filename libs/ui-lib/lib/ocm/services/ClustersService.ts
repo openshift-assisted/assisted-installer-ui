@@ -11,7 +11,6 @@ import {
 } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
 import {
   Cluster,
-  CreateManifestParams,
   Host,
   InfraEnvCreateParams,
   UpdateManifestParams,
@@ -136,15 +135,6 @@ const ClustersService = {
       );
     });
     return Promise.all(promises);
-  },
-
-  createDummyManifest(clusterId: Cluster['id']) {
-    const dummyManifest: CreateManifestParams = {
-      folder: 'manifests' as 'manifests' | 'openshift',
-      fileName: 'manifest1.yaml',
-      content: '',
-    };
-    return ClustersAPI.createCustomManifest(clusterId, dummyManifest);
   },
 
   updateCustomManifest(

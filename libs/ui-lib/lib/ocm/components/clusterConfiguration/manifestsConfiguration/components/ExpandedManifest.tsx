@@ -50,7 +50,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
             )}.`}
             label={
               <>
-                <span>File name</span>
+                <span>File name</span>{' '}
                 <PopoverIcon
                   bodyContent={
                     'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'

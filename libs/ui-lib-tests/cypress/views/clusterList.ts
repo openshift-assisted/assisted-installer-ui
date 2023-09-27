@@ -21,7 +21,7 @@ export const clusterListPage = {
       .scrollIntoView()
       .should('be.visible');
     cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`).within(() => {
-      cy.get(Cypress.env('actionsButtonAriaLabel')).click();
+      cy.get('button[aria-label="Actions"]').click();
     });
     cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`)
       .scrollIntoView()
@@ -32,13 +32,13 @@ export const clusterListPage = {
     cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`).should('not.exist');
   },
   getRefreshClusterListButton: () => {
-    return cy.get(Cypress.env('refreshButtonAriaLabel'));
+    return cy.get('button[aria-label="Refresh"]');
   },
   getExtraActionsDropdown: () => {
     return cy.get(Cypress.env('clusterListExtraActionsDropdown'));
   },
   filterClusterList: (filter) => {
-    cy.get(Cypress.env('filterInputArialabel')).fill(filter);
+    cy.get('input[aria-label="Filter"]').fill(filter);
   },
   waitForProvider: (provider, timeout = 600000) => {
     cy.get('tbody > tr')

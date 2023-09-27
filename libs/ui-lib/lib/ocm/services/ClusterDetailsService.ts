@@ -92,6 +92,7 @@ const ClusterDetailsService = {
     cluster,
     infraEnv,
     urlSearchParams,
+    addCustomManifests,
     ...args
   }: {
     cluster?: Cluster;
@@ -100,6 +101,7 @@ const ClusterDetailsService = {
     managedDomains: ManagedDomain[];
     ocpVersions: OpenshiftVersionOptionType[];
     urlSearchParams: string;
+    addCustomManifests?: boolean;
   }): OcmClusterDetailsValues {
     const values = getClusterDetailsInitialValues({
       cluster,
@@ -118,7 +120,7 @@ const ClusterDetailsService = {
       ...values,
       cpuArchitecture,
       hostsNetworkConfigurationType,
-      addCustomManifest: false,
+      addCustomManifest: !!addCustomManifests,
       isCMNSupported: true,
     };
   },
