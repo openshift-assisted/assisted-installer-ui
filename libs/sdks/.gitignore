@@ -1,4 +1,10 @@
-assisted-installer-service/**/*.{js,map,d.ts}
-accounts-management-service/**/*.{js,map,d.ts}
-authorization-service/**/*.{js,map,d.ts}
+assisted-installer-service/**/*.js
+assisted-installer-service/**/*.map
+assisted-installer-service/**/*.d.ts
+accounts-management-service/**/*.js
+accounts-management-service/**/*.map
+accounts-management-service/**/*.d.ts
+authorization-service/**/*.js
+authorization-service/**/*.map
+authorization-service/**/*.d.ts
 node_modules

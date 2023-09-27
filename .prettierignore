@@ -5,5 +5,14 @@
 .idea
 apps/*/build
 libs/*/build
+libs/sdks/assisted-installer-service/**/*.js
+libs/sdks/assisted-installer-service/**/*.map
+libs/sdks/assisted-installer-service/**/*.d.ts
+libs/sdks/accounts-management-service/**/*.js
+libs/sdks/accounts-management-service/**/*.map
+libs/sdks/accounts-management-service/**/*.d.ts
+libs/sdks/authorization-service/**/*.js
+libs/sdks/authorization-service/**/*.map
+libs/sdks/authorization-service/**/*.d.ts
 tools/*/build
 libs/ui-lib-tests/cypress/fixtures/*/files

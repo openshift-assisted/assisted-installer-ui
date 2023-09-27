@@ -3,7 +3,7 @@
     "incremental": true,
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsc/tsconfig.tsbuildinfo",
-    "target": "es2016",
+    "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "node",
