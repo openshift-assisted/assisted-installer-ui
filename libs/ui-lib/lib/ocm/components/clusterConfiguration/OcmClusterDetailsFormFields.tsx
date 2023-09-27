@@ -130,7 +130,7 @@ export const OcmClusterDetailsFormFields = ({
         maxLength={CLUSTER_NAME_MAX_LENGTH}
       />
 
-      <OcmBaseDomainField managedDomains={managedDomains} />
+      <OcmBaseDomainField managedDomains={managedDomains} clusterExists={clusterExists} />
 
       {/* TODO(mlibra): For single-cluster: We will probably change this to just a static text */}
       {forceOpenshiftVersion ? (

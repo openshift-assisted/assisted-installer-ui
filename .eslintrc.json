@@ -19,7 +19,13 @@
     "no-debugger": "error",
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
   },
-  "ignorePatterns": ["apps/*/build", "libs/*/build", "tools/*/build"],
+  "ignorePatterns": [
+    "apps/*/build",
+    "libs/*/build",
+    "libs/sdks/**/*.d.ts",
+    "libs/sdks/**/*.js",
+    "tools/*/build"
+  ],
   "overrides": [
     {
       "files": [
@@ -97,6 +103,20 @@
       "parserOptions": {
         "tsconfigRootDir": "libs/types",
         "project": "tsconfig.eslint.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["libs/sdks/**/*.ts"],
+
+      "extends": ["@openshift-assisted/eslint-config"],
+      "parserOptions": {
+        "tsconfigRootDir": "libs/sdks",
+        "project": "tsconfig.json",
         "sourceType": "module",
         "ecmaVersion": "latest"
       },

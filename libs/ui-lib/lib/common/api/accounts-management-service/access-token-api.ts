@@ -3,7 +3,7 @@ import { AccessTokenCfg } from '@openshift-assisted/types/accounts-management-se
 
 export const AccessTokenAPI = {
   makeBaseURI() {
-    return `/api/accounts_mgmt/v1/access_token`;
+    return '/api/accounts_mgmt/v1/access_token';
   },
 
   async fetchPullSecret() {
