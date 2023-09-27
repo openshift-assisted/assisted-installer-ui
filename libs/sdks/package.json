@@ -14,6 +14,10 @@
     "./authorization-service": {
       "source": "./authorization-service/index.ts",
       "default": "./authorization-service/index.js"
+    },
+    "./clusters-management-service": {
+      "source": "./clusters-management-service/index.ts",
+      "default": "./clusters-management-service/index.js"
     }
   },
   "dependencies": {
