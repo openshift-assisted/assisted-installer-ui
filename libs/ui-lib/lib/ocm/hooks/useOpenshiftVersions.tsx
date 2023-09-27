@@ -3,17 +3,12 @@ import { CpuArchitecture, OpenshiftVersionOptionType } from '../../common';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 import { getKeys } from '../../common/utils';
-import {
-  Cluster,
-  ImportClusterParams,
-  OpenshiftVersion,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 
 type OpenShiftVersion = Cluster['openshiftVersion'];
 
 type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
-  normalizeClusterVersion: (version: OpenShiftVersion) => ImportClusterParams['openshiftVersion'];
   isSupportedOpenShiftVersion: (version: OpenShiftVersion) => boolean;
   getCpuArchitectures: (version: OpenShiftVersion) => CpuArchitecture[];
   error?: { title: string; message: string };
@@ -72,14 +67,6 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     }
   }, []);
 
-  const normalizeClusterVersion = React.useCallback(
-    (version: OpenShiftVersion) => {
-      const matchingVersion = findVersionItemByVersion(version);
-      return matchingVersion?.value || version;
-    },
-    [findVersionItemByVersion],
-  );
-
   const isSupportedOpenShiftVersion = React.useCallback(
     (version: OpenShiftVersion) => {
       if (versions.length === 0) {
@@ -109,7 +96,6 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     error,
     loading: !error && versions.length === 0,
     versions,
-    normalizeClusterVersion,
     isSupportedOpenShiftVersion,
     getCpuArchitectures,
   };

@@ -35,7 +35,7 @@ const Day2ClusterService = {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
+  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
@@ -53,7 +53,7 @@ const Day2ClusterService = {
       ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
       getApiVipDnsName(ocmCluster).apiVipDnsname,
       pullSecret,
-      openshiftVersion,
+      ocmCluster.openshift_version,
       mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) || CpuArchitecture.x86,
     );
   },
@@ -69,6 +69,7 @@ const Day2ClusterService = {
     if (day2Clusters.length > 0) {
       return day2Clusters[0].id;
     }
+
     return undefined;
   },
 

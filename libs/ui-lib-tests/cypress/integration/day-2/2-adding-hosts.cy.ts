@@ -20,6 +20,7 @@ describe(`Assisted Installer Day2 flow`, () => {
       win.__app__.OCM.setAuthInterceptor((client) => client);
     });
     cy.findByRole('button', { name: 'Add hosts (With metrics)' }).click();
+    cy.wait('@day2-cluster-details');
   });
 
   describe('After cluster installed', () => {

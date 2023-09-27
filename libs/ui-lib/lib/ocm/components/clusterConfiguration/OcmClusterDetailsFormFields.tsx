@@ -96,7 +96,7 @@ export const OcmClusterDetailsFormFields = ({
       const isOracleSelected = selectedPlatform === 'oci';
       if (isOracleSelected) {
         setFieldValue('addCustomManifest', isOracleSelected, false);
-        clusterWizardContext.setAddCustomManifests(isOracleSelected);
+        clusterWizardContext.setCustomManifestsStep(isOracleSelected);
         setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
       }
     },
