@@ -1,10 +1,11 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import { ClusterDetailsValues, HelperText, getFieldId } from '../../../common';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
+import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
 
 const INPUT_NAME = 'baseDnsDomain';
 const INPUT_LABEL = 'Base domain';
@@ -30,7 +31,13 @@ export const BaseDnsHelperText = ({
   </HelperText>
 );
 
-export const OcmBaseDomainField = ({ managedDomains }: { managedDomains: ManagedDomain[] }) => {
+export const OcmBaseDomainField = ({
+  managedDomains,
+  clusterExists,
+}: {
+  managedDomains: ManagedDomain[];
+  clusterExists: boolean;
+}) => {
   const [, { value }, { setValue }] = useField<string>(INPUT_NAME);
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, useRedHatDnsService } = values;
@@ -73,12 +80,15 @@ export const OcmBaseDomainField = ({ managedDomains }: { managedDomains: Managed
   return (
     <>
       {!!managedDomains.length && toggleRedHatDnsService && (
-        <OcmCheckboxField
-          name="useRedHatDnsService"
-          label="Use a temporary 60-day domain"
-          helperText="A base domain will be provided for temporary, non-production clusters."
-          onChange={toggleRedHatDnsService}
-        />
+        <Tooltip content={clusterExistsReason} hidden={!clusterExists}>
+          <OcmCheckboxField
+            name="useRedHatDnsService"
+            label="Use a temporary 60-day domain"
+            helperText="A base domain will be provided for temporary, non-production clusters."
+            onChange={toggleRedHatDnsService}
+            isDisabled={clusterExists}
+          />
+        </Tooltip>
       )}
       <FormGroup
         id={`form-control__${fieldId}`}
