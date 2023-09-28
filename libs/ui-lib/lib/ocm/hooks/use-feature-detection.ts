@@ -1,5 +1,5 @@
 import type { FeatureListType } from '../../common/features/featureGate';
-import { detectFeatures } from '../store/slices/feature-flags/thunks';
+import { detectFeatures } from '../store/slices/feature-flags/slice';
 import { storeDay1 } from '../store/store-day1';
 import { useEffect } from 'react';
 
