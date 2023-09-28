@@ -4,13 +4,17 @@
   "type": "module",
   "exports": {
     "./assisted-installer-service": "./assisted-installer-service.d.ts",
+    "./accounts-management-service": "./accounts-management-service.d.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "./assisted-installer-service": [
         "./assisted-installer-service.d.ts"
-      ]     
+      ],
+      "./accounts-management-service": [
+        "./accounts-management-service.d.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -22,6 +26,8 @@
     "directory": "libs/types"
   },
   "files": [
+    "accounts-management-service.d.ts",
+    "authorization-service.d.ts",
     "assisted-installer-service.d.ts",
     "tsconfig.json"
   ],
