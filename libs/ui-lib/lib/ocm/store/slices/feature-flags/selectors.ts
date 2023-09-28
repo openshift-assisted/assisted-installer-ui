@@ -1,4 +1,4 @@
-import type { AssistedInstallerFeatureType } from '../../../../common/features/featureGate';
+import type { FeatureListType } from '../../../../common/features/featureGate';
 import type { RootStateDay1 } from '../../store-day1';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -7,10 +7,8 @@ export const selectFeatureFlagsSlice = (state: RootStateDay1) => state.featureFl
 export const isFeatureEnabled = createSelector(
   [
     selectFeatureFlagsSlice,
-    (
-      _featureFlags: ReturnType<typeof selectFeatureFlagsSlice>,
-      feature: AssistedInstallerFeatureType,
-    ) => feature,
+    (_featureFlags: ReturnType<typeof selectFeatureFlagsSlice>, featureId: keyof FeatureListType) =>
+      featureId,
   ],
-  (featureFlags, feature) => featureFlags.data[feature],
+  (featureFlags, featureId) => featureFlags.data[featureId],
 );

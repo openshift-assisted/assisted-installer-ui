@@ -1,21 +1,16 @@
-import { AsyncFeatureStatus } from '../store/slices/feature-flags/types/async-feature-status';
-import { CapabilitiesService } from '../services/capabilities-service';
+import type { FeatureListType } from '../../common/features/featureGate';
 
-export const externalFeatures: AsyncFeatureStatus[] = [
+type FeatureMapping = {
+  featureId: keyof FeatureListType;
+  capabilityId: string;
+};
+export const externalFeaturesMappings: Array<FeatureMapping> = [
   {
-    name: 'ASSISTED_INSTALLER_PLATFORM_OCI',
-    isEnabled: () => {
-      return CapabilitiesService.isCapabilityEnabled(
-        'capability.organization.bare_metal_installer_platform_oci',
-      );
-    },
+    featureId: 'ASSISTED_INSTALLER_PLATFORM_OCI',
+    capabilityId: 'capability.organization.bare_metal_installer_platform_oci',
   },
   {
-    name: 'ASSISTED_INSTALLER_MULTIARCH_SUPPORTED',
-    isEnabled: () => {
-      return CapabilitiesService.isCapabilityEnabled(
-        'capability.organization.bare_metal_installer_multiarch',
-      );
-    },
+    featureId: 'ASSISTED_INSTALLER_MULTIARCH_SUPPORTED',
+    capabilityId: 'capability.organization.bare_metal_installer_multiarch',
   },
 ];
