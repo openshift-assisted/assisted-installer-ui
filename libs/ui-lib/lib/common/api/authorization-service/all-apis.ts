@@ -3,7 +3,7 @@ import {
   AccessReviewResponse,
   FeatureReviewResponse,
   SelfAccessReview,
-} from '@openshift-assisted/types/authorization-service';
+} from '@openshift-assisted/sdks/authorization-service';
 
 export const AuthorizationApi = {
   makeBaseURI() {
