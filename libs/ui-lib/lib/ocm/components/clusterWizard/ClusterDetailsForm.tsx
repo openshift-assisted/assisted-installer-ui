@@ -145,7 +145,10 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   return (
     <Formik
       initialValues={initialValues}
-      validate={getRichTextValidation(validationSchema)}
+      validate={(values) => {
+        clearAlerts();
+        return getRichTextValidation(validationSchema)(values);
+      }}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, isValid, dirty, errors, touched }) => {
