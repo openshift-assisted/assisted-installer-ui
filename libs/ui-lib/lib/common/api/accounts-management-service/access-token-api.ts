@@ -1,5 +1,5 @@
 import { ocmClient as client } from '../axiosClient';
-import { AccessTokenCfg } from '@openshift-assisted/sdks/accounts-management-service';
+import { AccessTokenCfg } from '@openshift-assisted/types/accounts-management-service';
 
 export const AccessTokenAPI = {
   makeBaseURI() {
