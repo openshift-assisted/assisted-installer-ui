@@ -1,12 +1,13 @@
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
-import { mockServer, initMockContainer, resetMockContainer } from './vitest.utils';
+import { initMockContainer, resetMockContainer } from './mock-container';
+import { getMockServer } from './mock-server';
 
 beforeAll(() => {
-  mockServer?.listen({ onUnhandledRequest: 'error' });
+  getMockServer()?.listen({ onUnhandledRequest: 'error' });
 });
 
 afterAll(() => {
-  mockServer?.close();
+  getMockServer()?.close();
 });
 
 beforeEach(() => {
@@ -14,7 +15,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  mockServer?.resetHandlers();
+  getMockServer()?.resetHandlers();
   resetMockContainer();
   vi.clearAllMocks();
 });
