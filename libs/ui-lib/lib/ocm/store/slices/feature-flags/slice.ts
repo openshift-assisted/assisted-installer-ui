@@ -8,7 +8,7 @@ import { currentUserAsyncActions } from '../current-user/slice';
 import { RootStateDay1 } from '../../store-day1';
 
 const featureFlagsAsyncActions = {
-  detectFeatures: createAsyncThunk(
+  detectFeaturesAsync: createAsyncThunk(
     'featureFlags/detectFeatures',
     async (featuresOverride: FeatureListType | null = null, thunkApi) => {
       await thunkApi.dispatch(currentUserAsyncActions.getCapabilitiesAsync());
@@ -48,18 +48,19 @@ type FeatureFlagsAsyncThunkActionCreators =
 
 export type FeatureFlagsState = StateSliceWithMeta<FeatureListType, SerializedError | null>;
 
+const initialState: FeatureFlagsState = {
+  data: STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
+  error: null,
+  meta: {
+    status: 'idle',
+    updatedAt: null,
+    currentRequestId: null,
+  },
+};
+
 const featureFlagsSlice = createSlice({
   name: 'featureFlags',
-  initialState: () =>
-    ({
-      data: STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
-      error: null,
-      meta: {
-        status: 'idle',
-        updatedAt: null,
-        currentRequestId: null,
-      },
-    } as FeatureFlagsState),
+  initialState,
   reducers: {
     setMeta: (state, action: PayloadAction<FeatureFlagsAsyncThunkActionCreators>) => {
       state.meta.updatedAt = new Date().toUTCString();
@@ -87,13 +88,13 @@ const featureFlagsSlice = createSlice({
         return state;
       });
       builder.addCase(fulfilled, (state, action) => {
-        if (/pending/.test(state.meta.status)) {
+        if (/idle|pending/.test(state.meta.status)) {
           featureFlagsActions.setMeta(action);
         }
         return state;
       });
       builder.addCase(rejected, (state, action) => {
-        if (/pending/.test(state.meta.status)) {
+        if (/idle|pending/.test(state.meta.status)) {
           featureFlagsActions.setMeta(action);
           state.error = action.error;
         }

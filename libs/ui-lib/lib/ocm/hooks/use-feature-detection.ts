@@ -1,13 +1,17 @@
 import type { FeatureListType } from '../../common/features/featureGate';
-import { detectFeatures } from '../store/slices/feature-flags/slice';
+import { featureFlagsAsyncActions } from '../store/slices/feature-flags/slice';
 import { storeDay1 } from '../store/store-day1';
 import { useEffect } from 'react';
 
-export function useFeatureDetection<T extends FeatureListType>(overrides: T | null = null) {
+export function useFeatureDetection<T extends Partial<FeatureListType>>(
+  overrides: T | null = null,
+) {
   useEffect(() => {
     const onlyAssistedInstallerFeatures = Object.fromEntries(
       Object.entries(overrides ?? {}).filter(([k, _v]) => k.startsWith('ASSISTED_INSTALLER')),
     );
-    void storeDay1.dispatch(detectFeatures(onlyAssistedInstallerFeatures));
+    void storeDay1.dispatch(
+      featureFlagsAsyncActions.detectFeaturesAsync(onlyAssistedInstallerFeatures),
+    );
   }, [overrides]);
 }

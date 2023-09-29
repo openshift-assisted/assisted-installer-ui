@@ -6,20 +6,37 @@ function getMockContainer() {
   return element;
 }
 
-function initMockContainer(value: HTMLDivElement | null) {
+/**
+ * Call this in your test if you intend to render a React component
+ * @example
+ * beforeEach(() => {
+ *    initMockContainer();
+ * });
+ */
+function initMockContainer(
+  value: HTMLDivElement = document.createElement('div'),
+  baseElement: HTMLElement = document.body,
+) {
   element = value;
-  if (element) {
-    element.id = 'root';
-    document.body.appendChild(element);
-  }
+  element.id = 'root';
+  baseElement.appendChild(element);
 }
 
-function resetMockContainer() {
+/**
+ * Attempts to unmount and remove the underlying DOM element.
+ *
+ * Returns true when the underlying DOM element is reset successfully; false otherwise.
+ */
+function tryResetMockContainer() {
+  let didResetMockContainer = false;
   if (element) {
     unmountComponentAtNode(element);
     element.remove();
     element = null;
+    didResetMockContainer = true;
   }
+
+  return didResetMockContainer;
 }
 
-export { getMockContainer, initMockContainer, resetMockContainer };
+export { getMockContainer, initMockContainer, tryResetMockContainer };

@@ -11,7 +11,6 @@ const currentUserAsyncActions = {
     const account = await CurrentAccountApi.getCurrentAccount();
     if (account) {
       thunkApi.dispatch(currentUserActions.setAccount(account));
-      await thunkApi.dispatch(currentUserAsyncActions.getUserOrganizationWithCapabilitiesAsync());
     } else {
       thunkApi.rejectWithValue({
         message: 'No account data available',
@@ -21,23 +20,15 @@ const currentUserAsyncActions = {
 
   getUserOrganizationWithCapabilitiesAsync: createAsyncThunk(
     'currentUser/getUserOrganizationWithCapabilitiesAsync',
-    async (_, thunkApi) => {
-      const { currentUser } = thunkApi.getState() as RootStateDay1;
-      const orgId = currentUser.data?.organization_id;
-      if (orgId) {
-        const organization = await OrganizationsApi.getOrganization(orgId);
-        if (organization) {
-          thunkApi.dispatch(
-            currentUserActions.setOrganizationCapabilities(organization.capabilities ?? []),
-          );
-        } else {
-          thunkApi.rejectWithValue({
-            message: 'No organization data found',
-          } as SerializedError);
-        }
+    async (orgId: string, thunkApi) => {
+      const organization = await OrganizationsApi.getOrganization(orgId);
+      if (organization) {
+        thunkApi.dispatch(
+          currentUserActions.setOrganizationCapabilities(organization.capabilities ?? []),
+        );
       } else {
         thunkApi.rejectWithValue({
-          message: 'Account has no organization ID',
+          message: 'No organization data found',
         } as SerializedError);
       }
     },
@@ -47,7 +38,17 @@ const currentUserAsyncActions = {
     'currentUser/getCapabilitiesAsync',
     async (_, thunkApi) => {
       await thunkApi.dispatch(currentUserAsyncActions.getAccountAsync());
-      await thunkApi.dispatch(currentUserAsyncActions.getUserOrganizationWithCapabilitiesAsync());
+      const { currentUser } = thunkApi.getState() as RootStateDay1;
+      const orgId = currentUser.data?.organization_id;
+      if (orgId) {
+        await thunkApi.dispatch(
+          currentUserAsyncActions.getUserOrganizationWithCapabilitiesAsync(orgId),
+        );
+      } else {
+        thunkApi.rejectWithValue({
+          message: 'Account has no organization ID',
+        } as SerializedError);
+      }
     },
   ),
 };
@@ -106,13 +107,13 @@ const currentUserSlice = createSlice({
         return state;
       });
       builder.addCase(fulfilled, (state, action) => {
-        if (/pending/.test(state.meta.status)) {
+        if (/idle|pending/.test(state.meta.status)) {
           currentUserActions.setMeta(action);
         }
         return state;
       });
       builder.addCase(rejected, (state, action) => {
-        if (/pending/.test(state.meta.status)) {
+        if (/idle|pending/.test(state.meta.status)) {
           currentUserActions.setMeta(action);
           state.error = action.error;
         }
