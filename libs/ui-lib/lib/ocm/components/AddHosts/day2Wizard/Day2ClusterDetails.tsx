@@ -12,7 +12,6 @@ import {
   HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS,
   LoadingState,
   SupportedCpuArchitecture,
-  useFeature,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
@@ -86,7 +85,6 @@ const Day2ClusterDetails = () => {
   const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>(null);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [isAlternativeCpuSelected, setIsAlternativeCpuSelected] = React.useState(false);
-  const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const { getCpuArchitectures } = useOpenshiftVersions();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
@@ -94,13 +92,8 @@ const Day2ClusterDetails = () => {
   const pullSecret = usePullSecret();
 
   const cpuArchitectures = React.useMemo(
-    () =>
-      getSupportedCpuArchitectures(
-        canSelectCpuArch,
-        cpuArchitecturesByVersionImage,
-        day1CpuArchitecture,
-      ),
-    [canSelectCpuArch, cpuArchitecturesByVersionImage, day1CpuArchitecture],
+    () => getSupportedCpuArchitectures(cpuArchitecturesByVersionImage, day1CpuArchitecture),
+    [cpuArchitecturesByVersionImage, day1CpuArchitecture],
   );
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
