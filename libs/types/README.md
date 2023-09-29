@@ -22,6 +22,8 @@ Now you can import types as following:
 
 ```ts
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+// or...
+import { AccessTokenCfg } from '@openshift-assisted/types/accounts-management-service';
 ```
 
 ## Development:
@@ -32,3 +34,6 @@ In order to update the types use the following script defined in the `package.js
 ```bash
 $ yarn update-types:assisted-installer-service
 ```
+
+The types for the `accounts-management-service` are not generated automatically (for now, maybe they
+will in the future if there is a need to do so...).

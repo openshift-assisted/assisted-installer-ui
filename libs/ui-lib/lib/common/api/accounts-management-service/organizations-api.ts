@@ -1,5 +1,5 @@
 import { ocmClient as client } from '../axiosClient';
-import { Organization } from '@openshift-assisted/sdks/accounts-management-service';
+import { Organization } from '@openshift-assisted/types/accounts-management-service';
 
 export const OrganizationsApi = {
   makeBaseURI() {
