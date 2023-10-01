@@ -1,13 +1,21 @@
 import React from 'react';
-import { Flex, FlexItem, FormGroup, TextContent, TextVariants, Text } from '@patternfly/react-core';
+import {
+  Flex,
+  FlexItem,
+  FormGroup,
+  TextContent,
+  TextVariants,
+  Text,
+  Tooltip,
+} from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { HostsNetworkConfigurationType } from '../../../services';
-import { getFieldId, RadioField } from '../../../../common';
+import { RadioField, getFieldId } from '../../../../common';
 import { Day2ClusterDetailValues } from '../types';
 
 const GROUP_NAME = 'hostsNetworkConfigurationType';
 
-const Day2HostStaticIpConfigurations = () => {
+const Day2HostStaticIpConfigurations = ({ isDisabled }: { isDisabled: boolean }) => {
   const { setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
 
   const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,22 +33,29 @@ const Day2HostStaticIpConfigurations = () => {
       isInline
       onChange={onChangeNetworkType}
     >
-      <Flex>
-        <FlexItem key={HostsNetworkConfigurationType.DHCP}>
-          <RadioField
-            name={GROUP_NAME}
-            value={HostsNetworkConfigurationType.DHCP}
-            label="DHCP only"
-          />
-        </FlexItem>
-        <FlexItem key={HostsNetworkConfigurationType.STATIC}>
-          <RadioField
-            name={GROUP_NAME}
-            value={HostsNetworkConfigurationType.STATIC}
-            label="Static IP, bridges, and bonds"
-          />
-        </FlexItem>
-      </Flex>
+      <Tooltip
+        hidden={!isDisabled}
+        content="This cluster is using the Oracle cloud platform which allows only DHCP for the hosts' network configuration"
+      >
+        <Flex>
+          <FlexItem key={HostsNetworkConfigurationType.DHCP}>
+            <RadioField
+              name={GROUP_NAME}
+              value={HostsNetworkConfigurationType.DHCP}
+              label="DHCP only"
+              isDisabled={isDisabled}
+            />
+          </FlexItem>
+          <FlexItem key={HostsNetworkConfigurationType.STATIC}>
+            <RadioField
+              name={GROUP_NAME}
+              value={HostsNetworkConfigurationType.STATIC}
+              label="Static IP, bridges, and bonds"
+              isDisabled={isDisabled}
+            />
+          </FlexItem>
+        </Flex>
+      </Tooltip>
     </FormGroup>
   );
 };
