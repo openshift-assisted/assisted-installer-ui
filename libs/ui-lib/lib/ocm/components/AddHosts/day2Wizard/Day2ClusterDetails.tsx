@@ -220,6 +220,7 @@ const Day2ClusterDetails = () => {
                     day1CpuArchitecture={initialValues.cpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
                     onChange={(value) => handleChangeCpuArchitectureDropdown(value, initialValues)}
+                    platformType={day2Cluster.platform?.type}
                   />
                 </GridItem>
                 {isAlternativeCpuSelected && (
@@ -239,9 +240,10 @@ const Day2ClusterDetails = () => {
                     </Alert>
                   </GridItem>
                 )}
-
                 <GridItem>
-                  <Day2HostStaticIpConfigurations />
+                  <Day2HostStaticIpConfigurations
+                    isDisabled={day2Cluster.platform?.type === 'oci'}
+                  />
                 </GridItem>
               </Grid>
             </Form>

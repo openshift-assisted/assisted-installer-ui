@@ -1,9 +1,18 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  FormGroup,
+  Split,
+  SplitItem,
+  Tooltip,
+} from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
   CpuArchitecture,
+  FeatureId,
   getDefaultCpuArchitecture,
   getFieldId,
   SupportedCpuArchitecture,
@@ -11,7 +20,14 @@ import {
 import {
   ArchitectureSupportLevelId,
   Cluster,
+  PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  NewFeatureSupportLevelMap,
+  useNewFeatureSupportLevel,
+} from '../../../common/components/newFeatureSupportLevels';
+import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { ExternalPlaformIds, ExternalPlatformLabels } from './platformIntegration/constants';
 
 export type CpuArchitectureItem = {
   description: string;
@@ -57,6 +73,7 @@ type CpuArchitectureDropdownProps = {
   day1CpuArchitecture?: SupportedCpuArchitecture;
   cpuArchitectures: SupportedCpuArchitecture[];
   onChange?: (value: string) => void;
+  platformType?: PlatformType;
 };
 
 const CpuArchitectureDropdown = ({
@@ -64,7 +81,10 @@ const CpuArchitectureDropdown = ({
   day1CpuArchitecture,
   cpuArchitectures,
   onChange,
+  platformType,
 }: CpuArchitectureDropdownProps) => {
+  const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
+
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
     useField<SupportedCpuArchitecture>(INPUT_NAME);
 
@@ -75,21 +95,56 @@ const CpuArchitectureDropdown = ({
     day1CpuArchitecture ? architectureData[day1CpuArchitecture].label : CpuArchitecture.x86,
   );
 
+  const supportLevelDataForAllCpuArchs = useSupportLevelsAPI(
+    'featureForAllCpus',
+    openshiftVersion,
+    undefined,
+    platformType,
+    cpuArchitectures,
+  );
+
   const enabledItems = React.useMemo(() => {
     if (cpuArchitectures !== undefined) {
       return cpuArchitectures.map((cpuArch) => {
+        let isCpuSupported = true;
+        if (supportLevelDataForAllCpuArchs) {
+          const featureSupportLevelData = supportLevelDataForAllCpuArchs[
+            cpuArch
+          ] as NewFeatureSupportLevelMap;
+          isCpuSupported = newFeatureSupportLevelContext.isFeatureSupported(
+            ExternalPlaformIds[platformType ? platformType : 'baremetal'] as FeatureId,
+            featureSupportLevelData ?? undefined,
+          );
+        }
+
+        const disabledReason = `This cluster is using the  ${
+          platformType ? ExternalPlatformLabels[platformType] : ''
+        } platform which doesn't allow this CPU architecture.`;
         return (
           <DropdownItem
             key={cpuArch}
             id={cpuArch}
             description={cpuArch ? architectureData[cpuArch].description : ''}
+            isAriaDisabled={!isCpuSupported}
           >
-            {cpuArch ? architectureData[cpuArch].label : ''}
+            <Split>
+              <SplitItem>
+                <Tooltip hidden={isCpuSupported} content={disabledReason} position="top">
+                  <div>{cpuArch ? architectureData[cpuArch].label : ''}</div>
+                </Tooltip>
+              </SplitItem>
+              <SplitItem isFilled />
+            </Split>
           </DropdownItem>
         );
       });
     }
-  }, [cpuArchitectures]);
+  }, [
+    cpuArchitectures,
+    supportLevelDataForAllCpuArchs,
+    newFeatureSupportLevelContext,
+    platformType,
+  ]);
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
