@@ -53,7 +53,10 @@
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf node_modules build",
     "preview": "vite preview -c vite.config.ts",
-    "serve": "vite serve -c vite.config.ts"
+    "serve": "vite serve -c vite.config.ts",
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "type": "module",
   "version": "1.0.0"
