@@ -3,7 +3,7 @@ import { featureFlagsAsyncActions } from '../store/slices/feature-flags/slice';
 import { storeDay1 } from '../store/store-day1';
 import { useEffect } from 'react';
 
-export function useFeatureDetection<T extends Partial<FeatureListType>>(
+export function useFeatureDetection<T extends Partial<Record<string, boolean> & FeatureListType>>(
   overrides: T | null = null,
 ) {
   useEffect(() => {

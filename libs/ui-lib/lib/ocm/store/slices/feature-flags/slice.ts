@@ -1,11 +1,11 @@
 import type { PayloadAction, SerializedError } from '@reduxjs/toolkit';
 import type { StateSliceWithMeta } from '../../types/state-slice';
 import type { FeatureListType } from '../../../../common/features/featureGate';
+import type { RootStateDay1 } from '../../store-day1';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../../../common/features/featureGate';
 import { externalFeaturesMappings } from '../../../config/external-features';
 import { currentUserAsyncActions } from '../current-user/slice';
-import { RootStateDay1 } from '../../store-day1';
 
 const featureFlagsAsyncActions = {
   detectFeaturesAsync: createAsyncThunk(

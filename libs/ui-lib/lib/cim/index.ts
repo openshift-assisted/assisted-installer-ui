@@ -15,3 +15,4 @@ export * from '../common/components/clusterWizard/types';
 export * from '../common/components/clusterDetail';
 export * from '../common/components/clusterConfiguration';
 export * from '../common/types/clusters';
+export { ResourceUIState } from '../common';
