@@ -1,5 +1,1 @@
-[
-  "libs/*/vitest.config.ts",
-  "apps/*/vitest.config.ts",
-  "tools/*/vitest.config.ts"
-]
+["libs/*/vitest.config.ts", "apps/*/vitest.config.ts", "tools/*/vitest.config.ts"]
