@@ -113,7 +113,7 @@
   },
   "scripts": {
     "build": "yarn run -T tsc --build --verbose && yarn copy:css",
-    "check_circular_deps": "yarn run -T dpdm --warning false --tree false --exit-code circular:1 ./lib/index.ts",
+    "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./lib/index.ts",
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf node_modules build",
     "copy:css": "rsync -Ruv lib/./**/*.css build/cjs",
