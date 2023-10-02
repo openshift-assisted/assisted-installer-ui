@@ -250,6 +250,7 @@ export const clusterValidationLabels = (
   'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
   'mce-requirements-satisfied': t('ai:MCE requirements'),
+  'platform-requirements-satisfied': t('ai:Platform requirements'),
 });
 
 export const clusterValidationGroupLabels = (
