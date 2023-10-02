@@ -147,3 +147,15 @@ These can be generated automatically by running:
 ```
 yarn workspace @openshift-assisted/ui-lib update-api
 ```
+
+## Unit testing
+
+This project uses [Vitest](https://vitest.dev/api/) for unit testing.
+
+To run existing unit tests, call
+
+```
+yarn test:unit
+```
+
+To write a unit test, simply create/update a `*.test.ts` file.

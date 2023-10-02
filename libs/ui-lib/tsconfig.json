@@ -18,5 +18,6 @@
     "sourceMap": true,
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },
-  "include": ["lib"]
+  "include": ["lib"],
+  "exclude": ["**/*.test.ts"]
 }
