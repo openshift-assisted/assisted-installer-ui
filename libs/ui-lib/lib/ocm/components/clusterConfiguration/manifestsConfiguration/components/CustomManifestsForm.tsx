@@ -6,28 +6,26 @@ import {
   FieldArrayRenderProps,
   Formik,
   FormikConfig,
-  FormikErrors,
-  FormikHelpers,
   useFormikContext,
   yupToFormErrors,
 } from 'formik';
 import isEqual from 'lodash-es/isEqual.js';
-import { ErrorState, LoadingState, useAlerts, useFormikAutoSave } from '../../../../../common';
-import { CustomManifestsFormProps } from './propTypes';
 import {
-  CustomManifestValues,
-  FormViewManifestFolder,
-  ListManifestsExtended,
-  ManifestExtended,
-  ManifestFormData,
-} from '../data/dataTypes';
-import { getApiErrorMessage, handleApiError } from '../../../../api';
+  ErrorState,
+  LoadingState,
+  getApiErrorMessage,
+  handleApiError,
+  useAlerts,
+  useFormikAutoSave,
+} from '../../../../../common';
+import { CustomManifestsFormProps } from './propTypes';
+import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import useClusterCustomManifests from '../../../../hooks/useClusterCustomManifests';
 import { ClustersService } from '../../../../services';
 import { CustomManifestsArray } from './CustomManifestsArray';
-import { getManifestFakeId } from './utils';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
+import { ClustersAPI } from '../../../../services/apis';
 
 const fieldName = 'manifests';
 
@@ -54,55 +52,12 @@ const AutosaveWithParentUpdate = ({
   return null;
 };
 
-const getManifestDetails = (
-  updatedManifest: CustomManifestValues,
-): {
-  folderName: FormViewManifestFolder;
-  fileName: string | undefined;
-} => {
-  const existingFolderByFakeId = updatedManifest.fakeId?.substring(
-    0,
-    updatedManifest.fakeId.indexOf('#'),
+const manifestUpdated = (manifest: CustomManifestValues, oldManifest: CustomManifestValues) => {
+  return (
+    oldManifest.filename !== manifest.filename ||
+    oldManifest.folder !== manifest.folder ||
+    oldManifest.manifestYaml !== manifest.manifestYaml
   );
-  const existingFolder: FormViewManifestFolder =
-    existingFolderByFakeId === 'manifests' || existingFolderByFakeId === 'openshift'
-      ? existingFolderByFakeId
-      : 'manifests';
-  const existingFileName = updatedManifest.fakeId?.substring(
-    updatedManifest.fakeId.indexOf('#') + 1,
-  );
-
-  return {
-    folderName: existingFolder,
-    fileName: existingFileName,
-  };
-};
-
-const handleApiErrorInForm = (
-  manifests: CustomManifestValues[],
-  manifestsThatExists: CustomManifestValues[],
-  actions: FormikHelpers<ManifestFormData>,
-) => {
-  const errors: FormikErrors<ManifestFormData> = {};
-  errors.manifests = [];
-  manifests.forEach((manifest) => {
-    (errors.manifests as FormikErrors<CustomManifestValues>[]).push({
-      fakeId: manifest.fakeId,
-      folder: '',
-      filename: '',
-      manifestYaml: '',
-    });
-  });
-  errors.manifests.forEach((errorManifest) => {
-    manifestsThatExists.forEach((updatedManifest) => {
-      if ((errorManifest as CustomManifestValues).fakeId === updatedManifest.fakeId) {
-        (errorManifest as CustomManifestValues).manifestYaml =
-          'Failed to update the existing manifest';
-      }
-    });
-  });
-
-  actions.setErrors(errors);
 };
 
 export const CustomManifestsForm = ({
@@ -116,145 +71,73 @@ export const CustomManifestsForm = ({
   const [initialValues, setInitialValues] = React.useState<ManifestFormData | undefined>();
   const { addAlert, clearAlerts } = useAlerts();
   const { customManifests, isLoading, error } = useClusterCustomManifests(cluster.id || '', true);
-  const customManifestsLocalRef = React.useRef<ListManifestsExtended | undefined>();
-  const { updateUISettings } = useClusterWizardContext();
+  const customManifestsLocalRef = React.useRef<CustomManifestValues[]>([]);
+  const { updateUISettings, uiSettings } = useClusterWizardContext();
 
   React.useEffect(() => {
-    if (customManifests) {
-      setInitialValues(getInitialValues(customManifests));
-      customManifestsLocalRef.current = customManifests;
+    if (customManifests && !customManifestsLocalRef.current.length) {
+      const initValues = getInitialValues(customManifests);
+      setInitialValues(initValues);
+      customManifestsLocalRef.current = !!customManifests.length ? initValues.manifests : [];
     }
   }, [customManifests, getInitialValues]);
 
-  const updateCustomManifestsLocal = React.useCallback(
-    (updatedManifests: CustomManifestValues[], newValuesAdded: boolean) => {
-      if (newValuesAdded) {
-        updatedManifests.forEach((updatedManifest) => {
-          const customManifest: ManifestExtended = {
-            folder: updatedManifest.folder,
-            fileName: updatedManifest.filename,
-            yamlContent: updatedManifest.manifestYaml,
-          };
-          customManifestsLocalRef.current?.push(customManifest);
-        });
-      } else {
-        customManifestsLocalRef.current?.forEach((customManifest) => {
-          const updatedManifest: CustomManifestValues | undefined = updatedManifests.find(
-            (updatedManifest) =>
-              getManifestFakeId(
-                customManifest.folder || 'manifests',
-                customManifest.fileName || '',
-              ) === updatedManifest.fakeId || '',
-          );
-
-          if (updatedManifest) {
-            customManifest.folder = updatedManifest.folder;
-            customManifest.fileName = updatedManifest.filename;
-            customManifest.yamlContent = updatedManifest.manifestYaml;
-          }
-        });
-      }
-    },
-    [customManifestsLocalRef],
-  );
-
-  const removeCustomManifestFromLocal = React.useCallback(
-    (manifests: CustomManifestValues[]) => {
-      if (customManifestsLocalRef.current) {
-        const customManifestsLocalCopy = [...customManifestsLocalRef.current].filter(
-          (customManifest) => {
-            return !manifests.some((manifest) => {
-              return (
-                customManifest.folder === manifest.folder &&
-                customManifest.fileName === manifest.filename &&
-                customManifest.yamlContent === manifest.manifestYaml
-              );
-            });
-          },
-        );
-        if (customManifestsLocalCopy.length > 0) {
-          customManifestsLocalRef.current.splice(
-            customManifestsLocalRef.current.findIndex(
-              (manifest) =>
-                manifest.folder === customManifestsLocalCopy[0].folder &&
-                manifest.fileName === customManifestsLocalCopy[0].fileName,
-            ),
-            1,
-          );
-        }
-      }
-    },
-    [customManifestsLocalRef],
-  );
-
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
-    async (values, actions) => {
-      clearAlerts();
-      actions.setSubmitting(true);
-      const manifests = values.manifests;
-      const manifestsModified = manifests.filter(
-        (manifest) =>
-          !customManifestsLocalRef.current?.some(
-            (customManifest) =>
-              customManifest.folder === manifest.folder &&
-              customManifest.fileName === manifest.filename &&
-              customManifest.yamlContent === manifest.manifestYaml,
-          ),
-      );
-      if (cluster && manifestsModified.length > 0) {
-        //See if manifests exists previously to make a patch or create a new one
-        const manifestsThatExists = manifestsModified.filter((manifest) => manifest.fakeId !== '');
-        const newManifestsToCreate = manifestsModified.filter((manifest) => manifest.fakeId === '');
-        try {
-          const manifestsRequests = manifestsThatExists.map((updatedManifest) => {
-            const { folderName, fileName } = getManifestDetails(updatedManifest);
+    async ({ manifests }, actions) => {
+      if (manifests.length < customManifestsLocalRef.current.length) {
+        // submit was triggered by deleting a manifest
 
-            const existingManifest: CustomManifestValues = {
-              folder: folderName,
-              filename: fileName || '',
-              manifestYaml: '',
-            };
-
-            return ClustersService.updateCustomManifest(
-              existingManifest,
-              updatedManifest,
-              cluster?.id,
-            );
-          });
-          await Promise.all(manifestsRequests);
-
-          if (newManifestsToCreate.length > 0) {
-            await ClustersService.createClusterManifests(newManifestsToCreate, cluster?.id);
-            updateCustomManifestsLocal(newManifestsToCreate, true);
-          }
-
-          if (customManifestsLocalRef.current && manifestsThatExists.length > 0) {
-            updateCustomManifestsLocal(manifestsThatExists, false);
-          }
-          await updateUISettings({ customManifestsAdded: true });
-        } catch (e) {
-          handleApiErrorInForm(manifests, manifestsThatExists, actions);
-          handleApiError(e, () =>
-            addAlert({
-              title: 'Failed to update the custom manifests',
-              message: getApiErrorMessage(e),
-            }),
-          );
-        } finally {
-          actions.setSubmitting(false);
-        }
+        customManifestsLocalRef.current = manifests;
+        return;
       } else {
-        removeCustomManifestFromLocal(manifests);
+        clearAlerts();
+        actions.setSubmitting(true);
+
+        for (let index = 0; index < manifests.length; index++) {
+          try {
+            const manifest = manifests[index];
+            if (index >= (customManifestsLocalRef.current?.length || 0)) {
+              // manifest added
+              await ClustersAPI.createCustomManifest(
+                cluster.id,
+                ClustersService.transformFormViewManifest(manifest),
+              );
+            } else {
+              // manifest updated
+              const oldManifest = customManifestsLocalRef.current[index];
+
+              if (manifestUpdated(manifest, oldManifest)) {
+                await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
+              }
+            }
+          } catch (error) {
+            const errorArray = new Array(manifests.length).fill(undefined);
+            errorArray.splice(index, 1, { manifestYaml: 'Failed to save changes' });
+
+            const errors = {
+              manifests: errorArray,
+            };
+            actions.setErrors(errors);
+
+            // handleApiErrorInForm(manifests, customManifestsLocalRef.current, actions);
+            handleApiError(error, () =>
+              addAlert({
+                title: 'Failed to update the custom manifests',
+                message: getApiErrorMessage(error),
+              }),
+            );
+          }
+        }
+
+        customManifestsLocalRef.current = manifests;
+        if (!uiSettings?.customManifestsAdded) {
+          await updateUISettings({ customManifestsAdded: true });
+        }
+
+        actions.setSubmitting(false);
       }
     },
-    [
-      clearAlerts,
-      cluster,
-      updateUISettings,
-      updateCustomManifestsLocal,
-      addAlert,
-      removeCustomManifestFromLocal,
-    ],
+    [clearAlerts, uiSettings?.customManifestsAdded, cluster.id, addAlert, updateUISettings],
   );
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
