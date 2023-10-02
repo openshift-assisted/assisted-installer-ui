@@ -5,6 +5,7 @@ import {
   SelectOptionProps,
   TooltipProps,
   RadioProps,
+  FormSelectProps,
 } from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
@@ -37,7 +38,7 @@ export interface FieldProps {
 
 export interface SelectFieldProps extends FieldProps {
   options: FormSelectOptionProps[];
-  onChange?: (event: React.FormEvent<HTMLSelectElement>) => void;
+  onChange?: FormSelectProps['onChange'];
   getHelperText?: (value: string) => React.ReactNode | undefined;
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
