@@ -8,18 +8,12 @@ import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalB
 import Day2Wizard from './day2Wizard/Day2Wizard';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
-const InventoryAddHosts = ({
-  cluster,
-  canSelectCpuArch,
-}: {
-  cluster?: Cluster;
-  canSelectCpuArch?: boolean;
-}) => {
+const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
   if (!cluster) {
     return null;
   }
 
-  const showArmOnlyAlert = !canSelectCpuArch && cluster.cpuArchitecture === CpuArchitecture.ARM;
+  const showArmOnlyAlert = cluster.cpuArchitecture === CpuArchitecture.ARM;
   return (
     <Stack hasGutter>
       <StackItem>
