@@ -8,25 +8,24 @@ export const getFormData = (manifests: ListManifestsExtended): ManifestFormData 
   };
 };
 
-export const getEmptyFormViewManifest = (): CustomManifestValues => {
+export const getEmptyManifest = (): CustomManifestValues => {
   return {
     folder: 'manifests',
     filename: '',
     manifestYaml: '',
-    fakeId: '',
   };
 };
 
-export const getFormViewManifestValues = (manifests: ListManifestsExtended): ManifestFormData => {
-  const formData = getFormData(manifests);
-  if (!formData.manifests.length) {
-    return { manifests: [getEmptyFormViewManifest()] };
+export const getManifestValues = (manifests: ListManifestsExtended): ManifestFormData => {
+  if (!!manifests.length) {
+    return getFormData(manifests);
+  } else {
+    return getEmptyManifestsValues();
   }
-  return { manifests: formData.manifests };
 };
 
-export const getEmptyFormViewManifestsValues = (): ManifestFormData => {
-  return { manifests: [getEmptyFormViewManifest()] };
+export const getEmptyManifestsValues = (): ManifestFormData => {
+  return { manifests: [getEmptyManifest()] };
 };
 
 export const getClusterCustomManifests = (
@@ -37,13 +36,8 @@ export const getClusterCustomManifests = (
       folder: manifest.folder || 'manifests',
       filename: manifest.fileName || '',
       manifestYaml: manifest.yamlContent || '',
-      fakeId: getManifestFakeId(manifest.folder || 'manifests', manifest.fileName || ''),
     }));
   } else {
-    return [getEmptyFormViewManifest()];
+    return [getEmptyManifest()];
   }
-};
-
-export const getManifestFakeId = (folder: string, fileName: string): string => {
-  return `${folder}#${fileName}`;
 };
