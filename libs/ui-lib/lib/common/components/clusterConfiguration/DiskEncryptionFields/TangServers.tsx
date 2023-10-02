@@ -1,12 +1,18 @@
 import React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
-import { Stack, StackItem, TextInputTypes } from '@patternfly/react-core';
+import { Stack, StackItem, TextInputTypes, Tooltip, TooltipProps } from '@patternfly/react-core';
 import { ClusterDetailsValues } from '../../clusterWizard';
 import { InputField } from '../../ui';
 import { AddButton, RemovableField } from '../../ui/formik';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
-export const TangServers = ({ isDisabled = false }: { isDisabled: boolean }) => {
+export const TangServers = ({
+  isDisabled = false,
+  tooltipProps,
+}: {
+  isDisabled: boolean;
+  tooltipProps: TooltipProps;
+}) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { t } = useTranslation();
   return (
@@ -20,22 +26,26 @@ export const TangServers = ({ isDisabled = false }: { isDisabled: boolean }) => 
                 onRemove={() => remove(index)}
               >
                 <div>
-                  <InputField
-                    type={TextInputTypes.url}
-                    name={`diskEncryptionTangServers.${index}.url`}
-                    helperText={`Must start with "http://" or "https://". Optionally, end with ":<port>"`}
-                    label="Server URL"
-                    isRequired
-                    isDisabled={isDisabled}
-                  />
+                  <Tooltip {...tooltipProps}>
+                    <InputField
+                      type={TextInputTypes.url}
+                      name={`diskEncryptionTangServers.${index}.url`}
+                      helperText={`Must start with "http://" or "https://". Optionally, end with ":<port>"`}
+                      label="Server URL"
+                      isRequired
+                      isDisabled={isDisabled}
+                    />
+                  </Tooltip>
                   &thinsp;
-                  <InputField
-                    type={TextInputTypes.text}
-                    name={`diskEncryptionTangServers.${index}.thumbprint`}
-                    label="Server Thumbprint"
-                    isRequired
-                    isDisabled={isDisabled}
-                  />
+                  <Tooltip {...tooltipProps}>
+                    <InputField
+                      type={TextInputTypes.text}
+                      name={`diskEncryptionTangServers.${index}.thumbprint`}
+                      label="Server Thumbprint"
+                      isRequired
+                      isDisabled={isDisabled}
+                    />
+                  </Tooltip>
                 </div>
               </RemovableField>{' '}
             </StackItem>
