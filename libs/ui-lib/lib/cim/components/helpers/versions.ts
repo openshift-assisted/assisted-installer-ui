@@ -80,3 +80,8 @@ export const getMajorMinorVersion = (version = '') => {
   const match = /[0-9].[0-9][0-9]?/g.exec(version);
   return match?.[0] || '';
 };
+
+export const getNetworkType = (
+  ocpVersion: OpenshiftVersionOptionType | undefined,
+): 'OVNKubernetes' | 'OpenShiftSDN' =>
+  parseFloat(getMajorMinorVersion(ocpVersion?.version)) >= 4.12 ? 'OVNKubernetes' : 'OpenShiftSDN';

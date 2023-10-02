@@ -17,7 +17,7 @@ import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } fro
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
-import { getAICluster, getOCPVersions } from '../helpers';
+import { getAICluster, getNetworkType, getOCPVersions } from '../helpers';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -45,7 +45,10 @@ export const useDetailsFormik = ({
   clusterImages,
   usedClusterNames,
   infraEnv,
-}: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
+}: UseDetailsFormikArgs): [
+  ClusterDetailsValues & { networkType: 'OpenShiftSDN' | 'OVNKubernetes' },
+  Lazy,
+] => {
   const { t } = useTranslation();
   const featureSupportLevels = useFeatureSupportLevel();
   const ocpVersions = getOCPVersions(clusterImages);
@@ -62,12 +65,21 @@ export const useDetailsFormik = ({
     [agentClusterInstall, clusterDeployment, agents, infraEnv],
   );
   const initialValues = React.useMemo(
-    () =>
-      getClusterDetailsInitialValues({
+    () => {
+      const initValues = getClusterDetailsInitialValues({
         managedDomains: [], // not supported
         cluster,
         ocpVersions,
-      }),
+      });
+
+      const ocpVersion = ocpVersions.find(
+        (ocpVersion) => ocpVersion.value === initValues.openshiftVersion,
+      );
+      return {
+        ...initValues,
+        networkType: getNetworkType(ocpVersion),
+      };
+    },
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
