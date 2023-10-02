@@ -3,7 +3,6 @@ import React from 'react';
 // Must conform Unleash constants
 export type AssistedInstallerFeatureType =
   | 'ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE'
-  | 'ASSISTED_INSTALLER_MULTIARCH_SUPPORTED'
   | 'ASSISTED_INSTALLER_PLATFORM_OCI';
 
 export type FeatureListType = {
@@ -22,13 +21,11 @@ export type AssistedInstallerPermissionTypesListType = {
 // Hardcoded for ACM
 export const ACM_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: false,
-  ASSISTED_INSTALLER_MULTIARCH_SUPPORTED: true,
 };
 
 // Hardcoded outside OCM
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: false,
-  ASSISTED_INSTALLER_MULTIARCH_SUPPORTED: true,
   ASSISTED_INSTALLER_PLATFORM_OCI: true,
 };
 
@@ -46,7 +43,6 @@ export const FeatureGateContextProvider: React.FC<{
   // hardcoded defaults
   // TODO (mortegag): Remove all multiarch capacity related code in the UI.
   const featuresWithDefaults: FeatureListType = {
-    ASSISTED_INSTALLER_MULTIARCH_SUPPORTED: true,
     ...features,
   };
 
