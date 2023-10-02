@@ -12,6 +12,7 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { SelectFieldProps } from '../ui/formik/types';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -54,8 +55,9 @@ const getOpenshiftVersionHelperText =
 
 type OpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];
+  onChange?: SelectFieldProps['onChange'];
 };
-const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions }) => {
+const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions, onChange }) => {
   const selectOptions = React.useMemo(
     () =>
       versions
@@ -75,6 +77,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
       getHelperText={getOpenshiftVersionHelperText(versions)}
       isDisabled={versions.length === 0}
       isRequired
+      onChange={onChange}
     />
   );
 };
