@@ -112,6 +112,9 @@ const FailingValidation = <S extends string>({
       </>
     );
   } else {
+    if (validation.id === 'platform-requirements-satisfied') {
+      fix = validation.message;
+    }
     // console.error(
     //   'Unknown validation ID detected in the ',
     //   clusterGroup || hostGroup,
