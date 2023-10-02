@@ -1,9 +1,9 @@
-import { navbar } from '../../views/navbar';
-import { clusterDetailsPage } from '../../views/clusterDetails';
-import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
-import { networkingPage } from '../../views/networkingPage';
-import { reviewAndCreatePage } from '../../views/reviewCreate';
-import { commonActions } from '../../views/common';
+import { navbar } from '../../views/pages/navbar';
+import { clusterDetailsPage } from '../../views/forms/ClusterDetails/clusterDetails';
+import { bareMetalDiscoveryPage } from '../../views/forms/HostDiscovery/bareMetalDiscovery';
+import { networkingPage } from '../../views/forms/Networking/networkingPage';
+import { reviewAndCreatePage } from '../../views/forms/ReviewAndCreate/reviewCreate';
+import { commonActions } from '../../views/pages/common';
 
 describe(`Assisted Installer Read Only Cluster`, () => {
   const setTestStartSignal = (activeSignal: string) => {

@@ -1,5 +1,5 @@
-import { clusterDetailsPage } from '../../views/clusterDetails';
-import { commonActions } from '../../views/common';
+import { clusterDetailsPage } from '../../views/forms/ClusterDetails/clusterDetails';
+import { commonActions } from '../../views/pages/common';
 
 describe(`Assisted Installer Day2 flow`, () => {
   const setTestStartSignal = (activeSignal: string) => {

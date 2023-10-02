@@ -1,6 +1,6 @@
-import { navbar } from '../../views/navbar';
-import { commonActions } from '../../views/common';
-import { operatorsPage } from '../../views/operatorsPage';
+import { navbar } from '../../views/pages/navbar';
+import { commonActions } from '../../views/pages/common';
+import { operatorsPage } from '../../views/forms/Operators/operatorsPage';
 
 describe('Assisted Installer UI behaviour - cluster updates', () => {
   const setTestStartSignal = (activeSignal: string) => {

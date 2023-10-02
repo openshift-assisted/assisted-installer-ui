@@ -1,9 +1,9 @@
 import { NewClusterPage } from '../../../views/pages/NewClusterPage';
 import { ClusterDetailsForm } from '../../../views/forms/ClusterDetails/ClusterDetailsForm';
 import { externalPlatformTypes } from '../../../fixtures/cluster/external-platform-types';
-import { commonActions } from '../../../views/common';
+import { commonActions } from '../../../views/pages/common';
 import { pullSecret } from '../../../fixtures';
-import { clusterDetailsPage } from '../../../views/clusterDetails';
+import { clusterDetailsPage } from '../../../views/forms/ClusterDetails/clusterDetails';
 
 describe('Create a new cluster with external partner integrations', () => {
   const setTestStartSignal = (activeSignal: string) => {

@@ -1,4 +1,4 @@
-import { pullSecret } from '../fixtures';
+import { pullSecret } from '../../../fixtures';
 
 export const clusterDetailsPage = {
   getClusterNameField: () => {

@@ -1,6 +1,6 @@
-import { commonActions } from '../../views/common';
-import { clusterDetailsPage } from '../../views/clusterDetails';
-import { clusterListPage } from '../../views/clusterList';
+import { commonActions } from '../../views/pages/common';
+import { clusterDetailsPage } from '../../views/forms/ClusterDetails/clusterDetails';
+import { clusterListPage } from '../../views/pages/clusterList';
 import * as utils from '../../support/utils';
 
 describe(`Assisted Installer SNO Cluster Installation`, () => {

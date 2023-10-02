@@ -1,5 +1,5 @@
-import { commonActions } from '../../views/common';
-import { clusterDetailsPage } from '../../views/clusterDetails';
+import { commonActions } from '../../views/pages/common';
+import { clusterDetailsPage } from '../../views/forms/ClusterDetails/clusterDetails';
 import * as utils from '../../support/utils';
 import { dummyStaticNetworkConfig } from '../../fixtures/static-ip/static-network-config';
 

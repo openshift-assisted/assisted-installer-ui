@@ -1,6 +1,6 @@
-import { storagePage } from '../../views/storagePage';
-import { commonActions } from '../../views/common';
-import { hostsTableSection } from '../../views/hostsTableSection';
+import { storagePage } from '../../views/forms/Storage/storagePage';
+import { commonActions } from '../../views/pages/common';
+import { hostsTableSection } from '../../views/reusableComponents/hostsTableSection';
 
 const masterDisks = [
   {

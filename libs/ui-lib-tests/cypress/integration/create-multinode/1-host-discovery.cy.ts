@@ -1,8 +1,8 @@
-import { commonActions } from '../../views/common';
-import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
-import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoModal';
-import { hostsTableSection } from '../../views/hostsTableSection';
-import { navbar } from '../../views/navbar';
+import { commonActions } from '../../views/pages/common';
+import { bareMetalDiscoveryPage } from '../../views/forms/HostDiscovery/bareMetalDiscovery';
+import { bareMetalDiscoveryIsoModal } from '../../views/forms/HostDiscovery/bareMetalDiscoveryIsoModal';
+import { hostsTableSection } from '../../views/reusableComponents/hostsTableSection';
+import { navbar } from '../../views/pages/navbar';
 
 import * as utils from '../../support/utils';
 

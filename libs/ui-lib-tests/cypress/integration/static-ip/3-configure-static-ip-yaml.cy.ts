@@ -1,5 +1,5 @@
-import { commonActions } from '../../views/common';
-import { staticIpPage } from '../../views/staticIpPage';
+import { commonActions } from '../../views/pages/common';
+import { staticIpPage } from '../../views/forms/StaticIP/staticIpPage';
 
 describe(`Assisted Installer Static IP YAML configuration`, () => {
   const setTestStartSignal = (activeSignal: string) => {

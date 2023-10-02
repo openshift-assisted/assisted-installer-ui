@@ -1,6 +1,6 @@
-import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
-import { bareMetalDiscoveryIsoModal } from '../../views/bareMetalDiscoveryIsoModal';
-import { commonActions } from '../../views/common';
+import { bareMetalDiscoveryPage } from '../../views/forms/HostDiscovery/bareMetalDiscovery';
+import { bareMetalDiscoveryIsoModal } from '../../views/forms/HostDiscovery/bareMetalDiscoveryIsoModal';
+import { commonActions } from '../../views/pages/common';
 
 describe('Assisted Installer UI behaviour - infra env updates', () => {
   const setTestStartSignal = (activeSignal: string) => {

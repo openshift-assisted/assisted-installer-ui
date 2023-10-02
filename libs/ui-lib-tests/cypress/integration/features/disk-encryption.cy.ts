@@ -1,7 +1,7 @@
-import { clusterDetailsPage } from '../../views/clusterDetails';
-import { diskEncryptionSection } from '../../views/diskEncryptionSection';
-import { bareMetalDiscoveryPage } from '../../views/bareMetalDiscovery';
-import { commonActions } from '../../views/common';
+import { clusterDetailsPage } from '../../views/forms/ClusterDetails/clusterDetails';
+import { diskEncryptionSection } from '../../views/forms/ClusterDetails/diskEncryptionSection';
+import { bareMetalDiscoveryPage } from '../../views/forms/HostDiscovery/bareMetalDiscovery';
+import { commonActions } from '../../views/pages/common';
 import { diskEncryptionValues, tangServerValues } from '../../fixtures/disk-encryption';
 import * as utils from '../../support/utils';
 

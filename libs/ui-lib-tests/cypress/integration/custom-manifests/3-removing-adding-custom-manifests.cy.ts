@@ -1,4 +1,4 @@
-import { commonActions } from '../../views/common';
+import { commonActions } from '../../views/pages/common';
 import * as utils from '../../support/utils';
 import { CustomManifestsForm } from '../../views/forms';
 

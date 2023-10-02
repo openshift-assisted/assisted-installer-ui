@@ -1,5 +1,5 @@
-import { commonActions } from '../../views/common';
-import { reviewAndCreatePage } from '../../views/reviewCreate';
+import { commonActions } from '../../views/pages/common';
+import { reviewAndCreatePage } from '../../views/forms/ReviewAndCreate/reviewCreate';
 
 describe(`Assisted Installer SNO Review`, () => {
   const setTestStartSignal = (activeSignal: string) => {

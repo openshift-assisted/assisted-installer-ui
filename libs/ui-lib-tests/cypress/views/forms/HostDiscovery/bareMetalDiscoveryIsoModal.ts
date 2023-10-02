@@ -1,4 +1,4 @@
-import { isoDownloadLink } from '../fixtures/infra-envs';
+import { isoDownloadLink } from '../../../fixtures/infra-envs';
 
 export const bareMetalDiscoveryIsoModal = {
   getGenerateDiscoveryIsoModalId: () => {

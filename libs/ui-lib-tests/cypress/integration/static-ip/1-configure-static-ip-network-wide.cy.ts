@@ -1,5 +1,5 @@
-import { commonActions } from '../../views/common';
-import { staticIpPage } from '../../views/staticIpPage';
+import { commonActions } from '../../views/pages/common';
+import { staticIpPage } from '../../views/forms/StaticIP/staticIpPage';
 import testIpv4AndIpv6Addresses from '../../fixtures/data/ipv4-and-ipv6-addresses';
 
 type NetworkSelection = 'ipv4' | 'dual-stack';

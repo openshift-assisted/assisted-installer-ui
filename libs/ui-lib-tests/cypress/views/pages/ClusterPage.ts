@@ -1,4 +1,4 @@
-import { EventsModalControl } from '../modals/EventsModal';
+import { EventsModalControl } from '../reusableComponents/EventsModal';
 
 export class ClusterPage {
   constructor() {

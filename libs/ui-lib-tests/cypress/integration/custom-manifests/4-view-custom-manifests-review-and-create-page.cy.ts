@@ -1,5 +1,5 @@
-import { commonActions } from '../../views/common';
-import { reviewAndCreatePage } from '../../views/reviewCreate';
+import { commonActions } from '../../views/pages/common';
+import { reviewAndCreatePage } from '../../views/forms/ReviewAndCreate/reviewCreate';
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';
 
 describe(`Assisted Installer Review and create step with custom manifests`, () => {

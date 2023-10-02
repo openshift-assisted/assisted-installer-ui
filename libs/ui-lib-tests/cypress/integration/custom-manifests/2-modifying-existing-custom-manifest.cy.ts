@@ -1,4 +1,4 @@
-import { commonActions } from '../../views/common';
+import { commonActions } from '../../views/pages/common';
 import { CustomManifestsForm } from '../../views/forms';
 
 const ACTIVE_NAV_ITEM_CLASS = 'pf-m-current';

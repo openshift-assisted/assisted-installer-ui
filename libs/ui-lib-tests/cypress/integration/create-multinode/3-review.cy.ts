@@ -1,5 +1,5 @@
-import { reviewAndCreatePage } from '../../views/reviewCreate';
-import { commonActions } from '../../views/common';
+import { reviewAndCreatePage } from '../../views/forms/ReviewAndCreate/reviewCreate';
+import { commonActions } from '../../views/pages/common';
 
 describe(`Assisted Installer Multinode Review`, () => {
   const setTestStartSignal = (activeSignal: string) => {

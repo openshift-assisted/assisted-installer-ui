@@ -1,4 +1,4 @@
-import { commonActions } from '../../../views/common';
+import { commonActions } from '../../../views/pages/common';
 import OperatorsForm from '../../../views/forms/Operators/OperatorsForm';
 
 describe(`Create cluster with mce operator enabled`, () => {

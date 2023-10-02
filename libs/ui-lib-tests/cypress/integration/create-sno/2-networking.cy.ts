@@ -1,5 +1,5 @@
-import { commonActions } from '../../views/common';
-import { networkingPage } from '../../views/networkingPage';
+import { commonActions } from '../../views/pages/common';
+import { networkingPage } from '../../views/forms/Networking/networkingPage';
 
 describe(`Assisted Installer SNO Networking`, () => {
   const setTestStartSignal = (activeSignal: string) => {

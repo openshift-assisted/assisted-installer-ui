@@ -1,5 +1,8 @@
-import { commonActions } from '../../views/common';
-import { ValidateDiskHoldersParams, hostsTableSection } from '../../views/hostsTableSection';
+import { commonActions } from '../../views/pages/common';
+import {
+  ValidateDiskHoldersParams,
+  hostsTableSection,
+} from '../../views/reusableComponents/hostsTableSection';
 import { StorageForm } from '../../views/forms/Storage/StorageForm';
 
 describe(`Assisted Installer Storage Step`, () => {

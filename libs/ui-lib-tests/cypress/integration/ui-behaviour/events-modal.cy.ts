@@ -1,6 +1,6 @@
 import { ClusterPage } from '../../views/pages/ClusterPage';
 import { hostIds } from '../../fixtures/hosts';
-import { EventsModal } from '../../views/modals/EventsModal';
+import { EventsModal } from '../../views/reusableComponents/EventsModal';
 
 let clusterPage;
 let eventsModal;
