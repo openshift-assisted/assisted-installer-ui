@@ -15,6 +15,7 @@ import { ClusterDetailsValues } from '../../../common/components/clusterWizard/t
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ArmCheckbox from './ArmCheckbox';
 import { SNOControlGroup } from '../../../common';
+import { getNetworkType } from '../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -49,7 +50,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   extensionAfter,
   isNutanix,
 }) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
+  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
@@ -99,7 +100,13 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           {t('ai:OpenShift')} {forceOpenshiftVersion}
         </StaticTextField>
       ) : (
-        <OpenShiftVersionSelect versions={versions} />
+        <OpenShiftVersionSelect
+          versions={versions}
+          onChange={(value) => {
+            const ocpVersion = versions.find((v) => v.value === value);
+            setFieldValue('networkType', getNetworkType(ocpVersion));
+          }}
+        />
       )}
       {!isNutanix && (
         <>
