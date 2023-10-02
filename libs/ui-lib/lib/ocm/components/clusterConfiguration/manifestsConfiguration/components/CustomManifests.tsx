@@ -3,7 +3,7 @@ import { ListManifestsExtended } from '../data/dataTypes';
 import { CustomManifestsFormProps, CustomManifestFormState } from './propTypes';
 import { getFormViewManifestsValidationSchema } from './customManifestsValidationSchema';
 import { CustomManifestsForm } from './CustomManifestsForm';
-import { getEmptyFormViewManifestsValues, getFormViewManifestValues } from './utils';
+import { getEmptyManifestsValues, getManifestValues } from './utils';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const CustomManifests = ({
@@ -21,9 +21,9 @@ export const CustomManifests = ({
       validationSchema: getFormViewManifestsValidationSchema,
 
       getInitialValues: (customManifests: ListManifestsExtended) => {
-        return getFormViewManifestValues(customManifests);
+        return getManifestValues(customManifests);
       },
-      getEmptyValues: () => getEmptyFormViewManifestsValues(),
+      getEmptyValues: () => getEmptyManifestsValues(),
       showEmptyValues: true,
       cluster: cluster,
     });
