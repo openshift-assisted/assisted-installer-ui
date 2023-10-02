@@ -66,7 +66,6 @@ export const OcmClusterDetailsFormFields = ({
 
   const { t } = useTranslation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
   const { openshiftVersion, platform } = values;
   const { getCpuArchitectures } = useOpenshiftVersions();
@@ -78,8 +77,8 @@ export const OcmClusterDetailsFormFields = ({
     values.cpuArchitecture as SupportedCpuArchitecture,
   );
   const cpuArchitectures = React.useMemo(
-    () => getSupportedCpuArchitectures(isMultiArchSupported, cpuArchitecturesByVersionImage),
-    [cpuArchitecturesByVersionImage, isMultiArchSupported],
+    () => getSupportedCpuArchitectures(cpuArchitecturesByVersionImage),
+    [cpuArchitecturesByVersionImage],
   );
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
