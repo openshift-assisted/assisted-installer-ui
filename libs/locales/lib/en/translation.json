@@ -740,7 +740,7 @@
   "ai:Update": "Update",
   "ai:Upload": "Upload",
   "ai:Upload a YAML file": "Upload a YAML file",
-  "ai:Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.).": "Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.).",
+  "ai:Upload a YAML file in NMstate format (not the entire NMstate config CR) that includes your network configuration (static IPs, bonds, etc.).": "Upload a YAML file in NMstate format (not the entire NMstate config CR) that includes your network configuration (static IPs, bonds, etc.).",
   "ai:Upload a YAML file with BareMetalHost and Secret resource definitions. Use the provided template as a reference.": "Upload a YAML file with BareMetalHost and Secret resource definitions. Use the provided template as a reference.",
   "ai:URL must start with <bold>http</bold> (https schemes are not currently supported).": "URL must start with <bold>http</bold> (https schemes are not currently supported).",
   "ai:URL must start with <bold>http</bold>.": "URL must start with <bold>http</bold>.",
