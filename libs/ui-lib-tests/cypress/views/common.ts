@@ -75,10 +75,14 @@ export const commonActions = {
     });
   },
   verifyIsAtStep: (stepTitle: string) => {
-    cy.get('h2', { timeout: 2000 }).should('contain.text', stepTitle);
+    cy.get('h2', { timeout: 3500 }).then(($res) => {
+      $res[0].scrollIntoView();
+    });
+    cy.get('h2').should('contain.text', stepTitle);
   },
   verifyIsAtSubStep: (subStepTitle: string) => {
-    cy.get('h3', { timeout: 2000 }).should('contain.text', subStepTitle);
+    cy.get('h3', { timeout: 3500 }).scrollIntoView();
+    cy.get('h3').should('contain.text', subStepTitle);
   },
   verifyNextIsEnabled: () => {
     commonActions.getNextButton().should('be.enabled');

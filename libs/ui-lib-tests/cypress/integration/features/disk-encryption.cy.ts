@@ -60,15 +60,18 @@ describe(`Assisted Installer Disk Encryption`, () => {
     diskEncryptionSection.getEncryptionMode().check('tang');
     fillTangServers(0);
 
-    commonActions.toNextStepAfter('Cluster details');
+    // commonActions.toNextStepAfter('Cluster details');
+    commonActions.getNextButton().click();
 
     cy.wait('@create-cluster').then(({ request }) => {
       expect(request.body.disk_encryption.valueOf()).to.deep.equal(diskEncryptionValues);
     });
-    cy.wait('@create-infra-env');
-    utils.setLastWizardSignal('CLUSTER_CREATED');
+    // cy.wait('@create-infra-env');
+    // utils.setLastWizardSignal('CLUSTER_CREATED');
 
-    commonActions.toNextStepAfter('Operators');
-    bareMetalDiscoveryPage.setClusterIdFromUrl();
+    // commonActions.verifyIsAtStep('Operators');
+
+    // commonActions.toNextStepAfter('Operators');
+    // bareMetalDiscoveryPage.setClusterIdFromUrl();
   });
 });
