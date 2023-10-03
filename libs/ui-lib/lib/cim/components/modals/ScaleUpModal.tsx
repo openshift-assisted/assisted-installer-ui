@@ -58,6 +58,7 @@ type ScaleUpModalProps = {
   agents: AgentK8sResource[];
   onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
+  isNutanix: boolean;
 };
 
 const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
@@ -68,6 +69,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   agents,
   onChangeHostname,
   onSetInstallationDiskId,
+  isNutanix,
 }) => {
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
   const [error, setError] = React.useState<string | undefined>();
@@ -138,6 +140,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                         agents={agents}
                         onEditHost={setEditAgent}
                         onSetInstallationDiskId={onSetInstallationDiskId}
+                        isNutanix={isNutanix}
                       />
                     </StackItem>
                     {error && (
