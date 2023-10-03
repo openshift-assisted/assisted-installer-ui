@@ -104,7 +104,11 @@ const DiskEncryptionControlGroup = ({
           condition={enableDiskEncryptionOnMasters || (enableDiskEncryptionOnWorkers && !isSNO)}
         >
           <StackItem>
-            <DiskEncryptionMode diskEncryptionMode={diskEncryptionMode} isDisabled={isDisabled} />
+            <DiskEncryptionMode
+              diskEncryptionMode={diskEncryptionMode}
+              isDisabled={isDisabled}
+              tooltipProps={tooltipProps}
+            />
           </StackItem>
         </RenderIf>
       </Stack>

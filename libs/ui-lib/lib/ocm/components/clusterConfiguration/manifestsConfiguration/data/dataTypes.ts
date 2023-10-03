@@ -6,7 +6,6 @@ export type CustomManifestValues = {
   folder: FormViewManifestFolder;
   filename: string;
   manifestYaml: string;
-  fakeId?: string;
 };
 
 export interface ManifestFormData {

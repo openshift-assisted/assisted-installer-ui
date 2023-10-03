@@ -301,7 +301,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                     name="nmState"
                     language={Language.yaml}
                     description={t(
-                      'ai:Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.).',
+                      'ai:Upload a YAML file in NMstate format (not the entire NMstate config CR) that includes your network configuration (static IPs, bonds, etc.).',
                     )}
                   />
                   <MacMapping />
