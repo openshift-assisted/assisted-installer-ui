@@ -1,5 +1,4 @@
 import './cluster-list';
-import './cluster-details';
 import './host-discovery';
 import './misc';
 import './networking';

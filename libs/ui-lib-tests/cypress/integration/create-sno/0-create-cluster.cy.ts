@@ -23,7 +23,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       clusterListPage.getCreateNewClusterButton().should('be.visible');
       clusterListPage.getCreateNewClusterButton().click();
 
-      cy.location('pathname').should('eq', Cypress.env('newClusterLocation'));
+      cy.location('pathname').should('eq', '/clusters/~new');
     });
 
     it('Can submit the form to create a new cluster', () => {

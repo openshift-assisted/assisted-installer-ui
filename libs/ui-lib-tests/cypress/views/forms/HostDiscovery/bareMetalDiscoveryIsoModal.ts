@@ -89,7 +89,7 @@ export const bareMetalDiscoveryIsoModal = {
     return cy.get('[data-testid="edit-iso-btn"]');
   },
   getImageTypeField: () => {
-    return cy.get(Cypress.env('imageTypeFieldId'));
+    return cy.get('#form-input-imageType-field');
   },
   openImageTypeDropdown: () => {
     bareMetalDiscoveryIsoModal.getImageTypeField().find('button.pf-c-dropdown__toggle').click();

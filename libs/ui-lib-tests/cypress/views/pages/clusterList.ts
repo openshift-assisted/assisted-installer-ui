@@ -14,7 +14,7 @@ export const clusterListPage = {
   openCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
     cy.getClusterNameLinkSelector(clusterName).click();
     cy.get('.pf-c-breadcrumb__list > :nth-child(3)').should('contain', clusterName);
-    cy.get(Cypress.env('clusterNameFieldId')).should('have.value', clusterName);
+    cy.get('#form-input-name-field').should('have.value', clusterName);
   },
   deleteCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
     cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`)

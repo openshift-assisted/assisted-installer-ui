@@ -2,13 +2,13 @@ import { pullSecret } from '../../../fixtures';
 
 export const clusterDetailsPage = {
   getClusterNameField: () => {
-    return cy.get(Cypress.env('clusterNameFieldId'));
+    return cy.get('#form-input-name-field');
   },
   inputClusterName: (clusterName = Cypress.env('CLUSTER_NAME')) => {
     clusterDetailsPage.getClusterNameField().should('be.visible').clear().type(clusterName);
   },
   getOpenshiftVersionField: () => {
-    return cy.get(Cypress.env('openshiftVersionFieldId'));
+    return cy.get('#form-input-openshiftVersion-field');
   },
   openOpenshiftVersionDropdown: () => {
     clusterDetailsPage.getOpenshiftVersionField().find('button.pf-c-dropdown__toggle').click();
@@ -27,48 +27,48 @@ export const clusterDetailsPage = {
     clusterDetailsPage.getSelectedOpenShiftVersion().should('contain.text', `OpenShift ${version}`);
   },
   getPullSecret: () => {
-    return cy.get(Cypress.env('pullSecretFieldId'));
+    return cy.get('#form-input-pullSecret-field');
   },
   getPullSecretFieldHelper: () => {
-    return cy.get(Cypress.env('pullSecretFieldHelperId'));
+    return cy.get('#form-input-pullSecret-field-helper');
   },
   inputPullSecret: () => {
     clusterDetailsPage.getPullSecret().clear();
-    cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecret);
+    cy.get('#form-input-pullSecret-field').pasteText(pullSecret);
     clusterDetailsPage.getPullSecret().should('contain.text', pullSecret);
   },
   checkAiTechSupportLevel: () => {
-    cy.get(Cypress.env('assistedInstallerSupportLevel'))
+    cy.get('[data-testid=assisted-installer-support-level]')
       .should('be.visible')
       .should('contain.text', Cypress.env('techPreviewSupportLevel'));
   },
   checkSnoDevSupportLevel: () => {
-    cy.get(Cypress.env('snoSupportLevel'))
+    cy.get('[data-testid=SNO-support-level]')
       .should('be.visible')
       .should('contain.text', Cypress.env('devPreviewSupportLevel'));
   },
   getBaseDnsDomain: () => {
-    return cy.get(Cypress.env('baseDnsDomainFieldId'));
+    return cy.get('#form-input-baseDnsDomain-field');
   },
   inputBaseDnsDomain: (dns = Cypress.env('DNS_DOMAIN_NAME')) => {
     clusterDetailsPage.getBaseDnsDomain().clear().type(dns).should('have.value', dns);
   },
   getSno: () => {
-    return cy.get(Cypress.env('highAvailabilityModeFieldId'));
+    return cy.get('#form-input-highAvailabilityMode-field');
   },
   enableSno: () => {
     clusterDetailsPage.getSno().scrollIntoView().should('be.visible').check();
     clusterDetailsPage.getSno().should('be.checked');
   },
   getStaticIpNetworkConfig: () => {
-    return cy.get(Cypress.env('staticIpNetworkConfigFieldId'));
+    return cy.get('#form-radio-hostsNetworkConfigurationType-static-field');
   },
   openCpuArchitectureDropdown: () => {
-    cy.get(`${Cypress.env('cpuArchitectureFieldId')} > button.pf-c-dropdown__toggle`).click();
+    cy.get('#form-input-cpuArchitecture-field > button.pf-c-dropdown__toggle').click();
   },
   selectCpuArchitecture: (cpuArchitecture) => {
     cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).click();
-    cy.get(`${Cypress.env('cpuArchitectureFieldId')} .pf-c-dropdown__toggle-text`)
+    cy.get('#form-input-cpuArchitecture-field .pf-c-dropdown__toggle-text')
       .invoke('text')
       .should('match', new RegExp(cpuArchitecture, 'i'));
   },
@@ -79,10 +79,10 @@ export const clusterDetailsPage = {
     cy.get(`ul.pf-c-dropdown__menu li[id=${cpuArchitecture}] a`).should('not.exist');
   },
   getSnoDisclaimer: () => {
-    return cy.get(Cypress.env('checkboxSNODisclaimerFieldId'));
+    return cy.get('#form-checkbox-SNODisclaimer-field');
   },
   getRedHatDnsServiceCheck: () => {
-    return cy.get(Cypress.env('useRedHatDnsServiceFieldId'));
+    return cy.get('#form-checkbox-useRedHatDnsService-field');
   },
   setRedHatDnsService: () => {
     // set first option val to dnsDomain
@@ -93,7 +93,7 @@ export const clusterDetailsPage = {
       });
   },
   enableStaticNetworking: () => {
-    cy.get(`.pf-c-radio__label:contains(${Cypress.env('enableStaticIpRadioButtonText')})`)
+    cy.get('.pf-c-radio__label:contains("Static network configuration")')
       .scrollIntoView()
       .click({ force: true });
   },
@@ -103,7 +103,7 @@ export const clusterDetailsPage = {
       .should('contain.text', status === 'fail' ? '#c9190b' : '#3e8635');
   },
   getClusterNameFieldValidator: () => {
-    return cy.get(Cypress.env('clusterNameFieldValidator'));
+    return cy.get('[aria-label=Validation]');
   },
   validateInputNameFieldHelperError: (...childNums: number[]) => {
     clusterDetailsPage.getClusterNameFieldValidator().click();
@@ -115,7 +115,7 @@ export const clusterDetailsPage = {
     }
   },
   getInputDnsDomainFieldHelper: () => {
-    return cy.get(Cypress.env('baseDnsDomainFieldHelperId'));
+    return cy.get('#form-input-baseDnsDomain-field-helper');
   },
   getClusterDetailsBody: () => {
     return cy.get('.pf-l-grid');
