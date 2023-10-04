@@ -11,12 +11,15 @@ import 'cypress-fill-command';
 import '@testing-library/cypress/add-commands';
 import 'cypress-file-upload';
 
-Cypress.Commands.add('pasteText', (selector, text) => {
-  cy.get(selector).then((elem) => {
-    elem.text(text);
-    elem.val(text);
-    cy.get(selector).type(' {backspace}');
-  });
+
+Cypress.Commands.add('pasteText', { prevSubject: true }, (selector, text) => {
+  cy.wrap(selector)
+    .clear()
+    .then((elem) => {
+      elem.val(text);
+      elem.text(text);
+    })
+    .type(' {backspace}');
 });
 
 Cypress.Commands.add('findWithinOrGet', (childSelector: string, ancestorAlias?: string) => {

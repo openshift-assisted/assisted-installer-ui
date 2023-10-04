@@ -6,7 +6,7 @@ declare namespace Cypress {
      * @param ancestorAlias The alias of the child's ancestor
      */
     findWithinOrGet(childSelector: string, ancestorAlias?: string): Chainable<JQuery<HTMLElement>>;
-    pasteText(selector: string, text: string): Chainable<Element>;
+    pasteText(text: string): Chainable<Element>;
     newByDataTestId(selector: string, timeout?: number): Chainable<JQuery<HTMLElement>>;
     hostDetailSelector(i: number, label: string, timeout?: number): Chainable<Element>;
     getClusterNameLinkSelector(clusterName?: string): Chainable<Element>;
