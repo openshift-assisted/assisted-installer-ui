@@ -1,27 +1,21 @@
-export class OpenShiftVersionField {
-  static readonly alias = `@${OpenShiftVersionField.name}`;
-  static readonly selector = '#form-control__form-input-openshiftVersion-field';
+const selector = '#form-input-openshiftVersion-field';
 
-  static init(ancestorAlias?: string) {
-    cy.findWithinOrGet(OpenShiftVersionField.selector, ancestorAlias).as(
-      OpenShiftVersionField.name,
-    );
+export const OpenshiftVersion = (parentSelector: string) => ({
+  get: () => {
+    return cy.get(parentSelector).find(selector);
+  },
 
-    return OpenShiftVersionField;
-  }
+  open: () => {
+    OpenshiftVersion(parentSelector).get().find('button').click();
+  },
 
-  static findLabel() {
-    return cy.get(OpenShiftVersionField.alias).findByText(/openshift version/i);
-  }
-
-  static findDropdown() {
-    return cy.get(OpenShiftVersionField.alias).find('#form-input-openshiftVersion-field');
-  }
-
-  static selectVersion(version: string) {
-    OpenShiftVersionField.findDropdown().click();
-    OpenShiftVersionField.findDropdown().within(() => {
-      cy.findByRole('menuitem', { name: new RegExp(`openshift ${version}`, 'i') }).click();
-    });
-  }
-}
+  select: (version = Cypress.env('OPENSHIFT_VERSION')) => {
+    OpenshiftVersion(parentSelector).open();
+    OpenshiftVersion(parentSelector)
+      .get()
+      .find('ul')
+      .within(() => {
+        cy.get('li').contains(version).click();
+      });
+  },
+});

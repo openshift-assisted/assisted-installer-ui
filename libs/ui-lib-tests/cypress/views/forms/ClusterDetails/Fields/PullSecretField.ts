@@ -1,19 +1,12 @@
-export class PullSecretField {
-  static readonly alias = `@${PullSecretField.name}`;
-  static readonly selector = '#form-control__form-input-pullSecret-field';
+import { pullSecret } from '../../../../fixtures';
 
-  static init(ancestorAlias: string) {
-    cy.findWithinOrGet(PullSecretField.selector, ancestorAlias).as(PullSecretField.name);
-    return PullSecretField;
-  }
+const selector = '#form-input-pullSecret-field';
+export const PullSecret = (parentSelector: string) => ({
+  get: () => {
+    return cy.get(parentSelector).find(selector);
+  },
 
-  static findTextArea() {
-    return cy.get(PullSecretField.alias).find('#form-input-pullSecret-field');
-  }
-
-  static inputPullSecret(pullSecret: string) {
-    PullSecretField.findTextArea().clear();
-    cy.pasteText('#form-input-pullSecret-field', pullSecret);
-    PullSecretField.findTextArea().should('contain.text', pullSecret);
-  }
-}
+  input: () => {
+    PullSecret(parentSelector).get().pasteText(pullSecret);
+  },
+});

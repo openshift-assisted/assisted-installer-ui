@@ -1,6 +1,6 @@
-import { commonActions } from '../../views/pages/common';
-import { clusterDetailsPage } from '../../views/forms/ClusterDetails/clusterDetails';
-import * as utils from '../../support/utils';
+import { commonActions as common } from '../../views/pages/common';
+import { ClusterDetailsForm } from '../../views/forms/ClusterDetails/ClusterDetailsForm';
+import { NewClusterPage } from '../../views/pages/NewClusterPage';
 
 describe(`Assisted Installer Multinode Cluster Installation`, () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -19,23 +19,25 @@ describe(`Assisted Installer Multinode Cluster Installation`, () => {
 
   describe('Creating a new cluster', () => {
     it('Can submit the form to create a new cluster', () => {
-      commonActions.visitNewClusterPage();
+      NewClusterPage.visit();
 
-      clusterDetailsPage.inputClusterName();
-      clusterDetailsPage.getRedHatDnsServiceCheck().check();
-      clusterDetailsPage.inputOpenshiftVersion();
-      clusterDetailsPage.inputPullSecret();
+      ClusterDetailsForm.clusterName().input();
+      ClusterDetailsForm.baseDomain().dnsCheckbox().check();
+      ClusterDetailsForm.openshiftVersion().select();
+      ClusterDetailsForm.pullSecret().input();
 
-      commonActions.getInfoAlert().should('not.exist');
-      commonActions.toNextStepAfter('Cluster details');
+      common.getInfoAlert().should('not.exist');
+      common.toNextStepAfter('Cluster details');
 
       cy.wait('@create-cluster').then(({ request }) => {
+        expect(request.body).not.to.deep.equal({});
         expect(Object.keys(request.body)).not.to.contain('platform');
       });
-      cy.wait('@create-infra-env');
+      cy.wait('@create-infra-env').then(({ request }) => {
+        expect(request).not.to.deep.equal({});
+      });
 
-      utils.setLastWizardSignal('CLUSTER_CREATED');
-      commonActions.toNextStepAfter('Operators');
+      common.toNextStepAfter('Operators');
     });
   });
 });

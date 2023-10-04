@@ -1,13 +1,12 @@
-export class BaseDomainField {
-  static readonly alias = `@${BaseDomainField.name}`;
-  static readonly selector = '#form-control__form-input-baseDnsDomain-field';
+const selector = '#form-control__form-input-baseDnsDomain-field';
+const checkboxSelector = '#form-checkbox-useRedHatDnsService-field';
 
-  static init(ancestorAlias: string) {
-    cy.findWithinOrGet(BaseDomainField.selector, ancestorAlias).as(BaseDomainField.name);
-    return BaseDomainField;
-  }
+export const BaseDomain = (parentSelector: string) => ({
+  get: () => {
+    return cy.get(parentSelector).find(selector);
+  },
 
-  static findInputField() {
-    return cy.get(BaseDomainField.alias).findByText(/base domain/i);
-  }
-}
+  dnsCheckbox: () => {
+    return cy.get(parentSelector).find(checkboxSelector);
+  },
+});

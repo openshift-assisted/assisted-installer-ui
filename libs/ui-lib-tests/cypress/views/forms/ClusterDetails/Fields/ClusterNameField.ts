@@ -1,13 +1,11 @@
-export class ClusterNameField {
-  static readonly alias = `@${ClusterNameField.name}`;
-  static readonly selector = '#form-control__form-input-name-field';
+const selector = '#form-control__form-input-name-field';
 
-  static init(ancestorAlias?: string) {
-    cy.findWithinOrGet(ClusterNameField.selector, ancestorAlias).as(ClusterNameField.name);
-    return ClusterNameField;
-  }
+export const ClusterName = (parentSelector: string) => ({
+  get: () => {
+    return cy.get(parentSelector).find(selector);
+  },
 
-  static findInputField() {
-    return cy.get(ClusterNameField.alias).findByText(/cluster name/i);
-  }
-}
+  input: (clusterName = Cypress.env('CLUSTER_NAME')) => {
+    ClusterName(parentSelector).get().clear().type(clusterName);
+  },
+});
