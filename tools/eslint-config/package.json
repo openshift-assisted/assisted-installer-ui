@@ -13,5 +13,10 @@
     "@types/eslint": "^8"
   },
   "private": true,
+  "scripts": {
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
+  },
   "version": "1.0.0"
 }

@@ -45,7 +45,10 @@
   "scripts": {
     "process_new_strings": "scripts/process-new-strings.sh",
     "validate_translation_files": "scripts/validate-translation-files.sh",
-    "check_types": "yarn run -T tsc --noEmit"
+    "check_types": "yarn run -T tsc --noEmit",
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "type": "module",
   "version": "2.9.9-cim"
