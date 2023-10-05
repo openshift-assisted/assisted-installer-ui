@@ -9,7 +9,7 @@ import ConfirmationModal from '../../../../../common/components/ui/ConfirmationM
 import { ClustersAPI } from '../../../../services/apis';
 import { getApiErrorMessage, handleApiError } from '../../../../api';
 import { CustomManifest } from './CustomManifest';
-import { getEmptyFormViewManifest, getManifestName } from './utils';
+import { getEmptyManifest, getManifestName } from './utils';
 import { CustomManifestValues } from '../data/dataTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 
@@ -54,7 +54,7 @@ export const CustomManifestsArray = ({
     const newExpandedManifests = getExpandedManifestsInitialValue(field.value.length + 1);
     newExpandedManifests[field.value.length] = true;
     setExpandedManifests(newExpandedManifests);
-    push(getEmptyFormViewManifest());
+    push(getEmptyManifest());
   }, [field.value.length, push]);
 
   const removeManifest = React.useCallback(

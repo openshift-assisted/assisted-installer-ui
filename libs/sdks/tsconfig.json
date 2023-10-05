@@ -7,11 +7,8 @@
     "lib": ["DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "node",
-    "rootDirs": [
-      "./accounts-management-service",
-      "./assisted-installer-service",
-      "./authorization-service"
-    ],
+    "rootDir": "./lib",
+    "outDir": "./build",
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,

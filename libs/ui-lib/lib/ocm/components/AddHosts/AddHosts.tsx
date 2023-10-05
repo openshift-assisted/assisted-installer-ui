@@ -22,7 +22,6 @@ import {
   AddHostsContext,
   alertsSlice,
   canInstallHost,
-  useFeature,
 } from '../../../common';
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -38,7 +37,6 @@ export const AddHosts = () => {
   const { cluster, resetCluster, canEdit } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
-  const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleHostsInstall = React.useCallback(async () => {
     setSubmitting(true);
     try {
@@ -89,7 +87,7 @@ export const AddHosts = () => {
               </Grid>
             </StackItem>
             <StackItem>
-              <InventoryAddHosts cluster={cluster} canSelectCpuArch={canSelectCpuArch} />
+              <InventoryAddHosts cluster={cluster} />
             </StackItem>
           </Stack>
         </CardBody>
