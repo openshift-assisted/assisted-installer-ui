@@ -31,6 +31,7 @@ export const getNetworkInitialValues = (
     | 'serviceNetworksIpv4'
     | 'serviceNetworksDualstack'
   >,
+  isClusterManagedNetworkingUnsupported: boolean,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
   const isDualStackType = isDualStack(cluster);
@@ -40,7 +41,11 @@ export const getNetworkInitialValues = (
     ingressVips: cluster.ingressVips,
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
+    managedNetworkingType:
+      (cluster.apiVips && cluster.apiVips.length === 0 && isClusterManagedNetworkingUnsupported) ||
+      isSNOCluster
+        ? 'userManaged'
+        : 'clusterManaged',
     networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
     machineNetworks: cluster.machineNetworks || [],
     stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
