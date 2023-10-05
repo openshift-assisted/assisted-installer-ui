@@ -11,7 +11,6 @@ import {
 } from '../../../common';
 import ClusterProperties from './ClusterProperties';
 import { Grid } from '@patternfly/react-core';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { usePullSecret } from '../../hooks';
 import { selectCurrentClusterState } from '../../store/slices/current-cluster/selectors';
@@ -42,17 +41,9 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>
       <AlertsContextProvider>
-        <NewFeatureSupportLevelProvider
-          loadingUi={<div />}
-          cluster={cluster}
-          cpuArchitecture={infraEnv?.cpuArchitecture as CpuArchitecture}
-          openshiftVersion={cluster.openshiftVersion}
-          platformType={cluster.platform?.type}
-        >
-          <Grid className="pf-u-mt-md">
-            <ClusterProperties cluster={cluster} externalMode />
-          </Grid>
-        </NewFeatureSupportLevelProvider>
+        <Grid className="pf-u-mt-md">
+          <ClusterProperties cluster={cluster} externalMode />
+        </Grid>
       </AlertsContextProvider>
     </FeatureGateContextProvider>
   );

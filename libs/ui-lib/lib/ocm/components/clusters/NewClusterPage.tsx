@@ -8,7 +8,6 @@ import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextP
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterLoading from './ClusterLoading';
 import { ClusterUiError } from './ClusterPageErrors';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 
 const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
@@ -21,14 +20,12 @@ const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
           loadingUI={<ClusterLoading />}
           errorUI={<ClusterUiError />}
         >
-          <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-            {pageTitleSection}
-            <PageSection variant={PageSectionVariants.light} isFilled>
-              <ClusterWizardContextProvider>
-                <NewClusterWizard />
-              </ClusterWizardContextProvider>
-            </PageSection>
-          </NewFeatureSupportLevelProvider>
+          {pageTitleSection}
+          <PageSection variant={PageSectionVariants.light} isFilled>
+            <ClusterWizardContextProvider>
+              <NewClusterWizard />
+            </ClusterWizardContextProvider>
+          </PageSection>
         </ClusterDefaultConfigurationProvider>
       </SentryErrorMonitorContextProvider>
     </AlertsContextProvider>

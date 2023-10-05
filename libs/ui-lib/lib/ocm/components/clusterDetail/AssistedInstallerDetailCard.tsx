@@ -26,7 +26,6 @@ import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import { BackButton } from '../ui/Buttons/BackButton';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -139,15 +138,7 @@ const AssistedInstallerDetailCard = ({
               loadingUI={<LoadingCard />}
               errorUI={<LoadingDefaultConfigFailedCard />}
             >
-              <NewFeatureSupportLevelProvider
-                loadingUi={<LoadingCard />}
-                cluster={cluster}
-                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                openshiftVersion={cluster.openshiftVersion}
-                platformType={cluster.platform?.type}
-              >
-                {content}
-              </NewFeatureSupportLevelProvider>
+              {content}
               {isOutdatedClusterData && <ClusterPollingErrorModal />}
               <CancelInstallationModal />
               <ResetClusterModal />

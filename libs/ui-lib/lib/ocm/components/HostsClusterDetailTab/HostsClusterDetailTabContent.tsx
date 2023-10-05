@@ -14,7 +14,6 @@ import { handleApiError } from '../../api';
 import { isApiError } from '../../../common/api/utils';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import {
   AddHostsApiError,
   ReloadFailedError,
@@ -155,15 +154,7 @@ export const HostsClusterDetailTabContent = ({
       ocpConsoleUrl={ocmCluster?.console?.url}
       canEdit={ocmCluster.canEdit}
     >
-      <NewFeatureSupportLevelProvider
-        loadingUi={<LoadingState />}
-        cluster={day2Cluster}
-        cpuArchitecture={infraEnv?.cpuArchitecture as CpuArchitecture}
-        openshiftVersion={day2Cluster.openshiftVersion}
-        platformType={day2Cluster.platform?.type}
-      >
-        <AddHosts />
-      </NewFeatureSupportLevelProvider>
+      <AddHosts />
     </AddHostsContextProvider>
   );
 };

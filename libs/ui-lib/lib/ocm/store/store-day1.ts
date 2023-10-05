@@ -3,6 +3,7 @@ import { clustersReducer } from './slices/clusters/slice';
 import { currentClusterReducer } from './slices/current-cluster/slice';
 import { infraEnvsReducer } from './slices/infra-envs/slice';
 import { featureFlagsReducer } from './slices/feature-flags/slice';
+import { featureSupportLevelsReducer } from './slices/feature-support-levels/slice';
 import { currentUserReducer } from './slices/current-user/slice';
 
 export const storeDay1 = configureStore({
@@ -15,6 +16,7 @@ export const storeDay1 = configureStore({
     infraEnvs: infraEnvsReducer,
     featureFlags: featureFlagsReducer,
     currentUser: currentUserReducer,
+    featureSupportLevels: featureSupportLevelsReducer,
   },
 });
 export type RootStateDay1 = ReturnType<typeof storeDay1.getState>;

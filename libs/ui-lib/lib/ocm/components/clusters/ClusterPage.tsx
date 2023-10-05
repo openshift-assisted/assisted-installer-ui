@@ -29,7 +29,6 @@ import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
@@ -168,23 +167,15 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
                 loadingUI={<ClusterLoading />}
                 errorUI={<ClusterUiError />}
               >
-                <NewFeatureSupportLevelProvider
-                  loadingUi={<ClusterLoading />}
-                  cluster={cluster}
-                  cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                  openshiftVersion={cluster.openshiftVersion}
-                  platformType={cluster.platform?.type}
-                >
-                  {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
+                {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
                 <RebootNodeZeroModal cluster={cluster} />
                 */}
-                  {getContent(cluster, infraEnv)}
-                  {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
-                  {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
-                  <CancelInstallationModal />
-                  <ResetClusterModal />
-                  <DiscoveryImageModal />
-                </NewFeatureSupportLevelProvider>
+                {getContent(cluster, infraEnv)}
+                {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
+                {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
+                <CancelInstallationModal />
+                <ResetClusterModal />
+                <DiscoveryImageModal />
               </ClusterDefaultConfigurationProvider>
             </ModalDialogsContextProvider>
           </SentryErrorMonitorContextProvider>
