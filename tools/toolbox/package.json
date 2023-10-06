@@ -25,7 +25,10 @@
   "scripts": {
     "build": "yarn run -T tsc --build --verbose",
     "check_types": "yarn run -T tsc --noEmit",
-    "clean": "yarn run -T rimraf build node_modules"
+    "clean": "yarn run -T rimraf build node_modules",
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "private": true,
   "version": "1.0.0"

@@ -4,16 +4,16 @@
   "exports": {
     "./package.json": "./package.json",
     "./assisted-installer-service": {
-      "source": "./assisted-installer-service/index.ts",
-      "default": "./assisted-installer-service/index.js"
+      "source": "./lib/assisted-installer-service/index.ts",
+      "default": "./build/assisted-installer-service/index.js"
     },
     "./accounts-management-service": {
-      "source": "./accounts-management-service/index.ts",
-      "default": "./accounts-management-service/index.js"
+      "source": "./lib/accounts-management-service/index.ts",
+      "default": "./build/accounts-management-service/index.js"
     },
     "./authorization-service": {
-      "source": "./authorization-service/index.ts",
-      "default": "./authorization-service/index.js"
+      "source": "./lib/authorization-service/index.ts",
+      "default": "./build/authorization-service/index.js"
     }
   },
   "dependencies": {
@@ -25,9 +25,10 @@
   },
   "scripts": {
     "build": "tsc --build --verbose",
-    "clean": "yarn run -T rimraf ./*-service/**/*.{d.ts,js,map} node_modules/.cache/tsc/*.tsbuildinfo",
-    "format:fix": "yarn run format:all --write",
-    "lint:fix": "yarn run lint:all --fix",
+    "clean": "yarn run -T rimraf ./build node_modules/.cache/tsc/*.tsbuildinfo",
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache .",
     "generate-sdk:all": "openapi-generator-cli generate",
     "generate-sdk:production:assisted-installer-service": "openapi-generator-cli generate --generator-key prod:assisted-installer-service",
     "generate-sdk:production:accounts-management-service": "openapi-generator-cli generate --generator-key prod:accounts-management-service",
@@ -37,10 +38,7 @@
     "access": "public"
   },
   "files": [
-    "accounts-management-service/**/*.js",
-    "accounts-management-service/**/*.d.ts",
-    "assisted-installer-service/**/*.js",
-    "authorization-service/**/*.js"
+    "build"
   ],
   "type": "module"
 }
