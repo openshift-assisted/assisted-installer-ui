@@ -51,12 +51,6 @@ export const getAgentClusterInstall = ({
     // @ts-ignore
     spec: {
       holdInstallation: true,
-      clusterDeploymentRef: clusterDeploymentName
-        ? {
-            name: clusterDeploymentName,
-            namespace,
-          }
-        : {},
       networking: {
         clusterNetwork: [
           {
@@ -74,6 +68,13 @@ export const getAgentClusterInstall = ({
       },
     },
   };
+
+  if (obj.spec && clusterDeploymentName) {
+    obj.spec.clusterDeploymentRef = {
+      name: clusterDeploymentName,
+      namespace,
+    };
+  }
 
   if (obj.spec && values.sshPublicKey) {
     obj.spec.sshPublicKey = values.sshPublicKey;

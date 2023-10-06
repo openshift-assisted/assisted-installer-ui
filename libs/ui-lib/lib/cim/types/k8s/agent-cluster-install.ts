@@ -16,13 +16,10 @@ export type AgentClusterInstallStatusCondition =
 
 export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   spec?: {
-    clusterDeploymentRef?:
-      | {
-          name: string;
-          namespace: string;
-        }
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      | {};
+    clusterDeploymentRef?: {
+      name: string;
+      namespace: string;
+    };
     clusterMetadata?: {
       adminKubeconfigSecretRef?: {
         name: string;
