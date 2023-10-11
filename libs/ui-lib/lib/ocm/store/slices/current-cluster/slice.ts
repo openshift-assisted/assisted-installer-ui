@@ -1,23 +1,17 @@
 import findIndex from 'lodash-es/findIndex.js';
 import set from 'lodash-es/set.js';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
+import type { AnyAction, Dispatch, PayloadAction, ThunkDispatch } from '@reduxjs/toolkit';
+import type { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+import type { AssistedInstallerPermissionTypesListType } from '../../../../common/features/featureGate';
 import {
-  AnyAction,
-  createAsyncThunk,
-  createSlice,
-  Dispatch,
-  PayloadAction,
-  ThunkDispatch,
-} from '@reduxjs/toolkit';
-import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  AssistedInstallerPermissionTypesListType,
-  FETCH_ABORTED_ERROR_CODE,
-  getApiErrorCode,
-  getApiErrorMessage,
   handleApiError,
-  ResourceUIState,
-} from '../../../../common';
+  getApiErrorMessage,
+  getApiErrorCode,
+  FETCH_ABORTED_ERROR_CODE,
+} from '../../../../common/api/utils';
+import { ResourceUIState } from '../../../../common/types/resource-ui-state';
 import ClustersService from '../../../services/ClustersService';
 
 export type FetchErrorType = {

@@ -1,5 +1,5 @@
-import { CpuArchitecture, getAllCpuArchitectures } from '../../common';
-import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import type { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { CpuArchitecture, getAllCpuArchitectures } from '../../common//types/cpuArchitecture';
 
 const CACHE_KEY = 'infra-env-ids-cache-v2';
 

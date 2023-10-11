@@ -6,10 +6,11 @@ import {
   AnyAction,
   Dispatch,
 } from '@reduxjs/toolkit';
-import { ResourceUIState } from '../../../../common';
-import { ClustersAPI } from '../../../services/apis';
-import { handleApiError, isInOcm } from '../../../api';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { ResourceUIState } from '../../../../common/types/resource-ui-state';
+import ClustersAPI from '../../../../common/api/assisted-service/ClustersAPI';
+import { isInOcm } from '../../../../common/api/axiosClient';
+import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { handleApiError } from '../../../../common/api/utils';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',
