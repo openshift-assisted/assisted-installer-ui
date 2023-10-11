@@ -29,10 +29,10 @@ export const reviewAndCreatePage = {
     );
   },
   waitForInstallButton: (timeout = Cypress.env('START_INSTALLATION_TIMEOUT')) => {
-    cy.get(Cypress.env('buttonInstall'), { timeout: timeout }).should('be.enabled');
+    cy.get('button[name="install"]', { timeout: timeout }).should('be.enabled');
   },
   getInstallButton: () => {
-    return cy.get(Cypress.env('buttonInstall'));
+    return cy.get('button[name="install"]');
   },
   getCustomManifestsSection: () => {
     return cy.get('#custom-manifests-expandable');

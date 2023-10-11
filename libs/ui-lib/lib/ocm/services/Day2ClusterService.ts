@@ -3,7 +3,11 @@ import { ClustersAPI } from './apis';
 import { CpuArchitecture, SupportedCpuArchitecture } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  Platform,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
@@ -30,12 +34,20 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   return { apiVipDnsname, errorType: apiVipDnsname ? '' : urlType };
 };
 
+export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
+  const platformType = cloudProviderId === 'external' ? 'oci' : cloudProviderId;
+  const platform: Platform = {
+    type: (platformType as PlatformType) || 'baremetal',
+  };
+  return platform;
+};
+
 const Day2ClusterService = {
   getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
+  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
@@ -53,7 +65,7 @@ const Day2ClusterService = {
       ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
       getApiVipDnsName(ocmCluster).apiVipDnsname,
       pullSecret,
-      openshiftVersion,
+      ocmCluster.openshift_version,
       mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) || CpuArchitecture.x86,
     );
   },
@@ -69,6 +81,7 @@ const Day2ClusterService = {
     if (day2Clusters.length > 0) {
       return day2Clusters[0].id;
     }
+
     return undefined;
   },
 
@@ -117,6 +130,7 @@ const Day2ClusterService = {
         // The field "cpu_architecture" is calculated based on the existing hosts' architecture
         // It can be a specific architecture, or "multi" if hosts from several architectures have been discovered
         cpuArchitecture: mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture),
+        platform: mapCloudProviderToPlatformType(ocmCluster.cloud_provider?.id),
       };
     }
     return treakedCluster;

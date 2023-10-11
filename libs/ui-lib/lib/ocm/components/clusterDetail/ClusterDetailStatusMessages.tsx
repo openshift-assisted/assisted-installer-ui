@@ -15,6 +15,7 @@ import { isInOcm } from '../../api';
 import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
+import PostInstallAlert from '../../../common/components/clusterDetail/PostInstallAlert';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -76,22 +77,7 @@ const ClusterDetailStatusMessages = ({
           }
         />
       </RenderIf>
-      <RenderIf condition={!!platformLink}>
-        <Alert
-          variant="warning"
-          isInline
-          data-testid="alert-modify-platform-config"
-          title={
-            <p>
-              Modify your platform configuration to access your platform's features directly in
-              OpenShift.{' '}
-              <a href={platformLink} target="_blank" rel="noopener noreferrer">
-                Learn more about configuration <i className="fas fa-external-link-alt" />
-              </a>
-            </p>
-          }
-        />
-      </RenderIf>
+      {platformLink && <PostInstallAlert link={platformLink} />}
     </>
   );
 };

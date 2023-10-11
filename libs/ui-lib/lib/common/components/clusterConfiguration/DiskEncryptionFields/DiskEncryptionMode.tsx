@@ -8,6 +8,8 @@ import {
   Text,
   TextVariants,
   TextContent,
+  TooltipProps,
+  Tooltip,
 } from '@patternfly/react-core';
 import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../../config';
 import PopoverIcon from '../../ui/PopoverIcon';
@@ -64,31 +66,40 @@ const DiskEncryptionModeTang = () => {
 export interface DiskEncryptionModeProps {
   isDisabled: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
+  tooltipProps: TooltipProps;
 }
 
-export const DiskEncryptionMode = ({ diskEncryptionMode, isDisabled }: DiskEncryptionModeProps) => {
+export const DiskEncryptionMode = ({
+  diskEncryptionMode,
+  isDisabled,
+  tooltipProps,
+}: DiskEncryptionModeProps) => {
   const { t } = useTranslation();
   return (
     <Stack>
       <StackItem>
         <Flex>
           <FlexItem spacer={{ default: 'spacer3xl' }}>
-            <RadioField
-              isDisabled={isDisabled}
-              name="diskEncryptionMode"
-              label={<DiskEncryptionModeTPMv2 />}
-              id="TPMV2-button"
-              value="tpmv2"
-            />
+            <Tooltip {...tooltipProps}>
+              <RadioField
+                isDisabled={isDisabled}
+                name="diskEncryptionMode"
+                label={<DiskEncryptionModeTPMv2 />}
+                id="TPMV2-button"
+                value="tpmv2"
+              />
+            </Tooltip>
           </FlexItem>
           <FlexItem spacer={{ default: 'spacer3xl' }}>
-            <RadioField
-              isDisabled={isDisabled}
-              name="diskEncryptionMode"
-              label={<DiskEncryptionModeTang />}
-              id="tang-button"
-              value="tang"
-            />
+            <Tooltip {...tooltipProps}>
+              <RadioField
+                isDisabled={isDisabled}
+                name="diskEncryptionMode"
+                label={<DiskEncryptionModeTang />}
+                id="tang-button"
+                value="tang"
+              />
+            </Tooltip>
           </FlexItem>
         </Flex>
       </StackItem>
@@ -101,7 +112,7 @@ export const DiskEncryptionMode = ({ diskEncryptionMode, isDisabled }: DiskEncry
             </TextContent>
           </StackItem>
           &nbsp;
-          <TangServers isDisabled={isDisabled} />
+          <TangServers isDisabled={isDisabled} tooltipProps={tooltipProps} />
         </Stack>
       )}
     </Stack>

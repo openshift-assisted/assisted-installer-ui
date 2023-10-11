@@ -15,24 +15,30 @@ type ScaleUpFormProps = {
   agents: AgentK8sResource[];
   onEditHost: AgentTableActions['onEditHost'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
+  isNutanix: boolean;
 };
 
 const ScaleUpForm: React.FC<ScaleUpFormProps> = ({
   agents,
   onEditHost,
   onSetInstallationDiskId,
+  isNutanix,
 }) => {
   const { values } = useFormikContext<ScaleUpFormValues>();
   const { autoSelectHosts } = values;
   const availableAgents = React.useMemo(
     () =>
-      getAgentsForSelection(agents).filter(
-        (agent) =>
+      getAgentsForSelection(agents).filter((agent) => {
+        if (isNutanix && agent.status?.inventory?.systemVendor?.manufacturer !== 'Nutanix') {
+          return false;
+        }
+        return (
           !(
             agent.spec?.clusterDeploymentName?.name || agent.spec?.clusterDeploymentName?.namespace
-          ) && agent.status?.inventory.cpu?.architecture === values.cpuArchitecture,
-      ),
-    [agents, values.cpuArchitecture],
+          ) && agent.status?.inventory.cpu?.architecture === values.cpuArchitecture
+        );
+      }),
+    [agents, values.cpuArchitecture, isNutanix],
   );
   const { t } = useTranslation();
   return (

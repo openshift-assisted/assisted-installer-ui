@@ -46,6 +46,7 @@ import {
   InfraEnv,
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -157,10 +158,14 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster, true), [cluster]);
+  const featureSupportLevelData = useNewFeatureSupportLevel();
+  const isClusterManagedNetworkingUnsupported = !featureSupportLevelData.isFeatureSupported(
+    'CLUSTER_MANAGED_NETWORKING',
+  );
   const initialValues = React.useMemo(
-    () => getNetworkInitialValues(cluster, defaultNetworkValues),
+    () =>
+      getNetworkInitialValues(cluster, defaultNetworkValues, isClusterManagedNetworkingUnsupported),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
