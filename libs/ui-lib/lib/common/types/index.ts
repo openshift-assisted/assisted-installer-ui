@@ -1,12 +1,3 @@
-export enum ResourceUIState {
-  LOADING = 'LOADING',
-  RELOADING = 'RELOADING',
-  EMPTY = 'EMPTY',
-  LOADED = 'LOADED',
-  POLLING_ERROR = 'POLLING_ERROR',
-  UPDATE_ERROR = 'UPDATE_ERROR',
-}
-
 export type WithTestID = {
   testId?: string;
 };
