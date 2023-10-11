@@ -1,21 +1,21 @@
-import { ClustersAPI } from '../services/apis';
-import HostsService from './HostsService';
-import InfraEnvsService from './InfraEnvsService';
-import { AI_UI_TAG } from '../../common';
-import { isInOcm } from '../api';
-import { ClusterCreateParamsWithStaticNetworking } from './types';
-import omit from 'lodash-es/omit.js';
-import {
+import type { ClusterCreateParamsWithStaticNetworking } from './types';
+import type {
   CustomManifestValues,
   ListManifestsExtended,
 } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
-import {
+import type {
   Cluster,
   Host,
   InfraEnvCreateParams,
   UpdateManifestParams,
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import omit from 'lodash-es/omit.js';
+import ClustersAPI from '../../common/api/assisted-service/ClustersAPI';
+import HostsService from './HostsService';
+import InfraEnvsService from './InfraEnvsService';
+import { AI_UI_TAG } from '../../common/config/constants';
+import { isInOcm } from '../../common/api/axiosClient';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {

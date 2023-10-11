@@ -1,13 +1,12 @@
+import type { FeatureListType } from '../../../../common/features/featureGate';
+import type { RootStateDay1 } from '../../store-day1';
 import { createSelector } from '@reduxjs/toolkit';
-import { AssistedInstallerFeatureType } from '../../../../common';
-import { RootStateDay1 } from '../../store-day1';
 
 export const selectFeatureFlagsSlice = (state: RootStateDay1) => state.featureFlags;
 
 export const isFeatureEnabled = createSelector(
-  [selectFeatureFlagsSlice, (_, feature: AssistedInstallerFeatureType) => feature],
-  (featureFlags, feature) => {
-    // Configured via Unleash in the OCM
-    return !!featureFlags[feature];
-  },
+  selectFeatureFlagsSlice,
+  (_featureFlags: ReturnType<typeof selectFeatureFlagsSlice>, featureId: keyof FeatureListType) =>
+    featureId,
+  (featureFlags, featureId) => featureFlags.data[featureId],
 );
