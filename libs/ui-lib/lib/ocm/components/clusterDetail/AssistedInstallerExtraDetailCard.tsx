@@ -5,14 +5,11 @@ import { useSelector } from 'react-redux';
 
 import {
   AlertsContextProvider,
-  CpuArchitecture,
   FeatureGateContextProvider,
   FeatureListType,
 } from '../../../common';
 import ClusterProperties from './ClusterProperties';
 import { Grid } from '@patternfly/react-core';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { usePullSecret } from '../../hooks';
 import { selectCurrentClusterState } from '../../store/slices/current-cluster/selectors';
 
 type AssistedInstallerExtraDetailCardProps = {
@@ -23,16 +20,6 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
   allEnabledFeatures,
 }) => {
   const { data: cluster } = useSelector(selectCurrentClusterState);
-  const pullSecret = usePullSecret();
-  const { infraEnv } = useInfraEnv(
-    cluster?.id ? cluster?.id : '',
-    cluster?.cpuArchitecture
-      ? (cluster.cpuArchitecture as CpuArchitecture)
-      : CpuArchitecture.USE_DAY1_ARCHITECTURE,
-    cluster?.name,
-    pullSecret,
-    cluster?.openshiftVersion,
-  );
 
   if (!cluster || cluster.status === 'adding-hosts') {
     return null;

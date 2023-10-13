@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import { useStateSafely } from '../../../common/hooks';
 import {
   AddHostsContextProvider,
-  CpuArchitecture,
   ErrorState,
   LoadingState,
   POLLING_INTERVAL,
@@ -19,8 +18,6 @@ import {
   ReloadFailedError,
   UnableToAddHostsError,
 } from './HostsClusterDetailTabContentErrors';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const HostsClusterDetailTabContent = ({
@@ -35,15 +32,6 @@ export const HostsClusterDetailTabContent = ({
     setError(undefined);
     setDay2Cluster(null);
   }, [setDay2Cluster]);
-
-  const { infraEnv } = useInfraEnv(
-    ocmCluster.id || '',
-    mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture) ||
-      CpuArchitecture.USE_DAY1_ARCHITECTURE,
-    ocmCluster.name,
-    pullSecret,
-    ocmCluster.openshift_version,
-  );
 
   React.useEffect(() => {
     if (!isVisible) {
