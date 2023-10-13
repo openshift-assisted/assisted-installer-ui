@@ -5,10 +5,10 @@ import { AlertsContextProvider, FeatureGateContextProvider } from '../../../comm
 import { HostsClusterDetailTabContent } from './HostsClusterDetailTabContent';
 import { HostsClusterDetailTabProps } from './types';
 import { storeDay1 } from '../../store';
-import { featureFlagsActions } from '../../store/slices/feature-flags/slice';
+import { useFeatureDetection } from '../../hooks/use-feature-detection';
 
 const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => {
-  storeDay1.dispatch(featureFlagsActions.setFeatureFlags(props.allEnabledFeatures));
+  useFeatureDetection();
 
   return (
     <Provider store={storeDay1}>
