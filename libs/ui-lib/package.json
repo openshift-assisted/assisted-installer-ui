@@ -88,12 +88,6 @@
   "name": "@openshift-assisted/ui-lib",
   "peerDependencies": {
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
-    "@patternfly/react-code-editor": "^4.82.113",
-    "@patternfly/react-core": "^4.168.8",
-    "@patternfly/react-icons": "^4.93.3",
-    "@patternfly/react-styles": "^4.92.3",
-    "@patternfly/react-table": "^4.113.0",
-    "@patternfly/react-tokens": "^4.94.3",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^5.9 || ^6",
     "axios": ">=0.22.0 <1.0.0",
