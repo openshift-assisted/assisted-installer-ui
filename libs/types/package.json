@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./assisted-installer-service": "./assisted-installer-service.d.ts",
+    "./authorization-service": "./authorization-service.d.ts",
     "./accounts-management-service": "./accounts-management-service.d.ts",
     "./package.json": "./package.json"
   },
@@ -11,6 +12,9 @@
     "*": {
       "./assisted-installer-service": [
         "./assisted-installer-service.d.ts"
+      ],
+      "./authorization-service": [
+        "./authorization-service.d.ts"
       ],
       "./accounts-management-service": [
         "./accounts-management-service.d.ts"
