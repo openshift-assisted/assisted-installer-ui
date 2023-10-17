@@ -51,5 +51,5 @@
     "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "type": "module",
-  "version": "2.9.11-cim"
+  "version": "2.9.12-cim"
 }
