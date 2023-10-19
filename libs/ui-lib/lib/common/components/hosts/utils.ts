@@ -13,6 +13,7 @@ import {
   ValidationsInfo as HostValidationsInfo,
   ValidationGroup as HostValidationGroup,
 } from '../../types/hosts';
+import { isInOcm } from '../../api';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -97,7 +98,7 @@ export const getHostStatus = (
   hostStatus: Host['status'],
   clusterStatus: Cluster['status'],
 ): Host['status'] | 'finalizing' => {
-  if (hostStatus === 'installed' && clusterStatus !== 'installed') {
+  if (isInOcm && hostStatus === 'installed' && clusterStatus !== 'installed') {
     return 'finalizing';
   }
   return hostStatus;
