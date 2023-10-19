@@ -1,2 +1,2 @@
-export * from './routeBaseBath';
+export * from './routeBasePath';
 export * from './constants';

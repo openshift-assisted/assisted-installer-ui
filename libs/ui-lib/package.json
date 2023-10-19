@@ -2,6 +2,13 @@
   "dependencies": {
     "@openshift-assisted/locales": "workspace:*",
     "@openshift-assisted/types": "workspace:*",
+    "@patternfly/patternfly": "^4.222.4",
+    "@patternfly/react-code-editor": "^4.82.113",
+    "@patternfly/react-core": "^4.168.8",
+    "@patternfly/react-icons": "^4.93.3",
+    "@patternfly/react-styles": "^4.92.3",
+    "@patternfly/react-table": "^4.37.8",
+    "@patternfly/react-tokens": "^4.94.3",
     "axios-case-converter": "^0.11.1",
     "camel-case": "^4.1.2",
     "cidr-tools": "^4.3.0",
@@ -26,6 +33,7 @@
   },
   "description": "React component library for the Assisted Installer UI",
   "devDependencies": {
+    "@redhat-cloud-services/types": "^1.0.1",
     "@tsconfig/recommended": "^1.0.2",
     "@types/file-saver": "^2.0.1",
     "@types/human-date": "^1.4.0",
@@ -80,12 +88,6 @@
   "name": "@openshift-assisted/ui-lib",
   "peerDependencies": {
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
-    "@patternfly/react-code-editor": "^4.82.113",
-    "@patternfly/react-core": "^4.168.8",
-    "@patternfly/react-icons": "^4.93.3",
-    "@patternfly/react-styles": "^4.92.3",
-    "@patternfly/react-table": "^4.113.0",
-    "@patternfly/react-tokens": "^4.94.3",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^5.9 || ^6",
     "axios": ">=0.22.0 <1.0.0",
@@ -112,7 +114,7 @@
   },
   "scripts": {
     "build": "yarn run -T tsc --build --verbose && yarn copy:css",
-    "check_circular_deps": "yarn run -T dpdm --warning false --tree false --exit-code circular:1 ./lib/index.ts",
+    "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./lib/index.ts",
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf node_modules build",
     "copy:css": "rsync -Ruv lib/./**/*.css build/cjs",
