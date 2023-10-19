@@ -6,6 +6,9 @@ on:
       - master
       - features/*
       - bugs/*
+    tags:
+      - 'v*'
+      - '!v*-cim'
 
 jobs:
   push-to-quay-io:
