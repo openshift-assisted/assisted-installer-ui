@@ -28,38 +28,44 @@ const ScaleUpForm: React.FC<ScaleUpFormProps> = ({
   const { autoSelectHosts } = values;
   const availableAgents = React.useMemo(
     () =>
-      getAgentsForSelection(agents).filter((agent) => {
-        if (isNutanix && agent.status?.inventory?.systemVendor?.manufacturer !== 'Nutanix') {
-          return false;
-        }
-        return (
+      getAgentsForSelection(agents).filter(
+        (agent) =>
           !(
             agent.spec?.clusterDeploymentName?.name || agent.spec?.clusterDeploymentName?.namespace
-          ) && agent.status?.inventory.cpu?.architecture === values.cpuArchitecture
-        );
-      }),
+          ) &&
+          (isNutanix
+            ? agent.status?.inventory?.systemVendor?.manufacturer === 'Nutanix'
+            : agent.status?.inventory.cpu?.architecture === values.cpuArchitecture),
+      ),
     [agents, values.cpuArchitecture, isNutanix],
   );
   const { t } = useTranslation();
   return (
     <Form>
       <SwitchField name="autoSelectHosts" label={t('ai:Auto-select hosts')} />
-      <FormGroup fieldId="cpuArchitecture" label={t('ai:CPU architecture')}>
-        <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
-          <FlexItem>
-            <RadioField name="cpuArchitecture" id="x86_64" value="x86_64" label={t('ai:x86_64')} />
-          </FlexItem>
-          {/* <FlexItem spacer={{ default: 'spacer4xl' }} /> */}
-          <FlexItem>
-            <RadioField
-              name="cpuArchitecture"
-              id="arm64"
-              value="arm64"
-              label={<>{t('ai:arm64')}&nbsp;</>}
-            />
-          </FlexItem>
-        </Flex>
-      </FormGroup>
+      {!isNutanix && (
+        <FormGroup fieldId="cpuArchitecture" label={t('ai:CPU architecture')}>
+          <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
+            <FlexItem>
+              <RadioField
+                name="cpuArchitecture"
+                id="x86_64"
+                value="x86_64"
+                label={t('ai:x86_64')}
+              />
+            </FlexItem>
+            {/* <FlexItem spacer={{ default: 'spacer4xl' }} /> */}
+            <FlexItem>
+              <RadioField
+                name="cpuArchitecture"
+                id="arm64"
+                value="arm64"
+                label={<>{t('ai:arm64')}&nbsp;</>}
+              />
+            </FlexItem>
+          </Flex>
+        </FormGroup>
+      )}
 
       {autoSelectHosts && <ClusterScaleUpAutoHostsSelection availableAgents={availableAgents} />}
 
