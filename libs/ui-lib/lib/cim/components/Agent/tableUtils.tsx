@@ -343,6 +343,10 @@ export const canUnbindAgent = (
     }
   }
 
+  if (!agent.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)) {
+    return [false, t('ai:It is not possible to remove this node from the cluster.')];
+  }
+
   return [true, undefined];
 };
 
