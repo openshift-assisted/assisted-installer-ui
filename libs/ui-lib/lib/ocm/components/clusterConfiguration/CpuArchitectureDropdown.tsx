@@ -107,7 +107,14 @@ const CpuArchitectureDropdown = ({
     if (cpuArchitectures !== undefined) {
       return cpuArchitectures.map((cpuArch) => {
         let isCpuSupported = true;
-        if (supportLevelDataForAllCpuArchs) {
+        let disabledReason = `This cluster is using the  ${
+          platformType ? ExternalPlatformLabels[platformType] : ''
+        } platform which doesn't allow this CPU architecture.`;
+        if (day1CpuArchitecture === CpuArchitecture.ARM) {
+          isCpuSupported = cpuArch === CpuArchitecture.ARM;
+          disabledReason =
+            'Only hosts that have Arm64 CPU architecture can be added to this cluster.';
+        } else if (supportLevelDataForAllCpuArchs) {
           const featureSupportLevelData = supportLevelDataForAllCpuArchs[
             cpuArch
           ] as NewFeatureSupportLevelMap;
@@ -117,9 +124,6 @@ const CpuArchitectureDropdown = ({
           );
         }
 
-        const disabledReason = `This cluster is using the  ${
-          platformType ? ExternalPlatformLabels[platformType] : ''
-        } platform which doesn't allow this CPU architecture.`;
         return (
           <DropdownItem
             key={cpuArch}
@@ -141,9 +145,10 @@ const CpuArchitectureDropdown = ({
     }
   }, [
     cpuArchitectures,
+    day1CpuArchitecture,
     supportLevelDataForAllCpuArchs,
-    newFeatureSupportLevelContext,
     platformType,
+    newFeatureSupportLevelContext,
   ]);
 
   const onSelect = React.useCallback(
