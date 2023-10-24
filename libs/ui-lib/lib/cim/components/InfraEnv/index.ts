@@ -6,4 +6,3 @@ export { default as AddHostDropdown } from './AddHostDropdown';
 
 export * from './EnvironmentErrors';
 export * from './InfraEnvFormPage';
-export * from './utils';
