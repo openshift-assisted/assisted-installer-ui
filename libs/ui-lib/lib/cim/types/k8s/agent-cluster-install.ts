@@ -18,7 +18,6 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   spec?: {
     clusterDeploymentRef?: {
       name: string;
-      namespace: string;
     };
     clusterMetadata?: {
       adminKubeconfigSecretRef?: {
