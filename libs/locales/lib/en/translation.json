@@ -427,6 +427,7 @@
   "ai:It is not possible to remove a host which is being installed.": "It is not possible to remove a host that is being installed.",
   "ai:It is not possible to remove a node from a cluster during installation.": "It is not possible to remove a node from a cluster during installation.",
   "ai:It is not possible to remove control plane node from an installed cluster.": "It is not possible to remove control plane node from an installed cluster.",
+  "ai:It is not possible to remove this node from the cluster.": "It is not possible to remove this node from the cluster.",
   "ai:It may take a few minutes for the join request to appear.": "It might take a few minutes for the join request to appear.",
   "ai:It seems the Central infrastructure management is not configured which will prevent its features to be used. Please refer to the documentation for the first time setup steps.": "Central Infrastructure Management is not configured, which prevents its features from being used. Refer to the documentation for the first time setup steps.",
   "ai:It seems the Metal3 operator is missing configuration which will prevent it to find bare metal hosts in this namespace. Please refer to the documentation for the first time setup steps.": "The Metal3 operator is not configured correctly, which prevents it from finding bare metal hosts in this namespace. Refer to the documentation for the first time setup steps.",
