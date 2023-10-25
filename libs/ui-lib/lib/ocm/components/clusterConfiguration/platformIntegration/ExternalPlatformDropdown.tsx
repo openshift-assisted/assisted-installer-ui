@@ -14,7 +14,6 @@ import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import {
   CpuArchitecture,
-  DeveloperPreview,
   FeatureId,
   SupportedCpuArchitecture,
   getFieldId,
@@ -27,6 +26,7 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
 import { architectureData } from '../CpuArchitectureDropdown';
+import { DeveloperPreview } from '../../../../common/components/ui/DeveloperPreview';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');

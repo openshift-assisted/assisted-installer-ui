@@ -9,6 +9,8 @@ export * from './SimpleDropdown';
 export * from './DetailList';
 export * from './eventsModal';
 export * from './PreviewBadge';
+export * from './TechnologyPreview';
+export * from './DeveloperPreview';
 
 export * from './utils';
 
