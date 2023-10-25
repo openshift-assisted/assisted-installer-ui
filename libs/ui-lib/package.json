@@ -65,6 +65,11 @@
       "types": "./build/@types/cim/index.d.ts",
       "default": "./build/cjs/cim/index.js"
     },
+    "./common": {
+      "source": "./lib/common/index.ts",
+      "types": "./build/@types/common/index.d.ts",
+      "default": "./build/cjs/common/index.js"
+    },
     "./ocm": {
       "source": "./lib/ocm/index.ts",
       "types": "./build/@types/ocm/index.d.ts",
@@ -130,6 +135,9 @@
       ],
       "ocm": [
         "./build/@types/ocm/index.d.ts"
+      ],
+      "common": [
+        "./build/@types/common/index.d.ts"
       ]
     }
   },
