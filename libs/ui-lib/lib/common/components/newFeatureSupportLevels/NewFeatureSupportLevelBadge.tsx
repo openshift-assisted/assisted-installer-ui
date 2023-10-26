@@ -1,7 +1,8 @@
 import React from 'react';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { FeatureId, isPreviewSupportLevel } from '../../types';
-import { TechnologyPreview, DeveloperPreview } from '../ui/PreviewBadge';
+import { TechnologyPreview } from '../ui/TechnologyPreview';
+import { DeveloperPreview } from '../ui/DeveloperPreview';
 
 export type NewSupportLevelBadgeProps = {
   featureId: FeatureId;
