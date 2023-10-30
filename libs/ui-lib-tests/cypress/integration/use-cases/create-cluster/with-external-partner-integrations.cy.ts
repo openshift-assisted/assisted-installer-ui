@@ -99,6 +99,7 @@ describe('Create a new cluster with external partner integrations', () => {
     });
 
     it('Validate that Nutanix option is disabled when we choose SNO option', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
       ClusterDetailsForm.snoField.findCheckbox().click();
       ClusterDetailsForm.externalPartnerIntegrationsField
         .findDropdownItem('Nutanix')
