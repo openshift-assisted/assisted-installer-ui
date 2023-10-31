@@ -301,6 +301,7 @@ export const canUnbindAgent = (
   agentClusterInstalls: AgentClusterInstallK8sResource[] | undefined,
   agent: AgentK8sResource,
   t: TFunction,
+  infraEnv?: InfraEnvK8sResource,
 ): ActionCheck => {
   if (!agent?.spec.clusterDeploymentName?.name) {
     return [false, t('ai:The agent is not bound to a cluster.')];
@@ -342,7 +343,10 @@ export const canUnbindAgent = (
     }
   }
 
-  if (!agent.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)) {
+  if (
+    !agent.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY) &&
+    infraEnv?.spec?.clusterRef
+  ) {
     return [false, t('ai:It is not possible to remove this node from the cluster.')];
   }
 
@@ -471,7 +475,7 @@ export const useAgentsTable = (
           const agent = agents.find((a) => a.metadata?.uid === host.id);
 
           if (agent) {
-            return canUnbindAgent(agentClusterInstalls, agent, t);
+            return canUnbindAgent(agentClusterInstalls, agent, t, infraEnv);
           }
           const bmh = bmhs?.find((bmh) => bmh.metadata?.uid === host.id);
           if (bmh) {
