@@ -4,13 +4,13 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import { featureFlagsActions, FeatureFlagsState } from '../store/slices/feature-flags/slice';
-import { isFeatureEnabled } from '../store/slices/feature-flags/selectors';
-import { RootStateDay1, storeDay1 } from '../store/store-day1';
+import { featureFlagsActions } from '../store/slices/feature-flags/slice';
+import { storeDay1 } from '../store/store-day1';
 import { useFeatureDetection } from './use-feature-detection';
 import { CurrentAccountApi } from '../../common/api/accounts-management-service/current-account-api';
 import { OrganizationsApi } from '../../common/api/accounts-management-service/organizations-api';
 import { getMockContainer } from '../../_test-helpers/mock-container';
+import { isFeatureEnabled } from '../store/slices/feature-flags/selectors';
 
 vi.spyOn(featureFlagsActions, 'setFeatureFlag');
 vi.spyOn(CurrentAccountApi, 'getCurrentAccount').mockImplementation(() => {
@@ -51,12 +51,7 @@ describe('use-feature-detection.ts', () => {
       ),
     );
 
-    expect(
-      isFeatureEnabled(
-        storeDay1.getState() as RootStateDay1 & FeatureFlagsState,
-        'ASSISTED_INSTALLER_PLATFORM_OCI',
-      ),
-    ).toBe(true);
+    expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(true);
   });
 
   it('Internal features override external features', async () => {
@@ -86,12 +81,9 @@ describe('use-feature-detection.ts', () => {
       ),
     );
 
-    expect(
-      isFeatureEnabled(
-        storeDay1.getState() as RootStateDay1 & FeatureFlagsState,
-        'ASSISTED_INSTALLER_PLATFORM_OCI',
-      ),
-    ).toBe(featuresOverride.ASSISTED_INSTALLER_PLATFORM_OCI);
+    expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(
+      featuresOverride.ASSISTED_INSTALLER_PLATFORM_OCI,
+    );
   });
 
   it('Processes only features prefixed with ASSISTED_INSTALLER', async () => {
