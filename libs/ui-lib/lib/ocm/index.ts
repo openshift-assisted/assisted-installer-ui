@@ -1,4 +1,4 @@
-export * as Api from './api';
+export * as Api from '../common/api';
 export * as Store from './store';
 export * as Config from './config';
 export * as Services from './services';

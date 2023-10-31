@@ -14,7 +14,7 @@ import {
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { isInOcm } from '../../api';
+import { isInOcm } from '../../../common/api';
 import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,

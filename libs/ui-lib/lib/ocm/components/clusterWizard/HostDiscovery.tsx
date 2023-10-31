@@ -12,7 +12,7 @@ import {
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';

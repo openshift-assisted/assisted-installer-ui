@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
-import { getApiErrorMessage, handleApiError } from '../../../api';
+import { getApiErrorMessage, handleApiError } from '../../../../common/api';
 import { updateCluster } from '../../../store/slices/current-cluster/slice';
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';

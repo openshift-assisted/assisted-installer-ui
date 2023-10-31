@@ -7,7 +7,7 @@ import {
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { routeBasePath } from '../../config';
-import { isInOcm } from '../../api';
+import { isInOcm } from '../../../common/api';
 
 const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => (
   <PageSection variant={PageSectionVariants.light}>

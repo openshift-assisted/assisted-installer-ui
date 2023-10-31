@@ -7,7 +7,7 @@ import cloneDeep from 'lodash-es/cloneDeep.js';
 import { LoadingState, useAlerts } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
 import { ClustersAPI } from '../../../../services/apis';
-import { getApiErrorMessage, handleApiError } from '../../../../api';
+import { getApiErrorMessage, handleApiError } from '../../../../../common/api';
 import { CustomManifest } from './CustomManifest';
 import { getEmptyManifest, getManifestName } from './utils';
 import { CustomManifestValues } from '../data/dataTypes';

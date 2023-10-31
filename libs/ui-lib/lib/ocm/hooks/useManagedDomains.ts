@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAlerts } from '../../common';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { ManagedDomainsAPI } from '../services/apis';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 

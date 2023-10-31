@@ -20,7 +20,7 @@ import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import { OperatorsStep } from './OperatorsStep';
 import { ClustersService, OperatorsService } from '../../services';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { canNextOperators } from './wizardTransition';
 import { Cluster, MonitoredOperator } from '@openshift-assisted/types/assisted-installer-service';
 

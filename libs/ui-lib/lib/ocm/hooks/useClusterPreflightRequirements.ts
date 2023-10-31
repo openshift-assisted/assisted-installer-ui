@@ -5,7 +5,7 @@ import {
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ClustersAPI } from '../services/apis';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { getErrorMessage } from '../../common/utils';
 
 const { addAlert } = alertsSlice.actions;

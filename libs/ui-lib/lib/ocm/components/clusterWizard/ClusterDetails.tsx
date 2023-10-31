@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';

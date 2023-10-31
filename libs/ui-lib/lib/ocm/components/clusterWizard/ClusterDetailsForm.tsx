@@ -15,7 +15,7 @@ import {
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
 import ClusterWizardFooter from './ClusterWizardFooter';
-import { isInOcm } from '../../api';
+import { isInOcm } from '../../../common/api';
 import {
   ClusterDetailsService,
   ClusterDetailsUpdateParams,
