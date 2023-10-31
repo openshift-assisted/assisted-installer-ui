@@ -4,9 +4,9 @@ import { createSelector } from '@reduxjs/toolkit';
 
 export const selectFeatureFlagsSlice = (state: RootStateDay1) => state.featureFlags;
 
-export const isFeatureEnabled = createSelector(
-  selectFeatureFlagsSlice,
-  (_featureFlags: ReturnType<typeof selectFeatureFlagsSlice>, featureId: keyof FeatureListType) =>
-    featureId,
-  (featureFlags, featureId) => featureFlags.data[featureId],
-);
+export const isFeatureEnabled = (featureId: keyof FeatureListType) =>
+  createSelector(
+    selectFeatureFlagsSlice,
+    (featureFlags: ReturnType<typeof selectFeatureFlagsSlice>) =>
+      featureFlags.data[featureId] ?? false,
+  );

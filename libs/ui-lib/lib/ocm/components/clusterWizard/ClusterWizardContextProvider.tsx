@@ -12,15 +12,12 @@ import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import {
-  AssistedInstallerOCMPermissionTypesListType,
-  useFeature,
-  useAlerts,
-} from '../../../common';
+import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { useUISettings } from '../../hooks';
 import { AlertVariant } from '@patternfly/react-core';
+import { useFeature } from '../../hooks/use-feature-detection';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
