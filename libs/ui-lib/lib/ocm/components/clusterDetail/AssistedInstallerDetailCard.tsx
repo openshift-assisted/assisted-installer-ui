@@ -8,7 +8,6 @@ import {
   AssistedInstallerOCMPermissionTypesListType,
   CpuArchitecture,
   ErrorState,
-  FeatureGateContextProvider,
   FeatureListType,
   LoadingState,
   ResourceUIState,
@@ -29,6 +28,7 @@ import { BackButton } from '../ui/Buttons/BackButton';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeatureDetection } from '../../hooks/use-feature-detection';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -91,6 +91,7 @@ const AssistedInstallerDetailCard = ({
   allEnabledFeatures,
   permissions,
 }: AssistedInstallerDetailCardProps) => {
+  useFeatureDetection(allEnabledFeatures);
   const { cluster, uiState } = useClusterPolling(aiClusterId);
   const pullSecret = usePullSecret();
   const {
@@ -131,32 +132,30 @@ const AssistedInstallerDetailCard = ({
 
   const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
   return (
-    <FeatureGateContextProvider features={allEnabledFeatures}>
-      <AlertsContextProvider>
-        <SentryErrorMonitorContextProvider>
-          <ModalDialogsContextProvider>
-            <ClusterDefaultConfigurationProvider
-              loadingUI={<LoadingCard />}
-              errorUI={<LoadingDefaultConfigFailedCard />}
+    <AlertsContextProvider>
+      <SentryErrorMonitorContextProvider>
+        <ModalDialogsContextProvider>
+          <ClusterDefaultConfigurationProvider
+            loadingUI={<LoadingCard />}
+            errorUI={<LoadingDefaultConfigFailedCard />}
+          >
+            <NewFeatureSupportLevelProvider
+              loadingUi={<LoadingCard />}
+              cluster={cluster}
+              cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
+              openshiftVersion={cluster.openshiftVersion}
+              platformType={cluster.platform?.type}
             >
-              <NewFeatureSupportLevelProvider
-                loadingUi={<LoadingCard />}
-                cluster={cluster}
-                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                openshiftVersion={cluster.openshiftVersion}
-                platformType={cluster.platform?.type}
-              >
-                {content}
-              </NewFeatureSupportLevelProvider>
-              {isOutdatedClusterData && <ClusterPollingErrorModal />}
-              <CancelInstallationModal />
-              <ResetClusterModal />
-              <DiscoveryImageModal />
-            </ClusterDefaultConfigurationProvider>
-          </ModalDialogsContextProvider>
-        </SentryErrorMonitorContextProvider>
-      </AlertsContextProvider>
-    </FeatureGateContextProvider>
+              {content}
+            </NewFeatureSupportLevelProvider>
+            {isOutdatedClusterData && <ClusterPollingErrorModal />}
+            <CancelInstallationModal />
+            <ResetClusterModal />
+            <DiscoveryImageModal />
+          </ClusterDefaultConfigurationProvider>
+        </ModalDialogsContextProvider>
+      </SentryErrorMonitorContextProvider>
+    </AlertsContextProvider>
   );
 };
 
