@@ -52,19 +52,19 @@ const getDisabledReasonForExternalPlatform = (
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: SupportedCpuArchitecture,
 ): string | undefined => {
-  if (!isSNO) {
+  if (isSNO && (platform === 'nutanix' || platform === 'vsphere')) {
+    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift.`;
+  } else if (
+    isSNO &&
+    (cpuArchitecture === CpuArchitecture.ppc64le || cpuArchitecture === CpuArchitecture.s390x)
+  ) {
+    return `Plaform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
+  } else {
     return newFeatureSupportLevelContext.getFeatureDisabledReason(
       ExternalPlaformIds[platform] as FeatureId,
       featureSupportLevelData ?? undefined,
       cpuArchitecture,
     );
-  } else if (platform === 'nutanix' || platform === 'vsphere') {
-    return `${ExternalPlatformLabels[platform]} integration is not supported for Single-Node OpenShift.`;
-  } else if (
-    cpuArchitecture === CpuArchitecture.ppc64le ||
-    cpuArchitecture === CpuArchitecture.s390x
-  ) {
-    return `Plaform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
   }
 };
 
