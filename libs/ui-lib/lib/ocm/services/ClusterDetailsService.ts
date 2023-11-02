@@ -13,7 +13,7 @@ import {
   OcmClusterDetailsValues,
 } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
-import { isInOcm } from '../api';
+import { isInOcm } from '../../common/api';
 import { getDefaultCpuArchitecture } from './CpuArchitectureService';
 import {
   Cluster,

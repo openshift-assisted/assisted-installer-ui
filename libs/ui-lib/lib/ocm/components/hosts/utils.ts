@@ -1,7 +1,7 @@
 import { saveAs } from 'file-saver';
 import type { AlertsContextType } from '../../../common';
 
-import { isInOcm, handleApiError, getApiErrorMessage } from '../../api';
+import { isInOcm, handleApiError, getApiErrorMessage } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { ClustersService } from '../../services';
 import ClustersAPI from '../../../common/api/assisted-service/ClustersAPI';

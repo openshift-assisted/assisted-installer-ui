@@ -1,5 +1,5 @@
 import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { ClustersAPI } from '../services/apis';
 import { useAlerts } from '../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';

@@ -11,7 +11,7 @@ import {
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/services/DateAndTime';
-import { isInOcm } from '../../api';
+import { isInOcm } from '../../../common/api';
 import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';

@@ -14,7 +14,7 @@ import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import {
   forceReload,
   setServerUpdateError,

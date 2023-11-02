@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import get from 'lodash-es/get.js';
-import { isInOcm, handleApiError, getApiErrorMessage } from '../../api';
+import { isInOcm, handleApiError, getApiErrorMessage } from '../../../common/api';
 import { AlertsContextType, hostStatusOrder } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 import { ClustersService } from '../../services';

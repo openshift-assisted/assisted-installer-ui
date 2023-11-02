@@ -20,7 +20,7 @@ import {
 } from '../../../common';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
-import { handleApiError, getApiErrorMessage } from '../../api';
+import { handleApiError, getApiErrorMessage } from '../../../common/api';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';

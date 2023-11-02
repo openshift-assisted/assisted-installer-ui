@@ -4,7 +4,7 @@ import {
   ErrorSeverity,
   ExceptionReporter,
 } from '../../common/components/ErrorHandling/ErrorMonitorContext';
-import { handleApiError } from '../api';
+import { handleApiError } from '../../common/api';
 import { isApiError } from '../../common/api/utils';
 import { captureException } from '../sentry';
 import * as Sentry from '@sentry/browser';

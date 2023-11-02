@@ -1,6 +1,6 @@
 import React from 'react';
 import { CpuArchitecture, OpenshiftVersionOptionType } from '../../common';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 import { getKeys } from '../../common/utils';
 import { Cluster, OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';

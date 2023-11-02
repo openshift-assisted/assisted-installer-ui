@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { CpuArchitecture, ErrorState, LoadingState } from '../../../common';
 import {
   forceReload,

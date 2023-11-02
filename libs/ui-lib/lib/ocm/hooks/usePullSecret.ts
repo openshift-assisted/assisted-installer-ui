@@ -1,5 +1,5 @@
 import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { useAlerts } from '../../common';
 import { AccessTokenAPI } from '../../common/api/accounts-management-service/access-token-api';
 

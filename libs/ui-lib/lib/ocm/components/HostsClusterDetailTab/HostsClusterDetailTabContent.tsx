@@ -10,7 +10,7 @@ import {
 import { usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
 import Day2ClusterService, { getApiVipDnsName } from '../../services/Day2ClusterService';
-import { handleApiError } from '../../api';
+import { handleApiError } from '../../../common/api';
 import { isApiError } from '../../../common/api/utils';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
