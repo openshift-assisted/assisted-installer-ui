@@ -17,7 +17,7 @@ describe(`Assisted Installer Day2 flow`, () => {
     setTestStartSignal('CREATED_DAY2_CLUSTER');
     cy.visit('/day2-flow-mock');
     cy.window().then((win) => {
-      win.__app__.OCM.setAuthInterceptor((client) => client);
+      win.__app__.OCM.Api.setAuthInterceptor((client) => client);
     });
     cy.findByRole('button', { name: 'Add hosts (With metrics)' }).click();
     cy.wait('@day2-cluster-details');
