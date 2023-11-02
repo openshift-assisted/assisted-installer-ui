@@ -5,7 +5,7 @@ import { Formik, FormikConfig, useFormikContext, yupToFormErrors } from 'formik'
 import isEqual from 'lodash-es/isEqual.js';
 import { useAlerts, useFormikAutoSave } from '../../../../../common';
 import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
-import { getApiErrorMessage } from '../../../../api';
+import { getApiErrorMessage } from '../../../../../common/api';
 import { StaticIpFormProps } from './propTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 

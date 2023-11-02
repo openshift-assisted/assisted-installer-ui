@@ -11,7 +11,7 @@ import {
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { calculateCollectedLogsCount } from '../clusters/utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';

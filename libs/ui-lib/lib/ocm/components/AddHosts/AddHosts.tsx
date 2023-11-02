@@ -12,7 +12,7 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {

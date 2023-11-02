@@ -38,7 +38,7 @@ import {
   setServerUpdateError,
   updateClusterBase,
 } from '../../../store/slices/current-cluster/slice';
-import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
+import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../../common/api';
 import { usePullSecret } from '../../../hooks';
 import {
   Cluster,

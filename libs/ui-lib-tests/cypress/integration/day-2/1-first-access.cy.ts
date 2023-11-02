@@ -17,7 +17,7 @@ describe(`Day2 flow`, () => {
     setTestStartSignal('CLUSTER_FINISHED_INSTALLATION');
     cy.visit('/day2-flow-mock');
     cy.window().then((win) => {
-      win.__app__.OCM.setAuthInterceptor((client) => client);
+      win.__app__.OCM.Api.setAuthInterceptor((client) => client);
     });
   });
 

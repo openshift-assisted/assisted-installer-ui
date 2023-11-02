@@ -15,7 +15,7 @@ import {
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
-import { handleApiError } from '../../../api';
+import { handleApiError } from '../../../../common/api';
 import { Day2ClusterDetailValues } from '../types';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';

@@ -22,7 +22,7 @@ import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
 import { ClustersAPI } from '../../services/apis';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
-import { handleApiError, isInOcm } from '../../api';
+import { handleApiError, isInOcm } from '../../../common/api';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';

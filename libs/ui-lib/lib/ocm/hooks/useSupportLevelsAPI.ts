@@ -4,7 +4,7 @@ import {
   ArchitectureSupportLevelMap,
   NewFeatureSupportLevelMap,
 } from '../../common/components/newFeatureSupportLevels';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../../common/api';
 import NewFeatureSupportLevelsAPI from '../../common/api/assisted-service/NewFeatureSupportLevelsAPI';
 import { PlatformType } from '@openshift-assisted/types/./assisted-installer-service';
 

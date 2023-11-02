@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponseHeaders } from 'axios';
 import { EVENT_SEVERITIES, EventListFetchProps } from '../../../common';
-import { handleApiError } from '../../api';
+import { handleApiError } from '../../../common/api';
 import { EventsAPI } from '../../services/apis';
 import { SeverityCountsType } from '../../../common/components/ui/ClusterEventsToolbar';
 import { Event } from '@openshift-assisted/types/assisted-installer-service';
