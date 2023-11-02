@@ -17,7 +17,7 @@ import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { useUISettings } from '../../hooks';
 import { AlertVariant } from '@patternfly/react-core';
-import { useFeature } from '../../hooks/use-feature-detection';
+import { useFeature } from '../../hooks/use-feature';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],

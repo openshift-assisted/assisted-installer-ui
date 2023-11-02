@@ -28,7 +28,7 @@ import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressI
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
 import ClusterSummaryExpandable from './ClusterSummaryExpandable';
 import HostInventoryExpandable from './HostInventoryExpandable';
-import { useFeature } from '../../hooks/use-feature-detection';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailProps = {
   cluster: Cluster;

@@ -23,7 +23,7 @@ import InformationAndAlerts from './InformationAndAlerts';
 import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeature } from '../../hooks/use-feature-detection';
+import { useFeature } from '../../hooks/use-feature';
 
 const schedulableMastersTooltip =
   'Workloads must be run on control plane nodes when less than 5 hosts are discovered';
