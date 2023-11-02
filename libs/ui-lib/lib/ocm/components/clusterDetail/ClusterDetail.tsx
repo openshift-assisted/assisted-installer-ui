@@ -9,14 +9,7 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import {
-  ToolbarButton,
-  Alerts,
-  getEnabledHosts,
-  selectOlmOperators,
-  isSNO,
-  useFeature,
-} from '../../../common';
+import { ToolbarButton, Alerts, getEnabledHosts, selectOlmOperators, isSNO } from '../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { getClusterDetailId } from './utils';
@@ -35,6 +28,7 @@ import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressI
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
 import ClusterSummaryExpandable from './ClusterSummaryExpandable';
 import HostInventoryExpandable from './HostInventoryExpandable';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailProps = {
   cluster: Cluster;

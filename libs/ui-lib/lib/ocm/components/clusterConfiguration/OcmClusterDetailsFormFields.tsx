@@ -12,7 +12,6 @@ import {
   uniqueOcmClusterNameValidationMessages,
   CLUSTER_NAME_MAX_LENGTH,
   StaticTextField,
-  useFeature,
   getSupportedCpuArchitectures,
   SupportedCpuArchitecture,
 } from '../../../common';
@@ -36,6 +35,7 @@ import { useNewFeatureSupportLevel } from '../../../common/components/newFeature
 import { ExternalPlatformLabels } from './platformIntegration/constants';
 import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { useFeature } from '../../hooks/use-feature';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
