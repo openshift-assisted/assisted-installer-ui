@@ -642,7 +642,7 @@ export const day2ApiVipValidationSchema = Yup.string().test(
 export const bmcAddressValidationSchema = (t: TFunction) => {
   const bmcAddressValidationMessagesList = bmcAddressValidationMessages(t);
 
-  return Yup.string().matches(BMC_REGEX, {
+  return Yup.string().required().matches(BMC_REGEX, {
     message: bmcAddressValidationMessagesList.INVALID_VALUE,
     excludeEmptyString: true,
   });
