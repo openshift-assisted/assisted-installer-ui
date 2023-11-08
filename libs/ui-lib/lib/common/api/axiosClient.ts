@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
 import { camelCase } from 'camel-case';
+import { authInterceptor } from './authInterceptor';
 
 const withAssistedInstallerBasePath = (client: AxiosInstance): AxiosInstance => {
   // Conforms with basePath in swagger.json
@@ -21,7 +22,7 @@ const withAssistedInstallerBasePath = (client: AxiosInstance): AxiosInstance => 
   return client;
 };
 
-let isInOcm = false;
+const isInOcm = false;
 let ocmClient: AxiosInstance | null;
 let client = applyCaseMiddleware(
   withAssistedInstallerBasePath(axios.create()),
@@ -36,14 +37,11 @@ let client = applyCaseMiddleware(
   },
 );
 let clientWithoutCaseConverter = withAssistedInstallerBasePath(axios.create());
-
-export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => AxiosInstance) => {
-  isInOcm = true;
+//I need to figure out how to know if we are in OCM or not
+if (isInOcm) {
   ocmClient = authInterceptor(axios.create());
-
-  // Instances of Axios with URL intercepted using Assisted-installer's base-path
   client = authInterceptor(client);
   clientWithoutCaseConverter = authInterceptor(clientWithoutCaseConverter);
-};
+}
 
 export { client, ocmClient, isInOcm, clientWithoutCaseConverter };

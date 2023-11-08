@@ -7,6 +7,7 @@ import { routeBasePath } from '../config';
 import { AssistedUILibVersion } from './ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
+import { AlertsContextProvider } from '../../common';
 
 export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
   allEnabledFeatures,
@@ -16,14 +17,16 @@ export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
 
   return (
     <Provider store={storeDay1}>
-      <AssistedUILibVersion />
-      <Switch>
-        <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
-        <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
-        <Route path={`${routeBasePath}/clusters`} component={Clusters} />
-        {children}
-        <Redirect to={`${routeBasePath}/clusters`} />
-      </Switch>
+      <AlertsContextProvider>
+        <AssistedUILibVersion />
+        <Switch>
+          <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
+          <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
+          <Route path={`${routeBasePath}/clusters`} component={Clusters} />
+          {children}
+          <Redirect to={`${routeBasePath}/clusters`} />
+        </Switch>
+      </AlertsContextProvider>
     </Provider>
   );
 };
