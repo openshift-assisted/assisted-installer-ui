@@ -1,4 +1,3 @@
-import { saveAs } from 'file-saver';
 import get from 'lodash-es/get.js';
 import { isInOcm, handleApiError, getApiErrorMessage } from '../../../common/api';
 import { AlertsContextType, hostStatusOrder } from '../../../common';
@@ -24,10 +23,10 @@ export const downloadClusterInstallationLogs = async (
         hostId: undefined,
         logsType: 'all',
       });
-      saveAs(data.url);
+      download(data.url);
     } else {
       const { data, fileName } = await ClustersService.downloadLogs(clusterId);
-      saveAs(data, fileName);
+      download('', data, fileName);
     }
   } catch (e) {
     handleApiError(e, (e) => {
@@ -97,4 +96,22 @@ export const getMostSevereHostStatus = (hosts: Host[]) => {
     }
   }
   return status;
+};
+
+const download = (fileUrl?: string, dataBlob?: Blob, fileName?: string) => {
+  const link = document.createElement('a');
+  if (fileUrl && fileUrl !== '') {
+    link.setAttribute('href', fileUrl);
+  }
+  if (dataBlob) {
+    const file = new Blob([dataBlob], { type: 'text' });
+    link.setAttribute('href', URL.createObjectURL(file));
+  }
+  if (fileName) {
+    link.setAttribute('download', fileName);
+  }
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
