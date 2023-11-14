@@ -63,9 +63,10 @@ const fieldId = getFieldId(INPUT_NAME, 'input');
 const isCpuArchitectureSupported = (
   cpuArchitectures: SupportedCpuArchitecture[],
   cpuArchitecture: SupportedCpuArchitecture,
+  isArmDay1CpuArch: boolean,
 ): boolean => {
   const cpuArchFound = cpuArchitectures.find((cpuArch) => cpuArch === cpuArchitecture);
-  return cpuArchFound !== undefined;
+  return cpuArchFound !== undefined && !isArmDay1CpuArch;
 };
 
 type CpuArchitectureDropdownProps = {
@@ -166,6 +167,7 @@ const CpuArchitectureDropdown = ({
     const isSelectedCpuArchitectureSupported = isCpuArchitectureSupported(
       cpuArchitectures,
       selectedCpuArchitecture,
+      day1CpuArchitecture === CpuArchitecture.ARM,
     );
     if (
       !isSelectedCpuArchitectureSupported &&
@@ -178,7 +180,7 @@ const CpuArchitectureDropdown = ({
       prevVersionRef.current = openshiftVersion;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openshiftVersion, selectedCpuArchitecture]);
+  }, [cpuArchitectures, openshiftVersion, selectedCpuArchitecture]);
 
   const toggle = React.useMemo(
     () => (
