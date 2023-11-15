@@ -16,9 +16,6 @@ describe(`Day2 flow`, () => {
   beforeEach(() => {
     setTestStartSignal('CLUSTER_FINISHED_INSTALLATION');
     cy.visit('/day2-flow-mock');
-    cy.window().then((win) => {
-      win.__app__.OCM.Api.setAuthInterceptor((client) => client);
-    });
   });
 
   describe('Add hosts tab - error states', () => {
