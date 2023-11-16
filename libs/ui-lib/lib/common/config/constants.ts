@@ -387,4 +387,4 @@ export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
   'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html-single/assisted_installer_for_openshift_container_platform/index#checking-for-multiple-architectures_expanding-the-cluster';
 
 export const MCE_LINK =
-  'https://docs.openshift.com/container-platform/4.13/architecture/mce-overview-ocp.html';
+  'https://docs.openshift.com/container-platform/4.14/architecture/mce-overview-ocp.html';
