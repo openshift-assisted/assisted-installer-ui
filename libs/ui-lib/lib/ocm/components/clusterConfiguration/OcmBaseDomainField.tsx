@@ -22,11 +22,11 @@ export const BaseDnsHelperText = ({
   baseDnsDomain?: string;
 }) => (
   <HelperText fieldId={fieldId}>
-    Enter the name of your local host [localhost] or [localhost.com]. This cannot be changed after
-    creation. All DNS records must include the cluster name and be subdomains of the base you enter.
-    The full cluster address will be: <br />
+    Enter the name of your domain [domainname] or [domainname.com]. This cannot be changed after
+    cluster installed. All DNS records must include the cluster name and be subdomains of the base
+    you enter. The full cluster address will be: <br />
     <strong>
-      {name || '[Cluster Name]'}.{baseDnsDomain || '[localhost.com]'}
+      {name || '[Cluster Name]'}.{baseDnsDomain || '[domainname.com]'}
     </strong>
   </HelperText>
 );
