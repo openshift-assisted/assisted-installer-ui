@@ -2,26 +2,14 @@ import { AxiosInstance, AxiosRequestConfig } from 'axios';
 import * as Sentry from '@sentry/browser';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 
-const restrictedEnvApi = 'https://api.int.openshiftusgov.com';
 const apiGateway = 'https://api.openshift.com';
-
-export const isRestrictedEnv = (environment: string) => {
-  return environment === 'int';
-};
-
-const getBaseUrl = (environment: string, baseUrl?: string) => {
-  if (isRestrictedEnv(environment)) {
-    return restrictedEnvApi;
-  }
-  return baseUrl || apiGateway;
-};
 
 export const authInterceptor = (client: AxiosInstance): AxiosInstance => {
   client.interceptors.request.use(async (cfg) => {
-    const { auth, getEnvironment } = useChrome();
+    const { auth } = useChrome();
     await auth.getUser();
     const token = await auth.getToken();
-    const BASE_URL = getBaseUrl(getEnvironment(), cfg.baseURL);
+    const BASE_URL = cfg.baseURL || apiGateway;
     const updatedCfg: AxiosRequestConfig = {
       ...cfg,
       url: `${BASE_URL}${cfg.url ? cfg.url : ''}`,
