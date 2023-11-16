@@ -16,7 +16,12 @@ const FolderLabel = () => {
     <>
       Folder{' '}
       <PopoverIcon
-        bodyContent={<>To overwrite a manifest, select the folder the existing manifest is in.</>}
+        bodyContent={
+          <>
+            To overwrite an existing manifest, save the new manifest in the same folder with the
+            same name.
+          </>
+        }
       />
     </>
   );
