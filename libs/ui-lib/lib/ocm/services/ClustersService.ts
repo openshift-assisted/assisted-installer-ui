@@ -53,10 +53,16 @@ const ClustersService = {
     await ClustersAPI.deregister(clusterId);
   },
 
-  async downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
+  async downloadLogs(
+    clusterId: Cluster['id'],
+    hostId?: Host['id'],
+  ): Promise<{
+    data: Blob;
+    fileName: string | undefined;
+  }> {
     const { data, headers } = await ClustersAPI.downloadLogs(clusterId, hostId);
-    const contentHeader = headers['content-disposition'];
-    const fileName = contentHeader?.match(/filename="(.+)"/)?.[1];
+    const contentHeader: string | undefined = headers['content-disposition'] as string | undefined;
+    const fileName: string | undefined = contentHeader?.match(/filename="(.+)"/)?.[1];
     return { data, fileName };
   },
 

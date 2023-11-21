@@ -7,7 +7,7 @@ import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { isInOcm } from '../../api/axiosClient';
 import { getApiErrorMessage, handleApiError } from '../../api/utils';
 import ClustersAPI from '../../api/assisted-service/ClustersAPI';
-import { AxiosResponseHeaders } from 'axios';
+import { AxiosHeaderValue, AxiosHeaders, AxiosResponseHeaders } from 'axios';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 
@@ -22,10 +22,20 @@ type KubeconfigDownloadProps = {
 const getKubeconfigFileName = (
   headers:
     | AxiosResponseHeaders
-    | Partial<Record<string, string> & { 'set-cookie'?: string[] | undefined }>,
+    | Partial<Record<string, string> & { 'set-cookie'?: string[] | undefined }>
+    | Partial<
+        AxiosHeaders & {
+          Server: AxiosHeaderValue;
+          'Content-Type': AxiosHeaderValue;
+          'Content-Length': AxiosHeaderValue;
+          'Cache-Control': AxiosHeaderValue;
+          'Content-Encoding': AxiosHeaderValue;
+        }
+      >,
 ) => {
   const fileNameMatch =
-    headers['content-disposition'] && headers['content-disposition'].match(/filename=".*"/);
+    (headers['content-disposition'] as string) &&
+    (headers['content-disposition'] as string).match(/filename=".*"/);
   return fileNameMatch ? fileNameMatch[0].slice(10, -1) : 'kubeconfig';
 };
 

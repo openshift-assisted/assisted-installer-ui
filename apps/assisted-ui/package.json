@@ -11,7 +11,7 @@
     "@patternfly/react-tokens": "^4.94.3",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^5.9 || ^6",
-    "axios": ">=0.22.0 <1.0.0",
+    "axios": ">=0.22.0 <2.0.0",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "lodash": "^4",
