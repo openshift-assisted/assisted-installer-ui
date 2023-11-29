@@ -9,10 +9,10 @@ import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { getVipValidationsById } from '../../clusterConfiguration';
-import { selectApiVip } from '../../../selectors';
+import { selectApiVip, selectIngressVip } from '../../../selectors';
 
 interface VipStaticValueProps {
-  vipName: 'apiVip' | 'ingressVip';
+  vipName: 'apiVips' | 'ingressVips';
   cluster: Cluster;
   validationErrorMessage?: string;
 }
@@ -124,12 +124,12 @@ export const VirtualIPControlGroup = ({
             label={t('ai:API IP')}
             name="apiVip"
             helperText={apiVipHelperText}
-            value={cluster.apiVip || ''}
+            value={selectApiVip(cluster)}
             isValid={!apiVipFailedValidationMessage}
             isRequired
           >
             <VipStaticValue
-              vipName="apiVip"
+              vipName="apiVips"
               cluster={cluster}
               validationErrorMessage={apiVipFailedValidationMessage}
             />
@@ -138,12 +138,12 @@ export const VirtualIPControlGroup = ({
             label={t('ai:Ingress IP')}
             name="ingressVip"
             helperText={ingressVipHelperText}
-            value={cluster.ingressVip || ''}
+            value={selectIngressVip(cluster)}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
           >
             <VipStaticValue
-              vipName="ingressVip"
+              vipName="ingressVips"
               cluster={cluster}
               validationErrorMessage={ingressVipFailedValidationMessage}
             />
