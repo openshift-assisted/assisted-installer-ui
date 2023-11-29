@@ -2,9 +2,7 @@ import { fakeClusterId } from '../cluster/base-cluster';
 
 const UMNetworkingRequest = {
   api_vips: [],
-  api_vip: '',
   ingress_vips: [],
-  ingress_vip: '',
   cluster_networks: [
     {
       cidr: '10.128.0.0/14',
@@ -26,9 +24,7 @@ const UMNetworkingRequest = {
 
 const NetworkingRequest = {
   api_vips: [{ ip: '192.168.122.10', cluster_id: fakeClusterId }],
-  api_vip: '192.168.122.10',
   ingress_vips: [{ ip: '192.168.122.110', cluster_id: fakeClusterId }],
-  ingress_vip: '192.168.122.110',
   cluster_networks: [
     {
       cidr: '10.128.0.0/14',

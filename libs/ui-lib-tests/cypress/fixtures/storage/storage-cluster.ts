@@ -161,8 +161,8 @@ const storageCluster = {
   user_name: 'admin',
   validations_info: JSON.stringify(clusterValidation),
   vip_dhcp_allocation: false,
-  api_vip: '192.168.122.10',
-  ingress_vip: '192.168.122.110',
+  apiVips: [{ ip: '192.168.122.10', clusterId: fakeClusterId }],
+  ingressVips: [{ ip: '192.168.122.110', clusterId: fakeClusterId }],
 };
 
 export default storageCluster;

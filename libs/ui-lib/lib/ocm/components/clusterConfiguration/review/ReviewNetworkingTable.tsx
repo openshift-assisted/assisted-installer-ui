@@ -59,7 +59,8 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       });
 
-    cluster.apiVip &&
+    cluster.apiVips &&
+      cluster.apiVips.length > 0 &&
       networkRows.push({
         rowId: 'api-ip',
         cells: [
@@ -71,7 +72,8 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       });
 
-    cluster.ingressVip &&
+    cluster.ingressVips &&
+      cluster.ingressVips.length &&
       networkRows.push({
         rowId: 'ingress-ip',
         cells: [

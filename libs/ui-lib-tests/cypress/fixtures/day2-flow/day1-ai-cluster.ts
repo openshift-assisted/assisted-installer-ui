@@ -7,7 +7,6 @@ const aiCluster = {
   openshift_cluster_id: aiClusterId,
   additional_ntp_source: 'clock.redhat.com',
   ams_subscription_id: day2FlowIds.day1.ocmSubscriptionId,
-  api_vip: '192.168.127.100',
   api_vips: [
     {
       cluster_id: aiClusterId,
@@ -244,7 +243,6 @@ const aiCluster = {
   hyperthreading: 'all',
   ignition_endpoint: {},
   image_info: { created_at: '0001-01-01T00:00:00Z', expires_at: '0001-01-01T00:00:00.000Z' },
-  ingress_vip: '192.168.127.101',
   ingress_vips: [
     {
       cluster_id: aiClusterId,
