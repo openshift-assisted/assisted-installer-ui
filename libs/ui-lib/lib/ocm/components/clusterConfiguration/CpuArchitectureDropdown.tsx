@@ -173,7 +173,7 @@ const CpuArchitectureDropdown = ({
       selectedCpuArchitecture,
       day1CpuArchitecture,
     );
-     if (isCurrentDefaultCpuArchitectureSelected) {
+    if (isCurrentDefaultCpuArchitectureSelected) {
       setValue(getDefaultCpuArchitecture());
       setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
       setOpen(false);
