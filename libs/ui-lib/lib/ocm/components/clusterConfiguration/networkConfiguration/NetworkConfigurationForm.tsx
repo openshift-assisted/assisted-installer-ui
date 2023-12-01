@@ -14,8 +14,6 @@ import {
   LoadingState,
   NetworkConfigurationValues,
   SecurityFields,
-  selectApiVip,
-  selectIngressVip,
   useAlerts,
   useFormikAutoSave,
 } from '../../../../common';
@@ -201,9 +199,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
 
       const params: V2ClusterUpdateParams = {
         apiVips: values.apiVips,
-        apiVip: selectApiVip(values),
         ingressVips: values.ingressVips,
-        ingressVip: selectIngressVip(values),
         sshPublicKey: values.sshPublicKey,
         vipDhcpAllocation: values.vipDhcpAllocation,
         networkType: values.networkType,
@@ -215,9 +211,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
 
       if (params.userManagedNetworking) {
         params.apiVips = [];
-        params.apiVip = '';
         params.ingressVips = [];
-        params.ingressVip = '';
         if (isMultiNodeCluster) {
           delete params.machineNetworks;
         }
@@ -225,9 +219,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
         // cluster-managed can't be chosen in SNO, so this must be a multi-node cluster
         if (values.vipDhcpAllocation) {
           delete params.apiVips;
-          delete params.apiVip;
           delete params.ingressVips;
-          delete params.ingressVip;
         } else if (values.stackType === IPV4_STACK) {
           // The API will rebuild the default machineNetwork
           params.machineNetworks = [];

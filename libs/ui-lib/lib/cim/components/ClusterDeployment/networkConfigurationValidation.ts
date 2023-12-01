@@ -58,8 +58,8 @@ export const getNetworkInitialValues = (
       selectClusterNetworkHostPrefix(cluster) || defaultNetworkSettings.clusterNetworkHostPrefix,
     serviceNetworkCidr:
       selectServiceNetworkCIDR(cluster) || defaultNetworkSettings.serviceNetworkCidr,
-    apiVip: cluster.apiVip || '',
-    ingressVip: cluster.ingressVip || '',
+    apiVips: cluster.apiVips,
+    ingressVips: cluster.ingressVips,
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,

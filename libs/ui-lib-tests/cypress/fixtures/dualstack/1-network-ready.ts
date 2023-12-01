@@ -46,9 +46,7 @@ const featureUsageDualstack = {
 
 const dualstackClusterBase = {
   ...baseCluster('ai-e2e-dualstack'),
-  apiVip: '192.168.122.10',
   apiVips: [{ ip: '192.168.122.10', clusterId: fakeClusterId }],
-  ingressVip: '192.168.122.110',
   ingressVips: [{ ip: '192.168.122.110', clusterId: fakeClusterId }],
   cluster_networks: [
     {
@@ -100,9 +98,7 @@ const addNetworkItem = (networkItems, data) => {
 
 const withDualStackNetworks = (singleStackCluster) => ({
   ...singleStackCluster,
-  apiVip: '192.168.122.10',
   apiVips: [{ ip: '192.168.122.10', clusterId: fakeClusterId }],
-  ingressVip: '192.168.122.110',
   ingressVips: [{ ip: '192.168.122.110', clusterId: fakeClusterId }],
   cluster_networks: addNetworkItem(singleStackCluster.cluster_networks, {
     cidr: 'fd01::/48',

@@ -37,9 +37,7 @@ export type NetworkConfigurationValues = Pick<
   | 'clusterNetworkHostPrefix'
   | 'serviceNetworkCidr'
   | 'apiVips'
-  | 'apiVip'
   | 'ingressVips'
-  | 'ingressVip'
   | 'sshPublicKey'
   | 'vipDhcpAllocation'
   | 'networkType'
@@ -50,6 +48,8 @@ export type NetworkConfigurationValues = Pick<
   hostSubnet?: string;
   managedNetworkingType: 'userManaged' | 'clusterManaged';
   stackType?: 'singleStack' | 'dualStack';
+  apiVip?: string;
+  ingressVip?: string;
 };
 export type HostDiscoveryValues = V2ClusterUpdateParams & {
   usePlatformIntegration: boolean;
