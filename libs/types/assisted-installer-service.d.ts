@@ -68,6 +68,7 @@ export interface BindHostParams {
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
+  commandLine?: string;
 }
 export interface Cluster {
   /**
@@ -128,10 +129,6 @@ export interface Cluster {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
-   */
-  apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
-  /**
    * The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
    */
   apiVips?: ApiVip[];
@@ -143,10 +140,6 @@ export interface Cluster {
    * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
    */
   machineNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
-  /**
-   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
-   */
-  ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
   /**
    * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
    */
@@ -355,6 +348,7 @@ export interface Cluster {
    * A comma-separated list of tags that are associated to the cluster.
    */
   tags?: string;
+  'last-installation-preparation'?: LastInstallationPreparation;
 }
 export interface ClusterCreateParams {
   /**
@@ -392,17 +386,9 @@ export interface ClusterCreateParams {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
-   */
-  apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
-  /**
    * The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
    */
   apiVips?: ApiVip[];
-  /**
-   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
-   */
-  ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
   /**
    * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
    */
@@ -971,7 +957,8 @@ export type FeatureSupportLevelId =
   | 'FULL_ISO'
   | 'EXTERNAL_PLATFORM_OCI'
   | 'DUAL_STACK'
-  | 'PLATFORM_MANAGED_NETWORKING';
+  | 'PLATFORM_MANAGED_NETWORKING'
+  | 'SKIP_MCO_REBOOT';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
   string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
@@ -1802,6 +1789,10 @@ export interface InstallCmdRequest {
    * Skip formatting installation disk
    */
   skipInstallationDiskCleanup?: boolean;
+  /**
+   * If true, assisted service will attempt to skip MCO reboot
+   */
+  enableSkipMcoReboot?: boolean;
 }
 export interface InstallerArgsParams {
   /**
@@ -1889,6 +1880,19 @@ export interface L3Connectivity {
    * Percentage of packets lost during connectivity check.
    */
   packetLossPercentage?: number; // double
+}
+/**
+ * Gives the status of the last installation preparation (if any)
+ */
+export interface LastInstallationPreparation {
+  /**
+   * The last installation preparation status
+   */
+  status?: 'preparationNeverPerformed' | 'failed' | 'success';
+  /**
+   * The reason for the preparation status if applicable
+   */
+  reason?: string;
 }
 export type ListManagedDomains = ManagedDomain[];
 export type ListManifests = Manifest[];
@@ -2484,17 +2488,9 @@ export interface V2ClusterUpdateParams {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster's API.
-   */
-  apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
-  /**
    * The virtual IPs used to reach the OpenShift cluster's API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
    */
   apiVips?: ApiVip[];
-  /**
-   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
-   */
-  ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
   /**
    * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
    */
