@@ -60,13 +60,17 @@ export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureI
 const INPUT_NAME = 'cpuArchitecture';
 const fieldId = getFieldId(INPUT_NAME, 'input');
 
-const isCpuArchitectureSupported = (
+const isCurrentDefaultCpuArchitecture = (
   cpuArchitectures: SupportedCpuArchitecture[],
   cpuArchitecture: SupportedCpuArchitecture,
-  isArmDay1CpuArch: boolean,
+  day1CpuArchitecture?: SupportedCpuArchitecture,
 ): boolean => {
   const cpuArchFound = cpuArchitectures.find((cpuArch) => cpuArch === cpuArchitecture);
-  return cpuArchFound !== undefined && !isArmDay1CpuArch;
+  return (
+    cpuArchFound === undefined &&
+    cpuArchitecture !== getDefaultCpuArchitecture() &&
+    day1CpuArchitecture !== CpuArchitecture.ARM
+  );
 };
 
 type CpuArchitectureDropdownProps = {
@@ -164,15 +168,13 @@ const CpuArchitectureDropdown = ({
   );
 
   React.useEffect(() => {
-    const isSelectedCpuArchitectureSupported = isCpuArchitectureSupported(
+    const isCurrentDefaultCpuArchitectureSelected = isCurrentDefaultCpuArchitecture(
       cpuArchitectures,
       selectedCpuArchitecture,
-      day1CpuArchitecture === CpuArchitecture.ARM,
+      day1CpuArchitecture,
     );
-    if (
-      !isSelectedCpuArchitectureSupported &&
-      selectedCpuArchitecture !== getDefaultCpuArchitecture()
-    ) {
+    if (isCurrentDefaultCpuArchitectureSelected) {
+      setValue(getDefaultCpuArchitecture());
       setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
       setOpen(false);
     }
