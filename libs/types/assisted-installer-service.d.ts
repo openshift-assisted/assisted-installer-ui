@@ -958,7 +958,8 @@ export type FeatureSupportLevelId =
   | 'EXTERNAL_PLATFORM_OCI'
   | 'DUAL_STACK'
   | 'PLATFORM_MANAGED_NETWORKING'
-  | 'SKIP_MCO_REBOOT';
+  | 'SKIP_MCO_REBOOT'
+  | 'EXTERNAL_PLATFORM';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
   string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
@@ -2189,13 +2190,27 @@ export type OsImages = OsImage[];
  */
 export interface Platform {
   type: PlatformType;
+  external?: PlatformExternal;
   /**
    * Used by the service to indicate that the platform-specific components are not included in
    * OpenShift and must be provided as manifests separately.
    */
   readonly isExternal?: boolean;
 }
-export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'oci';
+/**
+ * Configuration used when installing with an external platform type.
+ */
+export interface PlatformExternal {
+  /**
+   * Holds the arbitrary string representing the infrastructure provider name.
+   */
+  platformName?: string;
+  /**
+   * When set to external, this property will enable an external cloud provider.
+   */
+  cloudControllerManager?: '' | 'External';
+}
+export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'oci' | 'external';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -2604,7 +2619,7 @@ export interface V2SupportLevelsArchitectures {
 export interface V2SupportLevelsFeatures {
   openshiftVersion: string;
   cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
-  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'oci';
+  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'oci' | 'external';
 }
 /**
  * Single VIP verification result.
