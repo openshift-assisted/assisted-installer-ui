@@ -18,7 +18,8 @@ import {
   ToolbarGroup,
   Tooltip,
 } from '@patternfly/react-core';
-import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
+import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
+import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
 import { fetchClustersAsync } from '../../store/slices/clusters/slice';

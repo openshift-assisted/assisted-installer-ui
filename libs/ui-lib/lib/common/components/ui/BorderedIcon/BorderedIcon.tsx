@@ -1,5 +1,6 @@
 import React from 'react';
-import { DownloadIcon, IconSize } from '@patternfly/react-icons';
+import { DownloadIcon } from '@patternfly/react-icons/dist/js/icons/download-icon';
+import { IconSize } from '@patternfly/react-icons/dist/js/createIcon';
 
 export const getPadding = (size: IconSize | keyof typeof IconSize) => {
   switch (size) {

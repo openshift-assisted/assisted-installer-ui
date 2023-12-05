@@ -18,7 +18,7 @@ import {
   TitleSizes,
 } from '@patternfly/react-core';
 import { Formik, FormikProps, useFormikContext } from 'formik';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 import {
   httpProxyValidationSchema,

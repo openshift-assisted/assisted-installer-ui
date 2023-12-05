@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  ExternalLinkAltIcon,
-} from '@patternfly/react-icons';
-import {
-  global_warning_color_100 as warningColor,
-  global_danger_color_100 as dangerColor,
-} from '@patternfly/react-tokens';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';

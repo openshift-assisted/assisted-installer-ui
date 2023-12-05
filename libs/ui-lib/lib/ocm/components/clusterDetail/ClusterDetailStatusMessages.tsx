@@ -9,7 +9,7 @@ import {
 } from '../../../common';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { calculateClusterDateDiff } from '../../../common/services/DateAndTime';
 import { isInOcm } from '../../../common/api';
 import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';

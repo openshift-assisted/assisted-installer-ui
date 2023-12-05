@@ -1,7 +1,7 @@
 import React from 'react';
 import { GridItem, Grid, Button } from '@patternfly/react-core';
 import { ArrayHelpers, FieldArray } from 'formik';
-import { PlusCircleIcon } from '@patternfly/react-icons';
+import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import { getFormikArrayItemFieldName, RemovableField } from '../../../../../../common';
 import { OcmInputField } from '../../../../ui/OcmFormFields';
 import { useSelector } from 'react-redux';

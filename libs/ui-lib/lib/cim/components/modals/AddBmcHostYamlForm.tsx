@@ -16,7 +16,8 @@ import {
   StackItem,
   Title,
 } from '@patternfly/react-core';
-import { ErrorCircleOIcon, UploadIcon } from '@patternfly/react-icons';
+import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
+import { UploadIcon } from '@patternfly/react-icons/dist/js/icons/upload-icon';
 import jsYaml from 'js-yaml';
 import { saveAs } from 'file-saver';
 

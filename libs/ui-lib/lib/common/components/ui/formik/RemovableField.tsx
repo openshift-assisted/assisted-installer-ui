@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, ButtonVariant, Tooltip, TooltipProps } from '@patternfly/react-core';
-import { MinusCircleIcon } from '@patternfly/react-icons';
+import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
 import './RemovableField.css';
 import classnames from 'classnames';
 

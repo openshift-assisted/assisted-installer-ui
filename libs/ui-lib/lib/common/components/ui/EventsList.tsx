@@ -1,12 +1,10 @@
 import React from 'react';
 import { Button, ButtonVariant, Label } from '@patternfly/react-core';
 import { TableVariant, Table, TableBody, breakWord } from '@patternfly/react-table';
-import {
-  InfoCircleIcon,
-  ExclamationTriangleIcon,
-  ExclamationCircleIcon,
-  SearchIcon,
-} from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Event, EventList } from '@openshift-assisted/types/assisted-installer-service';
 import { EmptyState } from './uiState';

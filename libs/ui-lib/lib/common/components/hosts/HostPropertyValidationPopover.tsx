@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, ButtonVariant, Popover } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon, PendingIcon } from '@patternfly/react-icons';
-import {
-  global_danger_color_100 as dangerColor,
-  global_success_color_100 as successColor,
-} from '@patternfly/react-tokens';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import { global_success_color_100 as successColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { toSentence } from '../ui';
 import { hostValidationFailureHints, hostValidationLabels } from '../../config';
 import { Validation } from '../../types/hosts';

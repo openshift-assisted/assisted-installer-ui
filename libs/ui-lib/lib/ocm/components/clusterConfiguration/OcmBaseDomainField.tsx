@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import { ClusterDetailsValues, HelperText, getFieldId } from '../../../common';
-import { CaretDownIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';

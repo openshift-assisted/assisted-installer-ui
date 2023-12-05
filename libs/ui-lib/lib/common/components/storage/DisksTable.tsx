@@ -21,7 +21,7 @@ import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-se
 import type { WithTestID } from '../../types/index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import FormatDiskCheckbox, {
   DiskFormattingType,

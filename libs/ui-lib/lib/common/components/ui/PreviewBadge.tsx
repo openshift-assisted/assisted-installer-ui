@@ -1,6 +1,6 @@
 import React from 'react';
 import { Label, Popover } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import ExternalLink from './ExternalLink';
 import { WithTestID } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

@@ -14,7 +14,9 @@ import {
   Title,
   TitleSizes,
 } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationTriangleIcon, PencilAltIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-icon';
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 

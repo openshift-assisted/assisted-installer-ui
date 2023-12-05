@@ -3,12 +3,10 @@ import { EventListFetchProps } from '../../types';
 import React from 'react';
 import { EventsModal } from '../ui';
 import { Button, ButtonVariant, Popover, Text, TextContent } from '@patternfly/react-core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  InProgressIcon,
-  PendingIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
+import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import ClusterProgressItem from './ClusterProgressItem';

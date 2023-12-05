@@ -4,7 +4,7 @@ import { Credentials, Cluster } from '@openshift-assisted/types/assisted-install
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ClusterCredentialsProps = {
