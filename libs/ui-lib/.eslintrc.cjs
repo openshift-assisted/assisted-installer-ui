@@ -33,6 +33,16 @@ module.exports = {
                 message:
                   'Please import useTranslation from lib/common/hooks/use-translation-wrapper.ts instead',
               },
+              {
+                name: '@patternfly/react-icons',
+                message:
+                  'Import using full path `@patternfly/react-icons/dist/js/icons/<icon>` instead',
+              },
+              {
+                name: '@patternfly/react-tokens',
+                message:
+                  'Import using full path `@patternfly/react-tokens/dist/js/<token>` instead',
+              },
             ],
             patterns: ['**/ocm/**/', '**/cim/**/'],
           },

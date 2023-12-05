@@ -36,6 +36,16 @@ module.exports = {
                 name: '@openshift-assisted/ui-lib',
                 message: 'Import from `@openshift-assisted/ui-lib/ocm` instead',
               },
+              {
+                name: '@patternfly/react-icons',
+                message:
+                  'Import using full path `@patternfly/react-icons/dist/js/icons/<icon>` instead',
+              },
+              {
+                name: '@patternfly/react-tokens',
+                message:
+                  'Import using full path `@patternfly/react-tokens/dist/js/<token>` instead',
+              },
             ],
           },
         ],
