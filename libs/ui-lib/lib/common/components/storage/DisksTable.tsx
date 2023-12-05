@@ -42,14 +42,14 @@ interface DisksTableProps extends WithTestID {
 }
 
 const diskColumns = (t: TFunction, showFormat: boolean) => [
-  { title: 'Name' },
-  { title: 'Role' },
-  { title: 'Limitations' },
-  showFormat ? { title: 'Format?' } : '',
-  { title: 'Drive type' },
-  { title: 'Size' },
-  { title: 'Serial' },
-  { title: 'Model' },
+  { title: t('ai:Name') },
+  { title: t('ai:Role') },
+  { title: t('ai:Limitations') },
+  showFormat ? { title: t('ai:Format?') } : '',
+  { title: t('ai:Drive type') },
+  { title: t('ai:Size') },
+  { title: t('ai:Serial') },
+  { title: t('ai:Model') },
   {
     title: (
       <>
