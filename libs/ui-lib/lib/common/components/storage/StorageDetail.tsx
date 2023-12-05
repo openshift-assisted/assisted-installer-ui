@@ -6,6 +6,7 @@ import { DiskFormattingType } from '../hosts/FormatDiskCheckbox';
 import { DisksTable } from './DisksTable';
 import SectionTitle from '../ui/SectionTitle';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type StorageDetailProps = {
   host: Host;
@@ -23,12 +24,11 @@ const StorageDetail = ({
   const inventory = getInventory(host);
   const disks = inventory.disks || [];
 
+  const { t } = useTranslation();
+
   return (
     <Grid hasGutter>
-      <SectionTitle
-        testId={'disks-section'}
-        title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`}
-      />
+      <SectionTitle testId={'disks-section'} title={t('ai:Disk', { count: disks.length })} />
       <GridItem>
         <DisksTable
           testId={'disks-table'}
