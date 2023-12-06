@@ -14,15 +14,16 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import * as React from 'react';
-import { HostStatus } from '../../../common/components/hosts/types';
+import { HostStatus, HostStatusDef } from '../../../common/components/hosts/types';
 import { agentStatus } from '../helpers/agentStatus';
 import { TableToolbar } from '../../../common';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { StatusCount } from '../Agent/tableUtils';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { TFunction } from 'i18next';
 
-const getStatusesForFiler = (statuses: HostStatus<string>) => {
+const getStatusesForFilter = (statuses: HostStatus<string>) => {
   const filterStatuses: {
     [category: string]: {
       [label: string]: string[];
@@ -34,25 +35,31 @@ const getStatusesForFiler = (statuses: HostStatus<string>) => {
   );
 
   sortedStatuses.forEach((status) => {
-    const { category, title } = statuses[status];
+    const { category, key } = statuses[status];
     if (filterStatuses[category]) {
-      if (filterStatuses[category][title]) {
-        filterStatuses[category][title].push(status);
+      if (filterStatuses[category][key]) {
+        filterStatuses[category][key].push(status);
       } else {
         filterStatuses[category] = {
           ...filterStatuses[category],
-          [title]: [status],
+          [key]: [status],
         };
       }
     } else {
       filterStatuses[category] = {
-        [title]: [status],
+        [key]: [status],
       };
     }
   });
 
   return filterStatuses;
 };
+
+const getCategoryLabels = (t: TFunction): { [k in HostStatusDef['category']]: string } => ({
+  'Installation related': t('ai:Installation related'),
+  'Discovery related': t('ai:Discovery related'),
+  'Bare Metal Host related': t('ai:Bare Metal Host related'),
+});
 
 type InfraTableToolbarProps = ReturnType<typeof usePagination> & {
   setSelectedHostIDs: (items: string[]) => void;
@@ -78,10 +85,13 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
   selectedHostIDs,
   ...paginationProps
 }) => {
-  const [statusFilterOpen, setStatusFilterOpen] = React.useState(false);
-  const filterStatuses = React.useMemo(() => getStatusesForFiler(agentStatus), []);
   const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
+  const [statusFilterOpen, setStatusFilterOpen] = React.useState(false);
   const itemIDs = React.useMemo(() => hosts.map((h) => h.id), [hosts]);
+  const filterStatuses = React.useMemo(() => getStatusesForFilter(agentStatuses), [agentStatuses]);
+  const categoryLabels = getCategoryLabels(t);
+
   return (
     <TableToolbar
       selectedIDs={selectedHostIDs || []}
@@ -104,7 +114,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
       <ToolbarItem>
         <ToolbarFilter
           chips={statusFilter}
-          deleteChip={(category, chip) => setStatusFilter(statusFilter?.filter((f) => f !== chip))}
+          deleteChip={(_, chip) => setStatusFilter(statusFilter?.filter((f) => f !== chip))}
           deleteChipGroup={() => setStatusFilter([])}
           categoryName="Status"
         >
@@ -130,7 +140,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
               <Grid key="statuses" hasGutter className="table-toolbar__dropdown">
                 {Object.keys(filterStatuses).map((category) => (
                   <GridItem key={category} span={4}>
-                    <SelectGroup label={category}>
+                    <SelectGroup label={categoryLabels[category as HostStatusDef['category']]}>
                       {Object.keys(filterStatuses[category]).map((label) => (
                         <SelectOption
                           key={label}

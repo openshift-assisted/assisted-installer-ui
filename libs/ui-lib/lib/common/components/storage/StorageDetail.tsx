@@ -28,7 +28,10 @@ const StorageDetail = ({
 
   return (
     <Grid hasGutter>
-      <SectionTitle testId={'disks-section'} title={t('ai:Disk', { count: disks.length })} />
+      <SectionTitle
+        testId={'disks-section'}
+        title={t('ai:{{count}} Disk', { count: disks.length })}
+      />
       <GridItem>
         <DisksTable
           testId={'disks-table'}

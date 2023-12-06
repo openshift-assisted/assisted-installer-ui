@@ -20,6 +20,7 @@ import {
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { agentStatus } from '../helpers/agentStatus';
 
 type ExpandComponentContextType = {
   onSetInstallationDiskId?: ClusterDeploymentHostsNetworkTableProps['onSetInstallationDiskId'];
@@ -79,6 +80,7 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       onSetInstallationDiskId,
     }) => {
       const { t } = useTranslation();
+      const agentStatuses = agentStatus(t);
       const cluster = React.useMemo(
         () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
         [clusterDeployment, agentClusterInstall, agents],
@@ -100,24 +102,37 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
                 hostnameColumn(t, hostActions.onEditHost, hosts),
                 agentStatusColumn({
                   agents,
+                  agentStatuses,
                   onEditHostname: onEditHost,
                   wizardStepId: 'networking',
                   t,
                 }),
-                activeNICColumn(cluster),
+                activeNICColumn(cluster, t),
               ]
             : [
                 hostnameColumn(t, hostActions.onEditHost, hosts),
                 roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
                 agentStatusColumn({
                   agents,
+                  agentStatuses,
                   onEditHostname: onEditHost,
                   wizardStepId: 'networking',
                   t,
                 }),
-                activeNICColumn(cluster),
+                activeNICColumn(cluster, t),
               ],
-        [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster, t],
+        [
+          isSNOCluster,
+          t,
+          hostActions.onEditHost,
+          hostActions.canEditRole,
+          hostActions.onEditRole,
+          hosts,
+          agents,
+          agentStatuses,
+          onEditHost,
+          cluster,
+        ],
       );
 
       const paginationProps = usePagination(hosts.length);

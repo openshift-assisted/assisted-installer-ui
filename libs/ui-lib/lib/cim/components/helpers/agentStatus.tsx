@@ -3,60 +3,61 @@ import { ConnectedIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 import { hostStatus } from '../../../common';
 import { HostStatus } from '../../../common/components/hosts/types';
+import { TFunction } from 'i18next';
 
-export const bmhStatus: HostStatus<string> = {
+export const bmhStatus = (t: TFunction): HostStatus<string> => ({
   'bmh-error': {
     key: 'bmh-error',
-    title: 'Error',
+    title: t('ai:Error'),
     category: 'Bare Metal Host related',
   },
   registering: {
     key: 'registering',
-    title: 'Registering',
+    title: t('ai:Registering'),
     category: 'Bare Metal Host related',
   },
   provisioning: {
     key: 'provisioning',
-    title: 'Provisioning',
+    title: t('ai:Provisioning'),
     category: 'Bare Metal Host related',
   },
   provisioned: {
     key: 'provisioned',
-    title: 'Provisioned',
+    title: t('ai:Provisioned'),
     category: 'Bare Metal Host related',
   },
   deprovisioning: {
     key: 'deprovisioning',
-    title: 'Deprovisioning',
+    title: t('ai:Deprovisioning'),
     category: 'Bare Metal Host related',
   },
   inspecting: {
     key: 'inspecting',
-    title: 'Inspecting',
+    title: t('ai:Inspecting'),
     category: 'Bare Metal Host related',
   },
   pending: {
     key: 'pending',
-    title: 'Pending',
+    title: t('ai:Pending'),
     category: 'Bare Metal Host related',
   },
-};
+});
 
-export const agentStatus: HostStatus<string> = {
-  ...hostStatus,
+export const agentStatus = (t: TFunction): HostStatus<string> => ({
+  ...hostStatus(t),
   discovered: {
     key: 'discovered',
-    title: 'Discovered',
+    title: t('ai:Discovered'),
     icon: <ConnectedIcon />,
     noPopover: true,
     category: 'Discovery related',
-    details: 'The host has been discovered and needs to be approved to before further use.',
+    details: t('ai:The host has been discovered and needs to be approved to before further use.'),
   },
-  ...bmhStatus,
+  ...bmhStatus(t),
   specSyncErr: {
     key: 'spec-sync-err',
-    title: 'Sync error',
+    title: t('ai:Sync error'),
     icon: <ExclamationCircleIcon color={dangerColor.value} />,
     category: 'Discovery related',
   },
-};
+});

@@ -26,6 +26,7 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
@@ -56,65 +57,71 @@ const statusColumn = (
   agents: AgentK8sResource[],
   bmhs: BareMetalHostK8sResource[],
   t: TFunction,
-): TableRow<Host> => ({
-  header: {
-    title: t('ai:Status'),
-    props: {
-      id: 'col-header-status',
+): TableRow<Host> => {
+  const agentStatuses = agentStatus(t);
+  const bmhStatuses = bmhStatus(t);
+  return {
+    header: {
+      title: t('ai:Status'),
+      props: {
+        id: 'col-header-status',
+      },
+      transforms: [sortable],
     },
-    transforms: [sortable],
-  },
-  cell: (host) => {
-    const agent = agents.find((a) => a.metadata?.uid === host.id);
-    const clusterName = agent?.spec.clusterDeploymentName?.name;
-    const bmh = bmhs?.find((b) => b.metadata?.uid === host.id);
+    cell: (host) => {
+      const agent = agents.find((a) => a.metadata?.uid === host.id);
+      const clusterName = agent?.spec.clusterDeploymentName?.name;
+      const bmh = bmhs?.find((b) => b.metadata?.uid === host.id);
 
-    let bmhStatus;
-    let title: React.ReactNode = '--';
-    if (agent) {
-      title = clusterName ? (
-        <Flex>
-          <FlexItem>
-            <AgentStatus agent={agent} zIndex={7000} />
-          </FlexItem>
-          <FlexItem align={{ default: 'alignRight' }}>
-            <Popover
-              aria-label={t('ai:Cluster popover')}
-              headerContent={<div>{t('ai:Cannot be deleted')}</div>}
-              bodyContent={
-                <div>
-                  {t(
-                    'ai:Hosts that are bound to a cluster cannot be deleted. Remove the host from the cluster and try again.',
-                  )}
-                </div>
-              }
-              footerContent={
-                <Link to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}>
-                  {t('ai:Go to cluster {{clusterName}}', { clusterName })}
-                </Link>
-              }
-            >
-              <Button variant="link" icon={<InfoCircleIcon color={blueInfoColor.value} />}>
-                {t('ai:Cannot be deleted')}
-              </Button>
-            </Popover>
-          </FlexItem>
-        </Flex>
-      ) : (
-        <AgentStatus agent={agent} />
-      );
-    } else if (bmh) {
-      bmhStatus = getBMHStatus(bmh);
-      title = <BMHStatus bmhStatus={bmhStatus} />;
-    }
+      let bmhStatus;
+      let title: React.ReactNode = '--';
+      if (agent) {
+        title = clusterName ? (
+          <Flex>
+            <FlexItem>
+              <AgentStatus agent={agent} zIndex={7000} />
+            </FlexItem>
+            <FlexItem align={{ default: 'alignRight' }}>
+              <Popover
+                aria-label={t('ai:Cluster popover')}
+                headerContent={<div>{t('ai:Cannot be deleted')}</div>}
+                bodyContent={
+                  <div>
+                    {t(
+                      'ai:Hosts that are bound to a cluster cannot be deleted. Remove the host from the cluster and try again.',
+                    )}
+                  </div>
+                }
+                footerContent={
+                  <Link to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}>
+                    {t('ai:Go to cluster {{clusterName}}', { clusterName })}
+                  </Link>
+                }
+              >
+                <Button variant="link" icon={<InfoCircleIcon color={blueInfoColor.value} />}>
+                  {t('ai:Cannot be deleted')}
+                </Button>
+              </Popover>
+            </FlexItem>
+          </Flex>
+        ) : (
+          <AgentStatus agent={agent} />
+        );
+      } else if (bmh) {
+        bmhStatus = getBMHStatus(bmh, bmhStatuses);
+        title = <BMHStatus bmhStatus={bmhStatus} />;
+      }
 
-    return {
-      title,
-      props: { 'data-testid': 'host-status' },
-      sortableValue: agent ? getAgentStatus(agent).status.title : bmhStatus?.state.title || '',
-    };
-  },
-});
+      return {
+        title,
+        props: { 'data-testid': 'host-status' },
+        sortableValue: agent
+          ? getAgentStatus(agent, agentStatuses).status.title
+          : bmhStatus?.state.title || '',
+      };
+    },
+  };
+};
 
 const tableContent = (
   agents: AgentK8sResource[],

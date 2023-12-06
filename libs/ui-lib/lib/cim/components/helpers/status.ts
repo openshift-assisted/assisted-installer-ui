@@ -22,8 +22,9 @@ import {
   wizardStepsValidationsMap,
 } from '../ClusterDeployment/wizardTransition';
 import { HostStatusDef } from '../../../common';
-import { agentStatus, bmhStatus } from './agentStatus';
+import { agentStatus } from './agentStatus';
 import { TFunction } from 'i18next';
+import { HostStatus } from '../../../common/components/hosts/types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const conditionsByTypeReducer = <K>(
@@ -125,29 +126,40 @@ export type AgentStatus = Host['status'] | 'discovered';
 const getInsufficientState = (agent: AgentK8sResource) =>
   agent?.spec?.clusterDeploymentName?.name ? 'insufficient' : 'insufficient-unbound';
 
-export const getAgentStatus = (
-  agent: AgentK8sResource,
-  excludeDiscovered = false,
-): { status: HostStatusDef; validationsInfo: ValidationsInfo; autoCSR?: boolean } => {
+export const getAgentStatusKey = (agent: AgentK8sResource, excludeDiscovered = false) => {
   const specSyncErr = agent.status?.conditions?.find(
     (c) => c.type === 'SpecSynced' && c.status === 'False',
   );
-
-  let status: HostStatusDef;
-  let validationsInfo: ValidationsInfo = {};
   if (specSyncErr) {
-    status = agentStatus['specSyncErr'];
+    return 'specSyncError';
   } else {
-    status = agentStatus[agent.status?.debugInfo?.state || getInsufficientState(agent)];
-    validationsInfo = agent.status?.validationsInfo || {};
     if (!excludeDiscovered && !agent.spec.approved) {
-      status = agentStatus.discovered;
+      return 'discovered';
+    } else {
+      return agent.status?.debugInfo?.state || getInsufficientState(agent);
     }
-    // TODO(jtomasek): Implement this
-    // const sublabel = areOnlyClusterSoftValidationsFailing(agentStatus.validationsInfo)
-    //   ? 'Some validations failed'
-    //   : undefined;
   }
+};
+
+export const getAgentStatus = (
+  agent: AgentK8sResource,
+  agentStatuses: HostStatus<string>,
+  excludeDiscovered = false,
+): { status: HostStatusDef; validationsInfo: ValidationsInfo; autoCSR?: boolean } => {
+  const key = getAgentStatusKey(agent, excludeDiscovered);
+
+  let validationsInfo: ValidationsInfo = {};
+
+  const status = agentStatuses[key];
+  if (key !== 'specSyncError') {
+    validationsInfo = agent.status?.validationsInfo || {};
+  }
+
+  // TODO(jtomasek): Implement this
+  // const sublabel = areOnlyClusterSoftValidationsFailing(agentStatus.validationsInfo)
+  //   ? 'Some validations failed'
+  //   : undefined;
+
   return { status, validationsInfo };
 };
 
@@ -157,13 +169,15 @@ export const getWizardStepAgentStatus = (
   t: TFunction,
   excludeDiscovered = false,
 ): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
-  const aStatus = getAgentStatus(agent, excludeDiscovered);
-  if ([agentStatus.discovered, agentStatus.specSyncErr].includes(aStatus.status)) {
+  const agentStatuses = agentStatus(t);
+  const aStatus = getAgentStatus(agent, agentStatuses, excludeDiscovered);
+
+  if ([agentStatuses.discovered, agentStatuses.specSyncErr].includes(aStatus.status)) {
     return aStatus;
   }
 
   const status =
-    agentStatus[
+    agentStatuses[
       getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, {
         status: aStatus.status.key as Host['status'],
         validationsInfo: aStatus.validationsInfo,
@@ -188,13 +202,19 @@ export const getWizardStepAgentStatus = (
   };
 };
 
-export const getBMHStatus = (bmh: BareMetalHostK8sResource) => {
-  let bmhState = bmhStatus.pending;
-
+export const getBMHStatusKey = (bmh: BareMetalHostK8sResource) => {
   if (bmh.status?.errorType) {
-    bmhState = bmhStatus['bmh-error'];
+    return 'bmh-error';
   } else if (bmh.status?.provisioning?.state) {
-    bmhState = bmhStatus[bmh.status?.provisioning?.state] || bmhStatus.pending;
+    return bmh.status?.provisioning?.state;
+  }
+};
+
+export const getBMHStatus = (bmh: BareMetalHostK8sResource, bmhStatuses: HostStatus<string>) => {
+  let bmhState = bmhStatuses.pending;
+  const statusKey = getBMHStatusKey(bmh);
+  if (statusKey) {
+    bmhState = bmhStatuses[statusKey] || bmhState;
   }
 
   return {

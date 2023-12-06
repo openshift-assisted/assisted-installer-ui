@@ -96,19 +96,19 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
     }));
 
   return (
-      <Table
-        data-testid={testId}
-        rows={rows}
-        cells={nicsColumns(t)}
-        variant={TableVariant.compact}
-        aria-label={t("ai:Host's network interfaces table")}
-        borders={false}
-        rowWrapper={NICsTableRowWrapper}
-      >
-        <TableHeader />
-        <TableBody rowKey={nicsRowKey} />
-      </Table>
-    );
+    <Table
+      data-testid={testId}
+      rows={rows}
+      cells={nicsColumns(t)}
+      variant={TableVariant.compact}
+      aria-label={t("ai:Host's network interfaces table")}
+      borders={false}
+      rowWrapper={NICsTableRowWrapper}
+    >
+      <TableHeader />
+      <TableBody rowKey={nicsRowKey} />
+    </Table>
+  );
 };
 
 export const HostDetail = ({
