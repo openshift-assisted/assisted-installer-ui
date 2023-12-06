@@ -3,7 +3,7 @@ import { AgentK8sResource } from '../../types/k8s/agent';
 import { Cluster, Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
-import { getAgentStatus, getClusterStatus } from './status';
+import { getAgentStatusKey, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import {
@@ -21,7 +21,7 @@ export const getAIHosts = (
 ) => {
   const bmhAgents: string[] = [];
   const hosts = agents.map((agent): Host => {
-    const { status } = getAgentStatus(agent, true);
+    const statusKey = getAgentStatusKey(agent, true);
     const statusInfo = agent.status?.debugInfo?.stateInfo || '';
     // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
     const inventory: Inventory = cloneDeep(agent.status?.inventory || {});
@@ -50,7 +50,7 @@ export const getAIHosts = (
       kind: 'Host',
       id: agent.metadata?.uid || '',
       href: '',
-      status: status.key as Host['status'],
+      status: statusKey as Host['status'],
       statusInfo,
       role: getAgentRole(agent),
       requestedHostname: agent.spec.hostname || inventory.hostname,

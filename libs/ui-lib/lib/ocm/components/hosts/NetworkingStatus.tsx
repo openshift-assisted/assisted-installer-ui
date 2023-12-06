@@ -9,14 +9,16 @@ import {
 } from '../../../common';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => {
+  const { t } = useTranslation();
   const networkingStatus = getWizardStepHostStatus(
     'networking',
     wizardStepsValidationsMap,
     props.host,
   );
-  const status = hostStatus[networkingStatus];
+  const status = hostStatus(t)[networkingStatus];
   const validationsInfo = getWizardStepHostValidationsInfo(
     props.validationsInfo,
     'networking',
