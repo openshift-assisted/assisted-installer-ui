@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import {
   Flex,
   FlexItem,

@@ -13,7 +13,7 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import { TrashIcon } from '@patternfly/react-icons';
+import { TrashIcon } from '@patternfly/react-icons/dist/js/icons/trash-icon';
 import isMatch from 'lodash-es/isMatch.js';
 import { PencilEditField } from '../../../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../../../types';

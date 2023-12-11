@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
-import { CaretDownIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import {
   Disk,
   DiskRole as DiskRoleValue,

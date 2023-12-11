@@ -9,7 +9,8 @@ import {
   Checkbox,
   TextInput,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { HelpIcon } from '@patternfly/react-icons/dist/js/icons/help-icon';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { CimConfigurationFormProps } from './types';

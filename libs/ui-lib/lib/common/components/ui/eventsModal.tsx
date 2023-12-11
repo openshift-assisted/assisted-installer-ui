@@ -8,8 +8,8 @@ import {
   Spinner,
   Title,
 } from '@patternfly/react-core';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps, EventsEntityKind } from '../../types';

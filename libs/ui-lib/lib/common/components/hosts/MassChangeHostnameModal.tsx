@@ -18,7 +18,7 @@ import {
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TFunction } from 'i18next';
 
 import {

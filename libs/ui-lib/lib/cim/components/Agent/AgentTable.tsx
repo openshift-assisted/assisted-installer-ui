@@ -2,7 +2,7 @@ import * as React from 'react';
 import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
 import { AgentTableActions } from '../ClusterDeployment/types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
-import { ConnectedIcon } from '@patternfly/react-icons';
+import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
 import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
 import {
   cpuArchitectureColumn,

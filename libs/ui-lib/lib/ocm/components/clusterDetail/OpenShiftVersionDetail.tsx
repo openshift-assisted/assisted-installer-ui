@@ -1,7 +1,7 @@
 import React from 'react';
 import { getOpenshiftVersionText } from '../../../common';
 import { useOpenshiftVersions } from '../../hooks';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';

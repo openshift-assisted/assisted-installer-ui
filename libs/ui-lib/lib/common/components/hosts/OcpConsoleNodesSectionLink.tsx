@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { AddHostsContext } from '../AddHosts/AddHostsContext';
 import { getOcpConsoleNodesPage } from '../../config';

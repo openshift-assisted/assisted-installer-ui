@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK, ODF_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';

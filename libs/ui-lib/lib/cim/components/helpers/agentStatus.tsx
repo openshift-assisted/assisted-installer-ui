@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { ConnectedIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
+import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { hostStatus } from '../../../common';
 import { HostStatus } from '../../../common/components/hosts/types';
 
