@@ -1,15 +1,11 @@
 import { Flex, FlexItem } from '@patternfly/react-core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  InProgressIcon,
-  UnknownIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
+import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import {
-  global_palette_green_500 as okColor,
-  global_danger_color_100 as dangerColor,
-} from '@patternfly/react-tokens';
+import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import * as React from 'react';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 

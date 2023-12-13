@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Button } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { Constants } from '@openshift-assisted/ui-lib/ocm';
 
 export const FeedbackButton: React.FC = () => (

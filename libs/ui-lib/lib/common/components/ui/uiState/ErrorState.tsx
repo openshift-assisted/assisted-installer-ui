@@ -11,8 +11,8 @@ import {
   EmptyStateSecondaryActions,
   EmptyStateIconProps,
 } from '@patternfly/react-core';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens/dist/js/global_danger_color_200';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 type ErrorStateProps = {

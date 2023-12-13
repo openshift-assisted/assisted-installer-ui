@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextVariants, TextContent, Text, FormGroup, Grid } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { Language } from '@patternfly/react-code-editor';
 import { useField } from 'formik';
 import { getFieldId, NMSTATE_EXAMPLES_LINK, PopoverIcon } from '../../../../../../common';

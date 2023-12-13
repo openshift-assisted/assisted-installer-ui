@@ -28,7 +28,7 @@ import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
-import { UnknownIcon } from '@patternfly/react-icons';
+import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { APPROVE_NODES_IN_CL_LINK } from '../../config';
 import { hostStatus } from './status';

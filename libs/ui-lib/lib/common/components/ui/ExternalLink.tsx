@@ -1,6 +1,6 @@
 import React, { ReactNode, MouseEvent } from 'react';
 import { Text } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 interface ExternalLinkProps {
   href?: string;

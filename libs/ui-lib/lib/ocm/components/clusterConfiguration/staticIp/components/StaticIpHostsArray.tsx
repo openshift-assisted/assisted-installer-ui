@@ -11,7 +11,7 @@ import {
   FlexItem,
   Grid,
 } from '@patternfly/react-core';
-import { MinusCircleIcon } from '@patternfly/react-icons';
+import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
 import { FieldArray, FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import { getFormikArrayItemFieldName, LoadingState } from '../../../../../common';

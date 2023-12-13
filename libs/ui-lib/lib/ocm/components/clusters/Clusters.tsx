@@ -8,7 +8,7 @@ import {
   Text,
   PageSection,
 } from '@patternfly/react-core';
-import { AddCircleOIcon } from '@patternfly/react-icons';
+import { AddCircleOIcon } from '@patternfly/react-icons/dist/js/icons/add-circle-o-icon';
 import {
   ResourceUIState,
   Alerts,

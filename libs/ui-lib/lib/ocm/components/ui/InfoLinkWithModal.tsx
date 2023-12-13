@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalProps } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 
 export interface InfoLinkWithModalProps {

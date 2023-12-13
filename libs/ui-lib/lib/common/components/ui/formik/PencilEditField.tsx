@@ -1,6 +1,6 @@
 import { useField } from 'formik';
 import * as React from 'react';
-import { PencilAltIcon } from '@patternfly/react-icons';
+import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-icon';
 import InputField from './InputField';
 import { Split, SplitItem } from '@patternfly/react-core';
 

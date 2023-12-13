@@ -1,6 +1,7 @@
-import { CheckCircleIcon, InfoCircleIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import React from 'react';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens';
+import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { Text, TextList, TextListItem, TextContent } from '@patternfly/react-core';
 import {
   FeatureId,

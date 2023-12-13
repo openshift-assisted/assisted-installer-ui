@@ -7,7 +7,7 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Trans } from 'react-i18next';
 import { PrismCode } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

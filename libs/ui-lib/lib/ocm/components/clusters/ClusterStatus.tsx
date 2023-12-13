@@ -1,17 +1,13 @@
 import React from 'react';
-import {
-  global_danger_color_100 as dangerColor,
-  global_success_color_100 as okColor,
-  global_warning_color_100 as warningColor,
-} from '@patternfly/react-tokens';
-import {
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  FileAltIcon,
-  CheckCircleIcon,
-  InProgressIcon,
-  BanIcon,
-} from '@patternfly/react-icons';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { FileAltIcon } from '@patternfly/react-icons/dist/js/icons/file-alt-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
+import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
 import { clusterStatusLabels, WithTestID } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';

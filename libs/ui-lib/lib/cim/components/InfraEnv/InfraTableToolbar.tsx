@@ -12,7 +12,7 @@ import {
   ToolbarFilter,
   ToolbarItem,
 } from '@patternfly/react-core';
-import { FilterIcon } from '@patternfly/react-icons';
+import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import * as React from 'react';
 import { HostStatus } from '../../../common/components/hosts/types';
 import { agentStatus } from '../helpers/agentStatus';
