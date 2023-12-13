@@ -8,7 +8,7 @@ import {
   EmptyStateSecondaryActions,
   EmptyStateIconProps,
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 
 type Props = {
   title?: string;

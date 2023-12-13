@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { CLUSTER_MANAGER_SITE_LINK, PULL_SECRET_INFO_LINK } from '../../../config';
 import PopoverIcon from '../PopoverIcon';
 import TextAreaField from './TextAreaField';

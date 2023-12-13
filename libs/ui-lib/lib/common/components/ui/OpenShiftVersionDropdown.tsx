@@ -7,7 +7,7 @@ import {
   FormGroup,
   DropdownSeparator,
 } from '@patternfly/react-core';
-import { CaretDownIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 
 import { OpenshiftVersionOptionType } from '../../types';
 import { TFunction } from 'i18next';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Button, ButtonVariant, Divider, Flex, FlexItem } from '@patternfly/react-core';
-import { PlusCircleIcon } from '@patternfly/react-icons';
+import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import { FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import { LoadingState, useAlerts } from '../../../../../common';

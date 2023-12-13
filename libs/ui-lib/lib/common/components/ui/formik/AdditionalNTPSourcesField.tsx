@@ -20,7 +20,7 @@ const AdditionalNTPSourcesField: React.FC<AdditionalNTPSourcesFieldProps> = ({
 }) => {
   const [field, , { setValue, setTouched }] = useField<string>(name);
   const formatAdditionalNtpSources = () => {
-    if (field.value) {
+    if (field.value && field.value !== '') {
       setValue(trimCommaSeparatedList(field.value));
       setTouched(true);
     }

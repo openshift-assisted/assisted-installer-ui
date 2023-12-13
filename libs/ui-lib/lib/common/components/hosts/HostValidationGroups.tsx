@@ -1,10 +1,10 @@
 import React, { Fragment, ReactElement } from 'react';
 import { Alert, AlertGroup, AlertVariant, Level, LevelItem } from '@patternfly/react-core';
-import {
-  global_warning_color_100 as warningColor,
-  global_success_color_100 as okColor,
-} from '@patternfly/react-tokens';
-import { PendingIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 import { Host, HostValidationId } from '@openshift-assisted/types/assisted-installer-service';
 import { Validation, ValidationsInfo } from '../../types/hosts';

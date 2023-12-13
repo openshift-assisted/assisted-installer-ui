@@ -40,7 +40,8 @@ import {
   bmcAddressValidationSchema,
 } from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
-import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
+import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import {
   InfraEnvK8sResource,
   SecretK8sResource,

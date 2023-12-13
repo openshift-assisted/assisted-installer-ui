@@ -19,7 +19,8 @@ import {
   Badge,
   TextInputTypes,
 } from '@patternfly/react-core';
-import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
+import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import type { ClusterEventsFiltersType } from '../../types';
 import type {
   Cluster,

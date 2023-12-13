@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConnectedIcon } from '@patternfly/react-icons';
+import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
 import EmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import HostsDiscoveryTroubleshootingInfoLinkWithModal from './HostsDiscoveryTroubleshootingInfoLinkWithModal';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core';
-import { CaretDownIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import { getFieldId, HostSubnet, NO_SUBNET_SET } from '../../../../common';
 

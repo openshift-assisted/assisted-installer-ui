@@ -830,6 +830,7 @@ __metadata:
   dependencies:
     "@openshift-assisted/locales": "workspace:*"
     "@openshift-assisted/types": "workspace:*"
+    "@openshift-console/dynamic-plugin-sdk": 0.0.3
     "@patternfly/patternfly": ^4.222.4
     "@patternfly/react-code-editor": ^4.82.113
     "@patternfly/react-core": ^4.168.8
@@ -876,14 +877,13 @@ __metadata:
     tslib: ^2.6.1
     unique-names-generator: ^4.2.0
   peerDependencies:
-    "@openshift-console/dynamic-plugin-sdk": 0.0.3
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
     axios: ">=0.22.0 <1.0.0"
     i18next: ^20.4 || ^21
     monaco-editor: ^0.34.1
-    react: ^17
-    react-dom: ^17
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
     react-i18next: ">11.7.3"
     react-monaco-editor: ^0.51.0
     react-redux: ^8.0.5

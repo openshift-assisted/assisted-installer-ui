@@ -12,13 +12,11 @@ import {
   InputGroup,
   Button,
 } from '@patternfly/react-core';
-import {
-  CheckCircleIcon,
-  CheckIcon,
-  ExclamationCircleIcon,
-  InfoCircleIcon,
-  TimesIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
+import { TimesIcon } from '@patternfly/react-icons/dist/js/icons/times-icon';
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';

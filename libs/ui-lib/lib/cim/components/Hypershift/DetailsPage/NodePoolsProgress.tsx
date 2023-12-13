@@ -7,8 +7,8 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens';
-import { CheckCircleIcon } from '@patternfly/react-icons';
+import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 import { AgentK8sResource, ConfigMapK8sResource } from '../../../types';

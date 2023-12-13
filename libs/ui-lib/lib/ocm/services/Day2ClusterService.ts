@@ -1,6 +1,12 @@
 import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
-import { CpuArchitecture, SupportedCpuArchitecture } from '../../common';
+import {
+  CpuArchitecture,
+  NonPlatformIntegrations,
+  SupportedCpuArchitecture,
+  SupportedPlatformIntegrations,
+  SupportedPlatformType,
+} from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
 import {
@@ -35,7 +41,13 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
 };
 
 export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
-  const platformType = cloudProviderId === 'external' ? 'oci' : cloudProviderId;
+  let platformType = cloudProviderId === 'external' ? 'oci' : cloudProviderId;
+  if (
+    !SupportedPlatformIntegrations.includes(platformType as SupportedPlatformType) &&
+    !NonPlatformIntegrations.includes(platformType as SupportedPlatformType)
+  ) {
+    platformType = 'baremetal';
+  }
   const platform: Platform = {
     type: (platformType as PlatformType) || 'baremetal',
   };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, Flex, FlexItem, Popover } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Link } from 'react-router-dom';
 import { sortable } from '@patternfly/react-table';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';

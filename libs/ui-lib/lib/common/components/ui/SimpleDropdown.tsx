@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownItem, DropdownToggle, Dropdown, DropdownProps } from '@patternfly/react-core';
-import { CaretDownIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { HostRole } from '../../../common/types/hosts';
 import './SimpleDropdown.css';
 

@@ -1,16 +1,12 @@
 import React from 'react';
 import lodashValues from 'lodash-es/values.js';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-} from '@patternfly/react-icons';
-import {
-  global_success_color_100 as okColor,
-  global_danger_color_100 as dangerColor,
-  global_warning_color_100 as warningColor,
-} from '@patternfly/react-tokens';
+import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import {
   ValidationsInfo as ClusterValidationsInfo,
   Validation as ClusterValidation,
