@@ -608,7 +608,7 @@ export const ntpSourceValidationSchema = Yup.string()
     'ntp-source-validation',
     'Provide a comma separated list of valid DNS names or IP addresses.',
     (value: string) => {
-      if (!value) {
+      if (!value || value === '') {
         return true;
       }
       return trimCommaSeparatedList(value)
@@ -620,6 +620,9 @@ export const ntpSourceValidationSchema = Yup.string()
     'ntp-source-validation-unique',
     'DNS names and IP addresses must be unique.',
     (value: string) => {
+      if (!value || value === '') {
+        return true;
+      }
       const arr = trimCommaSeparatedList(value).split(',');
       return arr.length === new Set(arr).size;
     },
