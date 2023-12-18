@@ -87,3 +87,21 @@ export const stringToJSON = <T>(jsonString: string | undefined): T | undefined =
 
   return jsObject;
 };
+
+export const downloadFile = (fileUrl?: string, dataBlob?: Blob, fileName?: string) => {
+  const link = document.createElement('a');
+  if (fileUrl && fileUrl !== '') {
+    link.setAttribute('href', fileUrl);
+  }
+  if (dataBlob) {
+    const file = new Blob([dataBlob], { type: 'text' });
+    link.setAttribute('href', URL.createObjectURL(file));
+  }
+  if (fileName) {
+    link.setAttribute('download', fileName);
+  }
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};

@@ -1,5 +1,4 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
@@ -10,6 +9,7 @@ import ClustersAPI from '../../api/assisted-service/ClustersAPI';
 import { AxiosHeaderValue, AxiosHeaders, AxiosResponseHeaders } from 'axios';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { downloadFile } from '../../utils';
 
 type KubeconfigDownloadProps = {
   className?: string;
@@ -56,12 +56,12 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
             clusterId,
             fileName: 'kubeconfig',
           });
-          saveAs(data.url);
+          downloadFile(data.url);
         } else {
           const response = await ClustersAPI.downloadClusterCredentials(clusterId, 'kubeconfig');
           const fileName = getKubeconfigFileName(response.headers);
 
-          saveAs(response.data, fileName);
+          downloadFile('', response.data, fileName);
         }
       } catch (e) {
         handleApiError(e, (e) => {
