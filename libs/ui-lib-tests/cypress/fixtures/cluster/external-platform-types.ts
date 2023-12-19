@@ -9,7 +9,7 @@ export const externalPlatformTypes = {
     href: 'https://access.redhat.com/solutions/6983944',
     tooltip: '',
   },
-  oci: {
+  external: {
     label: 'Oracle Cloud Infrastructure (Requires a custom manifest)',
     href: '',
     tooltip:

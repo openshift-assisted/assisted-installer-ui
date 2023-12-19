@@ -92,7 +92,7 @@ export const OcmClusterDetailsFormFields = ({
 
   const handleExternalPartnerIntegrationsChange = React.useCallback(
     (selectedPlatform: PlatformType) => {
-      const isOracleSelected = selectedPlatform === 'oci';
+      const isOracleSelected = selectedPlatform === 'external';
       if (isOracleSelected) {
         setFieldValue('addCustomManifest', isOracleSelected, false);
         clusterWizardContext.setCustomManifestsStep(isOracleSelected);
@@ -178,14 +178,14 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
 
-      <CustomManifestCheckbox clusterId={clusterId || ''} isDisabled={platform === 'oci'} />
+      <CustomManifestCheckbox clusterId={clusterId || ''} isDisabled={platform === 'external'} />
 
       {
         // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
         !isSingleClusterFeatureEnabled && (
           <HostsNetworkConfigurationControlGroup
             clusterExists={clusterExists}
-            isDisabled={platform === 'oci'}
+            isDisabled={platform === 'external'}
           />
         )
       }

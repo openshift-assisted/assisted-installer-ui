@@ -242,7 +242,10 @@ const Day2ClusterDetails = () => {
                 )}
                 <GridItem>
                   <Day2HostStaticIpConfigurations
-                    isDisabled={day2Cluster.platform?.type === 'oci'}
+                    isDisabled={
+                      day2Cluster.platform?.type === 'external' &&
+                      day2Cluster.platform?.external?.platformName === 'oci'
+                    }
                   />
                 </GridItem>
               </Grid>

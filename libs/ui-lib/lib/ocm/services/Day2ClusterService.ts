@@ -41,7 +41,7 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
 };
 
 export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
-  let platformType = cloudProviderId === 'external' ? 'oci' : cloudProviderId;
+  let platformType = cloudProviderId === 'external' ? 'external' : cloudProviderId;
   if (
     !SupportedPlatformIntegrations.includes(platformType as SupportedPlatformType) &&
     !NonPlatformIntegrations.includes(platformType as SupportedPlatformType)
@@ -51,6 +51,12 @@ export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
   const platform: Platform = {
     type: (platformType as PlatformType) || 'baremetal',
   };
+  if (platformType === 'external') {
+    platform.external = {
+      platformName: 'oci',
+      cloudControllerManager: 'External',
+    };
+  }
   return platform;
 };
 

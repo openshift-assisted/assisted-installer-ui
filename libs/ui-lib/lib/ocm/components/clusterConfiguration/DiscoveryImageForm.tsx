@@ -114,7 +114,9 @@ const DiscoveryImageForm = ({
           ? mapClusterCpuArchToInfraEnvCpuArch(infraEnv.cpuArchitecture)
           : mapClusterCpuArchToInfraEnvCpuArch(cpuArchitecture)
       }
-      isOracleCloudInfrastructure={cluster.platform?.type === 'oci'}
+      isOracleCloudInfrastructure={
+        cluster.platform?.type === 'external' && cluster.platform?.external?.platformName === 'oci'
+      }
     />
   );
 };

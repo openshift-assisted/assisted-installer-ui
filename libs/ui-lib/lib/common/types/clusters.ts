@@ -65,9 +65,13 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   useMultiClusterEngine: boolean;
 };
 
-export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'oci'>;
+export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;
 
-export const SupportedPlatformIntegrations: SupportedPlatformType[] = ['vsphere', 'nutanix', 'oci'];
+export const SupportedPlatformIntegrations: SupportedPlatformType[] = [
+  'vsphere',
+  'nutanix',
+  'external',
+];
 export const NonPlatformIntegrations: PlatformType[] = ['baremetal', 'none'];
 
 export type DiscoveryImageType = ImageType | 'discovery-image-ipxe';

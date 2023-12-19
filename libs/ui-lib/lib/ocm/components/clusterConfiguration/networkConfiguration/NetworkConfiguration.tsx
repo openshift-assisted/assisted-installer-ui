@@ -227,12 +227,12 @@ const NetworkConfiguration = ({
     () =>
       getManagedNetworkingState(
         isDualStack,
-        cluster.platform?.type === 'oci',
+        cluster.platform?.type === 'external' && cluster.platform.external?.platformName === 'oci',
         featureSupportLevelContext,
         cluster.platform?.type,
         featureSupportLevelData,
       ),
-    [isDualStack, cluster.platform?.type, featureSupportLevelContext, featureSupportLevelData],
+    [isDualStack, cluster.platform, featureSupportLevelContext, featureSupportLevelData],
   );
 
   return (
