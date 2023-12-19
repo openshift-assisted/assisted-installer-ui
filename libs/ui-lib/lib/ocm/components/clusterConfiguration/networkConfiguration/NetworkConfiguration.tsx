@@ -37,6 +37,7 @@ import {
   PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
 import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
+import { isOciPlatformType } from '../../utils';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -227,12 +228,12 @@ const NetworkConfiguration = ({
     () =>
       getManagedNetworkingState(
         isDualStack,
-        cluster.platform?.type === 'external' && cluster.platform.external?.platformName === 'oci',
+        isOciPlatformType(cluster),
         featureSupportLevelContext,
         cluster.platform?.type,
         featureSupportLevelData,
       ),
-    [isDualStack, cluster.platform, featureSupportLevelContext, featureSupportLevelData],
+    [isDualStack, cluster, featureSupportLevelContext, featureSupportLevelData],
   );
 
   return (

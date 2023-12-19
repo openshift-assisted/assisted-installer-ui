@@ -41,7 +41,7 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
 };
 
 export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
-  let platformType = cloudProviderId === 'external' ? 'external' : cloudProviderId;
+  let platformType = cloudProviderId;
   if (
     !SupportedPlatformIntegrations.includes(platformType as SupportedPlatformType) &&
     !NonPlatformIntegrations.includes(platformType as SupportedPlatformType)

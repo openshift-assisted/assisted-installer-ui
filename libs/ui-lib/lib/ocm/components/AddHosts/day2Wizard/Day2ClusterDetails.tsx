@@ -29,6 +29,7 @@ import {
   InfraEnv,
   InfraEnvCreateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { isOciPlatformType } from '../../utils';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -241,12 +242,7 @@ const Day2ClusterDetails = () => {
                   </GridItem>
                 )}
                 <GridItem>
-                  <Day2HostStaticIpConfigurations
-                    isDisabled={
-                      day2Cluster.platform?.type === 'external' &&
-                      day2Cluster.platform?.external?.platformName === 'oci'
-                    }
-                  />
+                  <Day2HostStaticIpConfigurations isDisabled={isOciPlatformType(day2Cluster)} />
                 </GridItem>
               </Grid>
             </Form>
