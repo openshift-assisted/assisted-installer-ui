@@ -17,6 +17,7 @@ const NewFeatureSupportLevelsAPI = {
           openshift_version: openshiftVersion,
           cpu_architecture: cpuArchitecture,
           platform_type: platformType,
+          ...(platformType === 'external' ? { external_platform_name: 'oci' } : {}),
         },
       },
     );

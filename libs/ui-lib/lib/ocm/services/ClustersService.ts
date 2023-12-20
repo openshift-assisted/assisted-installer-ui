@@ -33,7 +33,7 @@ const ClustersService = {
       staticNetworkConfig: params.staticNetworkConfig,
     };
 
-    if (params.platform?.type === 'oci') {
+    if (params.platform?.type === 'external' && params.platform.external?.platformName === 'oci') {
       infraEnvCreateParams.imageType = 'minimal-iso';
     }
 

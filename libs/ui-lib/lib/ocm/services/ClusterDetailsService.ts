@@ -44,6 +44,14 @@ const ClusterDetailsService = {
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
       platform: {
         type: values.platform,
+        ...(values.platform === 'external'
+          ? {
+              external: {
+                platformName: 'oci',
+                cloudControllerManager: 'External',
+              },
+            }
+          : {}),
       },
     };
 
@@ -76,9 +84,13 @@ const ClusterDetailsService = {
     }
 
     if (platform) {
-      params.platform = {
-        type: platform,
-      };
+      params.platform =
+        platform === 'external'
+          ? {
+              type: platform,
+              external: { platformName: 'oci', cloudControllerManager: 'External' },
+            }
+          : { type: platform };
     }
 
     return params;

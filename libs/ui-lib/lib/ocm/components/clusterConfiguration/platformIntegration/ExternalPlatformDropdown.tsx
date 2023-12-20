@@ -75,7 +75,7 @@ const getExternalPlatformTypes = (
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: SupportedCpuArchitecture,
 ): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => {
-  const platforms = ['none', 'nutanix', showOciOption && 'oci', 'vsphere'] as PlatformType[];
+  const platforms = ['none', 'nutanix', showOciOption && 'external', 'vsphere'] as PlatformType[];
 
   return platforms.filter(Boolean).reduce(
     (a, platform) => ({
@@ -171,7 +171,7 @@ export const ExternalPlatformDropdown = ({
             <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
               <div>
                 {label}
-                {platform === 'oci' && <DeveloperPreview testId={'oci-support-level`'} />}
+                {platform === 'external' && <DeveloperPreview testId={'oci-support-level`'} />}
               </div>
             </Tooltip>
           </SplitItem>
