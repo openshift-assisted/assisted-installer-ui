@@ -94,7 +94,7 @@ export const downloadFile = (fileUrl?: string, dataBlob?: Blob, fileName?: strin
     link.setAttribute('href', fileUrl);
   }
   if (dataBlob) {
-    const file = new Blob([dataBlob], { type: 'text' });
+    const file = new Blob([dataBlob], { type: 'octet/stream' });
     link.setAttribute('href', URL.createObjectURL(file));
   }
   if (fileName) {
