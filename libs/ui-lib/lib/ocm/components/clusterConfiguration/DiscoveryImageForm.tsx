@@ -18,6 +18,7 @@ import {
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectureService';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { isOciPlatformType } from '../utils';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -114,9 +115,7 @@ const DiscoveryImageForm = ({
           ? mapClusterCpuArchToInfraEnvCpuArch(infraEnv.cpuArchitecture)
           : mapClusterCpuArchToInfraEnvCpuArch(cpuArchitecture)
       }
-      isOracleCloudInfrastructure={
-        cluster.platform?.type === 'external' && cluster.platform?.external?.platformName === 'oci'
-      }
+      isOracleCloudInfrastructure={isOciPlatformType(cluster)}
     />
   );
 };
