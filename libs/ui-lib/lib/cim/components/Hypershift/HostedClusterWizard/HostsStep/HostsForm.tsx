@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
-import { Alert, Button, Form, Grid, GridItem } from '@patternfly/react-core';
+import { Alert, Button, Form, FormGroup, Grid, GridItem } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { PopoverIcon, SelectField } from '../../../../../common';
+import { PopoverIcon, RadioField, SelectField } from '../../../../../common';
 import { getRandomString } from '../../../../../common/utils';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 
@@ -42,6 +42,39 @@ const HostsForm: React.FC<HostsFormProps> = ({
   return (
     <Form>
       <Grid hasGutter>
+        <GridItem>
+          <FormGroup isInline label={<>{t('ai:Controller availability policy')}</>} isRequired>
+            <RadioField
+              name={'controllerAvailabilityPolicy'}
+              label={
+                <>
+                  {t('ai:Highly available')}{' '}
+                  <PopoverIcon
+                    bodyContent={t(
+                      'ai:Highly available means components should be resilient to problems across fault boundaries as defined by the component to which the policy is attached. This usually means running critical workloads with 3 replicas and with little or no toleration of disruption of the component.',
+                    )}
+                  />
+                </>
+              }
+              value={'HighlyAvailable'}
+            />
+            <RadioField
+              name={'controllerAvailabilityPolicy'}
+              label={
+                <>
+                  {t('ai:Single replica')}{' '}
+                  <PopoverIcon
+                    bodyContent={t(
+                      'ai:Single replica means components are not expected to be resilient to problems across most fault boundaries associated with high availability. This usually means running critical workloads with just 1 replica and with toleration of full disruption of the component.',
+                    )}
+                  />
+                </>
+              }
+              value={'SingleReplica'}
+            />
+          </FormGroup>
+        </GridItem>
+
         <GridItem>
           <SelectField
             label={t('ai:Namespace')}
