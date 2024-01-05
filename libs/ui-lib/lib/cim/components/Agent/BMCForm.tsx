@@ -184,7 +184,26 @@ const emptyValues: AddBmcValues = {
   bootMACAddress: '',
   disableCertificateVerification: true, // TODO(mlibra)
   online: true,
-  nmState: '',
+  nmState:
+    'interfaces:\n\
+- name: <nic1_name>\n\
+  type: ethernet\n\
+  state: up\n\
+  ipv4:\n\
+    address:\n\
+    - ip: <ip_address>\n\
+      prefix-length: 24\n\
+    enabled: true\n\
+dns-resolver:\n\
+  config:\n\
+    server:\n\
+    - <dns_ip_address>\n\
+routes:\n\
+  config:\n\
+  - destination: 0.0.0.0/0\n\
+    next-hop-address: <next_hop_ip_address>\n\
+    next-hop-interface: <next_hop_nic1_name>\n\
+',
   macMapping: [{ macAddress: '', name: '' }],
 };
 
@@ -204,7 +223,7 @@ const getInitValues = (
       bootMACAddress: bmh?.spec?.bootMACAddress || '',
       disableCertificateVerification: !!bmh?.spec?.bmc?.disableCertificateVerification,
       online: !!bmh?.spec?.online,
-      nmState: nmState ? yaml.dump(nmState?.spec?.config) : '',
+      nmState: nmState ? yaml.dump(nmState?.spec?.config) : emptyValues.nmState,
       macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
     };
   } else {
