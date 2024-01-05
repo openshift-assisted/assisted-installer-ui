@@ -278,8 +278,9 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 name="bootMACAddress"
                 placeholder={t('ai:Enter an address')}
                 description={t(
-                  "ai:The MAC address of the host's network connected NIC that will be used to provision the host. Required for libvirt VMs driven by vbmc.",
+                  "ai:The MAC address of the host's network connected NIC that will be used to provision the host.",
                 )}
+                isRequired
               />
               <InputField
                 label={t('ai:Username')}
