@@ -188,7 +188,11 @@ export const ExternalPlatformDropdown = ({
                   platform as PlatformType,
                   newFeatureSupportLevelContext,
                   featureSupportLevelData,
-                ) && <DeveloperPreview testId={'platform-support-level'} />}
+                ) && (
+                  <span onClick={(event) => event.stopPropagation()}>
+                    <DeveloperPreview testId={'platform-support-level'} />
+                  </span>
+                )}
               </div>
             </Tooltip>
           </SplitItem>
