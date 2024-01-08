@@ -104,6 +104,14 @@ export const areAllExternalPlatformIntegrationDisabled = (
     .every((info) => info.disabledReason !== undefined);
 };
 
+const getReasonForDropdownDisabled = (isSNO: boolean, labelCpuArch: string): string => {
+  if (!isSNO) {
+    return `Platform integration is not supported when ${labelCpuArch} is selected`;
+  } else {
+    return `Platform integration is not supported for SNO clusters`;
+  }
+};
+
 export const ExternalPlatformDropdown = ({
   showOciOption,
   onChange,
@@ -117,9 +125,10 @@ export const ExternalPlatformDropdown = ({
     Partial<{ [key in PlatformType]: ExternalPlatformInfo }>
   >({});
 
-  const tooltipDropdownDisabled = `Platform integration is not supported when ${
-    cpuArchitecture ? architectureData[cpuArchitecture].label : ''
-  } is selected`;
+  const tooltipDropdownDisabled = getReasonForDropdownDisabled(
+    isSNO,
+    cpuArchitecture ? architectureData[cpuArchitecture].label : '',
+  );
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {
     event.stopPropagation(); // Stop event propagation here
