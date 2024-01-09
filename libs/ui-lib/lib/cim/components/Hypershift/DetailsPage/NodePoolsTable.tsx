@@ -6,7 +6,7 @@ import {
   breakWord,
   expandable,
   sortable,
-  TableComposable,
+  Table,
   Tbody,
   Td,
   Th,
@@ -98,7 +98,7 @@ const NodePoolsTable = ({
     <>
       <Stack hasGutter>
         <StackItem>
-          <TableComposable variant="compact">
+          <Table variant="compact">
             <Thead>
               <Tr>
                 <Th />
@@ -229,7 +229,7 @@ const NodePoolsTable = ({
                 return rows;
               }, [])}
             </Tbody>
-          </TableComposable>
+          </Table>
         </StackItem>
         <StackItem>
           <Button

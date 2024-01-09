@@ -1,3 +1,4 @@
+import { Split, SplitItem, Spinner } from '@patternfly/react-core';
 import {
   Dropdown,
   DropdownGroup,
@@ -5,10 +6,7 @@ import {
   DropdownItemProps,
   DropdownSeparator,
   DropdownToggle,
-  Split,
-  SplitItem,
-  Spinner,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';

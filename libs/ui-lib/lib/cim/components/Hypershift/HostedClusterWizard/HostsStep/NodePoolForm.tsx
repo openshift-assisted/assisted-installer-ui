@@ -109,7 +109,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
               {!isExpanded && (
                 <>
                   <FlexItem>
-                    <Divider isVertical />
+                    <Divider orientation={{ default: 'vertical' }} />
                   </FlexItem>
                   <FlexItem>
                     <Label variant="outline">

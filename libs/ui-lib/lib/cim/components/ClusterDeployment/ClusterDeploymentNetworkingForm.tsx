@@ -152,7 +152,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           ) : infraEnvsLoading ? (
             <Split hasGutter>
               <SplitItem>
-                <Spinner isSVG size="md" />
+                <Spinner size="md" />
               </SplitItem>
               <SplitItem>{t('ai:Loading proxy configuration')}</SplitItem>
             </Split>

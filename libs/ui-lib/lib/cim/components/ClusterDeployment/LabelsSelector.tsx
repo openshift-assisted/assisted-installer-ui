@@ -1,14 +1,7 @@
 import React from 'react';
 import flatten from 'lodash-es/flatten.js';
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  Label,
-  LabelGroup,
-  Split,
-  SplitItem,
-} from '@patternfly/react-core';
+import { Label, LabelGroup, Split, SplitItem } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useField } from 'formik';
 
 import { MultiSelectField } from '../../../common';
@@ -118,7 +111,6 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
               <Label
                 key={key}
                 onClose={() => setValue(field.value.filter((value) => value.key !== key))}
-                isTruncated
               >
                 {`${key}=${value}`}
               </Label>
@@ -134,7 +126,7 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
           toggle={
             <DropdownToggle
               toggleIndicator={null}
-              onToggle={setAddLabelOpen}
+              onToggle={(_event, val) => setAddLabelOpen(val)}
               style={{ padding: 0 }}
             >
               <Label color="blue" variant="outline" className="pf-m-overflow">

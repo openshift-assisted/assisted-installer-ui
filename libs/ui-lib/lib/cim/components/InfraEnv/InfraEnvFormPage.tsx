@@ -360,7 +360,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={submitForm}
                 >
-                  {t('ai:Create')} {isSubmitting && <Spinner isSVG size="md" />}
+                  {t('ai:Create')} {isSubmitting && <Spinner size="md" />}
                 </Button>
                 <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
                   {t('ai:Cancel')}
