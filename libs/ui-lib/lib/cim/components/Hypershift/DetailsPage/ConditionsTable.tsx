@@ -1,4 +1,4 @@
-import { Flex, FlexItem } from '@patternfly/react-core';
+import { Flex, FlexItem, Icon } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
@@ -56,7 +56,9 @@ const ConditionsTable = ({ conditions, isDone }: ConditionsTableProps) => {
                 icon = <CheckCircleIcon color={okColor.value} />;
               } else if (c.status === nokStatus) {
                 icon = isDone ? (
-                  <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+                  <Icon size="sm" status="danger">
+                    <ExclamationCircleIcon />
+                  </Icon>
                 ) : (
                   <InProgressIcon />
                 );

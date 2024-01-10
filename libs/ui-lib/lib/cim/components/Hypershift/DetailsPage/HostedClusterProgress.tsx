@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   ExpandableSectionToggle,
+  Icon,
   ProgressStep,
   Spinner,
   Stack,
@@ -36,7 +37,9 @@ const HostedClusterProgress = ({ hostedCluster, launchToOCP }: HostedClusterProg
       availableCondtion?.status === 'True' ? (
         <CheckCircleIcon color={okColor.value} />
       ) : (
-        <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+        <Icon size="sm" status="danger">
+          <ExclamationCircleIcon />
+        </Icon>
       );
   }
 

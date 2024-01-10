@@ -1,6 +1,6 @@
 import React from 'react';
 import lodashValues from 'lodash-es/values.js';
-import { Button, ButtonVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Icon } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
@@ -121,9 +121,17 @@ const FailingValidation = <S extends string>({
 
   let icon;
   if (severity === 'warning') {
-    icon = <ExclamationTriangleIcon color={warningColor.value} />;
+    icon = (
+      <Icon status="warning">
+        <ExclamationTriangleIcon />
+      </Icon>
+    );
   } else {
-    icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+    icon = (
+      <Icon size="sm" status="danger">
+        <ExclamationCircleIcon />
+      </Icon>
+    );
   }
 
   return (

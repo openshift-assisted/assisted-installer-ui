@@ -36,7 +36,7 @@ export type ClusterFiltersType = {
 
 type ClustersListToolbarProps = {
   searchString: string;
-  setSearchString: (value: string) => void;
+  setSearchString: TextInputProps['onChange'];
   filters: ClusterFiltersType;
   setFilters: (filters: ClusterFiltersType) => void;
 };

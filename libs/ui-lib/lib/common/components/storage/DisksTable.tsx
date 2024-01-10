@@ -6,6 +6,7 @@ import {
   Popover,
   Alert,
   AlertVariant,
+  Icon,
 } from '@patternfly/react-core';
 import { TableVariant, RowWrapperProps, RowWrapper, IRow } from '@patternfly/react-table';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
@@ -115,7 +116,9 @@ const DiskName = ({
       {isIndented && <span style={{ width: '1rem', display: 'inline-block' }} />}
       {isInDiskSkipFormattingList(host, disk.id) && (
         <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
-          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>
         </Popover>
       )}
       {'   '}
@@ -130,7 +133,9 @@ const DiskName = ({
             maxWidth="30rem"
             data-testid="disk-limitations-popover"
           >
-            <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+            <Icon size="sm" status="warning">
+              <ExclamationTriangleIcon />
+            </Icon>
           </Popover>
         </>
       )}

@@ -7,6 +7,7 @@ import {
   ButtonVariant,
   Text,
   TextContent,
+  Icon,
 } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
@@ -85,7 +86,9 @@ const ResetClusterModal: React.FC = () => {
         </Text>
 
         <Text component="p">
-          <ExclamationTriangleIcon className="status-icon" color={warningColor.value} size="sm" />{' '}
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>{' '}
           Logs won't be available after the installation is reset.
         </Text>
 
