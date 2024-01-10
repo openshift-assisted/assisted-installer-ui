@@ -5,7 +5,7 @@ import { getHostRole, getInventory, RoleCell } from '../../index';
 import { TableRow } from '../hosts/AITable';
 import { Icon, Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const SkipFormattingDisks = () => (

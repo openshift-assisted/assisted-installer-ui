@@ -41,7 +41,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
     isChecked: Boolean(field.value),
     hasCheckIcon: Boolean(field.value),
     ouiaId: switchOuiaId,
-    onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+    onChange: (event: React.FormEvent<HTMLInputElement>, checked: boolean) => {
       if (onChangeCustomOverride) {
         onChangeCustomOverride(checked, event);
       } else {

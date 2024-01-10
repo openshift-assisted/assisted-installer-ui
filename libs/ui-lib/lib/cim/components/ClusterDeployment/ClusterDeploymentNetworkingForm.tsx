@@ -119,7 +119,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           <Checkbox
             id="edit-proxy"
             label={t('ai:Edit cluster-wide proxy settings')}
-            onChange={setEditProxy}
+            onChange={(_event, value) => setEditProxy(value)}
             isChecked={editProxy}
             body={editProxy && <ProxyInputFields />}
           />

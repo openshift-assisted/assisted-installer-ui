@@ -5,10 +5,11 @@ import {
   TooltipProps,
   RadioProps,
   FormSelectProps,
+  DropEvent,
 } from '@patternfly/react-core';
 import { SelectOptionProps } from '@patternfly/react-core/deprecated';
 import { FieldValidator, FieldHelperProps } from 'formik';
-import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
+import { DropzoneProps } from 'react-dropzone';
 import { CodeEditorProps } from '@patternfly/react-code-editor';
 import { Optional } from '../../../types/typescriptExtensions';
 
@@ -88,7 +89,7 @@ export interface TextAreaFieldProps extends FieldProps {
   getErrorText?: (error: string) => React.ReactNode | undefined;
   placeholder?: string;
   onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element> | undefined) => void;
   spellCheck?: boolean;
   rows?: number;
 }
@@ -100,7 +101,7 @@ export interface UploadFieldProps extends FieldProps {
   onBlur?: (event: React.FocusEvent<HTMLDivElement>) => void;
   allowEdittingUploadedText?: boolean;
   dropzoneProps?: Omit<DropzoneProps, 'onDropRejected'> & {
-    onDropRejected?: (helpers: FieldHelperProps<string>) => DropFileEventHandler;
+    onDropRejected?: (helpers: FieldHelperProps<string>) => DropEvent;
   };
 }
 

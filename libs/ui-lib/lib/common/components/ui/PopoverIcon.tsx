@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Button, ButtonProps, Popover } from '@patternfly/react-core';
+import { Button, ButtonProps, Icon, Popover } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
@@ -34,7 +34,9 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
       ouiaId={buttonOuiaId}
       style={buttonStyle}
     >
-      <IconComponent noVerticalAlign={noVerticalAlign} />
+      <Icon isInline={noVerticalAlign}>
+        <IconComponent />
+      </Icon>
     </Button>
   </Popover>
 );

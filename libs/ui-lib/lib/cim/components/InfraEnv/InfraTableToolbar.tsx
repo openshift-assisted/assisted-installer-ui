@@ -113,7 +113,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
           <Select
             variant={SelectVariant.checkbox}
             aria-label={t('ai:Status')}
-            onToggle={setStatusFilterOpen}
+            onToggle={(_event, value) => setStatusFilterOpen(value)}
             onSelect={(e, value) => {
               // eslint-disable-next-line
               if ((e.target as any).checked) {

@@ -12,6 +12,7 @@ import { clusterStatusLabels, WithTestID } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { Icon } from '@patternfly/react-core';
 
 type ClusterStatusProps = {
   status: Cluster['status'];
@@ -26,22 +27,46 @@ type ClusterStatusIconProps = {
 export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ...extraProps }) => {
   switch (status) {
     case 'cancelled':
-      return <BanIcon size={'sm'} {...extraProps} />;
+      return (
+        <Icon size="sm">
+          <BanIcon {...extraProps} />
+        </Icon>
+      );
     case 'insufficient':
     case 'pending-for-input':
     case 'ready':
-      return <FileAltIcon size={'sm'} {...extraProps} />;
+      return (
+        <Icon size="sm">
+          <FileAltIcon {...extraProps} />
+        </Icon>
+      );
     case 'error':
-      return <ExclamationCircleIcon color={dangerColor.value} size={'sm'} {...extraProps} />;
+      return (
+        <Icon size="sm">
+          <ExclamationCircleIcon color={dangerColor.value} {...extraProps} />
+        </Icon>
+      );
     case 'installed':
-      return <CheckCircleIcon color={okColor.value} size={'sm'} {...extraProps} />;
+      return (
+        <Icon size="sm">
+          <CheckCircleIcon color={okColor.value} {...extraProps} />
+        </Icon>
+      );
     case 'installing-pending-user-action':
-      return <ExclamationTriangleIcon color={warningColor.value} size={'sm'} {...extraProps} />;
+      return (
+        <Icon size="sm">
+          <ExclamationTriangleIcon color={warningColor.value} {...extraProps} />
+        </Icon>
+      );
     case 'preparing-for-installation':
     case 'installing':
     case 'finalizing':
     case 'adding-hosts':
-      return <InProgressIcon size={'sm'} {...extraProps} />;
+      return (
+        <Icon size="sm">
+          <InProgressIcon {...extraProps} />
+        </Icon>
+      );
     default:
       return <></>;
   }

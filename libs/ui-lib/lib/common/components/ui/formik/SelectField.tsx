@@ -49,7 +49,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
             onChange={(event, value) => {
               //customHandleChange enables calling formik change handler explicitly, useful for example to have the previous value
               callFormikOnChange && field.onChange(event);
-              onChange && onChange(value, event);
+              onChange && onChange(event, value);
             }}
           >
             {options.map((option, index) => (

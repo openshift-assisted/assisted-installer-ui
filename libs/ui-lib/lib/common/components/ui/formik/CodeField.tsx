@@ -46,7 +46,7 @@ const CodeField = ({
           data-testid={dataTestid ? dataTestid : `${fieldId}-testid`}
         >
           {description && (
-            <HelperText fieldId={fieldId}>
+            <HelperText>
               <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
             </HelperText>
           )}

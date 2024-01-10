@@ -25,7 +25,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   const fieldId = getFieldId(props.name, 'checkbox', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
-  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
+  const fieldHelperText = <HelperText>{helperText}</HelperText>;
 
   return (
     <Stack id={`form-control__${fieldId}`}>

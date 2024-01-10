@@ -161,7 +161,7 @@ const ClusterEventsToolbar = ({
     onSelect('severities', isChecked, value);
   };
 
-  const onMessageChange: TextInputProps['onChange'] = (message) => {
+  const onMessageChange: TextInputProps['onChange'] = (_event, message) => {
     setMessageValue(message);
     clearTimeout(timer);
 
@@ -309,7 +309,7 @@ const ClusterEventsToolbar = ({
                 id="search-text"
                 type={TextInputTypes.search}
                 aria-label="text to be searched"
-                onChange={(_event, message) => onMessageChange(message)}
+                onChange={(_event, message) => onMessageChange(_event, message)}
                 value={messageValue}
                 placeholder={t('ai:Filter by text')}
               />

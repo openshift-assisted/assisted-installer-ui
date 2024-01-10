@@ -184,7 +184,6 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     onEditHostname: HostStatusPopoverContentProps['onEditHostname'];
     title: string;
     validationsInfo: ValidationsInfo;
-    isSmall?: ButtonProps['isSmall'];
     details?: string;
     zIndex?: number;
     autoCSR?: boolean;

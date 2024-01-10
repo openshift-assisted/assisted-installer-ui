@@ -11,6 +11,7 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
+  Icon,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
@@ -70,7 +71,9 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
         onClick={(e) => e.preventDefault()}
         className="pf-c-form__group-label-help"
       >
-        <HelpIcon noVerticalAlign />
+        <Icon>
+          <HelpIcon />
+        </Icon>
       </button>
     </Popover>
   );
@@ -101,7 +104,9 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
               onClick={(e) => e.preventDefault()}
               className="pf-c-form__group-label-help"
             >
-              <HelpIcon noVerticalAlign />
+              <Icon>
+                <HelpIcon />
+              </Icon>
             </button>
           </Popover>
         }
@@ -126,7 +131,9 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   onClick={(e) => e.preventDefault()}
                   className="pf-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
                 </button>
               </Popover>
             }
@@ -174,7 +181,9 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   onClick={(e) => e.preventDefault()}
                   className="pf-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
                 </button>
               </Popover>
             }
@@ -222,7 +231,9 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   onClick={(e) => e.preventDefault()}
                   className="pf-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
                 </button>
               </Popover>
             }
@@ -272,7 +283,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           (isEdit &&
             configureLoadBalancerInitial) /* For edit flow, only No to Yes transition is possible */
         }
-        onChange={setConfigureLoadBalancer}
+        onChange={(_event, value) => setConfigureLoadBalancer(value)}
       />
     </Form>
   );

@@ -77,8 +77,9 @@ const UploadField: React.FC<UploadFieldProps> = ({
             disabled={isDisabled}
             dropzoneProps={{
               ...dropzoneProps,
-              onDropRejected:
-                dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers),
+              onDropRejected: () => {
+                dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers);
+              },
             }}
             allowEditingUploadedText={allowEdittingUploadedText}
           />

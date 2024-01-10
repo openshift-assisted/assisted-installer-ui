@@ -194,7 +194,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
     <>
       <ClustersListToolbar
         searchString={searchString}
-        setSearchString={setSearchString}
+        setSearchString={(_event, value) => setSearchString(value)}
         filters={filters}
         setFilters={setFilters}
       />

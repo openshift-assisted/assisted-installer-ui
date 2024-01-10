@@ -73,7 +73,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
               </HelperText>
             }
             isChecked={value === 'None'}
-            onChange={onChanged}
+            onChange={(_event, value) => onChanged(value)}
             className="with-tooltip"
           />
         </Tooltip>

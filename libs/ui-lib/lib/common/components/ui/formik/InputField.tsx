@@ -45,7 +45,6 @@ const InputField: React.FC<
 
     const fieldId = getFieldId(props.name, 'input', idPostfix);
     const errorMessage = useFieldErrorMsg({ name: props.name, inputError: error, validate });
-    const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
     const isValid = !(touched && error);
 
     return (
@@ -59,7 +58,7 @@ const InputField: React.FC<
             labelInfo={labelInfo}
           >
             {description && (
-              <HelperText fieldId={fieldId}>
+              <HelperText>
                 <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
               </HelperText>
             )}
@@ -73,7 +72,7 @@ const InputField: React.FC<
                   validated={isValid ? 'default' : 'error'}
                   isRequired={isRequired}
                   aria-describedby={`${fieldId}-helper`}
-                  onChange={(event, value) => {
+                  onChange={(event) => {
                     if (!props.isDisabled) {
                       !noDefaultOnChange && field.onChange(event);
                       onChange && onChange(event);

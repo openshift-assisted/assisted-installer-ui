@@ -81,7 +81,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
               </HelperText>
             }
             isChecked={value === 'None'}
-            onChange={onChanged}
+            onChange={(event, value) => onChanged(value)}
             className="with-tooltip"
           />
         </Tooltip>

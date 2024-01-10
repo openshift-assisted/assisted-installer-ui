@@ -91,7 +91,7 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
             </HelperText>
           }
           isChecked={value === CpuArchitecture.ARM}
-          onChange={handleChange}
+          onChange={(_event, value) => handleChange(value)}
         />
       </Tooltip>
     </FormGroup>

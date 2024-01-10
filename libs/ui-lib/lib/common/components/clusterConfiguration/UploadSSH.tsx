@@ -29,12 +29,8 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
       idPostfix="discovery"
       onBlur={() => value && setValue(trimSshPublicKey(value))}
       dropzoneProps={{
-        accept: '.pub',
+        accept: { pub: ['.pub'] },
         maxSize: 2048,
-        onDropRejected:
-          ({ setError }) =>
-          () =>
-            setError(t('ai:File not supported.')),
       }}
       isRequired={isRequired}
     />

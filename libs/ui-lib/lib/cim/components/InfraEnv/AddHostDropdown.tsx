@@ -55,7 +55,11 @@ const AddHostDropdown = ({
       <Dropdown
         id="infraenv-actions"
         toggle={
-          <DropdownToggle id="dropdown-basic" onToggle={setIsKebabOpen} toggleVariant="primary">
+          <DropdownToggle
+            id="dropdown-basic"
+            onToggle={(_event, value) => setIsKebabOpen(value)}
+            toggleVariant="primary"
+          >
             {t('ai:Add hosts')}
           </DropdownToggle>
         }
