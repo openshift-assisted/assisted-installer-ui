@@ -7,7 +7,10 @@ import {
   EmptyStateVariant,
   Button,
   ButtonVariant,
-  EmptyStateIconProps, EmptyStateActions, EmptyStateHeader, EmptyStateFooter,
+  EmptyStateIconProps,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens/dist/js/global_danger_color_200';
@@ -54,11 +57,17 @@ const ErrorState = ({
   return (
     <Bullseye>
       <EmptyState variant={variant}>
-        <EmptyStateHeader titleText={<>{title}</>} icon={<EmptyStateIcon icon={icon} color={iconColor} />} headingLevel="h2" />
-        <EmptyStateBody>{content || <DefaultErrorContent fetchData={fetchData} />}</EmptyStateBody><EmptyStateFooter>
-        {primaryAction}
-        {actions && <EmptyStateActions>{actions}</EmptyStateActions>}
-      </EmptyStateFooter></EmptyState>
+        <EmptyStateHeader
+          titleText={<>{title}</>}
+          icon={<EmptyStateIcon icon={icon} color={iconColor} />}
+          headingLevel="h2"
+        />
+        <EmptyStateBody>{content || <DefaultErrorContent fetchData={fetchData} />}</EmptyStateBody>
+        <EmptyStateFooter>
+          {primaryAction}
+          {actions && <EmptyStateActions>{actions}</EmptyStateActions>}
+        </EmptyStateFooter>
+      </EmptyState>
     </Bullseye>
   );
 };

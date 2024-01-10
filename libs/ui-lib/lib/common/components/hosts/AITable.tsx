@@ -1,23 +1,18 @@
 import React from 'react';
 import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
 import {
-	IRow,
-	SortByDirection,
-	ISortBy,
-	OnSort,
-	RowWrapperProps,
-	RowWrapper,
-	ICell,
-	IAction,
-	ISeparator,
-	InnerScrollContainer
+  IRow,
+  SortByDirection,
+  ISortBy,
+  OnSort,
+  RowWrapperProps,
+  RowWrapper,
+  ICell,
+  IAction,
+  ISeparator,
+  InnerScrollContainer,
 } from '@patternfly/react-table';
-import {
-	Table,
-	TableHeader,
-	TableBody,
-	TableProps
-} from '@patternfly/react-table/deprecated';
+import { Table, TableHeader, TableBody, TableProps } from '@patternfly/react-table/deprecated';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import xor from 'lodash-es/xor.js';
 import classnames from 'classnames';

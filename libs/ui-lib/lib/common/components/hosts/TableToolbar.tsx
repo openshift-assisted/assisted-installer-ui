@@ -1,22 +1,22 @@
 import * as React from 'react';
 import {
-	OnPerPageSelect,
-	OnSetPage,
-	Pagination,
-	PerPageOptions,
-	Split,
-	SplitItem,
-	Toolbar,
-	ToolbarContent,
-	ToolbarItem,
-	ToolbarProps,
-	Tooltip
+  OnPerPageSelect,
+  OnSetPage,
+  Pagination,
+  PerPageOptions,
+  Split,
+  SplitItem,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarProps,
+  Tooltip,
 } from '@patternfly/react-core';
 import {
-	Dropdown,
-	DropdownItem,
-	DropdownToggle,
-	DropdownToggleCheckbox
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  DropdownToggleCheckbox,
 } from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

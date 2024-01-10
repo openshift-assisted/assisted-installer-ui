@@ -1,26 +1,23 @@
 import React from 'react';
 import capitalize from 'lodash-es/capitalize.js';
 import {
-	Toolbar,
-	ToolbarItem,
-	ToolbarContent,
-	ToolbarFilter,
-	ToolbarChip,
-	Button,
-	ButtonVariant,
-	InputGroup,
-	TextInput,
-	ToolbarProps,
-	ToolbarFilterProps,
-	TextInputProps,
-	Badge,
-	TextInputTypes, InputGroupItem
+  Toolbar,
+  ToolbarItem,
+  ToolbarContent,
+  ToolbarFilter,
+  ToolbarChip,
+  Button,
+  ButtonVariant,
+  InputGroup,
+  TextInput,
+  ToolbarProps,
+  ToolbarFilterProps,
+  TextInputProps,
+  Badge,
+  TextInputTypes,
+  InputGroupItem,
 } from '@patternfly/react-core';
-import {
-	Select,
-	SelectOption,
-	SelectProps
-} from '@patternfly/react-core/deprecated';
+import { Select, SelectOption, SelectProps } from '@patternfly/react-core/deprecated';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import type { ClusterEventsFiltersType } from '../../types';
@@ -306,18 +303,22 @@ const ClusterEventsToolbar = ({
 
         <ToolbarItem>
           <InputGroup>
-            <InputGroupItem isFill ><TextInput
-              name="search-text"
-              id="search-text"
-              type={TextInputTypes.search}
-              aria-label="text to be searched"
-              onChange={(_event, message) => onMessageChange(message)}
-              value={messageValue}
-              placeholder={t('ai:Filter by text')}
-            /></InputGroupItem>
-            <InputGroupItem><Button variant={ButtonVariant.control} aria-label="search text button">
-              <SearchIcon />
-            </Button></InputGroupItem>
+            <InputGroupItem isFill>
+              <TextInput
+                name="search-text"
+                id="search-text"
+                type={TextInputTypes.search}
+                aria-label="text to be searched"
+                onChange={(_event, message) => onMessageChange(message)}
+                value={messageValue}
+                placeholder={t('ai:Filter by text')}
+              />
+            </InputGroupItem>
+            <InputGroupItem>
+              <Button variant={ButtonVariant.control} aria-label="search text button">
+                <SearchIcon />
+              </Button>
+            </InputGroupItem>
           </InputGroup>
         </ToolbarItem>
       </ToolbarContent>

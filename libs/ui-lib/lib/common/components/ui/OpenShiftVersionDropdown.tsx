@@ -1,13 +1,10 @@
 import React from 'react';
+import { HelperText, FormGroup } from '@patternfly/react-core';
 import {
-	HelperText,
-	FormGroup
-} from '@patternfly/react-core';
-import {
-	DropdownItem,
-	DropdownToggle,
-	Dropdown,
-	DropdownSeparator
+  DropdownItem,
+  DropdownToggle,
+  Dropdown,
+  DropdownSeparator,
 } from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 

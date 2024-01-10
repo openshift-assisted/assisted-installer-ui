@@ -20,9 +20,7 @@ const LoadingState: React.FC<Props> = ({ content, primaryAction, secondaryAction
       <Spinner size="xl" />
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
       {primaryAction}
-      {secondaryActions && (
-        <EmptyStateActions>{secondaryActions}</EmptyStateActions>
-      )}
+      {secondaryActions && <EmptyStateActions>{secondaryActions}</EmptyStateActions>}
     </EmptyState>
   </Bullseye>
 );

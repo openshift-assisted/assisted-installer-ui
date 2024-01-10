@@ -1,10 +1,5 @@
-import {
-	TableVariant
-} from '@patternfly/react-table';
-import {
-	Table,
-	TableBody
-} from '@patternfly/react-table/deprecated';
+import { TableVariant } from '@patternfly/react-table';
+import { Table, TableBody } from '@patternfly/react-table/deprecated';
 import * as React from 'react';
 import type { Inventory, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getEnabledHosts } from '../hosts';

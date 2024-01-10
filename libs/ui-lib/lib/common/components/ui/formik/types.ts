@@ -1,14 +1,12 @@
 import * as React from 'react';
 import {
-	TextInputTypes,
-	FormSelectOptionProps,
-	TooltipProps,
-	RadioProps,
-	FormSelectProps
+  TextInputTypes,
+  FormSelectOptionProps,
+  TooltipProps,
+  RadioProps,
+  FormSelectProps,
 } from '@patternfly/react-core';
-import {
-	SelectOptionProps
-} from '@patternfly/react-core/deprecated';
+import { SelectOptionProps } from '@patternfly/react-core/deprecated';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
 import { CodeEditorProps } from '@patternfly/react-code-editor';

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-	WizardBody,
-	WizardBodyProps
-} from '@patternfly/react-core/deprecated';
+import { WizardBody, WizardBodyProps } from '@patternfly/react-core/deprecated';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 
