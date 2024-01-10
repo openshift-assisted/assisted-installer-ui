@@ -7,7 +7,7 @@ import {
   Grid,
   PageSection,
   PageSectionVariants,
-  Title,
+  EmptyStateHeader,
 } from '@patternfly/react-core';
 import { HostsClusterDetailTabProps } from './types';
 import {
@@ -71,9 +71,7 @@ export const HostsClusterDetailTabMock: React.FC<
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
         <EmptyState>
-          <Title headingLevel="h4" size="lg">
-            Mocked environment not detected
-          </Title>
+          <EmptyStateHeader titleText="Mocked environment not detected" headingLevel="h4" />
           <EmptyStateBody>You can only use this page on a mocked environment</EmptyStateBody>
         </EmptyState>
       </PageSection>

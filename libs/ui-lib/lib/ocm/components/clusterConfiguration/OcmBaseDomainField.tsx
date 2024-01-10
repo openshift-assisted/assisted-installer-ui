@@ -1,7 +1,14 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup, Tooltip } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Tooltip,
+} from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useField, useFormikContext } from 'formik';
-import { ClusterDetailsValues, HelperText, getFieldId } from '../../../common';
+import { ClusterDetailsValues, getFieldId } from '../../../common';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
@@ -21,14 +28,18 @@ export const BaseDnsHelperText = ({
   name?: string;
   baseDnsDomain?: string;
 }) => (
-  <HelperText fieldId={fieldId}>
-    Enter the name of your domain [domainname] or [domainname.com]. This cannot be changed after
-    cluster installed. All DNS records must include the cluster name and be subdomains of the base
-    you enter. The full cluster address will be: <br />
-    <strong>
-      {name || '[Cluster Name]'}.{baseDnsDomain || '[domainname.com]'}
-    </strong>
-  </HelperText>
+  <FormHelperText>
+    <HelperText id={fieldId}>
+      <HelperTextItem>
+        Enter the name of your domain [domainname] or [domainname.com]. This cannot be changed after
+        cluster installed. All DNS records must include the cluster name and be subdomains of the
+        base you enter. The full cluster address will be: <br />
+        <strong>
+          {name || '[Cluster Name]'}.{baseDnsDomain || '[domainname.com]'}
+        </strong>
+      </HelperTextItem>
+    </HelperText>
+  </FormHelperText>
 );
 
 export const OcmBaseDomainField = ({
@@ -55,7 +66,7 @@ export const OcmBaseDomainField = ({
     const selectedDomain = managedDomains.find((d) => d.domain === value);
     return (
       <DropdownToggle
-        onToggle={(val) => setOpen(val)}
+        onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-u-w-100"
@@ -96,7 +107,6 @@ export const OcmBaseDomainField = ({
         name={INPUT_NAME}
         label={INPUT_LABEL}
         isRequired
-        helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
       >
         {useRedHatDnsService ? (
           <Dropdown
@@ -114,6 +124,7 @@ export const OcmBaseDomainField = ({
             isRequired
           />
         )}
+        <BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />
       </FormGroup>
     </>
   );

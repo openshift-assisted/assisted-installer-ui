@@ -1,11 +1,11 @@
 import React from 'react';
+import { FormGroup } from '@patternfly/react-core';
 import {
   DropdownItem,
   DropdownToggle,
   Dropdown,
-  FormGroup,
   DropdownSeparator,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import {
@@ -91,7 +91,7 @@ export const DiscoveryImageTypeDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(val)}
+        onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-u-w-100"

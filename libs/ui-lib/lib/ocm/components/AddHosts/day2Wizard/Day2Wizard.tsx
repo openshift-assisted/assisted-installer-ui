@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core';
+import { WizardHeader } from '@patternfly/react-core/deprecated';
 import classNames from 'classnames';
 import { ClusterWizardStep } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
