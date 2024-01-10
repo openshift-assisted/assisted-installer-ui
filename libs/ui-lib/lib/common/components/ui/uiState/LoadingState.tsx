@@ -5,7 +5,7 @@ import {
   Bullseye,
   EmptyStateVariant,
   Spinner,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
 } from '@patternfly/react-core';
 
 type Props = {
@@ -16,12 +16,12 @@ type Props = {
 
 const LoadingState: React.FC<Props> = ({ content, primaryAction, secondaryActions }) => (
   <Bullseye>
-    <EmptyState variant={EmptyStateVariant.small}>
+    <EmptyState variant={EmptyStateVariant.sm}>
       <Spinner size="xl" />
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
       {primaryAction}
       {secondaryActions && (
-        <EmptyStateSecondaryActions>{secondaryActions}</EmptyStateSecondaryActions>
+        <EmptyStateActions>{secondaryActions}</EmptyStateActions>
       )}
     </EmptyState>
   </Bullseye>

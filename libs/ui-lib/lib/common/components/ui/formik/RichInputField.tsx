@@ -11,6 +11,9 @@ import {
   PopoverPosition,
   InputGroup,
   Button,
+  InputGroupItem,
+  FormHelperText,
+  HelperText,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
@@ -23,7 +26,6 @@ import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-toke
 
 import { InputFieldProps as BaseInputProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 
 import './RichInputField.css';
 
@@ -104,64 +106,65 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
         id={`form-control__${fieldId}`}
         fieldId={fieldId}
         label={label}
-        helperText={
-          typeof helperText === 'string' ? (
-            helperText
-          ) : (
-            <HelperText fieldId={fieldId}>{helperText}</HelperText>
-          )
-        }
-        validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         labelIcon={labelIcon}
       >
         <InputGroup
           className={classNames('rich-input__group', { 'rich_input__group--invalid': !isValid })}
         >
-          <TextInput
-            {...field}
-            {...props}
-            ref={ref}
-            id={fieldId}
-            isRequired={isRequired}
-            aria-describedby={`${fieldId}-helper`}
-            onChange={(value, event) => {
-              !popoverOpen && setPopoverOpen(true);
-              !noDefaultOnChange && field.onChange(event);
-              setTouched(true, false);
-              onChange && onChange(event);
-            }}
-            className="rich-input__text"
-            onBlur={() => {
-              setTouched(true, false);
-              setPopoverOpen(false);
-            }}
-          />
-          <Popover
-            isVisible={popoverOpen}
-            shouldClose={() => setPopoverOpen(false)}
-            shouldOpen={() => setPopoverOpen(true)}
-            aria-label="validation popover"
-            position={PopoverPosition.top}
-            bodyContent={
-              <RichValidation
-                value={value}
-                error={error}
-                richValidationMessages={richValidationMessages as Record<string, string>}
-              />
-            }
-          >
-            <Button variant="plain" aria-label="Validation">
-              {!isValid ? (
-                <ExclamationCircleIcon color={dangerColor.value} />
-              ) : value ? (
-                <CheckCircleIcon color={okColor.value} />
-              ) : (
-                <InfoCircleIcon color={blueInfoColor.value} />
-              )}
-            </Button>
-          </Popover>
+          <InputGroupItem isFill>
+            <TextInput
+              {...field}
+              {...props}
+              ref={ref}
+              id={fieldId}
+              isRequired={isRequired}
+              aria-describedby={`${fieldId}-helper`}
+              onChange={(event, value) => {
+                !popoverOpen && setPopoverOpen(true);
+                !noDefaultOnChange && field.onChange(event);
+                setTouched(true, false);
+                onChange && onChange(event);
+              }}
+              className="rich-input__text"
+              onBlur={() => {
+                setTouched(true, false);
+                setPopoverOpen(false);
+              }}
+            />
+          </InputGroupItem>
+          <InputGroupItem>
+            <Popover
+              isVisible={popoverOpen}
+              shouldClose={() => setPopoverOpen(false)}
+              shouldOpen={() => setPopoverOpen(true)}
+              aria-label="validation popover"
+              position={PopoverPosition.top}
+              bodyContent={
+                <RichValidation
+                  value={value}
+                  error={error}
+                  richValidationMessages={richValidationMessages as Record<string, string>}
+                />
+              }
+            >
+              <Button variant="plain" aria-label="Validation">
+                {!isValid ? (
+                  <ExclamationCircleIcon color={dangerColor.value} />
+                ) : value ? (
+                  <CheckCircleIcon color={okColor.value} />
+                ) : (
+                  <InfoCircleIcon color={blueInfoColor.value} />
+                )}
+              </Button>
+            </Popover>
+          </InputGroupItem>
         </InputGroup>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant={isValid ? 'default' : 'error'}>{helperText}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   },

@@ -1,12 +1,14 @@
 import React from 'react';
 import {
-  DropdownItem,
-  DropdownToggle,
-  Dropdown,
-  HelperText,
-  FormGroup,
-  DropdownSeparator,
+	HelperText,
+	FormGroup
 } from '@patternfly/react-core';
+import {
+	DropdownItem,
+	DropdownToggle,
+	Dropdown,
+	DropdownSeparator
+} from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 
 import { OpenshiftVersionOptionType } from '../../types';
@@ -97,7 +99,7 @@ export const OpenShiftVersionDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(!isDisabled && val)}
+        onToggle={(_event, val) => setOpen(!isDisabled && val)}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         isText

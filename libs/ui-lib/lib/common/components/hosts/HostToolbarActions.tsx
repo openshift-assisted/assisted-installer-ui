@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { DropdownItem } from '@patternfly/react-core';
+import {
+	DropdownItem
+} from '@patternfly/react-core/deprecated';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ChangeHostnameActionProps = {

@@ -1,9 +1,17 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { Checkbox, FormGroup, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Checkbox,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { CheckboxFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const CheckboxField: React.FC<CheckboxFieldProps> = ({
   label,
@@ -22,11 +30,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   return (
     <Stack id={`form-control__${fieldId}`}>
       <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-        >
+        <FormGroup fieldId={fieldId}>
           <Checkbox
             {...field}
             {...props}
@@ -36,7 +40,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
             description={fieldHelperText}
             isValid={isValid}
             isChecked={field.value as boolean}
-            onChange={(value, event) => {
+            onChange={(event, value) => {
               field.onChange(event);
               onChange && onChange(value, event);
             }}
@@ -44,11 +48,16 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : helperText}
+            </HelperTextItem>
           </HelperText>
-        )}
+        </FormHelperText>
       </StackItem>
     </Stack>
   );

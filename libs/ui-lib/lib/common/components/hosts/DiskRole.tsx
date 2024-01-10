@@ -1,5 +1,9 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
+import {
+	Dropdown,
+	DropdownItem,
+	DropdownToggle
+} from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import {
   Disk,
@@ -101,7 +105,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(val)}
+        onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         className="pf-c-button pf-m-link pf-m-inline"

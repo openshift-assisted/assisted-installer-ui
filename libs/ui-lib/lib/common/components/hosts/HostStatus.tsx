@@ -205,7 +205,7 @@ const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
     hideOnOutsideClick={props.hideOnOutsideClick}
     zIndex={props.zIndex || 300}
   >
-    <Button variant={'link'} isInline isSmall={props.isSmall}>
+    <Button variant={'link'} isInline size="sm">
       {props.children}
     </Button>
   </Popover>

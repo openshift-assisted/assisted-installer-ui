@@ -1,11 +1,18 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, HelperTextItem, Stack, StackItem } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const CodeField = ({
   label,
@@ -27,7 +34,6 @@ const CodeField = ({
   const errorMessage = useFieldErrorMsg({ name, validate });
 
   const isValid = !errorMessage;
-  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
 
   return (
     <Stack>
@@ -35,9 +41,6 @@ const CodeField = ({
         <FormGroup
           fieldId={fieldId}
           label={label}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
           isRequired={isRequired}
           labelIcon={labelIcon}
           data-testid={dataTestid ? dataTestid : `${fieldId}-testid`}
@@ -65,11 +68,16 @@ const CodeField = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : helperText}
+            </HelperTextItem>
           </HelperText>
-        )}
+        </FormHelperText>
       </StackItem>
     </Stack>
   );

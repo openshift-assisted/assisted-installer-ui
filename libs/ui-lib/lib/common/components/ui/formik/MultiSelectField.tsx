@@ -3,19 +3,24 @@ import { useField } from 'formik';
 import Fuse from 'fuse.js';
 import {
   FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
+import {
   Select,
   SelectOption,
   SelectOptionObject,
   SelectOptionProps,
   SelectProps,
   SelectVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { MultiSelectFieldProps, MultiSelectOption } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 // Field value is a string[]
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
@@ -92,20 +97,11 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     keys: ['displayName'],
   });
   const { t } = useTranslation();
-  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
 
   return (
     <Stack>
       <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          label={label}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-        >
+        <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
           <Select
             {...field}
             {...props}
@@ -117,7 +113,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             isCreatable={false}
             placeholderText={placeholderText}
             isOpen={isOpen}
-            onToggle={onToggle}
+            onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
             onSelect={onSelect}
             onClear={onClearSelection}
             selections={selections}
@@ -136,11 +132,16 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : hText}
+            </HelperTextItem>
           </HelperText>
-        )}
+        </FormHelperText>
       </StackItem>
     </Stack>
   );

@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useField } from 'formik';
 import {
   FormGroup,
+  FormHelperText,
+  HelperText,
   HelperTextItem,
   Split,
   SplitItem,
@@ -11,8 +13,8 @@ import {
 } from '@patternfly/react-core';
 import { InputFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const InputField: React.FC<
   InputFieldProps & { inputError?: string; description?: React.ReactNode; labelInfo?: string }
@@ -52,9 +54,6 @@ const InputField: React.FC<
           <FormGroup
             fieldId={fieldId}
             label={label}
-            helperText={fieldHelperText}
-            helperTextInvalid={fieldHelperText}
-            validated={isValid ? 'default' : 'error'}
             isRequired={isRequired}
             labelIcon={labelIcon}
             labelInfo={labelInfo}
@@ -74,7 +73,7 @@ const InputField: React.FC<
                   validated={isValid ? 'default' : 'error'}
                   isRequired={isRequired}
                   aria-describedby={`${fieldId}-helper`}
-                  onChange={(value, event) => {
+                  onChange={(event, value) => {
                     if (!props.isDisabled) {
                       !noDefaultOnChange && field.onChange(event);
                       onChange && onChange(event);
@@ -87,11 +86,16 @@ const InputField: React.FC<
           </FormGroup>
         </StackItem>
         <StackItem>
-          {showErrorMessage && !isValid && (
-            <HelperText fieldId={fieldId} isError>
-              {errorMessage}
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem
+                icon={<ExclamationCircleIcon />}
+                variant={showErrorMessage ? 'error' : 'default'}
+              >
+                {showErrorMessage ? errorMessage : helperText}
+              </HelperTextItem>
             </HelperText>
-          )}
+          </FormHelperText>
         </StackItem>
       </Stack>
     );

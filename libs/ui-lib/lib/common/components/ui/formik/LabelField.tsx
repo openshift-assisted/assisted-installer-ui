@@ -1,13 +1,21 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Label, Stack, StackItem } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Label,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import TagsInput from 'react-tagsinput';
 import { InputFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 
 import './LabelField.css';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 type LabelValueProps = {
   value: React.ReactText;
@@ -44,20 +52,11 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   const fieldId = getFieldId(props.name, 'input', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
-  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
 
   return (
     <Stack>
       <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          label={label}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-        >
+        <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
           {t(
             "ai:Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.",
           )}
@@ -96,11 +95,16 @@ export const LabelField: React.FC<LabelFieldProps> = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : helperText}
+            </HelperTextItem>
           </HelperText>
-        )}
+        </FormHelperText>
       </StackItem>
     </Stack>
   );

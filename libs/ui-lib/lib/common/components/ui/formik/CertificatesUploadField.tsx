@@ -1,10 +1,16 @@
 import * as React from 'react';
-import { FormGroup, FileUpload } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FileUpload,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   label,
@@ -82,29 +88,7 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   };
 
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={
-        typeof helperText === 'string' ? (
-          helperText
-        ) : (
-          <HelperText fieldId={fieldId}>{helperText}</HelperText>
-        )
-      }
-      helperTextInvalid={
-        typeof errorMessage === 'string' ? (
-          errorMessage
-        ) : (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
-          </HelperText>
-        )
-      }
-      validated={isRejected ? 'error' : 'default'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-    >
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
       {children}
       <FileUpload
         filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
@@ -118,8 +102,8 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
         value={field.value}
         filename={filename}
         onFileInputChange={handleFileInputChange}
-        onDataChange={handleTextOrDataChange}
-        onTextChange={handleTextOrDataChange}
+        onDataChange={(_event, value: string) => handleTextOrDataChange(value)}
+        onTextChange={(_event, value: string) => handleTextOrDataChange(value)}
         onReadStarted={handleFileReadStarted}
         onReadFinished={handleFileReadFinished}
         onClearClick={handleClear}
@@ -133,6 +117,16 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
         disabled={isDisabled}
         allowEditingUploadedText={true}
       />
+      <FormHelperText>
+        <HelperText>
+          <HelperTextItem
+            icon={<ExclamationCircleIcon />}
+            variant={errorMessage ? 'error' : 'default'}
+          >
+            {errorMessage ? errorMessage : helperText}
+          </HelperTextItem>
+        </HelperText>
+      </FormHelperText>
     </FormGroup>
   );
 };

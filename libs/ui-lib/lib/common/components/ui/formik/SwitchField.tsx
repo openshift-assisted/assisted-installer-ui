@@ -1,9 +1,18 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Stack, StackItem, Switch, Tooltip } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Stack,
+  StackItem,
+  Switch,
+  Tooltip,
+} from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SwitchFieldProps } from './types';
-import HelperText from './HelperText';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const SwitchField: React.FC<SwitchFieldProps> = ({
   label,
@@ -42,19 +51,10 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
     },
   };
 
-  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
-
   return (
     <Stack>
       <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-        >
+        <FormGroup fieldId={fieldId} isRequired={isRequired} labelIcon={labelIcon}>
           {tooltipProps ? (
             <Tooltip {...tooltipProps}>
               <Switch {...switchFields} />
@@ -65,11 +65,16 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : hText}
+            </HelperTextItem>
           </HelperText>
-        )}
+        </FormHelperText>
       </StackItem>
     </Stack>
   );

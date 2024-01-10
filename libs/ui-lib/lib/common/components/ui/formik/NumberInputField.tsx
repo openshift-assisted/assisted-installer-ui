@@ -2,6 +2,9 @@ import * as React from 'react';
 import { useField } from 'formik';
 import {
   FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   NumberInput,
   NumberInputProps,
   Split,
@@ -11,7 +14,7 @@ import {
 } from '@patternfly/react-core';
 import { NumberInputFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 // eslint-disable-next-line react/display-name
 const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
@@ -63,20 +66,10 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
       doChange(isNaN(targetValue) ? 0 : Number(targetValue));
     };
 
-    const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
-
     return (
       <Stack>
         <StackItem>
-          <FormGroup
-            fieldId={fieldId}
-            label={label}
-            helperText={fieldHelperText}
-            helperTextInvalid={fieldHelperText}
-            validated={isValid ? 'default' : 'error'}
-            isRequired={isRequired}
-            labelIcon={labelIcon}
-          >
+          <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
             <Split>
               <SplitItem isFilled>
                 <NumberInput
@@ -97,11 +90,16 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
           </FormGroup>
         </StackItem>
         <StackItem>
-          {errorMessage && (
-            <HelperText fieldId={fieldId} isError>
-              {errorMessage}
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem
+                icon={<ExclamationCircleIcon />}
+                variant={errorMessage ? 'error' : 'default'}
+              >
+                {errorMessage ? errorMessage : helperText}
+              </HelperTextItem>
             </HelperText>
-          )}
+          </FormHelperText>
         </StackItem>
       </Stack>
     );

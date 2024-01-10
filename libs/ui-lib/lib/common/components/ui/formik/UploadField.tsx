@@ -1,10 +1,18 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, FileUpload, Stack, StackItem } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FileUpload,
+  Stack,
+  StackItem,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const UploadField: React.FC<UploadFieldProps> = ({
   label,
@@ -37,20 +45,10 @@ const UploadField: React.FC<UploadFieldProps> = ({
   };
   const errorMessage = getErrorMessage();
 
-  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
-
   return (
     <Stack>
       <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          label={label}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-        >
+        <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
           {children}
           <FileUpload
             filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
@@ -64,10 +62,10 @@ const UploadField: React.FC<UploadFieldProps> = ({
             type="text"
             value={field.value as string}
             filename={filename}
-            onChange={(value, filename) => {
-              setFilename(filename);
+            onFileInputChange={(event, file) => {
+              setFilename(file.name);
               helpers.setTouched(true);
-              helpers.setValue(value);
+              helpers.setValue(file);
             }}
             onBlur={(e) => {
               field.onBlur(e);
@@ -87,11 +85,16 @@ const UploadField: React.FC<UploadFieldProps> = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : helperText}
+            </HelperTextItem>
           </HelperText>
-        )}
+        </FormHelperText>
       </StackItem>
     </Stack>
   );

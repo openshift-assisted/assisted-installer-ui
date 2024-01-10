@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { FormGroup, Button } from '@patternfly/react-core';
+import {
+  FormGroup,
+  Button,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import { TextAreaSecretProps } from './types';
 import { getFieldId } from './utils';
 import TextAreaField from './TextAreaField';
@@ -28,15 +34,15 @@ const TextAreaSecretField: React.FC<TextAreaSecretProps> = ({
   }
 
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={helperTextHidden}
-      isRequired={props.isRequired}
-    >
+    <FormGroup fieldId={fieldId} label={label} isRequired={props.isRequired}>
       <Button onClick={() => onToggle(false)} variant="link">
         Change
       </Button>
+      <FormHelperText>
+        <HelperText>
+          <HelperTextItem>{helperTextHidden}</HelperTextItem>
+        </HelperText>
+      </FormHelperText>
     </FormGroup>
   );
 };
