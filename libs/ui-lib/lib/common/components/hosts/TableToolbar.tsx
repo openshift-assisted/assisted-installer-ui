@@ -124,7 +124,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
             {children}
             <ToolbarItem>
               {isDisabled ? (
-                <Tooltip content="Select one or more hosts">{actionsDropdown}</Tooltip>
+                <Tooltip content={t('ai:Select one or more hosts')}>{actionsDropdown}</Tooltip>
               ) : (
                 actionsDropdown
               )}

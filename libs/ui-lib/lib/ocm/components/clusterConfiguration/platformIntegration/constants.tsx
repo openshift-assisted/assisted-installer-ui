@@ -5,9 +5,8 @@ export const ExternalPlatformLabels: { [key in PlatformType]: string } = {
   baremetal: 'No platform integration',
   none: 'No platform integration',
   nutanix: 'Nutanix',
-  oci: 'Oracle Cloud Infrastructure (Requires a custom manifest)',
+  external: 'Oracle Cloud Infrastructure (Requires a custom manifest)',
   vsphere: 'vSphere',
-  external: '',
 };
 
 export const ExternalPlatformLinks: Partial<{ [key in PlatformType]: string }> = {
@@ -19,7 +18,6 @@ export const ExternalPlaformIds: { [key in PlatformType]: string } = {
   baremetal: '',
   none: '',
   nutanix: 'NUTANIX_INTEGRATION',
-  oci: 'EXTERNAL_PLATFORM_OCI',
+  external: 'EXTERNAL_PLATFORM_OCI',
   vsphere: 'VSPHERE_INTEGRATION',
-  external: '',
 };

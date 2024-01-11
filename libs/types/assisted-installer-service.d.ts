@@ -2191,11 +2191,6 @@ export type OsImages = OsImage[];
 export interface Platform {
   type: PlatformType;
   external?: PlatformExternal;
-  /**
-   * Used by the service to indicate that the platform-specific components are not included in
-   * OpenShift and must be provided as manifests separately.
-   */
-  readonly isExternal?: boolean;
 }
 /**
  * Configuration used when installing with an external platform type.
@@ -2210,7 +2205,7 @@ export interface PlatformExternal {
    */
   cloudControllerManager?: '' | 'External';
 }
-export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'oci' | 'external';
+export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none' | 'external';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -2619,7 +2614,8 @@ export interface V2SupportLevelsArchitectures {
 export interface V2SupportLevelsFeatures {
   openshiftVersion: string;
   cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
-  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'oci' | 'external';
+  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'external';
+  externalPlatformName?: string;
 }
 /**
  * Single VIP verification result.
