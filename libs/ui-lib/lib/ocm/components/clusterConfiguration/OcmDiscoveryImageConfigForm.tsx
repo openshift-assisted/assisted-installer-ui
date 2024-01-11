@@ -158,7 +158,7 @@ export const OcmDiscoveryImageConfigForm = ({
                     />
                     <UploadSSH
                       labelText={t(
-                        'ai:Provide SSH keys separated by newlines to be able to connect to the hosts for debugging purposes during the discovery process',
+                        'ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process',
                       )}
                     />
                     <ProxyFields />
