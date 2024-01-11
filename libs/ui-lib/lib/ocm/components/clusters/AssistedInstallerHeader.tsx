@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextContent, Text, Split, SplitItem } from '@patternfly/react-core';
-import { ASSISTED_INSTALLER_DOCUMENTATION_LINK, ExternalLink } from '../../../common';
+import { ASSISTED_INSTALLER_DOCUMENTATION_LINK, ExternalLink, isInOcm } from '../../../common';
 
 export const AssistedInstallerHeader = () => {
   return (
@@ -14,11 +14,13 @@ export const AssistedInstallerHeader = () => {
             Assisted Installer documentation
           </ExternalLink>
         </SplitItem>
-        <SplitItem>
-          <Text component="a" data-testid="whats-new-link">
-            What's new in Assisted Installer?
-          </Text>
-        </SplitItem>
+        {isInOcm && (
+          <SplitItem>
+            <Text component="a" data-testid="whats-new-link">
+              What's new in Assisted Installer?
+            </Text>
+          </SplitItem>
+        )}
       </Split>
     </TextContent>
   );

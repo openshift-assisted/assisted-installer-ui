@@ -112,6 +112,18 @@ const getReasonForDropdownDisabled = (isSNO: boolean, labelCpuArch: string): str
   }
 };
 
+const isPlatformDevPreview = (
+  platform: PlatformType,
+  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  featureSupportLevelData?: NewFeatureSupportLevelMap | null,
+): boolean => {
+  const supportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
+    ExternalPlaformIds[platform] as FeatureId,
+    featureSupportLevelData ?? undefined,
+  );
+  return platform === 'external' || supportLevel === 'dev-preview';
+};
+
 export const ExternalPlatformDropdown = ({
   showOciOption,
   onChange,
@@ -173,6 +185,7 @@ export const ExternalPlatformDropdown = ({
     const { label, href, disabledReason } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
+
     return (
       <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
         <Split>
@@ -180,7 +193,15 @@ export const ExternalPlatformDropdown = ({
             <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
               <div>
                 {label}
-                {platform === 'external' && <DeveloperPreview testId={'oci-support-level`'} />}
+                {isPlatformDevPreview(
+                  platform as PlatformType,
+                  newFeatureSupportLevelContext,
+                  featureSupportLevelData,
+                ) && (
+                  <span onClick={(event) => event.stopPropagation()}>
+                    <DeveloperPreview testId={'platform-support-level'} />
+                  </span>
+                )}
               </div>
             </Tooltip>
           </SplitItem>

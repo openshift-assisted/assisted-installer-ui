@@ -55,6 +55,10 @@ const ClusterDetailsService = {
       },
     };
 
+    if (!values.isCMNSupported) {
+      params.userManagedNetworking = true;
+    }
+
     if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC) {
       params.staticNetworkConfig = getDummyInfraEnvField();
     }
