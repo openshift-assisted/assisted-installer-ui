@@ -122,11 +122,14 @@ export const sshPublicKeyListValidationSchema = Yup.string()
       if (!value) {
         return true;
       }
-      return (
-        trimSshPublicKey(value)
-          .split('\n')
-          .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
-      );
+      return !!trimSshPublicKey(value).match(SSH_PUBLIC_KEY_REGEX);
+
+      // disable until mutliple keys are supported (https://issues.redhat.com/browse/METAL-250)
+      // return (
+      //   trimSshPublicKey(value)
+      //     .split('\n')
+      //     .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
+      // );
     },
   )
   .test('ssh-public-keys-unique', 'SSH public keys must be unique.', (value: string) => {

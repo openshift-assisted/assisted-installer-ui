@@ -104,6 +104,26 @@ export const areAllExternalPlatformIntegrationDisabled = (
     .every((info) => info.disabledReason !== undefined);
 };
 
+const getReasonForDropdownDisabled = (isSNO: boolean, labelCpuArch: string): string => {
+  if (!isSNO) {
+    return `Platform integration is not supported when ${labelCpuArch} is selected`;
+  } else {
+    return `Platform integration is not supported for SNO clusters`;
+  }
+};
+
+const isPlatformDevPreview = (
+  platform: PlatformType,
+  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  featureSupportLevelData?: NewFeatureSupportLevelMap | null,
+): boolean => {
+  const supportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
+    ExternalPlaformIds[platform] as FeatureId,
+    featureSupportLevelData ?? undefined,
+  );
+  return platform === 'external' || supportLevel === 'dev-preview';
+};
+
 export const ExternalPlatformDropdown = ({
   showOciOption,
   onChange,
@@ -117,9 +137,10 @@ export const ExternalPlatformDropdown = ({
     Partial<{ [key in PlatformType]: ExternalPlatformInfo }>
   >({});
 
-  const tooltipDropdownDisabled = `Platform integration is not supported when ${
-    cpuArchitecture ? architectureData[cpuArchitecture].label : ''
-  } is selected`;
+  const tooltipDropdownDisabled = getReasonForDropdownDisabled(
+    isSNO,
+    cpuArchitecture ? architectureData[cpuArchitecture].label : '',
+  );
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {
     event.stopPropagation(); // Stop event propagation here
@@ -164,6 +185,7 @@ export const ExternalPlatformDropdown = ({
     const { label, href, disabledReason } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
+
     return (
       <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
         <Split>
@@ -171,7 +193,15 @@ export const ExternalPlatformDropdown = ({
             <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
               <div>
                 {label}
-                {platform === 'external' && <DeveloperPreview testId={'oci-support-level`'} />}
+                {isPlatformDevPreview(
+                  platform as PlatformType,
+                  newFeatureSupportLevelContext,
+                  featureSupportLevelData,
+                ) && (
+                  <span onClick={(event) => event.stopPropagation()}>
+                    <DeveloperPreview testId={'platform-support-level'} />
+                  </span>
+                )}
               </div>
             </Tooltip>
           </SplitItem>
