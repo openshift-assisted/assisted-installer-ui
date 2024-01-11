@@ -120,7 +120,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               id={fieldId}
               isRequired={isRequired}
               aria-describedby={`${fieldId}-helper`}
-              onChange={(event, value) => {
+              onChange={(event) => {
                 !popoverOpen && setPopoverOpen(true);
                 !noDefaultOnChange && field.onChange(event);
                 setTouched(true, false);
