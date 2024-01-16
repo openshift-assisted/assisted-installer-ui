@@ -24,7 +24,12 @@ export type NodePoolFormValues = {
     key: string;
     value: string;
   }[];
-  count: number;
+  count?: number;
+  autoscaling?: {
+    minReplicas: number;
+    maxReplicas: number;
+  };
+  useAutoscaling?: boolean;
 };
 
 type NodePoolFormProps = {
@@ -91,6 +96,8 @@ const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePo
             agents={agents}
             countName="count"
             labelName="agentLabels"
+            autoscalingName={`autoscaling`}
+            useAutoscalingName={`useAutoscaling`}
             maxAgents={maxAgents}
             isEdit={isEdit}
           />

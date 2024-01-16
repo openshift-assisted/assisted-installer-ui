@@ -19,7 +19,7 @@ type ClusterInstallationProgressProps = {
     nodePool: NodePoolK8sResource,
     nodePoolPatches: {
       op: string;
-      value: unknown;
+      value?: unknown;
       path: string;
     }[],
   ) => Promise<unknown>;

@@ -37,7 +37,13 @@ type NodePoolFormProps = {
 const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, onRemove }) => {
   const { t } = useTranslation();
   const { values } = useFormikContext<HostsFormValues>();
-  const { setValue } = useFormikHelpers(`nodePools[${index}].count`);
+  const { setValue: setCountValue } = useFormikHelpers(`nodePools[${index}].count`);
+  const { setValue: setMinAutoscalingValue } = useFormikHelpers(
+    `nodePools[${index}].autoscaling.minReplicas`,
+  );
+  const { setValue: setMaxAutoscalingValue } = useFormikHelpers(
+    `nodePools[${index}].autoscaling.maxReplicas`,
+  );
   const [isExpanded, setExpanded] = React.useState(true);
   const infraEnvAgents = React.useMemo(() => {
     const infraEnv = infraEnvs.find((ie) => ie.metadata?.namespace === values.agentNamespace);
@@ -63,7 +69,11 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
   let previousNodePoolsCount = 0;
 
   for (let i = 0; i < index; i++) {
-    previousNodePoolsCount += values.nodePools[i].count;
+    previousNodePoolsCount += (
+      values.nodePools[i].useAutoscaling
+        ? values.nodePools[i].autoscaling?.maxReplicas
+        : values.nodePools[i].count
+    ) as number;
   }
 
   const maxAgents = Math.max(
@@ -71,12 +81,32 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     Math.min(matchingAgents.length, availableAgents.length - previousNodePoolsCount),
   );
 
-  const currentCount = values.nodePools[index].count;
+  const currentCount = (
+    values.nodePools[index].useAutoscaling
+      ? values.nodePools[index].autoscaling?.maxReplicas
+      : values.nodePools[index].count
+  ) as number;
+
   React.useEffect(() => {
     if (currentCount > maxAgents) {
-      void setValue(maxAgents);
+      if (!!values.nodePools[index].count) {
+        void setCountValue(maxAgents);
+      } else {
+        if (maxAgents === 0) {
+          void setMinAutoscalingValue(maxAgents);
+        }
+        void setMaxAutoscalingValue(maxAgents);
+      }
     }
-  }, [maxAgents, setValue, currentCount]);
+  }, [
+    maxAgents,
+    currentCount,
+    values.nodePools,
+    index,
+    setCountValue,
+    setMinAutoscalingValue,
+    setMaxAutoscalingValue,
+  ]);
 
   return (
     <Stack hasGutter>
@@ -135,6 +165,8 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
             agents={infraEnvAgents}
             countName={`nodePools.${index}.count`}
             labelName={`nodePools.${index}.agentLabels`}
+            autoscalingName={`nodePools.${index}.autoscaling`}
+            useAutoscalingName={`nodePools.${index}.useAutoscaling`}
             maxAgents={maxAgents}
           />
         </StackItem>

@@ -5,12 +5,17 @@ import { NodePoolK8sResource } from '../../types';
 export type NodePoolFormValue = {
   name: string;
   clusterName: string;
-  count: number;
   agentLabels: {
     key: string;
     value: string;
   }[];
   releaseImage: string;
+  count?: number;
+  autoscaling?: {
+    minReplicas: number;
+    maxReplicas: number;
+  };
+  useAutoscaling?: boolean;
 };
 
 export type HostsFormValues = {

@@ -4,7 +4,7 @@ import { StatusCondition } from '../../types/k8s/shared';
 export type NodePoolK8sResource = K8sResourceCommon & {
   spec: {
     clusterName: string;
-    replicas: number;
+    replicas?: number;
     management: {
       autoRepair?: boolean;
       replace?: {

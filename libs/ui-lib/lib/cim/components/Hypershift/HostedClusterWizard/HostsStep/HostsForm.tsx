@@ -35,7 +35,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
       ];
 
   const totalHosts = values.nodePools.reduce((acc, nodePool) => {
-    acc += nodePool.count;
+    acc += (nodePool.count || nodePool.autoscaling?.maxReplicas) as number;
     return acc;
   }, 0);
 
