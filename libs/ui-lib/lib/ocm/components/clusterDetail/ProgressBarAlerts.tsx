@@ -92,7 +92,7 @@ export const HostInstallationWarning = ({
   failedOperators = [],
   message,
 }: InstallationProgressWarningProps) => {
-  const { addAlert } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   const { t } = useTranslation();
   const featureSupportLevel = useNewFeatureSupportLevel();
 
@@ -107,7 +107,7 @@ export const HostInstallationWarning = ({
             <AlertActionLink
               id="cluster-installation-logs-button"
               onClick={() => {
-                void downloadClusterInstallationLogs(addAlert, cluster.id);
+                void downloadClusterInstallationLogs(addAlert, cluster.id, clearAlerts);
               }}
               isDisabled={!canDownloadClusterLogs(cluster)}
             >
@@ -143,7 +143,7 @@ export const HostsInstallationFailed = ({
   totalHosts,
   isCriticalNumberOfWorkersFailed,
 }: InstallationProgressWarningProps) => {
-  const { addAlert } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   const { resetClusterDialog } = useModalDialogsContext();
   const getID = (suffix: string) => `cluster-install-error-${suffix}`;
   let title, message;
@@ -185,7 +185,7 @@ export const HostsInstallationFailed = ({
             <AlertActionLink
               id="cluster-installation-logs-button"
               onClick={() => {
-                void downloadClusterInstallationLogs(addAlert, cluster.id);
+                void downloadClusterInstallationLogs(addAlert, cluster.id, clearAlerts);
               }}
               isDisabled={!canDownloadClusterLogs(cluster)}
             >
