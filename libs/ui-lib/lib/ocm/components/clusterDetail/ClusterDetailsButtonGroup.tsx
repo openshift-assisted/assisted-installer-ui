@@ -30,7 +30,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
   credentialsError,
   showKubeConfig = true,
 }) => {
-  const { addAlert } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   const { cancelInstallationDialog, resetClusterDialog } = useModalDialogsContext();
   const hasConsoleUrlAndNoError = credentials?.consoleUrl !== undefined && !credentialsError;
 
@@ -88,7 +88,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
           data-testid="cluster-installation-logs-button"
           variant={ButtonVariant.link}
           onClick={() => {
-            void downloadClusterInstallationLogs(addAlert, cluster.id);
+            void downloadClusterInstallationLogs(addAlert, cluster.id, clearAlerts);
           }}
           isDisabled={!canDownloadClusterLogs(cluster)}
         >

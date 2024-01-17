@@ -14,7 +14,9 @@ import {
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
   clusterId: string,
+  clearAlerts: AlertsContextType['clearAlerts'],
 ) => {
+  clearAlerts();
   try {
     if (isInOcm) {
       const { data } = await ClustersAPI.getPresignedForClusterFiles({
