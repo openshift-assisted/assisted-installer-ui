@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 
-const OdfDisksManualFormattingHint = () => {
+const OdfLvmDisksManualFormattingHint = () => {
   return (
     <Alert
       variant={AlertVariant.warning}
@@ -14,4 +14,4 @@ const OdfDisksManualFormattingHint = () => {
   );
 };
 
-export default OdfDisksManualFormattingHint;
+export default OdfLvmDisksManualFormattingHint;
