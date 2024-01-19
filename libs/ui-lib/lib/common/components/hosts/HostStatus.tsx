@@ -6,7 +6,6 @@ import {
   TextContent,
   FlexItem,
   Flex,
-  ButtonProps,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -264,7 +263,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
         {children && <FlexItem>{children}</FlexItem>}
         {sublabel && (
           <FlexItem
-            className="pf-u-font-size-xs"
+            className="pf-v5-u-font-size-xs"
             style={{ marginTop: 'calc(-1 * var(--pf-l-flex--spacer--xs))' }}
           >
             <WithHostStatusPopover {...popoverProps}>{sublabel}</WithHostStatusPopover>

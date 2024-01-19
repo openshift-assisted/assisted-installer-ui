@@ -183,7 +183,7 @@ const CpuArchitectureDropdown = ({
         onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {currentCpuArch}
       </DropdownToggle>
@@ -199,7 +199,7 @@ const CpuArchitectureDropdown = ({
         dropdownItems={enabledItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
         onSelect={onSelect}
       />
     </FormGroup>

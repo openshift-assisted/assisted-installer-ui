@@ -5,8 +5,6 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Stack,
-  StackItem,
   TextArea,
 } from '@patternfly/react-core';
 import { TextAreaFieldProps } from './types';
@@ -39,42 +37,38 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
   const { isDisabled, ...restProps } = props;
 
   return (
-    <Stack id={`form-control__${fieldId}`}>
-      <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          label={label}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-          className={groupClassName}
-        >
-          {children}
-          <TextArea
-            {...field}
-            {...restProps}
-            id={fieldId}
-            style={{ resize: 'vertical' }}
-            validated={isValid ? 'default' : 'error'}
-            isRequired={isRequired}
-            aria-describedby={`${fieldId}-helper`}
-            onChange={(event) => field.onChange(event)}
-            disabled={isDisabled}
-          />
-        </FormGroup>
-      </StackItem>
-      <StackItem>
+    <FormGroup
+      fieldId={fieldId}
+      label={label}
+      isRequired={isRequired}
+      labelIcon={labelIcon}
+      className={groupClassName}
+    >
+      {children}
+      <TextArea
+        {...field}
+        {...restProps}
+        id={fieldId}
+        style={{ resize: 'vertical' }}
+        validated={isValid ? 'default' : 'error'}
+        isRequired={isRequired}
+        aria-describedby={`${fieldId}-helper`}
+        onChange={(event) => field.onChange(event)}
+        disabled={isDisabled}
+      />
+      {(errorMessage || helperText) && (
         <FormHelperText>
           <HelperText>
             <HelperTextItem
-              icon={<ExclamationCircleIcon />}
+              icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
-      </StackItem>
-    </Stack>
+      )}
+    </FormGroup>
   );
 };
 

@@ -15,8 +15,6 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_info_color_100 as infoColor } from '@patternfly/react-tokens/dist/js/global_info_color_100';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 import { ClusterValidations, DetailItem, DetailList, HostsValidations } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -55,7 +53,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        classNameValue={'pf-u-mb-md'}
+        classNameValue={'pf-v5-u-mb-md'}
         testId="cluster-preflight-checks"
       />
       <DetailItem
@@ -69,7 +67,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        classNameValue={'pf-u-mb-md'}
+        classNameValue={'pf-v5-u-mb-md'}
         testId="host-preflight-checks"
       />
       <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />

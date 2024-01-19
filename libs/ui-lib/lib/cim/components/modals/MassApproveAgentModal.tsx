@@ -27,7 +27,7 @@ type ApproveTableRowProps = {
 };
 
 const ApproveTableRow: React.FC<ApproveTableRowProps> = ({ agent, children }) => (
-  <div className={agent?.spec.approved ? 'pf-u-color-200' : undefined}>{children}</div>
+  <div className={agent?.spec.approved ? 'pf-v5-u-color-200' : undefined}>{children}</div>
 );
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {

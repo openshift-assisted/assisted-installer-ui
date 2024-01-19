@@ -32,7 +32,7 @@ export class ExternalPartnerIntegrationsField {
   static findDropdownItems() {
     ExternalPartnerIntegrationsField.findDropdown().click();
     return ExternalPartnerIntegrationsField.findDropdown().find(
-      '.pf-c-dropdown__menu [role="menuitem"]',
+      '.pf-v5-c-dropdown__menu [role="menuitem"]',
     );
   }
 

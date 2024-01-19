@@ -1,5 +1,5 @@
 import React from 'react';
-import { HelperText, FormGroup } from '@patternfly/react-core';
+import { HelperText, FormGroup, FormHelperText, HelperTextItem } from '@patternfly/react-core';
 import {
   DropdownItem,
   DropdownToggle,
@@ -100,7 +100,7 @@ export const OpenShiftVersionDropdown = ({
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {current}
       </DropdownToggle>
@@ -123,9 +123,15 @@ export const OpenShiftVersionDropdown = ({
         dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       />
-      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      {helperText && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="default">{helperText}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
       {showReleasesLink && (
         <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
           <span data-ouia-id="openshift-releases-link">

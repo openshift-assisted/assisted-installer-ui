@@ -9,8 +9,6 @@ import {
   NumberInputProps,
   Split,
   SplitItem,
-  Stack,
-  StackItem,
 } from '@patternfly/react-core';
 import { NumberInputFieldProps } from './types';
 import { getFieldId } from './utils';
@@ -67,41 +65,37 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
     };
 
     return (
-      <Stack>
-        <StackItem>
-          <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
-            <Split>
-              <SplitItem isFilled>
-                <NumberInput
-                  {...props}
-                  value={field.value}
-                  onMinus={onMinus}
-                  onChange={handleChange}
-                  onPlus={onPlus}
-                  min={minValue}
-                  max={maxValue}
-                  ref={ref}
-                  id={fieldId}
-                  aria-describedby={`${fieldId}-helper`}
-                />
-              </SplitItem>
-              <SplitItem>{children}</SplitItem>
-            </Split>
-          </FormGroup>
-        </StackItem>
-        <StackItem>
+      <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+        <Split>
+          <SplitItem isFilled>
+            <NumberInput
+              {...props}
+              value={field.value}
+              onMinus={onMinus}
+              onChange={handleChange}
+              onPlus={onPlus}
+              min={minValue}
+              max={maxValue}
+              ref={ref}
+              id={fieldId}
+              aria-describedby={`${fieldId}-helper`}
+            />
+          </SplitItem>
+          <SplitItem>{children}</SplitItem>
+        </Split>
+        {(errorMessage || helperText) && (
           <FormHelperText>
             <HelperText>
               <HelperTextItem
-                icon={<ExclamationCircleIcon />}
+                icon={errorMessage && <ExclamationCircleIcon />}
                 variant={errorMessage ? 'error' : 'default'}
               >
                 {errorMessage ? errorMessage : helperText}
               </HelperTextItem>
             </HelperText>
           </FormHelperText>
-        </StackItem>
-      </Stack>
+        )}
+      </FormGroup>
     );
   },
 );

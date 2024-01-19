@@ -5,8 +5,6 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Stack,
-  StackItem,
   Switch,
   Tooltip,
 } from '@patternfly/react-core';
@@ -52,19 +50,15 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   };
 
   return (
-    <Stack>
-      <StackItem>
-        <FormGroup fieldId={fieldId} isRequired={isRequired} labelIcon={labelIcon}>
-          {tooltipProps ? (
-            <Tooltip {...tooltipProps}>
-              <Switch {...switchFields} />
-            </Tooltip>
-          ) : (
-            <Switch {...switchFields} />
-          )}
-        </FormGroup>
-      </StackItem>
-      <StackItem>
+    <FormGroup fieldId={fieldId} isRequired={isRequired} labelIcon={labelIcon}>
+      {tooltipProps ? (
+        <Tooltip {...tooltipProps}>
+          <Switch {...switchFields} />
+        </Tooltip>
+      ) : (
+        <Switch {...switchFields} />
+      )}
+      {(errorMessage || hText) && (
         <FormHelperText>
           <HelperText>
             <HelperTextItem
@@ -75,8 +69,8 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
-      </StackItem>
-    </Stack>
+      )}
+    </FormGroup>
   );
 };
 

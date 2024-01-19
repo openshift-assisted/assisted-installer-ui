@@ -21,7 +21,7 @@ export type PreviewBadgeProps = {
 
 export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   position = PreviewBadgePosition.inline,
-  className = 'pf-u-ml-md',
+  className = 'pf-v5-u-ml-md',
   text,
   popoverText,
   externalLink,
@@ -53,7 +53,7 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
         <Label
           style={{ cursor: 'pointer' }}
           color="orange"
-          icon={<InfoCircleIcon color="var(--pf-c-label__content--Color)" />}
+          icon={<InfoCircleIcon color="var(--pf-v5-c-label__content--Color)" />}
           className={clsName}
           {...(testId ? { 'data-testid': testId } : {})}
         >

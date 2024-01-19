@@ -54,7 +54,7 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
         onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {value || 'manifests'}
       </DropdownToggle>
@@ -72,7 +72,7 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
         dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       />
       <HelperText style={{ display: 'inherit' }}>
         {'Manifests can be placed in "manifests" or "openshift" directories.'}

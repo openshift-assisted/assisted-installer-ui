@@ -3,8 +3,6 @@ import { useField } from 'formik';
 import {
   FormGroup,
   FileUpload,
-  Stack,
-  StackItem,
   FormHelperText,
   HelperText,
   HelperTextItem,
@@ -46,58 +44,54 @@ const UploadField: React.FC<UploadFieldProps> = ({
   const errorMessage = getErrorMessage();
 
   return (
-    <Stack>
-      <StackItem>
-        <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
-          {children}
-          <FileUpload
-            filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
-            browseButtonText={t('ai:Browse...')}
-            clearButtonText={t('ai:Clear')}
-            id={field.name}
-            style={{ resize: 'vertical' }}
-            validated={isValid ? 'default' : 'error'}
-            isRequired={isRequired}
-            aria-describedby={`${fieldId}-helper`}
-            type="text"
-            value={field.value as string}
-            filename={filename}
-            onFileInputChange={(event, file) => {
-              setFilename(file.name);
-              helpers.setTouched(true);
-              helpers.setValue(file);
-            }}
-            onBlur={(e) => {
-              field.onBlur(e);
-              onBlur && onBlur(e);
-            }}
-            onReadStarted={() => setIsFileUploading(true)}
-            onReadFinished={() => setIsFileUploading(false)}
-            isLoading={isFileUploading}
-            disabled={isDisabled}
-            dropzoneProps={{
-              ...dropzoneProps,
-              onDropRejected: () => {
-                dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers);
-              },
-            }}
-            allowEditingUploadedText={allowEdittingUploadedText}
-          />
-        </FormGroup>
-      </StackItem>
-      <StackItem>
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+      {children}
+      <FileUpload
+        filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
+        browseButtonText={t('ai:Browse...')}
+        clearButtonText={t('ai:Clear')}
+        id={field.name}
+        style={{ resize: 'vertical' }}
+        validated={isValid ? 'default' : 'error'}
+        isRequired={isRequired}
+        aria-describedby={`${fieldId}-helper`}
+        type="text"
+        value={field.value as string}
+        filename={filename}
+        onFileInputChange={(event, file) => {
+          setFilename(file.name);
+          helpers.setTouched(true);
+          helpers.setValue(file);
+        }}
+        onBlur={(e) => {
+          field.onBlur(e);
+          onBlur && onBlur(e);
+        }}
+        onReadStarted={() => setIsFileUploading(true)}
+        onReadFinished={() => setIsFileUploading(false)}
+        isLoading={isFileUploading}
+        disabled={isDisabled}
+        dropzoneProps={{
+          ...dropzoneProps,
+          onDropRejected: () => {
+            dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers);
+          },
+        }}
+        allowEditingUploadedText={allowEdittingUploadedText}
+      />
+      {(errorMessage || helperText) && (
         <FormHelperText>
           <HelperText>
             <HelperTextItem
-              icon={<ExclamationCircleIcon />}
+              icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
-      </StackItem>
-    </Stack>
+      )}
+    </FormGroup>
   );
 };
 

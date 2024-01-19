@@ -6,8 +6,6 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Stack,
-  StackItem,
 } from '@patternfly/react-core';
 import { CheckboxFieldProps } from './types';
 import { getFieldId } from './utils';
@@ -28,38 +26,31 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   const fieldHelperText = <HelperText>{helperText}</HelperText>;
 
   return (
-    <Stack id={`form-control__${fieldId}`}>
-      <StackItem>
-        <FormGroup fieldId={fieldId}>
-          <Checkbox
-            {...field}
-            {...props}
-            id={fieldId}
-            label={label}
-            aria-describedby={`${fieldId}-helper`}
-            description={fieldHelperText}
-            isValid={isValid}
-            isChecked={field.value as boolean}
-            onChange={(event, value) => {
-              field.onChange(event);
-              onChange && onChange(value, event);
-            }}
-          />
-        </FormGroup>
-      </StackItem>
-      <StackItem>
+    <FormGroup fieldId={fieldId}>
+      <Checkbox
+        {...field}
+        {...props}
+        id={fieldId}
+        label={label}
+        aria-describedby={`${fieldId}-helper`}
+        description={fieldHelperText}
+        isValid={isValid}
+        isChecked={field.value as boolean}
+        onChange={(event, value) => {
+          field.onChange(event);
+          onChange && onChange(value, event);
+        }}
+      />
+      {errorMessage && (
         <FormHelperText>
           <HelperText>
-            <HelperTextItem
-              icon={<ExclamationCircleIcon />}
-              variant={errorMessage ? 'error' : 'default'}
-            >
-              {errorMessage ? errorMessage : helperText}
+            <HelperTextItem icon={<ExclamationCircleIcon />} variant="error">
+              {errorMessage}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
-      </StackItem>
-    </Stack>
+      )}
+    </FormGroup>
   );
 };
 

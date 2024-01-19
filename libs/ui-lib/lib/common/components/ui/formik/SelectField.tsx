@@ -7,8 +7,6 @@ import {
   FormSelectOption,
   HelperText,
   HelperTextItem,
-  Stack,
-  StackItem,
 } from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SelectFieldProps } from './types';
@@ -36,29 +34,25 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const hText = getHelperText ? getHelperText(field.value) : helperText;
 
   return (
-    <Stack id={`form-control__${fieldId}`}>
-      <StackItem>
-        <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
-          <FormSelect
-            {...field}
-            {...props}
-            id={fieldId}
-            validated={isValid ? 'default' : 'error'}
-            isRequired={isRequired}
-            aria-describedby={`${fieldId}-helper`}
-            onChange={(event, value) => {
-              //customHandleChange enables calling formik change handler explicitly, useful for example to have the previous value
-              callFormikOnChange && field.onChange(event);
-              onChange && onChange(event, value);
-            }}
-          >
-            {options.map((option, index) => (
-              <FormSelectOption key={option.id || index} {...option} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-      </StackItem>
-      <StackItem>
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+      <FormSelect
+        {...field}
+        {...props}
+        id={fieldId}
+        validated={isValid ? 'default' : 'error'}
+        isRequired={isRequired}
+        aria-describedby={`${fieldId}-helper`}
+        onChange={(event, value) => {
+          //customHandleChange enables calling formik change handler explicitly, useful for example to have the previous value
+          callFormikOnChange && field.onChange(event);
+          onChange && onChange(event, value);
+        }}
+      >
+        {options.map((option, index) => (
+          <FormSelectOption key={option.id || index} {...option} />
+        ))}
+      </FormSelect>
+      {(errorMessage || hText) && (
         <FormHelperText>
           <HelperText>
             <HelperTextItem
@@ -69,8 +63,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
-      </StackItem>
-    </Stack>
+      )}
+    </FormGroup>
   );
 };
 

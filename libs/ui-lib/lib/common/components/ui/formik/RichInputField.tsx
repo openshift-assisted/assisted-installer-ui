@@ -160,11 +160,13 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
             </Popover>
           </InputGroupItem>
         </InputGroup>
-        <FormHelperText>
-          <HelperText>
-            <HelperTextItem variant={isValid ? 'default' : 'error'}>{helperText}</HelperTextItem>
-          </HelperText>
-        </FormHelperText>
+        {helperText && (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={isValid ? 'default' : 'error'}>{helperText}</HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     );
   },

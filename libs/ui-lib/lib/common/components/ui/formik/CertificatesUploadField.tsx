@@ -118,16 +118,18 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
         disabled={isDisabled}
         allowEditingUploadedText={true}
       />
-      <FormHelperText>
-        <HelperText>
-          <HelperTextItem
-            icon={<ExclamationCircleIcon />}
-            variant={errorMessage ? 'error' : 'default'}
-          >
-            {errorMessage ? errorMessage : helperText}
-          </HelperTextItem>
-        </HelperText>
-      </FormHelperText>
+      {(errorMessage || helperText) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={errorMessage && <ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : helperText}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

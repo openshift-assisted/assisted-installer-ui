@@ -19,7 +19,7 @@ const ExpandableSectionTitle = ({
 }) => (
   <span>
     {`Host inventory ${hostsCount > 0 ? `(${hostsCount})` : ''}`}
-    {icon && <span className="pf-u-ml-sm">{icon}</span>}
+    {icon && <span className="pf-v5-u-ml-sm">{icon}</span>}
   </span>
 );
 

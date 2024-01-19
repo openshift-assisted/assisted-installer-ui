@@ -44,7 +44,7 @@ const Day2Wizard = () => {
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
     >
-      <div className={classNames('pf-c-wizard', 'cluster-wizard')}>
+      <div className={classNames('pf-v5-c-wizard', 'cluster-wizard')}>
         <WizardHeader
           title={'Add hosts'}
           description={'Choose the settings for adding a new host'}

@@ -21,10 +21,12 @@ export const SshPublicKeyHelperText: React.FC<{
   const { t } = useTranslation();
   return (
     <HelperText id={fieldId}>
-      {t(
-        'ai:Paste the content of a public ssh key you want to use to connect to the hosts into this field.',
-      )}{' '}
-      <ExternalLink href={SSH_GENERATION_DOC_LINK}>{t('ai:Learn more')}</ExternalLink>
+      <HelperTextItem>
+        {t(
+          'ai:Paste the content of a public ssh key you want to use to connect to the hosts into this field.',
+        )}{' '}
+        <ExternalLink href={SSH_GENERATION_DOC_LINK}>{t('ai:Learn more')}</ExternalLink>
+      </HelperTextItem>
     </HelperText>
   );
 };
@@ -88,13 +90,15 @@ const SecurityFields = ({
             isDisabled={isDisabled}
           />
         </RenderIf>
-        <FormHelperText>
-          <HelperText>
-            <HelperTextItem variant={touched && errorMsg ? 'error' : 'default'}>
-              {errorMsg ? errorMsg : ''}
-            </HelperTextItem>
-          </HelperText>
-        </FormHelperText>
+        {errorMsg && (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={touched && errorMsg ? 'error' : 'default'}>
+                {errorMsg ? errorMsg : ''}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     </>
   );

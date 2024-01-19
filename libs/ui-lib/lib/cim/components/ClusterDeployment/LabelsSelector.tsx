@@ -103,7 +103,7 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
   const categoryName = label || t('ai:Filter hosts by existing labels');
 
   return (
-    <Split hasGutter className="pf-c-label-group pf-m-category ai-split-filter-hosts">
+    <Split hasGutter className="pf-v5-c-label-group pf-m-category ai-split-filter-hosts">
       <SplitItem>
         {field.value.length ? (
           <LabelGroup categoryName={categoryName} className="ai-group-label-selector">
@@ -117,7 +117,7 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
             ))}
           </LabelGroup>
         ) : (
-          <span className="pf-c-label-group__label">{categoryName}</span>
+          <span className="pf-v5-c-label-group__label">{categoryName}</span>
         )}
       </SplitItem>
       <SplitItem>

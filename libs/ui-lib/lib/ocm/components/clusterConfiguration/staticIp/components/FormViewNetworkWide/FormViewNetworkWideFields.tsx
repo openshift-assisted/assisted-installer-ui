@@ -112,16 +112,18 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
           />
         </FlexItem>
       </Flex>
-      <FormHelperText>
-        <HelperText>
-          <HelperTextItem
-            icon={errorMessage ? <ExclamationCircleIcon /> : null}
-            variant={errorMessage ? 'error' : 'default'}
-          >
-            {errorMessage ? errorMessage : machineNetworkHelptext}
-          </HelperTextItem>
-        </HelperText>
-      </FormHelperText>
+      {(errorMessage || machineNetworkHelptext) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={errorMessage ? <ExclamationCircleIcon /> : null}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : machineNetworkHelptext}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

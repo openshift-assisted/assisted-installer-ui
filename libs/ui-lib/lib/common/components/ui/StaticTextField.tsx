@@ -39,13 +39,18 @@ export const StaticField: React.FC<StaticFieldProps> = ({
       isRequired={isRequired}
     >
       {children}
-      <FormHelperText>
-        <HelperText>
-          <HelperTextItem icon={<ExclamationCircleIcon />} variant={isValid ? 'default' : 'error'}>
-            {isValid ? helperText : helperTextInvalid}
-          </HelperTextItem>
-        </HelperText>
-      </FormHelperText>
+      {(helperText || helperTextInvalid) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={isValid ? 'default' : 'error'}
+            >
+              {isValid ? helperText : helperTextInvalid}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

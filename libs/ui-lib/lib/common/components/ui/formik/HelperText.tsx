@@ -12,7 +12,7 @@ type HelperTextProps = {
  */
 const HelperText: React.FC<HelperTextProps> = ({ fieldId, children, isError = false }) => (
   <div
-    className={css('pf-c-form__helper-text', { 'pf-m-error': isError })}
+    className={css('pf-v5-c-form__helper-text', { 'pf-m-error': isError })}
     id={isError ? `${fieldId}-helper-error` : `${fieldId}-helper`}
     aria-live="polite"
   >

@@ -8,5 +8,5 @@
 
 .detail-list ul ul,
 .detail-list ul li {
-  margin-top: var(--pf-c-content--dt--sm--MarginTop);
+  margin-top: var(--pf-v5-c-content--dt--sm--MarginTop);
 }

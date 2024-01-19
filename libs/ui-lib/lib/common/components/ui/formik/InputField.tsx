@@ -7,8 +7,6 @@ import {
   HelperTextItem,
   Split,
   SplitItem,
-  Stack,
-  StackItem,
   TextInput,
 } from '@patternfly/react-core';
 import { InputFieldProps } from './types';
@@ -48,55 +46,51 @@ const InputField: React.FC<
     const isValid = !(touched && error);
 
     return (
-      <Stack id={`form-control__${fieldId}`}>
-        <StackItem>
-          <FormGroup
-            fieldId={fieldId}
-            label={label}
-            isRequired={isRequired}
-            labelIcon={labelIcon}
-            labelInfo={labelInfo}
-          >
-            {description && (
-              <HelperText>
-                <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
-              </HelperText>
-            )}
-            <Split>
-              <SplitItem isFilled>
-                <TextInput
-                  {...field}
-                  {...props}
-                  ref={ref}
-                  id={fieldId}
-                  validated={isValid ? 'default' : 'error'}
-                  isRequired={isRequired}
-                  aria-describedby={`${fieldId}-helper`}
-                  onChange={(event) => {
-                    if (!props.isDisabled) {
-                      !noDefaultOnChange && field.onChange(event);
-                      onChange && onChange(event);
-                    }
-                  }}
-                />
-              </SplitItem>
-              <SplitItem>{children}</SplitItem>
-            </Split>
-          </FormGroup>
-        </StackItem>
-        <StackItem>
+      <FormGroup
+        fieldId={fieldId}
+        label={label}
+        isRequired={isRequired}
+        labelIcon={labelIcon}
+        labelInfo={labelInfo}
+      >
+        {description && (
+          <HelperText>
+            <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+          </HelperText>
+        )}
+        <Split>
+          <SplitItem isFilled>
+            <TextInput
+              {...field}
+              {...props}
+              ref={ref}
+              id={fieldId}
+              validated={isValid ? 'default' : 'error'}
+              isRequired={isRequired}
+              aria-describedby={`${fieldId}-helper`}
+              onChange={(event) => {
+                if (!props.isDisabled) {
+                  !noDefaultOnChange && field.onChange(event);
+                  onChange && onChange(event);
+                }
+              }}
+            />
+          </SplitItem>
+          <SplitItem>{children}</SplitItem>
+        </Split>
+        {(errorMessage || helperText) && (
           <FormHelperText>
             <HelperText>
               <HelperTextItem
-                icon={<ExclamationCircleIcon />}
+                icon={errorMessage && <ExclamationCircleIcon />}
                 variant={showErrorMessage ? 'error' : 'default'}
               >
                 {showErrorMessage ? errorMessage : helperText}
               </HelperTextItem>
             </HelperText>
           </FormHelperText>
-        </StackItem>
-      </Stack>
+        )}
+      </FormGroup>
     );
   },
 );

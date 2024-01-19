@@ -69,7 +69,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
         aria-label={t('ai:More info for load balancer on Amazon web services')}
         aria-describedby="cim-config-form-aws-title"
         onClick={(e) => e.preventDefault()}
-        className="pf-c-form__group-label-help"
+        className="pf-v5-c-form__group-label-help"
       >
         <Icon>
           <HelpIcon />
@@ -102,7 +102,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
               aria-label={t('ai:More info for configure storage sizes')}
               aria-describedby="cim-config-form-storage-title"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
               <Icon>
                 <HelpIcon />
@@ -129,7 +129,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   aria-label={t('ai:More info for database storage')}
                   aria-describedby="cim-config-form-storage-db"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help"
+                  className="pf-v5-c-form__group-label-help"
                 >
                   <Icon>
                     <HelpIcon />
@@ -179,7 +179,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   aria-label={t('ai:More info for system storage')}
                   aria-describedby="cim-config-form-storage-sys"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help"
+                  className="pf-v5-c-form__group-label-help"
                 >
                   <Icon>
                     <HelpIcon />
@@ -229,7 +229,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   aria-label={t('ai:More info for image storage')}
                   aria-describedby="cim-config-form-storage-img"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help"
+                  className="pf-v5-c-form__group-label-help"
                 >
                   <Icon>
                     <HelpIcon />

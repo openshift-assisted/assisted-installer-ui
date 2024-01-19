@@ -86,7 +86,7 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {currentDisplayValue}
       </DropdownToggle>
@@ -103,7 +103,7 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
       dropdownItems={dropdownItems}
       toggle={toggle}
       isOpen={isOpen}
-      className="pf-u-w-100"
+      className="pf-v5-u-w-100"
     />
   );
 };

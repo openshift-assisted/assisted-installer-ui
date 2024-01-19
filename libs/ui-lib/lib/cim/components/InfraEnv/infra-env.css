@@ -1,5 +1,5 @@
 .infra-env__form {
-  padding-right: var(--pf-c-wizard__main-body--PaddingRight);
+  padding-right: var(--pf-v5-c-wizard__main-body--PaddingRight);
 }
 
 .infra-env-hosts-tab-title__icon {

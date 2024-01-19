@@ -25,7 +25,7 @@ const ClusterWizardStep = ({
           {children}
         </WizardBody>
       </div>
-      {footer && <div className="pf-c-wizard__footer cluster-wizard-step__footer">{footer}</div>}
+      {footer && <div className="pf-v5-c-wizard__footer cluster-wizard-step__footer">{footer}</div>}
     </div>
   );
 };

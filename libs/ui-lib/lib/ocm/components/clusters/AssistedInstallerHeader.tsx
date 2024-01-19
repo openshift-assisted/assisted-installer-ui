@@ -5,7 +5,7 @@ import { ASSISTED_INSTALLER_DOCUMENTATION_LINK, ExternalLink } from '../../../co
 export const AssistedInstallerHeader = () => {
   return (
     <TextContent>
-      <Text component="h1" className="pf-u-display-inline">
+      <Text component="h1" className="pf-v5-u-display-inline">
         Install OpenShift with the Assisted Installer
       </Text>
       <Split hasGutter>

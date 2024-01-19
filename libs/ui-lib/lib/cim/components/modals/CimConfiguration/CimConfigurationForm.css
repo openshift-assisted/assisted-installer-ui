@@ -1,4 +1,4 @@
-.cim-config-form-title .pf-c-form__label-text {
+.cim-config-form-title .pf-v5-c-form__label-text {
   font-size: larger;
 }
 
@@ -18,6 +18,6 @@
   width: 10rem;
 }
 
-.cim-config-modal .pf-c-modal-box__body {
+.cim-config-modal .pf-v5-c-modal-box__body {
   overflow: hidden;
 }

@@ -104,7 +104,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
         onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
-        className="pf-c-button pf-m-link pf-m-inline"
+        className="pf-v5-c-button pf-m-link pf-m-inline"
       >
         {currentRoleLabel}
       </DropdownToggle>

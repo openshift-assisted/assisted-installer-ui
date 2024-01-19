@@ -18,7 +18,7 @@ export class ClusterPage {
   }
 
   get wizardBody() {
-    return cy.get('.pf-c-wizard__main-body');
+    return cy.get('.pf-v5-c-wizard__main-body');
   }
 
   get wizardFooter() {

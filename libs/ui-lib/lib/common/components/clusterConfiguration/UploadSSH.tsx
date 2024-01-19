@@ -29,7 +29,7 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
       idPostfix="discovery"
       onBlur={() => value && setValue(trimSshPublicKey(value))}
       dropzoneProps={{
-        accept: { pub: ['.pub'] },
+        accept: { 'application/x-ssh-key': ['.pub'] },
         maxSize: 2048,
       }}
       isRequired={isRequired}

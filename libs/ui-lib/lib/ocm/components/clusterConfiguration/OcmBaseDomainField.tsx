@@ -69,7 +69,7 @@ export const OcmBaseDomainField = ({
         onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {selectedDomain ? getManagedDomainLabel(selectedDomain) : 'Base domain'}
       </DropdownToggle>
@@ -114,7 +114,7 @@ export const OcmBaseDomainField = ({
             dropdownItems={dropdownItems}
             isOpen={isOpen}
             onSelect={onSelect}
-            className="pf-u-w-100"
+            className="pf-v5-u-w-100"
           />
         ) : (
           <OcmInputField

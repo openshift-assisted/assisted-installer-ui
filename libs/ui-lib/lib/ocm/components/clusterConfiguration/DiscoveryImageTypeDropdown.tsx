@@ -94,7 +94,7 @@ export const DiscoveryImageTypeDropdown = ({
         onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
         isDisabled={isDisabled}
       >
         {current || value}
@@ -112,7 +112,7 @@ export const DiscoveryImageTypeDropdown = ({
         dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
         onSelect={onSelect}
       />
     </FormGroup>
