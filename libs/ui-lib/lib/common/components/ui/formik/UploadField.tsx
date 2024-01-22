@@ -8,7 +8,7 @@ import {
   HelperTextItem,
 } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
-import { getFieldId } from './utils';
+import { getFieldId, trimSshPublicKey } from './utils';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
@@ -24,14 +24,13 @@ const UploadField: React.FC<UploadFieldProps> = ({
   name,
   onBlur,
   allowEdittingUploadedText = true,
-  dropzoneProps,
 }) => {
   const { t } = useTranslation();
 
   const [filename, setFilename] = React.useState<string>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
 
-  const [field, { touched, error }, helpers] = useField<string | File>(name);
+  const [field, { touched, error }, { setValue, setTouched }] = useField<string | File>(name);
   const fieldId = getFieldId(name, 'input', idPostfix);
   const isValid = !((touched || filename) && error);
 
@@ -42,7 +41,8 @@ const UploadField: React.FC<UploadFieldProps> = ({
     return '';
   };
   const errorMessage = getErrorMessage();
-
+  const acceptedFiles = { 'application/x-ssh-key': ['.pub'] };
+  const maxFileSize = 2048;
   return (
     <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
       {children}
@@ -58,26 +58,46 @@ const UploadField: React.FC<UploadFieldProps> = ({
         type="text"
         value={field.value as string}
         filename={filename}
-        onFileInputChange={(event, file) => {
+        onDataChange={(_event, file) => setValue(file)}
+        onTextChange={(_event, file) => setValue(file)}
+        onFileInputChange={(_event, file) => {
           setFilename(file.name);
-          helpers.setTouched(true);
-          helpers.setValue(file);
+          setTouched(true);
+          setValue(file);
         }}
         onBlur={(e) => {
-          field.onBlur(e);
-          onBlur && onBlur(e);
+          const file: File | string = field.value;
+          if (file instanceof File) {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+              if (event.target) {
+                const contentAsString = event.target.result as string;
+                setValue(trimSshPublicKey(contentAsString));
+                onBlur && onBlur(e);
+              }
+            };
+
+            // Read the file content as text
+            reader.readAsText(file);
+          } else {
+            setValue(trimSshPublicKey(file));
+            onBlur && onBlur(e);
+          }
         }}
         onReadStarted={() => setIsFileUploading(true)}
         onReadFinished={() => setIsFileUploading(false)}
         isLoading={isFileUploading}
         disabled={isDisabled}
-        dropzoneProps={{
-          ...dropzoneProps,
-          onDropRejected: () => {
-            dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers);
-          },
-        }}
         allowEditingUploadedText={allowEdittingUploadedText}
+        dropzoneProps={{
+          accept: acceptedFiles,
+          maxSize: maxFileSize,
+        }}
+        onClearClick={() => {
+          setFilename('');
+          setValue('');
+        }}
       />
       {(errorMessage || helperText) && (
         <FormHelperText>

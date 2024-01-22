@@ -84,17 +84,15 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
       labelIcon,
       helperText,
       isRequired,
-      onChange,
       validate,
       idPostfix,
-      noDefaultOnChange,
       richValidationMessages,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
-    const [field, { error, value, touched }, { setTouched }] = useField<string>({
+    const [field, { error, value, touched }] = useField<string>({
       name: props.name,
       validate,
     });
@@ -120,17 +118,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               id={fieldId}
               isRequired={isRequired}
               aria-describedby={`${fieldId}-helper`}
-              onChange={(event) => {
-                !popoverOpen && setPopoverOpen(true);
-                !noDefaultOnChange && field.onChange(event);
-                setTouched(true, false);
-                onChange && onChange(event);
-              }}
               className="rich-input__text"
-              onBlur={() => {
-                setTouched(true, false);
-                setPopoverOpen(false);
-              }}
             />
           </InputGroupItem>
           <InputGroupItem>

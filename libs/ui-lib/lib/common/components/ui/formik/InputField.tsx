@@ -78,7 +78,7 @@ const InputField: React.FC<
           </SplitItem>
           <SplitItem>{children}</SplitItem>
         </Split>
-        {(errorMessage || helperText) && (
+        {(showErrorMessage || helperText) && (
           <FormHelperText>
             <HelperText>
               <HelperTextItem

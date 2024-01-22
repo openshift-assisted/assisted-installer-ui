@@ -309,7 +309,7 @@ const ClusterEventsToolbar = ({
                 id="search-text"
                 type={TextInputTypes.search}
                 aria-label="text to be searched"
-                onChange={(_event, message) => onMessageChange(_event, message)}
+                onChange={onMessageChange}
                 value={messageValue}
                 placeholder={t('ai:Filter by text')}
               />

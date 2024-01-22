@@ -38,11 +38,13 @@ const TextAreaSecretField: React.FC<TextAreaSecretProps> = ({
       <Button onClick={() => onToggle(false)} variant="link">
         Change
       </Button>
-      <FormHelperText>
-        <HelperText>
-          <HelperTextItem>{helperTextHidden}</HelperTextItem>
-        </HelperText>
-      </FormHelperText>
+      {helperTextHidden && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>{helperTextHidden}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

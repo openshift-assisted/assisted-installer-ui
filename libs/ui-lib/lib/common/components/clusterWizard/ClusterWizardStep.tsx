@@ -1,7 +1,6 @@
 import React from 'react';
 import { WizardBody, WizardBodyProps } from '@patternfly/react-core/deprecated';
 import { css } from '@patternfly/react-styles';
-import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 
 import './ClusterWizardStep.css';
 
@@ -18,8 +17,8 @@ const ClusterWizardStep = ({
   // activeStep is required, but we're not passing it. Using the cast to avoid TS error
   const activeStep = undefined as unknown as WizardBodyProps['activeStep'];
   return (
-    <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')}>
-      <div className={css(styles.wizardInnerWrap)}>
+    <div className={css('pf-v5-c-wizard__outer-wrap', 'cluster-wizard-step')}>
+      <div className={css('pf-v5-c-wizard__inner-wrap')}>
         {navigation}
         <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false} activeStep={activeStep}>
           {children}
