@@ -83,6 +83,11 @@ const HostsStep: React.FC<HostsStepProps> = ({
                 agentLabels: [],
                 releaseImage: initReleaseImage,
                 clusterName,
+                useAutoscaling: false,
+                autoscaling: {
+                  minReplicas: 1,
+                  maxReplicas: 1,
+                },
               },
             ],
           }}

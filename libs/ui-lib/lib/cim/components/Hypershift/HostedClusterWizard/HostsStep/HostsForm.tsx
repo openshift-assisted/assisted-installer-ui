@@ -127,6 +127,11 @@ const HostsForm: React.FC<HostsFormProps> = ({
                       agentLabels: [],
                       releaseImage: initReleaseImage,
                       clusterName,
+                      useAutoscaling: false,
+                      autoscaling: {
+                        minReplicas: 1,
+                        maxReplicas: 1,
+                      },
                     } as NodePoolFormValue);
                   }}
                 >

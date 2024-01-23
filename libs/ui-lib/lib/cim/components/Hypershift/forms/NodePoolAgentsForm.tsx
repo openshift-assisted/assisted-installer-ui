@@ -4,8 +4,7 @@ import { CheckboxField, NumberInputField, PopoverIcon } from '../../../../common
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentK8sResource } from '../../../types';
 import { LabelSelectorGroup } from '../../ClusterDeployment/LabelsSelector';
-import { useField, useFormikContext } from 'formik';
-import { NodePoolFormValues } from '../modals/NodePoolForm';
+import { useField } from 'formik';
 
 type NodePoolAgentsFormProps = {
   agents: AgentK8sResource[];
@@ -28,24 +27,9 @@ const NodePoolAgentsForm = ({
 }: NodePoolAgentsFormProps) => {
   const { t } = useTranslation();
 
-  const { setFieldValue } = useFormikContext<NodePoolFormValues>();
-
   const [{ value: minValue }] = useField<number>(`${autoscalingName}.minReplicas`);
   const [{ value: maxValue }] = useField<number>(`${autoscalingName}.maxReplicas`);
   const [{ value: useAutoscalingValue }] = useField<boolean>(useAutoscalingName);
-
-  const toggleAutoscaling = React.useCallback(() => {
-    const newVal = !useAutoscalingValue;
-    if (autoscalingName) {
-      if (newVal) {
-        setFieldValue(autoscalingName, { minReplicas: 1, maxReplicas: 1 });
-        setFieldValue(countName, undefined);
-      } else {
-        setFieldValue(autoscalingName, undefined);
-        setFieldValue(countName, maxAgents > 0 ? 1 : 0);
-      }
-    }
-  }, [autoscalingName, countName, maxAgents, setFieldValue, useAutoscalingValue]);
 
   const helperText = (
     <>
@@ -66,11 +50,7 @@ const NodePoolAgentsForm = ({
         </GridItem>
       )}
       <GridItem>
-        <CheckboxField
-          name={useAutoscalingName || ''}
-          onChange={toggleAutoscaling}
-          label={t('ai:Use autoscaling')}
-        />
+        <CheckboxField name={useAutoscalingName} label={t('ai:Use autoscaling')} />
       </GridItem>
       {useAutoscalingValue ? (
         <>

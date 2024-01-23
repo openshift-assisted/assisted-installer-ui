@@ -24,12 +24,12 @@ export type NodePoolFormValues = {
     key: string;
     value: string;
   }[];
-  count?: number;
-  autoscaling?: {
+  count: number;
+  autoscaling: {
     minReplicas: number;
     maxReplicas: number;
   };
-  useAutoscaling?: boolean;
+  useAutoscaling: boolean;
 };
 
 type NodePoolFormProps = {

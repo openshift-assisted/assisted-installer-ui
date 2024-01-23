@@ -91,6 +91,11 @@ const AddNodePoolModal = ({
           )}`,
           agentLabels: [],
           count: 1,
+          useAutoscaling: false,
+          autoscaling: {
+            minReplicas: 1,
+            maxReplicas: 1,
+          },
         }}
         onSubmit={handleSubmit}
       >

@@ -139,7 +139,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
               {!isExpanded && (
                 <>
                   <FlexItem>
-                    <Divider isVertical />
+                    <Divider />
                   </FlexItem>
                   <FlexItem>
                     <Label variant="outline">

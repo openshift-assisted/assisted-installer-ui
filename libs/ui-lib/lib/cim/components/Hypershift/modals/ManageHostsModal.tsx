@@ -125,11 +125,11 @@ const ManageHostsModal = ({
           agentLabels: labelsToFormikValue(
             nodePool.spec.platform?.agent?.agentLabelSelector?.matchLabels || {},
           ),
-          count: nodePool.spec.replicas,
+          count: nodePool.spec.replicas || 1,
           useAutoscaling: !!nodePool.spec.autoScaling,
-          autoscaling: nodePool.spec.autoScaling && {
-            minReplicas: nodePool.spec.autoScaling.min,
-            maxReplicas: nodePool.spec.autoScaling.max,
+          autoscaling: {
+            minReplicas: nodePool.spec.autoScaling?.min || 1,
+            maxReplicas: nodePool.spec.autoScaling?.max || 1,
           },
         }}
         isInitialValid={false}
