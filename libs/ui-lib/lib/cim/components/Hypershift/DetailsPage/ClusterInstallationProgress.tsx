@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { ProgressStepper, Stack, StackItem } from '@patternfly/react-core';
 import { AgentK8sResource, ConfigMapK8sResource, SecretK8sResource } from '../../../types';
-import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
+import {
+  AgentMachineK8sResource,
+  HostedClusterK8sResource,
+  NodePoolK8sResource,
+  NodePoolPatches,
+} from '../types';
 import HypershiftKubeconfigDownload from './HypershiftKubeconfigDownload';
 import HostedClusterProgress from './HostedClusterProgress';
 import NodePoolsProgress from './NodePoolsProgress';
@@ -17,11 +22,7 @@ type ClusterInstallationProgressProps = {
   onRemoveNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   onUpdateNodePool: (
     nodePool: NodePoolK8sResource,
-    nodePoolPatches: {
-      op: string;
-      value?: unknown;
-      path: string;
-    }[],
+    nodePoolPatches: NodePoolPatches,
   ) => Promise<unknown>;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   launchToOCP: (urlSuffix: string, newTab: boolean) => void;

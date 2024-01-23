@@ -37,49 +37,46 @@ type ManageHostsModalProps = {
 const getPatches = (values: NodePoolFormValues, nodePool: NodePoolK8sResource) => {
   const patches = [];
 
-  if (values.useAutoscaling && !nodePool.spec.autoScaling) {
-    patches.push(
-      { op: 'remove', path: '/spec/replicas' },
-      {
-        op: 'add',
+  if (values.useAutoscaling) {
+    if (!!nodePool.spec.autoScaling) {
+      patches.push({
+        op: 'replace',
         value: {
           min: values.autoscaling?.minReplicas,
           max: values.autoscaling?.maxReplicas,
         },
         path: '/spec/autoScaling',
-      },
-    );
-  } else if (!values.useAutoscaling && !nodePool.spec.replicas) {
-    patches.push(
-      { op: 'remove', path: '/spec/autoScaling' },
-      {
-        op: 'add',
+      });
+    } else {
+      patches.push(
+        { op: 'remove', path: '/spec/replicas' },
+        {
+          op: 'add',
+          value: {
+            min: values.autoscaling?.minReplicas,
+            max: values.autoscaling?.maxReplicas,
+          },
+          path: '/spec/autoScaling',
+        },
+      );
+    }
+  } else {
+    if (!!nodePool.spec.replicas) {
+      patches.push({
+        op: 'replace',
         value: values.count,
         path: '/spec/replicas',
-      },
-    );
-  }
-
-  if (values.count !== nodePool.spec.replicas) {
-    patches.push({
-      op: 'replace',
-      value: values.count,
-      path: '/spec/replicas',
-    });
-  }
-  if (
-    values.useAutoscaling &&
-    (values.autoscaling?.minReplicas !== nodePool.spec.autoScaling?.min ||
-      values.autoscaling?.maxReplicas !== nodePool.spec.autoScaling?.max)
-  ) {
-    patches.push({
-      op: 'replace',
-      value: {
-        min: values.autoscaling?.minReplicas,
-        max: values.autoscaling?.maxReplicas,
-      },
-      path: '/spec/autoScaling',
-    });
+      });
+    } else {
+      patches.push(
+        { op: 'remove', path: '/spec/autoScaling' },
+        {
+          op: 'add',
+          value: values.count,
+          path: '/spec/replicas',
+        },
+      );
+    }
   }
   return patches;
 };

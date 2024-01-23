@@ -188,3 +188,9 @@ export type AgentMachineK8sResource = K8sResourceCommon & {
     };
   };
 };
+
+export type NodePoolPatches = {
+  op: string;
+  value?: unknown;
+  path: string;
+}[];
