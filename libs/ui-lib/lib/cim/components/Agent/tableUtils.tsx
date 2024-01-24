@@ -17,7 +17,7 @@ import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterD
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import { getAgentClusterInstallOfAgent, getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
 import { isInstallationInProgress } from '../ClusterDeployment/helpers';
-import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
+import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_GENERATED_AI_FLOW } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import BMHStatus from './BMHStatus';
 import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
@@ -301,7 +301,6 @@ export const canUnbindAgent = (
   agentClusterInstalls: AgentClusterInstallK8sResource[] | undefined,
   agent: AgentK8sResource,
   t: TFunction,
-  infraEnv?: InfraEnvK8sResource,
 ): ActionCheck => {
   if (!agent?.spec.clusterDeploymentName?.name) {
     return [false, t('ai:The agent is not bound to a cluster.')];
@@ -345,7 +344,8 @@ export const canUnbindAgent = (
 
   if (
     !agent.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY) &&
-    infraEnv?.spec?.clusterRef
+    agent.metadata?.labels?.hasOwnProperty(INFRAENV_GENERATED_AI_FLOW) &&
+    !!agent.spec.clusterDeploymentName
   ) {
     return [false, t('ai:It is not possible to remove this node from the cluster.')];
   }
@@ -475,7 +475,7 @@ export const useAgentsTable = (
           const agent = agents.find((a) => a.metadata?.uid === host.id);
 
           if (agent) {
-            return canUnbindAgent(agentClusterInstalls, agent, t, infraEnv);
+            return canUnbindAgent(agentClusterInstalls, agent, t);
           }
           const bmh = bmhs?.find((bmh) => bmh.metadata?.uid === host.id);
           if (bmh) {
