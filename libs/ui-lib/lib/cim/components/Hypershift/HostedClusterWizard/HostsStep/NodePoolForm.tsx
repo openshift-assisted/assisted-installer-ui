@@ -69,11 +69,9 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
   let previousNodePoolsCount = 0;
 
   for (let i = 0; i < index; i++) {
-    previousNodePoolsCount += (
-      values.nodePools[i].useAutoscaling
-        ? values.nodePools[i].autoscaling?.maxReplicas
-        : values.nodePools[i].count
-    ) as number;
+    previousNodePoolsCount += values.nodePools[i].useAutoscaling
+      ? values.nodePools[i].autoscaling?.maxReplicas
+      : values.nodePools[i].count;
   }
 
   const maxAgents = Math.max(
@@ -81,11 +79,9 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     Math.min(matchingAgents.length, availableAgents.length - previousNodePoolsCount),
   );
 
-  const currentCount = (
-    values.nodePools[index].useAutoscaling
-      ? values.nodePools[index].autoscaling?.maxReplicas
-      : values.nodePools[index].count
-  ) as number;
+  const currentCount = values.nodePools[index].useAutoscaling
+    ? values.nodePools[index].autoscaling?.maxReplicas
+    : values.nodePools[index].count;
 
   React.useEffect(() => {
     if (currentCount > maxAgents) {
@@ -129,7 +125,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
                   </SplitItem>
                   <SplitItem>
                     <PencilEditField
-                      name={`nodePools.${index}.name`}
+                      name={`nodePools.${index}.nodePoolName`}
                       isRequired
                       showErrorMessage={false}
                     />

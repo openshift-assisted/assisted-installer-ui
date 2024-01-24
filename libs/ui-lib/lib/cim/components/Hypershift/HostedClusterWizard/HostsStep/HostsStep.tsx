@@ -18,14 +18,15 @@ const validationSchema = (clusterName: string, nodePools: NodePoolK8sResource[],
       nodePools: Yup.array().of(
         Yup.object<NodePoolFormValue>()
           .shape({
-            name: Yup.string()
+            nodePoolName: Yup.string()
               .required(t('ai:Required field'))
               .test(t('ai:Must be unique'), t('ai:Must be unique'), (value) => {
                 if (!value) {
                   return true;
                 }
                 return (
-                  values.nodePools.filter(({ name }) => name === value).length === 1 &&
+                  values.nodePools.filter(({ nodePoolName }) => nodePoolName === value).length ===
+                    1 &&
                   !nodePools.some(
                     ({ metadata }) =>
                       metadata?.name === value && metadata?.namespace === clusterName,
@@ -78,7 +79,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
             agentNamespace: initInfraEnv || infraEnvsWithAgents[0]?.metadata?.namespace || '',
             nodePools: initNodePools || [
               {
-                name: `nodepool-${clusterName}-1`,
+                nodePoolName: `nodepool-${clusterName}-1`,
                 count: 1,
                 agentLabels: [],
                 releaseImage: initReleaseImage,

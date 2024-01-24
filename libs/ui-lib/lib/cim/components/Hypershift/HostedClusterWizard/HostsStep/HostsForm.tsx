@@ -35,7 +35,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
       ];
 
   const totalHosts = values.nodePools.reduce((acc, nodePool) => {
-    acc += (nodePool.count || nodePool.autoscaling?.maxReplicas) as number;
+    acc += nodePool.useAutoscaling ? nodePool.autoscaling.maxReplicas : nodePool.count;
     return acc;
   }, 0);
 
@@ -122,7 +122,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
                   onClick={() => {
                     const uniquePoolName = `nodepool-${clusterName}-${getRandomString(5)}`;
                     push({
-                      name: uniquePoolName,
+                      nodePoolName: uniquePoolName,
                       count: 1,
                       agentLabels: [],
                       releaseImage: initReleaseImage,

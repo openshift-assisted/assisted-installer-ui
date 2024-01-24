@@ -194,3 +194,17 @@ export type NodePoolPatches = {
   value?: unknown;
   path: string;
 }[];
+
+export type NodePoolFormValues = {
+  nodePoolName: string;
+  agentLabels: {
+    key: string;
+    value: string;
+  }[];
+  count: number;
+  autoscaling: {
+    minReplicas: number;
+    maxReplicas: number;
+  };
+  useAutoscaling: boolean;
+};

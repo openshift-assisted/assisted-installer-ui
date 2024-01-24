@@ -12,8 +12,13 @@ import {
 import { Formik, FormikConfig } from 'formik';
 import * as React from 'react';
 import { AgentK8sResource } from '../../../types';
-import { NodePoolK8sResource, HostedClusterK8sResource, AgentMachineK8sResource } from '../types';
-import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
+import {
+  NodePoolK8sResource,
+  HostedClusterK8sResource,
+  AgentMachineK8sResource,
+  NodePoolFormValues,
+} from '../types';
+import NodePoolForm from './NodePoolForm';
 import { labelsToFormikValue } from '../utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../../common/utils';
@@ -42,8 +47,8 @@ const getPatches = (values: NodePoolFormValues, nodePool: NodePoolK8sResource) =
       patches.push({
         op: 'replace',
         value: {
-          min: values.autoscaling?.minReplicas,
-          max: values.autoscaling?.maxReplicas,
+          min: values.autoscaling.minReplicas,
+          max: values.autoscaling.maxReplicas,
         },
         path: '/spec/autoScaling',
       });
@@ -53,8 +58,8 @@ const getPatches = (values: NodePoolFormValues, nodePool: NodePoolK8sResource) =
         {
           op: 'add',
           value: {
-            min: values.autoscaling?.minReplicas,
-            max: values.autoscaling?.maxReplicas,
+            min: values.autoscaling.minReplicas,
+            max: values.autoscaling.maxReplicas,
           },
           path: '/spec/autoScaling',
         },
