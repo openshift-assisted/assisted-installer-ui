@@ -80,11 +80,11 @@ class PaginationControl {
   }
 
   get menuText() {
-    return this.body.find('.pf-v5-c-options-menu__toggle-text');
+    return this.body.find('.pf-v5-c-menu-toggle__text');
   }
 
   get menu() {
-    return this.body.find('.events-pagination-bottom-toggle');
+    return this.body.find('#events-pagination-bottom-toggle');
   }
 
   perPageOption(num: number) {

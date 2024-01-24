@@ -87,13 +87,13 @@ export const commonActions = {
     commonActions.getNextButton().should('be.disabled');
   },
   getInfoAlert: () => {
-    return cy.get('div[aria-label="Info Alert"]');
+    return cy.get('.pf-v5-c-alert.pf-m-inline.pf-m-info');
   },
   getWarningAlert: () => {
-    return cy.get('div[aria-label="Warning Alert"]');
+    return cy.get('.pf-v5-c-alert.pf-m-inline.pf-m-warning');
   },
   getDangerAlert: () => {
-    return cy.get('div[aria-label="Danger Alert"]');
+    return cy.get('.pf-v5-c-alert.pf-m-inline.pf-m-danger');
   },
   getDNSErrorMessage: () => {
     return cy.get('#form-input-dns-field-helper-error');

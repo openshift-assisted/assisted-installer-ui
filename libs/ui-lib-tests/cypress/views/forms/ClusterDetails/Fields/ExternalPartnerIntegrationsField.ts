@@ -21,7 +21,7 @@ export class ExternalPartnerIntegrationsField {
 
   static findDropdownToggle() {
     return ExternalPartnerIntegrationsField.findDropdown().find(
-      '[data-ouia-component-type="PF4/DropdownToggle"]',
+      '[data-ouia-component-type="PF5/DropdownToggle"]',
     );
   }
 

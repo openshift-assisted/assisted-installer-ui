@@ -48,7 +48,9 @@ export const bareMetalDiscoveryPage = {
     cy.get('table.hosts-table > tbody > tr', { timeout: timeout }).should('contain.text', text);
   },
   selectHostRowKebabAction: (rowIndex, actionItem) => {
-    cy.get(`[data-testid=host-row-${rowIndex}] > .pf-v5-c-table__action .pf-v5-c-dropdown__toggle`)
+    cy.get(
+      `[data-testid=host-row-${rowIndex}] > td.pf-v5-c-table__action > button[aria-label="Kebab toggle"]`,
+    )
       .scrollIntoView()
       .click({ force: true });
     cy.get('li').contains(actionItem).click({ force: true });
@@ -60,7 +62,9 @@ export const bareMetalDiscoveryPage = {
     return cy.get(`[data-testid=host-row-${hostIndex}]`).find('.pf-v5-c-check__input');
   },
   validateIsReadOnlyHostMenu: () => {
-    cy.get(`[data-testid=host-row-0] > .pf-v5-c-table__action .pf-v5-c-dropdown__toggle`)
+    cy.get(
+      `[data-testid=host-row-0] > td.pf-v5-c-table__action > button[aria-label="Kebab toggle"]`,
+    )
       .scrollIntoView()
       .click({
         force: true,

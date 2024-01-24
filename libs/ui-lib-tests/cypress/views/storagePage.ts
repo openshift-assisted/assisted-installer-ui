@@ -52,7 +52,7 @@ export const storagePage = {
     //If a disk is skip formatting validate that warning icon is shown
     cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within(
       (/* $diskRow */) => {
-        cy.get('[role="img"]').should('have.attr', 'fill', '#f0ab00');
+        cy.get('[role="img"]').should('have.attr', 'fill', 'currentColor');
       },
     );
   },
