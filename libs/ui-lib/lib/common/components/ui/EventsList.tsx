@@ -6,6 +6,7 @@ import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circl
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
+// tslint:disable-line:no-any
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Event, EventList } from '@openshift-assisted/types/assisted-installer-service';
 import { EmptyState } from './uiState';
