@@ -34,7 +34,13 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const hText = getHelperText ? getHelperText(field.value) : helperText;
 
   return (
-    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+    <FormGroup
+      fieldId={fieldId}
+      label={label}
+      isRequired={isRequired}
+      labelIcon={labelIcon}
+      id={`form-control__${fieldId}`}
+    >
       <FormSelect
         {...field}
         {...props}

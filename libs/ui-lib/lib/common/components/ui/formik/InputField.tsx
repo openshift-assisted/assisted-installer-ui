@@ -47,6 +47,7 @@ const InputField: React.FC<
 
     return (
       <FormGroup
+        id={`form-control__${fieldId}`}
         fieldId={fieldId}
         label={label}
         isRequired={isRequired}
