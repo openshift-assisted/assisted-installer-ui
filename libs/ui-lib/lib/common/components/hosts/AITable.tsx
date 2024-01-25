@@ -13,7 +13,7 @@ import {
   InnerScrollContainer,
 } from '@patternfly/react-table';
 import { Table, TableHeader, TableBody, TableProps } from '@patternfly/react-table/deprecated';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import xor from 'lodash-es/xor.js';
 import classnames from 'classnames';
 
