@@ -70,7 +70,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
 
   for (let i = 0; i < index; i++) {
     previousNodePoolsCount += values.nodePools[i].useAutoscaling
-      ? values.nodePools[i].autoscaling?.maxReplicas
+      ? values.nodePools[i].autoscaling.maxReplicas
       : values.nodePools[i].count;
   }
 
@@ -80,18 +80,18 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
   );
 
   const currentCount = values.nodePools[index].useAutoscaling
-    ? values.nodePools[index].autoscaling?.maxReplicas
+    ? values.nodePools[index].autoscaling.maxReplicas
     : values.nodePools[index].count;
 
   React.useEffect(() => {
     if (currentCount > maxAgents) {
-      if (!!values.nodePools[index].count) {
-        void setCountValue(maxAgents);
-      } else {
+      if (values.nodePools[index].useAutoscaling) {
         if (maxAgents === 0) {
           void setMinAutoscalingValue(maxAgents);
         }
         void setMaxAutoscalingValue(maxAgents);
+      } else {
+        void setCountValue(maxAgents);
       }
     }
   }, [

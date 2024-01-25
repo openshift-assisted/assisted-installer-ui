@@ -36,6 +36,10 @@ const validationSchema = (clusterName: string, nodePools: NodePoolK8sResource[],
             clusterName: Yup.string().required(t('ai:Required field')),
             count: Yup.number(),
             releaseImage: Yup.string().required(t('ai:Required field')),
+            autoscaling: Yup.object().shape({
+              minReplicas: Yup.number().min(1, t('ai:Must be at least 1')),
+              maxReplicas: Yup.number().min(1, t('ai:Must be at least 1')),
+            }),
           })
           .required(t('ai:Required field')),
       ),
