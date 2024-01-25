@@ -10,7 +10,6 @@ import {
 } from '@patternfly/react-core';
 import { TableVariant, RowWrapperProps, RowWrapper, IRow } from '@patternfly/react-table';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
-// tslint:disable-line:no-any
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';
