@@ -57,7 +57,7 @@ jobs:
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             tags+=( ${GITHUB_REF_NAME} )
             if [[ ! "${GITHUB_REF_NAME}" =~ -cim$ ]]; then
-              tags+=( latest-released )            
+              tags+=( staging-released )            
             fi
           fi
           echo "tags=${tags[@]}" >> $GITHUB_OUTPUT

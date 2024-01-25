@@ -23,7 +23,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   cluster,
   title = 'Cluster installation failed',
 }) => {
-  const { addAlert } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   const { resetClusterDialog } = useModalDialogsContext();
 
   return (
@@ -41,7 +41,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
             </AlertActionLink>
             <AlertActionLink
               onClick={() => {
-                void downloadClusterInstallationLogs(addAlert, cluster.id);
+                void downloadClusterInstallationLogs(addAlert, cluster.id, clearAlerts);
               }}
               isDisabled={!canDownloadClusterLogs(cluster)}
               id={getID('button-download-installation-logs')}

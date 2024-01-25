@@ -33,7 +33,7 @@
     "@types/react": "17.0.x",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react-swc": "^3.0.1",
-    "vite": "^4.0.0",
+    "vite": "^4.5.2",
     "vite-plugin-environment": "^1.1.3"
   },
   "overrides": {

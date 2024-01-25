@@ -15,6 +15,16 @@ export interface ApiVip {
    */
   verification?: VipVerification;
 }
+export interface ApiVipConnectivityAdditionalRequestHeader {
+  /**
+   * Value of the header's key when making a request
+   */
+  key?: string;
+  /**
+   * The value corresponding to the header key
+   */
+  value?: string;
+}
 export interface ApiVipConnectivityRequest {
   /**
    * URL address of the API.
@@ -29,9 +39,13 @@ export interface ApiVipConnectivityRequest {
    */
   caCertificate?: string;
   /**
-   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl (DEPRECATED use requestHeaders to pass this token).
    */
   ignitionEndpointToken?: string;
+  /**
+   * Additional request headers to include when fetching the ignition from ignitionEndpointUrl.
+   */
+  requestHeaders?: ApiVipConnectivityAdditionalRequestHeader[];
 }
 /**
  * The response from the day-2 agent's attempt to download the worker ignition file from the API machine config server of the target cluster.
@@ -490,6 +504,9 @@ export interface ClusterDefaultConfig {
    */
   forbiddenHostnames?: string[];
 }
+export interface ClusterFinalizingProgress {
+  finalizingStage?: FinalizingStage;
+}
 export interface ClusterHostRequirements {
   /**
    * Unique identifier of the host the requirements relate to.
@@ -562,6 +579,10 @@ export interface ClusterProgressInfo {
   preparingForInstallationStagePercentage?: number;
   installingStagePercentage?: number;
   finalizingStagePercentage?: number;
+  finalizingStage?: FinalizingStage;
+  finalizingStageStartedAt?: string; // date-time
+  nodeUpdaterStartedAt?: string; // date-time
+  nodeUpdaterFinishedAt?: string; // date-time
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -959,7 +980,20 @@ export type FeatureSupportLevelId =
   | 'DUAL_STACK'
   | 'PLATFORM_MANAGED_NETWORKING'
   | 'SKIP_MCO_REBOOT'
-  | 'EXTERNAL_PLATFORM';
+  | 'EXTERNAL_PLATFORM'
+  | 'OVN_NETWORK_TYPE'
+  | 'SDN_NETWORK_TYPE';
+/**
+ * Cluster finalizing stage managed by controller
+ */
+export type FinalizingStage =
+  | 'Waiting for finalizing'
+  | 'Waiting for cluster operators'
+  | 'Adding router ca'
+  | 'Waiting for olm operators'
+  | 'Applying manifests'
+  | 'Waiting for olm operators csv'
+  | 'Done';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
   string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
@@ -1188,6 +1222,10 @@ export interface HostProgressInfo {
    * Time at which the current progress stage was last updated.
    */
   stageUpdatedAt?: string; // date-time
+  /**
+   * Indicate of the current stage has been timed out.
+   */
+  stageTimedOut?: boolean;
 }
 export interface HostRegistrationResponse {
   /**
@@ -1889,7 +1927,7 @@ export interface LastInstallationPreparation {
   /**
    * The last installation preparation status
    */
-  status?: 'preparationNeverPerformed' | 'failed' | 'success';
+  status?: 'notStarted' | 'failed' | 'success';
   /**
    * The reason for the preparation status if applicable
    */

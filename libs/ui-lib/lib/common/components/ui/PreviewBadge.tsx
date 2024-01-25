@@ -49,7 +49,7 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   );
   return (
     <span onClick={(e) => e.preventDefault()}>
-      <Popover bodyContent={bodyContent} position="top">
+      <Popover bodyContent={bodyContent} position="top" withFocusTrap={false}>
         <Label
           style={{ cursor: 'pointer' }}
           color="orange"
