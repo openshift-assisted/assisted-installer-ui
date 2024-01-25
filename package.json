@@ -13,7 +13,8 @@
     "vitest": "^0.34.5"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=14",
+    "yarn": ">=3.4.0"
   },
   "license": "Apache-2.0",
   "name": "assisted-installer-ui",
