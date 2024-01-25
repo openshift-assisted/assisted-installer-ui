@@ -4490,7 +4490,6 @@ __metadata:
 "follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.0":
   version: 1.15.4
   resolution: "follow-redirects@npm:1.15.4"
-
   peerDependenciesMeta:
     debug:
       optional: true
