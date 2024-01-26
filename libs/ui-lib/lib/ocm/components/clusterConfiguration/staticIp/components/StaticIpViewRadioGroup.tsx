@@ -19,7 +19,7 @@ const StaticIpViewRadioGroup = ({
   const GROUP_NAME = 'select-static-ip-view';
   const [confirmView, setConfirmView] = React.useState<StaticIpView>();
   const [view, setView] = React.useState<StaticIpView>(initialView);
-  const handleChange = (event: React.FormEvent<HTMLInputElement>, _checked: boolean) => {
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const selectedView = event.currentTarget.value as StaticIpView;
     if (confirmOnChangeView) {
       setConfirmView(selectedView);

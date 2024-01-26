@@ -42,7 +42,7 @@ export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ..
       );
     case 'error':
       return (
-        <Icon size="sm">
+        <Icon size="sm" status="danger">
           <ExclamationCircleIcon color={dangerColor.value} {...extraProps} />
         </Icon>
       );
@@ -54,7 +54,7 @@ export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ..
       );
     case 'installing-pending-user-action':
       return (
-        <Icon size="sm">
+        <Icon size="sm" status="warning">
           <ExclamationTriangleIcon color={warningColor.value} {...extraProps} />
         </Icon>
       );

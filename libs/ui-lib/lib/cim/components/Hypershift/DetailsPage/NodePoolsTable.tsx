@@ -2,8 +2,17 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Label, Popover, Stack, StackItem } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
-import { breakWord, expandable, sortable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { Table } from '@patternfly/react-table/deprecated';
+import {
+  breakWord,
+  expandable,
+  sortable,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@patternfly/react-table';
 import classnames from 'classnames';
 
 import { TableRow } from '../../../../common/components/hosts/AITable';

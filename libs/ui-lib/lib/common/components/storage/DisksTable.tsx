@@ -25,6 +25,7 @@ import { fileSize } from '../../utils';
 import { PopoverIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
@@ -117,7 +118,7 @@ const DiskName = ({
       {isInDiskSkipFormattingList(host, disk.id) && (
         <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
           <Icon size="sm" status="warning">
-            <ExclamationTriangleIcon />
+            <ExclamationTriangleIcon color={warningColor.value} />
           </Icon>
         </Popover>
       )}
@@ -134,7 +135,7 @@ const DiskName = ({
             data-testid="disk-limitations-popover"
           >
             <Icon size="sm" status="warning">
-              <ExclamationTriangleIcon />
+              <ExclamationTriangleIcon color={warningColor.value} />
             </Icon>
           </Popover>
         </>
