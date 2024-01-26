@@ -11,7 +11,10 @@ import { isOCPVersionEqualsOrMajor } from '../utils';
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
-  const isLVMSMultiNodeEnabled = isOCPVersionEqualsOrMajor(props.openshiftVersion || '', '4.15');
+  const isVersionEqualsOrMajorThan4_15 = isOCPVersionEqualsOrMajor(
+    props.openshiftVersion || '',
+    '4.15',
+  );
   return (
     <Stack hasGutter data-testid={'operators-form'}>
       <StackItem>
@@ -23,9 +26,18 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       <StackItem>
         <MceCheckbox />
       </StackItem>
-      <StackItem>
-        {isSNO || isLVMSMultiNodeEnabled ? <LvmCheckbox {...props} /> : <OdfCheckbox />}
-      </StackItem>
+      {isVersionEqualsOrMajorThan4_15 ? (
+        <>
+          <StackItem>
+            <LvmCheckbox {...props} />
+          </StackItem>
+          <StackItem>
+            <OdfCheckbox />
+          </StackItem>
+        </>
+      ) : (
+        <StackItem>{isSNO ? <LvmCheckbox {...props} /> : <OdfCheckbox />}</StackItem>
+      )}
     </Stack>
   );
 };
