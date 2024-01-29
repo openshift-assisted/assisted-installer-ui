@@ -98,7 +98,7 @@ export interface UploadFieldProps extends FieldProps {
   getErrorText?: (error: string) => React.ReactNode | undefined;
   placeholder?: string;
   onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLDivElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLDivElement>, value: string) => void;
   allowEdittingUploadedText?: boolean;
   dropzoneProps?: Omit<DropzoneProps, 'onDropRejected'> & {
     onDropRejected?: (helpers: FieldHelperProps<string>) => DropEvent;

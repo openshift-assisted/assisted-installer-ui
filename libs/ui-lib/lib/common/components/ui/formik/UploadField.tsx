@@ -8,7 +8,7 @@ import {
   HelperTextItem,
 } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
-import { getFieldId, trimSshPublicKey } from './utils';
+import { getFieldId } from './utils';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
@@ -73,16 +73,14 @@ const UploadField: React.FC<UploadFieldProps> = ({
             reader.onload = (event) => {
               if (event.target) {
                 const contentAsString = event.target.result as string;
-                setValue(trimSshPublicKey(contentAsString));
-                onBlur && onBlur(e);
+                onBlur && onBlur(e, contentAsString);
               }
             };
 
             // Read the file content as text
             reader.readAsText(file);
           } else {
-            setValue(trimSshPublicKey(file));
-            onBlur && onBlur(e);
+            onBlur && onBlur(e, file);
           }
         }}
         onReadStarted={() => setIsFileUploading(true)}
