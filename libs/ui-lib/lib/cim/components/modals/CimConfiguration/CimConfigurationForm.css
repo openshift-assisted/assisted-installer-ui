@@ -11,7 +11,7 @@
 }
 
 .cim-config-form-aws {
-  margin-bottom: var(--pf-global--spacer--md);
+  margin-bottom: var(--pf-v5-global--spacer--md);
 }
 
 .cim-config-form-volume input {

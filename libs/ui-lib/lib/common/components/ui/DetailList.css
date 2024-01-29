@@ -3,7 +3,7 @@
 }
 
 .detail-list dd {
-  margin-bottom: var(--pf-global--spacer--sm);
+  margin-bottom: var(--pf-v5-global--spacer--sm);
 }
 
 .detail-list ul ul,

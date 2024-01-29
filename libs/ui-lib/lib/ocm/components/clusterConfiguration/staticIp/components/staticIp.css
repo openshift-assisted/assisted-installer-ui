@@ -7,12 +7,12 @@
 }
 
 .vlan-id {
-  margin-left: var(--pf-global--spacer--md);
+  margin-left: var(--pf-v5-global--spacer--md);
 }
 
 .mac-ip-mapping .pf-v5-c-form__label-text {
-  color: var(--pf-global--Color--200);
-  font-size: var(--pf-global--FontSize--md);
+  color: var(--pf-v5-global--Color--200);
+  font-size: var(--pf-v5-global--FontSize--md);
   font-weight: unset;
 }
 

@@ -31,15 +31,15 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   const { t } = useTranslation();
   switch (position) {
     case PreviewBadgePosition.inlineRight:
-      clsName += ' pf-u-float-right';
+      clsName += ' pf-v5-u-float-right';
       break;
     case PreviewBadgePosition.inline:
-      clsName += ' pf-u-display-inline';
+      clsName += ' pf-v5-u-display-inline';
       break;
   }
   const bodyContent = (
     <>
-      <div style={{ marginBottom: 'var(--pf-global--spacer--sm)' }}>{popoverText}</div>
+      <div style={{ marginBottom: 'var(--pf-v5-global--spacer--sm)' }}>{popoverText}</div>
       {externalLink && (
         <>
           <ExternalLink href={externalLink}>{t('ai:Learn more')}</ExternalLink>

@@ -3,5 +3,5 @@
 }
 
 .infra-env-hosts-tab-title__icon {
-  margin-left: var(--pf-global--spacer--xs);
+  margin-left: var(--pf-v5-global--spacer--xs);
 }
