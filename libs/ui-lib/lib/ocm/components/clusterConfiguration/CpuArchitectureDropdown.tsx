@@ -180,7 +180,7 @@ const CpuArchitectureDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
+        onToggle={(_event, val: boolean) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-v5-u-w-100"
