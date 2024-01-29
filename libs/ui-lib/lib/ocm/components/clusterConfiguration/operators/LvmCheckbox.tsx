@@ -16,7 +16,10 @@ import {
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
+import {
+  getLvmIncompatibleWithCnvReason,
+  getLvmsIncompatibleWithOdfReason,
+} from '../../featureSupportLevels/featureStateUtils';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
@@ -81,6 +84,9 @@ const LvmCheckbox = ({ clusterId }: ClusterOperatorProps) => {
     let reason = featureSupportLevel.getFeatureDisabledReason('LVM');
     if (!reason) {
       reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
+      if (!reason) {
+        reason = getLvmsIncompatibleWithOdfReason(values);
+      }
     }
     setDisabledReason(reason);
   }, [values, featureSupportLevel, operatorInfo.lvmSupport]);

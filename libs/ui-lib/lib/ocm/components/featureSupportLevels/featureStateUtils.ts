@@ -218,3 +218,19 @@ export const isFeatureSupportedAndAvailable = (supportLevel: SupportLevel | unde
 
 export const hostsNetworkConfigurationDisabledReason =
   "DHCP only is the supported hosts' network configuration when external partner integrations is selected";
+
+export const getOdfIncompatibleWithLvmsReason = (operatorValues: OperatorsValues) => {
+  const mustDisableOdf = operatorValues.useOdfLogicalVolumeManager;
+  // In versions >= 4.15, it's not possible to select ODF + LVMS
+  return mustDisableOdf
+    ? `Currently, you can not install ${ODF_OPERATOR_LABEL} operator at the same time as ${LVMS_OPERATOR_LABEL} operator.`
+    : undefined;
+};
+
+export const getLvmsIncompatibleWithOdfReason = (operatorValues: OperatorsValues) => {
+  const mustDisableLvms = operatorValues.useOpenShiftDataFoundation;
+  // In versions >= 4.15, it's not possible to select ODF + LVMS
+  return mustDisableLvms
+    ? `Currently, you can not install ${LVMS_OPERATOR_LABEL} operator at the same time as ${ODF_OPERATOR_LABEL} operator.`
+    : undefined;
+};
