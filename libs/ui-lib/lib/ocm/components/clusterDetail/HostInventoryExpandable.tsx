@@ -5,6 +5,7 @@ import { getMostSevereHostStatus } from './utils';
 import { ExpandableSection } from '@patternfly/react-core';
 import './HostInventoryExpandable.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type HostInventoryExpandableProps = {
   cluster: Cluster;
@@ -24,11 +25,12 @@ const ExpandableSectionTitle = ({
 );
 
 const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const hosts = cluster.hosts || [];
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
-  const hostStatusDef = mostSevereHostStatus ? hostStatus[mostSevereHostStatus] : null;
+  const hostStatusDef = mostSevereHostStatus ? hostStatus(t)[mostSevereHostStatus] : null;
 
   return (
     <ExpandableSection

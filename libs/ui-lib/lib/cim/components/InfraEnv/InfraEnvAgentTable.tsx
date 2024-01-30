@@ -37,6 +37,7 @@ import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import InfraTableToolbar from './InfraTableToolbar';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;
@@ -107,6 +108,8 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     },
   );
   const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
+  const bmhStatuses = bmhStatus(t);
   const {
     statusCount,
     hostnameFilter,
@@ -114,7 +117,13 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     setStatusFilter,
     statusFilter,
     filteredHosts: hosts,
-  } = useAgentsFilter({ agents, bmhs: bareMetalHosts, hosts: allHosts });
+  } = useAgentsFilter({
+    agents,
+    agentStatuses,
+    bmhs: bareMetalHosts,
+    bmhStatuses,
+    hosts: allHosts,
+  });
 
   const content = React.useMemo(
     () =>
@@ -131,6 +140,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         discoveryTypeColumn(agents, bareMetalHosts, t),
         agentStatusColumn({
           agents,
+          agentStatuses,
           bareMetalHosts,
           onEditHostname: onEditHost,
           onApprove: onApprove,
@@ -143,15 +153,18 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         disksColumn(t),
       ].filter(Boolean),
     [
+      t,
       hosts,
       agents,
-      agentMachines,
+      bareMetalHosts,
+      hostActions.onEditHost,
+      hostActions.canEditHostname,
+      hostActions.canEditBMH,
+      agentStatuses,
       onEditHost,
       onApprove,
+      agentMachines,
       getClusterDeploymentLink,
-      hostActions,
-      bareMetalHosts,
-      t,
     ],
   );
 
@@ -162,7 +175,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
 
   const canEditHostname =
     selectedBMHs.some((bmh) => canEditBMH(bmh, t)[0]) ||
-    selectedAgents.some((a) => canEditAgent(a, t)[0]);
+    selectedAgents.some((a) => canEditAgent(a, agentStatuses, t)[0]);
 
   const massActions = [
     <DropdownItem
@@ -252,7 +265,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
-          canChangeHostname={canChangeHostname(agents, bareMetalHosts, t)}
+          canChangeHostname={canChangeHostname(agents, agentStatuses, bareMetalHosts, t)}
         />
       )}
       {isMassDeleteOpen && (

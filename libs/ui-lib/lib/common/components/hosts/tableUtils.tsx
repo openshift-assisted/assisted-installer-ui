@@ -154,7 +154,7 @@ export const statusColumn = (
         title: (
           <HostStatus
             host={host}
-            status={{ ...hostStatus[actualHostStatus], sublabel }}
+            status={{ ...hostStatus(t)[actualHostStatus], sublabel }}
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
@@ -286,8 +286,8 @@ export const countColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: <HostsCount cluster={cluster} inParenthesis /> },
 });
 
-export const activeNICColumn = (cluster: Cluster): TableRow<Host> => ({
-  header: { title: 'Active NIC', transforms: [sortable] },
+export const activeNICColumn = (cluster: Cluster, t: TFunction): TableRow<Host> => ({
+  header: { title: t('ai:Active NIC'), transforms: [sortable] },
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];

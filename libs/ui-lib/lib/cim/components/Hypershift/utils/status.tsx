@@ -9,6 +9,7 @@ import { AgentK8sResource } from '../../../types';
 import { getAgentStatus } from '../../helpers';
 import { NodePoolK8sResource } from '../types';
 import { TFunction } from 'i18next';
+import { agentStatus } from '../../helpers/agentStatus';
 
 export type NodePoolStatus = {
   type: 'error' | 'pending' | 'ok' | 'warning';
@@ -31,7 +32,8 @@ export const getNodePoolStatus = (
     };
   }
 
-  const agentStatuses = agents.map((a) => getAgentStatus(a));
+  const allAgentStatuses = agentStatus(t);
+  const agentStatuses = agents.map((a) => getAgentStatus(a, allAgentStatuses));
 
   const hasErrorAgents = agentStatuses.some(({ status }) => status.key === 'error');
 
