@@ -122,7 +122,7 @@ const featureSupportLevels = {
       USER_MANAGED_NETWORKING: 'supported',
       VIP_AUTO_ALLOC: 'dev-preview',
       VSPHERE_INTEGRATION: 'supported',
-      EXTERNAL_PLATFORM_OCI: 'supported',
+      EXTERNAL_PLATFORM_OCI: 'dev-preview',
     },
   },
   //TODO: add feature support levels for all cpu architectures

@@ -113,10 +113,15 @@ describe('Create a new cluster with external partner integrations', () => {
         .findDropdownToggle()
         .should('be.disabled');
     });
-    it('Validate that for OCP version 4.15 we show Technology Preview Badge in OCI option', () => {
+    it('Validate that for OCP version 4.15 we show Technology Preview badge in OCI option', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.15');
       ClusterDetailsForm.externalPartnerIntegrationsField.findDropdown().click();
-      cy.get(`[data-testid="EXTERNAL_PLATFORM_OCI-support-level"]`).should('exist');
+      ClusterDetailsForm.externalPartnerIntegrationsField.checkPlatformTechSupportLevel();
+    });
+    it('Validate that for OCP version 4.14 we show Developer Preview badge in OCI option', () => {
+      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
+      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdown().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField.checkPlatformDevSupportLevel();
     });
   });
 
