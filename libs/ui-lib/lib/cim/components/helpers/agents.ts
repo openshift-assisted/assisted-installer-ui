@@ -1,7 +1,6 @@
-import { AgentStatus } from './status';
+import { AgentStatus, getAgentStatusKey } from './status';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
-import { getAgentStatus } from './status';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';
 
 const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
@@ -21,8 +20,8 @@ export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
 
 export const getAgentsForSelection = (agents: AgentK8sResource[]) =>
   agents.filter((agent) => {
-    const { status } = getAgentStatus(agent);
-    return AGENT_FOR_SELECTION_STATUSES.includes(status.key as AgentStatus);
+    const key = getAgentStatusKey(agent);
+    return AGENT_FOR_SELECTION_STATUSES.includes(key as AgentStatus);
   });
 
 export const getAgentRole = (agent: AgentK8sResource) => agent.spec.role || agent.status?.role;

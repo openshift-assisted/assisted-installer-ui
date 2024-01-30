@@ -74,7 +74,7 @@ const NetworkConfigurationTableBase = ({
       hostnameColumn(t, onEditHost, undefined, canEditHostname),
       roleColumn(t, canEditRole, onEditRole, selectSchedulableMasters(cluster)),
       networkingStatusColumn(onEditHost),
-      activeNICColumn(cluster),
+      activeNICColumn(cluster, t),
       ipv4Column(cluster),
       ipv6Column(cluster),
       macAddressColumn(cluster),

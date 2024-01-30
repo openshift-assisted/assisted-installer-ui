@@ -15,6 +15,7 @@ import {
 import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { agentStatus } from '../helpers/agentStatus';
 
 export const getAgentId = (agent: AgentK8sResource) => agent.metadata?.uid as string;
 
@@ -43,6 +44,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
 }) => {
   const { t } = useTranslation();
   const agentClusterInstalls = React.useMemo(() => [agentClusterInstall], [agentClusterInstall]);
+  const agentStatuses = agentStatus(t);
   const [hosts, hostActions, actionResolver] = useAgentsTable(
     { agents, agentClusterInstalls },
     {
@@ -55,6 +57,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
       roleColumn(t),
       agentStatusColumn({
         agents,
+        agentStatuses,
         t,
       }),
       infraEnvColumn(agents, t),
@@ -63,7 +66,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
       memoryColumn(t),
       disksColumn(t),
     ],
-    [agents, hostActions, t],
+    [agentStatuses, agents, hostActions.onEditHost, t],
   );
 
   const paginationProps = usePagination(agents.length);

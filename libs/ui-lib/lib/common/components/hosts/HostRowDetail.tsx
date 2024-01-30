@@ -24,6 +24,7 @@ import SectionTitle from '../ui/SectionTitle';
 import { OnDiskRoleType } from './DiskRole';
 import StorageDetail from '../storage/StorageDetail';
 import { stringToJSON } from '../../utils';
+import { TFunction } from 'i18next';
 
 type HostDetailProps = {
   host: Host;
@@ -53,12 +54,12 @@ const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
   </GridItem>
 );
 
-const nicsColumns = [
-  { title: 'Name' },
-  { title: 'MAC address' },
-  { title: 'IPv4 address' },
-  { title: 'IPv6 address' },
-  { title: 'Speed' },
+const nicsColumns = (t: TFunction) => [
+  { title: t('ai:Name') },
+  { title: t('ai:MAC address') },
+  { title: t('ai:IPv4 address') },
+  { title: t('ai:IPv6 address') },
+  { title: t('ai:Speed') },
   // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
   // { title: 'Product' },
 ];
@@ -71,6 +72,7 @@ const NICsTableRowWrapper = (props: RowWrapperProps) => (
 );
 
 const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }) => {
+  const { t } = useTranslation();
   const rows: IRow[] = interfaces
     .sort((nicA, nicB) => nicA.name?.localeCompare(nicB.name || '') || 0)
     .map((nic) => ({
@@ -92,12 +94,12 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
       ],
       key: nic.name,
     }));
-  const { t } = useTranslation();
+
   return (
     <Table
       data-testid={testId}
       rows={rows}
-      cells={nicsColumns}
+      cells={nicsColumns(t)}
       variant={TableVariant.compact}
       aria-label={t("ai:Host's network interfaces table")}
       borders={false}
@@ -148,9 +150,9 @@ export const HostDetail = ({
 
   return (
     <Grid hasGutter>
-      <SectionTitle testId={'host-details-section'} title="Host details" />
+      <SectionTitle testId={'host-details-section'} title={t('ai:Host details')} />
       <SectionColumn>
-        <DetailItem testId={'uuid'} title="UUID" value={id} />
+        <DetailItem testId={'uuid'} title={t('ai:UUID')} value={id} />
         <DetailItem
           testId={'manufacturer'}
           title={t('ai:Manufacturer')}
@@ -161,7 +163,11 @@ export const HostDetail = ({
           title={t('ai:Product')}
           value={inventory.systemVendor?.productName || DASH}
         />
-        <DetailItem testId={'serial-number'} title="Serial number" value={rowInfo.serialNumber} />
+        <DetailItem
+          testId={'serial-number'}
+          title={t('ai:Serial number')}
+          value={rowInfo.serialNumber}
+        />
       </SectionColumn>
       <SectionColumn>
         <DetailItem
@@ -186,8 +192,8 @@ export const HostDetail = ({
         />
       </SectionColumn>
       <SectionColumn>
-        <DetailItem testId={'hw-type'} title="Hardware type" value={hardwareType} />
-        <DetailItem testId={'bmc-address'} title="BMC address" value={bmcAddress} />
+        <DetailItem testId={'hw-type'} title={t('ai:Hardware type')} value={hardwareType} />
+        <DetailItem testId={'bmc-address'} title={t('ai:BMC address')} value={bmcAddress} />
         <DetailItem
           testId={'boot-mode'}
           title={t('ai:Boot mode')}
@@ -215,10 +221,7 @@ export const HostDetail = ({
           updateDiskSkipFormatting={updateDiskSkipFormatting}
         />
       )}
-      <SectionTitle
-        testId={'nics-section'}
-        title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}
-      />
+      <SectionTitle testId={'nics-section'} title={t('ai:NIC', { count: nics.length })} />
       <GridItem>
         <NicsTable interfaces={nics} testId={'nics-table'} />
       </GridItem>
