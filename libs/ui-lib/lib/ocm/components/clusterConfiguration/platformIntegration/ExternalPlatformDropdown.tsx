@@ -19,7 +19,7 @@ import {
   getFieldId,
 } from '../../../../common';
 import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
-import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
+import { PlatformType, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import {
   NewFeatureSupportLevelData,
   NewFeatureSupportLevelMap,
@@ -43,6 +43,7 @@ export type ExternalPlatformInfo = {
   label: string;
   href?: string;
   disabledReason?: string;
+  supportLevel?: SupportLevel;
 };
 
 const getDisabledReasonForExternalPlatform = (
@@ -89,6 +90,10 @@ const getExternalPlatformTypes = (
           platform,
           featureSupportLevelData ?? undefined,
           cpuArchitecture,
+        ),
+        supportLevel: newFeatureSupportLevelContext.getFeatureSupportLevel(
+          ExternalPlaformIds[platform] as FeatureId,
+          featureSupportLevelData ?? undefined,
         ),
       },
     }),
@@ -170,7 +175,7 @@ export const ExternalPlatformDropdown = ({
   }, [dropdownIsDisabled, externalPlatformTypes]);
 
   const enabledItems = Object.keys(externalPlatformTypes).map((platform) => {
-    const { label, href, disabledReason } = externalPlatformTypes[
+    const { label, href, disabledReason, supportLevel } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
 
@@ -184,10 +189,7 @@ export const ExternalPlatformDropdown = ({
                 <span onClick={(event) => event.stopPropagation()}>
                   <NewFeatureSupportLevelBadge
                     featureId={ExternalPlaformIds[platform as PlatformType] as FeatureId}
-                    supportLevel={newFeatureSupportLevelContext.getFeatureSupportLevel(
-                      ExternalPlaformIds[platform as PlatformType] as FeatureId,
-                      featureSupportLevelData ?? undefined,
-                    )}
+                    supportLevel={supportLevel}
                   />
                 </span>
               </div>
