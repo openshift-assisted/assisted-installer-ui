@@ -6,6 +6,7 @@ import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
 import { Tooltip } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
 export type InfraEnvHostsTabAgentsWarning = {
   infraAgents: AgentK8sResource[];
@@ -26,9 +27,11 @@ const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarning> = (
   const bmhsWithoutAgents = infraBMHs.filter((bmh) =>
     agentsBMHNames.includes(bmh.metadata?.name || ''),
   );
+  const agentStatuses = agentStatus(t);
+  const bmhStatuses = bmhStatus(t);
 
-  const agentStates = infraAgents.map((agent) => getAgentStatus(agent, true).status);
-  const bmhStates = bmhsWithoutAgents.map((bmh) => getBMHStatus(bmh).state);
+  const agentStates = infraAgents.map((agent) => getAgentStatus(agent, agentStatuses, true).status);
+  const bmhStates = bmhsWithoutAgents.map((bmh) => getBMHStatus(bmh, bmhStatuses).state);
 
   const hostStates = [...agentStates, ...bmhStates];
 
