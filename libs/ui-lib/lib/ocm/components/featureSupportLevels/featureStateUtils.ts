@@ -40,11 +40,6 @@ export const getLvmIncompatibleWithCnvReason = (
   lvmSupport: SupportLevel | undefined,
 ) => {
   const hasSelectedCnv = operatorValues.useContainerNativeVirtualization;
-  const hasSelectedLVMS = operatorValues.useOdfLogicalVolumeManager;
-  // In versions which support for LVMS (4.12+), LVMS needs to be installed together with CNV
-  if (hasSelectedCnv && hasSelectedLVMS) {
-    return `${LVMS_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
-  }
   // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   if (hasSelectedCnv && lvmSupport !== 'supported') {
     return `Currently, you can not install ${LVM_OPERATOR_LABEL} operator at the same time as ${CNV_OPERATOR_LABEL} operator.`;
