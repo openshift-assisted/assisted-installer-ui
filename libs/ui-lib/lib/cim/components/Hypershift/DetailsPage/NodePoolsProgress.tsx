@@ -10,7 +10,12 @@ import { TFunction } from 'i18next';
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 
-import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
+import {
+  AgentMachineK8sResource,
+  HostedClusterK8sResource,
+  NodePoolK8sResource,
+  NodePoolPatches,
+} from '../types';
 import { AgentK8sResource, ConfigMapK8sResource } from '../../../types';
 import { getNodepoolAgents, getNodePoolStatus, NodePoolStatus } from '../utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -67,11 +72,7 @@ type NodePoolsProgressProps = {
   onRemoveNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   onUpdateNodePool: (
     nodePool: NodePoolK8sResource,
-    nodePoolPatches: {
-      op: string;
-      value: unknown;
-      path: string;
-    }[],
+    nodePoolPatches: NodePoolPatches,
   ) => Promise<unknown>;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   supportedVersionsCM?: ConfigMapK8sResource;

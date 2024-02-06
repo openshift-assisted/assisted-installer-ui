@@ -15,9 +15,9 @@ import { Formik } from 'formik';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../../common/utils';
 import { AgentK8sResource, ConfigMapK8sResource } from '../../../types';
-import { HostedClusterK8sResource, NodePoolK8sResource } from '../types';
+import { HostedClusterK8sResource, NodePoolFormValues, NodePoolK8sResource } from '../types';
 import { formikLabelsToLabels } from '../utils';
-import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
+import NodePoolForm from './NodePoolForm';
 
 type AddNodePoolModalProps = {
   agentsNamespace: string;
@@ -91,6 +91,11 @@ const AddNodePoolModal = ({
           )}`,
           agentLabels: [],
           count: 1,
+          useAutoscaling: false,
+          autoscaling: {
+            minReplicas: 1,
+            maxReplicas: 1,
+          },
         }}
         onSubmit={handleSubmit}
       >

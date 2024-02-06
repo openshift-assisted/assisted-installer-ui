@@ -22,7 +22,12 @@ import AgentStatus from '../../Agent/AgentStatus';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../common';
 import ManageHostsModal from '../modals/ManageHostsModal';
 import AddNodePoolModal from '../modals/AddNodePoolModal';
-import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
+import {
+  AgentMachineK8sResource,
+  HostedClusterK8sResource,
+  NodePoolK8sResource,
+  NodePoolPatches,
+} from '../types';
 import RemoveNodePoolModal from '../modals/RemoveNodePoolModal';
 import NodePoolStatus from './NodePoolStatus';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -37,11 +42,7 @@ type NodePoolsTableProps = {
   onRemoveNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   onUpdateNodePool: (
     nodePool: NodePoolK8sResource,
-    nodePoolPatches: {
-      op: string;
-      value: unknown;
-      path: string;
-    }[],
+    nodePoolPatches: NodePoolPatches,
   ) => Promise<unknown>;
   hostedCluster: HostedClusterK8sResource;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
