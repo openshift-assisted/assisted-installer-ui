@@ -284,7 +284,7 @@ const NetworkConfiguration = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled || !isSDNSupported}
           supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
         />
       )}
