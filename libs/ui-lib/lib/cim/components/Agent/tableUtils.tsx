@@ -583,7 +583,7 @@ export const useAgentsFilter = ({
 }: UseAgentsFilterArgs) => {
   const [hostnameFilter, setHostnameFilter] = React.useState<string>();
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const statusCount = Object.keys(agentStatus).reduce((acc, curr) => {
+  const statusCount = Object.keys(agentStatuses).reduce((acc, curr) => {
     acc[agentStatuses[curr].title] = 0;
     return acc;
   }, {} as StatusCount);
