@@ -173,10 +173,6 @@ export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6 = false) => {
   return !(isSNO || isIPv6);
 };
 
-export const getDefaultNetworkType = (isSNO: boolean, isIPv6 = false) => {
-  return isSNO || isIPv6 ? NETWORK_TYPE_OVN : NETWORK_TYPE_SDN;
-};
-
 export const canBeDualStack = (subnets: HostSubnets) =>
   subnets.some((subnet) => Address4.isValid(subnet.subnet)) &&
   subnets.some((subnet) => Address6.isValid(subnet.subnet));

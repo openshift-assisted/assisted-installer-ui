@@ -3,7 +3,6 @@ import {
   Cluster,
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
-  getDefaultNetworkType,
   HostSubnets,
   isDualStack,
   isSNO,
@@ -15,6 +14,7 @@ import {
   vipNoSuffixValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
+  NETWORK_TYPE_OVN,
   ClusterDefaultConfig,
 } from '../../../../common';
 
@@ -37,7 +37,7 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
+    networkType: cluster.networkType || NETWORK_TYPE_OVN,
     machineNetworks: cluster.machineNetworks || [],
     stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
     clusterNetworks:
