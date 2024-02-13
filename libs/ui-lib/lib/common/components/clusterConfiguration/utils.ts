@@ -10,7 +10,7 @@ import {
   ServiceNetwork,
   stringToJSON,
 } from '../../api';
-import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
+import { NO_SUBNET_SET } from '../../config';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,

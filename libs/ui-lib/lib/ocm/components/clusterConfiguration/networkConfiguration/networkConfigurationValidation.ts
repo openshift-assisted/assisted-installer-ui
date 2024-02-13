@@ -5,7 +5,6 @@ import {
   dualStackValidationSchema,
   HostSubnets,
   isDualStack,
-  isSNO,
   machineNetworksValidationSchema,
   NetworkConfigurationValues,
   serviceNetworkValidationSchema,
@@ -28,7 +27,6 @@ export const getNetworkInitialValues = (
     | 'serviceNetworksDualstack'
   >,
 ): NetworkConfigurationValues => {
-  const isSNOCluster = isSNO(cluster);
   const isDualStackType = isDualStack(cluster);
 
   return {
