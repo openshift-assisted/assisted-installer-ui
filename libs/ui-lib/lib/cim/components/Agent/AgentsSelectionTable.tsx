@@ -29,6 +29,7 @@ import {
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
+import { agentStatus } from '../helpers/agentStatus';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
@@ -55,6 +56,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   onSetInstallationDiskId,
 }) => {
   const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
   const [{ value: selectedIDs }] =
     useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
@@ -111,6 +113,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       ...(addAll ? [infraEnvColumn(matchingAgents, t)] : []),
       agentStatusColumn({
         agents: matchingAgents,
+        agentStatuses,
         wizardStepId: 'hosts-selection',
         t,
       }),
@@ -123,6 +126,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     actions.onEditRole,
     addAll,
     hosts,
+    agentStatuses,
     actions.onEditHost,
     actions.canEditHostname,
     t,

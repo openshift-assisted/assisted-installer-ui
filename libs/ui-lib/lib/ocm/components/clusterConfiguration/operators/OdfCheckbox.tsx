@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK, ODF_LINK } from '../../../../common';
+import {
+  getFieldId,
+  PopoverIcon,
+  ODF_REQUIREMENTS_LINK,
+  ODF_LINK,
+  OperatorsValues,
+} from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import { useFormikContext } from 'formik';
+import { getOdfIncompatibleWithLvmsReason } from '../../featureSupportLevels/featureStateUtils';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
@@ -37,8 +45,18 @@ const OdfHelperText = () => {
 
 const OdfCheckbox = () => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
+  const { values } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
-  const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('ODF');
+  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+
+  React.useEffect(() => {
+    let disabledReason = featureSupportLevelContext.getFeatureDisabledReason('ODF');
+    if (!disabledReason) {
+      disabledReason = getOdfIncompatibleWithLvmsReason(values);
+    }
+    setDisabledReason(disabledReason);
+  }, [values, featureSupportLevelContext]);
+
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField

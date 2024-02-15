@@ -15,17 +15,13 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { AgentK8sResource } from '../../../types';
 import { getAgentsForSelection, getVersionFromReleaseImage } from '../../helpers';
 import NodePoolAgentsForm from '../forms/NodePoolAgentsForm';
-import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
+import {
+  AgentMachineK8sResource,
+  HostedClusterK8sResource,
+  NodePoolFormValues,
+  NodePoolK8sResource,
+} from '../types';
 import { getNodepoolAgents } from '../utils';
-
-export type NodePoolFormValues = {
-  nodePoolName: string;
-  agentLabels: {
-    key: string;
-    value: string;
-  }[];
-  count: number;
-};
 
 type NodePoolFormProps = {
   agents: AgentK8sResource[];
@@ -91,6 +87,8 @@ const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePo
             agents={agents}
             countName="count"
             labelName="agentLabels"
+            autoscalingName={`autoscaling`}
+            useAutoscalingName={`useAutoscaling`}
             maxAgents={maxAgents}
             isEdit={isEdit}
           />

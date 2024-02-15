@@ -236,6 +236,10 @@ const NetworkConfiguration = ({
     [isDualStack, cluster, featureSupportLevelContext, featureSupportLevelData],
   );
 
+  const isSDNSupported = React.useMemo(() => {
+    return featureSupportLevelContext.isFeatureSupported('SDN_NETWORK_TYPE');
+  }, [featureSupportLevelContext]);
+
   return (
     <Grid hasGutter>
       <ManagedNetworkingControlGroup
@@ -258,7 +262,9 @@ const NetworkConfiguration = ({
           hostSubnets={hostSubnets}
         />
       )}
-      <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
+      {isSDNSupported && (
+        <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
+      )}
 
       {!(isUserManagedNetworking && !isSNOCluster) && (
         <AvailableSubnetsControl
@@ -278,7 +284,7 @@ const NetworkConfiguration = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled || !isSDNSupported}
           supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
         />
       )}
