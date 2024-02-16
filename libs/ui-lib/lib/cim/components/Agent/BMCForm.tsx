@@ -187,14 +187,14 @@ const emptyValues: AddBmcValues = {
   online: true,
   nmState:
     'interfaces:\n\
-- name: <nic1_name>\n\
-  type: ethernet\n\
-  state: up\n\
-  ipv4:\n\
-    address:\n\
-    - ip: <ip_address>\n\
-      prefix-length: 24\n\
-    enabled: true\n\
+  - name: <nic1_name>\n\
+    type: ethernet\n\
+    state: up\n\
+    ipv4:\n\
+      address:\n\
+      - ip: <ip_address>\n\
+        prefix-length: 24\n\
+      enabled: true\n\
 dns-resolver:\n\
   config:\n\
     server:\n\
@@ -213,9 +213,12 @@ const getInitValues = (
   nmState?: NMStateK8sResource,
   secret?: SecretK8sResource,
   isEdit?: boolean,
+  addNMState?: boolean,
 ): AddBmcValues => {
+  let values;
+
   if (isEdit) {
-    return {
+    values = {
       name: bmh?.metadata?.name || '',
       hostname: bmh?.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION] || '',
       bmcAddress: bmh?.spec?.bmc?.address || '',
@@ -228,8 +231,13 @@ const getInitValues = (
       macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
     };
   } else {
-    return emptyValues;
+    values = emptyValues;
   }
+
+  if (!addNMState) {
+    values.nmState = '';
+  }
+  return values;
 };
 
 const BMCForm: React.FC<BMCFormProps> = ({
@@ -255,12 +263,16 @@ const BMCForm: React.FC<BMCFormProps> = ({
       setError(getErrorMessage(e));
     }
   };
+
   const { t } = useTranslation();
   const { initValues, validationSchema } = React.useMemo(() => {
-    const initValues = getInitValues(bmh, nmState, secret, isEdit);
+    const addNmState =
+      infraEnv.metadata?.labels && infraEnv.metadata?.labels['networkType'] === 'static';
+
+    const initValues = getInitValues(bmh, nmState, secret, isEdit, addNmState);
     const validationSchema = getValidationSchema(usedHostnames, initValues.hostname, t);
     return { initValues, validationSchema };
-  }, [usedHostnames, bmh, nmState, secret, isEdit, t]);
+  }, [infraEnv.metadata?.labels, usedHostnames, bmh, nmState, secret, isEdit, t]);
 
   return (
     <Formik
