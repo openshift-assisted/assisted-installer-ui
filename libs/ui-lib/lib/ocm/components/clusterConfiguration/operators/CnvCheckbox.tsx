@@ -19,9 +19,11 @@ const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 const CnvLabel = ({
   clusterId,
   disabledReason,
+  showMessageForLvms,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   disabledReason?: string;
+  showMessageForLvms: boolean;
 }) => {
   return (
     <>
@@ -31,7 +33,9 @@ const CnvLabel = ({
       <PopoverIcon
         component={'a'}
         headerContent="Additional requirements"
-        bodyContent={<CnvHostRequirements clusterId={clusterId} />}
+        bodyContent={
+          <CnvHostRequirements clusterId={clusterId} showMessageForLvms={showMessageForLvms} />
+        }
       />
     </>
   );
@@ -48,7 +52,13 @@ const CnvHelperText = () => {
   );
 };
 
-const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
+const CnvCheckbox = ({
+  clusterId,
+  showMessageForLvms,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  showMessageForLvms: boolean;
+}) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
@@ -68,7 +78,13 @@ const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={CNV_FIELD_NAME}
-        label={<CnvLabel clusterId={clusterId} disabledReason={disabledReason} />}
+        label={
+          <CnvLabel
+            clusterId={clusterId}
+            disabledReason={disabledReason}
+            showMessageForLvms={showMessageForLvms}
+          />
+        }
         helperText={<CnvHelperText />}
         isDisabled={!!disabledReason}
       />

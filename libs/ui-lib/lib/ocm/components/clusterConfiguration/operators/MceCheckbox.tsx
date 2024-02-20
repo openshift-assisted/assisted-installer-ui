@@ -7,24 +7,43 @@ import { useNewFeatureSupportLevel } from '../../../../common/components/newFeat
 
 const MCE_FIELD_NAME = 'useMultiClusterEngine';
 
-const MceLabel = ({ disabledReason }: { disabledReason?: string }) => (
-  <>
-    <Tooltip hidden={!disabledReason} content={disabledReason}>
-      <span>Install multicluster engine </span>
-    </Tooltip>
-    <PopoverIcon
-      id={MCE_FIELD_NAME}
-      component={'a'}
-      headerContent="Additional requirements"
-      bodyContent={
-        <>
-          OpenShift Data Foundation (recommended for creating additional on-premise clusters) or
-          another persistent storage service
-        </>
-      }
-    />
-  </>
-);
+const MceLabel = ({
+  disabledReason,
+  showMessageForLvms,
+  isSNO,
+}: {
+  disabledReason?: string;
+  showMessageForLvms?: boolean;
+  isSNO?: boolean;
+}) => {
+  const odfText = !isSNO
+    ? 'OpenShift Data Foundation (recommended for creating additional on-premise clusters)'
+    : '';
+  const lvmsText = showMessageForLvms
+    ? !isSNO
+      ? ', Logical Volume Manager Storage'
+      : 'Logical Volume Manager Storage'
+    : '';
+
+  return (
+    <>
+      <Tooltip hidden={!disabledReason} content={disabledReason}>
+        <span>Install multicluster engine </span>
+      </Tooltip>
+      <PopoverIcon
+        id={MCE_FIELD_NAME}
+        component={'a'}
+        headerContent="Additional requirements"
+        bodyContent={
+          <>
+            {odfText}
+            {lvmsText} or another persistent storage service
+          </>
+        }
+      />
+    </>
+  );
+};
 
 const MceHelperText = () => {
   return (
@@ -37,7 +56,13 @@ const MceHelperText = () => {
   );
 };
 
-const MceCheckbox = () => {
+const MceCheckbox = ({
+  showMessageForLvms,
+  isSNO,
+}: {
+  showMessageForLvms: boolean;
+  isSNO: boolean;
+}) => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const fieldId = getFieldId(MCE_FIELD_NAME, 'input');
   const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MCE');
@@ -45,7 +70,13 @@ const MceCheckbox = () => {
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={MCE_FIELD_NAME}
-        label={<MceLabel disabledReason={disabledReason} />}
+        label={
+          <MceLabel
+            disabledReason={disabledReason}
+            showMessageForLvms={showMessageForLvms}
+            isSNO={isSNO}
+          />
+        }
         isDisabled={!!disabledReason}
         helperText={<MceHelperText />}
       />
