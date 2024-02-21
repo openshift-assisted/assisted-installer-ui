@@ -7,6 +7,7 @@ import {
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
+  EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
   ModalBoxBody,
@@ -14,7 +15,6 @@ import {
   Spinner,
   Stack,
   StackItem,
-  Title,
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
 import { UploadIcon } from '@patternfly/react-icons/dist/js/icons/upload-icon';
@@ -132,11 +132,12 @@ const AddBmcHostYamlForm: React.FC<
       <ModalBoxBody>
         <Stack hasGutter>
           <StackItem>
-            <EmptyState variant={EmptyStateVariant.large}>
-              <EmptyStateIcon icon={UploadIcon} />
-              <Title headingLevel="h4" size="lg">
-                {t('ai:Upload a YAML file')}
-              </Title>
+            <EmptyState variant={EmptyStateVariant.lg}>
+              <EmptyStateHeader
+                titleText={<>{t('ai:Upload a YAML file')}</>}
+                icon={<EmptyStateIcon icon={UploadIcon} />}
+                headingLevel="h4"
+              />
               <EmptyStateBody>
                 <p>
                   {t(

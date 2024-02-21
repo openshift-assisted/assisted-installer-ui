@@ -1,10 +1,18 @@
 import * as React from 'react';
-import { FormGroup, FileUpload } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FileUpload,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  DropEvent,
+} from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { FileRejection } from 'react-dropzone';
 
 const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   label,
@@ -20,9 +28,11 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
 
   const maxFileSize = 100000; //100 kb
   const maxFileSizeKb = 100;
-  const acceptedFiles =
-    '.pem,.crt,.ca,.cert,application/x-pem-file,application/x-x509-ca-cert,text/plain';
-
+  const acceptedFiles = {
+    'application/x-pem-file': ['.pem', '.crt', '.ca', '.cert'],
+    'application/x-x509-ca-cert': ['.pem', '.crt', '.ca', '.cert'],
+    'text/plain': ['.pem', '.crt', '.ca', '.cert'],
+  };
   const fieldId = getFieldId(name, 'input', idPostfix);
   const [field, , { setValue }] = useField<string | File>(name);
   const [filename, setFilename] = React.useState('');
@@ -30,10 +40,7 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   const [isRejected, setIsRejected] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
 
-  const handleFileInputChange = (
-    _event: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLElement>,
-    file: File,
-  ) => {
+  const handleFileInputChange = (_event: DropEvent, file: File) => {
     setFilename(file.name);
   };
 
@@ -59,8 +66,8 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
     setErrorMessage('');
   };
 
-  const handleFileRejected = (_rejectedFiles: File[]) => {
-    if (_rejectedFiles[0].size > maxFileSize) {
+  const handleFileRejected = (_rejectedFiles: FileRejection[]) => {
+    if (_rejectedFiles[0].file.size > maxFileSize) {
       setIsRejected(true);
       setErrorMessage(
         t('ai:File size is too big. Upload a new {{maxFileSizeKb}} Kb or less.', { maxFileSizeKb }),
@@ -82,29 +89,7 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   };
 
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={
-        typeof helperText === 'string' ? (
-          helperText
-        ) : (
-          <HelperText fieldId={fieldId}>{helperText}</HelperText>
-        )
-      }
-      helperTextInvalid={
-        typeof errorMessage === 'string' ? (
-          errorMessage
-        ) : (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
-          </HelperText>
-        )
-      }
-      validated={isRejected ? 'error' : 'default'}
-      isRequired={isRequired}
-      labelIcon={labelIcon}
-    >
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
       {children}
       <FileUpload
         filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
@@ -118,8 +103,8 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
         value={field.value}
         filename={filename}
         onFileInputChange={handleFileInputChange}
-        onDataChange={handleTextOrDataChange}
-        onTextChange={handleTextOrDataChange}
+        onDataChange={(_event, value: string) => handleTextOrDataChange(value)}
+        onTextChange={(_event, value: string) => handleTextOrDataChange(value)}
         onReadStarted={handleFileReadStarted}
         onReadFinished={handleFileReadFinished}
         onClearClick={handleClear}
@@ -133,6 +118,18 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
         disabled={isDisabled}
         allowEditingUploadedText={true}
       />
+      {(errorMessage || helperText) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={errorMessage && <ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : helperText}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

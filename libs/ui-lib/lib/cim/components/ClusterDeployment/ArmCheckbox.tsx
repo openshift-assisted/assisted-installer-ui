@@ -1,10 +1,16 @@
 import * as React from 'react';
-import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
+import {
+  Checkbox,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Tooltip,
+} from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import {
   CpuArchitecture,
   getFieldId,
-  HelperText,
   OpenshiftVersionOptionType,
   PopoverIcon,
 } from '../../../common';
@@ -86,12 +92,18 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
           label={<Label version={openshiftVersion} />}
           aria-describedby={`${fieldId}-helper`}
           description={
-            <HelperText fieldId={fieldId}>
-              {t('ai:Make sure all the hosts are using arm64 CPU architecture.')}
-            </HelperText>
+            <FormGroup>
+              <FormHelperText>
+                <HelperText id={fieldId}>
+                  <HelperTextItem>
+                    {t('ai:Make sure all the hosts are using arm64 CPU architecture.')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            </FormGroup>
           }
           isChecked={value === CpuArchitecture.ARM}
-          onChange={handleChange}
+          onChange={(_event, value) => handleChange(value)}
         />
       </Tooltip>
     </FormGroup>

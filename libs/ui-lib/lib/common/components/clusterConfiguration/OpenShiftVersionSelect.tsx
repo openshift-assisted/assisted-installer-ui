@@ -2,13 +2,13 @@ import React from 'react';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { SelectFieldProps } from '../ui/formik/types';
+import { Icon } from '@patternfly/react-core';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -26,7 +26,9 @@ const getOpenshiftVersionHelperText =
     if (!versions.length) {
       return (
         <>
-          <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+          <Icon size="sm" status="danger">
+            <ExclamationCircleIcon />
+          </Icon>
           &nbsp; {t('ai:No release image is available.')}
         </>
       );
@@ -39,7 +41,9 @@ const getOpenshiftVersionHelperText =
     if (selectedVersion.supportLevel !== 'production') {
       return (
         <>
-          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>
           &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
           <OpenShiftLifeCycleDatesLink />
         </>

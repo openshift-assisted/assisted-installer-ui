@@ -12,6 +12,7 @@ import {
   OrderType,
   HelperText,
   HelperTextItem,
+  Icon,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { PrismCode, SimpleAIPrismTheme } from '../ui';
@@ -208,7 +209,9 @@ export const HostsNotShowingLink = ({
     <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
       {!isInline && (
         <>
-          <InfoCircleIcon size="sm" />
+          <Icon size="sm">
+            <InfoCircleIcon />
+          </Icon>
           &nbsp;
         </>
       )}

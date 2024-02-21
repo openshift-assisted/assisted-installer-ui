@@ -1,15 +1,8 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableVariant,
-  RowWrapperProps,
-  RowWrapper,
-  IRow,
-} from '@patternfly/react-table';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { TableVariant, RowWrapperProps, RowWrapper, IRow } from '@patternfly/react-table';
+import { Table, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
 import type { Disk, Host, Interface } from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo } from '../../types/hosts';

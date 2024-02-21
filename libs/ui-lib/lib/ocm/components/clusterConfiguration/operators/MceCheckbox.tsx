@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { getFieldId, PopoverIcon, MCE_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
@@ -47,12 +47,14 @@ const MceLabel = ({
 
 const MceHelperText = () => {
   return (
-    <>
-      Create, import, and manage multiple clusters from this cluster.{' '}
-      <a href={MCE_LINK} target="_blank" rel="noopener noreferrer">
-        {'Learn more'} <ExternalLinkAltIcon />
-      </a>
-    </>
+    <HelperText>
+      <HelperTextItem variant="indeterminate">
+        Create, import, and manage multiple clusters from this cluster.{' '}
+        <a href={MCE_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
+      </HelperTextItem>
+    </HelperText>
   );
 };
 

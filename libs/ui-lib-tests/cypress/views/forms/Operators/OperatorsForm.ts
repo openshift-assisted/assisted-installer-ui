@@ -1,6 +1,6 @@
 export default class OperatorsForm {
   static get body() {
-    return cy.get('.pf-c-wizard__main-body');
+    return cy.get('.pf-v5-c-wizard__main-body');
   }
 
   static get mceOperatorControl() {
@@ -15,7 +15,7 @@ class MceOperatorControl {
   }
 
   static findPopoverButton() {
-    return MceOperatorControl.body.find('.pf-c-button').findByRole('img', {
+    return MceOperatorControl.body.find('.pf-v5-c-button').findByRole('img', {
       hidden: true,
     });
   }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { useFormikContext } from 'formik';
 import {
@@ -43,12 +43,14 @@ const CnvLabel = ({
 
 const CnvHelperText = () => {
   return (
-    <>
-      Run virtual machines alongside containers on one platform.{' '}
-      <a href={CNV_LINK} target="_blank" rel="noopener noreferrer">
-        {'Learn more'} <ExternalLinkAltIcon />
-      </a>
-    </>
+    <HelperText>
+      <HelperTextItem variant="indeterminate">
+        Run virtual machines alongside containers on one platform.{' '}
+        <a href={CNV_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
+      </HelperTextItem>
+    </HelperText>
   );
 };
 

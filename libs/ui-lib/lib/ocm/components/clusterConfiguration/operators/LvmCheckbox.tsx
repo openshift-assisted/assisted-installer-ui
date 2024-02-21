@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import {
   ClusterOperatorProps,
@@ -34,12 +34,14 @@ type LvmLabelProps = ClusterOperatorProps & {
 
 const LvmHelperText = ({ operatorName }: { operatorName: ExposedOperatorName }) => {
   return (
-    <>
-      Storage virtualization that offers a more flexible approach for disk space management.{' '}
-      {operatorName === OPERATOR_NAME_LVMS && (
-        <ExternalLink href={LVMS_LINK}>Learn more</ExternalLink>
-      )}
-    </>
+    <HelperText>
+      <HelperTextItem variant="indeterminate">
+        Storage virtualization that offers a more flexible approach for disk space management.{' '}
+        {operatorName === OPERATOR_NAME_LVMS && (
+          <ExternalLink href={LVMS_LINK}>Learn more</ExternalLink>
+        )}
+      </HelperTextItem>
+    </HelperText>
   );
 };
 

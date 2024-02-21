@@ -1,11 +1,17 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalProps } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Icon,
+  IconComponentProps,
+  Modal,
+  ModalProps,
+} from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 
 export interface InfoLinkWithModalProps {
   linkText: string;
-  infoCircleSize?: SVGIconProps['size'];
+  infoCircleSize?: IconComponentProps['size'];
   modalTitle: string;
   modalVariant?: ModalProps['variant'];
   isInline?: boolean;
@@ -34,7 +40,9 @@ const InfoLinkWithModal = ({
       <Button id={linkId} variant={ButtonVariant.link} onClick={handleLinkClick} isInline>
         {!isInline && (
           <>
-            <InfoCircleIcon size={infoCircleSize} />
+            <Icon size={infoCircleSize}>
+              <InfoCircleIcon />
+            </Icon>
             &nbsp;
           </>
         )}

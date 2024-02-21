@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Button,
   ButtonVariant,
+  Icon,
   Popover,
   Text,
   TextContent,
@@ -50,7 +51,9 @@ const VMRebootConfigurationInfo = () => {
       <Popover bodyContent={<VMRebootConfigurationContent />} minWidth="35rem">
         <Button variant={ButtonVariant.link} isInline>
           <>
-            <InfoCircleIcon size="sm" />
+            <Icon size="sm">
+              <InfoCircleIcon />
+            </Icon>
             &nbsp;
           </>
           {t('ai:Check your VM reboot configuration')}

@@ -9,7 +9,7 @@ import {
   MachineNetwork,
   ServiceNetwork,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
+import { NO_SUBNET_SET } from '../../config';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
@@ -171,10 +171,6 @@ export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: Clust
 
 export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6 = false) => {
   return !(isSNO || isIPv6);
-};
-
-export const getDefaultNetworkType = (isSNO: boolean, isIPv6 = false) => {
-  return isSNO || isIPv6 ? NETWORK_TYPE_OVN : NETWORK_TYPE_SDN;
 };
 
 export const canBeDualStack = (subnets: HostSubnets) =>

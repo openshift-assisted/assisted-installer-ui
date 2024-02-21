@@ -19,7 +19,7 @@ const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) =>
       className="cluster-summary-expandable"
       id="cluster-summary-expandable"
     >
-      <div className="pf-u-pl-md pf-u-pt-md">
+      <div className="pf-v5-u-pl-md pf-v5-u-pt-md">
         <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
         <ReviewSummaryContent cluster={cluster} />
       </div>

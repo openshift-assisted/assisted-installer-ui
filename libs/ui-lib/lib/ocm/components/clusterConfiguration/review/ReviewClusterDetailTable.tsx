@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table, TableBody, TableVariant } from '@patternfly/react-table';
+import { TableVariant } from '@patternfly/react-table';
+import { Table, TableBody } from '@patternfly/react-table/deprecated';
 import { genericTableRowKey, getDefaultCpuArchitecture } from '../../../../common';
 import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
 import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';

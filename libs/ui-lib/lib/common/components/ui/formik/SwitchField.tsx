@@ -1,9 +1,16 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Stack, StackItem, Switch, Tooltip } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Switch,
+  Tooltip,
+} from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SwitchFieldProps } from './types';
-import HelperText from './HelperText';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const SwitchField: React.FC<SwitchFieldProps> = ({
   label,
@@ -32,7 +39,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
     isChecked: Boolean(field.value),
     hasCheckIcon: Boolean(field.value),
     ouiaId: switchOuiaId,
-    onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+    onChange: (event: React.FormEvent<HTMLInputElement>, checked: boolean) => {
       if (onChangeCustomOverride) {
         onChangeCustomOverride(checked, event);
       } else {
@@ -42,36 +49,28 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
     },
   };
 
-  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
-
   return (
-    <Stack>
-      <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-        >
-          {tooltipProps ? (
-            <Tooltip {...tooltipProps}>
-              <Switch {...switchFields} />
-            </Tooltip>
-          ) : (
-            <Switch {...switchFields} />
-          )}
-        </FormGroup>
-      </StackItem>
-      <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+    <FormGroup fieldId={fieldId} isRequired={isRequired} labelIcon={labelIcon}>
+      {tooltipProps ? (
+        <Tooltip {...tooltipProps}>
+          <Switch {...switchFields} />
+        </Tooltip>
+      ) : (
+        <Switch {...switchFields} />
+      )}
+      {(errorMessage || hText) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : hText}
+            </HelperTextItem>
           </HelperText>
-        )}
-      </StackItem>
-    </Stack>
+        </FormHelperText>
+      )}
+    </FormGroup>
   );
 };
 

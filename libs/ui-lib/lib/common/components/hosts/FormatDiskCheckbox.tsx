@@ -99,7 +99,7 @@ const FormatDiskCheckbox = ({
         id={`select-formatted-${host.id}-${index}`}
         isChecked={isFormatDiskChecked(host, diskId, installationDiskId)}
         isDisabled={isFormatDiskDisabled(host, diskId, installationDiskId)}
-        onChange={(checked: boolean) =>
+        onChange={(_event, checked: boolean) =>
           onSelectFormattingDisk(checked, host.id, diskId, updateDiskSkipFormatting)
         }
       />

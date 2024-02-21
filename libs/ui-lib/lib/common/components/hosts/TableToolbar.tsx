@@ -1,9 +1,5 @@
 import * as React from 'react';
 import {
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  DropdownToggleCheckbox,
   OnPerPageSelect,
   OnSetPage,
   Pagination,
@@ -16,6 +12,12 @@ import {
   ToolbarProps,
   Tooltip,
 } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  DropdownToggleCheckbox,
+} from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -101,7 +103,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
                         id="select-checkbox"
                         key="select-checkbox"
                         aria-label={t('ai:Select all')}
-                        onChange={(checked) => (checked ? onSelectAll() : onSelectNone())}
+                        onChange={(_event, checked) => (checked ? onSelectAll() : onSelectNone())}
                         isChecked={isChecked}
                       >
                         {selectedIDs.length} {t('ai:selected')}

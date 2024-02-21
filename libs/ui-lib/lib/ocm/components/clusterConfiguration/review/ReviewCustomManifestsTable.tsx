@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table, TableVariant, TableBody } from '@patternfly/react-table';
+import { TableVariant } from '@patternfly/react-table';
+import { Table, TableBody } from '@patternfly/react-table/deprecated';
 import { Alert } from '@patternfly/react-core';
 import { ListManifestsExtended } from '../manifestsConfiguration/data/dataTypes';
 import { genericTableRowKey } from '../../../../common';

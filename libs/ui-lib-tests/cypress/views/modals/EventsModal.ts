@@ -30,7 +30,7 @@ export class EventsModal {
   }
 
   get contents() {
-    return this.body.find('.pf-c-table tr');
+    return this.body.find('.pf-v5-c-table tr');
   }
 
   get hostFilter() {
@@ -52,7 +52,7 @@ export class EventsModal {
 
 class PaginationControl {
   constructor(parentAlias: string) {
-    cy.get(parentAlias).find('.pf-c-pagination').as(PaginationControl.name);
+    cy.get(parentAlias).find('.pf-v5-c-pagination').as(PaginationControl.name);
   }
 
   static get alias() {
@@ -80,11 +80,11 @@ class PaginationControl {
   }
 
   get menuText() {
-    return this.body.find('.pf-c-options-menu__toggle-text');
+    return this.body.find('.pf-v5-c-menu-toggle__text');
   }
 
   get menu() {
-    return this.body.find('.events-pagination-bottom-toggle');
+    return this.body.find('#events-pagination-bottom-toggle');
   }
 
   perPageOption(num: number) {

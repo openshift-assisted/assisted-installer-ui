@@ -8,8 +8,13 @@ import {
   Popover,
   Checkbox,
   TextInput,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Icon,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { HelpIcon } from '@patternfly/react-icons/dist/js/icons/help-icon';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -22,7 +27,6 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
   docConfigAwsUrl,
   isEdit,
   isInProgressPeriod,
-
   dbVolSize,
   dbVolSizeValidation,
   setDbVolSize,
@@ -65,9 +69,11 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
         aria-label={t('ai:More info for load balancer on Amazon web services')}
         aria-describedby="cim-config-form-aws-title"
         onClick={(e) => e.preventDefault()}
-        className="pf-c-form__group-label-help"
+        className="pf-v5-c-form__group-label-help"
       >
-        <HelpIcon noVerticalAlign />
+        <Icon>
+          <HelpIcon />
+        </Icon>
       </button>
     </Popover>
   );
@@ -96,9 +102,11 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
               aria-label={t('ai:More info for configure storage sizes')}
               aria-describedby="cim-config-form-storage-title"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
-              <HelpIcon noVerticalAlign />
+              <Icon>
+                <HelpIcon />
+              </Icon>
             </button>
           </Popover>
         }
@@ -121,29 +129,39 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   aria-label={t('ai:More info for database storage')}
                   aria-describedby="cim-config-form-storage-db"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help"
+                  className="pf-v5-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
                 </button>
               </Popover>
             }
-            helperTextInvalid={dbVolSizeValidation}
-            validated={dbVolSizeValidation ? 'error' : 'default'}
             isRequired
           >
             <span className="cim-config-form-volume">
               <TextInput
+                validated={dbVolSizeValidation ? 'error' : 'default'}
                 isRequired
                 isDisabled={isEdit /* Not supported by backend */}
                 type="number"
                 id="cim-config-form-storage-db"
                 name="cim-config-form-storage-db"
                 value={dbVolSize}
-                onChange={(v: string) => setDbVolSize(getNumber(v, 1))}
+                onChange={(_event, v: string) => setDbVolSize(getNumber(v, 1))}
                 min={0 /* Do the validation elsewhere */}
               />{' '}
               Gi
             </span>
+            {dbVolSizeValidation !== undefined && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem icon={<ExclamationCircleIcon />} variant="error">
+                    {dbVolSizeValidation}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         </FlexItem>
         <FlexItem>
@@ -161,29 +179,39 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   aria-label={t('ai:More info for system storage')}
                   aria-describedby="cim-config-form-storage-sys"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help"
+                  className="pf-v5-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
                 </button>
               </Popover>
             }
-            helperTextInvalid={fsVolSizeValidation}
-            validated={fsVolSizeValidation ? 'error' : 'default'}
             isRequired
           >
             <span className="cim-config-form-volume">
               <TextInput
+                validated={fsVolSizeValidation ? 'error' : 'default'}
                 isRequired
                 isDisabled={isEdit /* Not supported by backend */}
                 type="number"
                 id="cim-config-form-storage-sys"
                 name="cim-config-form-storage-sys"
                 value={fsVolSize}
-                onChange={(v: string) => setFsVolSize(getNumber(v, 1))}
+                onChange={(_event, v: string) => setFsVolSize(getNumber(v, 1))}
                 min={0}
               />{' '}
               Gi
             </span>
+            {fsVolSizeValidation !== undefined && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem icon={<ExclamationCircleIcon />} variant="error">
+                    {fsVolSizeValidation}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         </FlexItem>
         <FlexItem>
@@ -201,33 +229,42 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                   aria-label={t('ai:More info for image storage')}
                   aria-describedby="cim-config-form-storage-img"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help"
+                  className="pf-v5-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
                 </button>
               </Popover>
             }
-            helperTextInvalid={imgVolSizeValidation}
-            validated={imgVolSizeValidation ? 'error' : 'default'}
             isRequired
           >
             <span className="cim-config-form-volume">
               <TextInput
+                validated={imgVolSizeValidation ? 'error' : 'default'}
                 isRequired
                 isDisabled={isEdit /* Not supported by backend */}
                 type="number"
                 id="cim-config-form-storage-img"
                 name="cim-config-form-storage-img"
                 value={imgVolSize}
-                onChange={(v: string) => setImgVolSize(getNumber(v, 10))}
+                onChange={(_event, v: string) => setImgVolSize(getNumber(v, 10))}
                 min={0}
               />{' '}
               Gi
             </span>
+            {imgVolSizeValidation !== undefined && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem icon={<ExclamationCircleIcon />} variant="error">
+                    {imgVolSizeValidation}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         </FlexItem>
       </Flex>
-
       <Checkbox
         label={
           <span className="cim-config-form-aws-label">
@@ -246,7 +283,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           (isEdit &&
             configureLoadBalancerInitial) /* For edit flow, only No to Yes transition is possible */
         }
-        onChange={setConfigureLoadBalancer}
+        onChange={(_event, value) => setConfigureLoadBalancer(value)}
       />
     </Form>
   );

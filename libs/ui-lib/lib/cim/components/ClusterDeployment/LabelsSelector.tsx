@@ -1,14 +1,7 @@
 import React from 'react';
 import flatten from 'lodash-es/flatten.js';
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  Label,
-  LabelGroup,
-  Split,
-  SplitItem,
-} from '@patternfly/react-core';
+import { Label, LabelGroup, Split, SplitItem } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useField } from 'formik';
 
 import { MultiSelectField } from '../../../common';
@@ -110,7 +103,7 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
   const categoryName = label || t('ai:Filter hosts by existing labels');
 
   return (
-    <Split hasGutter className="pf-c-label-group pf-m-category ai-split-filter-hosts">
+    <Split hasGutter className="pf-v5-c-label-group pf-m-category ai-split-filter-hosts">
       <SplitItem>
         {field.value.length ? (
           <LabelGroup categoryName={categoryName} className="ai-group-label-selector">
@@ -118,14 +111,13 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
               <Label
                 key={key}
                 onClose={() => setValue(field.value.filter((value) => value.key !== key))}
-                isTruncated
               >
                 {`${key}=${value}`}
               </Label>
             ))}
           </LabelGroup>
         ) : (
-          <span className="pf-c-label-group__label">{categoryName}</span>
+          <span className="pf-v5-c-label-group__label">{categoryName}</span>
         )}
       </SplitItem>
       <SplitItem>
@@ -134,7 +126,7 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
           toggle={
             <DropdownToggle
               toggleIndicator={null}
-              onToggle={setAddLabelOpen}
+              onToggle={(_event, val) => setAddLabelOpen(val)}
               style={{ padding: 0 }}
             >
               <Label color="blue" variant="outline" className="pf-m-overflow">

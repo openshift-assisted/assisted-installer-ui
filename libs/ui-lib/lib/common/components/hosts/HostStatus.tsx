@@ -6,7 +6,6 @@ import {
   TextContent,
   FlexItem,
   Flex,
-  ButtonProps,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -184,7 +183,6 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     onEditHostname: HostStatusPopoverContentProps['onEditHostname'];
     title: string;
     validationsInfo: ValidationsInfo;
-    isSmall?: ButtonProps['isSmall'];
     details?: string;
     zIndex?: number;
     autoCSR?: boolean;
@@ -205,7 +203,7 @@ const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
     hideOnOutsideClick={props.hideOnOutsideClick}
     zIndex={props.zIndex || 300}
   >
-    <Button variant={'link'} isInline isSmall={props.isSmall}>
+    <Button variant={'link'} isInline size="sm">
       {props.children}
     </Button>
   </Popover>
@@ -267,8 +265,8 @@ const HostStatus: React.FC<HostStatusProps> = ({
         {children && <FlexItem>{children}</FlexItem>}
         {sublabel && (
           <FlexItem
-            className="pf-u-font-size-xs"
-            style={{ marginTop: 'calc(-1 * var(--pf-l-flex--spacer--xs))' }}
+            className="pf-v5-u-font-size-xs"
+            style={{ marginTop: 'calc(-1 * var(--pf-v5-l-flex--spacer--xs))' }}
           >
             <WithHostStatusPopover {...popoverProps}>{sublabel}</WithHostStatusPopover>
           </FlexItem>

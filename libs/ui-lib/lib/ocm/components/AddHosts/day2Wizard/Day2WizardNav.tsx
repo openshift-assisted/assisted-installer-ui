@@ -1,5 +1,5 @@
 import React from 'react';
-import { WizardNav, WizardNavItem } from '@patternfly/react-core';
+import { WizardNav, WizardNavItem } from '@patternfly/react-core/deprecated';
 import { Day2WizardStepsType, day2WizardStepNames, staticIpFormViewSubSteps } from './constants';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { isStaticIpStep } from '../../clusterWizard/wizardTransition';

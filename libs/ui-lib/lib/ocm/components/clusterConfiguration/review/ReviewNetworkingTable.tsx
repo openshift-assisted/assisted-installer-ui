@@ -1,5 +1,6 @@
 import { Title } from '@patternfly/react-core';
-import { Table, TableVariant, TableBody, TableProps } from '@patternfly/react-table';
+import { TableVariant } from '@patternfly/react-table';
+import { Table, TableBody, TableProps } from '@patternfly/react-table/deprecated';
 import React from 'react';
 import {
   genericTableRowKey,
@@ -165,7 +166,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       </Table>
 
       <br />
-      <Title className="pf-u-color-400" headingLevel="h4">
+      <Title className="pf-v5-u-color-400" headingLevel="h4">
         Advanced networking settings
       </Title>
 
