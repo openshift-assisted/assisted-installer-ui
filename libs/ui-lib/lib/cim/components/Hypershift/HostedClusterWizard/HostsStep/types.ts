@@ -1,17 +1,11 @@
 import { FormikProps } from 'formik';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../../../types';
-import { NodePoolK8sResource } from '../../types';
+import { NodePoolFormValues, NodePoolK8sResource } from '../../types';
 
 export type NodePoolFormValue = {
-  name: string;
   clusterName: string;
-  count: number;
-  agentLabels: {
-    key: string;
-    value: string;
-  }[];
   releaseImage: string;
-};
+} & NodePoolFormValues;
 
 export type HostsFormValues = {
   controllerAvailabilityPolicy: string;

@@ -30,15 +30,16 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   wizardStepId,
   isDay2,
 }) => {
+  const { t } = useTranslation();
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
   const pendingApproval = !agent.spec.approved;
 
   const hostname = getHostname(host, agent.status?.inventory || {});
-  const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
   const status = wizardStepId
     ? getWizardStepAgentStatus(agent, wizardStepId, t)
-    : getAgentStatus(agent, false);
+    : getAgentStatus(agent, agentStatuses, false);
 
   const showValidationsRunning =
     isDay2 &&
@@ -54,7 +55,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
       autoCSR
       additionalPopoverContent={
-        status.status === agentStatus.specSyncErr ? (
+        status.status.key === 'specSyncErr' ? (
           <StackItem>
             <SpecSyncErrAlert agent={agent} />
           </StackItem>

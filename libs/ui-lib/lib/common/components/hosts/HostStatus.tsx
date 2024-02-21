@@ -228,6 +228,8 @@ const HostStatus: React.FC<HostStatusProps> = ({
     onEditHostname?.();
   }, [keepOnOutsideClick, onEditHostname]);
 
+  const { t } = useTranslation();
+
   const { title, icon, sublabel, details, noPopover } = status;
   const titleWithProgress = getTitleWithProgress(host, status);
   const popoverProps: WithHostStatusPopoverProps = {
@@ -249,7 +251,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
       {
         <FlexItem>
           {(autoCSR && status.key === 'added-to-existing-cluster'
-            ? hostStatus.installed.icon
+            ? hostStatus(t).installed.icon
             : icon) || <UnknownIcon />}
         </FlexItem>
       }

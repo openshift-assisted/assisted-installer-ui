@@ -4,7 +4,7 @@ import { StatusCondition } from '../../types/k8s/shared';
 export type NodePoolK8sResource = K8sResourceCommon & {
   spec: {
     clusterName: string;
-    replicas: number;
+    replicas?: number;
     management: {
       autoRepair?: boolean;
       replace?: {
@@ -187,4 +187,24 @@ export type AgentMachineK8sResource = K8sResourceCommon & {
       namespace: string;
     };
   };
+};
+
+export type NodePoolPatches = {
+  op: string;
+  value?: unknown;
+  path: string;
+}[];
+
+export type NodePoolFormValues = {
+  nodePoolName: string;
+  agentLabels: {
+    key: string;
+    value: string;
+  }[];
+  count: number;
+  autoscaling: {
+    minReplicas: number;
+    maxReplicas: number;
+  };
+  useAutoscaling: boolean;
 };

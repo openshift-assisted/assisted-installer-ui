@@ -34,6 +34,7 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ExpandComponent } from '../Agent/AgentsSelectionTable';
 import { HostsTableDetailContextProvider } from '../../../common/components/hosts/HostsTableDetailContext';
+import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -53,7 +54,11 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
   const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
+
   const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
+  const bmhStatuses = bmhStatus(t);
+
   const onSelect = (host: Host, isSelected: boolean) => {
     if (isSelected) {
       setSelectedHostIDs([...selectedHostIDs, host.id]);
@@ -79,7 +84,9 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       ...(addAll ? [discoveryTypeColumn(agents, bareMetalHosts, t)] : []),
       agentStatusColumn({
         agents,
+        agentStatuses,
         bareMetalHosts,
+        bmhStatuses,
         onEditHostname: onEditHost,
         onApprove,
         wizardStepId: 'hosts-discovery',
@@ -90,7 +97,19 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         ? [discoveredAtColumn(t), cpuCoresColumn(t), memoryColumn(t), disksColumn(t)]
         : []),
     ],
-    [agents, hostActions, bareMetalHosts, onApprove, onEditHost, addAll, t],
+    [
+      t,
+      hostActions.onEditHost,
+      hostActions.canEditRole,
+      hostActions.onEditRole,
+      addAll,
+      agents,
+      bareMetalHosts,
+      agentStatuses,
+      bmhStatuses,
+      onEditHost,
+      onApprove,
+    ],
   );
 
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
@@ -168,7 +187,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
           selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
-          canChangeHostname={canChangeHostname(agents, bareMetalHosts, t)}
+          canChangeHostname={canChangeHostname(agents, agentStatuses, bareMetalHosts, t)}
         />
       )}
       {isMassApproveOpen && (

@@ -51,9 +51,9 @@ export const ManagedNetworkingControlGroup = ({
           <>
             <span>{t('ai:User-Managed Networking')}</span>{' '}
             <PopoverIcon
-              bodyContent={
-                "With User-Managed Networking, you'll need to provide and configure a load balancer for the API and ingress endpoints."
-              }
+              bodyContent={t(
+                "ai:With User-Managed Networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.",
+              )}
             />
           </>
         }
