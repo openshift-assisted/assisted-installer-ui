@@ -14,7 +14,6 @@ import {
 import {
   canSelectNetworkTypeSDN,
   ClusterDefaultConfig,
-  getDefaultNetworkType,
   isAdvNetworkConf,
   isSNO,
   isSubnetInIPv6,
@@ -88,8 +87,6 @@ const NetworkConfiguration = ({
 
   useEffect(() => {
     if (!cluster.networkType) {
-      setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, isIPv6));
-    } else if (!isSDNSelectable) {
       setFieldValue('networkType', NETWORK_TYPE_OVN);
     }
     // Skipping "cluster.networkType" as it's ultimately the value we are setting in the form

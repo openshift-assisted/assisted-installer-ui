@@ -25,7 +25,7 @@ export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
   props,
   onSuccess,
   onError,
-) => {
+): Promise<void> => {
   try {
     EventsAPI.abort();
     const response = await EventsAPI.list(props);
