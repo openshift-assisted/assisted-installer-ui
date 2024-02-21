@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nodejs-16-minimal AS repo-builder
+FROM registry.access.redhat.com/ubi8/nodejs-18-minimal AS repo-builder
 USER root
 RUN INSTALL_PKGS="git rsync" && \
     microdnf --nodocs --setopt=install_weak_deps=0 install $INSTALL_PKGS && \
