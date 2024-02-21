@@ -56,7 +56,7 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
                   />
                 }
                 testId="platform-integration-note"
-                classNameValue={'pf-u-mt-sm'}
+                classNameValue={'pf-v5-u-mt-sm'}
               />
             </DetailList>
           </RenderIf>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WizardNav } from '@patternfly/react-core';
+import { WizardNav } from '@patternfly/react-core/deprecated';
 import { WizardNavItem } from '../../../common';
 import { wizardStepNames } from './constants';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';

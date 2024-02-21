@@ -1,21 +1,19 @@
 import React from 'react';
 import { useField } from 'formik';
 import Fuse from 'fuse.js';
+import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import {
-  FormGroup,
   Select,
   SelectOption,
   SelectOptionObject,
   SelectOptionProps,
   SelectProps,
   SelectVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { MultiSelectFieldProps, MultiSelectOption } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 // Field value is a string[]
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
@@ -92,57 +90,49 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     keys: ['displayName'],
   });
   const { t } = useTranslation();
-  const fieldHelperText = <HelperText fieldId={fieldId}>{hText}</HelperText>;
 
   return (
-    <Stack>
-      <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          label={label}
-          helperText={fieldHelperText}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-          isRequired={isRequired}
-          labelIcon={labelIcon}
-        >
-          <Select
-            {...field}
-            {...props}
-            id={fieldId}
-            variant={SelectVariant.typeaheadMulti}
-            typeAheadAriaLabel={t('ai:Select a state')}
-            validated={isValid ? 'default' : 'error'}
-            aria-describedby={`${fieldId}-helper`}
-            isCreatable={false}
-            placeholderText={placeholderText}
-            isOpen={isOpen}
-            onToggle={onToggle}
-            onSelect={onSelect}
-            onClear={onClearSelection}
-            selections={selections}
-            onFilter={(e, val) => {
-              if (!val || val === '') {
-                return children;
-              }
-              const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
-              return (
-                React.Children.toArray(children) as React.ReactElement<SelectOptionProps>[]
-              ).filter(({ props }) => results.includes(props.id as string));
-            }}
-          >
-            {children}
-          </Select>
-        </FormGroup>
-      </StackItem>
-      <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+      <Select
+        {...field}
+        {...props}
+        id={fieldId}
+        variant={SelectVariant.typeaheadMulti}
+        typeAheadAriaLabel={t('ai:Select a state')}
+        validated={isValid ? 'default' : 'error'}
+        aria-describedby={`${fieldId}-helper`}
+        isCreatable={false}
+        placeholderText={placeholderText}
+        isOpen={isOpen}
+        onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
+        onSelect={onSelect}
+        onClear={onClearSelection}
+        selections={selections}
+        onFilter={(e, val) => {
+          if (!val || val === '') {
+            return children;
+          }
+          const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
+          return (
+            React.Children.toArray(children) as React.ReactElement<SelectOptionProps>[]
+          ).filter(({ props }) => results.includes(props.id as string));
+        }}
+      >
+        {children}
+      </Select>
+      {(errorMessage || hText) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : hText}
+            </HelperTextItem>
           </HelperText>
-        )}
-      </StackItem>
-    </Stack>
+        </FormHelperText>
+      )}
+    </FormGroup>
   );
 };
 

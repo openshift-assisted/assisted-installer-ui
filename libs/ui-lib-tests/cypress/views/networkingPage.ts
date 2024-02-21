@@ -182,7 +182,7 @@ export const networkingPage = {
       cy.get(
         `[data-testid=host-row-${idx}] > ${Cypress.env(
           'nicStatus',
-        )} > .pf-m-align-items-center > .pf-l-flex > .pf-c-button`,
+        )} > .pf-m-align-items-center > .pf-l-flex > .pf-v5-c-button`,
         { timeout: timeout },
       ).should('be.visible');
     },
@@ -190,7 +190,7 @@ export const networkingPage = {
       cy.get(
         `[data-testid=host-row-${idx}] > ${Cypress.env(
           'nicStatus',
-        )} > .pf-m-align-items-center > .pf-l-flex > .pf-c-button`,
+        )} > .pf-m-align-items-center > .pf-l-flex > .pf-v5-c-button`,
       )
         .scrollIntoView()
         .should('be.visible')
@@ -200,7 +200,7 @@ export const networkingPage = {
       cy.get(
         `[data-testid=host-row-${idx}] > ${Cypress.env(
           'nicStatus',
-        )} > .pf-m-align-items-center > .pf-l-flex > .pf-u-font-size-xs > .pf-c-button`,
+        )} > .pf-m-align-items-center > .pf-l-flex > .pf-v5-u-font-size-xs > .pf-v5-c-button`,
       )
         .should('be.visible')
         .click();
@@ -212,7 +212,7 @@ export const networkingPage = {
       cy.get(`li:contains('${msg}')`, { timeout: timeout });
     },
     close: () => {
-      cy.get('.pf-c-popover__content > .pf-c-button > svg').should('be.visible').click();
+      cy.get('.pf-v5-c-popover__content > .pf-v5-c-button > svg').should('be.visible').click();
     },
   },
   validateClusterNetworkHostPrefix: (hostPrefix = Cypress.env('NETWORK_HOST_PREFIX')) => {
@@ -240,12 +240,12 @@ export const networkingPage = {
     return cy.get(Cypress.env('ingressVipFieldHelperId'));
   },
   enableUserManagedNetworking: () => {
-    cy.get(`.pf-c-radio__label:contains(${Cypress.env('userManagedNetworkingRadioText')})`)
+    cy.get(`.pf-v5-c-radio__label:contains(${Cypress.env('userManagedNetworkingRadioText')})`)
       .scrollIntoView()
       .click({ force: true });
   },
   validateUserManageNetworkingConfigContent: () => {
-    cy.get('.pf-c-content')
+    cy.get('.pf-v5-c-content')
       .should('be.visible')
       .within(() => {
         cy.get('p').should('contain.text', 'Please refer to the');
@@ -265,16 +265,16 @@ export const networkingPage = {
     return cy.get(Cypress.env('ovnKubernetesRadioId')).scrollIntoView();
   },
   setOvnNetworking: () => {
-    cy.get(`.pf-c-radio__label:contains(${Cypress.env('openVirtualNetworkingRadioText')})`)
+    cy.get(`.pf-v5-c-radio__label:contains(${Cypress.env('openVirtualNetworkingRadioText')})`)
       .scrollIntoView()
       .click({ force: true });
   },
   clickMainBody: () => {
-    cy.get('.pf-c-wizard__nav').click();
+    cy.get('.pf-v5-c-wizard__nav').click();
   },
   confirmStackTypeChange: () => {
     cy.get('body').then(($body) => {
-      if ($body.hasClass('pf-c-backdrop__open')) {
+      if ($body.hasClass('pf-v5-c-backdrop__open')) {
         cy.get(`button[data-testid='confirm-modal-submit']`).click();
       }
     });

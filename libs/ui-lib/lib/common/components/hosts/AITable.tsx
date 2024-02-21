@@ -1,9 +1,6 @@
 import React from 'react';
 import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
 import {
-  Table,
-  TableHeader,
-  TableBody,
   IRow,
   SortByDirection,
   ISortBy,
@@ -13,10 +10,10 @@ import {
   ICell,
   IAction,
   ISeparator,
-  TableProps,
   InnerScrollContainer,
 } from '@patternfly/react-table';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { Table, TableHeader, TableBody, TableProps } from '@patternfly/react-table/deprecated';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import xor from 'lodash-es/xor.js';
 import classnames from 'classnames';
 

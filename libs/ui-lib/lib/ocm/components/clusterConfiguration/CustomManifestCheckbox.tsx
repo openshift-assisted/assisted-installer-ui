@@ -1,7 +1,13 @@
 import * as React from 'react';
-import { Alert, FormGroup } from '@patternfly/react-core';
+import {
+  Alert,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
-import { getFieldId, HelperText, PopoverIcon } from '../../../common';
+import { getFieldId, PopoverIcon } from '../../../common';
 import { OcmCheckbox } from '../ui/OcmFormFields';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import DeleteCustomManifestModal from './manifestsConfiguration/DeleteCustomManifestModal';
@@ -72,12 +78,18 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
           label={<Label />}
           aria-describedby={`${fieldId}-helper`}
           description={
-            <HelperText fieldId={fieldId}>
-              Additional manifests will be applied at the install time for advanced configuration of
-              the cluster.
-            </HelperText>
+            <FormGroup>
+              <FormHelperText>
+                <HelperText id={fieldId}>
+                  <HelperTextItem>
+                    Additional manifests will be applied at the install time for advanced
+                    configuration of the cluster.
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            </FormGroup>
           }
-          onChange={onChange}
+          onChange={(_event, value) => onChange(value)}
           className="with-tooltip"
           isChecked={value}
           isDisabled={isDisabled}

@@ -44,7 +44,9 @@ const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host
         ?.clusterDeploymentName?.name;
       return {
         title: (
-          <div className={assignedToCluster ? 'pf-u-color-200' : undefined}>{computedHostname}</div>
+          <div className={assignedToCluster ? 'pf-v5-u-color-200' : undefined}>
+            {computedHostname}
+          </div>
         ),
         props: { 'data-testid': 'hostname' },
         sortableValue: computedHostname,

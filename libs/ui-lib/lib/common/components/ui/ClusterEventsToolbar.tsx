@@ -9,16 +9,15 @@ import {
   Button,
   ButtonVariant,
   InputGroup,
-  Select,
-  SelectOption,
   TextInput,
   ToolbarProps,
   ToolbarFilterProps,
-  SelectProps,
   TextInputProps,
   Badge,
   TextInputTypes,
+  InputGroupItem,
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectProps } from '@patternfly/react-core/deprecated';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import type { ClusterEventsFiltersType } from '../../types';
@@ -162,7 +161,7 @@ const ClusterEventsToolbar = ({
     onSelect('severities', isChecked, value);
   };
 
-  const onMessageChange: TextInputProps['onChange'] = (message) => {
+  const onMessageChange: TextInputProps['onChange'] = (_event, message) => {
     setMessageValue(message);
     clearTimeout(timer);
 
@@ -304,18 +303,22 @@ const ClusterEventsToolbar = ({
 
         <ToolbarItem>
           <InputGroup>
-            <TextInput
-              name="search-text"
-              id="search-text"
-              type={TextInputTypes.search}
-              aria-label="text to be searched"
-              onChange={onMessageChange}
-              value={messageValue}
-              placeholder={t('ai:Filter by text')}
-            />
-            <Button variant={ButtonVariant.control} aria-label="search text button">
-              <SearchIcon />
-            </Button>
+            <InputGroupItem isFill>
+              <TextInput
+                name="search-text"
+                id="search-text"
+                type={TextInputTypes.search}
+                aria-label="text to be searched"
+                onChange={onMessageChange}
+                value={messageValue}
+                placeholder={t('ai:Filter by text')}
+              />
+            </InputGroupItem>
+            <InputGroupItem>
+              <Button variant={ButtonVariant.control} aria-label="search text button">
+                <SearchIcon />
+              </Button>
+            </InputGroupItem>
           </InputGroup>
         </ToolbarItem>
       </ToolbarContent>

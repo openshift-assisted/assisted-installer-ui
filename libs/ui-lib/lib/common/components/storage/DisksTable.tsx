@@ -6,23 +6,17 @@ import {
   Popover,
   Alert,
   AlertVariant,
+  Icon,
 } from '@patternfly/react-core';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableVariant,
-  RowWrapperProps,
-  RowWrapper,
-  IRow,
-} from '@patternfly/react-table';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { TableVariant, RowWrapperProps, RowWrapper, IRow } from '@patternfly/react-table';
+import { Table, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+
 import FormatDiskCheckbox, {
   DiskFormattingType,
   isInDiskSkipFormattingList,
@@ -31,6 +25,7 @@ import { fileSize } from '../../utils';
 import { PopoverIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
@@ -122,7 +117,9 @@ const DiskName = ({
       {isIndented && <span style={{ width: '1rem', display: 'inline-block' }} />}
       {isInDiskSkipFormattingList(host, disk.id) && (
         <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
-          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon color={warningColor.value} />
+          </Icon>
         </Popover>
       )}
       {'   '}
@@ -137,7 +134,9 @@ const DiskName = ({
             maxWidth="30rem"
             data-testid="disk-limitations-popover"
           >
-            <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+            <Icon size="sm" status="warning">
+              <ExclamationTriangleIcon color={warningColor.value} />
+            </Icon>
           </Popover>
         </>
       )}

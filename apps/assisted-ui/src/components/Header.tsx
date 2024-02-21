@@ -1,5 +1,6 @@
 import type React from 'react';
-import { Brand, PageHeader, PageHeaderTools } from '@patternfly/react-core';
+import { Brand } from '@patternfly/react-core';
+import { PageHeader, PageHeaderTools } from '@patternfly/react-core/deprecated';
 import { AboutButton } from './AboutButton';
 import { FeedbackButton } from './FeedbackButton';
 

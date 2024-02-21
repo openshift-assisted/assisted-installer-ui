@@ -11,6 +11,9 @@ import {
   Flex,
   FlexItem,
   ButtonVariant,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
 } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import {
@@ -45,6 +48,7 @@ import {
 import { OcmCheckboxField, OcmInputField, OcmRadioField } from '../../../../ui/OcmFormFields';
 
 import '../staticIp.css';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const hostsConfiguredAlert = (
   <Alert
@@ -80,9 +84,6 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
       label="Machine network"
       fieldId={getFieldId(`${fieldName}`, 'input')}
       isRequired
-      helperTextInvalid={errorMessage}
-      validated={errorMessage ? 'error' : 'default'}
-      helperText={machineNetworkHelptext}
       className="machine-network"
     >
       <Flex>
@@ -111,6 +112,18 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
           />
         </FlexItem>
       </Flex>
+      {(errorMessage || machineNetworkHelptext) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={errorMessage ? <ExclamationCircleIcon /> : null}
+              variant={errorMessage ? 'error' : 'default'}
+            >
+              {errorMessage ? errorMessage : machineNetworkHelptext}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

@@ -299,7 +299,7 @@ const NetworkConfiguration = ({
           label="Use advanced networking"
           description="Configure advanced networking properties (e.g. CIDR ranges)."
           isChecked={isAdvanced}
-          onChange={toggleAdvConfiguration}
+          onChange={(_event, value) => toggleAdvConfiguration(value)}
           isDisabled={isDualStack}
         />
       </Tooltip>

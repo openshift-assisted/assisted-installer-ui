@@ -133,7 +133,6 @@ export const EventListFetch = ({
       <div className={className}>{eventList}</div>
       {!disablePagination && (
         <Pagination
-          perPageComponent="button"
           itemCount={totalEvents}
           widgetId="events-pagination"
           perPage={perPage}

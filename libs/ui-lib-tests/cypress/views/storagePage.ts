@@ -39,11 +39,11 @@ export const storagePage = {
     storagePage.getSkipFormattingCheckbox(hostId, 2).should('be.disabled');
   },
   validateSkipFormattingWarning: () => {
-    cy.get('.pf-c-alert__title').should(
+    cy.get('.pf-v5-c-alert__title').should(
       'contain.text',
       'There might be issues with the boot order',
     );
-    cy.get('.pf-c-alert__description').should(
+    cy.get('.pf-v5-c-alert__description').should(
       'contain.text',
       'You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention might be required during OpenShift installation.',
     );
@@ -52,7 +52,7 @@ export const storagePage = {
     //If a disk is skip formatting validate that warning icon is shown
     cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within(
       (/* $diskRow */) => {
-        cy.get('[role="img"]').should('have.attr', 'fill', '#f0ab00');
+        cy.get('[role="img"]').should('have.attr', 'color', '#f0ab00');
       },
     );
   },

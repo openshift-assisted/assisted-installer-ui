@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { WizardNav } from '@patternfly/react-core';
+import { WizardNav } from '@patternfly/react-core/deprecated';
 import {
   canNextClusterDetails,
   canNextHostDiscovery,

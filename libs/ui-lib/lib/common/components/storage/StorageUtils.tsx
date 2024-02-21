@@ -3,9 +3,10 @@ import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
 import { getHostRole, getInventory, RoleCell } from '../../index';
 import { TableRow } from '../hosts/AITable';
-import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { Icon, Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const SkipFormattingDisks = () => (
@@ -53,7 +54,9 @@ export const numberOfDisksColumn: TableRow<Host> = {
           {'   '}
           {host.skipFormattingDisks && (
             <Popover bodyContent={<SkipFormattingDisks />} minWidth="20rem" maxWidth="30rem">
-              <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+              <Icon size="sm" status="warning">
+                <ExclamationTriangleIcon color={warningColor.value} />
+              </Icon>
             </Popover>
           )}
         </>
@@ -78,7 +81,7 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
       const isExcluded = excludeMasters && isMaster;
       return {
         title: isExcluded ? (
-          <div style={{ color: 'var(--pf-global--disabled-color--100)' }}>Excluded for ODF</div>
+          <div style={{ color: 'var(--pf-v5-global--disabled-color--100)' }}>Excluded for ODF</div>
         ) : (
           'Use ODF'
         ),

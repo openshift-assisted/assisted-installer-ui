@@ -41,7 +41,7 @@ type EditItemProps = {
 const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning, noIcon }) => {
   let icon = <CheckCircleIcon color={okColor.value} />;
   if (isLoading) {
-    icon = <Spinner isSVG size="md" />;
+    icon = <Spinner size="md" />;
   } else if (isWarning) {
     icon = <ExclamationTriangleIcon color={warningColor.value} />;
   }

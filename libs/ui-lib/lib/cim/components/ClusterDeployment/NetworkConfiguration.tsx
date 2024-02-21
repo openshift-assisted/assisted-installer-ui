@@ -151,7 +151,7 @@ const NetworkConfiguration = ({
         label={t('ai:Use advanced networking')}
         description={t('ai:Configure advanced networking properties (e.g. CIDR ranges).')}
         isChecked={isAdvanced}
-        onChange={toggleAdvConfiguration}
+        onChange={(_event, checked: boolean) => toggleAdvConfiguration(checked)}
         body={isAdvanced && <AdvancedNetworkFields isClusterCIDRIPv6={isClusterCIDRIPv6} />}
       />
     </Grid>
