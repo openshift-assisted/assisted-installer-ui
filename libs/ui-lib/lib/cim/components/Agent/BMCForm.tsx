@@ -67,20 +67,15 @@ const getFieldError = (errors: FormikErrors<MacMappingFieldProps>, fieldName: st
 };
 
 const MacMapping = () => {
-  const [field, { touched, error }] = useField<MacMappingFieldProps>({
+  const [field] = useField<MacMappingFieldProps>({
     name: 'macMapping',
   });
   const { errors } = useFormikContext<MacMappingFieldProps>();
   const fieldId = getFieldId('macMapping', 'input');
-  const isValid = !(touched && error);
   const { t } = useTranslation();
 
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={t('ai:MAC to interface name mapping')}
-      validated={isValid ? 'default' : 'error'}
-    >
+    <FormGroup fieldId={fieldId} label={t('ai:MAC to interface name mapping')}>
       <FieldArray
         name="macMapping"
         render={({ push, remove }) => (

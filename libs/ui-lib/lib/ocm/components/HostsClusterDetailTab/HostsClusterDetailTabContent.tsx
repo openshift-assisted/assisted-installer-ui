@@ -137,7 +137,7 @@ export const HostsClusterDetailTabContent = ({
   if (error) {
     return (
       <ErrorState
-        variant={EmptyStateVariant.large}
+        variant={EmptyStateVariant.lg}
         content={error}
         title="Failed to prepare the cluster for adding hosts."
       />

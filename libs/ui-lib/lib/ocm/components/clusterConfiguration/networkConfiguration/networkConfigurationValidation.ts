@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import {
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
-  getDefaultNetworkType,
   HostSubnets,
   isDualStack,
   isSNO,
@@ -14,6 +13,7 @@ import {
   IPV4_STACK,
   DUAL_STACK,
   vipArrayValidationSchema,
+  NETWORK_TYPE_OVN,
 } from '../../../../common';
 import {
   ApiVip,
@@ -46,7 +46,7 @@ export const getNetworkInitialValues = (
       isSNOCluster
         ? 'userManaged'
         : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
+    networkType: cluster.networkType || NETWORK_TYPE_OVN,
     machineNetworks: cluster.machineNetworks || [],
     stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
     clusterNetworks:

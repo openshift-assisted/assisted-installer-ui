@@ -1,7 +1,15 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, TextContent, Text } from '@patternfly/react-core';
-import { getFieldId, HelperText } from './formik';
+import {
+  FormGroup,
+  TextContent,
+  Text,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
+import { getFieldId } from './formik';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 export interface StaticFieldProps {
   name: string;
@@ -28,18 +36,21 @@ export const StaticField: React.FC<StaticFieldProps> = ({
       id={`form-control__${fieldId}`}
       fieldId={fieldId}
       label={label}
-      helperText={
-        typeof helperText === 'string' ? (
-          helperText
-        ) : (
-          <HelperText fieldId={fieldId}>{helperText}</HelperText>
-        )
-      }
-      helperTextInvalid={helperTextInvalid}
-      validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
     >
       {children}
+      {(helperText || helperTextInvalid) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant={isValid ? 'default' : 'error'}
+            >
+              {isValid ? helperText : helperTextInvalid}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

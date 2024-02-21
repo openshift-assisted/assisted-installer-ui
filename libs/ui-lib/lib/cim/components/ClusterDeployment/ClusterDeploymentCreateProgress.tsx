@@ -7,7 +7,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
   Spinner,
   Title,
 } from '@patternfly/react-core';
@@ -63,14 +63,14 @@ const ClusterDeploymentCreateProgress: React.FC<ClusterDeploymentCreateProgressP
             </EmptyStateBody>
           </>
         )}
-        <EmptyStateSecondaryActions>
+        <EmptyStateActions>
           <Button variant="primary" onClick={toDetails}>
             {t('ai:See cluster details')}
           </Button>
           <Button variant="link" onClick={toListView}>
             {t('ai:Go to cluster list')}
           </Button>
-        </EmptyStateSecondaryActions>
+        </EmptyStateActions>
       </EmptyState>
     </Bullseye>
   );

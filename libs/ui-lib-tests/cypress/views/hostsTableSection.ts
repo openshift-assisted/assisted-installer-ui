@@ -92,8 +92,7 @@ export const hostsTableSection = {
     cy.get('td[data-testid="disk-name"]').then(($diskNames) => {
       disks.forEach((disk, index) => {
         cy.wrap($diskNames).eq(index).should('contain.text', disk.name);
-
-        if (disk.indented) {
+        if (disk.indented || disk.warning) {
           cy.wrap($diskNames).eq(index).find('span').should('exist');
         } else {
           cy.wrap($diskNames).eq(index).find('span').should('not.exist');

@@ -13,15 +13,15 @@
     "vitest": "^0.34.5"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=14",
+    "yarn": ">=3.4.0"
   },
   "license": "Apache-2.0",
   "name": "assisted-installer-ui",
   "packageManager": "yarn@3.4.1",
   "private": true,
   "resolutions": {
-    "@types/react": "<17.0.30",
-    "@types/react-dom": "<17.0.30"
+    "@types/react": "17.0.x"
   },
   "scripts": {
     "_build:ui-lib": "yarn workspace @openshift-assisted/ui-lib build",

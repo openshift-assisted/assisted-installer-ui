@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core';
+import { WizardHeader } from '@patternfly/react-core/deprecated';
 import classNames from 'classnames';
 import { ClusterWizardStep } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
@@ -43,7 +44,7 @@ const Day2Wizard = () => {
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
     >
-      <div className={classNames('pf-c-wizard', 'cluster-wizard')}>
+      <div className={classNames('pf-v5-c-wizard', 'cluster-wizard')}>
         <WizardHeader
           title={'Add hosts'}
           description={'Choose the settings for adding a new host'}

@@ -1,12 +1,11 @@
 import React from 'react';
+import { HelperText, FormGroup, FormHelperText, HelperTextItem } from '@patternfly/react-core';
 import {
   DropdownItem,
   DropdownToggle,
   Dropdown,
-  HelperText,
-  FormGroup,
   DropdownSeparator,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 
 import { OpenshiftVersionOptionType } from '../../types';
@@ -97,11 +96,11 @@ export const OpenShiftVersionDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(!isDisabled && val)}
+        onToggle={(_event, val) => setOpen(!isDisabled && val)}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {current}
       </DropdownToggle>
@@ -124,9 +123,15 @@ export const OpenShiftVersionDropdown = ({
         dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       />
-      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      {helperText && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="default">{helperText}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
       {showReleasesLink && (
         <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
           <span data-ouia-id="openshift-releases-link">

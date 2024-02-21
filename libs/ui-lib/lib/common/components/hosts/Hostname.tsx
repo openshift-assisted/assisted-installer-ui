@@ -43,7 +43,7 @@ const Hostname: React.FC<HostnameProps> = ({
   const body = (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
       {onEditHostname && !isValid && (
-        <FlexItem className={'pf-u-mr-xs'}>
+        <FlexItem className={'pf-v5-u-mr-xs'}>
           <ExclamationTriangleIcon color={warningColor.value} />
         </FlexItem>
       )}
@@ -60,7 +60,7 @@ const Hostname: React.FC<HostnameProps> = ({
       <Popover
         headerContent={
           <Flex alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem className={'pf-u-mr-xs'}>
+            <FlexItem className={'pf-v5-u-mr-xs'}>
               <ExclamationTriangleIcon color={warningColor.value} />
             </FlexItem>
             <FlexItem>{t('ai:Hostname is not valid')}</FlexItem>

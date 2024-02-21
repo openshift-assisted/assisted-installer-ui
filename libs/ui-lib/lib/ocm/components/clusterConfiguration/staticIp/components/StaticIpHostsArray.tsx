@@ -239,7 +239,7 @@ const Hosts = <HostFieldType,>({
               <Checkbox
                 label="Copy the YAML content"
                 isChecked={copyConfiguration}
-                onChange={setCopyConfiguration}
+                onChange={(_event, val) => setCopyConfiguration(val)}
                 aria-label="copy host configuration"
                 name="copy-host-configuration"
                 id="copy-host-configuration"

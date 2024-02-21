@@ -3,6 +3,7 @@ import { FormikHelpers } from 'formik';
 import {
   EmptyState,
   EmptyStateBody,
+  EmptyStateHeader,
   EmptyStateIcon,
   Modal,
   ModalVariant,
@@ -125,7 +126,7 @@ const GeneratingIsoDownload = ({
     />
   ) : (
     <EmptyState>
-      <EmptyStateIcon icon={Spinner} />
+      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
       <EmptyStateBody>{t('ai:Generating discovery ISO')}</EmptyStateBody>
     </EmptyState>
   );
@@ -149,7 +150,7 @@ const GeneratingIPXEDownload = ({
     />
   ) : (
     <EmptyState>
-      <EmptyStateIcon icon={Spinner} />
+      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
       <EmptyStateBody>{t('ai:Generating iPXE script')}</EmptyStateBody>
     </EmptyState>
   );

@@ -1,5 +1,10 @@
 import React from 'react';
-import { DropdownItem, DropdownToggle, Dropdown, DropdownProps } from '@patternfly/react-core';
+import {
+  DropdownItem,
+  DropdownToggle,
+  Dropdown,
+  DropdownProps,
+} from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { HostRole } from '../../../common/types/hosts';
 import './SimpleDropdown.css';
@@ -41,7 +46,7 @@ export const SimpleDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(!isDisabled && val)}
+        onToggle={(_event, val) => setOpen(!isDisabled && val)}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}

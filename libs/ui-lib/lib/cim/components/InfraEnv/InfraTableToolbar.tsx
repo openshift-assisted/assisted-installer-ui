@@ -3,15 +3,17 @@ import {
   Grid,
   GridItem,
   SearchInput,
-  Select,
-  SelectGroup,
-  SelectOption,
-  SelectVariant,
   Split,
   SplitItem,
   ToolbarFilter,
   ToolbarItem,
 } from '@patternfly/react-core';
+import {
+  Select,
+  SelectGroup,
+  SelectOption,
+  SelectVariant,
+} from '@patternfly/react-core/deprecated';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import * as React from 'react';
 import { HostStatus, HostStatusDef } from '../../../common/components/hosts/types';
@@ -35,19 +37,19 @@ const getStatusesForFilter = (statuses: HostStatus<string>) => {
   );
 
   sortedStatuses.forEach((status) => {
-    const { category, key } = statuses[status];
+    const { category, title } = statuses[status];
     if (filterStatuses[category]) {
-      if (filterStatuses[category][key]) {
-        filterStatuses[category][key].push(status);
+      if (filterStatuses[category][title]) {
+        filterStatuses[category][title].push(status);
       } else {
         filterStatuses[category] = {
           ...filterStatuses[category],
-          [key]: [status],
+          [title]: [status],
         };
       }
     } else {
       filterStatuses[category] = {
-        [key]: [status],
+        [title]: [status],
       };
     }
   });
@@ -121,7 +123,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
           <Select
             variant={SelectVariant.checkbox}
             aria-label={t('ai:Status')}
-            onToggle={setStatusFilterOpen}
+            onToggle={(_event, value) => setStatusFilterOpen(value)}
             onSelect={(e, value) => {
               // eslint-disable-next-line
               if ((e.target as any).checked) {

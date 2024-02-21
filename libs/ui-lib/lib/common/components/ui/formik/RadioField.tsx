@@ -24,8 +24,8 @@ const RadioField = ({
       {...rest}
       id={fieldId}
       isChecked={!!field.checked}
-      onChange={(checked, e) => {
-        onChange?.(checked, e);
+      onChange={(e, checked) => {
+        onChange?.(e, checked);
         callFormikOnChange && field.onChange(e);
       }}
     />

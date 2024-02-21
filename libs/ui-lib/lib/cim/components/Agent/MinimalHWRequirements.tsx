@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Icon, Modal, ModalVariant } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 
 import { ConfigMapK8sResource } from '../../types';
@@ -77,7 +77,9 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
         isInline
         className="host-requirements-link"
       >
-        <InfoCircleIcon size="sm" />
+        <Icon size="sm" status="warning">
+          <InfoCircleIcon />
+        </Icon>
         &nbsp;{t('ai:Minimum hardware requirements')}
       </Button>
       <MinimalHWRequirementsModal

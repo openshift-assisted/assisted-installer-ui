@@ -163,7 +163,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
                 clusterDeployment /* Hotfix: agentClusterInstall, agents */,
               }}
             >
-              <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
+              <div className={classNames('pf-v5-c-wizard', className)}>{renderCurrentStep()}</div>
             </ClusterDeploymentWizardContext.Provider>
           </ACMFeatureSupportLevelProvider>
         </AlertsContextProvider>

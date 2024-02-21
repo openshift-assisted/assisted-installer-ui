@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  DropdownItem,
-  DropdownToggle,
-  Dropdown,
-  HelperText,
-  FormGroup,
-} from '@patternfly/react-core';
+import { HelperText, FormGroup } from '@patternfly/react-core';
+import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import { getFieldId } from '../../../../../common/components/ui/formik';
@@ -56,10 +51,10 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(val)}
+        onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       >
         {value || 'manifests'}
       </DropdownToggle>
@@ -77,7 +72,7 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
         dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
       />
       <HelperText style={{ display: 'inherit' }}>
         {'Manifests can be placed in "manifests" or "openshift" directories.'}

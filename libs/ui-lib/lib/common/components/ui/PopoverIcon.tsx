@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Button, ButtonProps, Popover } from '@patternfly/react-core';
+import { Button, ButtonProps, Icon, Popover } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
@@ -30,11 +30,13 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
       component={component}
       variant={variant}
       onClick={(e) => e.preventDefault()}
-      className={classNames('pf-c-form__group-label-help', 'pf-u-p-0', buttonClassName)}
+      className={classNames('pf-v5-c-form__group-label-help', 'pf-v5-u-p-0', buttonClassName)}
       ouiaId={buttonOuiaId}
       style={buttonStyle}
     >
-      <IconComponent noVerticalAlign={noVerticalAlign} />
+      <Icon isInline={noVerticalAlign}>
+        <IconComponent />
+      </Icon>
     </Button>
   </Popover>
 );
