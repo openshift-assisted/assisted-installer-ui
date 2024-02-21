@@ -17,14 +17,14 @@ import {
   getFieldId,
 } from '../../../../common';
 import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
-import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
+import { PlatformType, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import {
   NewFeatureSupportLevelData,
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
 import { architectureData } from '../CpuArchitectureDropdown';
-import { DeveloperPreview } from '../../../../common/components/ui/DeveloperPreview';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
@@ -41,6 +41,7 @@ export type ExternalPlatformInfo = {
   label: string;
   href?: string;
   disabledReason?: string;
+  supportLevel?: SupportLevel;
 };
 
 const getDisabledReasonForExternalPlatform = (
@@ -88,6 +89,10 @@ const getExternalPlatformTypes = (
           featureSupportLevelData ?? undefined,
           cpuArchitecture,
         ),
+        supportLevel: newFeatureSupportLevelContext.getFeatureSupportLevel(
+          ExternalPlaformIds[platform] as FeatureId,
+          featureSupportLevelData ?? undefined,
+        ),
       },
     }),
     {},
@@ -108,18 +113,6 @@ const getReasonForDropdownDisabled = (isSNO: boolean, labelCpuArch: string): str
   } else {
     return `Platform integration is not supported for SNO clusters`;
   }
-};
-
-const isPlatformDevPreview = (
-  platform: PlatformType,
-  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
-  featureSupportLevelData?: NewFeatureSupportLevelMap | null,
-): boolean => {
-  const supportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
-    ExternalPlaformIds[platform] as FeatureId,
-    featureSupportLevelData ?? undefined,
-  );
-  return platform === 'external' || supportLevel === 'dev-preview';
 };
 
 export const ExternalPlatformDropdown = ({
@@ -180,7 +173,7 @@ export const ExternalPlatformDropdown = ({
   }, [dropdownIsDisabled, externalPlatformTypes]);
 
   const enabledItems = Object.keys(externalPlatformTypes).map((platform) => {
-    const { label, href, disabledReason } = externalPlatformTypes[
+    const { label, href, disabledReason, supportLevel } = externalPlatformTypes[
       platform as PlatformType
     ] as ExternalPlatformInfo;
 
@@ -191,15 +184,12 @@ export const ExternalPlatformDropdown = ({
             <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
               <div>
                 {label}
-                {isPlatformDevPreview(
-                  platform as PlatformType,
-                  newFeatureSupportLevelContext,
-                  featureSupportLevelData,
-                ) && (
-                  <span onClick={(event) => event.stopPropagation()}>
-                    <DeveloperPreview testId={'platform-support-level'} />
-                  </span>
-                )}
+                <span onClick={(event) => event.stopPropagation()}>
+                  <NewFeatureSupportLevelBadge
+                    featureId={ExternalPlaformIds[platform as PlatformType] as FeatureId}
+                    supportLevel={supportLevel}
+                  />
+                </span>
               </div>
             </Tooltip>
           </SplitItem>

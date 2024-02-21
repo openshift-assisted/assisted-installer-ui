@@ -16,17 +16,24 @@ import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterD
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import { getAgentClusterInstallOfAgent, getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
 import { isInstallationInProgress } from '../ClusterDeployment/helpers';
-import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
+import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_GENERATED_AI_FLOW } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import BMHStatus from './BMHStatus';
-import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
+import {
+  getAgentStatus,
+  getAgentStatusKey,
+  getBMHStatus,
+  getBMHStatusKey,
+  getWizardStepAgentStatus,
+} from '../helpers/status';
 import { filterByHostname } from '../../../common/components/hosts/utils';
-import { agentStatus, bmhStatus } from '../helpers/agentStatus';
+import { agentStatus } from '../helpers/agentStatus';
 import noop from 'lodash-es/noop.js';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { AgentMachineK8sResource } from '../Hypershift/types';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { HostStatus } from '../../../common/components/hosts/types';
 
 export const agentHostnameColumn = (
   t: TFunction,
@@ -117,7 +124,9 @@ export const discoveryTypeColumn = (
 
 type AgentStatusColumnProps = {
   agents: AgentK8sResource[];
+  agentStatuses: HostStatus<string>;
   bareMetalHosts?: BareMetalHostK8sResource[];
+  bmhStatuses?: HostStatus<string>;
   onEditHostname?: AgentTableActions['onEditHost'];
   onApprove?: AgentTableActions['onApprove'];
   wizardStepId?: ClusterDeploymentWizardStepsType;
@@ -127,7 +136,9 @@ type AgentStatusColumnProps = {
 
 export const agentStatusColumn = ({
   agents,
+  agentStatuses,
   bareMetalHosts,
+  bmhStatuses,
   onEditHostname,
   onApprove,
   wizardStepId,
@@ -158,8 +169,8 @@ export const agentStatusColumn = ({
             isDay2={isDay2}
           />
         );
-      } else if (bmh) {
-        bmhStatus = getBMHStatus(bmh);
+      } else if (bmh && bmhStatuses) {
+        bmhStatus = getBMHStatus(bmh, bmhStatuses);
         title = <BMHStatus bmhStatus={bmhStatus} />;
       }
 
@@ -169,7 +180,7 @@ export const agentStatusColumn = ({
         sortableValue: agent
           ? wizardStepId
             ? getWizardStepAgentStatus(agent, wizardStepId, t).status.title
-            : getAgentStatus(agent).status.title
+            : getAgentStatus(agent, agentStatuses).status.title
           : bmhStatus?.state.title || '',
       };
     },
@@ -254,11 +265,7 @@ export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableR
 };
 
 export const canEditBMH = (bmh: BareMetalHostK8sResource, t: TFunction): ActionCheck => {
-  const canEdit = [
-    bmhStatus.deprovisioning.key,
-    bmhStatus.pending.key,
-    bmhStatus.registering.key,
-  ].includes(getBMHStatus(bmh).state.key);
+  const canEdit = ['deprovisioning', 'pending', 'registering'].includes(getBMHStatusKey(bmh) || '');
 
   return [
     canEdit,
@@ -270,8 +277,12 @@ export const canEditBMH = (bmh: BareMetalHostK8sResource, t: TFunction): ActionC
   ];
 };
 
-export const canEditAgent = (agent: AgentK8sResource, t: TFunction): ActionCheck => {
-  const enabled = getAgentStatus(agent).status.category !== 'Installation related';
+export const canEditAgent = (
+  agent: AgentK8sResource,
+  agentStatuses: HostStatus<string>,
+  t: TFunction,
+): ActionCheck => {
+  const enabled = getAgentStatus(agent, agentStatuses).status.category !== 'Installation related';
   return [
     enabled,
     enabled
@@ -283,13 +294,14 @@ export const canEditAgent = (agent: AgentK8sResource, t: TFunction): ActionCheck
 export const canChangeHostname =
   (
     agents: AgentK8sResource[],
+    agentStatuses: HostStatus<string>,
     bareMetalHosts: BareMetalHostK8sResource[],
     t: TFunction,
   ): ((h: Host) => ActionCheck) =>
   (h: Host) => {
     const agent = agents.find((a) => a.metadata?.uid === h.id);
     if (agent) {
-      return canEditAgent(agent, t);
+      return canEditAgent(agent, agentStatuses, t);
     }
     const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
     if (bmh) {
@@ -302,13 +314,12 @@ export const canUnbindAgent = (
   agentClusterInstalls: AgentClusterInstallK8sResource[] | undefined,
   agent: AgentK8sResource,
   t: TFunction,
-  infraEnv?: InfraEnvK8sResource,
 ): ActionCheck => {
   if (!agent?.spec.clusterDeploymentName?.name) {
     return [false, t('ai:The agent is not bound to a cluster.')];
   }
 
-  const { status } = getAgentStatus(agent);
+  const statusKey = getAgentStatusKey(agent);
   if (
     [
       'preparing-for-installation',
@@ -316,13 +327,13 @@ export const canUnbindAgent = (
       'installing-in-progress',
       'installing-pending-user-action',
       'resetting-pending-user-action',
-    ].includes(status.key)
+    ].includes(statusKey)
   ) {
     return [false, t('ai:It is not possible to remove a host which is being installed.')];
   }
 
   if (
-    ['installed', 'error', 'cancelled'].includes(status.key) &&
+    ['installed', 'error', 'cancelled'].includes(statusKey) &&
     (agent.status?.role === 'master' || agent.status?.role === 'bootstrap')
   ) {
     return [
@@ -346,7 +357,8 @@ export const canUnbindAgent = (
 
   if (
     !agent.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY) &&
-    infraEnv?.spec?.clusterRef
+    agent.metadata?.labels?.hasOwnProperty(INFRAENV_GENERATED_AI_FLOW) &&
+    !!agent.spec.clusterDeploymentName
   ) {
     return [false, t('ai:It is not possible to remove this node from the cluster.')];
   }
@@ -354,8 +366,12 @@ export const canUnbindAgent = (
   return [true, undefined];
 };
 
-const canDeleteAgent = (agent: AgentK8sResource, t: TFunction): ActionCheck => {
-  const enabled = getAgentStatus(agent).status.category !== 'Installation related';
+const canDeleteAgent = (
+  agent: AgentK8sResource,
+  agentStatuses: HostStatus<string>,
+  t: TFunction,
+): ActionCheck => {
+  const enabled = getAgentStatus(agent, agentStatuses).status.category !== 'Installation related';
 
   return [
     enabled,
@@ -386,6 +402,7 @@ export const useAgentsTable = (
     onSetInstallationDiskId,
   } = tableActions || {};
   const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
   const [hosts, actions] = React.useMemo(
     (): [Host[], HostsTableActions] => [
       getAIHosts(agents, bmhs, infraEnv),
@@ -408,7 +425,7 @@ export const useAgentsTable = (
           if (!agent) {
             return false;
           }
-          return canEditAgent(agent, t);
+          return canEditAgent(agent, agentStatuses, t);
         },
         onDeleteHost: onDeleteHost
           ? (host: Host) => {
@@ -422,7 +439,7 @@ export const useAgentsTable = (
           const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
 
           if (agent) {
-            return canDeleteAgent(agent, t);
+            return canDeleteAgent(agent, agentStatuses, t);
           } else if (bmh) {
             return [true, undefined];
           }
@@ -476,7 +493,7 @@ export const useAgentsTable = (
           const agent = agents.find((a) => a.metadata?.uid === host.id);
 
           if (agent) {
-            return canUnbindAgent(agentClusterInstalls, agent, t, infraEnv);
+            return canUnbindAgent(agentClusterInstalls, agent, t);
           }
           const bmh = bmhs?.find((bmh) => bmh.metadata?.uid === host.id);
           if (bmh) {
@@ -488,6 +505,7 @@ export const useAgentsTable = (
     ],
     [
       agents,
+      t,
       bmhs,
       infraEnv,
       onEditHost,
@@ -497,7 +515,7 @@ export const useAgentsTable = (
       onSelect,
       onEditBMH,
       onUnbindHost,
-      t,
+      agentStatuses,
       agentClusterInstalls,
     ],
   );
@@ -508,14 +526,15 @@ export const useAgentsTable = (
 const filterByStatus = (
   hosts: Host[],
   agents: AgentK8sResource[],
+  agentStatuses: HostStatus<string>,
   bareMetalHosts: BareMetalHostK8sResource[],
   statusFilter: string[],
 ) => {
   if (!statusFilter?.length) {
     return hosts;
   }
-  const statusKeys = Object.keys(agentStatus).filter((k) =>
-    statusFilter.includes(agentStatus[k].title),
+  const statusKeys = Object.keys(agentStatuses).filter((k) =>
+    statusFilter.includes(agentStatuses[k].title),
   );
   return hosts.filter((h) => {
     const agent = agents.find((a) => a.metadata?.uid === h.id);
@@ -524,10 +543,9 @@ const filterByStatus = (
       if (!bmh) {
         return false;
       }
-      const bmhStatus = getBMHStatus(bmh);
-      return statusKeys.includes(bmhStatus.state.key);
+      return statusKeys.includes(getBMHStatusKey(bmh) || '');
     }
-    const { status } = getAgentStatus(agent);
+    const { status } = getAgentStatus(agent, agentStatuses);
     return statusKeys.includes(status.key);
   });
 };
@@ -535,44 +553,60 @@ const filterByStatus = (
 export const filterHosts = (
   hosts: Host[],
   agents: AgentK8sResource[],
+  agentStatuses: HostStatus<string>,
   bareMetalHosts: BareMetalHostK8sResource[],
   hostnameFilter: string | undefined,
   statusFilter: string[],
 ) => {
   const byHostname = filterByHostname(hosts, hostnameFilter);
-  const byStatus = filterByStatus(byHostname, agents, bareMetalHosts, statusFilter);
+  const byStatus = filterByStatus(byHostname, agents, agentStatuses, bareMetalHosts, statusFilter);
 
   return byStatus;
 };
 
 type UseAgentsFilterArgs = {
   agents: AgentK8sResource[];
+  agentStatuses: HostStatus<string>;
   bmhs: BareMetalHostK8sResource[];
+  bmhStatuses: HostStatus<string>;
   hosts: Host[];
 };
 
 export type StatusCount = Record<string, number>;
 
-export const useAgentsFilter = ({ agents, bmhs, hosts }: UseAgentsFilterArgs) => {
+export const useAgentsFilter = ({
+  agents,
+  agentStatuses,
+  bmhs,
+  bmhStatuses,
+  hosts,
+}: UseAgentsFilterArgs) => {
   const [hostnameFilter, setHostnameFilter] = React.useState<string>();
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
-  const statusCount = Object.keys(agentStatus).reduce((acc, curr) => {
-    acc[agentStatus[curr].title] = 0;
+  const statusCount = Object.keys(agentStatuses).reduce((acc, curr) => {
+    acc[agentStatuses[curr].title] = 0;
     return acc;
   }, {} as StatusCount);
   hosts.forEach((host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     const bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);
     if (agent) {
-      const { status } = getAgentStatus(agent);
+      const { status } = getAgentStatus(agent, agentStatuses);
       statusCount[status.title]++;
     } else if (bmh) {
-      const { state } = getBMHStatus(bmh);
+      const { state } = getBMHStatus(bmh, bmhStatuses);
       statusCount[state.title]++;
     }
   });
 
-  const filteredHosts = filterHosts(hosts, agents, bmhs, hostnameFilter, statusFilter);
+  const filteredHosts = filterHosts(
+    hosts,
+    agents,
+    agentStatuses,
+    bmhs,
+    hostnameFilter,
+    statusFilter,
+  );
 
   return {
     statusCount,

@@ -47,4 +47,18 @@ export class ExternalPartnerIntegrationsField {
       cy.findByRole('menuitem', { name: new RegExp(`${platform}`, 'i') }).click();
     });
   }
+
+  static checkPlatformTechSupportLevel() {
+    return cy
+      .get(`[data-testid="EXTERNAL_PLATFORM_OCI-support-level"]`)
+      .should('be.visible')
+      .should('contain.text', Cypress.env('techPreviewSupportLevel'));
+  }
+
+  static checkPlatformDevSupportLevel() {
+    return cy
+      .get(`[data-testid="EXTERNAL_PLATFORM_OCI-support-level"]`)
+      .should('be.visible')
+      .should('contain.text', Cypress.env('devPreviewSupportLevel'));
+  }
 }

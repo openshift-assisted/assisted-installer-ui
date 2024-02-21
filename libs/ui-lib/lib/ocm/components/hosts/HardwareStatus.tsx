@@ -14,6 +14,7 @@ import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { stringToJSON } from '../../../common/utils';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type HardwareStatusProps = {
   host: Host;
@@ -25,12 +26,13 @@ type HardwareStatusProps = {
 const DELETE_MODAL_STATUS_Z_INDEX = 500;
 
 const HardwareStatus = (props: HardwareStatusProps) => {
+  const { t } = useTranslation();
   const hardwareStatus = getWizardStepHostStatus(
     'host-discovery',
     wizardStepsValidationsMap,
     props.host,
   );
-  const status = hostStatus[hardwareStatus];
+  const status = hostStatus(t)[hardwareStatus];
   const validationsInfo = getWizardStepHostValidationsInfo(
     props.validationsInfo,
     'host-discovery',

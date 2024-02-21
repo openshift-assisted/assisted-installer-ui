@@ -21,6 +21,7 @@ import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { HostStatus } from '../../../common/components/hosts/types';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;
@@ -51,7 +52,11 @@ const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host
   };
 };
 
-const statusColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
+const statusColumn = (
+  agents: AgentK8sResource[],
+  agentStatuses: HostStatus<string>,
+  t: TFunction,
+): TableRow<Host> => {
   return {
     header: {
       title: t('ai:Status'),
@@ -62,8 +67,10 @@ const statusColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> 
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      const status = agent?.spec.approved ? t('ai:Already approved') : agentStatus.discovered.title;
-      const icon = agentStatus.discovered.icon;
+      const status = agent?.spec.approved
+        ? t('ai:Already approved')
+        : agentStatuses.discovered.title;
+      const icon = agentStatuses.discovered.icon;
       return {
         title: (
           <ApproveTableRow agent={agent}>
@@ -99,6 +106,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
   const [progress, setProgress] = React.useState<number | null>(null);
   const [error, setError] = React.useState<{ title: string; message: string }>();
   const { t } = useTranslation();
+  const agentStatuses = agentStatus(t);
   const onClick = async () => {
     setError(undefined);
     let i = 0;
@@ -122,10 +130,10 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
   };
   const { content, hosts } = React.useMemo(
     () => ({
-      content: [hostnameColumn(agents, t), statusColumn(agents, t)],
+      content: [hostnameColumn(agents, t), statusColumn(agents, agentStatuses, t)],
       hosts: getAIHosts(agents),
     }),
-    [agents, t],
+    [agentStatuses, agents, t],
   );
 
   const paginationProps = usePagination(hosts.length);
