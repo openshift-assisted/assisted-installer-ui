@@ -184,26 +184,25 @@ const emptyValues: AddBmcValues = {
   bootMACAddress: '',
   disableCertificateVerification: true, // TODO(mlibra)
   online: true,
-  nmState:
-    'interfaces:\n\
-  - name: <nic1_name>\n\
-    type: ethernet\n\
-    state: up\n\
-    ipv4:\n\
-      address:\n\
-      - ip: <ip_address>\n\
-        prefix-length: 24\n\
-      enabled: true\n\
-dns-resolver:\n\
-  config:\n\
-    server:\n\
-    - <dns_ip_address>\n\
-routes:\n\
-  config:\n\
-  - destination: 0.0.0.0/0\n\
-    next-hop-address: <next_hop_ip_address>\n\
-    next-hop-interface: <next_hop_nic1_name>\n\
-',
+  nmState: `interfaces:
+  - name: <nic1_name>
+    type: ethernet
+    state: up
+    ipv4:
+      address:
+      - ip: <ip_address>
+        prefix-length: 24
+      enabled: true
+dns-resolver:
+  config:
+    server:
+    - <dns_ip_address>
+routes:
+  config:
+  - destination: 0.0.0.0/0
+    next-hop-address: <next_hop_ip_address>
+    next-hop-interface: <next_hop_nic1_name>
+  `,
   macMapping: [{ macAddress: '', name: '' }],
 };
 
@@ -214,7 +213,7 @@ const getInitValues = (
   isEdit?: boolean,
   addNMState?: boolean,
 ): AddBmcValues => {
-  let values;
+  let values = emptyValues;
 
   if (isEdit) {
     values = {
@@ -229,8 +228,6 @@ const getInitValues = (
       nmState: nmState ? yaml.dump(nmState?.spec?.config) : emptyValues.nmState,
       macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
     };
-  } else {
-    values = emptyValues;
   }
 
   if (!addNMState) {
