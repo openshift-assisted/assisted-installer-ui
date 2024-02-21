@@ -15,8 +15,6 @@ import {
 import {
   getSubnetFromMachineNetworkCidr,
   getHostSubnets,
-  isSubnetInIPv6,
-  getDefaultNetworkType,
 } from '../../../common/components/clusterConfiguration/utils';
 import {
   isSNO,
@@ -25,7 +23,7 @@ import {
   selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
 } from '../../../common/selectors/clusterSelectors';
-import { NO_SUBNET_SET } from '../../../common/config';
+import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../../common/config';
 
 const getInitHostSubnet = (
   cluster: Cluster,
@@ -48,8 +46,6 @@ export const getNetworkInitialValues = (
   defaultNetworkSettings: ClusterDefaultConfig,
 ): NetworkConfigurationValues => {
   const managedNetworkingType = cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged';
-  const isIPv6 = isSubnetInIPv6(cluster);
-  const isSNOCluster = isSNO(cluster);
 
   return {
     clusterNetworkCidr:
@@ -64,7 +60,7 @@ export const getNetworkInitialValues = (
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType,
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isIPv6),
+    networkType: cluster.networkType || NETWORK_TYPE_OVN,
   };
 };
 
