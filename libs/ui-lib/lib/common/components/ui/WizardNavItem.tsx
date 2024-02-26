@@ -14,7 +14,7 @@ const getNavItemContent = (
     return (
       <>
         {content}
-        <Icon size="sm" status="danger" className="wizard-nav-item-warning-icon">
+        <Icon status="danger" className="wizard-nav-item-warning-icon">
           <ExclamationCircleIcon />
         </Icon>
       </>
