@@ -24,3 +24,15 @@ export const getActualLVMOperatorName = ({
 
   return operator;
 };
+
+export const getOdfLvmsText = (isSingleNode: boolean, OPCVersionGreaterThan4_15: boolean) => {
+  if (OPCVersionGreaterThan4_15) {
+    return 'OpenShift Data Foundation (recommended for creating additional on-premise clusters), Logical Volume Manager Storage or another persistent storage service';
+  } else {
+    if (isSingleNode) {
+      return 'Logical Volume Manager Storage or another persistent storage service';
+    } else {
+      return 'OpenShift Data Foundation (recommended for creating additional on-premise clusters)  or another persistent storage service';
+    }
+  }
+};
