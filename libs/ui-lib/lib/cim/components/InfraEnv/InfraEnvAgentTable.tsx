@@ -109,8 +109,14 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     },
   );
   const { t } = useTranslation();
-  const agentStatuses = agentStatus(t);
-  const bmhStatuses = bmhStatus(t);
+  const { agentStatuses, bmhStatuses } = React.useMemo(
+    () => ({
+      agentStatuses: agentStatus(t),
+      bmhStatuses: bmhStatus(t),
+    }),
+    [t],
+  );
+
   const {
     statusCount,
     hostnameFilter,
