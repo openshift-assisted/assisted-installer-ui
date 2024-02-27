@@ -4,27 +4,22 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/exter
 import { getFieldId, PopoverIcon, MCE_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import { useSelector } from 'react-redux';
+import { selectIsCurrentClusterSNO } from '../../../store/slices/current-cluster/selectors';
+import { getOdfLvmsText } from './utils';
 
 const MCE_FIELD_NAME = 'useMultiClusterEngine';
 
 const MceLabel = ({
   disabledReason,
-  showMessageForLvms,
+  isVersionEqualsOrMajorThan4_15,
   isSNO,
 }: {
   disabledReason?: string;
-  showMessageForLvms?: boolean;
-  isSNO?: boolean;
+  isVersionEqualsOrMajorThan4_15: boolean;
+  isSNO: boolean;
 }) => {
-  const odfText = !isSNO
-    ? 'OpenShift Data Foundation (recommended for creating additional on-premise clusters)'
-    : '';
-  const lvmsText = showMessageForLvms
-    ? !isSNO
-      ? ', Logical Volume Manager Storage'
-      : 'Logical Volume Manager Storage'
-    : '';
-
+  const odfLvmsText = getOdfLvmsText(isSNO, isVersionEqualsOrMajorThan4_15);
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -34,12 +29,7 @@ const MceLabel = ({
         id={MCE_FIELD_NAME}
         component={'a'}
         headerContent="Additional requirements"
-        bodyContent={
-          <>
-            {odfText}
-            {lvmsText} or another persistent storage service
-          </>
-        }
+        bodyContent={<>{odfLvmsText}</>}
       />
     </>
   );
@@ -59,12 +49,11 @@ const MceHelperText = () => {
 };
 
 const MceCheckbox = ({
-  showMessageForLvms,
-  isSNO,
+  isVersionEqualsOrMajorThan4_15,
 }: {
-  showMessageForLvms: boolean;
-  isSNO: boolean;
+  isVersionEqualsOrMajorThan4_15: boolean;
 }) => {
+  const isSNO = useSelector(selectIsCurrentClusterSNO);
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const fieldId = getFieldId(MCE_FIELD_NAME, 'input');
   const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MCE');
@@ -75,7 +64,7 @@ const MceCheckbox = ({
         label={
           <MceLabel
             disabledReason={disabledReason}
-            showMessageForLvms={showMessageForLvms}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
             isSNO={isSNO}
           />
         }

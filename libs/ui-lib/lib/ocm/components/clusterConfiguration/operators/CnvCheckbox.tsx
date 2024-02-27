@@ -19,11 +19,11 @@ const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 const CnvLabel = ({
   clusterId,
   disabledReason,
-  showMessageForLvms,
+  isVersionEqualsOrMajorThan4_15,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   disabledReason?: string;
-  showMessageForLvms: boolean;
+  isVersionEqualsOrMajorThan4_15: boolean;
 }) => {
   return (
     <>
@@ -34,7 +34,10 @@ const CnvLabel = ({
         component={'a'}
         headerContent="Additional requirements"
         bodyContent={
-          <CnvHostRequirements clusterId={clusterId} showMessageForLvms={showMessageForLvms} />
+          <CnvHostRequirements
+            clusterId={clusterId}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+          />
         }
       />
     </>
@@ -56,10 +59,10 @@ const CnvHelperText = () => {
 
 const CnvCheckbox = ({
   clusterId,
-  showMessageForLvms,
+  isVersionEqualsOrMajorThan4_15,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
-  showMessageForLvms: boolean;
+  isVersionEqualsOrMajorThan4_15: boolean;
 }) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
@@ -84,7 +87,7 @@ const CnvCheckbox = ({
           <CnvLabel
             clusterId={clusterId}
             disabledReason={disabledReason}
-            showMessageForLvms={showMessageForLvms}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
           />
         }
         helperText={<CnvHelperText />}
