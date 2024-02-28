@@ -5,9 +5,12 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/exter
 import { TFunction } from 'i18next';
 import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
+import {
+  OPENSHIFT_LIFE_CYCLE_DATES_LINK,
+  UiIcon,
+  OpenshiftVersionOptionType,
+} from '../../../common';
 import { isInOcm } from '../../../common/api';
-import { Icon } from '@patternfly/react-core';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -26,10 +29,8 @@ const getOpenshiftVersionHelperText = (
   if (!versions.length) {
     return (
       <>
-        <Icon size="sm" status="danger">
-          <ExclamationCircleIcon />
-        </Icon>
-        &nbsp; {t('ai:No release image is available.')}
+        <UiIcon status="danger" size="sm" icon={<ExclamationCircleIcon />} />; &nbsp;{' '}
+        {t('ai:No release image is available.')}
       </>
     );
   }
@@ -42,10 +43,8 @@ const getOpenshiftVersionHelperText = (
   if (selectedVersion.supportLevel !== 'production') {
     return (
       <>
-        <Icon size="sm" status="warning">
-          <ExclamationTriangleIcon />
-        </Icon>
-        &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
+        <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />; &nbsp;
+        {t('ai:Please note that this version is not production-ready.')}&nbsp;
         <OpenShiftLifeCycleDatesLink />
       </>
     );

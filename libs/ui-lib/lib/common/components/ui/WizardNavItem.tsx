@@ -1,8 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { WizardNavItem, WizardNavItemProps } from '@patternfly/react-core/deprecated';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-
-import { Icon } from '@patternfly/react-core';
+import UiIcon from './UiIcon';
 
 const getNavItemContent = (
   content: ReactNode,
@@ -14,9 +13,11 @@ const getNavItemContent = (
     return (
       <>
         {content}
-        <Icon status="danger" className="wizard-nav-item-warning-icon">
-          <ExclamationCircleIcon />
-        </Icon>
+        <UiIcon
+          status="danger"
+          className="wizard-nav-item-warning-icon"
+          icon={<ExclamationCircleIcon />}
+        />
       </>
     );
   }

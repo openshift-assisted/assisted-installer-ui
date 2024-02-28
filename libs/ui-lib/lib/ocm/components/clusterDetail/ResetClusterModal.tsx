@@ -7,7 +7,6 @@ import {
   ButtonVariant,
   Text,
   TextContent,
-  Icon,
 } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
@@ -15,7 +14,7 @@ import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { calculateCollectedLogsCount } from '../clusters/utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { ErrorState, LoadingState } from '../../../common';
+import { ErrorState, LoadingState, UiIcon } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 
 const ResetClusterModal: React.FC = () => {
@@ -85,10 +84,8 @@ const ResetClusterModal: React.FC = () => {
         </Text>
 
         <Text component="p">
-          <Icon size="sm" status="warning">
-            <ExclamationTriangleIcon />
-          </Icon>{' '}
-          Logs won't be available after the installation is reset.
+          <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} /> Logs won't be
+          available after the installation is reset.
         </Text>
 
         <Text component="p">Are you sure you want to reset the cluster?</Text>

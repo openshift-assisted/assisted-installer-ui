@@ -6,7 +6,6 @@ import {
   Popover,
   Alert,
   AlertVariant,
-  Icon,
 } from '@patternfly/react-core';
 import { TableVariant, RowWrapperProps, RowWrapper, IRow } from '@patternfly/react-table';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
@@ -22,10 +21,9 @@ import FormatDiskCheckbox, {
   isInDiskSkipFormattingList,
 } from '../hosts/FormatDiskCheckbox';
 import { fileSize } from '../../utils';
-import { PopoverIcon } from '../ui';
+import { PopoverIcon, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
@@ -117,9 +115,7 @@ const DiskName = ({
       {isIndented && <span style={{ width: '1rem', display: 'inline-block' }} />}
       {isInDiskSkipFormattingList(host, disk.id) && (
         <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
-          <Icon size="sm" status="warning">
-            <ExclamationTriangleIcon color={warningColor.value} />
-          </Icon>
+          <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
         </Popover>
       )}
       {'   '}
@@ -134,9 +130,7 @@ const DiskName = ({
             maxWidth="30rem"
             data-testid="disk-limitations-popover"
           >
-            <Icon size="sm" status="warning">
-              <ExclamationTriangleIcon color={warningColor.value} />
-            </Icon>
+            <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
           </Popover>
         </>
       )}

@@ -12,10 +12,9 @@ import {
   OrderType,
   HelperText,
   HelperTextItem,
-  Icon,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { PrismCode, SimpleAIPrismTheme } from '../ui';
+import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
@@ -209,9 +208,7 @@ export const HostsNotShowingLink = ({
     <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
       {!isInline && (
         <>
-          <Icon size="sm">
-            <InfoCircleIcon />
-          </Icon>
+          <UiIcon size="sm" icon={<InfoCircleIcon />} />
           &nbsp;
         </>
       )}

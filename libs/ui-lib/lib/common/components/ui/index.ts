@@ -25,3 +25,5 @@ export { default as ClusterEventsToolbar } from './ClusterEventsToolbar';
 export { default as ModalProgress } from './ModalProgress';
 export { default as ConfirmationModal } from './ConfirmationModal';
 export { default as NoPermissionsError } from './NoPermissionsError';
+
+export { default as UiIcon } from './UiIcon';

@@ -5,10 +5,9 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/exter
 
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
-import { SelectField } from '../ui';
+import { SelectField, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { SelectFieldProps } from '../ui/formik/types';
-import { Icon } from '@patternfly/react-core';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -26,9 +25,7 @@ const getOpenshiftVersionHelperText =
     if (!versions.length) {
       return (
         <>
-          <Icon size="sm" status="danger">
-            <ExclamationCircleIcon />
-          </Icon>
+          <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />
           &nbsp; {t('ai:No release image is available.')}
         </>
       );
@@ -41,9 +38,7 @@ const getOpenshiftVersionHelperText =
     if (selectedVersion.supportLevel !== 'production') {
       return (
         <>
-          <Icon size="sm" status="warning">
-            <ExclamationTriangleIcon />
-          </Icon>
+          <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
           &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
           <OpenShiftLifeCycleDatesLink />
         </>

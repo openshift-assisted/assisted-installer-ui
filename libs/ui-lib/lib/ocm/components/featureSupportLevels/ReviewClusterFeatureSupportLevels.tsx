@@ -2,7 +2,7 @@ import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-cir
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import React from 'react';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
-import { Text, TextList, TextListItem, TextContent, Icon } from '@patternfly/react-core';
+import { Text, TextList, TextListItem, TextContent } from '@patternfly/react-core';
 import {
   FeatureId,
   FeatureIdToSupportLevel,
@@ -12,7 +12,7 @@ import {
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { DetailItem } from '../../../common';
+import { DetailItem, UiIcon } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -86,17 +86,13 @@ export const LimitedSupportedCluster = ({
   <TextContent>
     {showVersionWarning && (
       <Text>
-        <Icon size="sm" color="var(--pf-v5-global--info-color--100)">
-          <InfoCircleIcon />
-        </Icon>
+        <UiIcon size="sm" color="var(--pf-v5-global--info-color--100)" icon={<InfoCircleIcon />} />
         &nbsp;The installed OpenShift version is not production-ready
       </Text>
     )}
     {Object.keys(clusterFeatureSupportLevels).length > 0 && (
       <>
-        <Icon size="sm" color="var(--pf-v5-global--info-color--100)">
-          <InfoCircleIcon />
-        </Icon>
+        <UiIcon size="sm" color="var(--pf-v5-global--info-color--100)" icon={<InfoCircleIcon />} />
         &nbsp;Your cluster will be subject to support limitations because it includes:
         <TextList>{getPreviewFeatureList(clusterFeatureSupportLevels)}</TextList>
       </>
