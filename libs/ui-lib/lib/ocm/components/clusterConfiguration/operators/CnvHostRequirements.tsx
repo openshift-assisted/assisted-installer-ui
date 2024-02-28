@@ -5,8 +5,15 @@ import { useClusterPreflightRequirements } from '../../../hooks';
 import { ErrorState, LoadingState, OPERATOR_NAME_CNV, RenderIf } from '../../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { selectIsCurrentClusterSNO } from '../../../store/slices/current-cluster/selectors';
+import { getOdfLvmsText } from './utils';
 
-const CnvHostRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
+const CnvHostRequirements = ({
+  clusterId,
+  isVersionEqualsOrMajorThan4_15,
+}: {
+  clusterId: Cluster['id'];
+  isVersionEqualsOrMajorThan4_15: boolean;
+}) => {
   const { preflightRequirements, error, isLoading } = useClusterPreflightRequirements(clusterId);
   const isSingleNode = useSelector(selectIsCurrentClusterSNO);
 
@@ -23,7 +30,7 @@ const CnvHostRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
 
   const workerRequirements = cnvRequirements?.requirements?.worker?.quantitative;
   const masterRequirements = cnvRequirements?.requirements?.master?.quantitative;
-
+  const odfLvmsText = getOdfLvmsText(isSingleNode, isVersionEqualsOrMajorThan4_15);
   return (
     <>
       <List>
@@ -48,12 +55,7 @@ const CnvHostRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
             ? ` and ${masterRequirements?.diskSizeGb} storage space`
             : ''}
         </ListItem>
-        <RenderIf condition={!isSingleNode}>
-          <ListItem>
-            OpenShift Data Foundation (recommended for full functionality) or another persistent
-            storage service
-          </ListItem>
-        </RenderIf>
+        <ListItem>{odfLvmsText}</ListItem>
       </List>
     </>
   );

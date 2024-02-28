@@ -21,10 +21,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <CnvCheckbox {...props} />
+        <CnvCheckbox {...props} isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15} />
       </StackItem>
       <StackItem>
-        <MceCheckbox />
+        <MceCheckbox isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15} />
       </StackItem>
       {isVersionEqualsOrMajorThan4_15 ? (
         <>

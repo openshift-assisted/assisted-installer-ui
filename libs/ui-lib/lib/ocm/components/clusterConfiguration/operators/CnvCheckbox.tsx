@@ -19,9 +19,11 @@ const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 const CnvLabel = ({
   clusterId,
   disabledReason,
+  isVersionEqualsOrMajorThan4_15,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   disabledReason?: string;
+  isVersionEqualsOrMajorThan4_15: boolean;
 }) => {
   return (
     <>
@@ -31,7 +33,12 @@ const CnvLabel = ({
       <PopoverIcon
         component={'a'}
         headerContent="Additional requirements"
-        bodyContent={<CnvHostRequirements clusterId={clusterId} />}
+        bodyContent={
+          <CnvHostRequirements
+            clusterId={clusterId}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+          />
+        }
       />
     </>
   );
@@ -50,7 +57,13 @@ const CnvHelperText = () => {
   );
 };
 
-const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
+const CnvCheckbox = ({
+  clusterId,
+  isVersionEqualsOrMajorThan4_15,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  isVersionEqualsOrMajorThan4_15: boolean;
+}) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
@@ -70,7 +83,13 @@ const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={CNV_FIELD_NAME}
-        label={<CnvLabel clusterId={clusterId} disabledReason={disabledReason} />}
+        label={
+          <CnvLabel
+            clusterId={clusterId}
+            disabledReason={disabledReason}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+          />
+        }
         helperText={<CnvHelperText />}
         isDisabled={!!disabledReason}
       />
