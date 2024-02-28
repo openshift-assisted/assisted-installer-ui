@@ -86,13 +86,13 @@ export const LimitedSupportedCluster = ({
   <TextContent>
     {showVersionWarning && (
       <Text>
-        <UiIcon size="sm" color="var(--pf-v5-global--info-color--100)" icon={<InfoCircleIcon />} />
+        <UiIcon size="sm" icon={<InfoCircleIcon color="var(--pf-v5-global--info-color--100)" />} />
         &nbsp;The installed OpenShift version is not production-ready
       </Text>
     )}
     {Object.keys(clusterFeatureSupportLevels).length > 0 && (
       <>
-        <UiIcon size="sm" color="var(--pf-v5-global--info-color--100)" icon={<InfoCircleIcon />} />
+        <UiIcon size="sm" icon={<InfoCircleIcon color="var(--pf-v5-global--info-color--100)" />} />
         &nbsp;Your cluster will be subject to support limitations because it includes:
         <TextList>{getPreviewFeatureList(clusterFeatureSupportLevels)}</TextList>
       </>

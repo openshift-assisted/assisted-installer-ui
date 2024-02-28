@@ -4,7 +4,6 @@ import { Icon, IconComponentProps } from '@patternfly/react-core';
 export type UiIconProps = {
   size?: IconComponentProps['size'];
   status?: IconComponentProps['status'] | undefined;
-  color?: string;
   icon?: ReactElement;
   className?: string;
 };
@@ -12,12 +11,7 @@ export type UiIconProps = {
 const UiIcon: React.FC<UiIconProps> = (props) => {
   return (
     <>
-      <Icon
-        size={props.size ? props.size : 'md'}
-        status={props.status}
-        className={props.className}
-        color={props.color}
-      >
+      <Icon size={props.size ? props.size : 'md'} status={props.status} className={props.className}>
         {props.icon}
       </Icon>
     </>

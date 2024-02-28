@@ -112,7 +112,7 @@ const getCheckIcon = (validationStatuses: string[]) => {
   } else if (validationStatuses.includes('pending')) {
     return <UiIcon status="info" icon={<InfoCircleIcon />} />;
   }
-  return <UiIcon status="warning" color={okColor.value} icon={<CheckCircleIcon />} />;
+  return <UiIcon status="warning" icon={<CheckCircleIcon color={okColor.value} />} />;
 };
 
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
