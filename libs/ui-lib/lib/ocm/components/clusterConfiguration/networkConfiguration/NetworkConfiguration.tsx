@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
-import { Grid, Tooltip } from '@patternfly/react-core';
+import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
   canBeDualStack,
@@ -241,71 +241,87 @@ const NetworkConfiguration = ({
   }, [featureSupportLevelContext]);
 
   return (
-    <Grid hasGutter>
-      <ManagedNetworkingControlGroup
-        disabled={isViewerMode || managedNetworkingState.isDisabled}
-        tooltipCmnDisabled={managedNetworkingState.clusterManagedDisabledReason}
-        tooltipUmnDisabled={managedNetworkingState.userManagedDisabledReason}
-      />
+    <Stack hasGutter>
+      <StackItem>
+        <ManagedNetworkingControlGroup
+          disabled={isViewerMode || managedNetworkingState.isDisabled}
+          tooltipCmnDisabled={managedNetworkingState.clusterManagedDisabledReason}
+          tooltipUmnDisabled={managedNetworkingState.userManagedDisabledReason}
+        />
+      </StackItem>
 
       {isUserManagedNetworking && (
-        <UserManagedNetworkingTextContent
-          shouldDisplayLoadBalancersBullet={!isSNOCluster}
-          docVersion={cluster.openshiftVersion}
-        />
+        <StackItem>
+          <UserManagedNetworkingTextContent
+            shouldDisplayLoadBalancersBullet={!isSNOCluster}
+            docVersion={cluster.openshiftVersion}
+          />
+        </StackItem>
       )}
 
       {(isSNOCluster || !isUserManagedNetworking) && (
-        <StackTypeControlGroup
-          clusterId={cluster.id}
-          isDualStackSelectable={isDualStackSelectable}
-          hostSubnets={hostSubnets}
-        />
+        <StackItem>
+          <StackTypeControlGroup
+            clusterId={cluster.id}
+            isDualStackSelectable={isDualStackSelectable}
+            hostSubnets={hostSubnets}
+          />
+        </StackItem>
       )}
       {isSDNSupported && (
-        <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
+        <StackItem>
+          <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
+        </StackItem>
       )}
 
       {!(isUserManagedNetworking && !isSNOCluster) && (
-        <AvailableSubnetsControl
-          clusterId={cluster.id}
-          hostSubnets={hostSubnets}
-          isRequired={!isUserManagedNetworking}
-          isDisabled={
-            (cluster.vipDhcpAllocation &&
-              selectApiVip(cluster) === '' &&
-              selectIngressVip(cluster) === '') ||
-            hostSubnets.length === 0 ||
-            false
-          }
-        />
+        <StackItem>
+          <AvailableSubnetsControl
+            clusterId={cluster.id}
+            hostSubnets={hostSubnets}
+            isRequired={!isUserManagedNetworking}
+            isDisabled={
+              (cluster.vipDhcpAllocation &&
+                selectApiVip(cluster) === '' &&
+                selectIngressVip(cluster) === '') ||
+              hostSubnets.length === 0 ||
+              false
+            }
+          />
+        </StackItem>
       )}
 
       {!isUserManagedNetworking && (
-        <VirtualIPControlGroup
-          cluster={cluster}
-          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled || !isSDNSupported}
-          supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
-        />
+        <StackItem>
+          <VirtualIPControlGroup
+            cluster={cluster}
+            isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled || !isSDNSupported}
+            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
+          />
+        </StackItem>
       )}
-
-      <Tooltip
-        content={'Advanced networking properties must be configured in dual-stack'}
-        hidden={!isDualStack}
-        position={'top-start'}
-      >
-        <OcmCheckbox
-          id="useAdvancedNetworking"
-          label="Use advanced networking"
-          description="Configure advanced networking properties (e.g. CIDR ranges)."
-          isChecked={isAdvanced}
-          onChange={(_event, value) => toggleAdvConfiguration(value)}
-          isDisabled={isDualStack}
-        />
-      </Tooltip>
-
-      {isAdvanced && <AdvancedNetworkFields />}
-    </Grid>
+      <StackItem>
+        <Tooltip
+          content={'Advanced networking properties must be configured in dual-stack'}
+          hidden={!isDualStack}
+          position={'top-start'}
+        >
+          <OcmCheckbox
+            id="useAdvancedNetworking"
+            label="Use advanced networking"
+            description="Configure advanced networking properties (e.g. CIDR ranges)."
+            isChecked={isAdvanced}
+            onChange={(_event, value) => toggleAdvConfiguration(value)}
+            isDisabled={isDualStack}
+          />
+        </Tooltip>
+      </StackItem>
+      {isAdvanced && (
+        <StackItem>
+          <AdvancedNetworkFields />
+        </StackItem>
+      )}
+    </Stack>
   );
 };
 
