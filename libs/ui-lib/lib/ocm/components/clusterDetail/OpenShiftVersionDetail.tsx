@@ -1,8 +1,8 @@
 import React from 'react';
-import { getOpenshiftVersionText } from '../../../common';
+import { UiIcon, getOpenshiftVersionText } from '../../../common';
 import { useOpenshiftVersions } from '../../hooks';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { Icon, Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -20,9 +20,7 @@ const UnsupportedVersion = ({ version }: { version: string }) => {
     <Text component="p">
       {version} &nbsp;
       <Popover bodyContent={hint}>
-        <Icon size="sm" status="warning">
-          <ExclamationTriangleIcon />
-        </Icon>
+        <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
       </Popover>
     </Text>
   );

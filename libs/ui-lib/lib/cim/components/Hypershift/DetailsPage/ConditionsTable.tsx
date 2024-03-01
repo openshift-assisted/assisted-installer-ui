@@ -1,4 +1,4 @@
-import { Flex, FlexItem, Icon } from '@patternfly/react-core';
+import { Flex, FlexItem } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
@@ -10,6 +10,7 @@ import * as React from 'react';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 import './ConditionsTable.css';
+import { UiIcon } from '../../../../common';
 
 const ignoredConditions = ['Progressing'];
 const reversedConditions = ['Degraded'];
@@ -56,9 +57,7 @@ const ConditionsTable = ({ conditions, isDone }: ConditionsTableProps) => {
                 icon = <CheckCircleIcon color={okColor.value} />;
               } else if (c.status === nokStatus) {
                 icon = isDone ? (
-                  <Icon size="sm" status="danger">
-                    <ExclamationCircleIcon />
-                  </Icon>
+                  <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />
                 ) : (
                   <InProgressIcon />
                 );

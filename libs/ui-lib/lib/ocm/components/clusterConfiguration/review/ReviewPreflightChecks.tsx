@@ -5,7 +5,6 @@ import {
   Grid,
   GridItem,
   gridSpans,
-  Icon,
   Split,
   SplitItem,
 } from '@patternfly/react-core';
@@ -15,8 +14,13 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_info_color_100 as infoColor } from '@patternfly/react-tokens/dist/js/global_info_color_100';
-
-import { ClusterValidations, DetailItem, DetailList, HostsValidations } from '../../../../common';
+import {
+  ClusterValidations,
+  DetailItem,
+  DetailList,
+  HostsValidations,
+  UiIcon,
+} from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { useOpenshiftVersions } from '../../../hooks';
 import { wizardStepNames } from '../../clusterWizard/constants';
@@ -102,29 +106,13 @@ const PreflightCheckInfo = ({
 
 const getCheckIcon = (validationStatuses: string[]) => {
   if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
-    return (
-      <Icon size="sm" status="danger">
-        <ExclamationCircleIcon />
-      </Icon>
-    );
+    return <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
   } else if (validationStatuses.includes('warning')) {
-    return (
-      <Icon status="warning">
-        <ExclamationTriangleIcon />
-      </Icon>
-    );
+    return <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
   } else if (validationStatuses.includes('pending')) {
-    return (
-      <Icon size="sm" status="info">
-        <InfoCircleIcon />
-      </Icon>
-    );
+    return <UiIcon status="info" icon={<InfoCircleIcon />} />;
   }
-  return (
-    <Icon color={okColor.value}>
-      <CheckCircleIcon />
-    </Icon>
-  );
+  return <UiIcon status="warning" icon={<CheckCircleIcon color={okColor.value} />} />;
 };
 
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
@@ -138,13 +126,9 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   );
 
   const supportLevelIcon = isFullySupported ? (
-    <Icon size="sm" color={okColor.value}>
-      <CheckCircleIcon />
-    </Icon>
+    <CheckCircleIcon color={okColor.value} />
   ) : (
-    <Icon size="sm" color={infoColor.value}>
-      <InfoCircleIcon />
-    </Icon>
+    <InfoCircleIcon color={infoColor.value} />
   );
 
   const clusterValidations = React.useMemo(

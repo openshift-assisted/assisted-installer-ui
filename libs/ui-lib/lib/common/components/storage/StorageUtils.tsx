@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
-import { getHostRole, getInventory, RoleCell } from '../../index';
+import { getHostRole, getInventory, RoleCell, UiIcon } from '../../index';
 import { TableRow } from '../hosts/AITable';
-import { Icon, Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
-
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const SkipFormattingDisks = () => (
@@ -54,9 +52,7 @@ export const numberOfDisksColumn: TableRow<Host> = {
           {'   '}
           {host.skipFormattingDisks && (
             <Popover bodyContent={<SkipFormattingDisks />} minWidth="20rem" maxWidth="30rem">
-              <Icon size="sm" status="warning">
-                <ExclamationTriangleIcon color={warningColor.value} />
-              </Icon>
+              <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
             </Popover>
           )}
         </>

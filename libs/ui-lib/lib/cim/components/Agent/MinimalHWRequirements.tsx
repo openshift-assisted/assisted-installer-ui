@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, ButtonVariant, Icon, Modal, ModalVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 
 import { ConfigMapK8sResource } from '../../types';
@@ -7,6 +7,7 @@ import HostRequirements, {
   HostRequirementsListProps,
 } from '../../../common/components/hosts/HostRequirements';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { UiIcon } from '../../../common';
 
 type HostData = {
   cpu_cores: number;
@@ -77,9 +78,7 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
         isInline
         className="host-requirements-link"
       >
-        <Icon size="sm" status="warning">
-          <InfoCircleIcon />
-        </Icon>
+        <UiIcon size="sm" status="warning" icon={<InfoCircleIcon />} />
         &nbsp;{t('ai:Minimum hardware requirements')}
       </Button>
       <MinimalHWRequirementsModal

@@ -1,6 +1,6 @@
 import React from 'react';
 import lodashValues from 'lodash-es/values.js';
-import { Button, ButtonVariant, Icon } from '@patternfly/react-core';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
@@ -30,6 +30,7 @@ import {
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { getKeys, stringToJSON } from '../../utils';
+import { UiIcon } from '../ui';
 
 const AllValidationsPassed = () => {
   const { t } = useTranslation();
@@ -120,17 +121,9 @@ const FailingValidation = <S extends string>({
 
   let icon;
   if (severity === 'warning') {
-    icon = (
-      <Icon status="warning">
-        <ExclamationTriangleIcon />
-      </Icon>
-    );
+    icon = <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
   } else {
-    icon = (
-      <Icon size="sm" status="danger">
-        <ExclamationCircleIcon />
-      </Icon>
-    );
+    icon = <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
   }
 
   return (
