@@ -416,6 +416,7 @@
   "ai:Information & Troubleshooting": "Information & Troubleshooting",
   "ai:Information and warnings": "Information and warnings",
   "ai:Infrastructure": "Infrastructure",
+  "ai:Infrastructure availability policy": "Infrastructure availability policy",
   "ai:Infrastructure env": "Infrastructure env",
   "ai:Infrastructure environment details": "Infrastructure environment details",
   "ai:Infrastructure environments are used by clusters. Create an infrastructure environment to add resources to your cluster.": "Infrastructure environments are used by clusters. Create an infrastructure environment to add resources to your cluster.",
