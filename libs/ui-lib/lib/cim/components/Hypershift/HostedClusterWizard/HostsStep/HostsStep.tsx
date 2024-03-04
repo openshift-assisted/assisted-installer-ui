@@ -57,6 +57,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
   initReleaseImage,
   nodePools,
   controllerAvailabilityPolicy,
+  infrastructureAvailabilityPolicy,
 }) => {
   const { t } = useTranslation();
   const availableAgents = getAgentsForSelection(agents);
@@ -80,6 +81,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
         <Formik<HostsFormValues>
           initialValues={{
             controllerAvailabilityPolicy: controllerAvailabilityPolicy || 'HighlyAvailable',
+            infrastructureAvailabilityPolicy: infrastructureAvailabilityPolicy || 'HighlyAvailable',
             agentNamespace: initInfraEnv || infraEnvsWithAgents[0]?.metadata?.namespace || '',
             nodePools: initNodePools || [
               {
