@@ -53,7 +53,9 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
     !canNextOperators({ cluster });
 
   const handleNext = () => {
-    history.replace(pathname, undefined);
+    if (window.location.pathname.indexOf('assisted-installer') > -1) {
+      history.replace(pathname, undefined);
+    }
     clusterWizardContext.moveNext();
   };
 
