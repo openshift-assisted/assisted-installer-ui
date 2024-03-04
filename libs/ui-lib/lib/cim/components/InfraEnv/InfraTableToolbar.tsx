@@ -35,19 +35,19 @@ const getStatusesForFilter = (statuses: HostStatus<string>) => {
   );
 
   sortedStatuses.forEach((status) => {
-    const { category, key } = statuses[status];
+    const { category, title } = statuses[status];
     if (filterStatuses[category]) {
-      if (filterStatuses[category][key]) {
-        filterStatuses[category][key].push(status);
+      if (filterStatuses[category][title]) {
+        filterStatuses[category][title].push(status);
       } else {
         filterStatuses[category] = {
           ...filterStatuses[category],
-          [key]: [status],
+          [title]: [status],
         };
       }
     } else {
       filterStatuses[category] = {
-        [key]: [status],
+        [title]: [status],
       };
     }
   });
