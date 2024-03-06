@@ -45,6 +45,7 @@ export const StaticField: React.FC<StaticFieldProps> = ({
             <HelperTextItem
               icon={<ExclamationCircleIcon />}
               variant={isValid ? 'default' : 'error'}
+              id={!isValid ? `${fieldId}-helper-error` : `${fieldId}-helper}`}
             >
               {isValid ? helperText : helperTextInvalid}
             </HelperTextItem>

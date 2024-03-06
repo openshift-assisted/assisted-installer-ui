@@ -93,7 +93,10 @@ const SecurityFields = ({
         {errorMsg && (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem variant={touched && errorMsg ? 'error' : 'default'}>
+              <HelperTextItem
+                variant={touched && errorMsg ? 'error' : 'default'}
+                id={errorMsg ? `${fieldId}-helper-error` : `${fieldId}-helper}`}
+              >
                 {errorMsg ? errorMsg : ''}
               </HelperTextItem>
             </HelperText>
