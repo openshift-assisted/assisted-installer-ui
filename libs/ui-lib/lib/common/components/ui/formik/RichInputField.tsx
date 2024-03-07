@@ -87,6 +87,8 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
       validate,
       idPostfix,
       richValidationMessages,
+      noDefaultOnChange,
+      onChange,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
@@ -118,7 +120,15 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               id={fieldId}
               isRequired={isRequired}
               aria-describedby={`${fieldId}-helper`}
+              onChange={(event) => {
+                !popoverOpen && setPopoverOpen(true);
+                !noDefaultOnChange && field.onChange(event);
+                onChange && onChange(event);
+              }}
               className="rich-input__text"
+              onBlur={() => {
+                setPopoverOpen(false);
+              }}
             />
           </InputGroupItem>
           <InputGroupItem>
@@ -135,6 +145,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                   richValidationMessages={richValidationMessages as Record<string, string>}
                 />
               }
+              withFocusTrap={false}
             >
               <Button variant="plain" aria-label="Validation">
                 {!isValid ? (
