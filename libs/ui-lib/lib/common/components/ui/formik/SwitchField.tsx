@@ -64,7 +64,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
             <HelperTextItem
               icon={<ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
-              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper}`}
+              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
             >
               {errorMessage ? errorMessage : hText}
             </HelperTextItem>

@@ -119,7 +119,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
             <HelperTextItem
               icon={errorMessage ? <ExclamationCircleIcon /> : null}
               variant={errorMessage ? 'error' : 'default'}
-              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper}`}
+              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
             >
               {errorMessage ? errorMessage : machineNetworkHelptext}
             </HelperTextItem>

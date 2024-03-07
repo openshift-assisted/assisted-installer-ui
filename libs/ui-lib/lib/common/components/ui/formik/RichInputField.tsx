@@ -153,7 +153,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
             <HelperText>
               <HelperTextItem
                 variant={isValid ? 'default' : 'error'}
-                id={!isValid ? `${fieldId}-helper-error` : `${fieldId}-helper}`}
+                id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
               >
                 {helperText}
               </HelperTextItem>
