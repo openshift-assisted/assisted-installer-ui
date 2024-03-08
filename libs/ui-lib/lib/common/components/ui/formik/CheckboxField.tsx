@@ -44,7 +44,11 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
       {errorMessage && (
         <FormHelperText>
           <HelperText>
-            <HelperTextItem icon={<ExclamationCircleIcon />} variant="error">
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant="error"
+              id={`${fieldId}-helper-error`}
+            >
               {errorMessage}
             </HelperTextItem>
           </HelperText>
