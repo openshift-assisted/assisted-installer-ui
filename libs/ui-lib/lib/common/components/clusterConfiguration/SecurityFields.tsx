@@ -1,12 +1,6 @@
 import * as React from 'react';
 import { useFormikContext } from 'formik';
-import {
-  Checkbox,
-  FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-} from '@patternfly/react-core';
+import { Checkbox, FormGroup, HelperText, HelperTextItem } from '@patternfly/react-core';
 
 import { RenderIf } from '../ui/RenderIf';
 import { getFieldId, TextAreaField, trimSshPublicKey, ExternalLink } from '../ui';
@@ -46,10 +40,8 @@ const SecurityFields = ({
   //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
   const defaultShareSshKey = !!imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey);
   const [shareSshKey, setShareSshKey] = React.useState(defaultShareSshKey);
-  const { values, setFieldValue, errors, touched } =
+  const { values, setFieldValue } =
     useFormikContext<Pick<NetworkConfigurationValues, 'sshPublicKey'>>();
-
-  const errorMsg = errors.sshPublicKey;
 
   const handleSshKeyBlur = () => {
     if (values.sshPublicKey) {
@@ -90,18 +82,6 @@ const SecurityFields = ({
             isDisabled={isDisabled}
           />
         </RenderIf>
-        {errorMsg && (
-          <FormHelperText>
-            <HelperText>
-              <HelperTextItem
-                variant={touched && errorMsg ? 'error' : 'default'}
-                id={errorMsg ? `${fieldId}-helper-error` : `${fieldId}-helper`}
-              >
-                {errorMsg ? errorMsg : ''}
-              </HelperTextItem>
-            </HelperText>
-          </FormHelperText>
-        )}
       </FormGroup>
     </>
   );
