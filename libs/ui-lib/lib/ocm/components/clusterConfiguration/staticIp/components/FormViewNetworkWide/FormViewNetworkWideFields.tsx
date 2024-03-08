@@ -76,13 +76,14 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
     const cidr = getMachineNetworkCidr(value);
     return getHumanizedSubnetRange(getAddressObject(cidr, protocolVersion));
   }, [value, protocolVersion, errorMessage]);
+  const fieldId = getFieldId(`${fieldName}`, 'input');
   return (
     <FormGroup
       labelIcon={
         <PopoverIcon noVerticalAlign bodyContent="The range of IP addresses of the hosts." />
       }
       label="Machine network"
-      fieldId={getFieldId(`${fieldName}`, 'input')}
+      fieldId={fieldId}
       isRequired
       className="machine-network"
     >
@@ -118,6 +119,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
             <HelperTextItem
               icon={errorMessage ? <ExclamationCircleIcon /> : null}
               variant={errorMessage ? 'error' : 'default'}
+              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
             >
               {errorMessage ? errorMessage : machineNetworkHelptext}
             </HelperTextItem>
