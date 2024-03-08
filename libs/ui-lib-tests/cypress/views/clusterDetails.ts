@@ -32,10 +32,10 @@ export const clusterDetailsPage = {
   getPullSecretFieldHelper: () => {
     return cy.get(Cypress.env('pullSecretFieldHelperId'));
   },
-  inputPullSecret: () => {
+  inputPullSecret: (pullSecretValue = pullSecret) => {
     clusterDetailsPage.getPullSecret().clear();
-    cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecret);
-    clusterDetailsPage.getPullSecret().should('contain.text', pullSecret);
+    cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecretValue);
+    clusterDetailsPage.getPullSecret().should('contain.text', pullSecretValue);
   },
   checkAiTechSupportLevel: () => {
     cy.get(Cypress.env('assistedInstallerSupportLevel'))
@@ -125,5 +125,17 @@ export const clusterDetailsPage = {
   },
   getExternalPlatformIntegrationStaticField: () => {
     return cy.get('#form-static-platform-field');
+  },
+  clickClusterDetailsBody: () => {
+    cy.get('.pf-v5-l-grid').click();
+  },
+  validateInputDnsDomainFieldHelper: (msg) => {
+    cy.get(Cypress.env('baseDnsDomainFieldHelperErrorId')).should('contain', msg);
+  },
+  clearPullSecret: () => {
+    cy.get(Cypress.env('pullSecretFieldId')).clear().blur();
+  },
+  validateInputPullSecretFieldHelper: (msg) => {
+    cy.get(Cypress.env('pullSecretFieldHelperErrorId')).should('contain', msg);
   },
 };
