@@ -23,3 +23,5 @@ Cypress.env(
   'staticIpNetworkConfigFieldId',
   '#form-radio-hostsNetworkConfigurationType-static-field',
 );
+Cypress.env('baseDnsDomainFieldHelperErrorId', '#form-input-baseDnsDomain-field-helper-error');
+Cypress.env('pullSecretFieldHelperErrorId', '#form-input-pullSecret-field-helper-error');
