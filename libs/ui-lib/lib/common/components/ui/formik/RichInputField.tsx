@@ -166,7 +166,12 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
         {helperText && (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem variant={isValid ? 'default' : 'error'}>{helperText}</HelperTextItem>
+              <HelperTextItem
+                variant={isValid ? 'default' : 'error'}
+                id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
+              >
+                {helperText}
+              </HelperTextItem>
             </HelperText>
           </FormHelperText>
         )}
