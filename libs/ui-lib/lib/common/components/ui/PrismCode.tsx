@@ -49,7 +49,7 @@ const PrismCode: React.FC<PrismCodeProps> = ({
             onCopy={(e) => clipboardCopyFunc(e, code)}
             style={{ float: 'right', background: 'inherit' }}
           >
-            {}
+            {''}
           </ClipboardCopy>
         )}
         {tokens.map((line, i) => (

@@ -20,7 +20,7 @@ export type DownloadISOProps = {
   hasDHCP?: boolean;
   isSNO?: boolean;
   fileName?: string;
-  downloadUrl?: string;
+  downloadUrl: string;
   onClose: () => void;
   onReset?: () => void;
   docVersion?: string;
