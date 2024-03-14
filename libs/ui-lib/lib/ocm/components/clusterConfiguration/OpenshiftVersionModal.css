@@ -1,0 +1,5 @@
+#available-openshift-versions-modal {
+  height: 54vh;
+  overflow: auto;
+  display: flex;
+}

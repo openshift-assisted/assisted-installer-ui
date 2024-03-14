@@ -10,6 +10,7 @@ import ClusterLoading from './ClusterLoading';
 import { ClusterUiError } from './ClusterPageErrors';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
+import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 
 const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
   pageTitleSection,
@@ -17,19 +18,21 @@ const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
-        <ClusterDefaultConfigurationProvider
-          loadingUI={<ClusterLoading />}
-          errorUI={<ClusterUiError />}
-        >
-          <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-            {pageTitleSection}
-            <PageSection variant={PageSectionVariants.light} isFilled>
-              <ClusterWizardContextProvider>
-                <NewClusterWizard />
-              </ClusterWizardContextProvider>
-            </PageSection>
-          </NewFeatureSupportLevelProvider>
-        </ClusterDefaultConfigurationProvider>
+        <ModalDialogsContextProvider>
+          <ClusterDefaultConfigurationProvider
+            loadingUI={<ClusterLoading />}
+            errorUI={<ClusterUiError />}
+          >
+            <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
+              {pageTitleSection}
+              <PageSection variant={PageSectionVariants.light} isFilled>
+                <ClusterWizardContextProvider>
+                  <NewClusterWizard />
+                </ClusterWizardContextProvider>
+              </PageSection>
+            </NewFeatureSupportLevelProvider>
+          </ClusterDefaultConfigurationProvider>
+        </ModalDialogsContextProvider>
       </SentryErrorMonitorContextProvider>
     </AlertsContextProvider>
   );

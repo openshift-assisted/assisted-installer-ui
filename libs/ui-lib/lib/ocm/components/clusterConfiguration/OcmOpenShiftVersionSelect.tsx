@@ -3,7 +3,6 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exc
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { TFunction } from 'i18next';
-import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   OPENSHIFT_LIFE_CYCLE_DATES_LINK,
@@ -11,6 +10,8 @@ import {
   OpenshiftVersionOptionType,
 } from '../../../common';
 import { isInOcm } from '../../../common/api';
+import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
+import { OpenShiftVersionModal } from './OpenShiftVersionModal';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -43,7 +44,8 @@ const getOpenshiftVersionHelperText = (
   if (selectedVersion.supportLevel !== 'production') {
     return (
       <>
-        <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />; &nbsp;
+        <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />
+        &nbsp;
         {t('ai:Please note that this version is not production-ready.')}&nbsp;
         <OpenShiftLifeCycleDatesLink />
       </>
@@ -57,6 +59,8 @@ type OcmOpenShiftVersionSelectProps = {
 };
 const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps) => {
   const { t } = useTranslation();
+  const [selectedValue, setSelectedValue] = React.useState<OpenshiftVersionOptionType>(); // Estado para almacenar el valor seleccionado
+
   const selectOptions = React.useMemo(
     () =>
       versions
@@ -72,15 +76,46 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
         })),
     [versions, t],
   );
+  const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
+
+  const showOpenshiftVersionModal = () => {
+    setIsOpenshiftVersionModalOpen(true);
+  };
+
+  const setValueSelected = (selectedValue: OpenshiftVersionOptionType) => {
+    setSelectedValue(selectedValue);
+  };
+
+  const updatedSelectOptions = React.useMemo(() => {
+    if (selectedValue && !selectOptions.find((option) => option.value === selectedValue.value)) {
+      return [
+        ...selectOptions,
+        {
+          label: selectedValue.label,
+          value: selectedValue.value,
+        },
+      ];
+    }
+    return selectOptions;
+  }, [selectOptions, selectedValue]);
 
   return (
-    <OpenShiftVersionDropdown
-      name="openshiftVersion"
-      items={selectOptions}
-      versions={versions}
-      getHelperText={getOpenshiftVersionHelperText}
-      showReleasesLink={isInOcm}
-    />
+    <>
+      <OpenShiftVersionDropdown
+        name="openshiftVersion"
+        items={updatedSelectOptions}
+        versions={versions}
+        getHelperText={getOpenshiftVersionHelperText}
+        showReleasesLink={isInOcm}
+        showOpenshiftVersionModal={showOpenshiftVersionModal}
+        valueSelected={selectedValue}
+      />
+      <OpenShiftVersionModal
+        isOpen={isOpenshiftVersionModalOpen}
+        setOpenhiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
+        setValueSelected={setValueSelected}
+      />
+    </>
   );
 };
 

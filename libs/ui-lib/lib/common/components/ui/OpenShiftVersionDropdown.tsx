@@ -1,9 +1,17 @@
+/* eslint-disable no-console */
 import React from 'react';
-import { HelperText, FormGroup, FormHelperText, HelperTextItem } from '@patternfly/react-core';
+import {
+  HelperText,
+  FormGroup,
+  FormHelperText,
+  HelperTextItem,
+  Button,
+} from '@patternfly/react-core';
 import {
   DropdownItem,
   DropdownToggle,
   Dropdown,
+  DropdownGroup,
   DropdownSeparator,
 } from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
@@ -31,6 +39,8 @@ type OpenShiftVersionDropdownProps = {
   versions: OpenshiftVersionOptionType[];
   getHelperText: HelperTextType;
   showReleasesLink: boolean;
+  showOpenshiftVersionModal: () => void;
+  valueSelected?: OpenshiftVersionOptionType;
 };
 
 export const OpenShiftVersionDropdown = ({
@@ -39,6 +49,8 @@ export const OpenShiftVersionDropdown = ({
   versions,
   getHelperText,
   showReleasesLink,
+  showOpenshiftVersionModal,
+  valueSelected,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -47,15 +59,23 @@ export const OpenShiftVersionDropdown = ({
   const isDisabled = versions.length === 0;
 
   const { defaultLabel, defaultValue } = React.useMemo(() => {
-    const defaultVersion = versions.find((item) => item.default);
+    const defaultVersion = valueSelected ? valueSelected : versions.find((item) => item.default);
     return {
       defaultLabel: defaultVersion?.label || '',
       defaultValue: defaultVersion?.value || '',
     };
-  }, [versions]);
+  }, [valueSelected, versions]);
 
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const [current, setCurrent] = React.useState<string>(defaultLabel);
+
+  React.useEffect(() => {
+    if (defaultLabel !== current) {
+      setCurrent(defaultLabel);
+      setValue(defaultValue);
+      setHelperText(getHelperText(versions, defaultValue, t));
+    }
+  }, [current, defaultLabel, defaultValue, getHelperText, setValue, t, versions]);
 
   const versionsY = Array.from(new Set(items.map((val) => val.value.match(/^\d+\.(\d+)/)?.[1])));
   const lastVersion = versionsY.slice(-1)[0];
@@ -75,19 +95,34 @@ export const OpenShiftVersionDropdown = ({
     if (y !== lastVersion) {
       items.push(<DropdownSeparator key={`separator-${y || ''}`} />);
     }
-
     return items;
   });
+
+  const dropdownGroup = [
+    <DropdownGroup label="Latest releases" key="latest-releases">
+      {dropdownItems}
+    </DropdownGroup>,
+    <DropdownGroup key="all-available-versions">
+      <DropdownItem key="all-versions" id="all-versions">
+        <Button variant="link" isInline onClick={() => showOpenshiftVersionModal()}>
+          Show all available versions
+        </Button>
+      </DropdownItem>
+    </DropdownGroup>,
+  ];
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const newLabel = event?.currentTarget.innerText;
       const newValue = event?.currentTarget.id;
-      if (newLabel && newValue) {
-        setCurrent(newLabel);
-        setValue(newValue);
-        setHelperText(getHelperText(versions, newValue, t));
-        setOpen(false);
+      // eslint-disable-next-line no-console
+      if (newValue !== 'all-versions') {
+        if (newLabel && newValue) {
+          setCurrent(newLabel);
+          setValue(newValue);
+          setHelperText(getHelperText(versions, newValue, t));
+          setOpen(false);
+        }
       }
     },
     [setCurrent, setHelperText, setOpen, getHelperText, t, versions, setValue],
@@ -120,7 +155,7 @@ export const OpenShiftVersionDropdown = ({
         name={name}
         id={fieldId}
         onSelect={onSelect}
-        dropdownItems={dropdownItems}
+        dropdownItems={dropdownGroup}
         toggle={toggle}
         isOpen={isOpen}
         className="pf-v5-u-w-100"
