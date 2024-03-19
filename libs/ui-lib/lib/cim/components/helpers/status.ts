@@ -131,7 +131,7 @@ export const getAgentStatusKey = (agent: AgentK8sResource, excludeDiscovered = f
     (c) => c.type === 'SpecSynced' && c.status === 'False',
   );
   if (specSyncErr) {
-    return 'specSyncError';
+    return 'specSyncErr';
   } else {
     if (!excludeDiscovered && !agent.spec.approved) {
       return 'discovered';
@@ -151,7 +151,7 @@ export const getAgentStatus = (
   let validationsInfo: ValidationsInfo = {};
 
   const status = agentStatuses[key];
-  if (key !== 'specSyncError') {
+  if (key !== 'specSyncErr') {
     validationsInfo = agent.status?.validationsInfo || {};
   }
 
