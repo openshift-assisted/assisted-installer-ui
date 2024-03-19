@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import {
   HelperText,
@@ -67,15 +66,11 @@ export const OpenShiftVersionDropdown = ({
   }, [valueSelected, versions]);
 
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
-  const [current, setCurrent] = React.useState<string>(defaultLabel);
+  const [current, setCurrent] = React.useState<string>();
 
   React.useEffect(() => {
-    if (defaultLabel !== current) {
-      setCurrent(defaultLabel);
-      setValue(defaultValue);
-      setHelperText(getHelperText(versions, defaultValue, t));
-    }
-  }, [current, defaultLabel, defaultValue, getHelperText, setValue, t, versions]);
+    setCurrent(defaultLabel);
+  }, [defaultLabel]);
 
   const versionsY = Array.from(new Set(items.map((val) => val.value.match(/^\d+\.(\d+)/)?.[1])));
   const lastVersion = versionsY.slice(-1)[0];
@@ -115,7 +110,6 @@ export const OpenShiftVersionDropdown = ({
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const newLabel = event?.currentTarget.innerText;
       const newValue = event?.currentTarget.id;
-      // eslint-disable-next-line no-console
       if (newValue !== 'all-versions') {
         if (newLabel && newValue) {
           setCurrent(newLabel);
@@ -125,7 +119,7 @@ export const OpenShiftVersionDropdown = ({
         }
       }
     },
-    [setCurrent, setHelperText, setOpen, getHelperText, t, versions, setValue],
+    [setValue, getHelperText, versions, t],
   );
 
   const toggle = React.useMemo(

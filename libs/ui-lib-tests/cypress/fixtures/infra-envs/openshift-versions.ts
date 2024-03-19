@@ -11,11 +11,6 @@ export const s390x = 's390x';
 export const ppc64le = 'ppc64le';
 
 const versions: Record<string, Version> = {
-  '4.8': {
-    cpu_architectures: [x86],
-    display_name: '4.8.57',
-    support_level: 'production',
-  },
   '4.9': {
     cpu_architectures: [x86],
     display_name: '4.9.59',
@@ -23,39 +18,24 @@ const versions: Record<string, Version> = {
   },
   '4.10': {
     cpu_architectures: [x86, arm64],
-    display_name: '4.10.57',
-    support_level: 'production',
-  },
-  '4.11.13-multi': {
-    cpu_architectures: [x86, arm64],
-    display_name: '4.11.13-multi',
+    display_name: '4.10.67',
     support_level: 'production',
   },
   '4.11': {
     cpu_architectures: [x86, arm64],
     default: true,
-    display_name: '4.11.38',
+    display_name: '4.11.58',
     support_level: 'production',
-  },
-  '4.12': {
-    cpu_architectures: [x86, arm64],
-    display_name: '4.12.14',
-    support_level: 'production',
-  },
-  '4.13': {
-    cpu_architectures: [x86, arm64],
-    display_name: '4.13.0-rc.6',
-    support_level: 'beta',
   },
   '4.14': {
     cpu_architectures: [x86, arm64, s390x, ppc64le],
-    display_name: '4.14.0-ec.3',
-    support_level: 'beta',
+    display_name: '4.14.16',
+    support_level: 'production',
   },
   '4.15': {
     cpu_architectures: [x86, arm64, s390x, ppc64le],
-    display_name: 'OpenShift 4.15.0-rc.3',
-    support_level: 'beta',
+    display_name: 'OpenShift 4.15.2',
+    support_level: 'production',
   },
 };
 
