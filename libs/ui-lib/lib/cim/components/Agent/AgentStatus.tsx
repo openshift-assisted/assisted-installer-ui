@@ -55,7 +55,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
       autoCSR
       additionalPopoverContent={
-        status.status.key === 'specSyncErr' ? (
+        status.status.key === 'spec-sync-err' ? (
           <StackItem>
             <SpecSyncErrAlert agent={agent} />
           </StackItem>
