@@ -18,7 +18,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 export type DownloadISOProps = {
   isSNO?: boolean;
   fileName?: string;
-  downloadUrl?: string;
+  downloadUrl: string;
   onClose: () => void;
   onReset?: () => void;
 };

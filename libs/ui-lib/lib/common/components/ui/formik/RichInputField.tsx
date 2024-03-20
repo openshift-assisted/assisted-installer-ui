@@ -87,12 +87,14 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
       validate,
       idPostfix,
       richValidationMessages,
+      noDefaultOnChange,
+      onChange,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
-    const [field, { error, value, touched }] = useField<string>({
+    const [field, { error, value, touched }, { setTouched }] = useField<string>({
       name: props.name,
       validate,
     });
@@ -118,7 +120,19 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               id={fieldId}
               isRequired={isRequired}
               aria-describedby={`${fieldId}-helper`}
+              onChange={(event, val) => {
+                !popoverOpen && setPopoverOpen(true);
+                !noDefaultOnChange && field.onChange(event);
+                onChange && onChange(event);
+                if (!touched && val?.length) {
+                  setTouched(true);
+                }
+              }}
               className="rich-input__text"
+              onBlur={() => {
+                setPopoverOpen(false);
+                setTouched(true);
+              }}
             />
           </InputGroupItem>
           <InputGroupItem>
@@ -135,6 +149,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                   richValidationMessages={richValidationMessages as Record<string, string>}
                 />
               }
+              withFocusTrap={false}
             >
               <Button variant="plain" aria-label="Validation">
                 {!isValid ? (
@@ -151,7 +166,12 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
         {helperText && (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem variant={isValid ? 'default' : 'error'}>{helperText}</HelperTextItem>
+              <HelperTextItem
+                variant={isValid ? 'default' : 'error'}
+                id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
+              >
+                {helperText}
+              </HelperTextItem>
             </HelperText>
           </FormHelperText>
         )}
