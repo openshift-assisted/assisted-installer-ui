@@ -55,7 +55,7 @@ export const agentStatus = (t: TFunction): HostStatus<string> => ({
   },
   ...bmhStatus(t),
   specSyncErr: {
-    key: 'spec-sync-err',
+    key: 'specSyncErr',
     title: t('ai:Sync error'),
     icon: <ExclamationCircleIcon color={dangerColor.value} />,
     category: 'Discovery related',
