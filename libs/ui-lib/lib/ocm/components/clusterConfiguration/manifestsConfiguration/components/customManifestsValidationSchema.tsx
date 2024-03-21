@@ -46,7 +46,9 @@ export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>
           .required('Required')
           .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
           .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
-        otherwise: Yup.string().notRequired(), // Validation is not required if filename contains 'patch'
+        otherwise: Yup.string()
+          .required('Required')
+          .test('not-big-file', getMaxFileSizeMessage, validateFileSize), // Validation of file content is not required if filename contains 'patch'
       }),
     }),
   ),
