@@ -363,6 +363,10 @@ export interface Cluster {
    */
   tags?: string;
   'last-installation-preparation'?: LastInstallationPreparation;
+  /**
+   * Indication if organization soft timeouts is enabled for the cluster.
+   */
+  orgSoftTimeoutsEnabled?: boolean;
 }
 export interface ClusterCreateParams {
   /**
@@ -581,8 +585,7 @@ export interface ClusterProgressInfo {
   finalizingStagePercentage?: number;
   finalizingStage?: FinalizingStage;
   finalizingStageStartedAt?: string; // date-time
-  nodeUpdaterStartedAt?: string; // date-time
-  nodeUpdaterFinishedAt?: string; // date-time
+  finalizingStageTimedOut?: boolean;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -987,11 +990,10 @@ export type FeatureSupportLevelId =
  * Cluster finalizing stage managed by controller
  */
 export type FinalizingStage =
-  | 'Waiting for finalizing'
   | 'Waiting for cluster operators'
   | 'Adding router ca'
-  | 'Waiting for olm operators'
-  | 'Applying manifests'
+  | 'Applying olm manifests'
+  | 'Waiting for olm operators csv initialization'
   | 'Waiting for olm operators csv'
   | 'Done';
 export type FreeAddressesList = string /* ipv4 */[];
@@ -1140,6 +1142,10 @@ export interface Host {
    * The last time the host's agent communicated with the service.
    */
   checkedInAt?: string; // date-time
+  /**
+   * Indicate that connection to assisted service was timed out when soft timeout is enabled.
+   */
+  connectionTimedOut?: boolean;
   /**
    * The last time the host's agent tried to register in the service.
    */
@@ -1344,6 +1350,10 @@ export interface HostRegistrationResponse {
    */
   checkedInAt?: string; // date-time
   /**
+   * Indicate that connection to assisted service was timed out when soft timeout is enabled.
+   */
+  connectionTimedOut?: boolean;
+  /**
    * The last time the host's agent tried to register in the service.
    */
   registeredAt?: string; // date-time
@@ -1467,6 +1477,10 @@ export interface HostUpdateParams {
    */
   ignitionEndpointToken?: string;
   /**
+   * JSON-formatted string of additional HTTP headers when fetching the ignition.
+   */
+  ignitionEndpointHttpHeaders?: IgnitionEndpointHttpHeadersParams[];
+  /**
    * Labels to be added to the corresponding node.
    */
   nodeLabels?: NodeLabelParams[];
@@ -1525,6 +1539,16 @@ export interface IgnitionEndpoint {
    * base64 encoded CA certficate to be used when contacting the URL via https.
    */
   caCertificate?: string;
+}
+export interface IgnitionEndpointHttpHeadersParams {
+  /**
+   * The key for the http header's key-value pair.
+   */
+  key: string;
+  /**
+   * The value for the http header's key-value pair.
+   */
+  value: string;
 }
 export interface IgnoredValidations {
   /**
@@ -2111,7 +2135,7 @@ export interface OpenshiftVersion {
   /**
    * Level of support of the version.
    */
-  supportLevel: 'beta' | 'production' | 'maintenance';
+  supportLevel: 'beta' | 'production' | 'maintenance' | 'end-of-life';
   /**
    * Indication that the version is the recommended one.
    */
@@ -2292,6 +2316,10 @@ export interface RebootForReclaimRequest {
    */
   hostFsMountDir: string;
 }
+/**
+ * Release channel.
+ */
+export type ReleaseChannel = 'candidate' | 'fast' | 'stable' | 'eus';
 export interface ReleaseImage {
   /**
    * Version of the OpenShift cluster.
@@ -2320,9 +2348,20 @@ export interface ReleaseImage {
   /**
    * Level of support of the version.
    */
-  supportLevel?: 'beta' | 'production' | 'maintenance';
+  supportLevel?: 'beta' | 'production' | 'maintenance' | 'end-of-life';
 }
 export type ReleaseImages = ReleaseImage[];
+export interface ReleaseSource {
+  /**
+   * Version of the OpenShift cluster.
+   * example:
+   * 4.14
+   */
+  openshiftVersion: string;
+  multiCpuArchitectures: ('x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x')[];
+  upgradeChannels: UpgradeChannel[];
+}
+export type ReleaseSources = ReleaseSource[];
 export interface Route {
   /**
    * Interface to which packets for this route will be sent
@@ -2497,6 +2536,13 @@ export interface UpgradeAgentResponse {
  * Agent upgrade result.
  */
 export type UpgradeAgentResult = 'success' | 'failure';
+export interface UpgradeChannel {
+  /**
+   * The CPU architecture of the image.
+   */
+  cpuArchitecture: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  channels: ReleaseChannel[];
+}
 export interface Usage {
   /**
    * Unique idenftifier of the feature
