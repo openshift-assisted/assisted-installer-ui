@@ -7,7 +7,8 @@ import {
   validateFileType,
   INCORRECT_TYPE_FILE_MESSAGE,
 } from '../../../../../common/utils';
-const INCORRECT_FILENAME = 'Must have a yaml, yml or json extension and can not contain /.';
+const INCORRECT_FILENAME =
+  'Must have a yaml, yml, json, yaml.patch or yml.patch extension and can not contain /.';
 
 const UNIQUE_FOLDER_FILENAME = 'Ensure unique file names to avoid conflicts and errors.';
 
@@ -39,10 +40,16 @@ export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>
           return validateFileName(value);
         })
         .concat(getUniqueValidationSchema),
-      manifestYaml: Yup.string()
-        .required('Required')
-        .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
-        .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
+      manifestYaml: Yup.string().when('filename', {
+        is: (filename: string) => !filename.includes('patch'),
+        then: Yup.string()
+          .required('Required')
+          .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
+          .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
+        otherwise: Yup.string()
+          .required('Required')
+          .test('not-big-file', getMaxFileSizeMessage, validateFileSize), // Validation of file content is not required if filename contains 'patch'
+      }),
     }),
   ),
 });

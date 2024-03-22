@@ -88,7 +88,10 @@ describe(`Assisted Installer Custom manifests step`, () => {
         .attachFile(`custom-manifests/files/img.png`);
       CustomManifestsForm.expandedManifest(0)
         .fileUploadError()
-        .should('contain.text', 'File type is not supported. File type must be yaml, yml or json.');
+        .should(
+          'contain.text',
+          'File type is not supported. File type must be yaml, yml ,json , yaml.patch. or yml.patch.',
+        );
       commonActions.verifyNextIsDisabled();
     });
 
@@ -97,7 +100,10 @@ describe(`Assisted Installer Custom manifests step`, () => {
       CustomManifestsForm.expandedManifest(0).fileName().clear().type('test.txt');
       CustomManifestsForm.expandedManifest(0)
         .fileNameError()
-        .should('contain.text', 'Must have a yaml, yml or json extension and can not contain /.');
+        .should(
+          'contain.text',
+          'Must have a yaml, yml, json, yaml.patch or yml.patch extension and can not contain /.',
+        );
 
       CustomManifestsForm.validationAlert().should(
         'contain.text',
