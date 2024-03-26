@@ -132,25 +132,27 @@ export const getClusterDetailsValidationSchema = ({
               : false;
           }
         },
-        then: Yup.bool().oneOf(
-          [true],
-          t('ai:Confirm the Single Node OpenShift disclaimer to continue.'),
-        ),
+        then: () =>
+          Yup.bool().oneOf(
+            [true],
+            t('ai:Confirm the Single Node OpenShift disclaimer to continue.'),
+          ),
       }),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode) => {
           return diskEncryptionMode === 'tang';
         },
-        then: Yup.array().of(
-          Yup.object().shape({
-            url: Yup.string()
-              .url(
-                t('ai:Tang Server URL must be a valid URL starting with "http://" or "https://"'),
-              )
-              .required(t('ai:Required.')),
-            thumbprint: Yup.string().required(t('ai:Required.')),
-          }),
-        ),
+        then: () =>
+          Yup.array().of(
+            Yup.object().shape({
+              url: Yup.string()
+                .url(
+                  t('ai:Tang Server URL must be a valid URL starting with "http://" or "https://"'),
+                )
+                .required(t('ai:Required.')),
+              thumbprint: Yup.string().required(t('ai:Required.')),
+            }),
+          ),
       }),
     });
   });
