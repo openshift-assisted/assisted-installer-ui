@@ -56,7 +56,7 @@ export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
 const getValidationSchema = (allowEmpty: boolean) =>
-  Yup.lazy<DiscoveryImageFormValues>((values) =>
+  Yup.lazy<DiscoveryImageFormValues>((values: DiscoveryImageFormValues) =>
     Yup.object<DiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema,
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', allowEmpty }),
