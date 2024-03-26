@@ -73,7 +73,7 @@ export const getDuplicates = (list: string[]): string[] => {
 };
 
 export const getRichTextValidation =
-  <T extends object>(schema: Yup.ObjectSchema<T> | Yup.Lazy) =>
+  <T extends object>(schema: Yup.ObjectSchema<T> | Yup.Lazy<T>) =>
   async (values: T): Promise<FieldErrors | undefined> => {
     try {
       await schema.validate(values, {

@@ -66,6 +66,8 @@ const NetworkConfigurationForm: React.FC<{
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
 
+  console.log({ errors, touched, isSubmitting, isValid, setFieldValue, values });
+
   // DHCP allocation is currently not supported for Nutanix hosts
   // https://issues.redhat.com/browse/MGMT-12382
   const isHostsPlatformTypeNutanix = React.useMemo(
@@ -247,7 +249,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={memoizedValidationSchema}
+      // validationSchema={memoizedValidationSchema}
       onSubmit={onSubmit}
       validateOnMount
     >

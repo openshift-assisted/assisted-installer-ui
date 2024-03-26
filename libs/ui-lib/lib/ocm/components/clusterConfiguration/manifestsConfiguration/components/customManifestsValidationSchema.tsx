@@ -30,7 +30,7 @@ export const getUniqueValidationSchema = Yup.string().test(
 
 export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
   manifests: Yup.array<CustomManifestValues>().of(
-    Yup.object().shape({
+    Yup.object({
       folder: Yup.mixed().required('Required'),
       filename: Yup.string()
         .required('Required')
