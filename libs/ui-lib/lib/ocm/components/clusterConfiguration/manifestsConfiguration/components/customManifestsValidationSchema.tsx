@@ -42,13 +42,15 @@ export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>
         .concat(getUniqueValidationSchema),
       manifestYaml: Yup.string().when('filename', {
         is: (filename: string) => !filename.includes('patch'),
-        then: Yup.string()
-          .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
-          .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
-        otherwise: Yup.string()
-          .required('Required')
-          .test('not-big-file', getMaxFileSizeMessage, validateFileSize), // Validation of file content is not required if filename contains 'patch'
+        then: () =>
+          Yup.string()
+            .required('Required')
+            .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
+            .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
+        otherwise: () =>
+          Yup.string()
+            .required('Required')
+            .test('not-big-file', getMaxFileSizeMessage, validateFileSize), // Validation of file content is not required if filename contains 'patch'
       }),
     }),
   ),

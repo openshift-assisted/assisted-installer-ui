@@ -108,13 +108,14 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
       useVlan: Yup.boolean(),
       vlanId: Yup.mixed().when('useVlan', {
         is: true,
-        then: Yup.number()
-          .required(MUST_BE_A_NUMBER)
-          .min(1, `Must be more than or equal to 1`)
-          .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
-          .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
-          .nullable()
-          .transform(transformNumber) as Yup.NumberSchema,
+        then: () =>
+          Yup.number()
+            .required(MUST_BE_A_NUMBER)
+            .min(1, `Must be more than or equal to 1`)
+            .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
+            .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
+            .nullable()
+            .transform(transformNumber) as Yup.NumberSchema,
       }),
       protocolType: Yup.string(),
       dns: getDNSValidationSchema(values.protocolType),
