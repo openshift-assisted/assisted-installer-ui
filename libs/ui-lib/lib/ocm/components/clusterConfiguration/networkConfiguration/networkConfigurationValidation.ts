@@ -66,7 +66,7 @@ export const getNetworkConfigurationValidationSchema = (
   initialValues: NetworkConfigurationValues,
   hostSubnets: HostSubnets,
 ) =>
-  Yup.lazy<NetworkConfigurationValues>((values) =>
+  Yup.lazy<NetworkConfigurationValues>((values: NetworkConfigurationValues) =>
     Yup.object<NetworkConfigurationValues>().shape({
       apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema<IngressVip>(

@@ -249,7 +249,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={memoizedValidationSchema}
+      validationSchema={memoizedValidationSchema}
       onSubmit={onSubmit}
       validateOnMount
     >

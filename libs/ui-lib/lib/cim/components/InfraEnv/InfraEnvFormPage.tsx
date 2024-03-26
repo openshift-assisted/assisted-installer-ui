@@ -66,7 +66,7 @@ export type EnvironmentStepFormValues = {
 };
 
 const validationSchema = (usedNames: string[], t: TFunction) =>
-  Yup.lazy<EnvironmentStepFormValues>((values) =>
+  Yup.lazy<EnvironmentStepFormValues>((values: EnvironmentStepFormValues) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: richNameValidationSchema(t, usedNames),
       location: locationValidationSchema(t).required(t('ai:Location is a required field.')),
