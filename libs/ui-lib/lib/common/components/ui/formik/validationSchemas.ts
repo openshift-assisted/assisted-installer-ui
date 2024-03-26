@@ -193,7 +193,7 @@ export const vipRangeValidationSchema = (
   Yup.string().test(
     'vip-validation',
     'IP Address is outside of selected subnet',
-    (value: string) => {
+    (value: string, testContext: Yup.TestContext) => {
       if (!value) {
         return true;
       }
@@ -202,7 +202,7 @@ export const vipRangeValidationSchema = (
         const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
         validator.validateSync(value);
       } catch (err) {
-        return this.createError({ message: getErrorMessage(err) });
+        return testContext.createError({ message: getErrorMessage(err) });
       }
 
       const foundHostSubnets = [];
