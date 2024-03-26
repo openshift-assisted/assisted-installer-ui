@@ -98,7 +98,7 @@ export const getClusterDetailsValidationSchema = ({
   t: TFunction;
   newFeatureSupportLevels?: NewFeatureSupportLevelData;
 }) =>
-  Yup.lazy<{ baseDnsDomain: string }>((values) => {
+  Yup.lazy<{ baseDnsDomain: string }>((values: { baseDnsDomain: string }) => {
     const validateName = () =>
       nameValidationSchema(t, usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
     if (pullSecretSet) {
