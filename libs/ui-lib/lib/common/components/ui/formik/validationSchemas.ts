@@ -193,7 +193,7 @@ export const vipRangeValidationSchema = (
   Yup.string().test(
     'vip-validation',
     'IP Address is outside of selected subnet',
-    function (value: string) {
+    (value: string) => {
       if (!value) {
         return true;
       }
@@ -276,7 +276,7 @@ const requiredOnceSet = (initialValue?: string, message?: string) =>
 
 export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingType'], {
   is: 'clusterManaged',
-  then: Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
+  then: () => Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
 });
 
 export const vipValidationSchema = (
@@ -287,13 +287,14 @@ export const vipValidationSchema = (
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (vipDhcpAllocation, managedNetworkingType) =>
       !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
-      .concat(vipRangeValidationSchema(hostSubnets, values, true))
-      .concat(vipUniqueValidationSchema(values, false))
-      .when('hostSubnet', {
-        is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
-        then: Yup.string().required('Required. Please provide an IP address'),
-      }),
+    then: () =>
+      requiredOnceSet(initialValue, 'Required. Please provide an IP address')
+        .concat(vipRangeValidationSchema(hostSubnets, values, true))
+        .concat(vipUniqueValidationSchema(values, false))
+        .when('hostSubnet', {
+          is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
+          then: () => Yup.string().required('Required. Please provide an IP address'),
+        }),
   });
 
 export const vipNoSuffixValidationSchema = (
@@ -304,15 +305,16 @@ export const vipNoSuffixValidationSchema = (
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (vipDhcpAllocation, managedNetworkingType) =>
       !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
-      .concat(ipNoSuffixValidationSchema)
-      .concat(vipRangeValidationSchema(hostSubnets, values, false))
-      .concat(vipBroadcastValidationSchema(values))
-      .concat(vipUniqueValidationSchema(values, true))
-      .when('hostSubnet', {
-        is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
-        then: Yup.string().required('Required. Please provide an IP address'),
-      }),
+    then: () =>
+      requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
+        .concat(ipNoSuffixValidationSchema)
+        .concat(vipRangeValidationSchema(hostSubnets, values, false))
+        .concat(vipBroadcastValidationSchema(values))
+        .concat(vipUniqueValidationSchema(values, true))
+        .when('hostSubnet', {
+          is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
+          then: () => Yup.string().required('Required. Please provide an IP address'),
+        }),
   });
 
 export const vipArrayValidationSchema = <T>(
