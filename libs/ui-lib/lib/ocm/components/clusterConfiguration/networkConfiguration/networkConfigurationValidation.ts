@@ -66,7 +66,7 @@ export const getNetworkConfigurationValidationSchema = (
   initialValues: NetworkConfigurationValues,
   hostSubnets: HostSubnets,
 ) =>
-  Yup.lazy<NetworkConfigurationValues>((values: NetworkConfigurationValues) =>
+  Yup.lazy((values: NetworkConfigurationValues) =>
     Yup.object<NetworkConfigurationValues>().shape({
       apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema<IngressVip>(
@@ -79,28 +79,28 @@ export const getNetworkConfigurationValidationSchema = (
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
           : machineNetworksValidationSchema.when('stackType', {
-              is: IPV4_STACK,
-              then: IPv4ValidationSchema,
-              otherwise:
-                values.machineNetworks &&
-                values.machineNetworks?.length >= 2 &&
-                dualStackValidationSchema('machine networks'),
+              is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+              then: () => IPv4ValidationSchema,
+              otherwise: () =>
+                values.machineNetworks && values.machineNetworks?.length >= 2
+                  ? dualStackValidationSchema('machine networks')
+                  : Yup.array(),
             }),
       clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
-        is: IPV4_STACK,
-        then: IPv4ValidationSchema,
-        otherwise:
-          values.clusterNetworks &&
-          values.clusterNetworks?.length >= 2 &&
-          dualStackValidationSchema('cluster network'),
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        then: () => IPv4ValidationSchema,
+        otherwise: () =>
+          values.clusterNetworks && values.clusterNetworks?.length >= 2
+            ? dualStackValidationSchema('cluster network')
+            : Yup.array(),
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
-        is: IPV4_STACK,
-        then: IPv4ValidationSchema,
-        otherwise:
-          values.serviceNetworks &&
-          values.serviceNetworks?.length >= 2 &&
-          dualStackValidationSchema('service network'),
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        then: () => IPv4ValidationSchema,
+        otherwise: () =>
+          values.serviceNetworks && values.serviceNetworks?.length >= 2
+            ? dualStackValidationSchema('service network')
+            : Yup.array(),
       }),
     }),
   );

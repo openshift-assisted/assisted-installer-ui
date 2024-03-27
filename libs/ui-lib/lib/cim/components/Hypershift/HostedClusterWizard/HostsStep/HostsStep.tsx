@@ -12,7 +12,7 @@ import { TFunction } from 'i18next';
 import { NodePoolK8sResource } from '../../types';
 
 const validationSchema = (clusterName: string, nodePools: NodePoolK8sResource[], t: TFunction) =>
-  Yup.lazy<HostsFormValues>((values: HostsFormValues) =>
+  Yup.lazy((values: HostsFormValues) =>
     Yup.object<HostsFormValues>().shape({
       agentNamespace: Yup.string().required(t('ai:Required field')),
       nodePools: Yup.array().of(

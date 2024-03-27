@@ -52,14 +52,13 @@ export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
   ProxyFieldsType &
   TrustedCertificateFieldsType;
 
-const validationSchema = Yup.lazy<OcmDiscoveryImageFormValues>(
-  (values: OcmDiscoveryImageFormValues) =>
-    Yup.object<OcmDiscoveryImageFormValues>().shape({
-      sshPublicKey: sshPublicKeyListValidationSchema,
-      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }), // share the schema, httpS is currently not supported
-      noProxy: noProxyValidationSchema,
-    }),
+const validationSchema = Yup.lazy((values: OcmDiscoveryImageFormValues) =>
+  Yup.object<OcmDiscoveryImageFormValues>().shape({
+    sshPublicKey: sshPublicKeyListValidationSchema,
+    httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }),
+    httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }), // share the schema, httpS is currently not supported
+    noProxy: noProxyValidationSchema,
+  }),
 );
 
 type OcmDiscoveryImageConfigFormProps = Proxy & {
