@@ -157,11 +157,11 @@ const getValidationSchema = (usedHostnames: string[], origHostname: string, t: T
       Yup.object().shape(
         {
           macAddress: macAddressValidationSchema.when('name', {
-            is: (val) => !!val,
+            is: (name: string) => !!name,
             then: () => macAddressValidationSchema.required(t('ai:MAC has to be specified')),
           }),
           name: Yup.string().when('macAddress', {
-            is: (val) => !!val,
+            is: (name: string) => !!name,
             then: () => Yup.string().required(t('ai:Name has to be specified')),
           }),
         },

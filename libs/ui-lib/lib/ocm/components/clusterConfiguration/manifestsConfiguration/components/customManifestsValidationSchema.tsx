@@ -15,10 +15,10 @@ const UNIQUE_FOLDER_FILENAME = 'Ensure unique file names to avoid conflicts and 
 export const getUniqueValidationSchema = Yup.string().test(
   'unique',
   UNIQUE_FOLDER_FILENAME,
-  function (value: string) {
-    const context = this.options.context as Yup.TestContext & { values?: ManifestFormData };
+  (value, testContext: Yup.TestContext) => {
+    const context = testContext.options.context as Yup.TestContext & { values?: ManifestFormData };
     if (!context || !context.values) {
-      return this.createError({
+      return testContext.createError({
         message: 'Unexpected error: Yup test context should contain form values',
       });
     }
@@ -28,9 +28,9 @@ export const getUniqueValidationSchema = Yup.string().test(
   },
 );
 
-export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>().shape({
+export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>({
   manifests: Yup.array<CustomManifestValues>().of(
-    Yup.object().shape({
+    Yup.object({
       folder: Yup.mixed().required('Required'),
       filename: Yup.string()
         .required('Required')
