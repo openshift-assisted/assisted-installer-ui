@@ -88,7 +88,7 @@ const getDNSValidationSchema = (protocolType: StaticProtocolType) => {
 };
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
-  return Yup.object().shape<IpConfig>({
+  return Yup.object({
     machineNetwork: getMachineNetworkValidationSchema(protocolVersion),
     gateway: getIPValidationSchema(protocolVersion)
       .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork))
@@ -96,33 +96,32 @@ const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConf
   });
 };
 
-export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
-  (values: FormViewNetworkWideValues) => {
-    const ipConfigsValidationSchemas = Yup.object().shape({
-      ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
-      ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
-        ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
-        : Yup.object<IpConfig>(),
-    });
-    return Yup.object().shape({
-      useVlan: Yup.boolean(),
-      vlanId: Yup.mixed().when('useVlan', {
-        is: true,
-        then: () =>
-          Yup.number()
-            .required(MUST_BE_A_NUMBER)
-            .min(1, `Must be more than or equal to 1`)
-            .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
-            .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
-            .nullable()
-            .transform(transformNumber) as Yup.NumberSchema,
-      }),
-      protocolType: Yup.string(),
-      dns: getDNSValidationSchema(values.protocolType),
-      ipConfigs: ipConfigsValidationSchemas,
-    });
-  },
-);
+export const networkWideValidationSchema = Yup.lazy((values: FormViewNetworkWideValues) => {
+  const ipConfigsValidationSchemas = Yup.object({
+    ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
+    ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
+      ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
+      : Yup.object<IpConfig>(),
+  });
+
+  return Yup.object({
+    useVlan: Yup.boolean(),
+    vlanId: Yup.mixed().when('useVlan', {
+      is: (useVlan: boolean) => useVlan,
+      then: () =>
+        Yup.number()
+          .required(MUST_BE_A_NUMBER)
+          .min(1, `Must be more than or equal to 1`)
+          .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
+          .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
+          .nullable()
+          .transform(transformNumber) as Yup.NumberSchema,
+    }),
+    protocolType: Yup.string(),
+    dns: getDNSValidationSchema(values.protocolType),
+    ipConfigs: ipConfigsValidationSchemas,
+  });
+});
 
 export const validateNumber = (vlanId: FormViewNetworkWideValues['vlanId']) => {
   //We need to validate that value is a number(without letters) and is not an exponential number (ex: 1e2)

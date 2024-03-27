@@ -37,15 +37,15 @@ const getAgentsToAdd = (
   );
 
 const getValidationSchema = (agentsCount: number) => {
-  return Yup.lazy<ScaleUpFormValues>((values: ScaleUpFormValues) => {
+  return Yup.lazy((values: ScaleUpFormValues) => {
     return Yup.object<ScaleUpFormValues>().shape({
       hostCount: Yup.number().min(1).max(agentsCount),
       autoSelectedHostIds: values.autoSelectHosts
-        ? Yup.array<string>().min(1).max(agentsCount)
-        : Yup.array<string>(),
+        ? Yup.array(Yup.string()).min(1).max(agentsCount)
+        : Yup.array(Yup.string()),
       selectedHostIds: values.autoSelectHosts
-        ? Yup.array<string>()
-        : Yup.array<string>().min(1).max(agentsCount),
+        ? Yup.array(Yup.string())
+        : Yup.array(Yup.string()).min(1).max(agentsCount),
     });
   });
 };

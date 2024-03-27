@@ -32,6 +32,6 @@ export type StaticIpFormProps<StaticIpViewValues extends object> = StaticIpViewP
   showEmptyValues: boolean;
   getInitialValues(infraEnv: InfraEnv): StaticIpViewValues;
   getUpdateParams(currentInfraEnv: InfraEnv, values: StaticIpViewValues): HostStaticNetworkConfig[];
-  validationSchema: Yup.Schema<StaticIpViewValues>;
+  validationSchema: Yup.ObjectSchema<Yup.AnyObject> | Yup.Lazy<Yup.AnyObject>;
   getEmptyValues(): StaticIpViewValues;
 };

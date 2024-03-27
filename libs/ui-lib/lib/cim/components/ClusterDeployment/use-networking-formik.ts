@@ -45,7 +45,7 @@ const getNetworkConfigurationValidationSchema = (
   initialValues: ClusterDeploymentNetworkingValues,
   hostSubnets: HostSubnets,
 ) =>
-  Yup.lazy<ClusterDeploymentNetworkingValues>((values: ClusterDeploymentNetworkingValues) =>
+  Yup.lazy((values: ClusterDeploymentNetworkingValues) =>
     Yup.object<ClusterDeploymentNetworkingValues>().shape({
       clusterNetworkHostPrefix: hostPrefixValidationSchema(values.clusterNetworkCidr),
       clusterNetworkCidr: ipBlockValidationSchema(values.serviceNetworkCidr),

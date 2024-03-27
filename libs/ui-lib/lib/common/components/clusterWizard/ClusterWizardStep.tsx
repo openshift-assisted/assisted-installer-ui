@@ -9,7 +9,7 @@ type ClusterWizardStepProps = {
   navigation?: React.ReactNode;
 };
 
-const ClusterWizardStep = ({
+export const ClusterWizardStep = ({
   navigation,
   footer,
   children,
@@ -29,4 +29,4 @@ const ClusterWizardStep = ({
   );
 };
 
-export default ClusterWizardStep;
+// export default ClusterWizardStep;
