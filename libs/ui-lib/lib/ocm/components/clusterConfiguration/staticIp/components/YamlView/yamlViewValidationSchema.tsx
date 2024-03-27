@@ -60,7 +60,7 @@ const getInterfaceNamesInCurrentHost: UniqueStringArrayExtractor<YamlViewValues>
 };
 
 const macInterfaceMapValidationSchema = Yup.array<MacInterfaceMap>().of(
-  Yup.object().shape({
+  Yup.object({
     macAddress: macAddressValidationSchema
       .required(requiredMsg)
       .concat(getUniqueValidationSchema(getAllMacAddresses)),
@@ -72,7 +72,7 @@ const macInterfaceMapValidationSchema = Yup.array<MacInterfaceMap>().of(
   }),
 );
 
-export const yamlViewValidationSchema = Yup.object().shape<YamlViewValues>({
+export const yamlViewValidationSchema = Yup.object({
   hosts: Yup.array<HostStaticNetworkConfig>().of(
     Yup.object().shape({
       networkYaml: networkYamlValidationSchema,

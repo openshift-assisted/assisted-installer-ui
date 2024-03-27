@@ -1,6 +1,10 @@
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
-import { Cluster, ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  DiskEncryption,
+  ManagedDomain,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import {
@@ -98,7 +102,7 @@ export const getClusterDetailsValidationSchema = ({
   t: TFunction;
   newFeatureSupportLevels?: NewFeatureSupportLevelData;
 }) =>
-  Yup.lazy<{ baseDnsDomain: string }>((values: { baseDnsDomain: string }) => {
+  Yup.lazy((values: { baseDnsDomain: string }) => {
     const validateName = () =>
       nameValidationSchema(t, usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
     if (pullSecretSet) {
@@ -117,7 +121,10 @@ export const getClusterDetailsValidationSchema = ({
       pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
-        is: (highAvailabilityMode, openshiftVersion) => {
+        is: (
+          highAvailabilityMode: Cluster['highAvailabilityMode'],
+          openshiftVersion: Cluster['openshiftVersion'],
+        ) => {
           const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
           if (newFeatureSupportLevels) {
             return (
@@ -139,7 +146,7 @@ export const getClusterDetailsValidationSchema = ({
           ),
       }),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
-        is: (diskEncryptionMode) => {
+        is: (diskEncryptionMode: DiskEncryption['mode']) => {
           return diskEncryptionMode === 'tang';
         },
         then: () =>

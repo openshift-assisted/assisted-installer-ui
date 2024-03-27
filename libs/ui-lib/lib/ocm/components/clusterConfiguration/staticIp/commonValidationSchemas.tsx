@@ -16,23 +16,27 @@ export type UniqueStringArrayExtractor<FormValues> = (
 export const getUniqueValidationSchema = <FormValues,>(
   uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
 ) => {
-  return Yup.string().test('unique', 'Value must be unique', function (value: string) {
-    const context = this.options.context as Yup.TestContext & { values?: FormValues };
-    if (!context || !context.values) {
-      return this.createError({
-        message: 'Unexpected error: Yup test context should contain form values',
-      });
-    }
+  return Yup.string().test(
+    'unique',
+    'Value must be unique',
+    (value, testContext: Yup.TestContext) => {
+      const context = testContext.options.context as Yup.TestContext & { values?: FormValues };
+      if (!context || !context.values) {
+        return testContext.createError({
+          message: 'Unexpected error: Yup test context should contain form values',
+        });
+      }
 
-    const values = uniqueStringArrayExtractor(context.values, this, value);
+      const values = uniqueStringArrayExtractor(context.values, testContext, value as string);
 
-    if (!values) {
-      return this.createError({
-        message: 'Unexpected error: Failed to get values to test uniqueness',
-      });
-    }
-    return values.filter((currentValue) => currentValue === value).length === 1;
-  });
+      if (!values) {
+        return testContext.createError({
+          message: 'Unexpected error: Failed to get values to test uniqueness',
+        });
+      }
+      return values.filter((currentValue) => currentValue === value).length === 1;
+    },
+  );
 };
 
 const isValidIPv4Address = (addressStr: string) => {
@@ -86,7 +90,7 @@ export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) =
   return Yup.string().test(
     protocolVersion,
     `Value \${value} is not a valid ${protocolVersionLabel} address`,
-    function (value: string) {
+    (value?: string) => {
       if (!value) {
         return true;
       }
@@ -120,7 +124,7 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion?: ProtocolV
       const duplicates = getDuplicates(addresses);
       return `The following IP addresses are duplicated: ${duplicates.join(',')}`;
     },
-    function (value: string) {
+    (value?: string) => {
       if (!value) {
         return true;
       }
@@ -195,7 +199,7 @@ export const getIpAddressInSubnetValidationSchema = (
   return Yup.string().test(
     'is-in-subnet',
     `IP Address is outside of the machine network ${subnet}`,
-    function (value: string) {
+    (value, testContext: Yup.TestContext) => {
       if (!value) {
         return true;
       }
@@ -204,7 +208,7 @@ export const getIpAddressInSubnetValidationSchema = (
         ipValidationSchema.validateSync(value);
       } catch (err) {
         const error = err as { message: string };
-        return this.createError({ message: error.message });
+        return testContext.createError({ message: error.message });
       }
       try {
         const inSubnet = isInSubnet(value, subnet);

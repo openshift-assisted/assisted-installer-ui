@@ -1,8 +1,6 @@
 import * as Yup from 'yup';
 
 import {
-  FormViewHost,
-  HostIps,
   FormViewNetworkWideValues,
   FormViewHostsValues,
   ProtocolVersion,
@@ -31,11 +29,11 @@ const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
 ) => values.hosts.map((host) => host.macAddress);
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
-  Yup.object().shape<FormViewHost>({
+  Yup.object({
     macAddress: macAddressValidationSchema
       .required(requiredMsg)
       .concat(getUniqueValidationSchema(getAllMacAddresses)),
-    ips: Yup.object().shape<HostIps>({
+    ips: Yup.object({
       ipv4: showIpv4(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
             ProtocolVersion.ipv4,
@@ -69,6 +67,6 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
 
 export const getFormViewHostsValidationSchema = (networkWideValues: FormViewNetworkWideValues) => {
   return Yup.object().shape({
-    hosts: Yup.array<FormViewHost>().of(getHostValidationSchema(networkWideValues)),
+    hosts: Yup.array(getHostValidationSchema(networkWideValues)),
   });
 };

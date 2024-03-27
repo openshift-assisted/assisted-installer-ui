@@ -77,7 +77,10 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
 
   const validate = (values: StaticIpFormValues) => {
     try {
-      validationSchema.validateSync(values, { abortEarly: false, context: { values } });
+      validationSchema.validateSync(values, {
+        abortEarly: false,
+        context: { values },
+      });
       return {};
     } catch (error) {
       return yupToFormErrors(error);

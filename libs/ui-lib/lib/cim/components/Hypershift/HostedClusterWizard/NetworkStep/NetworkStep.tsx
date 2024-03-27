@@ -16,7 +16,7 @@ import {
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const getValidationSchema = (t: TFunction) =>
-  Yup.lazy<NetworkFormValues>((values: NetworkFormValues) =>
+  Yup.lazy((values: NetworkFormValues) =>
     Yup.object<NetworkFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema.required(t('ai:Required field')),
       clusterNetworkCidr: values.isAdvanced
