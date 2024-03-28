@@ -9,7 +9,7 @@ export default defineConfig({
   viewportWidth: 1360, // 16*85
   viewportHeight: 765, // 9*85
   env: {
-    OPENSHIFT_VERSION: '4.12.14',
+    OPENSHIFT_VERSION: '4.14.16',
     DNS_DOMAIN_NAME: 'redhat.com',
     CLUSTER_NAME: 'ai-e2e-sno',
     HOST_RENAME: 'e2e-control-host',

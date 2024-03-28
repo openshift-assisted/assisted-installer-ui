@@ -46,7 +46,8 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.toNextStepAfter('Operators');
     });
 
-    it('Show the dev-preview badge for SNO', () => {
+    //We don't have OCP versions with dev-preview badge
+    it.skip('Show the dev-preview badge for SNO', () => {
       commonActions.visitNewClusterPage();
       clusterDetailsPage.inputOpenshiftVersion('4.8');
       clusterDetailsPage.enableSno();

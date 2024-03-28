@@ -32,7 +32,11 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const dispatch = useDispatch();
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
   const pullSecret = usePullSecret();
-  const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+  const {
+    error: errorOCPVersions,
+    loading: loadingOCPVersions,
+    versions,
+  } = useOpenshiftVersions('true');
 
   const handleClusterUpdate = React.useCallback(
     async (
