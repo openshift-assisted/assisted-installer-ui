@@ -15,7 +15,6 @@ import {
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../types/clusters';
-import { getErrorMessage } from '../../../utils';
 import { getSubnet } from '../../clusterConfiguration/utils';
 import {
   bmcAddressValidationMessages,
@@ -194,44 +193,40 @@ export const vipRangeValidationSchema = (
   { machineNetworks, hostSubnet }: NetworkConfigurationValues,
   allowSuffix: boolean,
 ) =>
-  Yup.string().test(
-    'vip-validation',
-    'IP Address is outside of selected subnet',
-    (value, testContext: Yup.TestContext) => {
-      if (!value) {
-        return true;
-      }
+  Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', (value) => {
+    if (!value) {
+      return true;
+    }
 
-      try {
-        const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
-        validator.validateSync(value);
-      } catch (err) {
-        return testContext.createError({ message: getErrorMessage(err) });
-      }
+    try {
+      const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
+      validator.validateSync(value);
+    } catch (err) {
+      return true;
+    }
 
-      const foundHostSubnets = [];
-      if (machineNetworks) {
-        const cidrs = machineNetworks?.map((network) => network.cidr);
-        foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
-      } else {
-        const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-        if (subnet) {
-          foundHostSubnets.push(subnet);
+    const foundHostSubnets = [];
+    if (machineNetworks) {
+      const cidrs = machineNetworks?.map((network) => network.cidr);
+      foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
+    } else {
+      const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
+      if (subnet) {
+        foundHostSubnets.push(subnet);
+      }
+    }
+    for (const hostSubnet of foundHostSubnets) {
+      if (hostSubnet?.subnet) {
+        // Workaround for bug in CIM backend. hostIDs are empty
+        if (!hostSubnet.hostIDs.length) {
+          return true;
+        } else if (isInSubnet(value, hostSubnet.subnet)) {
+          return true;
         }
       }
-      for (const hostSubnet of foundHostSubnets) {
-        if (hostSubnet?.subnet) {
-          // Workaround for bug in CIM backend. hostIDs are empty
-          if (!hostSubnet.hostIDs.length) {
-            return true;
-          } else if (isInSubnet(value, hostSubnet.subnet)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
-  );
+    }
+    return false;
+  });
 
 const vipUniqueValidationSchema = (
   { ingressVips, apiVips, apiVip, ingressVip }: NetworkConfigurationValues,
@@ -297,12 +292,7 @@ export const vipValidationSchema = (
     then: () =>
       requiredOnceSet(initialValue, 'Required. Please provide an IP address')
         .concat(vipRangeValidationSchema(hostSubnets, values, true))
-        .concat(vipUniqueValidationSchema(values, false))
-        .when('hostSubnet', {
-          is: (hostSubnet: NetworkConfigurationValues['hostSubnet']) =>
-            hostSubnet !== NO_SUBNET_SET,
-          then: () => Yup.string().required('Required. Please provide an IP address'),
-        }),
+        .concat(vipUniqueValidationSchema(values, false)),
   });
 
 export const vipNoSuffixValidationSchema = (
@@ -320,12 +310,7 @@ export const vipNoSuffixValidationSchema = (
         .concat(ipNoSuffixValidationSchema)
         .concat(vipRangeValidationSchema(hostSubnets, values, false))
         .concat(vipBroadcastValidationSchema(values))
-        .concat(vipUniqueValidationSchema(values, true))
-        .when('hostSubnet', {
-          is: (hostSubnet: NetworkConfigurationValues['hostSubnet']) =>
-            hostSubnet !== NO_SUBNET_SET,
-          then: () => Yup.string().required('Required. Please provide an IP address'),
-        }),
+        .concat(vipUniqueValidationSchema(values, true)),
   });
 
 export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
