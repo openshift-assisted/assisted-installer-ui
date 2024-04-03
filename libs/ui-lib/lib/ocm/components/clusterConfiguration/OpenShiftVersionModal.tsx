@@ -16,7 +16,7 @@ export const OpenShiftVersionModal = ({
   isOpen,
   setValueSelected,
 }: OpenShiftVersionModalProps) => {
-  const { versions } = useOpenshiftVersions('false');
+  const { versions } = useOpenshiftVersions(false);
   const onClose = React.useCallback(
     () => setOpenhiftVersionModalOpen(false),
     [setOpenhiftVersionModalOpen],

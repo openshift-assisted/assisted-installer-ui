@@ -28,7 +28,7 @@ const UnsupportedVersion = ({ version }: { version: string }) => {
 
 const OpenShiftVersionDetail = ({ cluster }: { cluster: Cluster }) => {
   const { openshiftVersion } = cluster;
-  const { isSupportedOpenShiftVersion, versions } = useOpenshiftVersions('false');
+  const { isSupportedOpenShiftVersion, versions } = useOpenshiftVersions(false);
   const isSupported = isSupportedOpenShiftVersion(openshiftVersion);
 
   const version = React.useMemo(() => {

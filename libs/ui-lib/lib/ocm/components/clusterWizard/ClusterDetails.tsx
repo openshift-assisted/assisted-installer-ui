@@ -36,7 +36,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     error: errorOCPVersions,
     loading: loadingOCPVersions,
     versions,
-  } = useOpenshiftVersions('true');
+  } = useOpenshiftVersions(true);
 
   const handleClusterUpdate = React.useCallback(
     async (
