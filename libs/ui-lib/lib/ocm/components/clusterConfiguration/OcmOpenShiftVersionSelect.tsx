@@ -112,7 +112,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
       />
       <OpenShiftVersionModal
         isOpen={isOpenshiftVersionModalOpen}
-        setOpenhiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
+        setOpenshiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
         setValueSelected={setValueSelected}
       />
     </>

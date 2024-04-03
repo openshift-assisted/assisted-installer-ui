@@ -10,6 +10,7 @@ import {
   TextInputGroupMain,
   TextInputGroupUtilities,
   Button,
+  Divider,
 } from '@patternfly/react-core';
 import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 import { OpenshiftVersionOptionType } from '../../types';
@@ -227,15 +228,18 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
     >
       <SelectList id="select-typeahead-listbox">
         {selectOptions.map((option, index) => (
-          <SelectOption
-            key={option.value as string}
-            isFocused={focusedItemIndex === index}
-            className={option.className}
-            onClick={() => setSelected(option.value as string)}
-            id={`select-typeahead-${(option.value as string).replace(' ', '-')}`}
-            {...option}
-            ref={null}
-          />
+          <>
+            <SelectOption
+              key={option.value as string}
+              isFocused={focusedItemIndex === index}
+              className={option.className}
+              onClick={() => setSelected(option.value as string)}
+              id={`select-typeahead-${(option.value as string).replace(' ', '-')}`}
+              {...option}
+              ref={null}
+            />
+            <Divider component="li" />
+          </>
         ))}
       </SelectList>
     </Select>
