@@ -42,15 +42,22 @@ const getOpenshiftVersionHelperText = (
   }
 
   if (selectedVersion.supportLevel !== 'production') {
+    let messageSelectedVersion = t('ai:Please note that this version is not production-ready.');
+    if (selectedVersion.supportLevel === 'end-of-life') {
+      messageSelectedVersion = t(
+        'ai:Please note that this version that is not maintained anymore.',
+      );
+    }
     return (
       <>
         <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />
         &nbsp;
-        {t('ai:Please note that this version is not production-ready.')}&nbsp;
+        {messageSelectedVersion}&nbsp;
         <OpenShiftLifeCycleDatesLink />
       </>
     );
   }
+
   return null;
 };
 
@@ -114,6 +121,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
         isOpen={isOpenshiftVersionModalOpen}
         setOpenshiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
         setValueSelected={setValueSelected}
+        getHelperText={getOpenshiftVersionHelperText}
       />
     </>
   );

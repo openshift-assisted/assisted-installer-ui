@@ -11,18 +11,25 @@ import {
   TextInputGroupUtilities,
   Button,
   Divider,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
 } from '@patternfly/react-core';
 import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 import { OpenshiftVersionOptionType } from '../../types';
+import { HelperTextType } from './OpenShiftVersionDropdown';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type OpenshiftSelectWithSearchProps = {
   versions: OpenshiftVersionOptionType[];
   setValueSelected: (value: OpenshiftVersionOptionType) => void;
+  getHelperText: HelperTextType;
 };
 
 export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectWithSearchProps> = ({
   versions,
   setValueSelected,
+  getHelperText,
 }: OpenshiftSelectWithSearchProps) => {
   const initialSelectOptions = React.useMemo(
     () =>
@@ -44,6 +51,8 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
   const [focusedItemIndex, setFocusedItemIndex] = React.useState<number | null>(null);
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
   const textInputRef = React.useRef<HTMLInputElement>();
+  const { t } = useTranslation();
+  const [helperText, setHelperText] = React.useState(getHelperText(versions, inputValue, t));
 
   React.useEffect(() => {
     let newSelectOptions: SelectOptionProps[] = initialSelectOptions;
@@ -100,6 +109,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
         default: filteredVersions[0].default,
         supportLevel: filteredVersions[0].supportLevel,
       });
+      setHelperText(getHelperText(versions, value as string, t));
     }
     setIsOpen(false);
     setFocusedItemIndex(null);
@@ -216,32 +226,43 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
   );
 
   return (
-    <Select
-      id="typeahead-openshift-select"
-      isOpen={isOpen}
-      selected={selected}
-      onSelect={onSelect}
-      onOpenChange={() => {
-        setIsOpen(false);
-      }}
-      toggle={toggle}
-    >
-      <SelectList id="select-typeahead-listbox">
-        {selectOptions.map((option, index) => (
-          <>
-            <SelectOption
-              key={option.value as string}
-              isFocused={focusedItemIndex === index}
-              className={option.className}
-              onClick={() => setSelected(option.value as string)}
-              id={`select-typeahead-${(option.value as string).replace(' ', '-')}`}
-              {...option}
-              ref={null}
-            />
-            <Divider component="li" />
-          </>
-        ))}
-      </SelectList>
-    </Select>
+    <>
+      <Select
+        id="typeahead-openshift-select"
+        isOpen={isOpen}
+        selected={selected}
+        onSelect={onSelect}
+        onOpenChange={() => {
+          setIsOpen(false);
+        }}
+        toggle={toggle}
+        isScrollable
+      >
+        <SelectList id="select-typeahead-listbox">
+          {selectOptions.map((option, index) => (
+            <>
+              <SelectOption
+                key={option.value as string}
+                isFocused={focusedItemIndex === index}
+                className={option.className}
+                onClick={() => setSelected(option.value as string)}
+                id={`select-typeahead-${(option.value as string).replace(' ', '-')}`}
+                {...option}
+                ref={null}
+              />
+              <Divider component="li" id={`divider-${option.value as string}`} />
+            </>
+          ))}
+        </SelectList>
+      </Select>
+      <FormHelperText>
+        <HelperText>
+          <HelperTextItem variant="default">
+            {helperText ??
+              'Select an Openshift version from the list or use the type ahead to narrow down the list.'}
+          </HelperTextItem>
+        </HelperText>
+      </FormHelperText>
+    </>
   );
 };

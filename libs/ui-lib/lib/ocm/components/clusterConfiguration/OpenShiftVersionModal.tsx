@@ -18,18 +18,18 @@ type OpenShiftVersionModalProps = {
   setOpenshiftVersionModalOpen: (isOpen: boolean) => void;
   isOpen: boolean;
   setValueSelected: (valueSelected: OpenshiftVersionOptionType) => void;
+  getHelperText: HelperTextType;
 };
 
 export const OpenShiftVersionModal = ({
   setOpenshiftVersionModalOpen,
   isOpen,
   setValueSelected,
+  getHelperText,
 }: OpenShiftVersionModalProps) => {
   const { versions } = useOpenshiftVersions(false);
   const onClose = () => setOpenshiftVersionModalOpen(false);
 
-  const helperText =
-    'Select an Openshift version from the list or use the type ahead to narrow down the list.';
   return (
     <Modal
       title="Available OpenShift Versions"
@@ -52,12 +52,11 @@ export const OpenShiftVersionModal = ({
         label={'OpenShift version'}
         isRequired
       >
-        <OpenshiftSelectWithSearch versions={versions} setValueSelected={setValueSelected} />
-        <FormHelperText>
-          <HelperText>
-            <HelperTextItem variant="default">{helperText}</HelperTextItem>
-          </HelperText>
-        </FormHelperText>
+        <OpenshiftSelectWithSearch
+          versions={versions}
+          setValueSelected={setValueSelected}
+          getHelperText={getHelperText}
+        />
       </FormGroup>
     </Modal>
   );
