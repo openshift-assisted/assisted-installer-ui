@@ -14,7 +14,7 @@ const versions: Record<string, Version> = {
   '4.9': {
     cpu_architectures: [x86],
     display_name: '4.9.59',
-    support_level: 'production',
+    support_level: 'end-of-life',
   },
   '4.10': {
     cpu_architectures: [x86, arm64],
@@ -25,7 +25,7 @@ const versions: Record<string, Version> = {
     cpu_architectures: [x86, arm64],
     default: true,
     display_name: '4.11.58',
-    support_level: 'production',
+    support_level: 'beta',
   },
   '4.14': {
     cpu_architectures: [x86, arm64, s390x, ppc64le],
