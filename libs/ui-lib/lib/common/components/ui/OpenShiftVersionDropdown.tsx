@@ -110,13 +110,11 @@ export const OpenShiftVersionDropdown = ({
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const newLabel = event?.currentTarget.innerText;
       const newValue = event?.currentTarget.id;
-      if (newValue !== 'all-versions') {
-        if (newLabel && newValue) {
-          setCurrent(newLabel);
-          setValue(newValue);
-          setHelperText(getHelperText(versions, newValue, t));
-          setOpen(false);
-        }
+      if (newLabel && newValue !== 'all-versions') {
+        setCurrent(newLabel);
+        setValue(newValue);
+        setHelperText(getHelperText(versions, newValue, t));
+        setOpen(false);
       }
     },
     [setValue, getHelperText, versions, t],
