@@ -25,7 +25,7 @@ import { getErrorMessage } from '../../../common/utils';
 import { getWarningMessage } from './utils';
 
 const validationSchema = () =>
-  Yup.lazy<ProxyFieldsType>((values) =>
+  Yup.lazy((values: ProxyFieldsType) =>
     Yup.object<ProxyFieldsType>().shape({
       httpProxy: httpProxyValidationSchema({
         values,

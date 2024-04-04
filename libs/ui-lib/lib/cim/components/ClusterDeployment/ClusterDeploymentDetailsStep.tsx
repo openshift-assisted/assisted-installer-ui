@@ -49,7 +49,7 @@ export const useDetailsFormik = ({
   isNutanix,
 }: UseDetailsFormikArgs): [
   ClusterDetailsValues & { networkType: 'OpenShiftSDN' | 'OVNKubernetes' },
-  Lazy,
+  Lazy<{ baseDnsDomain: string }>,
 ] => {
   const { t } = useTranslation();
   const featureSupportLevels = useFeatureSupportLevel();

@@ -107,14 +107,15 @@ export const VirtualIPControlGroup = ({
   const onChangeDhcp = React.useCallback(
     (hasDhcp: boolean) => {
       // We need to sync the values back to the form
-      setFieldValue('apiVips', hasDhcp ? [] : cluster.apiVips);
-      setFieldValue('ingressVips', hasDhcp ? [] : cluster.ingressVips);
+      setFieldValue('apiVips', hasDhcp ? [] : cluster.apiVips, true);
+      setFieldValue('ingressVips', hasDhcp ? [] : cluster.ingressVips, true);
     },
     [cluster.apiVips, cluster.ingressVips, setFieldValue],
   );
 
-  const setVipValue = (field: string, e: React.ChangeEvent<HTMLInputElement>) =>
-    setFieldValue(field, [{ ip: e.target.value, clusterId: cluster.id }]);
+  const setVipValue = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    setFieldValue(field, [{ ip: e.target.value, clusterId: cluster.id }], true);
+  };
 
   const ipFieldsSuffix = values.stackType === DUAL_STACK ? ' (IPv4)' : '';
   return (
