@@ -24,7 +24,17 @@ const versions: Record<string, Version> = {
   '4.11': {
     cpu_architectures: [x86, arm64],
     default: true,
-    display_name: '4.11.58',
+    display_name: '4.11.38',
+    support_level: 'production',
+  },
+  '4.12': {
+    cpu_architectures: [x86, arm64],
+    display_name: '4.12.14',
+    support_level: 'production',
+  },
+  '4.13': {
+    cpu_architectures: [x86, arm64],
+    display_name: '4.13.0-rc.6',
     support_level: 'beta',
   },
   '4.14': {
