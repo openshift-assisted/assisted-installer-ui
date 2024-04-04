@@ -19,16 +19,16 @@ import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 import { OpenshiftVersionOptionType } from '../../types';
 import { HelperTextType } from './OpenShiftVersionDropdown';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { useFormikContext } from 'formik';
+import { ClusterDetailsValues } from '../clusterWizard';
 
 type OpenshiftSelectWithSearchProps = {
   versions: OpenshiftVersionOptionType[];
-  setValueSelected: (value: OpenshiftVersionOptionType) => void;
   getHelperText: HelperTextType;
 };
 
 export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectWithSearchProps> = ({
   versions,
-  setValueSelected,
   getHelperText,
 }: OpenshiftSelectWithSearchProps) => {
   const initialSelectOptions = React.useMemo(
@@ -42,6 +42,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       })),
     [versions],
   );
+  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const [isOpen, setIsOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<string>('');
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -52,7 +53,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
   const textInputRef = React.useRef<HTMLInputElement>();
   const { t } = useTranslation();
-  const [helperText, setHelperText] = React.useState(getHelperText(versions, inputValue, t));
+  const [helperText, setHelperText] = React.useState(getHelperText(versions, inputValue, t, true));
 
   React.useEffect(() => {
     let newSelectOptions: SelectOptionProps[] = initialSelectOptions;
@@ -101,14 +102,14 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       setFilterValue('');
       setSelected(value as string);
       const filteredVersions = versions.filter((version) => version.value === value);
-
-      setValueSelected({
+      setFieldValue('customOpenshiftSelect', {
         label: filteredVersions[0].label,
         value: filteredVersions[0].value,
         version: filteredVersions[0].version,
         default: filteredVersions[0].default,
         supportLevel: filteredVersions[0].supportLevel,
       });
+
       setHelperText(getHelperText(versions, value as string, t));
     }
     setIsOpen(false);
@@ -228,7 +229,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
   return (
     <>
       <Select
-        id="typeahead-openshift-select"
+        id="customOpenshiftSelect"
         isOpen={isOpen}
         selected={selected}
         onSelect={onSelect}
@@ -240,7 +241,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       >
         <SelectList id="select-typeahead-listbox">
           {selectOptions.map((option, index) => (
-            <>
+            <React.Fragment key={index}>
               <SelectOption
                 key={option.value as string}
                 isFocused={focusedItemIndex === index}
@@ -250,8 +251,12 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
                 {...option}
                 ref={null}
               />
-              <Divider component="li" id={`divider-${option.value as string}`} />
-            </>
+              <Divider
+                component="li"
+                id={`divider-${option.value as string}`}
+                key={`divider-${option.value as string}`}
+              />
+            </React.Fragment>
           ))}
         </SelectList>
       </Select>

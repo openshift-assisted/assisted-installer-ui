@@ -1,30 +1,19 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-  Modal,
-  ModalVariant,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, FormGroup, Modal, ModalVariant } from '@patternfly/react-core';
 import './OpenshiftVersionModal.css';
-import { OpenshiftSelectWithSearch } from '../../../common/components/ui/OpenshiftVersionSelect';
+import { OpenshiftSelectWithSearch } from '../../../common/components/ui/OpenshiftSelectWithSearch';
 import { useOpenshiftVersions } from '../../hooks';
-import { OpenshiftVersionOptionType } from '../../../common';
+import { HelperTextType } from '../../../common/components/ui/OpenShiftVersionDropdown';
 
 type OpenShiftVersionModalProps = {
   setOpenshiftVersionModalOpen: (isOpen: boolean) => void;
   isOpen: boolean;
-  setValueSelected: (valueSelected: OpenshiftVersionOptionType) => void;
   getHelperText: HelperTextType;
 };
 
 export const OpenShiftVersionModal = ({
   setOpenshiftVersionModalOpen,
   isOpen,
-  setValueSelected,
   getHelperText,
 }: OpenShiftVersionModalProps) => {
   const { versions } = useOpenshiftVersions(false);
@@ -36,10 +25,10 @@ export const OpenShiftVersionModal = ({
       id="available-openshift-versions-modal"
       isOpen={isOpen}
       actions={[
-        <Button key="select" variant={ButtonVariant.primary} onClick={onClose}>
+        <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={onClose}>
           Select
         </Button>,
-        <Button key="close" variant={ButtonVariant.link} onClick={onClose}>
+        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onClose}>
           Cancel
         </Button>,
       ]}
@@ -47,16 +36,12 @@ export const OpenShiftVersionModal = ({
       variant={ModalVariant.small}
     >
       <FormGroup
-        id={`form-control__typeahead-openshift-select`}
-        fieldId={'typeahead-openshift-select'}
+        id={`form-control__customOpenshiftSelect`}
+        fieldId={'customOpenshiftSelect'}
         label={'OpenShift version'}
         isRequired
       >
-        <OpenshiftSelectWithSearch
-          versions={versions}
-          setValueSelected={setValueSelected}
-          getHelperText={getHelperText}
-        />
+        <OpenshiftSelectWithSearch versions={versions} getHelperText={getHelperText} />
       </FormGroup>
     </Modal>
   );

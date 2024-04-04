@@ -8,10 +8,12 @@ import {
   OPENSHIFT_LIFE_CYCLE_DATES_LINK,
   UiIcon,
   OpenshiftVersionOptionType,
+  ClusterDetailsValues,
 } from '../../../common';
 import { isInOcm } from '../../../common/api';
 import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { OpenShiftVersionModal } from './OpenShiftVersionModal';
+import { useFormikContext } from 'formik';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -26,12 +28,13 @@ const getOpenshiftVersionHelperText = (
   versions: OpenshiftVersionOptionType[],
   selectedVersionValue: string | undefined,
   t: TFunction,
+  isModal?: boolean,
 ) => {
-  if (!versions.length) {
+  if (!versions.length && !isModal) {
     return (
       <>
-        <UiIcon status="danger" size="sm" icon={<ExclamationCircleIcon />} />; &nbsp;{' '}
-        {t('ai:No release image is available.')}
+        <UiIcon status="danger" size="sm" icon={<ExclamationCircleIcon />} />
+        &nbsp; {t('ai:No release image is available.')}
       </>
     );
   }
@@ -66,8 +69,9 @@ type OcmOpenShiftVersionSelectProps = {
 };
 const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps) => {
   const { t } = useTranslation();
-  const [selectedValue, setSelectedValue] = React.useState<OpenshiftVersionOptionType>(); // Estado para almacenar el valor seleccionado
-
+  const {
+    values: { customOpenshiftSelect },
+  } = useFormikContext<ClusterDetailsValues>();
   const selectOptions = React.useMemo(
     () =>
       versions
@@ -89,39 +93,35 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
     setIsOpenshiftVersionModalOpen(true);
   };
 
-  const setValueSelected = (selectedValue: OpenshiftVersionOptionType) => {
-    setSelectedValue(selectedValue);
-  };
-
   const updatedSelectOptions = React.useMemo(() => {
-    if (selectedValue && !selectOptions.find((option) => option.value === selectedValue.value)) {
+    if (
+      customOpenshiftSelect &&
+      !selectOptions.find((option) => option.value === customOpenshiftSelect.value)
+    ) {
       return [
-        ...selectOptions,
         {
-          label: selectedValue.label,
-          value: selectedValue.value,
+          label: customOpenshiftSelect.label,
+          value: customOpenshiftSelect.value,
         },
       ];
     }
-    return selectOptions;
-  }, [selectOptions, selectedValue]);
-
+    return [];
+  }, [selectOptions, customOpenshiftSelect]);
   return (
     <>
       <OpenShiftVersionDropdown
         name="openshiftVersion"
-        items={updatedSelectOptions}
+        items={selectOptions}
         versions={versions}
         getHelperText={getOpenshiftVersionHelperText}
         showReleasesLink={isInOcm}
         showOpenshiftVersionModal={showOpenshiftVersionModal}
-        valueSelected={selectedValue}
+        customItems={updatedSelectOptions}
       />
       {isOpenshiftVersionModalOpen && (
         <OpenShiftVersionModal
           isOpen={isOpenshiftVersionModalOpen}
           setOpenshiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
-          setValueSelected={setValueSelected}
           getHelperText={getOpenshiftVersionHelperText}
         />
       )}
