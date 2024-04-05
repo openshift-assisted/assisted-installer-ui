@@ -25,7 +25,7 @@ const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
 
 const supportedVersionLevels = ['production', 'maintenance'];
 
-export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
+export default function useOpenshiftVersions(latest_release?: boolean): UseOpenshiftVersionsType {
   const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [error, setError] = React.useState<UseOpenshiftVersionsType['error']>();
 
@@ -40,9 +40,9 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     [versions],
   );
 
-  const fetchOpenshiftVersions = React.useCallback(async () => {
+  const fetchOpenshiftVersions = React.useCallback(async (latest_release: boolean) => {
     try {
-      const { data } = await SupportedOpenshiftVersionsAPI.list();
+      const { data } = await SupportedOpenshiftVersionsAPI.list(latest_release);
 
       const versions: OpenshiftVersionOptionType[] = getKeys(data).map((key) => {
         const versionItem = data[key] as OpenshiftVersion;
@@ -89,8 +89,8 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   );
 
   React.useEffect(() => {
-    void fetchOpenshiftVersions();
-  }, [fetchOpenshiftVersions]);
+    void fetchOpenshiftVersions(latest_release ?? false);
+  }, [latest_release, fetchOpenshiftVersions]);
 
   return {
     error,

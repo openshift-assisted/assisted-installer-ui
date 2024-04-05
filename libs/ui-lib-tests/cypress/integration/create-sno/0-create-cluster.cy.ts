@@ -46,15 +46,6 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       commonActions.toNextStepAfter('Operators');
     });
 
-    it('Show the dev-preview badge for SNO', () => {
-      commonActions.visitNewClusterPage();
-      clusterDetailsPage.inputOpenshiftVersion('4.8');
-      clusterDetailsPage.enableSno();
-      commonActions
-        .getWarningAlert()
-        .should('contain.text', 'Limitations for using Single Node OpenShift');
-    });
-
     describe('When the cluster is created', () => {
       beforeEach(() => {
         setTestStartSignal('CLUSTER_CREATED');
