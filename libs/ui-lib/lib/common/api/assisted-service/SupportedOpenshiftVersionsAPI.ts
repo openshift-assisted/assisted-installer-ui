@@ -2,12 +2,14 @@ import { client } from '../../api/axiosClient';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 
 const SupportedOpenshiftVersionsAPI = {
-  makeBaseURI() {
-    return `/v2/openshift-versions`;
+  makeBaseURI(latestRelease: boolean) {
+    return `/v2/openshift-versions?only_latest=${latestRelease.toString()}`;
   },
 
-  list() {
-    return client.get<OpenshiftVersion[]>(`${SupportedOpenshiftVersionsAPI.makeBaseURI()}`);
+  list(latestRelease: boolean) {
+    return client.get<OpenshiftVersion[]>(
+      `${SupportedOpenshiftVersionsAPI.makeBaseURI(latestRelease)}`,
+    );
   },
 };
 
