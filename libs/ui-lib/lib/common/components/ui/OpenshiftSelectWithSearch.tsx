@@ -240,24 +240,37 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
         isScrollable
       >
         <SelectList id="select-typeahead-listbox">
-          {selectOptions.map((option, index) => (
-            <React.Fragment key={index}>
-              <SelectOption
-                key={option.value as string}
-                isFocused={focusedItemIndex === index}
-                className={option.className}
-                onClick={() => setSelected(option.value as string)}
-                id={`select-typeahead-${(option.value as string).replace(' ', '-')}`}
-                {...option}
-                ref={null}
-              />
-              <Divider
-                component="li"
-                id={`divider-${option.value as string}`}
-                key={`divider-${option.value as string}`}
-              />
-            </React.Fragment>
-          ))}
+          {selectOptions.map((option, index) => {
+            const match = (option.value as string).match(/\d+\.(\d+)\.\d+/);
+            const y = match ? match[1] : null;
+
+            const previousY =
+              index > 0
+                ? ((selectOptions[index - 1].value as string).match(/\d+\.(\d+)\.\d+/) || [])[1]
+                : null;
+
+            const showDivider = previousY !== null && y !== previousY;
+            return (
+              <React.Fragment key={index}>
+                {showDivider && (
+                  <Divider
+                    component="li"
+                    id={`divider-${option.value as string}`}
+                    key={`divider-${option.value as string}`}
+                  />
+                )}
+                <SelectOption
+                  key={option.value as string}
+                  isFocused={focusedItemIndex === index}
+                  className={option.className}
+                  onClick={() => setSelected(option.value as string)}
+                  id={`select-typeahead-${(option.value as string).replace(' ', '-')}`}
+                  {...option}
+                  ref={null}
+                />
+              </React.Fragment>
+            );
+          })}
         </SelectList>
       </Select>
       <FormHelperText>
