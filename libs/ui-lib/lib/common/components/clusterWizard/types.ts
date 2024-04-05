@@ -32,7 +32,7 @@ export type ClusterDetailsValues = {
   diskEncryption: DiskEncryption;
   cpuArchitecture: string;
   platform: PlatformType;
-  customOpenshiftSelect: OpenshiftVersionOptionType;
+  customOpenshiftSelect: OpenshiftVersionOptionType | null;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {
