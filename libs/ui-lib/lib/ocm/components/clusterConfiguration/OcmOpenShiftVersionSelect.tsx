@@ -47,9 +47,7 @@ const getOpenshiftVersionHelperText = (
   if (selectedVersion.supportLevel !== 'production') {
     let messageSelectedVersion = t('ai:Please note that this version is not production-ready.');
     if (selectedVersion.supportLevel === 'end-of-life') {
-      messageSelectedVersion = t(
-        'ai:Please note that this version that is not maintained anymore.',
-      );
+      messageSelectedVersion = t('ai:Please note that this version is not maintained anymore.');
     }
     return (
       <>
