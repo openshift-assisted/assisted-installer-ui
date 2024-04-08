@@ -3,14 +3,17 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exc
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { TFunction } from 'i18next';
-import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   OPENSHIFT_LIFE_CYCLE_DATES_LINK,
   UiIcon,
   OpenshiftVersionOptionType,
+  ClusterDetailsValues,
 } from '../../../common';
 import { isInOcm } from '../../../common/api';
+import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
+import { OpenShiftVersionModal } from './OpenShiftVersionModal';
+import { useFormikContext } from 'formik';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -25,12 +28,13 @@ const getOpenshiftVersionHelperText = (
   versions: OpenshiftVersionOptionType[],
   selectedVersionValue: string | undefined,
   t: TFunction,
+  isModal?: boolean,
 ) => {
-  if (!versions.length) {
+  if (!versions.length && !isModal) {
     return (
       <>
-        <UiIcon status="danger" size="sm" icon={<ExclamationCircleIcon />} />; &nbsp;{' '}
-        {t('ai:No release image is available.')}
+        <UiIcon status="danger" size="sm" icon={<ExclamationCircleIcon />} />
+        &nbsp; {t('ai:No release image is available.')}
       </>
     );
   }
@@ -41,14 +45,22 @@ const getOpenshiftVersionHelperText = (
   }
 
   if (selectedVersion.supportLevel !== 'production') {
+    let messageSelectedVersion = t('ai:Please note that this version is not production-ready.');
+    if (selectedVersion.supportLevel === 'end-of-life') {
+      messageSelectedVersion = t(
+        'ai:Please note that this version that is not maintained anymore.',
+      );
+    }
     return (
       <>
-        <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />; &nbsp;
-        {t('ai:Please note that this version is not production-ready.')}&nbsp;
+        <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />
+        &nbsp;
+        {messageSelectedVersion}&nbsp;
         <OpenShiftLifeCycleDatesLink />
       </>
     );
   }
+
   return null;
 };
 
@@ -57,6 +69,9 @@ type OcmOpenShiftVersionSelectProps = {
 };
 const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps) => {
   const { t } = useTranslation();
+  const {
+    values: { customOpenshiftSelect },
+  } = useFormikContext<ClusterDetailsValues>();
   const selectOptions = React.useMemo(
     () =>
       versions
@@ -72,15 +87,45 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
         })),
     [versions, t],
   );
+  const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
 
+  const showOpenshiftVersionModal = () => {
+    setIsOpenshiftVersionModalOpen(true);
+  };
+
+  const updatedSelectOptions = React.useMemo(() => {
+    if (
+      customOpenshiftSelect &&
+      !selectOptions.find((option) => option.value === customOpenshiftSelect.value)
+    ) {
+      return [
+        {
+          label: customOpenshiftSelect.label,
+          value: customOpenshiftSelect.value,
+        },
+      ];
+    }
+    return [];
+  }, [selectOptions, customOpenshiftSelect]);
   return (
-    <OpenShiftVersionDropdown
-      name="openshiftVersion"
-      items={selectOptions}
-      versions={versions}
-      getHelperText={getOpenshiftVersionHelperText}
-      showReleasesLink={isInOcm}
-    />
+    <>
+      <OpenShiftVersionDropdown
+        name="openshiftVersion"
+        items={selectOptions}
+        versions={versions}
+        getHelperText={getOpenshiftVersionHelperText}
+        showReleasesLink={isInOcm}
+        showOpenshiftVersionModal={showOpenshiftVersionModal}
+        customItems={updatedSelectOptions}
+      />
+      {isOpenshiftVersionModalOpen && (
+        <OpenShiftVersionModal
+          isOpen={isOpenshiftVersionModalOpen}
+          setOpenshiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
+          getHelperText={getOpenshiftVersionHelperText}
+        />
+      )}
+    </>
   );
 };
 

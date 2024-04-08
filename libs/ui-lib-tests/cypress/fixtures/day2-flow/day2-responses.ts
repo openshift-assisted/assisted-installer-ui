@@ -54,7 +54,7 @@ const x68InfraEnv = {
   email_domain: 'redhat.com',
   expires_at: '2023-06-26T17:18:16.000Z',
   kind: 'InfraEnv',
-  openshift_version: '4.12',
+  openshift_version: '4.14',
   org_id: '11009103',
   proxy: {},
   pull_secret_set: true,

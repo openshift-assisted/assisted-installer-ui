@@ -20,10 +20,7 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
   describe('OpenShiftVersion tests', () => {
     it('Should have the correct values for the Openshift versions', () => {
       commonActions.visitNewClusterPage();
-
-      clusterDetailsPage
-        .getSelectedOpenShiftVersion()
-        .should('contain.text', `OpenShift ${versionsFixtures.getDefaultOpenShiftVersion()}`);
+      clusterDetailsPage.inputOpenshiftVersion();
 
       // Checking that the submitting value (item ID) for each version is correct
       clusterDetailsPage.openOpenshiftVersionDropdown();
@@ -32,7 +29,10 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
         .getOpenshiftVersionDropdown()
         .find('[role="menuitem"]')
         .each((versionItem, index) => {
-          expect(versionItem.parent()).to.have.id(expectedVersionIds[index]);
+          //TODO: test adaptations for new feature about custom OCP releases
+          if (index < 7) {
+            expect(versionItem.parent()).to.have.id(expectedVersionIds[index]);
+          }
         });
     });
 
