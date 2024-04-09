@@ -109,6 +109,39 @@ const HostsForm: React.FC<HostsFormProps> = ({
         </GridItem>
 
         <GridItem>
+          <FormGroup isInline label={<>{t('ai:OLM catalog placement')}</>} isRequired>
+            <RadioField
+              name={'olmCatalogPlacement'}
+              label={
+                <>
+                  {t('ai:Management')}{' '}
+                  <PopoverIcon
+                    bodyContent={t(
+                      'ai:OLM catalog components will be deployed onto the management cluster.',
+                    )}
+                  />
+                </>
+              }
+              value={'management'}
+            />
+            <RadioField
+              name={'olmCatalogPlacement'}
+              label={
+                <>
+                  {t('ai:Guest')}{' '}
+                  <PopoverIcon
+                    bodyContent={t(
+                      'ai:OLM catalog components will be deployed onto the guest cluster.',
+                    )}
+                  />
+                </>
+              }
+              value={'guest'}
+            />
+          </FormGroup>
+        </GridItem>
+
+        <GridItem>
           <SelectField
             label={t('ai:Namespace')}
             name="agentNamespace"
