@@ -56,6 +56,12 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
   const [helperText, setHelperText] = React.useState(getHelperText(versions, inputValue, t, true));
 
   React.useEffect(() => {
+    if (textInputRef.current) {
+      textInputRef.current.maxLength = 30;
+    }
+  }, []);
+
+  React.useEffect(() => {
     let newSelectOptions: SelectOptionProps[] = initialSelectOptions;
 
     // Filter menu items based on the text input value when one exists
@@ -68,7 +74,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       if (!newSelectOptions.length) {
         newSelectOptions = [
           {
-            isDisabled: false,
+            isDisabled: true,
             children: `No results found for "${filterValue}"`,
             value: 'no results',
           },
