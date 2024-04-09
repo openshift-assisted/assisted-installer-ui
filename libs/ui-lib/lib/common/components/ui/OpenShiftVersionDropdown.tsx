@@ -84,8 +84,9 @@ export const OpenShiftVersionDropdown = ({
   React.useEffect(() => {
     setCurrent(defaultLabel);
     setValue(defaultValue);
+    setHelperText(getHelperText(versions, defaultValue, t));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultLabel, defaultValue]);
+  }, [defaultLabel, defaultValue, customOpenshiftSelect]);
 
   const parsedVersionsForItems = getParsedVersions(items);
   const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
