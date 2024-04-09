@@ -10,6 +10,7 @@ export type NodePoolFormValue = {
 export type HostsFormValues = {
   controllerAvailabilityPolicy: string;
   infrastructureAvailabilityPolicy: string;
+  olmCatalogPlacement: string;
   agentNamespace: string;
   nodePools: NodePoolFormValue[];
 };
@@ -31,4 +32,5 @@ export type HostsStepProps = {
   nodePools: NodePoolK8sResource[];
   controllerAvailabilityPolicy: string;
   infrastructureAvailabilityPolicy: string;
+  olmCatalogPlacement: string;
 };
