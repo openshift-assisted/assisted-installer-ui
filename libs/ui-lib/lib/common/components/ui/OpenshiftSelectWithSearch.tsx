@@ -103,7 +103,10 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       setSelected(value as string);
       const filteredVersions = versions.filter((version) => version.value === value);
       setFieldValue('customOpenshiftSelect', {
-        label: filteredVersions[0].label,
+        label:
+          filteredVersions[0].supportLevel === 'beta'
+            ? filteredVersions[0].label + ' - ' + t('ai:Developer preview release')
+            : filteredVersions[0].label,
         value: filteredVersions[0].value,
         version: filteredVersions[0].version,
         default: filteredVersions[0].default,
