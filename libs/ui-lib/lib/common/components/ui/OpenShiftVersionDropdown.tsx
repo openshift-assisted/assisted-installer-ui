@@ -23,6 +23,7 @@ import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
 import { ClusterDetailsValues, ItemDropdown } from '../clusterWizard';
+import './OpenshiftVersionDropdown.css';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
