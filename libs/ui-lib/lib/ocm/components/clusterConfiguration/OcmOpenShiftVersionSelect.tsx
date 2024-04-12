@@ -44,7 +44,10 @@ const getOpenshiftVersionHelperText = (
     return null;
   }
 
-  if (selectedVersion.supportLevel !== 'production') {
+  if (
+    selectedVersion.supportLevel !== 'production' &&
+    selectedVersion.supportLevel !== 'maintenance'
+  ) {
     let messageSelectedVersion = t('ai:Please note that this version is not production-ready.');
     if (selectedVersion.supportLevel === 'end-of-life') {
       messageSelectedVersion = t('ai:Please note that this version is not maintained anymore.');
@@ -72,17 +75,15 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
   } = useFormikContext<ClusterDetailsValues>();
   const selectOptions = React.useMemo(
     () =>
-      versions
-        .filter((version) => version.supportLevel !== 'maintenance')
-        .map((version) => ({
-          label:
-            version.supportLevel === 'beta'
-              ? version.label + ' - ' + t('ai:Developer preview release')
-              : version.label,
-          // This is the "key" from openshift-versions API response
-          // It can either be in the long or short (for default versions) form
-          value: version.value,
-        })),
+      versions.map((version) => ({
+        label:
+          version.supportLevel === 'beta'
+            ? version.label + ' - ' + t('ai:Developer preview release')
+            : version.label,
+        // This is the "key" from openshift-versions API response
+        // It can either be in the long or short (for default versions) form
+        value: version.value,
+      })),
     [versions, t],
   );
   const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
