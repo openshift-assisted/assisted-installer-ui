@@ -9,13 +9,11 @@ import { ClusterDetailsValues, OpenshiftVersionOptionType } from '../../../commo
 
 type OpenShiftVersionModalProps = {
   setOpenshiftVersionModalOpen: (isOpen: boolean) => void;
-  isOpen: boolean;
   getHelperText: HelperTextType;
 };
 
 export const OpenShiftVersionModal = ({
   setOpenshiftVersionModalOpen,
-  isOpen,
   getHelperText,
 }: OpenShiftVersionModalProps) => {
   const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
@@ -34,7 +32,7 @@ export const OpenShiftVersionModal = ({
     <Modal
       title="Available OpenShift Versions"
       id="available-openshift-versions-modal"
-      isOpen={isOpen}
+      isOpen
       actions={[
         <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={handleSelect}>
           Select
