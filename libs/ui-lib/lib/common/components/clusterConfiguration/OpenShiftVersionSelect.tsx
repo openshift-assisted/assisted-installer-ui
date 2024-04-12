@@ -35,7 +35,10 @@ const getOpenshiftVersionHelperText =
       return null;
     }
 
-    if (selectedVersion.supportLevel !== 'production') {
+    if (
+      selectedVersion.supportLevel !== 'production' &&
+      selectedVersion.supportLevel !== 'maintenance'
+    ) {
       return (
         <>
           <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
@@ -55,12 +58,10 @@ type OpenShiftVersionSelectProps = {
 const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions, onChange }) => {
   const selectOptions = React.useMemo(
     () =>
-      versions
-        .filter((version) => version.supportLevel !== 'maintenance')
-        .map((version) => ({
-          label: version.label,
-          value: version.value,
-        })),
+      versions.map((version) => ({
+        label: version.label,
+        value: version.value,
+      })),
     [versions],
   );
   const { t } = useTranslation();
