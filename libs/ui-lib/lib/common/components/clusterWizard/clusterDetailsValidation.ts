@@ -81,7 +81,6 @@ export const getClusterDetailsInitialValues = ({
     cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
     platform: cluster?.platform?.type || 'none',
     customOpenshiftSelect: null,
-    helperTextOpenshift: null,
   };
 };
 

@@ -16,7 +16,6 @@ import {
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 
 import { OpenshiftVersionOptionType } from '../../types';
-import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { useField, useFormikContext } from 'formik';
 import { getFieldId } from './formik';
@@ -25,12 +24,7 @@ import { OCP_RELEASES_PAGE } from '../../config';
 import { ClusterDetailsValues, ItemDropdown } from '../clusterWizard';
 import './OpenshiftVersionDropdown.css';
 
-export type HelperTextType = (
-  versions: OpenshiftVersionOptionType[],
-  value: string | undefined,
-  t: TFunction,
-  isModal?: boolean,
-) => JSX.Element | null;
+export type HelperTextType = (value: string | undefined, inModal?: boolean) => JSX.Element | null;
 
 type OpenShiftVersionDropdownProps = {
   name: string;
@@ -61,38 +55,24 @@ export const OpenShiftVersionDropdown = ({
   showOpenshiftVersionModal,
   customItems,
 }: OpenShiftVersionDropdownProps) => {
-  const [field, , { setValue }] = useField(name);
+  const [field, , { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
   const { t } = useTranslation();
   const fieldId = getFieldId(name, 'input');
   const isDisabled = versions.length === 0;
   const {
-    values: { customOpenshiftSelect, helperTextOpenshift },
+    values: { customOpenshiftSelect },
   } = useFormikContext<ClusterDetailsValues>();
-  const { defaultLabel, defaultValue } = React.useMemo(() => {
-    const defaultVersion = customOpenshiftSelect
-      ? customOpenshiftSelect
-      : versions.find((item) => item.default);
-    return {
-      defaultLabel: defaultVersion?.label || '',
-      defaultValue: defaultVersion?.value || '',
-    };
-  }, [customOpenshiftSelect, versions]);
-
-  const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const [current, setCurrent] = React.useState<string>();
 
   React.useEffect(() => {
-    setCurrent(defaultLabel);
-    setValue(defaultValue);
+    const defaultVersion = customOpenshiftSelect
+      ? customOpenshiftSelect
+      : versions.find((item) => item.default);
+    setCurrent(defaultVersion?.label || '');
+    setValue(defaultVersion?.value || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultLabel, defaultValue, customOpenshiftSelect]);
-
-  React.useEffect(() => {
-    if (helperTextOpenshift !== null) {
-      setHelperText(helperTextOpenshift);
-    }
-  }, [helperTextOpenshift]);
+  }, [customOpenshiftSelect]);
 
   const parsedVersionsForItems = getParsedVersions(items);
   const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
@@ -150,15 +130,14 @@ export const OpenShiftVersionDropdown = ({
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const newLabel = event?.currentTarget.innerText;
-      const newValue = event?.currentTarget.id;
+      const newValue = event?.currentTarget.id || '';
       if (newLabel && newValue !== 'all-versions') {
         setCurrent(newLabel);
         setValue(newValue);
-        setHelperText(getHelperText(versions, newValue, t));
         setOpen(false);
       }
     },
-    [setValue, getHelperText, versions, t],
+    [setValue],
   );
 
   const toggle = React.useMemo(
@@ -175,6 +154,8 @@ export const OpenShiftVersionDropdown = ({
     ),
     [setOpen, current, isDisabled],
   );
+
+  const helperText = getHelperText(field.value);
 
   return (
     <FormGroup

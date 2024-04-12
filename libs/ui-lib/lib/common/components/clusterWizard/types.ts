@@ -33,7 +33,6 @@ export type ClusterDetailsValues = {
   cpuArchitecture: string;
   platform: PlatformType;
   customOpenshiftSelect: OpenshiftVersionOptionType | null;
-  helperTextOpenshift: JSX.Element | null;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {

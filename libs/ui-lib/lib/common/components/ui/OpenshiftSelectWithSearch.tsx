@@ -53,7 +53,6 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
   const textInputRef = React.useRef<HTMLInputElement>();
   const { t } = useTranslation();
-  const [helperText, setHelperText] = React.useState(getHelperText(versions, inputValue, t, true));
 
   React.useEffect(() => {
     if (textInputRef.current) {
@@ -118,8 +117,6 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
         default: filteredVersions[0].default,
         supportLevel: filteredVersions[0].supportLevel,
       });
-
-      setHelperText(getHelperText(versions, value as string, t));
     }
     setIsOpen(false);
     setFocusedItemIndex(null);
@@ -234,6 +231,8 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       </TextInputGroup>
     </MenuToggle>
   );
+
+  const helperText = getHelperText(selected, true);
 
   return (
     <>
