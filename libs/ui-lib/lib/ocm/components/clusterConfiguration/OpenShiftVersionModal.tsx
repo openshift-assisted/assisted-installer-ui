@@ -6,6 +6,7 @@ import { useOpenshiftVersions } from '../../hooks';
 import { HelperTextType } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { useFormikContext } from 'formik';
 import { ClusterDetailsValues, OpenshiftVersionOptionType } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type OpenShiftVersionModalProps = {
   setOpenshiftVersionModalOpen: (isOpen: boolean) => void;
@@ -22,10 +23,12 @@ export const OpenShiftVersionModal = ({
   const { versions } = useOpenshiftVersions(false);
   const onClose = () => setOpenshiftVersionModalOpen(false);
   const [customOpenshiftSelect, setCustomOpenshiftSelect] = useState<OpenshiftVersionOptionType>(); // Cambiar el tipo según lo que esperes aquí
+  const { t } = useTranslation();
 
   const handleSelect = () => {
     if (customOpenshiftSelect) {
       setFieldValue('customOpenshiftSelect', customOpenshiftSelect);
+      setFieldValue('helperTextOpenshift', getHelperText(versions, customOpenshiftSelect.value, t));
     }
     onClose();
   };

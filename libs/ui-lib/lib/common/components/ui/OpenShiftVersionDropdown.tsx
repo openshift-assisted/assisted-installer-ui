@@ -67,7 +67,7 @@ export const OpenShiftVersionDropdown = ({
   const fieldId = getFieldId(name, 'input');
   const isDisabled = versions.length === 0;
   const {
-    values: { customOpenshiftSelect },
+    values: { customOpenshiftSelect, helperTextOpenshift },
   } = useFormikContext<ClusterDetailsValues>();
   const { defaultLabel, defaultValue } = React.useMemo(() => {
     const defaultVersion = customOpenshiftSelect
@@ -85,9 +85,14 @@ export const OpenShiftVersionDropdown = ({
   React.useEffect(() => {
     setCurrent(defaultLabel);
     setValue(defaultValue);
-    setHelperText(getHelperText(versions, defaultValue, t));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultLabel, defaultValue, customOpenshiftSelect]);
+
+  React.useEffect(() => {
+    if (helperTextOpenshift !== null) {
+      setHelperText(helperTextOpenshift);
+    }
+  }, [helperTextOpenshift]);
 
   const parsedVersionsForItems = getParsedVersions(items);
   const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
