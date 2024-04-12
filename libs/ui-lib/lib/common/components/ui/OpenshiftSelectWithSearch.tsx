@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import {
   Select,
   SelectOption,
@@ -19,17 +19,17 @@ import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 import { OpenshiftVersionOptionType } from '../../types';
 import { HelperTextType } from './OpenShiftVersionDropdown';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { useFormikContext } from 'formik';
-import { ClusterDetailsValues } from '../clusterWizard';
 
 type OpenshiftSelectWithSearchProps = {
   versions: OpenshiftVersionOptionType[];
   getHelperText: HelperTextType;
+  setCustomOpenshiftSelect: Dispatch<SetStateAction<OpenshiftVersionOptionType | undefined>>;
 };
 
 export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectWithSearchProps> = ({
   versions,
   getHelperText,
+  setCustomOpenshiftSelect,
 }: OpenshiftSelectWithSearchProps) => {
   const initialSelectOptions = React.useMemo(
     () =>
@@ -42,7 +42,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       })),
     [versions],
   );
-  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
+
   const [isOpen, setIsOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<string>('');
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -108,7 +108,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       setFilterValue('');
       setSelected(value as string);
       const filteredVersions = versions.filter((version) => version.value === value);
-      setFieldValue('customOpenshiftSelect', {
+      setCustomOpenshiftSelect({
         label:
           filteredVersions[0].supportLevel === 'beta'
             ? filteredVersions[0].label + ' - ' + t('ai:Developer preview release')
