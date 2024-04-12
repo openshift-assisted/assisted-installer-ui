@@ -80,26 +80,28 @@ export const getNetworkConfigurationValidationSchema = (
           ? Yup.array()
           : machineNetworksValidationSchema.when('stackType', {
               is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-              then: () => IPv4ValidationSchema,
+              then: () => machineNetworksValidationSchema.concat(IPv4ValidationSchema),
               otherwise: () =>
                 values.machineNetworks && values.machineNetworks?.length >= 2
-                  ? dualStackValidationSchema('machine networks')
+                  ? machineNetworksValidationSchema.concat(
+                      dualStackValidationSchema('machine networks'),
+                    )
                   : Yup.array(),
             }),
       clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => IPv4ValidationSchema,
+        then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
         otherwise: () =>
           values.clusterNetworks && values.clusterNetworks?.length >= 2
-            ? dualStackValidationSchema('cluster network')
+            ? clusterNetworksValidationSchema.concat(dualStackValidationSchema('cluster network'))
             : Yup.array(),
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => IPv4ValidationSchema,
+        then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
         otherwise: () =>
           values.serviceNetworks && values.serviceNetworks?.length >= 2
-            ? dualStackValidationSchema('service network')
+            ? serviceNetworkValidationSchema.concat(dualStackValidationSchema('service network'))
             : Yup.array(),
       }),
     }),
