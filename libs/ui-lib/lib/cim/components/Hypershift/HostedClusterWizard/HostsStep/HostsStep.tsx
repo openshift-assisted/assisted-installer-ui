@@ -58,6 +58,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
   nodePools,
   controllerAvailabilityPolicy,
   infrastructureAvailabilityPolicy,
+  olmCatalogPlacement,
 }) => {
   const { t } = useTranslation();
   const availableAgents = getAgentsForSelection(agents);
@@ -82,6 +83,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
           initialValues={{
             controllerAvailabilityPolicy: controllerAvailabilityPolicy || 'HighlyAvailable',
             infrastructureAvailabilityPolicy: infrastructureAvailabilityPolicy || 'HighlyAvailable',
+            olmCatalogPlacement: olmCatalogPlacement || 'management',
             agentNamespace: initInfraEnv || infraEnvsWithAgents[0]?.metadata?.namespace || '',
             nodePools: initNodePools || [
               {
