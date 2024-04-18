@@ -52,14 +52,6 @@ const AutosaveWithParentUpdate = ({
   return null;
 };
 
-const manifestUpdated = (manifest: CustomManifestValues, oldManifest: CustomManifestValues) => {
-  return (
-    oldManifest.filename !== manifest.filename ||
-    oldManifest.folder !== manifest.folder ||
-    oldManifest.manifestYaml !== manifest.manifestYaml
-  );
-};
-
 export const CustomManifestsForm = ({
   onFormStateChange,
   getEmptyValues,
@@ -105,10 +97,7 @@ export const CustomManifestsForm = ({
             } else {
               // manifest updated
               const oldManifest = customManifestsLocalRef.current[index];
-
-              if (manifestUpdated(manifest, oldManifest)) {
-                await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
-              }
+              await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
             }
           } catch (error) {
             const errorArray = new Array(manifests.length).fill(undefined);
