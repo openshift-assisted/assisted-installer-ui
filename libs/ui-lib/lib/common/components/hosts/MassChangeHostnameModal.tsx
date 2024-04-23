@@ -251,7 +251,11 @@ const MassChangeHostnameForm = ({
         </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>
-        <Button key="submit" type={ButtonType.submit} isDisabled={isSubmitting || !isValid}>
+        <Button
+          key="submit"
+          type={ButtonType.submit}
+          isDisabled={isSubmitting || !isValid || !hostnameInputRef.current?.value.trim()}
+        >
           {t('ai:Change')}
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={isSubmitting}>
