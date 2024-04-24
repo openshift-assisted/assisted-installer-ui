@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Button,
   ButtonVariant,
@@ -33,9 +33,8 @@ import {
   selectClusterTableRows,
 } from '../../store/slices/clusters/selectors';
 
-type ClustersProps = RouteComponentProps;
-
-const Clusters: React.FC<ClustersProps> = ({ history }) => {
+const Clusters = () => {
+  const history = useHistory();
   const { LOADING, EMPTY, POLLING_ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
@@ -129,9 +128,9 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   }
 };
 
-const ClustersPage: React.FC<RouteComponentProps> = (props) => (
+const ClustersPage = () => (
   <AlertsContextProvider>
-    <Clusters {...props} />
+    <Clusters />
   </AlertsContextProvider>
 );
 

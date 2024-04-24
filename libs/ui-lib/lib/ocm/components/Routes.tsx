@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Redirect, Route } from 'react-router-dom';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import type { FeatureListType } from '../../common/features/featureGate';
 import { routeBasePath } from '../config';
@@ -18,9 +18,9 @@ export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
     <Provider store={storeDay1}>
       <AssistedUILibVersion />
       <Switch>
-        <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
-        <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
-        <Route path={`${routeBasePath}/clusters`} component={Clusters} />
+        <Route path={`${routeBasePath}/clusters/~new`} children={<NewClusterPage />} />
+        <Route path={`${routeBasePath}/clusters/:clusterId`} children={<ClusterPage />} />
+        <Route path={`${routeBasePath}/clusters`} children={<Clusters />} />
         {children}
         <Redirect to={`${routeBasePath}/clusters`} />
       </Switch>
