@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
 import {
@@ -34,13 +34,12 @@ import { usePullSecret } from '../../hooks';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 
-type MatchParams = {
-  clusterId: string;
-};
-
-const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolean }> = ({
+const ClusterPageGeneric = ({
   clusterId,
   showBreadcrumbs = false,
+}: {
+  clusterId: string;
+  showBreadcrumbs?: boolean;
 }) => {
   if (!clusterId) {
     // console.error('ClusterPageGeneric: missing clusterId');
@@ -196,13 +195,17 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
   return <Redirect to="/clusters" />;
 };
 
-export const SingleClusterPage: React.FC<{ clusterId: string }> = ({ clusterId }) => (
+export const SingleClusterPage = ({ clusterId }: { clusterId: string }) => (
   <AlertsContextProvider>
     <ClusterPageGeneric clusterId={clusterId} />
   </AlertsContextProvider>
 );
-export const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => (
-  <AlertsContextProvider>
-    <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
-  </AlertsContextProvider>
-);
+
+export const ClusterPage = () => {
+  const { clusterId } = useParams<{ clusterId: string }>();
+  return (
+    <AlertsContextProvider>
+      <ClusterPageGeneric clusterId={clusterId || ''} showBreadcrumbs />
+    </AlertsContextProvider>
+  );
+};
