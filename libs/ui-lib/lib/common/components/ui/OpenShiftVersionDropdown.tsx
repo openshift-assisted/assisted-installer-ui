@@ -76,7 +76,7 @@ export const OpenShiftVersionDropdown = ({
 
   const parsedVersionsForItems = getParsedVersions(items);
   const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
-    const items = versions.map(({ value, label }) => (
+    const items = versions.reverse().map(({ value, label }) => (
       <DropdownItem key={value} id={value}>
         {label}
       </DropdownItem>
@@ -90,7 +90,7 @@ export const OpenShiftVersionDropdown = ({
 
   const parsedVersionsForCustomItems = getParsedVersions(customItems);
   const customDropdownItems = parsedVersionsForCustomItems.parsedVersions.map(({ y, versions }) => {
-    const customItems = versions.map(({ value, label }) => (
+    const customItems = versions.reverse().map(({ value, label }) => (
       <DropdownItem key={value} id={value}>
         {label}
       </DropdownItem>
