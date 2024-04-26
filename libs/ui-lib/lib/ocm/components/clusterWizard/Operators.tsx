@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   ClusterWizardStep,
@@ -42,7 +43,7 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const isNextDisabled =
@@ -53,7 +54,9 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
     !canNextOperators({ cluster });
 
   const handleNext = () => {
-    history.replace(pathname, undefined);
+    if (window.location.pathname.indexOf('assisted-installer') > -1) {
+      navigate(pathname, { state: undefined, replace: true });
+    }
     clusterWizardContext.moveNext();
   };
 

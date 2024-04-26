@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Button,
   ButtonVariant,
@@ -34,7 +34,7 @@ import {
 } from '../../store/slices/clusters/selectors';
 
 const Clusters = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { LOADING, EMPTY, POLLING_ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
@@ -84,7 +84,7 @@ const Clusters = () => {
             primaryAction={
               <Button
                 variant={ButtonVariant.primary}
-                onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+                onClick={() => navigate(`${routeBasePath}/clusters/~new`)}
                 id="empty-state-new-cluster-button"
                 data-ouia-id="button-create-new-cluster"
               >

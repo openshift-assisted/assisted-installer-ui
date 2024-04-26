@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Toolbar,
   ToolbarItem,
@@ -52,7 +52,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   setFilters,
 }) => {
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const clustersUIState = useSelectorDay1(selectClustersUIState);
   const dispatch = useDispatchDay1();
   const fetchClusters = React.useCallback(() => void dispatch(fetchClustersAsync()), [dispatch]);
@@ -153,7 +153,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         </ToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
-          onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+          onClick={() => navigate(`${routeBasePath}/clusters/~new`)}
           id="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >
