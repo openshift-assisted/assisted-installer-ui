@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
 import {
@@ -131,7 +131,7 @@ const ClusterPageGeneric = ({
 
   if (uiState === ResourceUIState.POLLING_ERROR && !cluster) {
     if (Number(errorDetail?.code) === 404) {
-      return <Redirect to={`${routeBasePath}/clusters`} />;
+      return <Navigate to={`${routeBasePath}/clusters`} />;
     }
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
@@ -140,7 +140,7 @@ const ClusterPageGeneric = ({
           fetchData={
             Number(errorDetail?.code) === 401 ? () => window.location.reload() : fetchCluster
           }
-          actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
+          actions={[<BackButton key={'cancel'} to={'..'} />]}
         />
       </PageSection>
     );
@@ -151,7 +151,7 @@ const ClusterPageGeneric = ({
       <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
           title="Cluster details not found"
-          actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
+          actions={[<BackButton key={'cancel'} to={`..`} />]}
           content={
             'Check to make sure the cluster-ID is valid. Otherwise, the cluster details may have been deleted.'
           }
@@ -197,7 +197,7 @@ const ClusterPageGeneric = ({
     );
   }
 
-  return <Redirect to="/clusters" />;
+  return <Navigate to="/clusters" />;
 };
 
 export const SingleClusterPage = ({ clusterId }: { clusterId: string }) => (
