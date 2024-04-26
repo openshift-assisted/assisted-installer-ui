@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
@@ -10,7 +10,7 @@ export const CimStorageMissingAlert: React.FC<{
   storageOperatorUrl: string;
 }> = ({ docStorageUrl, storageOperatorUrl }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const contentWorkaround = (
     <>
@@ -20,10 +20,7 @@ export const CimStorageMissingAlert: React.FC<{
   );
 
   const actionLinks: React.ReactNode[] = [
-    <AlertActionLink
-      key="install-storage-operator"
-      onClick={() => history.push(storageOperatorUrl)}
-    >
+    <AlertActionLink key="install-storage-operator" onClick={() => navigate(storageOperatorUrl)}>
       {t('ai:Install storage operator')}
     </AlertActionLink>,
     <AlertActionLink key="storage-class" onClick={() => window.open(docStorageUrl, '_blank')}>

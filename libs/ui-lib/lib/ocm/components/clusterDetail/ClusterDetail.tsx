@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Stack,
   StackItem,
@@ -40,7 +40,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const isSNOExpansionAllowed =
     featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION');
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const history = useHistory();
+  const navigate = useNavigate();
   const canAddHosts =
     (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !isInOcm;
 
@@ -49,13 +49,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       try {
         const { data } = await ClustersAPI.allowAddHosts(cluster.id);
         updateCluster(data);
-        history.push(`${routeBasePath}/clusters/${cluster.id}`);
+        navigate(`${routeBasePath}/clusters/${cluster.id}`);
       } catch (e) {
         handleApiError(e);
       }
     };
     void doItAsync();
-  }, [cluster.id, history]);
+  }, [cluster.id, navigate]);
 
   return (
     <Stack hasGutter>
@@ -112,7 +112,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           {!isSingleClusterFeatureEnabled && (
             <ToolbarButton
               variant={ButtonVariant.link}
-              onClick={() => history.push(`${routeBasePath}/clusters`)}
+              onClick={() => navigate(`${routeBasePath}/clusters`)}
               id={getClusterDetailId('button-back-to-all-clusters')}
             >
               Back to all clusters

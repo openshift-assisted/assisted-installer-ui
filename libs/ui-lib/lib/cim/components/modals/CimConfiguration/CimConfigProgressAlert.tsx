@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Alert,
   AlertVariant,
@@ -26,7 +26,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   assistedServiceDeploymentUrl,
 }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [hideSuccess, setHideSuccess] = React.useState(true);
 
   React.useEffect(
@@ -68,7 +68,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       variant={ButtonVariant.link}
       isInline
       key="assisted-service-deployment"
-      onClick={() => history.push(assistedServiceDeploymentUrl)}
+      onClick={() => navigate(assistedServiceDeploymentUrl)}
     >
       {t('ai:Troubleshoot in the assisted service deployment')} <ExternalLinkAltIcon />
     </Button>
