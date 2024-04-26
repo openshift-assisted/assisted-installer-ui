@@ -112,7 +112,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           {!isSingleClusterFeatureEnabled && (
             <ToolbarButton
               variant={ButtonVariant.link}
-              onClick={() => navigate(`${routeBasePath}/clusters`)}
+              onClick={() => navigate('..')}
               id={getClusterDetailId('button-back-to-all-clusters')}
             >
               Back to all clusters

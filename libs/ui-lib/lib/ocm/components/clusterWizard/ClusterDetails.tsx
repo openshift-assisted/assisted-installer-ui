@@ -10,7 +10,6 @@ import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransi
 import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
-import { routeBasePath } from '../../config';
 import {
   ClusterDetailsUpdateParams,
   ClustersService,
@@ -73,7 +72,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       clearAlerts();
       try {
         const cluster = await ClustersService.create(params);
-        navigate(`${routeBasePath}/clusters/${cluster.id}`, { state: ClusterWizardFlowStateNew });
+        navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
       } catch (e) {
         handleApiError(e, () =>

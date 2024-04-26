@@ -1,30 +1,33 @@
-/* eslint-disable react/no-children-prop */
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom-v5-compat';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import type { FeatureListType } from '../../common/features/featureGate';
-import { routeBasePath } from '../config';
 import { AssistedUILibVersion } from './ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
 
-export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
+export const UILibRoutes = ({
   allEnabledFeatures,
   children,
+}: {
+  allEnabledFeatures: FeatureListType;
+  children: React.ReactNode;
 }) => {
   useFeatureDetection(allEnabledFeatures);
 
   return (
     <Provider store={storeDay1}>
       <AssistedUILibVersion />
-      <Switch>
-        <Route path={`${routeBasePath}/clusters/~new`} children={<NewClusterPage />} />
-        <Route path={`${routeBasePath}/clusters/:clusterId`} children={<ClusterPage />} />
-        <Route path={`${routeBasePath}/clusters`} children={<Clusters />} />
+      <Routes>
+        <Route path="clusters" element={<Outlet />}>
+          <Route path="~new" element={<NewClusterPage />} />
+          <Route path=":clusterId" element={<ClusterPage />} />
+          <Route index element={<Clusters />} />
+        </Route>
         {children}
-        <Redirect to={`${routeBasePath}/clusters`} />
-      </Switch>
+        <Route path="*" element={<Navigate to="clusters" />} />
+      </Routes>
     </Provider>
   );
 };

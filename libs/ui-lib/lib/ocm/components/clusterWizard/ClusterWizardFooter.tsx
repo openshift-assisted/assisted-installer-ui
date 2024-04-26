@@ -9,7 +9,6 @@ import {
   clusterFieldLabels,
   selectClusterValidationsInfo,
 } from '../../../common';
-import { routeBasePath } from '../../config';
 import { wizardStepsValidationsMap } from './wizardTransition';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
@@ -81,7 +80,7 @@ const ClusterWizardFooter = ({
   const { alerts } = useAlerts();
   const navigate = useNavigate();
 
-  const handleCancel = React.useCallback(() => navigate(`${routeBasePath}/clusters/`), [navigate]);
+  const handleCancel = React.useCallback(() => navigate('..'), [navigate]);
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
 
