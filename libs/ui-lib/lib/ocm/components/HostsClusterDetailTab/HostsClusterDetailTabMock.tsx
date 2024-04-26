@@ -1,5 +1,4 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import {
   ButtonVariant,
   EmptyState,
@@ -9,7 +8,6 @@ import {
   PageSectionVariants,
   EmptyStateHeader,
 } from '@patternfly/react-core';
-import { HostsClusterDetailTabProps } from './types';
 import {
   OcmCpuArchitecture,
   STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
@@ -44,9 +42,7 @@ const getCluster = (type: string) => {
   }
 };
 
-export const HostsClusterDetailTabMock: React.FC<
-  RouteComponentProps & HostsClusterDetailTabProps
-> = () => {
+export const HostsClusterDetailTabMock = () => {
   const [tabShown, setTabShown] = React.useState<string>('');
   const [isMocked, setIsMocked] = React.useState<boolean>(false);
 

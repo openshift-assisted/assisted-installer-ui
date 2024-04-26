@@ -39,5 +39,3 @@ export const ocmPermissionsToAIPermissions = (
   }
   return permissions;
 };
-
-export const OCM_CLUSTER_LIST_LINK = '/openshift'; // TODO(mlibra): Tweak it!!!
