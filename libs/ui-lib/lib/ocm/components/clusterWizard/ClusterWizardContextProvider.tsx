@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
 import {
+  ClusterWizardFlowStateType,
   ClusterWizardStepsType,
   getClusterWizardFirstStep,
   isStaticIpStep,
@@ -90,7 +91,8 @@ const ClusterWizardContextProvider = ({
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
-  const { state: locationState } = useLocation();
+  const location = useLocation();
+  const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
     uiSettings,
     updateUISettings,

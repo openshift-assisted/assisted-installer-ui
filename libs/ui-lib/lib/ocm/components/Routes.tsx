@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Switch, Redirect, Route } from 'react-router-dom';
