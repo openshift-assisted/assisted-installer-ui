@@ -23,6 +23,7 @@ export type OcmClusterDetailsValues = ClusterDetailsValues & {
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
   addCustomManifest: boolean;
   isCMNSupported: boolean;
+  isSNODevPreview: boolean;
 };
 
 export type UISettingsValues = {

@@ -25,7 +25,6 @@ import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterD
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import { useClusterWizardContext } from './ClusterWizardContext';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import {
   Cluster,
   ClusterCreateParams,
@@ -67,7 +66,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const clusterWizardContext = useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const featureSupportLevels = useNewFeatureSupportLevel();
   const { clearAlerts } = useAlerts();
 
   const handleSubmit = React.useCallback(
@@ -139,7 +137,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     ocpVersions,
     isOcm: true,
     t,
-    newFeatureSupportLevels: featureSupportLevels,
   });
 
   return (
