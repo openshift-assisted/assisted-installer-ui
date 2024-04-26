@@ -1,7 +1,7 @@
 import React from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import type { IRow, IRowData } from '@patternfly/react-table';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
 import type { TFunction } from 'i18next';
 import {
   DASH,
@@ -14,7 +14,6 @@ import {
 } from '../../../../common';
 import type { ClusterTableRows, HumanizedSortable } from '../../../../common';
 import ClusterStatus, { getClusterStatusText } from '../../../components/clusters/ClusterStatus';
-import { routeBasePath } from '../../../config';
 import { RootStateDay1 } from '../../store-day1';
 import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -53,7 +52,7 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
     cells: [
       {
         title: (
-          <Link key={name} to={`${routeBasePath}/clusters/${id}`} id={`cluster-link-${id}`}>
+          <Link key={name} to={id} id={`cluster-link-${id}`}>
             {name}
           </Link>
         ),

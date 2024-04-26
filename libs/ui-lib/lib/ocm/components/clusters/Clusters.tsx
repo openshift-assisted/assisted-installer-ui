@@ -22,7 +22,6 @@ import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
 import { handleApiError, getApiErrorMessage } from '../../../common/api';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
-import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
@@ -84,7 +83,7 @@ const Clusters = () => {
             primaryAction={
               <Button
                 variant={ButtonVariant.primary}
-                onClick={() => navigate(`${routeBasePath}/clusters/~new`)}
+                onClick={() => navigate(`~new`)}
                 id="empty-state-new-cluster-button"
                 data-ouia-id="button-create-new-cluster"
               >

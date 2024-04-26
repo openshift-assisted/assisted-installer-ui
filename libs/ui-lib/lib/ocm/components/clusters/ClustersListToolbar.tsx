@@ -23,7 +23,6 @@ import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
 import { fetchClustersAsync } from '../../store/slices/clusters/slice';
-import { routeBasePath } from '../../config';
 import omit from 'lodash-es/omit.js';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -153,7 +152,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         </ToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
-          onClick={() => navigate(`${routeBasePath}/clusters/~new`)}
+          onClick={() => navigate(`~new`)}
           id="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >

@@ -2,7 +2,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { storeDay1 } from '../../store';
-import { OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
   AssistedInstallerOCMPermissionTypesListType,
@@ -62,7 +61,7 @@ const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; err
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={fetchCluster}
-          actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+          actions={[<BackButton key={'cancel'} to={'..'} />]}
           content={error}
         />
       </CardBody>
@@ -80,7 +79,7 @@ const LoadingDefaultConfigFailedCard = () => (
     <CardBody>
       <ErrorState
         title="Failed to retrieve the default configuration"
-        actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+        actions={[<BackButton key={'cancel'} to={'..'} />]}
       />
     </CardBody>
   </Card>
