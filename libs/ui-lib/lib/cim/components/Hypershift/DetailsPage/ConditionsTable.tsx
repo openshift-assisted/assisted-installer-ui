@@ -18,7 +18,7 @@ type ConditionsTableProps = {
   conditions?: {
     status: string;
     type: string;
-    message: string;
+    message?: string;
   }[];
   isDone: boolean;
 };
@@ -73,7 +73,7 @@ const ConditionsTable = ({ conditions, isDone }: ConditionsTableProps) => {
                     <FlexItem>{c.type}</FlexItem>
                   </Flex>
                 </Td>
-                <Td span={8}>{c.message}</Td>
+                <Td span={8}>{c.message || '-'}</Td>
               </Tr>
             );
           })}
