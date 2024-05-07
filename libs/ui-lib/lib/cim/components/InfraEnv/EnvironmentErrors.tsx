@@ -19,7 +19,7 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
   children,
   inModal,
 }) => {
-  const infraEnvAlerts = getFailingResourceConditions(infraEnv, undefined /* For ALL */);
+  const infraEnvAlerts = getFailingResourceConditions(infraEnv, ['ImageCreated']);
   const { t } = useTranslation();
 
   if (infraEnv.status && !infraEnvAlerts.length) {
