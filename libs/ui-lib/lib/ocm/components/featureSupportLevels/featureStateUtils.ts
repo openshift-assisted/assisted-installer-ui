@@ -96,20 +96,20 @@ const getCnvDisabledReason = (
   if (!activeFeatureConfiguration) {
     return undefined;
   }
+  if (platformType === 'nutanix') {
+    return `${CNV_OPERATOR_LABEL} is not available when Nutanix platform type is selected.`;
+  }
   if (!isSupported) {
     const cpuArchitectureLabel =
       architectureData[
         activeFeatureConfiguration.underlyingCpuArchitecture as SupportedCpuArchitecture
       ].label;
-    if (platformType === 'nutanix') {
-      return `${CNV_OPERATOR_LABEL} is not available when Nutanix platform type is selected.`;
-    } else {
-      return `${CNV_OPERATOR_LABEL} is not available when ${
-        cpuArchitectureLabel
-          ? cpuArchitectureLabel
-          : activeFeatureConfiguration.underlyingCpuArchitecture
-      } CPU architecture is selected.`;
-    }
+
+    return `${CNV_OPERATOR_LABEL} is not available when ${
+      cpuArchitectureLabel
+        ? cpuArchitectureLabel
+        : activeFeatureConfiguration.underlyingCpuArchitecture
+    } CPU architecture is selected.`;
   } else {
     return undefined;
   }
@@ -124,12 +124,11 @@ const getLvmDisabledReason = (
     return undefined;
   }
   const operatorLabel = isSupported ? LVMS_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
+  if (platformType === 'nutanix') {
+    return `${operatorLabel} is not supported when Nutanix platform type is selected.`;
+  }
   if (!isSupported) {
-    if (platformType === 'nutanix') {
-      return `${operatorLabel} is not supported when Nutanix platform type is selected.`;
-    } else {
-      return `${operatorLabel} is not supported in this OpenShift version.`;
-    }
+    return `${operatorLabel} is not supported in this OpenShift version.`;
   }
   return undefined;
 };
@@ -198,12 +197,11 @@ export const getNewFeatureDisabledReason = (
       return getOciDisabledReason(cpuArchitecture, isSupported);
     }
     case 'MCE': {
+      if (platformType === 'nutanix') {
+        return 'Multicluster engine is not supported with Nutanix platform type.';
+      }
       if (!isSupported) {
-        if (platformType === 'nutanix') {
-          return 'Multicluster engine is not supported with Nutanix platform type.';
-        } else {
-          return 'Multicluster engine is not supported in this OpenShift version.';
-        }
+        return 'Multicluster engine is not supported in this OpenShift version.';
       }
     }
     case 'NUTANIX_INTEGRATION': {
