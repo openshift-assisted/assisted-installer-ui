@@ -134,6 +134,7 @@ const ClusterDetailsService = {
       hostsNetworkConfigurationType,
       addCustomManifest: !!addCustomManifests,
       isCMNSupported: true,
+      isSNODevPreview: false,
     };
   },
 };
