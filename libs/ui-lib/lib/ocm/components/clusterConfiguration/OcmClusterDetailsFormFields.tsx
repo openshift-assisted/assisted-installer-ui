@@ -111,6 +111,13 @@ export const OcmClusterDetailsFormFields = ({
       ),
       false,
     );
+    setFieldValue(
+      'isSNODevPreview',
+      featureSupportLevelContext.getFeatureSupportLevel(
+        'SNO',
+        featureSupportLevelData ?? undefined,
+      ) === 'dev-preview',
+    );
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
   return (

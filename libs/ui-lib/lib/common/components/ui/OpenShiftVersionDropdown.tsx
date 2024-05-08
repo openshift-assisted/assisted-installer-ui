@@ -38,13 +38,12 @@ type OpenShiftVersionDropdownProps = {
 
 const getParsedVersions = (items: ItemDropdown) => {
   const versionsY = Array.from(new Set(items.map((val) => val.value.match(/^\d+\.(\d+)/)?.[1])));
-  const lastVersion = versionsY.slice(-1)[0];
 
   const parsedVersions = versionsY.map((y) => ({
     y: y,
     versions: items.filter((val) => val.value.match(/^\d+\.(\d+)/)?.[1] === y),
   }));
-  return { parsedVersions: parsedVersions, lastVersion: lastVersion };
+  return { parsedVersions: parsedVersions.reverse() };
 };
 export const OpenShiftVersionDropdown = ({
   name,
@@ -75,6 +74,7 @@ export const OpenShiftVersionDropdown = ({
   }, [customOpenshiftSelect]);
 
   const parsedVersionsForItems = getParsedVersions(items);
+  let lastY: string | undefined = '';
   const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
     const items = versions.map(({ value, label }) => (
       <DropdownItem key={value} id={value}>
@@ -82,13 +82,15 @@ export const OpenShiftVersionDropdown = ({
       </DropdownItem>
     ));
 
-    if (y !== parsedVersionsForItems.lastVersion) {
+    if (lastY !== null && y !== lastY) {
       items.push(<DropdownSeparator key={`separator-${y || ''}`} />);
     }
+    lastY = y;
     return items;
   });
 
   const parsedVersionsForCustomItems = getParsedVersions(customItems);
+  let lastCustomY: string | undefined = '';
   const customDropdownItems = parsedVersionsForCustomItems.parsedVersions.map(({ y, versions }) => {
     const customItems = versions.map(({ value, label }) => (
       <DropdownItem key={value} id={value}>
@@ -96,9 +98,11 @@ export const OpenShiftVersionDropdown = ({
       </DropdownItem>
     ));
 
-    if (y !== parsedVersionsForCustomItems.lastVersion) {
+    if (lastCustomY !== null && y !== lastCustomY) {
       customItems.push(<DropdownSeparator key={`separator-${y || ''}`} />);
     }
+    lastCustomY = y;
+
     return customItems;
   });
 
