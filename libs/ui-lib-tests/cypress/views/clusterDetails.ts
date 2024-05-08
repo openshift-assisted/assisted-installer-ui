@@ -26,6 +26,11 @@ export const clusterDetailsPage = {
     });
     clusterDetailsPage.getSelectedOpenShiftVersion().should('contain.text', `OpenShift ${version}`);
   },
+  clickLinkAllAvailableVersions: () => {
+    clusterDetailsPage.getOpenshiftVersionDropdown().within(() => {
+      cy.get('li').contains('Show all available versions').click();
+    });
+  },
   getPullSecret: () => {
     return cy.get(Cypress.env('pullSecretFieldId'));
   },

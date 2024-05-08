@@ -16,14 +16,14 @@ export type PreviewBadgeProps = {
   className?: string;
   text: string;
   externalLink?: string;
-  popoverText: string;
+  popoverContent: React.ReactNode;
 } & WithTestID;
 
 export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   position = PreviewBadgePosition.inline,
   className = 'pf-v5-u-ml-md',
   text,
-  popoverText,
+  popoverContent,
   externalLink,
   testId,
 }) => {
@@ -39,7 +39,7 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   }
   const bodyContent = (
     <>
-      <div style={{ marginBottom: 'var(--pf-v5-global--spacer--sm)' }}>{popoverText}</div>
+      <div style={{ marginBottom: 'var(--pf-v5-global--spacer--sm)' }}>{popoverContent}</div>
       {externalLink && (
         <>
           <ExternalLink href={externalLink}>{t('ai:Learn more')}</ExternalLink>
