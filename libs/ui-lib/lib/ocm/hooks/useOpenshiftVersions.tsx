@@ -16,11 +16,9 @@ type UseOpenshiftVersionsType = {
 };
 
 const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
-  return versions
-    .sort((version1, version2) =>
-      version1.label.localeCompare(version2.label, undefined, { numeric: true }),
-    )
-    .reverse();
+  return versions.sort((version1, version2) =>
+    version1.value.localeCompare(version2.value, undefined, { numeric: true }),
+  );
 };
 
 const supportedVersionLevels = ['production', 'maintenance'];
@@ -56,6 +54,7 @@ export default function useOpenshiftVersions(latest_release?: boolean): UseOpens
           cpuArchitectures: versionItem.cpuArchitectures as CpuArchitecture[],
         };
       });
+
       setVersions(sortVersions(versions));
     } catch (e) {
       handleApiError(e, (e) => {
