@@ -215,3 +215,35 @@ export const HostsInstallationSuccess = () => {
     </>
   );
 };
+
+type ClusterInstallationTimeoutProps = {
+  cluster: Cluster;
+};
+
+export const ClusterInstallationTimeout = ({ cluster }: ClusterInstallationTimeoutProps) => {
+  const { addAlert, clearAlerts } = useAlerts();
+  return (
+    <>
+      <Alert
+        isInline
+        variant="warning"
+        title="Cluster installation is taking too long"
+        actionLinks={
+          <>
+            <AlertActionLink
+              id="cluster-installation-logs-button"
+              onClick={() => {
+                void downloadClusterInstallationLogs(addAlert, cluster.id, clearAlerts);
+              }}
+              isDisabled={!canDownloadClusterLogs(cluster)}
+            >
+              Download installation logs
+            </AlertActionLink>
+          </>
+        }
+      >
+        Check the logs to find out why or reset the cluster to start over.
+      </Alert>
+    </>
+  );
+};
