@@ -201,6 +201,7 @@ export const OcmClusterDetailsFormFields = ({
         values={values}
         isDisabled={isPullSecretSet}
         isSNO={isSNO({ highAvailabilityMode })}
+        docVersion={openshiftVersion}
       />
     </Form>
   );

@@ -70,7 +70,10 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
         selectSchedulableMasters(cluster),
         cluster.kind,
       ),
-      hardwareStatusColumn({ onEditHostname: onEditHost }),
+      hardwareStatusColumn({
+        onEditHostname: onEditHost,
+        openshiftVersion: cluster.openshiftVersion,
+      }),
       discoveredAtColumn(t),
       cpuCoresColumn(t),
       memoryColumn(t),
