@@ -55,6 +55,7 @@ const ValidationSection = ({
           hosts={cluster?.hosts || []}
           validationsInfo={validationsInfo}
           wizardStepsValidationsMap={wizardStepsValidationsMap}
+          lastInstallationPreparation={cluster['last-installation-preparation']}
         />
       )}
     </AlertGroup>

@@ -10,7 +10,10 @@ import {
   ListItem,
 } from '@patternfly/react-core';
 import { checkHostValidations, WizardStepsValidationMap } from './validationsInfoUtils';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  LastInstallationPreparation,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { ClusterWizardStepHostStatusDeterminationObject } from '../../types/hosts';
@@ -28,6 +31,7 @@ type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends strin
   hosts: ClusterWizardStepHostStatusDeterminationObject[];
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>;
   children?: React.ReactNode;
+  lastInstallationPreparation?: LastInstallationPreparation | undefined;
 };
 
 const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string>({
@@ -37,6 +41,7 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   hosts,
   wizardStepsValidationsMap,
   children,
+  lastInstallationPreparation,
 }: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
   const { failedClusterValidations, failedHostnameValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
@@ -107,6 +112,15 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
                   )}
                 </FlexItem>
               )}
+            </Flex>
+          </Alert>
+        </AlertGroup>
+      )}
+      {lastInstallationPreparation && lastInstallationPreparation.status === 'failed' && (
+        <AlertGroup>
+          <Alert variant={AlertVariant.danger} title="Error in preparing installation" isInline>
+            <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
+              <FlexItem>{lastInstallationPreparation.reason}</FlexItem>
             </Flex>
           </Alert>
         </AlertGroup>
