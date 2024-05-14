@@ -109,6 +109,11 @@
     "uuid": "^8.1",
     "yup": "^1.4.0"
   },
+  "overrides": {
+    "@types/react-router-dom": {
+      "react-router": "5.3.2"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
