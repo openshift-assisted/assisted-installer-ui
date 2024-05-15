@@ -29,8 +29,8 @@ import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { APPROVE_NODES_IN_CL_LINK } from '../../config';
 import { hostStatus } from './status';
+import { getApproveNodesInClLink } from '../../config';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -43,12 +43,14 @@ type HostStatusPopoverContentProps = ValidationInfoActionProps & {
   validationsInfo: ValidationsInfo;
   autoCSR?: boolean;
   additionalPopoverContent?: React.ReactNode;
+  openshiftVersion?: string;
 };
 
 const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   details,
   autoCSR,
   additionalPopoverContent,
+  openshiftVersion,
   ...props
 }) => {
   const { host } = props;
@@ -99,7 +101,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
             {t('ai:It may take a few minutes for the join request to appear.')}
             <br />
             {t('ai:If you prefer using the CLI, follow the instructions in')}&nbsp;
-            <ExternalLink href={APPROVE_NODES_IN_CL_LINK}>
+            <ExternalLink href={getApproveNodesInClLink(openshiftVersion)}>
               {t('ai:How to approve nodes using the CLI')}
             </ExternalLink>
           </>
@@ -187,6 +189,7 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     zIndex?: number;
     autoCSR?: boolean;
     additionalPopoverContent?: React.ReactNode;
+    openshiftVersion?: string;
   };
 
 const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
@@ -221,6 +224,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   zIndex,
   autoCSR,
   additionalPopoverContent,
+  openshiftVersion,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
 
@@ -245,6 +249,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
     zIndex,
     autoCSR,
     additionalPopoverContent,
+    openshiftVersion,
   };
 
   return (

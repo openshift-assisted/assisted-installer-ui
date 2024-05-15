@@ -38,8 +38,10 @@ export const FEEDBACK_FORM_LINK =
 
 export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offerings/techpreview';
 
-export const ENCRYPTING_DISK_DURING_INSTALLATION =
-  'https://docs.openshift.com/container-platform/4.7/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing';
+export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string) =>
+  `https://docs.openshift.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.12'
+  }/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing`;
 
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
@@ -52,13 +54,17 @@ export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
-export const LVMS_LINK =
-  'https://docs.openshift.com/container-platform/4.12/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html';
+export const getLvmsDocsLink = (ocpVersion?: string) =>
+  `https://docs.openshift.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.12'
+  }/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html`;
 
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
 
-export const APPROVE_NODES_IN_CL_LINK =
-  'https://docs.openshift.com/container-platform/4.11/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic';
+export const getApproveNodesInClLink = (ocpVersion?: string) =>
+  `https://docs.openshift.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.11'
+  }/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic`;
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
@@ -383,8 +389,15 @@ export const CHANGE_ISO_PASSWORD_FILE_LINK =
 export const CUSTOM_MANIFESTS_HELP_LINK =
   'https://docs.openshift.com/container-platform/4.12/installing/install_config/installing-customizing.html';
 
+export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
+  `https://docs.openshift.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.12'
+  }/installing/install_config/installing-customizing.html`;
+
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
   'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html-single/assisted_installer_for_openshift_container_platform/index#checking-for-multiple-architectures_expanding-the-cluster';
 
-export const MCE_LINK =
-  'https://docs.openshift.com/container-platform/4.14/architecture/mce-overview-ocp.html';
+export const getMceDocsLink = (ocpVersion?: string) =>
+  `https://docs.openshift.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.12'
+  }/architecture/mce-overview-ocp.html`;
