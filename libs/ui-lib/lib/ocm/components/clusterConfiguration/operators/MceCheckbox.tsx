@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { getFieldId, PopoverIcon, MCE_LINK } from '../../../../common';
+import { getFieldId, PopoverIcon, getMceDocsLink } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { useSelector } from 'react-redux';
@@ -35,12 +35,12 @@ const MceLabel = ({
   );
 };
 
-const MceHelperText = () => {
+const MceHelperText = ({ docsVersion }: { docsVersion: string }) => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Create, import, and manage multiple clusters from this cluster.{' '}
-        <a href={MCE_LINK} target="_blank" rel="noopener noreferrer">
+        <a href={getMceDocsLink(docsVersion)} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -50,8 +50,10 @@ const MceHelperText = () => {
 
 const MceCheckbox = ({
   isVersionEqualsOrMajorThan4_15,
+  openshiftVersion,
 }: {
   isVersionEqualsOrMajorThan4_15: boolean;
+  openshiftVersion?: string;
 }) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const featureSupportLevelContext = useNewFeatureSupportLevel();
@@ -69,7 +71,7 @@ const MceCheckbox = ({
           />
         }
         isDisabled={!!disabledReason}
-        helperText={<MceHelperText />}
+        helperText={<MceHelperText docsVersion={openshiftVersion || ''} />}
       />
     </FormGroup>
   );
