@@ -21,6 +21,7 @@ type HardwareStatusProps = {
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
   isWithinModal?: boolean;
+  openshiftVersion?: string;
 };
 
 const DELETE_MODAL_STATUS_Z_INDEX = 500;
@@ -53,6 +54,7 @@ const HardwareStatus = (props: HardwareStatusProps) => {
       status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      openshiftVersion={props.openshiftVersion}
     />
   );
 };
@@ -60,9 +62,11 @@ const HardwareStatus = (props: HardwareStatusProps) => {
 export const hardwareStatusColumn = ({
   onEditHostname,
   isWithinModal,
+  openshiftVersion,
 }: {
   onEditHostname?: HostsTableActions['onEditHost'];
   isWithinModal?: boolean;
+  openshiftVersion?: string;
 }): TableRow<Host> => {
   return {
     header: {
@@ -82,6 +86,7 @@ export const hardwareStatusColumn = ({
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             isWithinModal={isWithinModal}
+            openshiftVersion={openshiftVersion}
           />
         ),
         props: { 'data-testid': 'host-hw-status' },

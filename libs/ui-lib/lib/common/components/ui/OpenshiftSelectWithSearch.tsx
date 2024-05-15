@@ -248,7 +248,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
         isScrollable
       >
         <SelectList id="select-typeahead-listbox">
-          {selectOptions.map((option, index) => {
+          {selectOptions.reverse().map((option, index) => {
             const match = (option.value as string).match(/\d+\.(\d+)\.\d+/);
             const y = match ? match[1] : null;
 

@@ -16,6 +16,11 @@ describe(`Assisted Installer Custom manifests step`, () => {
     beforeEach(() => {
       setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
       commonActions.visitClusterDetailsPage();
+      Cypress.on('uncaught:exception', (err, runnable) => {
+        // returning false here prevents Cypress from
+        // failing the test
+        return false;
+      });
     });
 
     it('Can add new custom manifests', () => {

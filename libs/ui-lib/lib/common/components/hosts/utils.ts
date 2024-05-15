@@ -51,7 +51,6 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
     'resetting-pending-user-action',
     'installing-pending-user-action',
     'pending-for-input',
-    'added-to-existing-cluster',
     'error',
   ].includes(status);
 

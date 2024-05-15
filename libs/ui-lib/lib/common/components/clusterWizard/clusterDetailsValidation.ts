@@ -15,7 +15,6 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
-import { NewFeatureSupportLevelData } from '../newFeatureSupportLevels';
 import { FeatureSupportLevelData } from '../featureSupportLevels';
 
 const emptyTangServers = (): TangServer[] => {
@@ -92,7 +91,6 @@ export const getClusterDetailsValidationSchema = ({
   validateUniqueName,
   isOcm,
   t,
-  newFeatureSupportLevels,
 }: {
   usedClusterNames: string[];
   featureSupportLevels?: FeatureSupportLevelData;
@@ -101,9 +99,8 @@ export const getClusterDetailsValidationSchema = ({
   validateUniqueName?: boolean;
   isOcm?: boolean;
   t: TFunction;
-  newFeatureSupportLevels?: NewFeatureSupportLevelData;
 }) =>
-  Yup.lazy((values: { baseDnsDomain: string }) => {
+  Yup.lazy((values: { baseDnsDomain: string; isSNODevPreview: boolean }) => {
     const validateName = () =>
       nameValidationSchema(t, usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
     if (pullSecretSet) {
@@ -127,21 +124,17 @@ export const getClusterDetailsValidationSchema = ({
           openshiftVersion: Cluster['openshiftVersion'],
         ) => {
           const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
-          if (newFeatureSupportLevels) {
-            return (
-              highAvailabilityMode === 'None' &&
-              selectedVersion &&
-              newFeatureSupportLevels.getFeatureSupportLevel('SNO') === 'dev-preview'
-            );
-          } else {
+          if (featureSupportLevels) {
             return highAvailabilityMode === 'None' && selectedVersion && featureSupportLevels
               ? featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO') ===
                   'dev-preview'
               : false;
+          } else {
+            return highAvailabilityMode === 'None' && selectedVersion && values.isSNODevPreview;
           }
         },
         then: () =>
-          Yup.bool().oneOf(
+          Yup.boolean().oneOf(
             [true],
             t('ai:Confirm the Single Node OpenShift disclaimer to continue.'),
           ),

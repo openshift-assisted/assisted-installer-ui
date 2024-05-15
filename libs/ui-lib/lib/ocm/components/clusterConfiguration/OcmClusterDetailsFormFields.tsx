@@ -111,6 +111,13 @@ export const OcmClusterDetailsFormFields = ({
       ),
       false,
     );
+    setFieldValue(
+      'isSNODevPreview',
+      featureSupportLevelContext.getFeatureSupportLevel(
+        'SNO',
+        featureSupportLevelData ?? undefined,
+      ) === 'dev-preview',
+    );
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
   return (
@@ -194,6 +201,7 @@ export const OcmClusterDetailsFormFields = ({
         values={values}
         isDisabled={isPullSecretSet}
         isSNO={isSNO({ highAvailabilityMode })}
+        docVersion={openshiftVersion}
       />
     </Form>
   );

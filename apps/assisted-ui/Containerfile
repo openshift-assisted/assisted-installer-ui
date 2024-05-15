@@ -26,7 +26,7 @@ RUN npm install -g corepack@0.24.1
 WORKDIR "${APP_ROOT}/src/repo"
 RUN yarn install --immutable && yarn build:all
 
-FROM registry.access.redhat.com/ubi8/nginx-120 AS assisted-ui
+FROM registry.access.redhat.com/ubi8/nginx-122 AS assisted-ui
 COPY --from=devcontainer /opt/app-root/src/repo/apps/assisted-ui/build/ "${NGINX_APP_ROOT}/src/"
 COPY --from=devcontainer /opt/app-root/src/repo/apps/assisted-ui/deploy/ /deploy/
 CMD [ "/deploy/start.sh" ]

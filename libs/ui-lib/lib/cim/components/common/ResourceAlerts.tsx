@@ -30,19 +30,30 @@ export const SingleResourceAlerts: React.FC<{
       <TextContent>
         <TextList component={TextListVariants.ul}>
           {conditions.map((c) => {
-            const [title, ...messages] = c.message.split(/:|\.,/);
-            return (
-              <React.Fragment key={title}>
-                <TextListItem component={TextListItemVariants.li}>
-                  <strong>{title}</strong>
-                </TextListItem>
-                {messages.map((m) => (
-                  <TextListItem key={m} component={TextListItemVariants.li}>
-                    {m}
+            if (c.message) {
+              const [title, ...messages] = c.message.split(/:|\.,/);
+              return (
+                <React.Fragment key={c.type}>
+                  <TextListItem component={TextListItemVariants.li}>
+                    <strong>{title}</strong>
                   </TextListItem>
-                ))}
-              </React.Fragment>
-            );
+                  {messages.map((m) => (
+                    <TextListItem key={m} component={TextListItemVariants.li}>
+                      {m}
+                    </TextListItem>
+                  ))}
+                </React.Fragment>
+              );
+            } else {
+              return (
+                <React.Fragment key={c.type}>
+                  <TextListItem component={TextListItemVariants.li}>
+                    <strong>{c.type}</strong>
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.li}>{c.reason || ''}</TextListItem>
+                </React.Fragment>
+              );
+            }
           })}
         </TextList>
       </TextContent>
