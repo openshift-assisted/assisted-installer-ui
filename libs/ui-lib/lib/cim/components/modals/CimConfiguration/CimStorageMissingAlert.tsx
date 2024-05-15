@@ -10,6 +10,7 @@ export const CimStorageMissingAlert: React.FC<{
   storageOperatorUrl: string;
 }> = ({ docStorageUrl, storageOperatorUrl }) => {
   const { t } = useTranslation();
+  // eslint-disable-next-line
   const history = useHistory();
 
   const contentWorkaround = (
@@ -22,6 +23,7 @@ export const CimStorageMissingAlert: React.FC<{
   const actionLinks: React.ReactNode[] = [
     <AlertActionLink
       key="install-storage-operator"
+      // eslint-disable-next-line
       onClick={() => history.push(storageOperatorUrl)}
     >
       {t('ai:Install storage operator')}

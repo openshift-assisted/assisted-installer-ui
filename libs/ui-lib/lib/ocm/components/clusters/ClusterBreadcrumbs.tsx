@@ -5,8 +5,7 @@ import {
   BreadcrumbItem,
   PageSection,
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
-import { routeBasePath } from '../../config';
+import { Link } from 'react-router-dom-v5-compat';
 import { isInOcm } from '../../../common/api';
 
 const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => (
@@ -18,7 +17,7 @@ const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => (
         </BreadcrumbItem>
         {clusterName ? (
           <BreadcrumbItem>
-            <Link to={`${routeBasePath}/clusters`}>Assisted Clusters</Link>
+            <Link to={`..`}>Assisted Clusters</Link>
           </BreadcrumbItem>
         ) : (
           <BreadcrumbItem isActive>Assisted Clusters</BreadcrumbItem>

@@ -1,9 +1,13 @@
-import { unmountComponentAtNode } from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 let element: HTMLDivElement | null = null;
+let root: ReactDOM.Root;
 
 function getMockContainer() {
-  return element;
+  if (element) {
+    root = ReactDOM.createRoot(element);
+    return root;
+  }
 }
 
 /**
@@ -29,8 +33,8 @@ function initMockContainer(
  */
 function tryResetMockContainer() {
   let didResetMockContainer = false;
-  if (element) {
-    unmountComponentAtNode(element);
+  if (element && root) {
+    root.unmount();
     element.remove();
     element = null;
     didResetMockContainer = true;

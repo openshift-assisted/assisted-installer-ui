@@ -26,6 +26,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   assistedServiceDeploymentUrl,
 }) => {
   const { t } = useTranslation();
+  // eslint-disable-next-line
   const history = useHistory();
   const [hideSuccess, setHideSuccess] = React.useState(true);
 
@@ -68,6 +69,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       variant={ButtonVariant.link}
       isInline
       key="assisted-service-deployment"
+      // eslint-disable-next-line
       onClick={() => history.push(assistedServiceDeploymentUrl)}
     >
       {t('ai:Troubleshoot in the assisted service deployment')} <ExternalLinkAltIcon />

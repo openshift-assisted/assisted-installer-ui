@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { Grid, GridItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';

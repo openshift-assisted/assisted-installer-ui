@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Button,
   ButtonVariant,
@@ -22,7 +22,6 @@ import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
 import { handleApiError, getApiErrorMessage } from '../../../common/api';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
-import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
@@ -33,9 +32,8 @@ import {
   selectClusterTableRows,
 } from '../../store/slices/clusters/selectors';
 
-type ClustersProps = RouteComponentProps;
-
-const Clusters: React.FC<ClustersProps> = ({ history }) => {
+const Clusters = () => {
+  const navigate = useNavigate();
   const { LOADING, EMPTY, POLLING_ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
@@ -85,7 +83,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
             primaryAction={
               <Button
                 variant={ButtonVariant.primary}
-                onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+                onClick={() => navigate(`~new`)}
                 id="empty-state-new-cluster-button"
                 data-ouia-id="button-create-new-cluster"
               >
@@ -129,9 +127,9 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   }
 };
 
-const ClustersPage: React.FC<RouteComponentProps> = (props) => (
+const ClustersPage = () => (
   <AlertsContextProvider>
-    <Clusters {...props} />
+    <Clusters />
   </AlertsContextProvider>
 );
 
