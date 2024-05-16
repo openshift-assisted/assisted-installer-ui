@@ -12,9 +12,9 @@ import {
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
 
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { Host, HostProgressInfo } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/hosts';
-import { ExternalLink, getHumanizedDateTime } from '../ui';
+import { ExternalLink, UiIcon, getHumanizedDateTime } from '../ui';
 
 import HostProgress from './HostProgress';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
@@ -31,6 +31,7 @@ import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon'
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { hostStatus } from './status';
 import { getApproveNodesInClLink } from '../../config';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -213,6 +214,24 @@ const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
   </Popover>
 );
 
+const getHostStatusIcon = (icon: React.ReactNode, progress: HostProgressInfo | undefined) => {
+  if (progress?.stageTimedOut === undefined) {
+    return (
+      <Popover
+        bodyContent={
+          <small>
+            Waiting for control plane has been active more than the expected completion time.
+          </small>
+        }
+        minWidth="20rem"
+        maxWidth="30rem"
+      >
+        <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
+      </Popover>
+    );
+  } else return icon;
+};
+
 const HostStatus: React.FC<HostStatusProps> = ({
   host,
   validationsInfo,
@@ -252,13 +271,14 @@ const HostStatus: React.FC<HostStatusProps> = ({
     openshiftVersion,
   };
 
+  const hostIcon = getHostStatusIcon(icon, host.progress);
   return (
     <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
       {
         <FlexItem>
           {(autoCSR && status.key === 'added-to-existing-cluster'
             ? hostStatus(t).installed.icon
-            : icon) || <UnknownIcon />}
+            : hostIcon) || <UnknownIcon />}
         </FlexItem>
       }
 
