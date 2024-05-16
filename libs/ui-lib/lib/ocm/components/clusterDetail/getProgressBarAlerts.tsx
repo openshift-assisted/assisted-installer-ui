@@ -5,6 +5,7 @@ import {
   HostsInstallationFailed,
   HostInstallationWarning,
   HostsInstallationSuccess,
+  ClusterInstallationTimeout,
 } from './ProgressBarAlerts';
 import {
   Cluster,
@@ -34,6 +35,7 @@ export const getClusterProgressAlerts = (
   const [totalMasters, failedMasters, pendingUserActionMasters] = hostsStatus(hosts, 'master');
   const [totalWorkers, failedWorkers, pendingUserActionWorkers] = hostsStatus(hosts, 'worker');
   const failedOperators = olmOperatorsStatus(olmOperators);
+  const finalizingStageTimeout = cluster?.progress?.finalizingStageTimedOut;
   if (['error', 'cancelled'].includes(cluster.status)) {
     return (
       <Stack>
@@ -44,6 +46,14 @@ export const getClusterProgressAlerts = (
             failedHosts={failedMasters}
             isCriticalNumberOfWorkersFailed={failedWorkers === 1}
           />
+        </StackItem>
+      </Stack>
+    );
+  } else if (finalizingStageTimeout) {
+    return (
+      <Stack>
+        <StackItem>
+          <ClusterInstallationTimeout cluster={cluster} />{' '}
         </StackItem>
       </Stack>
     );
