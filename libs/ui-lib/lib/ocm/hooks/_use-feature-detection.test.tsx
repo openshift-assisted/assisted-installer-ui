@@ -2,7 +2,6 @@ import type { Account, Organization } from '@openshift-assisted/types/accounts-m
 import { describe, it, vi, expect } from 'vitest';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { render } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { featureFlagsActions } from '../store/slices/feature-flags/slice';
 import { storeDay1 } from '../store/store-day1';
@@ -40,16 +39,19 @@ describe('use-feature-detection.ts', () => {
       ],
     });
 
-    await act(() =>
-      Promise.resolve(
-        render(
-          <Provider store={storeDay1}>
-            <DummyComponent />
-          </Provider>,
-          getMockContainer(),
+    const mockContainer = getMockContainer();
+
+    if (mockContainer) {
+      await act(() =>
+        Promise.resolve(
+          mockContainer.render(
+            <Provider store={storeDay1}>
+              <DummyComponent />
+            </Provider>,
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(true);
   });
@@ -70,16 +72,19 @@ describe('use-feature-detection.ts', () => {
       ],
     });
 
-    await act(() =>
-      Promise.resolve(
-        render(
-          <Provider store={storeDay1}>
-            <DummyComponent />
-          </Provider>,
-          getMockContainer(),
+    const mockContainer = getMockContainer();
+
+    if (mockContainer) {
+      await act(() =>
+        Promise.resolve(
+          mockContainer.render(
+            <Provider store={storeDay1}>
+              <DummyComponent />
+            </Provider>,
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(
       featuresOverride.ASSISTED_INSTALLER_PLATFORM_OCI,
@@ -93,17 +98,19 @@ describe('use-feature-detection.ts', () => {
       return null;
     };
 
-    await act(() =>
-      Promise.resolve(
-        render(
-          <Provider store={storeDay1}>
-            <DummyComponent />
-          </Provider>,
-          getMockContainer(),
-        ),
-      ),
-    );
+    const mockContainer = getMockContainer();
 
+    if (mockContainer) {
+      await act(() =>
+        Promise.resolve(
+          mockContainer.render(
+            <Provider store={storeDay1}>
+              <DummyComponent />
+            </Provider>,
+          ),
+        ),
+      );
+    }
     /* Here we don't mock the call to the user organization API, therefore the
      * capabilities in the currentUser slice should remain undefined, since the list
      * of featuresOverride should get filtered out of features not prefixed with
