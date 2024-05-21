@@ -16,7 +16,7 @@ export const getShortOpenshiftVersion = (ocpVersion?: string) =>
   ocpVersion?.split('.').slice(0, 2).join('.');
 
 export const ASSISTED_INSTALLER_DOCUMENTATION_LINK =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/index';
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2024/html/installing_openshift_container_platform_with_the_assisted_installer/index';
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
@@ -27,7 +27,7 @@ export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
 export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/assembly_installing-operators#proc_installing-openshift-data-foundation_assembly_installing-operators';
+  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.15';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
 export const getReportIssueLink = () =>
@@ -395,7 +395,7 @@ export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
   }/installing/install_config/installing-customizing.html`;
 
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html-single/assisted_installer_for_openshift_container_platform/index#checking-for-multiple-architectures_expanding-the-cluster';
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2024/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster';
 
 export const getMceDocsLink = (ocpVersion?: string) =>
   `https://docs.openshift.com/container-platform/${
