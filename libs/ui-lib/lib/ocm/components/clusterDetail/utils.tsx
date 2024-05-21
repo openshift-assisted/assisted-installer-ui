@@ -99,3 +99,13 @@ export const getMostSevereHostStatus = (hosts: Host[]) => {
   }
   return status;
 };
+
+export const getHostsWithTimeout = (hosts: Host[]) => {
+  for (let i = 0; i < hosts.length; i++) {
+    const host = hosts[i];
+    if (host.progress?.stageTimedOut !== undefined) {
+      return host.progress?.stageTimedOut;
+    }
+  }
+  return false;
+};
