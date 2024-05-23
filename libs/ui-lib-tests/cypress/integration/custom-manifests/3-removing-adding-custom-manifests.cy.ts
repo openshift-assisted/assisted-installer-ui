@@ -99,7 +99,10 @@ describe(`Assisted Installer Custom manifests step`, () => {
       CustomManifestsForm.initManifest(0, true);
       CustomManifestsForm.collapsedManifest(0).name();
       CustomManifestsForm.initManifest(1, true);
-      CustomManifestsForm.collapsedManifest(1).error();
+      CustomManifestsForm.collapsedManifest(1).name();
+      CustomManifestsForm.collapseManifest(2);
+      CustomManifestsForm.initManifest(2, true);
+      CustomManifestsForm.collapsedManifest(2).error();
     });
   });
 });

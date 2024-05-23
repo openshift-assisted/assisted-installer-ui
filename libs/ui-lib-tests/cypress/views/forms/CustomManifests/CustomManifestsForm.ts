@@ -38,4 +38,8 @@ export const CustomManifestsForm = {
         .as(`ExpandedManifest-${index}`);
     }
   },
+
+  collapseManifest: (index: number) => {
+    CustomManifestsForm.body().findByTestId(`toggle-manifest-${index}`).click();
+  },
 };
