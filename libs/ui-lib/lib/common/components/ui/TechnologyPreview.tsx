@@ -1,5 +1,5 @@
 import React from 'react';
-import { TECH_SUPPORT_LEVEL_LINK } from '../../config/constants';
+import { TECH_SUPPORT_LEVEL_LINK } from '../../config/docs_links';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { PreviewBadge, PreviewBadgeProps } from './PreviewBadge';
 

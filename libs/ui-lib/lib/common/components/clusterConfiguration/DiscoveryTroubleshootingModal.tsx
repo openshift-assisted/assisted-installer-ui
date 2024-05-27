@@ -18,7 +18,7 @@ import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
-import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
+import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/docs_links';
 import * as Sentry from '@sentry/browser';
 
 export const DiscoveryTroubleshootingModalContent = () => {
