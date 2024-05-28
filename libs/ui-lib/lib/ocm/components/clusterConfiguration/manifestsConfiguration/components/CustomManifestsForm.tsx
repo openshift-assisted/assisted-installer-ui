@@ -76,13 +76,12 @@ export const CustomManifestsForm = ({
 
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
     async ({ manifests }, actions) => {
+      clearAlerts();
       if (manifests.length < customManifestsLocalRef.current.length) {
         // submit was triggered by deleting a manifest
-
         customManifestsLocalRef.current = manifests;
         return;
       } else {
-        clearAlerts();
         actions.setSubmitting(true);
 
         for (let index = 0; index < manifests.length; index++) {
