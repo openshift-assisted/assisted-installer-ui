@@ -27,7 +27,7 @@ import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
-import { getOCPStaticIPDocLink } from '../../config/constants';
+import { getOCPStaticIPDocLink } from '../../config/docs_links';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
