@@ -55,8 +55,8 @@ export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
 const validationSchema = Yup.lazy((values: OcmDiscoveryImageFormValues) =>
   Yup.object<OcmDiscoveryImageFormValues>().shape({
     sshPublicKey: sshPublicKeyListValidationSchema,
-    httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }),
-    httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }), // share the schema, httpS is currently not supported
+    httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
+    httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,
   }),
 );
