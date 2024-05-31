@@ -10,7 +10,7 @@ import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-s
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
   const match = /.+:(.*)-/gm.exec(releaseImage);
-  if (match && match[1]) {
+  if (match && match.length > 1 && match[1]) {
     return match[1];
   }
 };
@@ -34,18 +34,28 @@ const getSupportLevelFromChannel = (
   return 'beta';
 };
 
+export const supportedNutanixPlatforms = ['x86_64', 'x86-64'];
+
+export const isValidImageSet = (cis: ClusterImageSetK8sResource, architectures?: string[]) => {
+  if (cis.metadata?.labels?.visible !== 'true') {
+    return false;
+  }
+  if (!architectures) {
+    return true;
+  }
+  return architectures.some(
+    (arch) => cis.spec?.releaseImage.endsWith(arch) || cis.metadata?.labels?.architecture === arch,
+  );
+};
+
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
   isNutanix?: boolean | undefined,
 ): OpenshiftVersionOptionType[] => {
   const versions = clusterImageSets
-    .filter((clusterImageSet) => {
-      let supportedPlatform = true;
-      if (isNutanix && clusterImageSet.spec?.releaseImage) {
-        supportedPlatform = clusterImageSet.spec.releaseImage.endsWith('-x86_64');
-      }
-      return supportedPlatform && clusterImageSet.metadata?.labels?.visible !== 'false';
-    })
+    .filter((clusterImageSet) =>
+      isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined),
+    )
     .map((clusterImageSet): OpenshiftVersionOptionType => {
       const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
       return {
