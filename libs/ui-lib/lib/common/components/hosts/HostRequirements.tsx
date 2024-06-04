@@ -3,6 +3,7 @@ import * as React from 'react';
 import ExternalLink from '../ui/ExternalLink';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { fileSize } from '../../utils';
+import { HOST_REQUIREMENTS_LINK } from '../../config/docs_links';
 
 type HWRequirements = {
   cpuCores?: number;
@@ -75,9 +76,7 @@ export const HostRequirementsList: React.FC<HostRequirementsListProps> = ({
         {t(
           "ai:Also note that each host's disk write speed should meet the minimum requirements to run OpenShift. ",
         )}
-        <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>
-          {t('ai:Learn more')}
-        </ExternalLink>
+        <ExternalLink href={HOST_REQUIREMENTS_LINK}>{t('ai:Learn more')}</ExternalLink>
       </ListItem>
     </List>
   );

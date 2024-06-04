@@ -9,7 +9,7 @@ import {
   PreviewSupportLevel,
   isPreviewSupportLevel,
 } from '../../../common/types';
-import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
+import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/docs_links';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { DetailItem, UiIcon } from '../../../common';

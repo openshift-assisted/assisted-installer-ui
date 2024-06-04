@@ -215,7 +215,7 @@ const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
 );
 
 const getHostStatusIcon = (icon: React.ReactNode, progress: HostProgressInfo | undefined) => {
-  if (progress?.stageTimedOut === undefined) {
+  if (progress?.stageTimedOut !== undefined) {
     return (
       <Popover
         bodyContent={
