@@ -214,8 +214,12 @@ const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
   </Popover>
 );
 
-const getHostStatusIcon = (icon: React.ReactNode, progress: HostProgressInfo | undefined) => {
-  if (progress?.stageTimedOut !== undefined) {
+const getHostStatusIcon = (
+  icon: React.ReactNode,
+  progress: HostProgressInfo | undefined,
+  status: HostStatusProps['status'],
+) => {
+  if (progress?.stageTimedOut !== undefined && status.title !== 'Error') {
     return (
       <Popover
         bodyContent={
@@ -271,7 +275,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
     openshiftVersion,
   };
 
-  const hostIcon = getHostStatusIcon(icon, host.progress);
+  const hostIcon = getHostStatusIcon(icon, host.progress, status);
   return (
     <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
       {
