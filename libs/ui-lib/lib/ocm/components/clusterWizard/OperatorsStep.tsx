@@ -25,6 +25,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </StackItem>
       <StackItem>
         <MceCheckbox
+          {...props}
           isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
           openshiftVersion={props.openshiftVersion}
         />
