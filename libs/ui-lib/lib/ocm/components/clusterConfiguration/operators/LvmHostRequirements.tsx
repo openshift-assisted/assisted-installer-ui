@@ -23,18 +23,11 @@ const LvmHostRequirements = ({ clusterId }: { clusterId: ClusterOperatorProps['c
     (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_LVM,
   );
 
-  const { qualitative = [], quantitative } = lvmRequirements?.requirements
+  const { qualitative = [] } = lvmRequirements?.requirements
     ?.master as HostTypeHardwareRequirements;
 
   return (
     <List>
-      {quantitative && (
-        <ListItem>
-          The host node requires an additional {quantitative.ramMib} MiB of memory{' '}
-          {quantitative.diskSizeGb ? ',' : ' and'} {quantitative.cpuCores} CPUs
-          {quantitative?.diskSizeGb ? ` and ${quantitative?.diskSizeGb} storage space` : ''}
-        </ListItem>
-      )}
       {qualitative.map((qualitativeItem, index) => (
         <ListItem key={index}>{qualitativeItem}</ListItem>
       ))}
