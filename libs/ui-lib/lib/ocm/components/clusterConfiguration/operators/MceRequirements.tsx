@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { List, ListItem } from '@patternfly/react-core';
 import { useClusterPreflightRequirements } from '../../../hooks';
-import { ErrorState, LoadingState, OPERATOR_NAME_CNV, RenderIf } from '../../../../common';
+import { ErrorState, LoadingState, OPERATOR_NAME_MCE, RenderIf } from '../../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { selectIsCurrentClusterSNO } from '../../../store/slices/current-cluster/selectors';
 import { getOdfLvmsText } from './utils';
@@ -25,7 +25,7 @@ const MceRequirements = ({
   }
 
   const mceRequirements = preflightRequirements?.operators?.find(
-    (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_CNV,
+    (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_MCE,
   );
 
   const workerRequirements = mceRequirements?.requirements?.worker?.quantitative;
