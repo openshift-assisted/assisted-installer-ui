@@ -6,6 +6,8 @@
   },
   "exports": {
     "./en/translation.json": "./lib/en/translation.json",
+    "./es/translation.json": "./lib/es/translation.json",
+    "./fr/translation.json": "./lib/fr/translation.json",
     "./ja/translation.json": "./lib/ja/translation.json",
     "./ko/translation.json": "./lib/ko/translation.json",
     "./zh/translation.json": "./lib/zh/translation.json",
@@ -15,6 +17,12 @@
     "*": {
       "en/translation.json": [
         "./@types/en.d.ts"
+      ],
+      "es/translation.json": [
+        "./@types/es.d.ts"
+      ],
+      "fr/translation.json": [
+        "./@types/fr.d.ts"
       ],
       "ja/translation.json": [
         "./@types/ja.d.ts"
