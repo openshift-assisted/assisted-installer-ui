@@ -130,7 +130,7 @@ const formDataToInfraEnvField = (formData: StaticFormData): HostStaticNetworkCon
     ret = [
       {
         networkYaml: toYaml(formData.networkWide),
-        macInterfaceMap: getDummyMacInterfaceMap(),
+        macInterfaceMap: getDummyMacInterfaceMap(formData.networkWide),
       },
     ];
   } else {
