@@ -34,9 +34,9 @@ export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
 export const getApproveNodesInClLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.11'
-  }/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic`;
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.13'
+  }/html/installing/installing-on-any-platform#installation-approve-csrs_installing-platform-agnostic`;
 
 //Static Ip configuration
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
