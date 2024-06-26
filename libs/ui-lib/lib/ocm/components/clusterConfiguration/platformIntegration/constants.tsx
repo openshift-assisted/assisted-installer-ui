@@ -1,4 +1,4 @@
-import { NUTANIX_CONFIG_LINK, VSPHERE_CONFIG_LINK } from '../../../../common';
+import { NUTANIX_CONFIG_LINK, OCI_CONFIG_LINK, VSPHERE_CONFIG_LINK } from '../../../../common';
 import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 export const ExternalPlatformLabels: { [key in PlatformType]: string } = {
@@ -12,6 +12,7 @@ export const ExternalPlatformLabels: { [key in PlatformType]: string } = {
 export const ExternalPlatformLinks: Partial<{ [key in PlatformType]: string }> = {
   nutanix: NUTANIX_CONFIG_LINK,
   vsphere: VSPHERE_CONFIG_LINK,
+  external: OCI_CONFIG_LINK,
 };
 
 export const ExternalPlaformIds: { [key in PlatformType]: string } = {

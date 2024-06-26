@@ -48,9 +48,11 @@ export const getOCPStaticIPDocLink = (docVersion = '2.8') =>
   `https://docs.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#on-prem-creating-your-cluster-with-the-cli-nmstateconfig`;
 
 //Platform integration
-export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944';
+export const NUTANIX_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#assembly_installing-on-nutanix`;
 
-export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
+export const VSPHERE_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#adding-hosts-on-vsphere_installing-on-vsphere`;
+
+export const OCI_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#installing-on-oci`;
 
 //Custom manifests
 export const CUSTOM_MANIFESTS_HELP_LINK = `https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
