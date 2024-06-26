@@ -18,15 +18,16 @@ export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/i
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
 export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing`;
+  }/html/installing/installation-configuration#installation-special-config-encrypt-disk_installing-customizing`;
 
 //Networking page
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal`;
+  }/html/installing/installing-on-bare-metal#installation-network-user-infra_installing-bare-metal`;
+
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
 //Hosts status
@@ -50,15 +51,14 @@ export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944'
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
 //Custom manifests
-export const CUSTOM_MANIFESTS_HELP_LINK =
-  'https://docs.redhat.com/container-platform/4.12/installing/install_config/installing-customizing.html';
+export const CUSTOM_MANIFESTS_HELP_LINK = `https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
 
 export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.12'
-  }/installing/install_config/installing-customizing.html`;
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.13'
+  }/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
 
-export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
+export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
 
 export const OCP_RELEASES_PAGE = 'openshift/releases';
 
