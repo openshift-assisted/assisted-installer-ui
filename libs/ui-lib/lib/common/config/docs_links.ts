@@ -58,8 +58,7 @@ export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
     getShortOpenshiftVersion(ocpVersion) || '4.12'
   }/installing/install_config/installing-customizing.html`;
 
-export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2024/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster';
+export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
 
 export const OCP_RELEASES_PAGE = 'openshift/releases';
 
