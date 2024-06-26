@@ -1,5 +1,7 @@
+const DEFAULT_OPENSHIFT_DOCS_VERSION = '4.15';
+
 export const getShortOpenshiftVersion = (ocpVersion?: string) =>
-  ocpVersion?.split('.').slice(0, 2).join('.');
+  ocpVersion ? ocpVersion.split('.').slice(0, 2).join('.') : DEFAULT_OPENSHIFT_DOCS_VERSION;
 
 export const getYearForAssistedInstallerDocumentationLink = () => {
   return new Date().getFullYear();
@@ -18,15 +20,15 @@ export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/i
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
 export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/html/installing/installation-configuration#installation-special-config-encrypt-disk_installing-customizing`;
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/installing/installation-configuration#installation-special-config-encrypt-disk_installing-customizing`;
 
 //Networking page
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/html/installing/installing-on-bare-metal#installation-network-user-infra_installing-bare-metal`;
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/installing/installing-on-bare-metal#installation-network-user-infra_installing-bare-metal`;
 
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
@@ -35,9 +37,9 @@ export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
 export const getApproveNodesInClLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/html/installing/installing-on-any-platform#installation-approve-csrs_installing-platform-agnostic`;
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/installing/installing-on-any-platform#installation-approve-csrs_installing-platform-agnostic`;
 
 //Static Ip configuration
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
@@ -54,9 +56,9 @@ export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901'
 export const CUSTOM_MANIFESTS_HELP_LINK = `https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
 
 export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
 
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
 
@@ -79,9 +81,9 @@ export const getMceDocsLink = () =>
   `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#resource_requirements`;
 
 export const getLvmsDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.12'
-  }/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html`;
+  `https://docs.redhat.com/container-platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html`;
 
 //Others
 export const REDHAT_CONSOLE_OPENSHIFT = 'https://console.redhat.com/openshift';
