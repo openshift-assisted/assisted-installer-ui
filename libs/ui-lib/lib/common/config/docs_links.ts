@@ -18,13 +18,13 @@ export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/i
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
 export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.12'
+  `https://docs.redhat.com/container-platform/${
+    getShortOpenshiftVersion(ocpVersion) || '4.13'
   }/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing`;
 
 //Networking page
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
+  `https://docs.redhat.com/container-platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.13'
   }/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal`;
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
@@ -34,7 +34,7 @@ export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
 export const getApproveNodesInClLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
+  `https://docs.redhat.com/container-platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.11'
   }/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic`;
 
@@ -51,10 +51,10 @@ export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901'
 
 //Custom manifests
 export const CUSTOM_MANIFESTS_HELP_LINK =
-  'https://docs.openshift.com/container-platform/4.12/installing/install_config/installing-customizing.html';
+  'https://docs.redhat.com/container-platform/4.12/installing/install_config/installing-customizing.html';
 
 export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
+  `https://docs.redhat.com/container-platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.12'
   }/installing/install_config/installing-customizing.html`;
 
@@ -76,12 +76,12 @@ export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
 export const getMceDocsLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
+  `https://docs.redhat.com/container-platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.12'
   }/architecture/mce-overview-ocp.html`;
 
 export const getLvmsDocsLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
+  `https://docs.redhat.com/container-platform/${
     getShortOpenshiftVersion(ocpVersion) || '4.12'
   }/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html`;
 
