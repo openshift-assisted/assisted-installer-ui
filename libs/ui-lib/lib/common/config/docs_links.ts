@@ -75,7 +75,7 @@ export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
-export const getMceDocsLink = (ocpVersion?: string) =>
+export const getMceDocsLink = () =>
   `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#resource_requirements`;
 
 export const getLvmsDocsLink = (ocpVersion?: string) =>

@@ -37,12 +37,12 @@ const MceLabel = ({
   );
 };
 
-const MceHelperText = ({ docsVersion }: { docsVersion: string }) => {
+const MceHelperText = () => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Create, import, and manage multiple clusters from this cluster.{' '}
-        <a href={getMceDocsLink(docsVersion)} target="_blank" rel="noopener noreferrer">
+        <a href={getMceDocsLink()} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -53,10 +53,8 @@ const MceHelperText = ({ docsVersion }: { docsVersion: string }) => {
 const MceCheckbox = ({
   clusterId,
   isVersionEqualsOrMajorThan4_15,
-  openshiftVersion,
 }: {
   isVersionEqualsOrMajorThan4_15: boolean;
-  openshiftVersion?: string;
   clusterId: ClusterOperatorProps['clusterId'];
 }) => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
@@ -74,7 +72,7 @@ const MceCheckbox = ({
           />
         }
         isDisabled={!!disabledReason}
-        helperText={<MceHelperText docsVersion={openshiftVersion || ''} />}
+        helperText={<MceHelperText />}
       />
     </FormGroup>
   );
