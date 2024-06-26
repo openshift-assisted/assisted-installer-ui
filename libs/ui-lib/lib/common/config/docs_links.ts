@@ -42,7 +42,7 @@ export const getApproveNodesInClLink = (ocpVersion?: string) =>
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
 
 export const getOCPStaticIPDocLink = (docVersion = '2.8') =>
-  `https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#on-prem-creating-your-cluster-with-the-cli-nmstateconfig`;
+  `https://docs.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#on-prem-creating-your-cluster-with-the-cli-nmstateconfig`;
 
 //Platform integration
 export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944';
@@ -58,7 +58,7 @@ export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
     getShortOpenshiftVersion(ocpVersion) || '4.12'
   }/installing/install_config/installing-customizing.html`;
 
-export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
+export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
 
 export const OCP_RELEASES_PAGE = 'openshift/releases';
 
@@ -76,9 +76,7 @@ export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
 export const getMceDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.12'
-  }/architecture/mce-overview-ocp.html`;
+  `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#resource_requirements`;
 
 export const getLvmsDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/container-platform/${
