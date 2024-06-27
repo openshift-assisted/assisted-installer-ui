@@ -27,6 +27,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         <MceCheckbox
           clusterId={props.clusterId}
           isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+          openshiftVersion={props.openshiftVersion}
         />
       </StackItem>
       {isVersionEqualsOrMajorThan4_15 ? (
