@@ -73,7 +73,7 @@ export const HOST_REQUIREMENTS_LINK = 'https://access.redhat.com/solutions/48856
 
 //Operators page
 export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.15';
+  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation';
 
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
@@ -85,9 +85,9 @@ export const getMceDocsLink = (ocpVersion?: string) =>
   )}/html/architecture/about-the-multicluster-engine-for-kubernetes-operator`;
 
 export const getLvmsDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/container-platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
     ocpVersion,
-  )}/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html`;
+  )}/html/storage/configuring-persistent-storage#overview-of-lvm-storage-functionality_ways-to-provision-local-storage`;
 
 //Others
 export const REDHAT_CONSOLE_OPENSHIFT = 'https://console.redhat.com/openshift';
