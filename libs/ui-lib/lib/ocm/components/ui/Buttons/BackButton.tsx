@@ -10,7 +10,7 @@ export type BackButtonProps = {
   variant?: ButtonProps['variant'];
 };
 export const BackButton = ({ to, variant = 'secondary' }: BackButtonProps) => (
-  <Button variant={variant} component={(props) => <Link to={to} {...props} />}>
-    Back
-  </Button>
+  <Link to={to}>
+    <Button variant={variant}>Back</Button>
+  </Link>
 );
