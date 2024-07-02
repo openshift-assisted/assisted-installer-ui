@@ -86,7 +86,7 @@ const EventsList = ({ events, resetFilters }: EventsListProps) => {
                 </Label>{' '}
               </>
             )}
-            {event.message}
+            {event.message.replace(/\\n/, ' ')}
           </>
         ),
       },
