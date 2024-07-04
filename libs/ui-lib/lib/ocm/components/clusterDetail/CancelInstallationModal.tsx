@@ -71,7 +71,7 @@ const CancelInstallationModal: React.FC = () => {
           }}
           isDisabled={isSubmitting}
         >
-          Abort Installation
+          Abort installation
         </Button>,
         <Button
           key="cancel"
