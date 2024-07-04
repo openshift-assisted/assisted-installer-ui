@@ -171,11 +171,13 @@ const NetworkConfiguration = ({
   React.useEffect(() => {
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
-      setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVips', [], false);
-      setFieldValue('apiVips', [], false);
+      if (values.vipDhcpAllocation || values.ingressVips?.length || values.apiVips?.length) {
+        setFieldValue('vipDhcpAllocation', false);
+        setFieldValue('ingressVips', [], false);
+        setFieldValue('apiVips', [], false);
+      }
 
-      if (!isSNOCluster) {
+      if (!isSNOCluster && values.machineNetworks?.length) {
         setFieldValue('machineNetworks', [], false);
       }
     }
@@ -185,6 +187,9 @@ const NetworkConfiguration = ({
     values.vipDhcpAllocation,
     setFieldValue,
     validateField,
+    values.apiVips,
+    values.ingressVips,
+    values.machineNetworks,
   ]);
 
   const toggleAdvConfiguration = React.useCallback(
