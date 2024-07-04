@@ -61,14 +61,14 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
             id={getID('button-launch-console')}
           />
         </RenderIf>
-        <RenderIf condition={canAbortInstallation(cluster) && !canOpenConsole(cluster.status)}>
+        <RenderIf condition={canAbortInstallation(cluster)}>
           <Button
             data-testid="cluster-installation-abort-button"
             variant={ButtonVariant.danger}
             onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
             isDisabled={false}
           >
-            Abort Installation
+            Abort installation
           </Button>
         </RenderIf>
       </FlexItem>
