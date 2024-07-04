@@ -7,7 +7,8 @@ import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
-import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
+import { useManagedDomains, useUsedClusterNames } from '../../hooks';
+import { useOpenshiftVersionsContext } from './OpenshiftVersionsContext';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config';
@@ -35,8 +36,8 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const {
     error: errorOCPVersions,
     loading: loadingOCPVersions,
-    versions,
-  } = useOpenshiftVersions(true);
+    latestVersions: versions,
+  } = useOpenshiftVersionsContext();
 
   const handleClusterUpdate = React.useCallback(
     async (
