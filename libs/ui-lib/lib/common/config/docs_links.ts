@@ -73,7 +73,7 @@ export const HOST_REQUIREMENTS_LINK = 'https://access.redhat.com/solutions/48856
 
 //Operators page
 export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation';
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
 
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
