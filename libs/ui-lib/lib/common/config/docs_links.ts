@@ -7,7 +7,7 @@ export const getYearForAssistedInstallerDocumentationLink = () => {
   return new Date().getFullYear();
 };
 
-export const ASSISTED_INSTALLER_DOCUMENTATION_LINK = `https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/index`;
+export const ASSISTED_INSTALLER_DOCUMENTATION_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/index`;
 
 //New cluster page
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
@@ -73,7 +73,7 @@ export const HOST_REQUIREMENTS_LINK = 'https://access.redhat.com/solutions/48856
 
 //Operators page
 export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation';
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
 
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
