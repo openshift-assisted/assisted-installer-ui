@@ -74,12 +74,12 @@ export const MacIpMapping = ({
 
   return (
     <Grid className="mac-ip-mapping">
-      <GridItem span={6}>
-        <FieldArray
-          name={fieldName}
-          validateOnChange={false}
-          render={({ push, remove }) => (
-            <Grid hasGutter>
+      <FieldArray
+        name={fieldName}
+        validateOnChange={false}
+        render={({ push, remove }) => (
+          <Grid hasGutter>
+            <GridItem span={6}>
               {macInterfaceMap.map((_, idx) => (
                 <MacMappingItem
                   key={getFormikArrayItemFieldName(fieldName, idx)}
@@ -90,12 +90,11 @@ export const MacIpMapping = ({
                   hostIdx={hostIdx}
                 />
               ))}
-
-              {!isViewerMode && <AddMapping onPush={push} />}
-            </Grid>
-          )}
-        />
-      </GridItem>
+            </GridItem>
+            <GridItem>{!isViewerMode && <AddMapping onPush={push} />}</GridItem>
+          </Grid>
+        )}
+      />
     </Grid>
   );
 };
