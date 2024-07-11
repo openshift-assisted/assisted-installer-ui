@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { sortable, expandable, breakWord } from '@patternfly/react-table';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
 
 import {
   HostsTableActions,
