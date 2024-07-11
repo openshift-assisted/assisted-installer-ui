@@ -14,7 +14,7 @@ import { AddHostDropdownProps } from './types';
 import './AddHostDropdown.css';
 import { PopoverIcon } from '../../../common';
 import { Trans } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
 
