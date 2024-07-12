@@ -29,6 +29,7 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
+import { BrowserRouter } from 'react-router-dom';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -59,12 +60,14 @@ const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; err
         </Title>
       </CardHeader>
       <CardBody>
-        <ErrorState
-          title="Failed to fetch the cluster"
-          fetchData={fetchCluster}
-          actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
-          content={error}
-        />
+        <BrowserRouter>
+          <ErrorState
+            title="Failed to fetch the cluster"
+            fetchData={fetchCluster}
+            actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+            content={error}
+          />
+        </BrowserRouter>
       </CardBody>
     </Card>
   );
@@ -78,10 +81,12 @@ const LoadingDefaultConfigFailedCard = () => (
       </Title>
     </CardHeader>
     <CardBody>
-      <ErrorState
-        title="Failed to retrieve the default configuration"
-        actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
-      />
+      <BrowserRouter>
+        <ErrorState
+          title="Failed to retrieve the default configuration"
+          actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+        />
+      </BrowserRouter>
     </CardBody>
   </Card>
 );
