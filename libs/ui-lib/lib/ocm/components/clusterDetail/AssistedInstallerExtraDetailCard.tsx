@@ -11,6 +11,7 @@ import useInfraEnv from '../../hooks/useInfraEnv';
 import { usePullSecret } from '../../hooks';
 import { selectCurrentClusterState } from '../../store/slices/current-cluster/selectors';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
+import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
 
 type AssistedInstallerExtraDetailCardProps = {
   allEnabledFeatures: FeatureListType;
@@ -53,12 +54,16 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
   );
 };
 
-const Wrapper: React.FC<AssistedInstallerExtraDetailCardProps> = (props) => (
-  <Provider store={storeDay1}>
-    <AlertsContextProvider>
-      <AssistedInstallerExtraDetailCard {...props} />
-    </AlertsContextProvider>
-  </Provider>
-);
+const Wrapper: React.FC<AssistedInstallerExtraDetailCardProps> = (props) => {
+  return (
+    <Provider store={storeDay1}>
+      <AlertsContextProvider>
+        <OpenshiftVersionsContextProvider>
+          <AssistedInstallerExtraDetailCard {...props} />
+        </OpenshiftVersionsContextProvider>
+      </AlertsContextProvider>
+    </Provider>
+  );
+};
 
 export default Wrapper;

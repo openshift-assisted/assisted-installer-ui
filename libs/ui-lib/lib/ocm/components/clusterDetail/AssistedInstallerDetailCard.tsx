@@ -30,6 +30,7 @@ import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
 import { BrowserRouter } from 'react-router-dom';
+import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -138,28 +139,30 @@ const AssistedInstallerDetailCard = ({
   const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
   return (
     <AlertsContextProvider>
-      <SentryErrorMonitorContextProvider>
-        <ModalDialogsContextProvider>
-          <ClusterDefaultConfigurationProvider
-            loadingUI={<LoadingCard />}
-            errorUI={<LoadingDefaultConfigFailedCard />}
-          >
-            <NewFeatureSupportLevelProvider
-              loadingUi={<LoadingCard />}
-              cluster={cluster}
-              cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-              openshiftVersion={cluster.openshiftVersion}
-              platformType={cluster.platform?.type}
+      <OpenshiftVersionsContextProvider>
+        <SentryErrorMonitorContextProvider>
+          <ModalDialogsContextProvider>
+            <ClusterDefaultConfigurationProvider
+              loadingUI={<LoadingCard />}
+              errorUI={<LoadingDefaultConfigFailedCard />}
             >
-              {content}
-            </NewFeatureSupportLevelProvider>
-            {isOutdatedClusterData && <ClusterPollingErrorModal />}
-            <CancelInstallationModal />
-            <ResetClusterModal />
-            <DiscoveryImageModal />
-          </ClusterDefaultConfigurationProvider>
-        </ModalDialogsContextProvider>
-      </SentryErrorMonitorContextProvider>
+              <NewFeatureSupportLevelProvider
+                loadingUi={<LoadingCard />}
+                cluster={cluster}
+                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
+                openshiftVersion={cluster.openshiftVersion}
+                platformType={cluster.platform?.type}
+              >
+                {content}
+              </NewFeatureSupportLevelProvider>
+              {isOutdatedClusterData && <ClusterPollingErrorModal />}
+              <CancelInstallationModal />
+              <ResetClusterModal />
+              <DiscoveryImageModal />
+            </ClusterDefaultConfigurationProvider>
+          </ModalDialogsContextProvider>
+        </SentryErrorMonitorContextProvider>
+      </OpenshiftVersionsContextProvider>
     </AlertsContextProvider>
   );
 };
