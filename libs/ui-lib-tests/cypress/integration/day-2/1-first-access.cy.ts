@@ -39,8 +39,6 @@ describe(`Day2 flow`, () => {
     });
 
     it('Creates a Day2 cluster when the cluster has metrics', () => {
-      Cypress.env('OPENSHIFT_VERSIONS_DELAY', true);
-
       cy.findByRole('button', { name: 'Add hosts (With metrics)' }).click();
       cy.wait('@create-day2-cluster').then(() => {
         setLastWizardSignal('CREATED_DAY2_CLUSTER');
