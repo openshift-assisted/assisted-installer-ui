@@ -33,6 +33,7 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
+import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
 
 type MatchParams = {
   clusterId: string;
@@ -72,7 +73,9 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
       };
       return (
         <AddHostsContextProvider cluster={cluster} resetCluster={onReset}>
-          <AddHosts />
+          <OpenshiftVersionsContextProvider>
+            <AddHosts />
+          </OpenshiftVersionsContextProvider>
         </AddHostsContextProvider>
       );
     } else if (
@@ -168,23 +171,25 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
                 loadingUI={<ClusterLoading />}
                 errorUI={<ClusterUiError />}
               >
-                <NewFeatureSupportLevelProvider
-                  loadingUi={<ClusterLoading />}
-                  cluster={cluster}
-                  cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                  openshiftVersion={cluster.openshiftVersion}
-                  platformType={cluster.platform?.type}
-                >
-                  {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
-                <RebootNodeZeroModal cluster={cluster} />
-                */}
-                  {getContent(cluster, infraEnv)}
-                  {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
-                  {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
-                  <CancelInstallationModal />
-                  <ResetClusterModal />
-                  <DiscoveryImageModal />
-                </NewFeatureSupportLevelProvider>
+                <OpenshiftVersionsContextProvider>
+                  <NewFeatureSupportLevelProvider
+                    loadingUi={<ClusterLoading />}
+                    cluster={cluster}
+                    cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
+                    openshiftVersion={cluster.openshiftVersion}
+                    platformType={cluster.platform?.type}
+                  >
+                    {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
+                    <RebootNodeZeroModal cluster={cluster} />
+                    */}
+                    {getContent(cluster, infraEnv)}
+                    {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
+                    {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
+                    <CancelInstallationModal />
+                    <ResetClusterModal />
+                    <DiscoveryImageModal />
+                  </NewFeatureSupportLevelProvider>
+                </OpenshiftVersionsContextProvider>
               </ClusterDefaultConfigurationProvider>
             </ModalDialogsContextProvider>
           </SentryErrorMonitorContextProvider>

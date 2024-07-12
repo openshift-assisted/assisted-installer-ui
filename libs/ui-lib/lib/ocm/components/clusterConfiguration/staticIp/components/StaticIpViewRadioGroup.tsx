@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, AlertVariant, ButtonVariant, Form, FormGroup } from '@patternfly/react-core';
 import { StaticIpView } from '../data/dataTypes';
-import { getFieldId } from '../../../../../common';
+import { getFieldId, useAlerts } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
 import { OcmRadio } from '../../../ui/OcmFormFields';
 
@@ -16,6 +16,7 @@ const StaticIpViewRadioGroup = ({
   confirmOnChangeView,
   onChangeView,
 }: StaticIpViewRadioGroupProps) => {
+  const { clearAlerts } = useAlerts();
   const GROUP_NAME = 'select-static-ip-view';
   const [confirmView, setConfirmView] = React.useState<StaticIpView>();
   const [view, setView] = React.useState<StaticIpView>(initialView);
@@ -30,6 +31,7 @@ const StaticIpViewRadioGroup = ({
   };
 
   const onConfirm = (selectedView: StaticIpView) => {
+    clearAlerts();
     setView(selectedView);
     setConfirmView(undefined);
     onChangeView(selectedView);

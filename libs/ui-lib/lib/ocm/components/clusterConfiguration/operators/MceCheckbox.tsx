@@ -1,25 +1,22 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { getFieldId, PopoverIcon, getMceDocsLink } from '../../../../common';
+import { getFieldId, PopoverIcon, getMceDocsLink, ClusterOperatorProps } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
-import { useSelector } from 'react-redux';
-import { selectIsCurrentClusterSNO } from '../../../store/slices/current-cluster/selectors';
-import { getOdfLvmsText } from './utils';
+import MceRequirements from './MceRequirements';
 
 const MCE_FIELD_NAME = 'useMultiClusterEngine';
 
 const MceLabel = ({
   disabledReason,
   isVersionEqualsOrMajorThan4_15,
-  isSNO,
+  clusterId,
 }: {
   disabledReason?: string;
   isVersionEqualsOrMajorThan4_15: boolean;
-  isSNO: boolean;
+  clusterId: ClusterOperatorProps['clusterId'];
 }) => {
-  const odfLvmsText = getOdfLvmsText(isSNO, isVersionEqualsOrMajorThan4_15);
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -29,7 +26,12 @@ const MceLabel = ({
         id={MCE_FIELD_NAME}
         component={'a'}
         headerContent="Additional requirements"
-        bodyContent={<>{odfLvmsText}</>}
+        bodyContent={
+          <MceRequirements
+            clusterId={clusterId}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+          />
+        }
       />
     </>
   );
@@ -49,13 +51,14 @@ const MceHelperText = ({ docsVersion }: { docsVersion: string }) => {
 };
 
 const MceCheckbox = ({
+  clusterId,
   isVersionEqualsOrMajorThan4_15,
   openshiftVersion,
 }: {
   isVersionEqualsOrMajorThan4_15: boolean;
   openshiftVersion?: string;
+  clusterId: ClusterOperatorProps['clusterId'];
 }) => {
-  const isSNO = useSelector(selectIsCurrentClusterSNO);
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const fieldId = getFieldId(MCE_FIELD_NAME, 'input');
   const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MCE');
@@ -67,7 +70,7 @@ const MceCheckbox = ({
           <MceLabel
             disabledReason={disabledReason}
             isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
-            isSNO={isSNO}
+            clusterId={clusterId}
           />
         }
         isDisabled={!!disabledReason}

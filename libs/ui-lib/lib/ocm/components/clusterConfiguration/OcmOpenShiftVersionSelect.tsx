@@ -6,7 +6,7 @@ import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShif
 import { OpenShiftVersionModal } from './OpenShiftVersionModal';
 import { useFormikContext } from 'formik';
 import { getOpenshiftVersionHelperText } from './OpenshiftVersionHelperText';
-import { useOpenshiftVersions } from '../../hooks';
+import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
 
 type OcmOpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];
@@ -50,7 +50,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
     return [];
   }, [selectOptions, customOpenshiftSelect]);
 
-  const { versions: allVersions } = useOpenshiftVersions(false);
+  const { allVersions } = useOpenshiftVersionsContext();
 
   const getHelperText = (value: string | undefined, inModal?: boolean) => {
     return getOpenshiftVersionHelperText(allVersions, value, t, inModal);

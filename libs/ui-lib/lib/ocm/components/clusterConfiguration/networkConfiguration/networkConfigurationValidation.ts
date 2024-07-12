@@ -42,6 +42,7 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType:
+      cluster.platform?.type === 'none' ||
       (cluster.apiVips && cluster.apiVips.length === 0 && isClusterManagedNetworkingUnsupported) ||
       isSNOCluster
         ? 'userManaged'

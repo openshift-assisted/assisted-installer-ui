@@ -28,7 +28,7 @@ import CpuArchitectureDropdown, {
 import { OcmBaseDomainField } from './OcmBaseDomainField';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { useOpenshiftVersions } from '../../hooks';
+import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
 import { ExternalPlatformDropdown } from './platformIntegration/ExternalPlatformDropdown';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
@@ -68,7 +68,7 @@ export const OcmClusterDetailsFormFields = ({
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
   const { openshiftVersion, platform } = values;
-  const { getCpuArchitectures } = useOpenshiftVersions();
+  const { getCpuArchitectures } = useOpenshiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
   const featureSupportLevelData = useSupportLevelsAPI(
