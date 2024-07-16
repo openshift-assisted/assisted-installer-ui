@@ -15,7 +15,7 @@
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "lodash": "^4",
-    "monaco-editor": "0.45.0",
+    "monaco-editor": "^0.44.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.11.4",
