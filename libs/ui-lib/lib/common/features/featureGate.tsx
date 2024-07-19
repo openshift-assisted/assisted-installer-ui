@@ -1,9 +1,7 @@
 import React from 'react';
 
 // Must conform Unleash constants
-export type AssistedInstallerFeatureType =
-  | 'ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE'
-  | 'ASSISTED_INSTALLER_PLATFORM_OCI';
+export type AssistedInstallerFeatureType = 'ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE';
 
 export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
@@ -26,7 +24,6 @@ export const ACM_ENABLED_FEATURES: FeatureListType = {
 // Hardcoded outside OCM
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: false,
-  ASSISTED_INSTALLER_PLATFORM_OCI: true,
 };
 
 export type FeatureGateContextType = {
@@ -40,8 +37,6 @@ export const FeatureGateContext = React.createContext<FeatureGateContextType>({
 export const FeatureGateContextProvider: React.FC<{
   features: FeatureListType;
 }> = ({ features, children }) => {
-  // hardcoded defaults
-  // TODO (mortegag): Remove all multiarch capacity related code in the UI.
   const featuresWithDefaults: FeatureListType = {
     ...features,
   };
