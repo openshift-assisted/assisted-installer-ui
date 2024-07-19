@@ -3,7 +3,7 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 
 type ConnectivityMajorityGroups = {
   l3_connected_addresses: object;
-  majority_groups: { [key: string]: string[] };
+  majority_groups?: { [key: string]: string[] };
 };
 
 export const getHostNetworks = (
@@ -18,12 +18,14 @@ export const getHostNetworks = (
     agentClusterInstall.status.connectivityMajorityGroups,
   ) as ConnectivityMajorityGroups;
 
-  return Object.keys(connectivityMajorityGroups.majority_groups)
+  const majorityGroups = connectivityMajorityGroups.majority_groups || {};
+
+  return Object.keys(majorityGroups)
     .filter((k) => !['IPv4', 'IPv6'].includes(k))
     .map((cidr) => {
       const hostIds: string[] = [];
 
-      connectivityMajorityGroups.majority_groups[cidr].forEach((hostName: string) => {
+      majorityGroups[cidr].forEach((hostName: string) => {
         const agent: AgentK8sResource | undefined = agents.find(
           (agent) => agent.metadata?.name === hostName,
         );
