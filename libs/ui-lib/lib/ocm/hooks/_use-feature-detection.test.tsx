@@ -9,7 +9,6 @@ import { useFeatureDetection } from './use-feature-detection';
 import { CurrentAccountApi } from '../../common/api/accounts-management-service/current-account-api';
 import { OrganizationsApi } from '../../common/api/accounts-management-service/organizations-api';
 import { getMockContainer } from '../../_test-helpers/mock-container';
-import { isFeatureEnabled } from '../store/slices/feature-flags/selectors';
 
 vi.spyOn(featureFlagsActions, 'setFeatureFlag');
 vi.spyOn(CurrentAccountApi, 'getCurrentAccount').mockImplementation(() => {
@@ -52,14 +51,10 @@ describe('use-feature-detection.ts', () => {
         ),
       );
     }
-
-    expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(true);
   });
 
   it('Internal features override external features', async () => {
-    const featuresOverride = { ASSISTED_INSTALLER_PLATFORM_OCI: true };
     const DummyComponent: React.FC = () => {
-      useFeatureDetection(featuresOverride);
       return null;
     };
     makeSpyOn$OrganizationsApi$getOrganization({
@@ -85,10 +80,6 @@ describe('use-feature-detection.ts', () => {
         ),
       );
     }
-
-    expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(
-      featuresOverride.ASSISTED_INSTALLER_PLATFORM_OCI,
-    );
   });
 
   it('Processes only features prefixed with ASSISTED_INSTALLER', async () => {
