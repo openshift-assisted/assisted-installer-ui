@@ -13,6 +13,7 @@ export const getEmptyManifest = (): CustomManifestValues => {
     folder: 'manifests',
     filename: '',
     manifestYaml: '',
+    created: false,
   };
 };
 
@@ -36,6 +37,7 @@ export const getClusterCustomManifests = (
       folder: manifest.folder || 'manifests',
       filename: manifest.fileName || '',
       manifestYaml: manifest.yamlContent || '',
+      created: true,
     }));
   } else {
     return [getEmptyManifest()];
