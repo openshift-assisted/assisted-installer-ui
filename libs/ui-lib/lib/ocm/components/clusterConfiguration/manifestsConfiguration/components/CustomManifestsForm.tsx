@@ -93,11 +93,15 @@ export const CustomManifestsForm = ({
                 cluster.id,
                 ClustersService.transformFormViewManifest(manifest),
               );
+              if (!uiSettings?.customManifestsAdded) {
+                await updateUISettings({ customManifestsAdded: true });
+              }
             } else {
               // manifest updated
               const oldManifest = customManifestsLocalRef.current[index];
               await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
             }
+
           } catch (error) {
             const errorArray = new Array(manifests.length).fill(undefined);
             errorArray.splice(index, 1, { manifestYaml: 'Failed to save changes' });
@@ -118,9 +122,6 @@ export const CustomManifestsForm = ({
         }
 
         customManifestsLocalRef.current = manifests;
-        if (!uiSettings?.customManifestsAdded) {
-          await updateUISettings({ customManifestsAdded: true });
-        }
 
         actions.setSubmitting(false);
       }
