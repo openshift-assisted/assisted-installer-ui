@@ -12,7 +12,7 @@ export const UILibRoutes = ({
   children,
 }: {
   allEnabledFeatures: FeatureListType;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) => {
   useFeatureDetection(allEnabledFeatures);
 
