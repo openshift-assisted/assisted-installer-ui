@@ -11,9 +11,7 @@ import { ClusterUiError } from './ClusterPageErrors';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 
-const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
-  pageTitleSection,
-}) => {
+const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactNode }) => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
@@ -35,7 +33,7 @@ const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
   );
 };
 
-const NewClusterTitleSection: React.FC = () => (
+const NewClusterTitleSection = () => (
   <>
     <ClusterBreadcrumbs clusterName="New cluster" />
     <PageSection variant={PageSectionVariants.light}>
@@ -44,7 +42,7 @@ const NewClusterTitleSection: React.FC = () => (
   </>
 );
 
-export const NewSingleClusterPage: React.FC = () => <NewClusterPageGeneric />;
-export const NewClusterPage: React.FC = () => (
+export const NewSingleClusterPage = () => <NewClusterPageGeneric />;
+export const NewClusterPage = () => (
   <NewClusterPageGeneric pageTitleSection={<NewClusterTitleSection />} />
 );

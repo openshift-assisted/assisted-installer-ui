@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {
   WizardFooter,
@@ -9,7 +9,6 @@ import {
   clusterFieldLabels,
   selectClusterValidationsInfo,
 } from '../../../common';
-import { routeBasePath } from '../../config';
 import { wizardStepsValidationsMap } from './wizardTransition';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
@@ -79,12 +78,9 @@ const ClusterWizardFooter = ({
   ...rest
 }: ClusterWizardFooterProps) => {
   const { alerts } = useAlerts();
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  const handleCancel = React.useCallback(
-    () => history.push(`${routeBasePath}/clusters/`),
-    [history],
-  );
+  const handleCancel = React.useCallback(() => navigate('..'), [navigate]);
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
 

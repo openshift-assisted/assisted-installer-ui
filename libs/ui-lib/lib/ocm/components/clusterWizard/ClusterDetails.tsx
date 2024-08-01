@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
@@ -10,7 +10,6 @@ import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransi
 import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
-import { routeBasePath } from '../../config';
 import {
   ClusterDetailsUpdateParams,
   ClustersService,
@@ -28,7 +27,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const clusterWizardContext = useClusterWizardContext();
   const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
   const pullSecret = usePullSecret();
@@ -69,7 +68,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       clearAlerts();
       try {
         const cluster = await ClustersService.create(params);
-        history.push(`${routeBasePath}/clusters/${cluster.id}`, ClusterWizardFlowStateNew);
+        navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
       } catch (e) {
         handleApiError(e, () =>
@@ -80,7 +79,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, history, addAlert, dispatch],
+    [clearAlerts, navigate, addAlert, dispatch],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
