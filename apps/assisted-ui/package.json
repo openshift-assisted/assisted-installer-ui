@@ -22,6 +22,7 @@
     "react-monaco-editor": "^0.55.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^5.3.3",
+    "react-router-dom-v5-compat": "^6.21.2",
     "react-tagsinput": "^3.20",
     "redux": "^4",
     "uuid": "^8.1",
@@ -31,7 +32,6 @@
   "devDependencies": {
     "@tsconfig/vite-react": "^1.0.1",
     "@types/react": "17.0.x",
-    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react-swc": "^3.0.1",
     "vite": "^4.5.3",
     "vite-plugin-environment": "^1.1.3"
