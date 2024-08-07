@@ -17,6 +17,7 @@ import {
   ReviewClusterDetailTable,
   ReviewNetworkingTable,
   ReviewOperatorsTable,
+  ReviewPlatformTable,
   TableSummaryExpandable,
 } from '.';
 import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
@@ -51,9 +52,12 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
               <DetailItem
                 title={'Platform integration'}
                 value={
-                  <PlatformIntegrationNote
-                    platformType={cluster.platform?.type as SupportedPlatformType}
-                  />
+                  <>
+                    <ReviewPlatformTable cluster={cluster} />
+                    <PlatformIntegrationNote
+                      platformType={cluster.platform?.type as SupportedPlatformType}
+                    />
+                  </>
                 }
                 testId="platform-integration-note"
                 classNameValue={'pf-v5-u-mt-sm'}
