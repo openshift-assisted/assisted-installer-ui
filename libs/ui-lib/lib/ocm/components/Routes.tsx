@@ -8,11 +8,10 @@ import { AssistedUILibVersion } from './ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
 
-export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
+export const Routes: React.FC<{ allEnabledFeatures?: FeatureListType }> = ({
   allEnabledFeatures,
-  children,
 }) => {
-  useFeatureDetection(allEnabledFeatures);
+  useFeatureDetection(allEnabledFeatures || null);
 
   return (
     <Provider store={storeDay1}>
@@ -21,8 +20,6 @@ export const Routes: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
         <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
         <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
         <Route path={`${routeBasePath}/clusters`} component={Clusters} />
-        {children}
-        <Redirect to={`${routeBasePath}/clusters`} />
       </Switch>
     </Provider>
   );
