@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AlertVariant, List, ListComponent, ListItem } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { CpuArchitecture } from '../../../common';

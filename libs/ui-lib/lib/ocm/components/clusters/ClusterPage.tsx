@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
 import {
@@ -35,13 +35,12 @@ import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
 
-type MatchParams = {
-  clusterId: string;
-};
-
-const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolean }> = ({
+const ClusterPageGeneric = ({
   clusterId,
   showBreadcrumbs = false,
+}: {
+  clusterId: string;
+  showBreadcrumbs?: boolean;
 }) => {
   if (!clusterId) {
     // console.error('ClusterPageGeneric: missing clusterId');
@@ -132,7 +131,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
 
   if (uiState === ResourceUIState.POLLING_ERROR && !cluster) {
     if (Number(errorDetail?.code) === 404) {
-      return <Redirect to={`${routeBasePath}/clusters`} />;
+      return <Navigate to={`${routeBasePath}/clusters`} />;
     }
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
@@ -141,7 +140,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
           fetchData={
             Number(errorDetail?.code) === 401 ? () => window.location.reload() : fetchCluster
           }
-          actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
+          actions={[<BackButton key={'cancel'} to={'..'} />]}
         />
       </PageSection>
     );
@@ -152,7 +151,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
       <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
           title="Cluster details not found"
-          actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
+          actions={[<BackButton key={'cancel'} to={`..`} />]}
           content={
             'Check to make sure the cluster-ID is valid. Otherwise, the cluster details may have been deleted.'
           }
@@ -198,16 +197,20 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs?: boolea
     );
   }
 
-  return <Redirect to="/clusters" />;
+  return <Navigate to="/clusters" />;
 };
 
-export const SingleClusterPage: React.FC<{ clusterId: string }> = ({ clusterId }) => (
+export const SingleClusterPage = ({ clusterId }: { clusterId: string }) => (
   <AlertsContextProvider>
     <ClusterPageGeneric clusterId={clusterId} />
   </AlertsContextProvider>
 );
-export const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => (
-  <AlertsContextProvider>
-    <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
-  </AlertsContextProvider>
-);
+
+export const ClusterPage = () => {
+  const { clusterId } = useParams<{ clusterId: string }>();
+  return (
+    <AlertsContextProvider>
+      <ClusterPageGeneric clusterId={clusterId || ''} showBreadcrumbs />
+    </AlertsContextProvider>
+  );
+};

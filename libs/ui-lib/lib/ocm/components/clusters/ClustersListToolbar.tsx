@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Toolbar,
   ToolbarItem,
@@ -22,7 +22,6 @@ import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
 import { fetchClustersAsync } from '../../store/slices/clusters/slice';
-import { routeBasePath } from '../../config';
 import omit from 'lodash-es/omit.js';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -51,7 +50,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   setFilters,
 }) => {
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const clustersUIState = useSelectorDay1(selectClustersUIState);
   const dispatch = useDispatchDay1();
   const fetchClusters = React.useCallback(() => void dispatch(fetchClustersAsync()), [dispatch]);
@@ -154,7 +153,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         </ToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
-          onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+          onClick={() => navigate(`~new`)}
           id="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >

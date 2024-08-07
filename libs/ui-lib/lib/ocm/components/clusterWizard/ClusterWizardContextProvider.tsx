@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
 import {
   ClusterWizardFlowStateType,
@@ -91,7 +91,8 @@ const ClusterWizardContextProvider = ({
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
-  const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
+  const location = useLocation();
+  const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
     uiSettings,
     updateUISettings,
