@@ -87,16 +87,21 @@ export const CustomManifestsForm = ({
         for (let index = 0; index < manifests.length; index++) {
           try {
             const manifest = manifests[index];
-            if (index >= (customManifestsLocalRef.current?.length || 0)) {
-              // manifest added
+            if (manifest.created) {
+              // update manifest
+              const oldManifest = customManifestsLocalRef.current[index];
+              await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
+            } else {
+              // add manifest
               await ClustersAPI.createCustomManifest(
                 cluster.id,
                 ClustersService.transformFormViewManifest(manifest),
               );
-            } else {
-              // manifest updated
-              const oldManifest = customManifestsLocalRef.current[index];
-              await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
+
+              manifests[index].created = true;
+              if (!uiSettings?.customManifestsAdded) {
+                await updateUISettings({ customManifestsAdded: true });
+              }
             }
           } catch (error) {
             const errorArray = new Array(manifests.length).fill(undefined);
@@ -118,9 +123,6 @@ export const CustomManifestsForm = ({
         }
 
         customManifestsLocalRef.current = manifests;
-        if (!uiSettings?.customManifestsAdded) {
-          await updateUISettings({ customManifestsAdded: true });
-        }
 
         actions.setSubmitting(false);
       }

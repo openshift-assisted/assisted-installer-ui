@@ -2,7 +2,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { storeDay1 } from '../../store';
-import { OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
   AssistedInstallerOCMPermissionTypesListType,
@@ -29,8 +28,8 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
-import { BrowserRouter } from 'react-router-dom';
 import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
+import { BrowserRouter } from 'react-router-dom-v5-compat';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -65,7 +64,7 @@ const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; err
           <ErrorState
             title="Failed to fetch the cluster"
             fetchData={fetchCluster}
-            actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+            actions={[<BackButton key={'cancel'} to={'..'} />]}
             content={error}
           />
         </BrowserRouter>
@@ -85,7 +84,7 @@ const LoadingDefaultConfigFailedCard = () => (
       <BrowserRouter>
         <ErrorState
           title="Failed to retrieve the default configuration"
-          actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
+          actions={[<BackButton key={'cancel'} to={'..'} />]}
         />
       </BrowserRouter>
     </CardBody>
