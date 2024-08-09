@@ -102,6 +102,11 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     </>
   );
   const { t } = useTranslation();
+
+  React.useEffect(() => {
+    window.addEventListener('resize', () => setStatusExpanded(false));
+  }, []);
+
   return (
     <Toolbar
       id="clusters-list-toolbar"
