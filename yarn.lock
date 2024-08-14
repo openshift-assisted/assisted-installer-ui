@@ -902,7 +902,6 @@ __metadata:
     prism-react-renderer: ^1.1.1
     react-error-boundary: ^3.1.4
     react-measure: ^2.5.2
-    react-router-dom: ^5.3.3
     react-router-dom-v5-compat: ^6.21.2
     swr: ^2
     tslib: ^2.6.1
