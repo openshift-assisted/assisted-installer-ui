@@ -1,3 +1,6 @@
+// This component resolves the folowing bug: https://issues.redhat.com/browse/MGMT-18567
+// Once this issues is addressed in PatternFly, this component should be removed.
+
 import {
   Chip,
   ChipGroup,
