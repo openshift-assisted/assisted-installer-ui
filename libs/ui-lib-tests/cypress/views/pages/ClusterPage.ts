@@ -10,7 +10,7 @@ export class ClusterPage {
   }
 
   static visit(options?: Partial<Cypress.VisitOptions>) {
-    cy.visit(`/clusters/${Cypress.env('clusterId')}`, options);
+    cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`, options);
   }
 
   get body() {

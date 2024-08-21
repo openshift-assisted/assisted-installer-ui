@@ -99,10 +99,10 @@ export const commonActions = {
     return cy.get('#form-input-dns-field-helper-error');
   },
   visitNewClusterPage: () => {
-    cy.visit('/clusters/~new');
+    cy.visit('/assisted-installer/clusters/~new');
   },
   visitClusterDetailsPage: () => {
-    cy.visit(`/clusters/${Cypress.env('clusterId')}`);
+    cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`);
     cy.get('h2').should('exist');
   },
 };
