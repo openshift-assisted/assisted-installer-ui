@@ -15,7 +15,7 @@ describe(`Assisted Installer Static IP Cluster Creation`, () => {
 
   beforeEach(() => {
     setTestStartSignal('');
-    cy.visit('/clusters');
+    cy.visit('/assisted-installer/clusters');
   });
 
   describe('Creating a new cluster', () => {
