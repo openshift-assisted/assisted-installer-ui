@@ -15,7 +15,7 @@ describe('Assisted Installer UI behaviour - cluster creation with custom OCP rel
 
   beforeEach(() => {
     setTestStartSignal('');
-    cy.visit('/assisted-installer/clusters');
+    cy.visit('/clusters');
   });
 
   describe('Custom OpenShiftVersion tests', () => {

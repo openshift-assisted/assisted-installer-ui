@@ -15,7 +15,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
 
   beforeEach(() => {
     setTestStartSignal('');
-    cy.visit('/assisted-installer/clusters');
+    cy.visit('/clusters');
   });
 
   describe('Creating a new cluster', () => {
@@ -23,7 +23,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       clusterListPage.getCreateNewClusterButton().should('be.visible');
       clusterListPage.getCreateNewClusterButton().click();
 
-      cy.location('pathname').should('eq', '/assisted-installer/clusters/~new');
+      cy.location('pathname').should('eq', Cypress.env('newClusterLocation'));
     });
 
     it('Can submit the form to create a new cluster', () => {
@@ -49,7 +49,7 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
     describe('When the cluster is created', () => {
       beforeEach(() => {
         setTestStartSignal('CLUSTER_CREATED');
-        cy.visit('/assisted-installer/clusters');
+        cy.visit('/clusters');
       });
 
       it('Lists the new cluster', () => {

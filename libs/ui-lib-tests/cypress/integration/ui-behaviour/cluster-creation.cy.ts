@@ -14,7 +14,7 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
 
   beforeEach(() => {
     setTestStartSignal('');
-    cy.visit('/assisted-installer/clusters');
+    cy.visit('/clusters');
   });
 
   describe('OpenShiftVersion tests', () => {
