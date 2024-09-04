@@ -23,6 +23,7 @@ import {
 } from './validationsInfoUtils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { stringToJSON } from '../../utils';
+import { UISettingsValues } from '../../types';
 
 type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends string> = {
   currentStepId: ClusterWizardStepsType;
@@ -32,6 +33,7 @@ type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends strin
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>;
   children?: React.ReactNode;
   lastInstallationPreparation?: LastInstallationPreparation | undefined;
+  uiSettings?: UISettingsValues;
 };
 
 const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string>({
@@ -42,7 +44,12 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   wizardStepsValidationsMap,
   children,
   lastInstallationPreparation,
+  uiSettings,
 }: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
+  const [showInstallAlert, setShowInstallAlert] = React.useState(
+    lastInstallationPreparation && lastInstallationPreparation.status === 'failed',
+  );
+
   const { failedClusterValidations, failedHostnameValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
       validationsInfo || {},
@@ -68,6 +75,15 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
       failedHostnameValidations: hostnameValidations,
     };
   }, [validationsInfo, currentStepId, wizardStepsValidationsMap, hosts]);
+
+  React.useEffect(() => {
+    if (
+      lastInstallationPreparation?.reason?.includes('manifest') &&
+      uiSettings?.customManifestsUpdated
+    ) {
+      setShowInstallAlert(false);
+    }
+  }, [lastInstallationPreparation, uiSettings]);
 
   const isClusterReady =
     getWizardStepClusterStatus(
@@ -116,11 +132,11 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
           </Alert>
         </AlertGroup>
       )}
-      {lastInstallationPreparation && lastInstallationPreparation.status === 'failed' && (
+      {showInstallAlert && (
         <AlertGroup>
           <Alert variant={AlertVariant.danger} title="Error in preparing installation" isInline>
             <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
-              <FlexItem>{lastInstallationPreparation.reason}</FlexItem>
+              <FlexItem>{lastInstallationPreparation?.reason}</FlexItem>
             </Flex>
           </Alert>
         </AlertGroup>

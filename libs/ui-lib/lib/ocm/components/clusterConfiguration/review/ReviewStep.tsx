@@ -21,6 +21,23 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
+  const [disableInstallButton, setDisableInstallButton] = React.useState<boolean>();
+
+  React.useEffect(() => {
+    if (
+      cluster['last-installation-preparation']?.status === 'failed' &&
+      cluster['last-installation-preparation'].reason?.includes('manifest')
+    ) {
+      if (clusterWizardContext.uiSettings?.customManifestsUpdated === undefined) {
+        setDisableInstallButton(true);
+        void clusterWizardContext.updateUISettings({ customManifestsUpdated: false });
+      } else if (clusterWizardContext.uiSettings?.customManifestsUpdated === false) {
+        setDisableInstallButton(true);
+      }
+    } else {
+      setDisableInstallButton(isViewerMode || isStartingInstallation || cluster.status !== 'ready');
+    }
+  }, [cluster, isStartingInstallation, isViewerMode, clusterWizardContext]);
 
   const handleClusterInstall = async () => {
     setIsStartingInstallation(true);
@@ -28,6 +45,10 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
       const { data } = await ClustersService.install(cluster.id, cluster.tags);
       dispatch(updateCluster(data));
       setIsStartingInstallation(false);
+
+      if (clusterWizardContext.uiSettings?.customManifestsUpdated) {
+        void clusterWizardContext.updateUISettings({ customManifestsUpdated: undefined });
+      }
       // If successful, backend changes cluster state which leads to unmounting the Wizard
       // If validation fails, the wizard stays on this step and shows alerts
     } catch (e) {
@@ -54,7 +75,7 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
             name="install"
             data-testid="button-install-cluster"
             onClick={() => void handleClusterInstall()}
-            isDisabled={isViewerMode || isStartingInstallation || cluster.status !== 'ready'}
+            isDisabled={disableInstallButton}
           >
             Install cluster
           </Button>
