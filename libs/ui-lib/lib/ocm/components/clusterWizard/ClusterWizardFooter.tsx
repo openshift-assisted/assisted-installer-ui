@@ -81,7 +81,7 @@ const ClusterWizardFooter = ({
   const { alerts } = useAlerts();
   const navigate = useNavigate();
 
-  const handleCancel = React.useCallback(() => navigate('..'), [navigate]);
+  const handleCancel = React.useCallback(() => navigate('/cluster-list'), [navigate]);
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
 
