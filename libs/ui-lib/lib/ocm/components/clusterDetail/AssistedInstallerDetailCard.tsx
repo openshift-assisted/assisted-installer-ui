@@ -29,11 +29,17 @@ import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
 import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
-import { BrowserRouter } from 'react-router-dom-v5-compat';
+import {
+  unstable_HistoryRouter as HistoryRouter,
+  HistoryRouterProps,
+  BrowserRouter,
+} from 'react-router-dom-v5-compat';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
   allEnabledFeatures: FeatureListType;
+  history: HistoryRouterProps['history'];
+  basename: HistoryRouterProps['basename'];
   permissions?: AssistedInstallerOCMPermissionTypesListType;
 };
 
@@ -64,7 +70,7 @@ const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; err
           <ErrorState
             title="Failed to fetch the cluster"
             fetchData={fetchCluster}
-            actions={[<BackButton key={'cancel'} to={'..'} />]}
+            actions={[<BackButton key={'cancel'} to={'/cluster-list'} />]}
             content={error}
           />
         </BrowserRouter>
@@ -84,7 +90,7 @@ const LoadingDefaultConfigFailedCard = () => (
       <BrowserRouter>
         <ErrorState
           title="Failed to retrieve the default configuration"
-          actions={[<BackButton key={'cancel'} to={'..'} />]}
+          actions={[<BackButton key={'cancel'} to={'/cluster-list'} />]}
         />
       </BrowserRouter>
     </CardBody>
@@ -94,6 +100,8 @@ const LoadingDefaultConfigFailedCard = () => (
 const AssistedInstallerDetailCard = ({
   aiClusterId,
   allEnabledFeatures,
+  history,
+  basename,
   permissions,
 }: AssistedInstallerDetailCardProps) => {
   useFeatureDetection(allEnabledFeatures);
@@ -136,33 +144,36 @@ const AssistedInstallerDetailCard = ({
   );
 
   const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
+
   return (
-    <AlertsContextProvider>
-      <OpenshiftVersionsContextProvider>
-        <SentryErrorMonitorContextProvider>
-          <ModalDialogsContextProvider>
-            <ClusterDefaultConfigurationProvider
-              loadingUI={<LoadingCard />}
-              errorUI={<LoadingDefaultConfigFailedCard />}
-            >
-              <NewFeatureSupportLevelProvider
-                loadingUi={<LoadingCard />}
-                cluster={cluster}
-                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                openshiftVersion={cluster.openshiftVersion}
-                platformType={cluster.platform?.type}
+    <HistoryRouter history={history} basename={basename}>
+      <AlertsContextProvider>
+        <OpenshiftVersionsContextProvider>
+          <SentryErrorMonitorContextProvider>
+            <ModalDialogsContextProvider>
+              <ClusterDefaultConfigurationProvider
+                loadingUI={<LoadingCard />}
+                errorUI={<LoadingDefaultConfigFailedCard />}
               >
-                {content}
-              </NewFeatureSupportLevelProvider>
-              {isOutdatedClusterData && <ClusterPollingErrorModal />}
-              <CancelInstallationModal />
-              <ResetClusterModal />
-              <DiscoveryImageModal />
-            </ClusterDefaultConfigurationProvider>
-          </ModalDialogsContextProvider>
-        </SentryErrorMonitorContextProvider>
-      </OpenshiftVersionsContextProvider>
-    </AlertsContextProvider>
+                <NewFeatureSupportLevelProvider
+                  loadingUi={<LoadingCard />}
+                  cluster={cluster}
+                  cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
+                  openshiftVersion={cluster.openshiftVersion}
+                  platformType={cluster.platform?.type}
+                >
+                  {content}
+                </NewFeatureSupportLevelProvider>
+                {isOutdatedClusterData && <ClusterPollingErrorModal />}
+                <CancelInstallationModal />
+                <ResetClusterModal />
+                <DiscoveryImageModal />
+              </ClusterDefaultConfigurationProvider>
+            </ModalDialogsContextProvider>
+          </SentryErrorMonitorContextProvider>
+        </OpenshiftVersionsContextProvider>
+      </AlertsContextProvider>
+    </HistoryRouter>
   );
 };
 
