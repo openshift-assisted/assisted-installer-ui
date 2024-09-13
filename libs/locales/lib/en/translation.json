@@ -305,6 +305,7 @@
   "ai:Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.": "Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.",
   "ai:Exposes the service externally using a cloud provider's load balancer": "Exposes the service externally using a cloud provider's load balancer",
   "ai:Exposes the service on each node's IP at a static port": "Exposes the service on each node's IP at a static port",
+  "ai:Externally provisioned": "Externally provisioned",
   "ai:Failed": "Failed",
   "ai:Failed on {{humanizedDataTime}}": "Failed on {{humanizedDataTime}}",
   "ai:Failed to add host": "Failed to add host",
