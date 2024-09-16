@@ -13,7 +13,7 @@ import {
 } from '../../../common/components/ui/formik';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import ArmCheckbox from './ArmCheckbox';
+import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import { SNOControlGroup } from '../../../common';
 import { getNetworkType } from '../helpers';
 
@@ -111,7 +111,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <>
           <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
-          <ArmCheckbox versions={versions} />
+          <CpuArchitectureDropdown />
         </>
       )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
