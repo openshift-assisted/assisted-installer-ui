@@ -4,51 +4,20 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/d
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import {
+  architectureData,
   CpuArchitecture,
   FeatureId,
   getDefaultCpuArchitecture,
   getFieldId,
   SupportedCpuArchitecture,
 } from '../../../common';
-import {
-  ArchitectureSupportLevelId,
-  Cluster,
-  PlatformType,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { ExternalPlaformIds, ExternalPlatformLabels } from './platformIntegration/constants';
-
-export type CpuArchitectureItem = {
-  description: string;
-  featureSupportLevelId?: ArchitectureSupportLevelId;
-  label: string;
-};
-
-export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureItem> = {
-  [CpuArchitecture.x86]: {
-    description: '',
-    label: 'x86_64',
-  },
-  [CpuArchitecture.ARM]: {
-    description: 'Some features may not be available',
-    featureSupportLevelId: 'ARM64_ARCHITECTURE',
-    label: 'Arm64',
-  },
-  [CpuArchitecture.ppc64le]: {
-    description: 'Some features may not be available',
-    featureSupportLevelId: 'PPC64LE_ARCHITECTURE',
-    label: 'IBM Power (ppc64le)',
-  },
-  [CpuArchitecture.s390x]: {
-    description: 'Some features may not be available',
-    featureSupportLevelId: 'S390X_ARCHITECTURE',
-    label: 'IBM Z (s390x)',
-  },
-};
 
 const INPUT_NAME = 'cpuArchitecture';
 const fieldId = getFieldId(INPUT_NAME, 'input');

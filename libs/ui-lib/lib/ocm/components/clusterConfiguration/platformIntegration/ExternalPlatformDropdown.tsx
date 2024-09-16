@@ -14,6 +14,7 @@ import {
   CpuArchitecture,
   FeatureId,
   SupportedCpuArchitecture,
+  architectureData,
   getFieldId,
 } from '../../../../common';
 import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
@@ -23,7 +24,6 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
-import { architectureData } from '../CpuArchitectureDropdown';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const INPUT_NAME = 'platform';
