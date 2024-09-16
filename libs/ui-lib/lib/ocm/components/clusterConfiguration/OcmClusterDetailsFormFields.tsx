@@ -14,6 +14,7 @@ import {
   StaticTextField,
   getSupportedCpuArchitectures,
   SupportedCpuArchitecture,
+  architectureData,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -21,10 +22,7 @@ import { OcmRichInputField } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 import CustomManifestCheckbox from './CustomManifestCheckbox';
-import CpuArchitectureDropdown, {
-  architectureData,
-  CpuArchitectureItem,
-} from './CpuArchitectureDropdown';
+import CpuArchitectureDropdown from './CpuArchitectureDropdown';
 import { OcmBaseDomainField } from './OcmBaseDomainField';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
@@ -80,9 +78,8 @@ export const OcmClusterDetailsFormFields = ({
     () => getSupportedCpuArchitectures(cpuArchitecturesByVersionImage),
     [cpuArchitecturesByVersionImage],
   );
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const cpuArchitecture = (architectureData[values.cpuArchitecture] as CpuArchitectureItem).label;
+  const cpuArchitecture =
+    architectureData[values.cpuArchitecture as SupportedCpuArchitecture].label;
 
   const featureSupportLevelContext = useNewFeatureSupportLevel();
 
