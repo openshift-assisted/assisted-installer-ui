@@ -1,12 +1,12 @@
 import {
   ActiveFeatureConfiguration,
+  architectureData,
   CpuArchitecture,
   FeatureId,
   isSNO,
   OperatorsValues,
   SupportedCpuArchitecture,
 } from '../../../common';
-import { architectureData } from '../clusterConfiguration/CpuArchitectureDropdown';
 import {
   Cluster,
   PlatformType,
