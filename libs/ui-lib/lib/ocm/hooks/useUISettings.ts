@@ -1,7 +1,8 @@
 import React from 'react';
 import { Cluster } from '@openshift-assisted/types/./assisted-installer-service';
-import { UISettingService, UISettingsValues } from '../services';
+import { UISettingService } from '../services';
 import { ClustersAPI } from '../services/apis';
+import { UISettingsValues } from '../../common';
 
 const useUISettings = (clusterId?: Cluster['id']) => {
   const [uiSettings, setUISettings] = React.useState<UISettingsValues>();

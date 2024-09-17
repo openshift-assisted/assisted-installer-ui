@@ -10,3 +10,4 @@ export * from './featureSupportLevel';
 export * from './typescriptExtensions';
 export * from './generateIsoFields';
 export * from './errortype';
+export * from './ui-settings';

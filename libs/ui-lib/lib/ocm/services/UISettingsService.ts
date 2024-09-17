@@ -1,6 +1,6 @@
 import { Cluster } from '@openshift-assisted/types/./assisted-installer-service';
 import { UISettingsAPI } from '../../common/api/assisted-service';
-import { UISettingsValues } from './types';
+import { UISettingsValues } from '../../common';
 
 const PREFIX_LENGHT = 6;
 

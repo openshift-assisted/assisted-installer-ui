@@ -91,6 +91,7 @@ export const CustomManifestsForm = ({
               // update manifest
               const oldManifest = customManifestsLocalRef.current[index];
               await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
+              await updateUISettings({ customManifestsUpdated: true });
             } else {
               // add manifest
               await ClustersAPI.createCustomManifest(
@@ -127,7 +128,7 @@ export const CustomManifestsForm = ({
         actions.setSubmitting(false);
       }
     },
-    [clearAlerts, uiSettings?.customManifestsAdded, cluster.id, addAlert, updateUISettings],
+    [clearAlerts, cluster.id, uiSettings, updateUISettings, addAlert],
   );
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;

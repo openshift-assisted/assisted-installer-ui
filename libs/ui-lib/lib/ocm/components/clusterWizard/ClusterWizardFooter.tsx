@@ -32,6 +32,7 @@ const ValidationSection = ({
 }: ClusterValidationSectionProps) => {
   const { currentStepId } = useClusterWizardContext();
   const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
+  const { uiSettings } = useClusterWizardContext();
   const { t } = useTranslation();
 
   let _alertContent = alertContent;
@@ -55,6 +56,7 @@ const ValidationSection = ({
           validationsInfo={validationsInfo}
           wizardStepsValidationsMap={wizardStepsValidationsMap}
           lastInstallationPreparation={cluster['last-installation-preparation']}
+          uiSettings={uiSettings}
         />
       )}
     </AlertGroup>

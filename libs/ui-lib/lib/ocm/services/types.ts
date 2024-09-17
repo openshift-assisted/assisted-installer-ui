@@ -25,8 +25,3 @@ export type OcmClusterDetailsValues = ClusterDetailsValues & {
   isCMNSupported: boolean;
   isSNODevPreview: boolean;
 };
-
-export type UISettingsValues = {
-  addCustomManifests?: boolean;
-  customManifestsAdded?: boolean;
-};
