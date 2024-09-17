@@ -14,7 +14,7 @@ describe(`Assisted Installer Multinode Cluster Installation`, () => {
 
   beforeEach(() => {
     setTestStartSignal('');
-    cy.visit('/clusters');
+    cy.visit('/assisted-installer/clusters');
   });
 
   describe('Creating a new cluster', () => {
