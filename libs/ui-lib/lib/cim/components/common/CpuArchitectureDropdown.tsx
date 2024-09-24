@@ -1,11 +1,19 @@
 import * as React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { architectureData, getFieldId, SupportedCpuArchitecture } from '../../../common';
-import { useField } from 'formik';
+import {
+  architectureData,
+  ClusterDetailsValues,
+  CpuArchitecture,
+  getFieldId,
+  StaticField,
+  SupportedCpuArchitecture,
+} from '../../../common';
+import { useField, useFormikContext } from 'formik';
 
-const CpuArchitectureDropdown = () => {
+const CpuArchitectureDropdown = ({ isDisabled = false }: { isDisabled?: boolean }) => {
   const { t } = useTranslation();
+  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const [{ name, value }, , { setValue }] = useField<SupportedCpuArchitecture>('cpuArchitecture');
   const [cpuArchOpen, setCpuArchOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
@@ -20,14 +28,21 @@ const CpuArchitectureDropdown = () => {
 
   const onCpuArchSelect = React.useCallback(
     (e?: React.SyntheticEvent<HTMLDivElement>) => {
-      setValue(e?.currentTarget.id as SupportedCpuArchitecture);
+      const val = e?.currentTarget.id as SupportedCpuArchitecture;
+      setValue(val);
+
+      if (val === CpuArchitecture.s390x) {
+        setFieldValue('userManagedNetworking', true);
+      } else {
+        setFieldValue('userManagedNetworking', false);
+      }
       setCpuArchOpen(false);
     },
-    [setValue],
+    [setValue, setFieldValue],
   );
 
-  return (
-    <FormGroup isInline fieldId={fieldId} label={t('ai:CPU architecture')}>
+  return !isDisabled ? (
+    <FormGroup isInline fieldId={fieldId} label={t('ai:CPU architecture')} required>
       <Dropdown
         toggle={
           <DropdownToggle onToggle={onCpuArchToggle} className="pf-u-w-100">
@@ -63,6 +78,10 @@ const CpuArchitectureDropdown = () => {
         className="pf-u-w-100"
       />
     </FormGroup>
+  ) : (
+    <StaticField name={'cpuArchitecture'} label={t('ai:CPU architecture')} isRequired>
+      {architectureData[value].label}
+    </StaticField>
   );
 };
 

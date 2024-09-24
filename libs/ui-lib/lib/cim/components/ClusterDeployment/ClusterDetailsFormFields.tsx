@@ -52,6 +52,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
 }) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode } = values;
+
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -111,7 +112,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <>
           <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
-          <CpuArchitectureDropdown />
+          <CpuArchitectureDropdown isDisabled={isEditFlow} />
         </>
       )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
