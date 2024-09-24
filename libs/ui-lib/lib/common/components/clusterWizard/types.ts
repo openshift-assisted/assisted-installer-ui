@@ -33,6 +33,7 @@ export type ClusterDetailsValues = {
   cpuArchitecture: string;
   platform: PlatformType;
   customOpenshiftSelect: OpenshiftVersionOptionType | null;
+  userManagedNetworking: boolean;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {
