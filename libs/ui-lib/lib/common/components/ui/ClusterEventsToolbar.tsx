@@ -32,6 +32,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { isSelectEventChecked } from './utils';
 import { TFunction } from 'i18next';
 import { stringToJSON } from '../../utils';
+import { CustomToolbarFilter } from './CustomToolbarFilter';
 
 export type SeverityCountsType = { [severity in Event['severity']]: number };
 
@@ -218,7 +219,7 @@ const ClusterEventsToolbar = ({
     >
       <ToolbarContent>
         {entityKind === 'cluster' && (
-          <ToolbarFilter
+          <CustomToolbarFilter
             categoryName="Hosts"
             chips={hostChips}
             deleteChip={(_, chip) =>
@@ -261,7 +262,7 @@ const ClusterEventsToolbar = ({
                 )),
               ]}
             </Select>
-          </ToolbarFilter>
+          </CustomToolbarFilter>
         )}
 
         <ToolbarFilter
