@@ -27,7 +27,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useDispatchDay1, useSelectorDay1 } from '../../store';
 import { selectClustersUIState } from '../../store/slices/clusters/selectors';
-import { CustomToolbarFilter } from './CustomToolbarFilter';
+import { CustomToolbarFilter } from '../../../common/components/ui/CustomToolbarFilter';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from clusterStatusLabels
