@@ -13,18 +13,24 @@ import CnvHostRequirements from './CnvHostRequirements';
 import { getCnvIncompatibleWithLvmReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
+
+type CnvLabelProps = {
+  clusterId: string;
+  disabledReason?: string;
+  isVersionEqualsOrMajorThan4_15: boolean;
+  supportLevel?: SupportLevel;
+};
 
 const CnvLabel = ({
   clusterId,
   disabledReason,
   isVersionEqualsOrMajorThan4_15,
-}: {
-  clusterId: ClusterOperatorProps['clusterId'];
-  disabledReason?: string;
-  isVersionEqualsOrMajorThan4_15: boolean;
-}) => {
+  supportLevel,
+}: CnvLabelProps) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -40,6 +46,7 @@ const CnvLabel = ({
           />
         }
       />
+      <NewFeatureSupportLevelBadge featureId="CNV" supportLevel={supportLevel} />
     </>
   );
 };
@@ -88,6 +95,7 @@ const CnvCheckbox = ({
             clusterId={clusterId}
             disabledReason={disabledReason}
             isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+            supportLevel={featureSupportLevel.getFeatureSupportLevel('CNV')}
           />
         }
         helperText={<CnvHelperText />}
