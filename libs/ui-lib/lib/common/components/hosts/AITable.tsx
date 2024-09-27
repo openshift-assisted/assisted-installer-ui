@@ -35,6 +35,7 @@ type TableMemoProps = {
   variant?: TableProps['variant'];
   // eslint-disable-next-line
   actionResolver?: ActionsResolver<any>;
+  skipScroll?: boolean;
 };
 const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
   ({
@@ -48,6 +49,7 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
     testId,
     variant,
     actionResolver,
+    skipScroll,
   }) => {
     const tableActionResolver = React.useCallback(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -58,28 +60,27 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
     const newProps = {
       canCollapseAll: false,
     };
-    return (
-      <InnerScrollContainer>
-        <Table
-          rows={rows}
-          cells={cells}
-          onCollapse={onCollapse}
-          aria-label="Hosts table"
-          className={classnames(className, 'hosts-table')}
-          sortBy={sortBy}
-          onSort={onSort}
-          rowWrapper={rowWrapper}
-          data-testid={testId}
-          actionResolver={actionResolver ? tableActionResolver : undefined}
-          variant={variant}
-          actionsMenuAppendTo={() => document.body}
-          {...newProps}
-        >
-          <TableHeader />
-          <TableBody rowKey={rowKey} />
-        </Table>
-      </InnerScrollContainer>
+    const tableElement = (
+      <Table
+        rows={rows}
+        cells={cells}
+        onCollapse={onCollapse}
+        aria-label="Hosts table"
+        className={classnames(className, 'hosts-table')}
+        sortBy={sortBy}
+        onSort={onSort}
+        rowWrapper={rowWrapper}
+        data-testid={testId}
+        actionResolver={actionResolver ? tableActionResolver : undefined}
+        variant={variant}
+        actionsMenuAppendTo={() => document.body}
+        {...newProps}
+      >
+        <TableHeader />
+        <TableBody rowKey={rowKey} />
+      </Table>
     );
+    return skipScroll ? tableElement : <InnerScrollContainer>{tableElement}</InnerScrollContainer>;
   },
 );
 TableMemo.displayName = 'tableMemo';
@@ -155,6 +156,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
   variant?: TableProps['variant'];
+  skipScroll?: boolean;
 };
 // eslint-disable-next-line
 const AITable = <R extends any>({
@@ -177,6 +179,7 @@ const AITable = <R extends any>({
   perPageOptions,
   canSelectAll,
   variant,
+  skipScroll,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   React.useEffect(() => {
@@ -331,6 +334,7 @@ const AITable = <R extends any>({
           data-testid={testId}
           actionResolver={actionResolver}
           variant={variant}
+          skipScroll={skipScroll}
         />
       </SelectionProvider.Provider>
       {showPagination && (

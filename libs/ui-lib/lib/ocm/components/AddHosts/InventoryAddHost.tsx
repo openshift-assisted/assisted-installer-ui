@@ -40,7 +40,7 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
         </StackItem>
       )}
       <StackItem>
-        <ClusterHostsTable cluster={cluster} />
+        <ClusterHostsTable cluster={cluster} skipScroll />
       </StackItem>
     </Stack>
   );
