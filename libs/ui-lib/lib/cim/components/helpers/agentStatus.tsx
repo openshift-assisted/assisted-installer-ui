@@ -42,6 +42,11 @@ export const bmhStatus = (t: TFunction): HostStatus<string> => ({
     title: t('ai:Pending'),
     category: 'Bare Metal Host related',
   },
+  'externally provisioned': {
+    key: 'externally provisioned',
+    title: t('ai:Externally provisioned'),
+    category: 'Bare Metal Host related',
+  },
 });
 
 export const agentStatus = (t: TFunction): HostStatus<string> => ({
