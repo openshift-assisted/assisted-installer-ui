@@ -9,6 +9,7 @@ import {
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_MCE,
   OPERATOR_NAME_ODF,
+  OPERATOR_NAME_OAI,
   OperatorsValues,
   selectMonitoredOperators,
   useAlerts,
@@ -34,6 +35,7 @@ export const getOperatorsInitialValues = (
     useOdfLogicalVolumeManager: isOperatorEnabled([OPERATOR_NAME_LVM]),
     useContainerNativeVirtualization: isOperatorEnabled([OPERATOR_NAME_CNV]),
     useMultiClusterEngine: isOperatorEnabled([OPERATOR_NAME_MCE]),
+    useOpenShiftAI: isOperatorEnabled([OPERATOR_NAME_OAI])
   };
 };
 
