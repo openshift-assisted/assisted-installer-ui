@@ -210,8 +210,10 @@ export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefin
 
   const fuse = new Fuse(hostsWithHostname, {
     ignoreLocation: true,
+    threshold: 0.3,
     keys: ['hostname'],
   });
+
   return fuse.search(hostnameFilter).map(({ item }) => item.host);
 };
 
