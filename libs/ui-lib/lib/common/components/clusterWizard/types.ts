@@ -31,6 +31,7 @@ export type ClusterDetailsValues = {
   diskEncryption: DiskEncryption;
   cpuArchitecture: string;
   platform: PlatformType;
+  userManagedNetworking: boolean;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {

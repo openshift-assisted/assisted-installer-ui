@@ -20,7 +20,12 @@ import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
-import { CpuArchitecture, LabelValue } from '../../../common';
+import {
+  architectureData,
+  CpuArchitecture,
+  LabelValue,
+  SupportedCpuArchitecture,
+} from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
@@ -160,7 +165,8 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
             <DescriptionListGroup>
               <DescriptionListTerm>{t('ai:CPU architecture')}</DescriptionListTerm>
               <DescriptionListDescription>
-                {infraEnv.spec?.cpuArchitecture ?? CpuArchitecture.x86}
+                {architectureData[infraEnv.spec?.cpuArchitecture as SupportedCpuArchitecture]
+                  .label ?? CpuArchitecture.x86}
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>

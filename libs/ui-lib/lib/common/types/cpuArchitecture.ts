@@ -2,6 +2,12 @@ import { ArchitectureSupportLevelId } from '@openshift-assisted/types/assisted-i
 
 export type ClusterCpuArchitecture = 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 
+export type CpuArchitectureItem = {
+  description: string;
+  featureSupportLevelId?: ArchitectureSupportLevelId;
+  label: string;
+};
+
 export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',
@@ -42,6 +48,28 @@ export const getAllCpuArchitectures = (): SupportedCpuArchitecture[] => [
   CpuArchitecture.ppc64le,
   CpuArchitecture.s390x,
 ];
+
+export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureItem> = {
+  [CpuArchitecture.x86]: {
+    description: '',
+    label: 'x86_64',
+  },
+  [CpuArchitecture.ARM]: {
+    description: 'Some features may not be available',
+    featureSupportLevelId: 'ARM64_ARCHITECTURE',
+    label: 'Arm64',
+  },
+  [CpuArchitecture.ppc64le]: {
+    description: 'Some features may not be available',
+    featureSupportLevelId: 'PPC64LE_ARCHITECTURE',
+    label: 'IBM Power (ppc64le)',
+  },
+  [CpuArchitecture.s390x]: {
+    description: 'Some features may not be available',
+    featureSupportLevelId: 'S390X_ARCHITECTURE',
+    label: 'IBM Z (s390x)',
+  },
+};
 
 export const getSupportedCpuArchitectures = (
   cpuArchitectures: CpuArchitecture[],

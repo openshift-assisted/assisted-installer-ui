@@ -48,6 +48,7 @@ import './infra-env.css';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 
 export type EnvironmentStepFormValues = {
   name: string;
@@ -60,7 +61,10 @@ export type EnvironmentStepFormValues = {
   enableProxy: boolean;
   labels: string[];
   networkType: 'dhcp' | 'static';
-  cpuArchitecture: CpuArchitecture;
+  cpuArchitecture: Extract<
+    CpuArchitecture,
+    CpuArchitecture.x86 | CpuArchitecture.ARM | CpuArchitecture.s390x
+  >;
   enableNtpSources: boolean;
   additionalNtpSources: string;
 };
@@ -136,6 +140,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
     setFieldValue('sshPublicKey', sshPublicKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pullSecret, sshPublicKey]);
+
   return (
     <Stack hasGutter>
       <StackItem>
@@ -216,27 +221,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
               </FlexItem>
             </Flex>
           </FormGroup>
-          <FormGroup fieldId="cpuArchitecture" label={t('ai:CPU architecture')}>
-            <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
-              <FlexItem>
-                <RadioField
-                  name="cpuArchitecture"
-                  id="x86_64"
-                  value="x86_64"
-                  label={t('ai:x86_64')}
-                />
-              </FlexItem>
-              <FlexItem spacer={{ default: 'spacer4xl' }} />
-              <FlexItem>
-                <RadioField
-                  name="cpuArchitecture"
-                  id="arm64"
-                  value="arm64"
-                  label={<>{t('ai:arm64')}&nbsp;</>}
-                />
-              </FlexItem>
-            </Flex>
-          </FormGroup>
+          <CpuArchitectureDropdown />
           <RichInputField
             label={t('ai:Location')}
             name="location"
