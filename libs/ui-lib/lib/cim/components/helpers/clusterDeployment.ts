@@ -234,5 +234,12 @@ export const getClusterDeploymentCpuArchitecture = (
     arch = clusterDeployment.metadata?.annotations?.[CPU_ARCHITECTURE_ANNOTATION_KEY];
   }
 
-  return arch === CpuArchitecture.ARM ? CpuArchitecture.ARM : CpuArchitecture.x86;
+  switch (arch) {
+    case CpuArchitecture.ARM:
+      return CpuArchitecture.ARM;
+    case CpuArchitecture.s390x:
+      return CpuArchitecture.s390x;
+    default:
+      return CpuArchitecture.x86;
+  }
 };
