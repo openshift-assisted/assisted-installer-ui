@@ -75,9 +75,14 @@ export const HOST_REQUIREMENTS_LINK = 'https://access.redhat.com/solutions/48856
 export const ODF_REQUIREMENTS_LINK =
   'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
 
+export const OAI_REQUIREMENTS_LINK =
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
+
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
+
+export const OAI_LINK = 'https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai';
 
 export const getMceDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
