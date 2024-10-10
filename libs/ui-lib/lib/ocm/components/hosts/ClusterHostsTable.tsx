@@ -43,9 +43,10 @@ export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
 export interface ClusterHostsTableProps {
   cluster: Cluster;
   skipDisabled?: boolean;
+  skipScroll?: boolean;
 }
 
-const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
+const ClusterHostsTable = ({ cluster, skipDisabled, skipScroll }: ClusterHostsTableProps) => {
   const { wizardPerPage, setWizardPerPage } = React.useContext(ClusterWizardContext) || {};
   const {
     onEditHost,
@@ -99,6 +100,7 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
           content={content}
           actionResolver={actionResolver}
           variant={TableVariant.compact}
+          skipScroll={skipScroll}
           {...paginationProps}
         >
           <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
