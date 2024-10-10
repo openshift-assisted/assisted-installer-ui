@@ -3,49 +3,34 @@ import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/r
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   architectureData,
-  ClusterDetailsValues,
   CpuArchitecture,
   getFieldId,
   StaticField,
   SupportedCpuArchitecture,
 } from '../../../common';
-import { useField, useFormikContext } from 'formik';
+import { useField } from 'formik';
+import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
 
 const CpuArchitectureDropdown = ({ isDisabled = false }: { isDisabled?: boolean }) => {
   const { t } = useTranslation();
-  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const [{ name, value }, , { setValue }] = useField<SupportedCpuArchitecture>('cpuArchitecture');
   const [cpuArchOpen, setCpuArchOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
+  const { setValue: setUserManagedNetworking } = useFormikHelpers<boolean>('userManagedNetworking');
 
-  const onCpuArchToggle = React.useCallback(() => {
-    if (cpuArchOpen) {
-      setCpuArchOpen(false);
-    } else {
-      setCpuArchOpen(true);
-    }
-  }, [cpuArchOpen]);
+  const onCpuArchSelect = (e?: React.SyntheticEvent<HTMLDivElement>) => {
+    const val = e?.currentTarget.id as SupportedCpuArchitecture;
+    setValue(val);
+    setUserManagedNetworking(val === CpuArchitecture.s390x);
 
-  const onCpuArchSelect = React.useCallback(
-    (e?: React.SyntheticEvent<HTMLDivElement>) => {
-      const val = e?.currentTarget.id as SupportedCpuArchitecture;
-      setValue(val);
-
-      if (val === CpuArchitecture.s390x) {
-        setFieldValue('userManagedNetworking', true);
-      } else {
-        setFieldValue('userManagedNetworking', false);
-      }
-      setCpuArchOpen(false);
-    },
-    [setValue, setFieldValue],
-  );
+    setCpuArchOpen(false);
+  };
 
   return !isDisabled ? (
     <FormGroup isInline fieldId={fieldId} label={t('ai:CPU architecture')} required>
       <Dropdown
         toggle={
-          <DropdownToggle onToggle={onCpuArchToggle} className="pf-u-w-100">
+          <DropdownToggle onToggle={() => setCpuArchOpen(!cpuArchOpen)} className="pf-u-w-100">
             {value ? architectureData[value].label : t('ai:CPU architecture')}
           </DropdownToggle>
         }
