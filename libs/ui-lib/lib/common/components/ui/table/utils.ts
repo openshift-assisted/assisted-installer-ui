@@ -7,6 +7,7 @@ import { getHumanizedDateTime } from '../utils';
 export type HumanizedSortable = {
   title: string | React.ReactNode;
   sortableValue: number | string;
+  props?: IRow["props"]
 };
 
 type GetCellType = (row: IRow, index: number | undefined) => string | HumanizedSortable;
