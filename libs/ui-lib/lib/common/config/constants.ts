@@ -267,6 +267,7 @@ export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_LVMS = 'lvms';
 export const OPERATOR_NAME_MCE = 'mce';
+export const OPERATOR_NAME_OAI = 'oai';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -275,6 +276,7 @@ const OperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_OAI,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -282,6 +284,7 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_OAI,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -301,6 +304,7 @@ export const operatorLabelsCim = (
     [OPERATOR_NAME_LVM]: useLVMS
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
+    [OPERATOR_NAME_OAI]: t('ai:OpenShift AI'),
   };
 };
 
@@ -317,6 +321,7 @@ export const operatorLabels = (
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
     [OPERATOR_NAME_MCE]: t('ai:Multicluster engine'),
+    [OPERATOR_NAME_OAI]: t('ai:OpenShift AI'),
   };
 };
 

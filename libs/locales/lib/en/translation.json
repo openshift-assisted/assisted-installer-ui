@@ -598,6 +598,7 @@
   "ai:Open Virtual Networking (OVN)": "Open Virtual Networking (OVN)",
   "ai:Opening file": "Opening file",
   "ai:OpenShift": "OpenShift",
+  "ai:OpenShift AI": "OpenShift AI",
   "ai:OpenShift Cluster Manager": "OpenShift Cluster Manager",
   "ai:OpenShift Data Foundation": "OpenShift Data Foundation",
   "ai:OpenShift in-place upgrades aren't expected to work with SNO. If an upgrade is needed, your system will need a redeployment.": "OpenShift in-place upgrades are not expected to work with SNO. If an upgrade is needed, your system to be redeployed.",

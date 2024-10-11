@@ -18,6 +18,7 @@ const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
+const OAI_OPERATOR_LABEL = 'OpenShift AI';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -72,6 +73,21 @@ const getOdfDisabledReason = (
     return undefined;
   }
 
+  if (!isSupported) {
+    return `The installer cannot currently enable ${ODF_OPERATOR_LABEL} with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.`;
+  }
+  return undefined;
+};
+
+const getOaiDisabledReason = (
+  cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  isSupported: boolean,
+) => {
+  if (!cluster) {
+    return undefined;
+  }
+
   const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm && isSNO(cluster)) {
     return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
@@ -87,6 +103,7 @@ const getOdfDisabledReason = (
   }
   return undefined;
 };
+
 
 const getCnvDisabledReason = (
   activeFeatureConfiguration: ActiveFeatureConfiguration,
@@ -105,11 +122,10 @@ const getCnvDisabledReason = (
         activeFeatureConfiguration.underlyingCpuArchitecture as SupportedCpuArchitecture
       ].label;
 
-    return `${CNV_OPERATOR_LABEL} is not available when ${
-      cpuArchitectureLabel
-        ? cpuArchitectureLabel
-        : activeFeatureConfiguration.underlyingCpuArchitecture
-    } CPU architecture is selected.`;
+    return `${CNV_OPERATOR_LABEL} is not available when ${cpuArchitectureLabel
+      ? cpuArchitectureLabel
+      : activeFeatureConfiguration.underlyingCpuArchitecture
+      } CPU architecture is selected.`;
   } else {
     return undefined;
   }
@@ -189,9 +205,8 @@ export const getNewFeatureDisabledReason = (
       return getNetworkTypeSelectionDisabledReason(cluster);
     }
     case 'CLUSTER_MANAGED_NETWORKING': {
-      return `Cluster-managed networking is not supported when using ${
-        platformType ? ExternalPlatformLabels[platformType] : ''
-      }`;
+      return `Cluster-managed networking is not supported when using ${platformType ? ExternalPlatformLabels[platformType] : ''
+        }`;
     }
     case 'EXTERNAL_PLATFORM_OCI': {
       return getOciDisabledReason(cpuArchitecture, isSupported);
@@ -216,9 +231,8 @@ export const getNewFeatureDisabledReason = (
     }
     case 'USER_MANAGED_NETWORKING': {
       if (!isSupported) {
-        return `User-Managed Networking is not supported when using ${
-          platformType ? ExternalPlatformLabels[platformType] : ''
-        }`;
+        return `User-Managed Networking is not supported when using ${platformType ? ExternalPlatformLabels[platformType] : ''
+          }`;
       }
     }
     default: {
