@@ -62,6 +62,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     hosts: Host[];
     skipDisabled?: boolean;
     children: React.ReactNode;
+    skipScroll?: boolean;
   };
 
 const HostsTable = ({ hosts, skipDisabled, ...rest }: HostsTableProps & WithTestID) => {
