@@ -28,7 +28,7 @@ export const storagePage = {
     return cy.get(`input[id="select-formatted-${hostId}-${indexSelect}"]`);
   },
   validateSkipFormattingDisks: (hostId: string, numDisks: number) => {
-    cy.get("td[data-label='Format?']").should('have.length', numDisks);
+    cy.get("td[data-testid='disk-formatted']").should('have.length', numDisks);
     //Checking if checkboxes are checked/unchecked
     storagePage.getSkipFormattingCheckbox(hostId, 0).should('not.be.checked');
     storagePage.getSkipFormattingCheckbox(hostId, 1).should('be.checked');
