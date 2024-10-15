@@ -1,6 +1,5 @@
 import React from 'react';
-import { TableVariant } from '@patternfly/react-table';
-import { Table, TableBody } from '@patternfly/react-table/deprecated';
+import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { Alert } from '@patternfly/react-core';
 import { ListManifestsExtended } from '../manifestsConfiguration/data/dataTypes';
 import { genericTableRowKey } from '../../../../common';
@@ -28,14 +27,22 @@ export const ReviewCustomManifestsTable = ({ manifests }: { manifests: ListManif
   return (
     <>
       <Table
-        rows={rows}
-        cells={['']}
         variant={TableVariant.compact}
         borders={false}
         className="review-table"
         aria-label="Custom manifests review table"
       >
-        <TableBody rowKey={genericTableRowKey} />
+        <Tbody>
+          {rows.map((row, i) => (
+            <Tr key={genericTableRowKey(row.rowId)}>
+              {row.cells.map((cell, j) => (
+                <Td key={`cell-${i}-${j}`} {...cell.props}>
+                  {cell.title}
+                </Td>
+              ))}
+            </Tr>
+          ))}
+        </Tbody>
       </Table>
       <Alert
         isInline

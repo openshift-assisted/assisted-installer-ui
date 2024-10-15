@@ -7,18 +7,12 @@ import { getHumanizedDateTime } from '../utils';
 export type HumanizedSortable = {
   title: string | React.ReactNode;
   sortableValue: number | string;
-  props?: IRow["props"]
+  props?: IRow['props'];
 };
 
 type GetCellType = (row: IRow, index: number | undefined) => string | HumanizedSortable;
 
-export type GenericTableProps = {
-  rowId: string;
-  cells: IRow['cells'][];
-};
-
-export const genericTableRowKey = ({ rowData }: { rowData: GenericTableProps }): string =>
-  `row-key${rowData.rowId}`;
+export const genericTableRowKey = (rowId: string): string => `row-key${rowId}`;
 
 /**
  * Generates rows array for item which spans across all table columns.

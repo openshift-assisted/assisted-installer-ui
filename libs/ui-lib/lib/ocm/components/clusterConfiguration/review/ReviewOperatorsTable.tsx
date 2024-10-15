@@ -1,6 +1,5 @@
 import React from 'react';
-import { TableVariant } from '@patternfly/react-table';
-import { Table, TableBody } from '@patternfly/react-table/deprecated';
+import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import {
   ExposedOperatorNames,
   hasEnabledOperators,
@@ -22,7 +21,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
     ).map((operator) => ({
       rowId: `operator-${operator}`,
       cells: [
-        operatorNames[operator],
+        { title: operatorNames[operator] },
         {
           title: 'Enabled',
           props: { 'data-testid': `operator-${operator}` },
@@ -33,14 +32,22 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
 
   return (
     <Table
-      rows={rows}
-      cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
       aria-label={'Operators review table'}
       className="review-table"
     >
-      <TableBody rowKey={genericTableRowKey} />
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={genericTableRowKey(row.rowId)}>
+            {row.cells.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`} {...cell.props}>
+                {cell.title}
+              </Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 };
