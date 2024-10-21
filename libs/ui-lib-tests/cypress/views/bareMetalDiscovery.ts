@@ -37,7 +37,7 @@ export const bareMetalDiscoveryPage = {
     numWorkers: number = Cypress.env('NUM_WORKERS'),
     timeout = Cypress.env('HOST_REGISTRATION_TIMEOUT'),
   ) => {
-    cy.get('table.hosts-table > tbody', { timeout: timeout }).should(($els) => {
+    cy.get('table.hosts-table > tbody > tr:not([hidden])', { timeout: timeout }).should(($els) => {
       expect($els.length).to.be.eq(numMasters + numWorkers);
       if (numMasters + numWorkers === 1) {
         expect($els[0].textContent).not.to.contain('Waiting for host');
