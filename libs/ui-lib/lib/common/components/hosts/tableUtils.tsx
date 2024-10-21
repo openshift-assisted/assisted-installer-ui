@@ -1,4 +1,3 @@
-import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
 import type {
@@ -66,10 +65,9 @@ export const hostnameColumn = (
       title: t('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
+        modifier: 'breakWord',
       },
-      transforms: [sortable],
-      cellFormatters: [expandable],
-      cellTransforms: [breakWord],
+      sort: true,
     },
     cell: (host) => {
       const inventory = getInventory(host);
@@ -105,7 +103,7 @@ export const roleColumn = (
       props: {
         id: 'col-header-role',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const editRole = onEditRole
@@ -137,7 +135,7 @@ export const statusColumn = (
       props: {
         id: 'col-header-status',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
@@ -174,7 +172,7 @@ export const discoveredAtColumn = (t: TFunction): TableRow<Host> => ({
     props: {
       id: 'col-header-discoveredat',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const { createdAt } = host;
@@ -193,7 +191,7 @@ export const cpuArchitectureColumn = (t: TFunction): TableRow<Host> => ({
     props: {
       id: 'col-header-cpuarchitecture',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -211,7 +209,7 @@ export const cpuCoresColumn = (t: TFunction): TableRow<Host> => ({
     props: {
       id: 'col-header-cpucores',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -238,7 +236,7 @@ export const memoryColumn = (t: TFunction): TableRow<Host> => ({
     props: {
       id: 'col-header-memory',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -263,7 +261,7 @@ export const disksColumn = (t: TFunction): TableRow<Host> => ({
     props: {
       id: 'col-header-disk',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -287,7 +285,10 @@ export const countColumn = (cluster: Cluster): TableRow<Host> => ({
 });
 
 export const activeNICColumn = (cluster: Cluster, t: TFunction): TableRow<Host> => ({
-  header: { title: t('ai:Active NIC'), transforms: [sortable] },
+  header: {
+    title: t('ai:Active NIC'),
+    sort: true,
+  },
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
@@ -303,7 +304,10 @@ export const activeNICColumn = (cluster: Cluster, t: TFunction): TableRow<Host> 
 });
 
 export const ipv4Column = (cluster: Cluster): TableRow<Host> => ({
-  header: { title: 'IPv4 address', transforms: [sortable] },
+  header: {
+    title: 'IPv4 address',
+    sort: true,
+  },
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
@@ -320,7 +324,10 @@ export const ipv4Column = (cluster: Cluster): TableRow<Host> => ({
 });
 
 export const ipv6Column = (cluster: Cluster): TableRow<Host> => ({
-  header: { title: 'IPv6 address', transforms: [sortable] },
+  header: {
+    title: 'IPv6 address',
+    sort: true,
+  },
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
@@ -337,7 +344,10 @@ export const ipv6Column = (cluster: Cluster): TableRow<Host> => ({
 });
 
 export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
-  header: { title: 'MAC address', transforms: [sortable] },
+  header: {
+    title: 'MAC address',
+    sort: true,
+  },
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
