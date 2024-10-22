@@ -64,7 +64,8 @@ const ValidationsAlert = ({
       <ul>
         {validations.map((v) => (
           <li key={v.id}>
-            <strong>{hostValidationLabels(t)[v.id] || v.id}:</strong>&nbsp;{toSentence(v.message)}{' '}
+            <strong>{hostValidationLabels(t)[v.id] || v.id}:</strong>&nbsp;
+            {toSentence(v.message.replace(/\\n/, ' '))}{' '}
             {v.status === 'failure' && hostValidationFailureHints(t)[v.id]}
           </li>
         ))}
