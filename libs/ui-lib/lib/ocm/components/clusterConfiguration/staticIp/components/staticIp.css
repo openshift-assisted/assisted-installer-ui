@@ -27,3 +27,9 @@
 .machine-network .pf-v5-c-form__helper-text.pf-m-error {
   margin-top: unset;
 }
+
+.use-bond {
+  margin-left: var(--pf-v5-global--spacer--md);
+  flex: 0 0 24rem;
+}
+
