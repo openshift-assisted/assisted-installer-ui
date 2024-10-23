@@ -3,6 +3,7 @@ import { ProtocolVersion } from './dataTypes';
 export enum NmstateInterfaceType {
   ETHERNET = 'ethernet',
   VLAN = 'vlan',
+  BOND = 'bond',
 }
 
 export type NmstateAddress = {
@@ -53,16 +54,19 @@ export type NmstateVlanInterface = {
   };
 } & NmstateProtocolConfigs;
 
-export type NmstateInterface = NmstateEthernetInterface | NmstateVlanInterface;
+export type NmstateInterface =
+  | NmstateEthernetInterface
+  | NmstateVlanInterface
+  | NmstateBondInterface;
 
 export const isVlanInterface = (
-  nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface,
+  nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface | NmstateBondInterface,
 ): nmStateInterface is NmstateVlanInterface => {
   return nmStateInterface.type === NmstateInterfaceType.VLAN;
 };
 
 export const isEthernetInterface = (
-  nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface,
+  nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface | NmstateBondInterface,
 ): nmStateInterface is NmstateEthernetInterface => {
   return nmStateInterface.type === NmstateInterfaceType.ETHERNET;
 };
@@ -78,4 +82,24 @@ export type Nmstate = {
     }[];
   };
   interfaces: NmstateInterface[];
+};
+
+export type NmstateBondInterface = {
+  name: string;
+  type: NmstateInterfaceType.BOND;
+  state: string;
+} & NmstateProtocolConfigs & {
+    'link-aggregation': {
+      mode: string;
+      options: {
+        miimon: string;
+      };
+      port: string[];
+    };
+  };
+
+export const isBondInterface = (
+  nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface | NmstateBondInterface,
+): nmStateInterface is NmstateEthernetInterface => {
+  return nmStateInterface.type === NmstateInterfaceType.BOND;
 };

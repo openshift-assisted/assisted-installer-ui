@@ -4,7 +4,7 @@ import { SelectField } from '../../../../../../common';
 
 type BondsSelectProps = {
   onChange?: SelectFieldProps['onChange'];
-  id: string;
+  name: string;
 };
 
 const bondsList = [
@@ -16,19 +16,18 @@ const bondsList = [
   { value: 'balance-tlb', label: 'Balance-tlb(5)', default: false },
   { value: 'balance-alb', label: 'Balance-alb(6)', default: false },
 ];
-const BondsSelect: React.FC<BondsSelectProps> = ({ onChange, id }) => {
+const BondsSelect: React.FC<BondsSelectProps> = ({ onChange, name }) => {
   const selectOptions = React.useMemo(
     () =>
       bondsList.map((version) => ({
         label: version.label,
         value: version.value,
-        selected: version.default,
       })),
     [],
   );
   return (
     <SelectField
-      name={id}
+      name={name}
       label="Bond type"
       options={selectOptions}
       isRequired

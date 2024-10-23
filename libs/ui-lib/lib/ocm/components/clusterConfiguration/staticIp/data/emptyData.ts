@@ -19,6 +19,9 @@ export const getEmptyFormViewHost = (): FormViewHost => {
   return {
     macAddress: '',
     ips: getEmptyHostIps(),
+    bondType: 'active-backup',
+    bondPrimaryInterface: '',
+    bondSecondaryInterface: '',
   };
 };
 

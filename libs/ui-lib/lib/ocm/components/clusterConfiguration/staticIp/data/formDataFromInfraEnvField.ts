@@ -24,6 +24,8 @@ import {
   isVlanInterface,
   NmstateEthernetInterface,
   NmstateVlanInterface,
+  NmstateBondInterface,
+  NmstateInterfaceType,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
 
@@ -64,7 +66,7 @@ const getVlanId = (interfaces: NmstateInterface[]): number | null => {
 };
 
 const getIpAddress = (
-  networkInterface: NmstateEthernetInterface | NmstateVlanInterface,
+  networkInterface: NmstateEthernetInterface | NmstateVlanInterface | NmstateBondInterface,
   protocolVersion: ProtocolVersion,
 ): string => {
   const ipAddressData = networkInterface[protocolVersion];
@@ -145,7 +147,16 @@ const getFormViewHost = (
       ipv4: '',
       ipv6: '',
     },
+    bondType: 'active-backup',
+    bondPrimaryInterface: '',
+    bondSecondaryInterface: '',
   };
+
+  if (realInterface.type === NmstateInterfaceType.BOND) {
+    ret.bondType = realInterface['link-aggregation'].mode;
+    ret.bondPrimaryInterface = infraEnvHost.macInterfaceMap[0].macAddress ?? '';
+    ret.bondSecondaryInterface = infraEnvHost.macInterfaceMap[1].macAddress ?? '';
+  }
 
   for (const protocolVersion of getShownProtocolVersions(protocolType)) {
     ret.ips[protocolVersion] = getIpAddress(realInterface, protocolVersion);
