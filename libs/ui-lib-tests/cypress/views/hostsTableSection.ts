@@ -24,7 +24,7 @@ export const hostsTableSection = {
       });
   },
   validateHostCpuCores: () => {
-    cy.get('td[data-label="CPU Cores"]')
+    cy.get('td[data-testid="host-cpu-cores"]')
       .should('have.length', numMasters() + numWorkers())
       .each((hostCpuCores, idx) => {
         const isMaster = idx <= numMasters() - 1;
@@ -36,7 +36,7 @@ export const hostsTableSection = {
       });
   },
   validateHostMemory: () => {
-    cy.get('td[data-label="Memory"]')
+    cy.get('td[data-testid="host-memory"]')
       .should('have.length', numMasters() + numWorkers())
       .each((hostMemory, idx) => {
         const isMaster = idx <= numMasters() - 1;
@@ -48,7 +48,7 @@ export const hostsTableSection = {
       });
   },
   validateHostDiskSize: (masterDiskTotalSize: number, workerDiskTotalSize: number) => {
-    cy.get('td[data-label="Total storage"]')
+    cy.get('td[data-testid="host-disks"]')
       .should('have.length', numMasters() + numWorkers())
       .each((hostDisk, idx) => {
         const isMaster = idx <= numMasters() - 1;
@@ -60,16 +60,15 @@ export const hostsTableSection = {
       });
   },
   waitForHardwareStatus: (status: string) => {
-    // Start at index 2 here because of selector
-    for (let i = 2; i <= numMasters() + numWorkers() + 1; i++) {
-      cy.hostDetailSelector(i, 'Status', Cypress.env('HOST_READY_TIMEOUT')).should(
-        'contain.text',
-        status,
-      );
-    }
+    cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
+      cy
+        .wrap(row)
+        .find('td[data-testid="host-hw-status"]', { timeout: Cypress.env('HOST_READY_TIMEOUT') })
+        .should('contain.text', status),
+    );
   },
   getHostDisksExpander: (hostIndex: number) => {
-    return cy.get(`#expandable-toggle${hostIndex * 2}`);
+    return cy.get(`#expand-toggle${hostIndex}`);
   },
   getHostDetailsTitle: (hostIndex: number) => {
     return cy.get(`h3[data-testid="disks-section"]`).then((hostTables) => {
@@ -89,7 +88,7 @@ export const hostsTableSection = {
     });
   },
   validateGroupingByDiskHolders: (disks: ValidateDiskHoldersParams, message?: string) => {
-    cy.get('td[data-testid="disk-name"]').then(($diskNames) => {
+    cy.get('.pf-m-expanded td[data-testid="disk-name"]').then(($diskNames) => {
       disks.forEach((disk, index) => {
         cy.wrap($diskNames).eq(index).should('contain.text', disk.name);
         if (disk.indented || disk.warning) {
