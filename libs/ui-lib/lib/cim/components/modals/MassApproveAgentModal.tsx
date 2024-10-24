@@ -9,7 +9,6 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { sortable } from '@patternfly/react-table';
 import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';
@@ -38,7 +37,7 @@ const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
@@ -63,7 +62,7 @@ const statusColumn = (
       props: {
         id: 'col-header-status', // ACM jest tests require id over testId
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);

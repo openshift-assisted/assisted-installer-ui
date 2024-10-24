@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
 import { getHostRole, getInventory, RoleCell, UiIcon } from '../../index';
 import { TableRow } from '../hosts/AITable';
@@ -20,7 +19,7 @@ export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<
       props: {
         id: 'col-header-role',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const hostRole = getHostRole(host, t, schedulableMasters);
@@ -39,7 +38,7 @@ export const numberOfDisksColumn: TableRow<Host> = {
     props: {
       id: 'col-header-num-disks',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -70,7 +69,7 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
       props: {
         id: 'col-header-odf',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const isMaster = host.role === 'master' || host.suggestedRole === 'master';

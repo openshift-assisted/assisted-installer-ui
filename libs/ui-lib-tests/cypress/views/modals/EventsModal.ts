@@ -30,7 +30,7 @@ export class EventsModal {
   }
 
   get contents() {
-    return this.body.find('.pf-v5-c-table tr');
+    return this.body.find('.pf-v5-c-table__tbody tr');
   }
 
   get hostFilter() {

@@ -2,17 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom-v5-compat';
 import { Button, Label, Popover, Stack, StackItem } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
-import {
-  breakWord,
-  expandable,
-  sortable,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import classnames from 'classnames';
 
 import { TableRow } from '../../../../common/components/hosts/AITable';
@@ -61,10 +51,9 @@ export const nodePoolNameColumn = (): TableRow<NodePoolWithAgents> => {
       title: 'Nodepool',
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
+        modifier: 'breakWord',
       },
-      transforms: [sortable],
-      cellFormatters: [expandable],
-      cellTransforms: [breakWord],
+      sort: true,
     },
     cell: ({ nodePool }) => {
       return {
