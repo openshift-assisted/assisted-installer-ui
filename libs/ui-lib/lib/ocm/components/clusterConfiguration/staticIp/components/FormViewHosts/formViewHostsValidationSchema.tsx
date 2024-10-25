@@ -26,7 +26,19 @@ const getAllIpv6Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
 
 const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
   values: FormViewHostsValues,
-) => values.hosts.map((host) => host.macAddress);
+) => {
+  // eslint-disable-next-line no-console
+  console.log(values.hosts);
+  return values.hosts.map((host) => host.macAddress);
+};
+
+const getAllBondPrimaryInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
+  values: FormViewHostsValues,
+) => values.hosts.map((host) => host.bondPrimaryInterface);
+
+const getAllSecondaryInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
+  values: FormViewHostsValues,
+) => values.hosts.map((host) => host.bondSecondaryInterface);
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
   Yup.object({
@@ -63,6 +75,12 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
             )
         : Yup.string(),
     }),
+    bondPrimaryInterface: macAddressValidationSchema.concat(
+      getUniqueValidationSchema(getAllBondPrimaryInterfaces),
+    ),
+    bondSecondaryInterface: macAddressValidationSchema.concat(
+      getUniqueValidationSchema(getAllSecondaryInterfaces),
+    ),
   });
 
 export const getFormViewHostsValidationSchema = (networkWideValues: FormViewNetworkWideValues) => {

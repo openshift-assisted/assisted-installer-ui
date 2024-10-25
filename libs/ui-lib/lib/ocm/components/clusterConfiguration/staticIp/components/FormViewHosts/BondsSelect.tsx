@@ -8,13 +8,13 @@ type BondsSelectProps = {
 };
 
 const bondsList = [
-  { value: 'balance-rr', label: 'Balance-rr(0)', default: false },
-  { value: 'active-backup', label: 'Active-Backup(1)', default: true },
-  { value: 'balance-xor', label: 'Balance-xor(2)', default: false },
-  { value: 'broadcast', label: 'Broadcast(3)', default: false },
-  { value: '802.3ad', label: '802.3ad(4)', default: false },
-  { value: 'balance-tlb', label: 'Balance-tlb(5)', default: false },
-  { value: 'balance-alb', label: 'Balance-alb(6)', default: false },
+  { value: 'balance-rr', label: 'Balance-rr (0)', default: false },
+  { value: 'active-backup', label: 'Active-Backup (1)', default: true },
+  { value: 'balance-xor', label: 'Balance-xor (2)', default: false },
+  { value: 'broadcast', label: 'Broadcast (3)', default: false },
+  { value: '802.3ad', label: '802.3ad (4)', default: false },
+  { value: 'balance-tlb', label: 'Balance-tlb (5)', default: false },
+  { value: 'balance-alb', label: 'Balance-alb (6)', default: false },
 ];
 const BondsSelect: React.FC<BondsSelectProps> = ({ onChange, name }) => {
   const selectOptions = React.useMemo(

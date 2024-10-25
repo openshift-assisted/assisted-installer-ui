@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FormGroup, Grid, TextContent, Text, TextVariants, Checkbox } from '@patternfly/react-core';
+import React from 'react';
+import { FormGroup, Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import { getFieldId, PopoverIcon } from '../../../../../../common';
@@ -7,25 +7,34 @@ import HostSummary from '../CollapsedHost';
 import { FormViewHost, StaticProtocolType } from '../../data/dataTypes';
 import { getProtocolVersionLabel, getShownProtocolVersions } from '../../data/protocolVersion';
 import { getEmptyFormViewHost } from '../../data/emptyData';
-import { OcmInputField } from '../../../../ui/OcmFormFields';
+import { OcmCheckboxField, OcmInputField } from '../../../../ui/OcmFormFields';
 import '../staticIp.css';
 import BondsSelect from './BondsSelect';
 import BondsConfirmationModal from './BondsConfirmationModal';
 
 const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
   const Component: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
     const { setFieldValue } = useFormikContext();
     const [bondPrimaryField] = useField(`${fieldName}.bondPrimaryInterface`);
     const [bondSecondaryField] = useField(`${fieldName}.bondSecondaryInterface`);
 
-    const [useBond, setUseBond] = useState<boolean>(
+    const [useBond, setUseBond] = React.useState<boolean>(
       !!bondPrimaryField.value || !!bondSecondaryField.value,
     );
 
     const handleUseBondChange = (checked: boolean) => {
       if (!checked) {
-        setIsModalOpen(true);
+        // Mostrar el modal solo si ambos campos tienen valor
+        if (bondPrimaryField.value && bondSecondaryField.value) {
+          setIsModalOpen(true);
+        } else {
+          // Si no tienen valor, simplemente actualiza el estado sin mostrar el modal
+          setUseBond(false);
+          setFieldValue(`${fieldName}.bondType`, 'active-backup');
+          setFieldValue(`${fieldName}.bondPrimaryInterface`, '');
+          setFieldValue(`${fieldName}.bondSecondaryInterface`, '');
+        }
       } else {
         setUseBond(true);
       }
@@ -46,7 +55,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
       <>
         <Grid hasGutter>
           <FormGroup>
-            <Checkbox
+            <OcmCheckboxField
               label={
                 <>
                   {'Use bond'}{' '}
@@ -56,34 +65,29 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
                   />
                 </>
               }
-              isChecked={useBond}
-              onChange={(_event, value) => handleUseBondChange(value)}
-              id={`use-bond-${hostIdx}`}
+              onChange={(value) => handleUseBondChange(value)}
+              data-tesid={`use-bond-${hostIdx}`}
+              name={`use-bond-${hostIdx}`}
             />
           </FormGroup>
           {useBond && (
-            <>
-              <div className="use-bond">
-                <Grid hasGutter>
-                  <FormGroup fieldId={`bond-type-${hostIdx}`}>
-                    <BondsSelect
-                      name={`${fieldName}.bondType`}
-                      data-testid={`bond-type-${hostIdx}`}
-                    />
-                  </FormGroup>
-                  <OcmInputField
-                    name={`${fieldName}.bondPrimaryInterface`}
-                    label="Port 1 MAC Address"
-                    data-testid={`bond-primary-interface-${hostIdx}`}
-                  />{' '}
-                  <OcmInputField
-                    name={`${fieldName}.bondSecondaryInterface`}
-                    label="Port 2 MAC Adddress"
-                    data-testid={`bond-secondary-interface-${hostIdx}`}
-                  />
-                </Grid>
-              </div>
-            </>
+            <Grid hasGutter className="pf-v5-u-ml-lg">
+              <FormGroup fieldId={`bond-type-${hostIdx}`}>
+                <BondsSelect name={`${fieldName}.bondType`} data-testid={`bond-type-${hostIdx}`} />
+              </FormGroup>
+              <OcmInputField
+                name={`${fieldName}.bondPrimaryInterface`}
+                label="Port 1 MAC Address"
+                data-testid={`bond-primary-interface-${hostIdx}`}
+                isRequired
+              />{' '}
+              <OcmInputField
+                name={`${fieldName}.bondSecondaryInterface`}
+                label="Port 2 MAC Adddress"
+                data-testid={`bond-secondary-interface-${hostIdx}`}
+                isRequired
+              />
+            </Grid>
           )}
           <OcmInputField
             name={`${fieldName}.macAddress`}
