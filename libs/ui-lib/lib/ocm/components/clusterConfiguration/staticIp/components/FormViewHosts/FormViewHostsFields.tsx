@@ -61,7 +61,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
                   {'Use bond'}{' '}
                   <PopoverIcon
                     noVerticalAlign
-                    bodyContent="Select this to combine two network interfaces for redundancy and/or increased bandwidth."
+                    bodyContent="Bonds help you to combine network interfaces  for increased bandwidth and ensure redundancy. To bond more than 2 network interfaces per host, use the YAML view."
                   />
                 </>
               }
