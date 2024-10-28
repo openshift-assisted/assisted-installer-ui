@@ -75,12 +75,18 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
             )
         : Yup.string(),
     }),
-    bondPrimaryInterface: macAddressValidationSchema.concat(
-      getUniqueValidationSchema(getAllBondPrimaryInterfaces),
-    ),
-    bondSecondaryInterface: macAddressValidationSchema.concat(
-      getUniqueValidationSchema(getAllSecondaryInterfaces),
-    ),
+    bondPrimaryInterface: Yup.mixed().when('useBond', {
+      is: true,
+      then: () =>
+        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondPrimaryInterfaces)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
+    bondSecondaryInterface: Yup.mixed().when('useBond', {
+      is: true,
+      then: () =>
+        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllSecondaryInterfaces)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
   });
 
 export const getFormViewHostsValidationSchema = (networkWideValues: FormViewNetworkWideValues) => {

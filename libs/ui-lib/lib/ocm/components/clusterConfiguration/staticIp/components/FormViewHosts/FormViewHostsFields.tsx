@@ -66,8 +66,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
                 </>
               }
               onChange={(value) => handleUseBondChange(value)}
-              data-tesid={`use-bond-${hostIdx}`}
-              name={`use-bond-${hostIdx}`}
+              name={`${fieldName}.useBond`}
             />
           </FormGroup>
           {useBond && (

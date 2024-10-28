@@ -19,6 +19,7 @@ export const getEmptyFormViewHost = (): FormViewHost => {
   return {
     macAddress: '',
     ips: getEmptyHostIps(),
+    useBond: false,
     bondType: 'active-backup',
     bondPrimaryInterface: '',
     bondSecondaryInterface: '',

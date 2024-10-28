@@ -147,6 +147,7 @@ const getFormViewHost = (
       ipv4: '',
       ipv6: '',
     },
+    useBond: false,
     bondType: 'active-backup',
     bondPrimaryInterface: '',
     bondSecondaryInterface: '',

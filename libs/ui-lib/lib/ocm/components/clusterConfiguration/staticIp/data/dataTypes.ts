@@ -31,6 +31,7 @@ export type MachineNetworks = { [protocolVersion in ProtocolVersion]: string };
 export type FormViewHost = {
   macAddress: string;
   ips: HostIps;
+  useBond: boolean;
   bondType: string;
   bondPrimaryInterface: string;
   bondSecondaryInterface: string;
