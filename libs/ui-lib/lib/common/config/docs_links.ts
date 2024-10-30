@@ -22,13 +22,13 @@ export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
     ocpVersion,
-  )}/html/installing/installation-configuration#installation-special-config-encrypt-disk_installing-customizing`;
+  )}/html/installation_configuration/installing-customizing#installation-special-config-encrypt-disk_installing-customizing`;
 
 //Networking page
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
     ocpVersion,
-  )}/html/installing/installing-on-bare-metal#installation-network-user-infra_installing-bare-metal`;
+  )}/html/installing_on_bare_metal/installing-bare-metal#installation-network-user-infra_installing-bare-metal`;
 
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
@@ -39,7 +39,7 @@ export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
 export const getApproveNodesInClLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
     ocpVersion,
-  )}/html/installing/installing-on-any-platform#installation-approve-csrs_installing-platform-agnostic`;
+  )}/html/installing_on_any_platform/installing-platform-agnostic#installation-approve-csrs_installing-platform-agnostic`;
 
 //Static Ip configuration
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
@@ -53,14 +53,6 @@ export const NUTANIX_CONFIG_LINK = `https://docs.redhat.com/en/documentation/ass
 export const VSPHERE_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#adding-hosts-on-vsphere_installing-on-vsphere`;
 
 export const OCI_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#installing-on-oci`;
-
-//Custom manifests
-export const CUSTOM_MANIFESTS_HELP_LINK = `https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
-
-export const getCustomManifestsDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
-    ocpVersion,
-  )}/html/installing/installation-configuration#installation-special-config-kargs_installing-customizing`;
 
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
 
