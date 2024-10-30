@@ -1,6 +1,5 @@
 import { Title } from '@patternfly/react-core';
-import { TableVariant } from '@patternfly/react-table';
-import { Table, TableBody, TableProps } from '@patternfly/react-table/deprecated';
+import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import React from 'react';
 import {
   genericTableRowKey,
@@ -15,11 +14,14 @@ import {
 } from '../../clusterDetail/ClusterProperties';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
-const dummyCells = ['', '', ''];
+type ReviewTableRowsType = {
+  rowId: string;
+  cells: { title: string | React.ReactNode; props?: object }[];
+}[];
 
 export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
   const rows = React.useMemo(() => {
-    const networkRows: TableProps['rows'] = [
+    const networkRows = [
       {
         rowId: 'network-management',
         cells: [
@@ -40,7 +42,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       },
-    ];
+    ] as ReviewTableRowsType;
 
     !!cluster.machineNetworks?.length &&
       networkRows.push({
@@ -56,7 +58,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'machine-networks' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack(cluster) ? { title: 'Primary' } : { title: '' },
         ],
       });
 
@@ -94,7 +96,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       {
         rowId: 'cluster-network-cidr',
         cells: [
-          'Cluster network CIDR',
+          { title: 'Cluster network CIDR' },
           {
             title: cluster.clusterNetworks?.map((network) => (
               <span key={network.cidr}>
@@ -105,12 +107,12 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             props: { 'data-testid': 'cluster-network-cidr' },
           },
           isDualStack(cluster) && { title: 'Primary' },
-        ],
+        ].filter(Boolean),
       },
       {
         rowId: 'cluster-network-host-prefix',
         cells: [
-          'Cluster network host prefix',
+          { title: 'Cluster network host prefix' },
           {
             title: cluster.clusterNetworks?.map((network) => (
               <span key={network.hostPrefix}>
@@ -121,12 +123,12 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             props: { 'data-testid': 'cluster-network-prefix' },
           },
           isDualStack(cluster) && { title: 'Primary' },
-        ],
+        ].filter(Boolean),
       },
       {
         rowId: 'service-network-cidr',
         cells: [
-          'Service network CIDR',
+          { title: 'Service network CIDR' },
           {
             title: cluster.serviceNetworks?.map((network) => (
               <span key={network.cidr}>
@@ -137,32 +139,40 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             props: { 'data-testid': 'service-network-cidr' },
           },
           isDualStack(cluster) && { title: 'Primary' },
-        ],
+        ].filter(Boolean),
       },
       {
         rowId: 'networking-type',
         cells: [
-          'Networking type',
+          { title: 'Networking type' },
           {
             title: getNetworkType(cluster.networkType),
             props: { 'data-testid': 'networking-type', colSpan: 2 },
           },
         ],
       },
-    ];
+    ] as ReviewTableRowsType;
   }, [cluster]);
 
   return (
     <>
       <Table
-        rows={rows}
-        cells={dummyCells}
         variant={TableVariant.compact}
         borders={false}
         className={'review-table'}
         aria-label={'Networking review table'}
       >
-        <TableBody rowKey={genericTableRowKey} />
+        <Tbody>
+          {rows.map((row, i) => (
+            <Tr key={genericTableRowKey(row.rowId)}>
+              {row.cells.map((cell, j) => (
+                <Td key={`cell-${i}-${j}`} {...cell.props}>
+                  {cell.title}
+                </Td>
+              ))}
+            </Tr>
+          ))}
+        </Tbody>
       </Table>
 
       <br />
@@ -171,14 +181,22 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       </Title>
 
       <Table
-        rows={rowsAdvanced}
-        cells={dummyCells}
         variant={TableVariant.compact}
         borders={false}
         className={'review-table'}
         aria-label={'Advanced networking review table'}
       >
-        <TableBody rowKey={genericTableRowKey} />
+        <Tbody>
+          {rowsAdvanced.map((row, i) => (
+            <Tr key={genericTableRowKey(row.rowId)}>
+              {row.cells.map((cell, j) => (
+                <Td key={`cell-${i}-${j}`} {...cell.props}>
+                  {cell.title}
+                </Td>
+              ))}
+            </Tr>
+          ))}
+        </Tbody>
       </Table>
     </>
   );

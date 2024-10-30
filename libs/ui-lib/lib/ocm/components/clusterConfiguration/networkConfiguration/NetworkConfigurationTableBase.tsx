@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { sortable } from '@patternfly/react-table';
 import { HostsTableActions, selectSchedulableMasters } from '../../../../common';
 import NetworkingStatus from '../../hosts/NetworkingStatus';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -24,7 +23,10 @@ import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-serv
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
 ): TableRow<Host> => ({
-  header: { title: 'Status', transforms: [sortable] },
+  header: {
+    title: 'Status',
+    sort: true,
+  },
   cell: (host) => {
     const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
     const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
