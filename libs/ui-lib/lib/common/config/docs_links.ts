@@ -92,3 +92,6 @@ export const FEEDBACK_FORM_LINK =
 
 export const CHANGE_ISO_PASSWORD_FILE_LINK =
   'https://raw.githubusercontent.com/openshift/assisted-service/master/docs/change-iso-password.sh';
+
+export const getCiscoIntersightLink = (downloadIsoUrl: string) =>
+  `https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO?_workflow_Version=1&IsoUrl=${downloadIsoUrl}`;
