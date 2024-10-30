@@ -33,7 +33,7 @@ const BondDeleteModalModal = ({ isOpen, onConfirm, onCancel }: BondDeleteModalMo
     >
       <ModalBoxBody>
         <Stack hasGutter>
-          <StackItem>{t('ai: The bond associated with the host will be removed.')}</StackItem>
+          <StackItem>{t('ai:The bond associated with the host will be removed.')}</StackItem>
         </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>

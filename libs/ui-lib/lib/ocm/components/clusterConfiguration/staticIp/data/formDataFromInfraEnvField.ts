@@ -147,13 +147,14 @@ const getFormViewHost = (
       ipv4: '',
       ipv6: '',
     },
-    useBond: false,
     bondType: 'active-backup',
     bondPrimaryInterface: '',
     bondSecondaryInterface: '',
+    useBond: false,
   };
 
   if (realInterface.type === NmstateInterfaceType.BOND) {
+    ret.useBond = true;
     ret.bondType = realInterface['link-aggregation'].mode;
     ret.bondPrimaryInterface = infraEnvHost.macInterfaceMap[0].macAddress ?? '';
     ret.bondSecondaryInterface = infraEnvHost.macInterfaceMap[1].macAddress ?? '';

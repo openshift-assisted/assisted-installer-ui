@@ -17,14 +17,10 @@ const bondsList = [
   { value: 'balance-alb', label: 'Balance-alb (6)', default: false },
 ];
 const BondsSelect: React.FC<BondsSelectProps> = ({ onChange, name }) => {
-  const selectOptions = React.useMemo(
-    () =>
-      bondsList.map((version) => ({
-        label: version.label,
-        value: version.value,
-      })),
-    [],
-  );
+  const selectOptions = bondsList.map((version) => ({
+    label: version.label,
+    value: version.value,
+  }));
   return (
     <SelectField
       name={name}

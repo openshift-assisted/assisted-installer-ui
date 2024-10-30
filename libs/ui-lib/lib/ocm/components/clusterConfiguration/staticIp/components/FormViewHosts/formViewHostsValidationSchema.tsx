@@ -27,8 +27,6 @@ const getAllIpv6Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
 const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
   values: FormViewHostsValues,
 ) => {
-  // eslint-disable-next-line no-console
-  console.log(values.hosts);
   return values.hosts.map((host) => host.macAddress);
 };
 

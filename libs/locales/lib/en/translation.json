@@ -1,5 +1,4 @@
 {
-  "ai: The bond associated with the host will be removed.": " The bond associated with the host will be removed.",
   "ai:({{size}} hosts available)": "({{size}} hosts available)",
   "ai:(1 host available)": "(1 host available)",
   "ai:(no hosts available)": "(no hosts available)",
@@ -751,6 +750,7 @@
   "ai:Technology preview features provide early access to upcoming product innovations, enabling you to test functionality and provide feedback during the development process.": "Technology preview features provide early access to upcoming product innovations, enabling you to test functionality and provide feedback during the development process.",
   "ai:The agent is not bound to a cluster.": "The agent is not bound to a cluster.",
   "ai:The agent ran successfully": "The agent ran successfully",
+  "ai:The bond associated with the host will be removed.": "The bond associated with the host will be removed.",
   "ai:The classic bullet-proof networking type": "The classic bullet-proof networking type",
   "ai:The cluster can not be installed yet because there are no available hosts with {{cpuArchitecture}} architecture found. To continue:": "The cluster cannot be installed because there are no available hosts with {{cpuArchitecture}} architecture found. To continue:",
   "ai:The cluster has 0 hosts. No workloads will be able to run.": "The cluster has 0 hosts. No workloads will be able to run.",

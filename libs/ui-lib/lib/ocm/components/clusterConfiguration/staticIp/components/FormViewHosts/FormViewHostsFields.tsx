@@ -18,30 +18,23 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
     const { setFieldValue } = useFormikContext();
     const [bondPrimaryField] = useField(`${fieldName}.bondPrimaryInterface`);
     const [bondSecondaryField] = useField(`${fieldName}.bondSecondaryInterface`);
-
-    const [useBond, setUseBond] = React.useState<boolean>(
-      !!bondPrimaryField.value || !!bondSecondaryField.value,
-    );
+    const [useBond] = useField(`${fieldName}.useBond`);
 
     const handleUseBondChange = (checked: boolean) => {
       if (!checked) {
-        // Mostrar el modal solo si ambos campos tienen valor
-        if (bondPrimaryField.value && bondSecondaryField.value) {
+        if (bondPrimaryField.value || bondSecondaryField.value) {
           setIsModalOpen(true);
         } else {
-          // Si no tienen valor, simplemente actualiza el estado sin mostrar el modal
-          setUseBond(false);
+          setFieldValue(`${fieldName}.useBond`, false);
           setFieldValue(`${fieldName}.bondType`, 'active-backup');
           setFieldValue(`${fieldName}.bondPrimaryInterface`, '');
           setFieldValue(`${fieldName}.bondSecondaryInterface`, '');
         }
-      } else {
-        setUseBond(true);
       }
     };
 
     const handleModalConfirm = () => {
-      setUseBond(false);
+      setFieldValue(`${fieldName}.useBond`, false);
       setFieldValue(`${fieldName}.bondType`, 'active-backup');
       setFieldValue(`${fieldName}.bondPrimaryInterface`, '');
       setFieldValue(`${fieldName}.bondSecondaryInterface`, '');
