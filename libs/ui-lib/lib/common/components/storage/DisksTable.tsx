@@ -7,9 +7,7 @@ import {
   Alert,
   AlertVariant,
 } from '@patternfly/react-core';
-import { TableVariant, RowWrapperProps, RowWrapper, IRow } from '@patternfly/react-table';
-import { Table, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
+import { TableVariant, Thead, Tbody, Table, Th, Tr, Td } from '@patternfly/react-table';
 import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
@@ -34,29 +32,25 @@ interface DisksTableProps extends WithTestID {
   updateDiskSkipFormatting?: DiskFormattingType;
 }
 
-const diskColumns = (t: TFunction, showFormat: boolean) => [
-  { title: t('ai:Name') },
-  { title: t('ai:Role') },
-  { title: t('ai:Limitations') },
-  showFormat ? { title: t('ai:Format?') } : '',
-  { title: t('ai:Drive type') },
-  { title: t('ai:Size') },
-  { title: t('ai:Serial') },
-  { title: t('ai:Model') },
-  {
-    title: (
-      <>
-        WWN <PopoverIcon bodyContent={t('ai:World Wide Name (WWN) is a unique disk identifier.')} />
-      </>
-    ),
-  },
-];
-
-const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key as string;
-
-const DisksTableRowWrapper = (props: RowWrapperProps) => (
-  <RowWrapper {...props} data-testid={`disk-row-${(props.row?.key as string) || ''}`} />
-);
+const diskColumns = (t: TFunction, showFormat: boolean) =>
+  [
+    { title: t('ai:Name') },
+    { title: t('ai:Role') },
+    { title: t('ai:Limitations') },
+    showFormat ? { title: t('ai:Format?') } : '',
+    { title: t('ai:Drive type') },
+    { title: t('ai:Size') },
+    { title: t('ai:Serial') },
+    { title: t('ai:Model') },
+    {
+      title: (
+        <>
+          WWN{' '}
+          <PopoverIcon bodyContent={t('ai:World Wide Name (WWN) is a unique disk identifier.')} />
+        </>
+      ),
+    },
+  ].filter(Boolean) as { title: string | React.ReactNode }[];
 
 const SkipFormattingDisk = () => (
   <TextContent>
@@ -151,7 +145,7 @@ const DisksTable = ({
   const isEditable = !!canEditDisks?.(host);
   const diskColumnTitles = diskColumns(t, isEditable);
 
-  const rows: IRow[] = disks
+  const rows = disks
     .filter((disk) => disk.driveType !== 'LVM')
     .sort((a, b) => (a.name && a.name.localeCompare(b.name as string)) || 0)
     .sort((a, b) => {
@@ -205,20 +199,28 @@ const DisksTable = ({
         { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
       ],
       key: disk.path,
-    }));
+    })) as { key: string; cells: { title: string | React.ReactNode; props: object }[] }[];
 
   return (
-    <Table
-      data-testid={testId}
-      rows={rows}
-      cells={diskColumnTitles}
-      variant={TableVariant.compact}
-      aria-label="Host's disks table"
-      borders={false}
-      rowWrapper={DisksTableRowWrapper}
-    >
-      <TableHeader />
-      <TableBody rowKey={diskRowKey} />
+    <Table data-testid={testId} variant={TableVariant.compact} aria-label="Host's disks table">
+      <Thead>
+        <Tr>
+          {diskColumnTitles.map((col, i) => (
+            <Th key={`col-${i}`}>{col.title}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={`disk-row-${row.key}`} data-testid={`disk-row-${row.key}`}>
+            {row.cells.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`} {...cell.props}>
+                {cell.title}
+              </Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 };
