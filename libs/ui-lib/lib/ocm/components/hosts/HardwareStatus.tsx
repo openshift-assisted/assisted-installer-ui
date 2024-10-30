@@ -1,4 +1,3 @@
-import { sortable } from '@patternfly/react-table';
 import React from 'react';
 import {
   areOnlySoftValidationsOfWizardStepFailing,
@@ -74,7 +73,7 @@ export const hardwareStatusColumn = ({
       props: {
         id: 'col-header-hwstatus',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};

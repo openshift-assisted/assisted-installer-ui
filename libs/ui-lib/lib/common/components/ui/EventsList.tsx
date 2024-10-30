@@ -1,21 +1,16 @@
 import React from 'react';
 import { Button, ButtonVariant, Label } from '@patternfly/react-core';
-import { TableVariant, breakWord } from '@patternfly/react-table';
-import { Table, TableBody } from '@patternfly/react-table/deprecated';
+import { Table, TableText, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { Event, EventList } from '@openshift-assisted/types/assisted-installer-service';
 import { EmptyState } from './uiState';
 import { getHumanizedDateTime } from './utils';
-import { fitContent, noPadding } from './table';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-const getEventRowKey = ({ rowData }: ExtraParamsType) =>
-  // eslint-disable-next-line
-  rowData?.props?.event.eventTime + rowData?.props?.event.message;
+const getEventRowKey = (event: Event) => event.eventTime + event.message;
 
 const getLabelColor = (severity: Event['severity']) => {
   switch (severity) {
@@ -74,11 +69,15 @@ const EventsList = ({ events, resetFilters }: EventsListProps) => {
   const rows = events.map((event) => ({
     cells: [
       {
-        title: <strong>{getHumanizedDateTime(event.eventTime)}</strong>,
+        title: (
+          <TableText wrapModifier="fitContent" cellPadding={0}>
+            <strong>{getHumanizedDateTime(event.eventTime)}</strong>
+          </TableText>
+        ),
       },
       {
         title: (
-          <>
+          <TableText wrapModifier="breakWord">
             {event.severity !== 'info' && (
               <>
                 <Label color={getLabelColor(event.severity)} icon={getLabelIcon(event.severity)}>
@@ -87,7 +86,7 @@ const EventsList = ({ events, resetFilters }: EventsListProps) => {
               </>
             )}
             {event.message.replace(/\\n/, ' ')}
-          </>
+          </TableText>
         ),
       },
     ],
@@ -95,17 +94,28 @@ const EventsList = ({ events, resetFilters }: EventsListProps) => {
   }));
 
   return (
-    <Table
-      rows={rows}
-      cells={[
-        { title: t('ai:Time'), cellTransforms: [fitContent, noPadding] },
-        { title: t('ai:Message'), cellTransforms: [breakWord] },
-      ]}
-      variant={TableVariant.compact}
-      aria-label={t('ai:Events table')}
-      borders={false}
-    >
-      <TableBody rowKey={getEventRowKey} />
+    <Table variant={TableVariant.compact} aria-label={t('ai:Events table')} borders={false}>
+      <Thead>
+        <Tr>
+          <Th>
+            <TableText wrapModifier="fitContent" cellPadding={0}>
+              {t('ai:Time')}
+            </TableText>
+          </Th>
+          <Th>
+            <TableText wrapModifier="breakWord">{t('ai:Message')}</TableText>
+          </Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={getEventRowKey(row.props.event)}>
+            {row.cells.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`}>{cell.title}</Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 };
