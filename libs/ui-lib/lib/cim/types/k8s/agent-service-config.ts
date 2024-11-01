@@ -11,6 +11,13 @@ type StorageConfig = {
   };
 };
 
+export type OsImage = {
+  cpuArchitecture: string;
+  openshiftVersion: string;
+  url: string;
+  version: string;
+};
+
 export type AgentServiceConfigConditionType = 'DeploymentsHealthy' | 'ReconcileCompleted';
 
 export type AgentServiceConfigK8sResource = K8sResourceCommon & {
@@ -18,6 +25,7 @@ export type AgentServiceConfigK8sResource = K8sResourceCommon & {
     databaseStorage: StorageConfig;
     filesystemStorage: StorageConfig;
     imageStorage: StorageConfig;
+    osImages?: OsImage[];
   };
   status?: {
     conditions?: StatusCondition<AgentServiceConfigConditionType>[];
