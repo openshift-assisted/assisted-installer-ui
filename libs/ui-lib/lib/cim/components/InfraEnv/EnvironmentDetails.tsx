@@ -169,6 +169,16 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
                   .label ?? CpuArchitecture.x86}
               </DescriptionListDescription>
             </DescriptionListGroup>
+
+            {infraEnv.spec?.osImageVersion && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>{t('ai:OpenShift version')}</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {`OpenShift ${infraEnv.spec?.osImageVersion}`}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+
             <DescriptionListGroup>
               <DescriptionListTerm>{t('ai:Labels')}</DescriptionListTerm>
               <DescriptionListDescription>
