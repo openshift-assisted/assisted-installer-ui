@@ -62,7 +62,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
               name={`${fieldName}.useBond`}
             />
           </FormGroup>
-          {useBond && (
+          {useBond.value && (
             <Grid hasGutter className="pf-v5-u-ml-lg">
               <FormGroup fieldId={`bond-type-${hostIdx}`}>
                 <BondsSelect name={`${fieldName}.bondType`} data-testid={`bond-type-${hostIdx}`} />
@@ -81,12 +81,14 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
               />
             </Grid>
           )}
-          <OcmInputField
-            name={`${fieldName}.macAddress`}
-            label="MAC Address"
-            isRequired
-            data-testid={`mac-address-${hostIdx}`}
-          />
+          {!useBond.value && (
+            <OcmInputField
+              name={`${fieldName}.macAddress`}
+              label="MAC Address"
+              isRequired
+              data-testid={`mac-address-${hostIdx}`}
+            />
+          )}
           {getShownProtocolVersions(protocolType).map((protocolVersion) => (
             <FormGroup
               label={`IP address (${getProtocolVersionLabel(protocolVersion)})`}

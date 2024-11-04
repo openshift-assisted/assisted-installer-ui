@@ -49,9 +49,14 @@ const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
   Yup.object({
-    macAddress: macAddressValidationSchema
-      .required(requiredMsg)
-      .concat(getUniqueValidationSchema(getAllMacAddresses)),
+    macAddress: Yup.mixed().when('useBond', {
+      is: false,
+      then: () =>
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllMacAddresses)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
     ips: Yup.object({
       ipv4: showIpv4(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
