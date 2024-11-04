@@ -30,13 +30,22 @@ const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
   return values.hosts.map((host) => host.macAddress);
 };
 
-const getAllBondPrimaryInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
+const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
   values: FormViewHostsValues,
-) => values.hosts.map((host) => host.bondPrimaryInterface);
+) => {
+  const interfaces = new Set<string>();
 
-const getAllSecondaryInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
-  values: FormViewHostsValues,
-) => values.hosts.map((host) => host.bondSecondaryInterface);
+  values.hosts.forEach((host) => {
+    if (host.bondPrimaryInterface) {
+      interfaces.add(host.bondPrimaryInterface);
+    }
+    if (host.bondSecondaryInterface) {
+      interfaces.add(host.bondSecondaryInterface);
+    }
+  });
+
+  return Array.from(interfaces);
+};
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
   Yup.object({
@@ -76,13 +85,13 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     bondPrimaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondPrimaryInterfaces)),
+        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
     }),
     bondSecondaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllSecondaryInterfaces)),
+        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
     }),
   });
