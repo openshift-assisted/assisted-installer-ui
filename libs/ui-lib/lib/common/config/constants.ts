@@ -321,3 +321,5 @@ export const operatorLabels = (
 };
 
 export const AI_UI_TAG = 'ui_ocm';
+
+export const AI_ASSISTED_MIGRATION_TAG = 'assisted_migration';
