@@ -33,18 +33,10 @@ const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
 const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
   values: FormViewHostsValues,
 ) => {
-  const interfaces = new Set<string>();
-
-  values.hosts.forEach((host) => {
-    if (host.bondPrimaryInterface) {
-      interfaces.add(host.bondPrimaryInterface);
-    }
-    if (host.bondSecondaryInterface) {
-      interfaces.add(host.bondSecondaryInterface);
-    }
-  });
-
-  return Array.from(interfaces);
+  return values.hosts.flatMap((host) => [
+    host.bondPrimaryInterface.toLowerCase(),
+    host.bondSecondaryInterface.toLowerCase(),
+  ]);
 };
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
