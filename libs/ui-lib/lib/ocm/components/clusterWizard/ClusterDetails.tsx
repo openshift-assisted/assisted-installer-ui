@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
@@ -37,6 +37,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     loading: loadingOCPVersions,
     latestVersions: versions,
   } = useOpenshiftVersionsContext();
+  const location = useLocation();
 
   const handleClusterUpdate = React.useCallback(
     async (
@@ -72,7 +73,9 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     async (params: ClusterCreateParamsWithStaticNetworking, addCustomManifests: boolean) => {
       clearAlerts();
       try {
-        const cluster = await ClustersService.create(params);
+        const searchParams = new URLSearchParams(location.search);
+        const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
+        const cluster = await ClustersService.create(params, isAssistedMigration);
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
       } catch (e) {
@@ -84,7 +87,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, navigate, addAlert, dispatch],
+    [clearAlerts, location.search, navigate, addAlert, dispatch],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
