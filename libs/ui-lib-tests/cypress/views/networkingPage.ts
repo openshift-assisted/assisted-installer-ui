@@ -61,25 +61,15 @@ export const networkingPage = {
       .should('be.visible')
       .should('contain.text', Cypress.env('devPreviewSupportLevel'));
   },
-  waitForNetworkStatusToNotContain: (
-    text,
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-    timeout = Cypress.env('HOST_READY_TIMEOUT'),
-  ) => {
-    for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-      cy.hostDetailSelector(i, 'Status', timeout).should('not.contain', text);
-    }
+  waitForNetworkStatusToNotContain: (text, timeout = Cypress.env('HOST_READY_TIMEOUT')) => {
+    cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
+      cy.wrap(row).find('td[data-testid="nic-status"]', { timeout }).should('not.contain', text),
+    );
   },
-  waitForNetworkStatus: (
-    status,
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-    timeout = Cypress.env('HOST_READY_TIMEOUT'),
-  ) => {
-    for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-      cy.hostDetailSelector(i, 'Status', timeout).should('contain.text', status);
-    }
+  waitForNetworkStatus: (status, timeout = Cypress.env('HOST_READY_TIMEOUT')) => {
+    cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
+      cy.wrap(row).find('td[data-testid="nic-status"]', { timeout }).should('contain.text', status),
+    );
   },
   waitForHostNetworkStatusInsufficient: (
     idx,

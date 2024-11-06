@@ -221,6 +221,11 @@ export const getNewFeatureDisabledReason = (
         }`;
       }
     }
+    case 'MTV': {
+      if (!isSupported) {
+        return 'Migration Toolkit for Virtualization is not supported in this OpenShift version';
+      }
+    }
     default: {
       return undefined;
     }

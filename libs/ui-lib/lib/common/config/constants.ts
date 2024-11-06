@@ -126,6 +126,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
   'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
   'mce-requirements-satisfied': t('ai:Multicluster engine requirements'),
+  'mtv-requirements-satisfied': t('ai:Migration toolkit for virtualization requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -174,6 +175,7 @@ export const hostValidationFailureHints = (
   'no-skip-missing-disk': '',
   'no-ip-collisions-in-network': '',
   'mce-requirements-satisfied': '',
+  'mtv-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
@@ -267,6 +269,7 @@ export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_LVMS = 'lvms';
 export const OPERATOR_NAME_MCE = 'mce';
+export const OPERATOR_NAME_MTV = 'mtv';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -275,6 +278,7 @@ const OperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -282,6 +286,7 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -321,3 +326,5 @@ export const operatorLabels = (
 };
 
 export const AI_UI_TAG = 'ui_ocm';
+
+export const AI_ASSISTED_MIGRATION_TAG = 'assisted_migration';

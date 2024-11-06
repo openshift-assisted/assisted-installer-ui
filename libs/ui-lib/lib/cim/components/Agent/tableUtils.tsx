@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { sortable, expandable, breakWord } from '@patternfly/react-table';
 import { Link } from 'react-router-dom-v5-compat';
 
 import {
@@ -48,10 +47,9 @@ export const agentHostnameColumn = (
     title: t('ai:Hostname'),
     props: {
       id: 'col-header-hostname', // ACM jest tests require id over testId
+      modifier: 'breakWord',
     },
-    transforms: [sortable],
-    cellFormatters: [expandable],
-    cellTransforms: [breakWord],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -97,7 +95,7 @@ export const discoveryTypeColumn = (
       props: {
         id: 'col-header-discovery-type',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
@@ -151,7 +149,7 @@ export const agentStatusColumn = ({
       props: {
         id: 'col-header-infraenvstatus',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
@@ -199,7 +197,7 @@ export const clusterColumn = (
       props: {
         id: 'col-header-cluster',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
@@ -239,7 +237,7 @@ export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableR
       props: {
         id: 'col-header-infraenv',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;

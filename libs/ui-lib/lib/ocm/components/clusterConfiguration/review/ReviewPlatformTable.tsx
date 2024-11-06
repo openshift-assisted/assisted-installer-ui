@@ -1,6 +1,5 @@
 import React from 'react';
-import { TableVariant } from '@patternfly/react-table';
-import { Table, TableBody } from '@patternfly/react-table/deprecated';
+import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { genericTableRowKey } from '../../../../common';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import { ExternalPlatformLabels } from '../platformIntegration/constants';
@@ -23,14 +22,22 @@ export const ReviewPlatformTable = ({ cluster }: { cluster: Cluster }) => {
 
   return (
     <Table
-      rows={rows}
-      cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
       aria-label={'Platform'}
       className="review-table"
     >
-      <TableBody rowKey={genericTableRowKey} />
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={genericTableRowKey(row.rowId)}>
+            {row.cells.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`} {...cell.props}>
+                {cell.title}
+              </Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 };
