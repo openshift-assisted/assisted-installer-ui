@@ -8,6 +8,7 @@ import {
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
   OPERATOR_NAME_ODF,
   OperatorsValues,
   selectMonitoredOperators,
@@ -34,6 +35,7 @@ export const getOperatorsInitialValues = (
     useOdfLogicalVolumeManager: isOperatorEnabled([OPERATOR_NAME_LVM]),
     useContainerNativeVirtualization: isOperatorEnabled([OPERATOR_NAME_CNV]),
     useMultiClusterEngine: isOperatorEnabled([OPERATOR_NAME_MCE]),
+    useMigrationToolkitforVirtualization: isOperatorEnabled([OPERATOR_NAME_MTV]),
   };
 };
 

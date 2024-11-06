@@ -610,6 +610,7 @@ export type ClusterValidationId =
   | 'cnv-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
+  | 'mtv-requirements-satisfied'
   | 'network-type-valid'
   | 'platform-requirements-satisfied';
 export interface CompletionParams {
@@ -694,7 +695,7 @@ export interface CreateManifestParams {
   /**
    * The name of the manifest to customize the installed OCP cluster.
    */
-  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  fileName: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * base64 encoded manifest content.
    */
@@ -770,6 +771,7 @@ export interface Disk {
   sizeBytes?: number;
   bootable?: boolean;
   removable?: boolean;
+  partitionTypes?: string;
   /**
    * Whether the disk appears to be an installation media or not
    */
@@ -790,6 +792,7 @@ export interface Disk {
    * A comma-separated list of disk names that this disk belongs to
    */
   holders?: string;
+  iscsi?: Iscsi;
 }
 export interface DiskConfigParams {
   id: string;
@@ -868,6 +871,10 @@ export interface DomainResolutionResponse {
      * The IPv6 addresses of the domain, empty if none
      */
     ipv6Addresses?: string /* ipv6 */[];
+    /**
+     * The cnames that were resolved for the domain, empty if none
+     */
+    cnames?: string[];
   }[];
 }
 /**
@@ -970,6 +977,7 @@ export type FeatureSupportLevelId =
   | 'LSO'
   | 'CNV'
   | 'MCE'
+  | 'MTV'
   | 'NUTANIX_INTEGRATION'
   | 'BAREMETAL_PLATFORM'
   | 'NONE_PLATFORM'
@@ -995,6 +1003,7 @@ export type FinalizingStage =
   | 'Applying olm manifests'
   | 'Waiting for olm operators csv initialization'
   | 'Waiting for olm operators csv'
+  | 'Waiting for OLM operator setup jobs'
   | 'Done';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
@@ -1509,6 +1518,7 @@ export type HostValidationId =
   | 'odf-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
+  | 'mtv-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
@@ -1758,6 +1768,10 @@ export interface InfraEnvUpdateParams {
    * Allows users to change the additionalTrustBundle infra-env field
    */
   additionalTrustBundle?: string;
+  /**
+   * Version of the OS image
+   */
+  openshiftVersion?: string;
 }
 export interface InfraError {
   /**
@@ -1856,6 +1870,10 @@ export interface InstallCmdRequest {
    * If true, assisted service will attempt to skip MCO reboot
    */
   enableSkipMcoReboot?: boolean;
+  /**
+   * If true, notify number of reboots by assisted controller
+   */
+  notifyNumReboots?: boolean;
 }
 export interface InstallerArgsParams {
   /**
@@ -1901,6 +1919,12 @@ export interface IoPerf {
   syncDuration?: number;
 }
 export type Ip = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+export interface Iscsi {
+  /**
+   * Host IP address used to reach iSCSI target
+   */
+  hostIpAddress?: string;
+}
 /**
  * pair of [operation, argument] specifying the argument and what operation should be applied on it.
  */
@@ -2033,6 +2057,10 @@ export interface Manifest {
    * The file name prefaced by the folder that contains it.
    */
   fileName?: string;
+  /**
+   * Describes whether manifest is sourced from a user or created by the system.
+   */
+  manifestSource?: 'user' | 'system';
 }
 export interface Memory {
   physicalBytes?: number;
@@ -2501,7 +2529,7 @@ export interface UpdateManifestParams {
   /**
    * The file name for the manifest to modify.
    */
-  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  fileName: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * The new folder for the manifest. Manifests can be placed in 'manifests' or 'openshift' directories.
    */
@@ -2509,7 +2537,7 @@ export interface UpdateManifestParams {
   /**
    * The new file name for the manifest.
    */
-  updatedFileName?: string; // ^[^/]*\.(yaml|yml|json)$
+  updatedFileName?: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * The new base64 encoded manifest content.
    */
@@ -2691,6 +2719,10 @@ export interface V2Events {
 export interface V2InfraEnvs {
   clusterId?: string;
   owner?: string;
+}
+export interface V2OpenshiftVersions {
+  version?: string;
+  onlyLatest?: boolean;
 }
 export interface V2SupportLevelsArchitectures {
   openshiftVersion: string;
