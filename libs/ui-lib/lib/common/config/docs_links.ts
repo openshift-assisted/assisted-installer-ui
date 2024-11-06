@@ -95,3 +95,6 @@ export const CHANGE_ISO_PASSWORD_FILE_LINK =
 
 export const getCiscoIntersightLink = (downloadIsoUrl: string) =>
   `https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO?_workflow_Version=1&IsoUrl=${downloadIsoUrl}`;
+
+export const MTV_LINK =
+  'https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/2.7/';

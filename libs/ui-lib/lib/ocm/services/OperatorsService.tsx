@@ -6,6 +6,7 @@ import {
   OPERATOR_NAME_LVM,
   OperatorName,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import { getKeys } from '../../common/utils';
@@ -35,6 +36,7 @@ const OperatorsService = {
     setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
     setOperator(OPERATOR_NAME_ODF, values.useOpenShiftDataFoundation);
     setOperator(OPERATOR_NAME_MCE, values.useMultiClusterEngine);
+    setOperator(OPERATOR_NAME_MTV, values.useMigrationToolkitforVirtualization);
 
     // TODO: remove following once the LSO option is exposed to the user
     if (!hasActiveOperators(values)) {
