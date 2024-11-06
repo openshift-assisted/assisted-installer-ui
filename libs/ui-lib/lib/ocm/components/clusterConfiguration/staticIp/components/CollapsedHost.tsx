@@ -17,6 +17,21 @@ export type HostSummaryProps = {
   numInterfaces: number;
   hostIdx: number;
   hasError: boolean;
+  bondPrimaryInterface: string;
+  bondSecondaryInterface: string;
+};
+
+const getLabelCollapsedHost = (
+  macAddress: string,
+  mappingValue: string,
+  bondPrimaryInterface: string,
+  bondSecondaryInterface: string,
+) => {
+  if (bondPrimaryInterface !== '' && bondSecondaryInterface !== '') {
+    return `${bondPrimaryInterface}/${bondSecondaryInterface} -> ${mappingValue}`;
+  } else {
+    return `${macAddress} -> ${mappingValue}`;
+  }
 };
 
 const HostSummary: React.FC<HostSummaryProps> = ({
@@ -26,6 +41,8 @@ const HostSummary: React.FC<HostSummaryProps> = ({
   numInterfaces,
   hasError,
   hostIdx,
+  bondPrimaryInterface,
+  bondSecondaryInterface,
 }) => {
   return (
     <>
@@ -49,10 +66,14 @@ const HostSummary: React.FC<HostSummaryProps> = ({
           {!hasError && (
             <>
               <FlexItem>
-                <Label
-                  variant="outline"
-                  data-testid="first-mapping-label"
-                >{`${macAddress} -> ${mappingValue}`}</Label>{' '}
+                <Label variant="outline" data-testid="first-mapping-label">
+                  {getLabelCollapsedHost(
+                    macAddress,
+                    mappingValue,
+                    bondPrimaryInterface,
+                    bondSecondaryInterface,
+                  )}
+                </Label>{' '}
               </FlexItem>
               {numInterfaces > 1 && (
                 <FlexItem>

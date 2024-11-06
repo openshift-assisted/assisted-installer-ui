@@ -123,14 +123,17 @@ const getCollapsedHostComponent = (protocolType: StaticProtocolType) => {
       (protocolVersion) => value.ips[protocolVersion],
     );
     const mapValue = ipAddresses.join(', ');
+
     return (
       <HostSummary
-        title="MAC to IP mapping"
+        title={value.useBond ? 'Bonds to IP mapping' : 'MAC to IP mapping'}
         numInterfaces={1}
         macAddress={value.macAddress}
         mappingValue={mapValue}
         hostIdx={hostIdx}
         hasError={!!error}
+        bondPrimaryInterface={value.bondPrimaryInterface}
+        bondSecondaryInterface={value.bondSecondaryInterface}
       />
     );
   };
