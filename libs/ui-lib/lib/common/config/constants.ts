@@ -127,6 +127,13 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
   'mce-requirements-satisfied': t('ai:Multicluster engine requirements'),
   'mtv-requirements-satisfied': t('ai:Migration toolkit for virtualization requirements'),
+  'no-iscsi-nic-belongs-to-machine-cidr': t('ai:iSCSI NIC belongs to machine CIDR'),
+  'node-feature-discovery-requirements-satisfied': t('ai:Node Feature Discovery requirements'),
+  'nvidia-gpu-requirements-satisfied': t('ai:NVIDIA GPU requirements'),
+  'pipelines-requirements-satisfied': t('ai:Pipelines requirements'),
+  'serverless-requirements-satisfied': t('ai:Serverless requirements'),
+  'servicemesh-requirements-satisfied': t('ai:Service Mesh requirements'),
+  'openshift-ai-requirements-satisfied': t('ai:OpenShift AI requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -176,6 +183,13 @@ export const hostValidationFailureHints = (
   'no-ip-collisions-in-network': '',
   'mce-requirements-satisfied': '',
   'mtv-requirements-satisfied': '',
+  'no-iscsi-nic-belongs-to-machine-cidr': '',
+  'node-feature-discovery-requirements-satisfied': '',
+  'nvidia-gpu-requirements-satisfied': '',
+  'pipelines-requirements-satisfied': '',
+  'serverless-requirements-satisfied': '',
+  'servicemesh-requirements-satisfied': '',
+  'openshift-ai-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
