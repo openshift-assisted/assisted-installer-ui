@@ -284,6 +284,12 @@ export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_LVMS = 'lvms';
 export const OPERATOR_NAME_MCE = 'mce';
 export const OPERATOR_NAME_MTV = 'mtv';
+export const OPERATOR_NAME_NODE_FEATURE_DISCOVERY = 'node-feature-discovery';
+export const OPERATOR_NAME_NVIDIA_GPU = 'nvidia-gpu';
+export const OPERATOR_NAME_PIPELINES = 'pipelines';
+export const OPERATOR_NAME_SERVICEMESH = 'servicemesh';
+export const OPERATOR_NAME_SERVERLESS = 'serverless';
+export const OPERATOR_NAME_OPENSHIFT_AI = 'openshift-ai';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -293,6 +299,12 @@ const OperatorNames = [
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
   OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_OPENSHIFT_AI,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -301,6 +313,12 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
   OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_OPENSHIFT_AI,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -336,6 +354,12 @@ export const operatorLabels = (
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
     [OPERATOR_NAME_MCE]: t('ai:Multicluster engine'),
+    [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: t('ai:Node Feature Discovery'),
+    [OPERATOR_NAME_NVIDIA_GPU]: t('ai:NVIDIA GPU'),
+    [OPERATOR_NAME_PIPELINES]: t('ai:Pipelines'),
+    [OPERATOR_NAME_SERVICEMESH]: t('ai:Service Mesh'),
+    [OPERATOR_NAME_SERVERLESS]: t('ai:Serverless'),
+    [OPERATOR_NAME_OPENSHIFT_AI]: t('ai:OpenShift AI'),
   };
 };
 
