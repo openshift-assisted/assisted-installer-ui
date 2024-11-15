@@ -9,7 +9,7 @@ Cypress.env('shareDiscoverySshKeyFieldId', '#form-checkbox-shareDiscoverySshKey-
 Cypress.env('inputSshPublicKeyFieldId', '#form-input-sshPublicKey-field');
 Cypress.env('networkingVmsAlert', 'networking-vms-alert');
 Cypress.env('vipAutoAllocSupportLevel', `[data-testid=VIP_AUTO_ALLOC-support-level]`);
-Cypress.env('nicStatus', `[data-testid=nic-status]`);
+Cypress.env('nicStatus', `[data-testid=host-status]`);
 Cypress.env('apiVipFieldHelperId', '#form-input-apiVip-field-helper');
 Cypress.env('clusterNetworkCidrFieldHelperId', '#form-input-clusterNetworks-0-cidr-field-helper');
 Cypress.env(
