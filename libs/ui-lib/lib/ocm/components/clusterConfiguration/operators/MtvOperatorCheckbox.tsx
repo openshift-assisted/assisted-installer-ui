@@ -51,9 +51,12 @@ const MtvHelperText = () => {
 
 const MtvCheckbox = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
-  const { values } = useFormikContext<OperatorsValues>();
+  const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(Mtv_FIELD_NAME, 'input');
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
+
+  const selectCNVOperator = (checked: boolean) =>
+    setFieldValue('useContainerNativeVirtualization', checked);
 
   React.useEffect(() => {
     const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MTV');
@@ -67,6 +70,7 @@ const MtvCheckbox = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId
         label={<MtvLabel disabledReason={disabledReason} clusterId={clusterId} />}
         isDisabled={!!disabledReason}
         helperText={<MtvHelperText />}
+        onChange={selectCNVOperator}
       />
     </FormGroup>
   );
