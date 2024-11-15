@@ -38,7 +38,7 @@ export const networkingStatusColumn = (
           validationsInfo={validationsInfo}
         />
       ),
-      props: { 'data-testid': 'nic-status' },
+      props: { 'data-testid': 'host-status' },
       sortableValue: status,
     };
   },
