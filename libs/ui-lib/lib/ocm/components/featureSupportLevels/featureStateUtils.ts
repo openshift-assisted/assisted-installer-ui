@@ -222,6 +222,9 @@ export const getNewFeatureDisabledReason = (
       }
     }
     case 'MTV': {
+      if (cluster && isSNO(cluster)) {
+        return 'Migration Toolkit for Virtualization is not supported for Single-Node OpenShift';
+      }
       if (!isSupported) {
         return 'Migration Toolkit for Virtualization is not supported in this OpenShift version';
       }
