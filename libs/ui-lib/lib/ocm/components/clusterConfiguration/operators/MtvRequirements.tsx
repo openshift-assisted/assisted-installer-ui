@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { List, ListItem } from '@patternfly/react-core';
 import { useClusterPreflightRequirements } from '../../../hooks';
-import { ErrorState, LoadingState, OPERATOR_NAME_CNV, RenderIf } from '../../../../common';
+import { ErrorState, LoadingState, OPERATOR_NAME_MTV, RenderIf } from '../../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { selectIsCurrentClusterSNO } from '../../../store/slices/current-cluster/selectors';
 
@@ -18,7 +18,7 @@ const MtvRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   }
 
   const mtvRequirements = preflightRequirements?.operators?.find(
-    (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_CNV,
+    (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_MTV,
   );
 
   const workerRequirements = mtvRequirements?.requirements?.worker?.quantitative;
@@ -26,9 +26,6 @@ const MtvRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   return (
     <>
       <List>
-        <ListItem>
-          Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes
-        </ListItem>
         <RenderIf condition={!isSingleNode}>
           <ListItem>
             Each worker node requires an additional {workerRequirements?.ramMib || 360} MiB of
