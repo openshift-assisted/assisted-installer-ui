@@ -27,18 +27,31 @@ const CodeField = ({
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
   const errorMessage = useFieldErrorMsg({ name, validate });
-  const [code] = React.useState('Some example content');
 
   const isValid = !errorMessage;
 
-  const pasteFromClipboard = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      return text;
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to read clipboard contents: ', err);
-      return '';
+  const pasteFromClipboardFirefox = () => {
+    return new Promise((resolve) => {
+      const handlePaste = (e: ClipboardEvent) => {
+        const text = e?.clipboardData?.getData('text/plain');
+        document.removeEventListener('paste', handlePaste);
+        resolve(text);
+      };
+      document.addEventListener('paste', handlePaste);
+      alert('Use Ctrl+V to paste the content in this browser');
+    });
+  };
+
+  const pasteFromClipboard = async (): Promise<string | undefined> => {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      try {
+        return await navigator.clipboard.readText();
+      } catch (err) {
+        return '';
+      }
+    } else {
+      const text = await pasteFromClipboardFirefox();
+      return text as string;
     }
   };
 
@@ -50,7 +63,7 @@ const CodeField = ({
       onClick={() => {
         void pasteFromClipboard().then((text) => setValue(text, true));
       }}
-      isVisible={code !== ''}
+      isVisible
     />
   );
 
