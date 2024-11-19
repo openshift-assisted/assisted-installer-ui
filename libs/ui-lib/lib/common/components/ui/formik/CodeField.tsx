@@ -3,9 +3,10 @@ import { useField } from 'formik';
 import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
-import { CodeEditor } from '@patternfly/react-code-editor';
+import { CodeEditor, CodeEditorControl } from '@patternfly/react-code-editor';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import PasteIcon from '@patternfly/react-icons/dist/js/icons/paste-icon';
 
 const CodeField = ({
   label,
@@ -21,12 +22,37 @@ const CodeField = ({
   downloadFileName,
   dataTestid,
   isReadOnly,
+  showCustomControls = false,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
   const errorMessage = useFieldErrorMsg({ name, validate });
+  const [code] = React.useState('Some example content');
 
   const isValid = !errorMessage;
+
+  const pasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      return text;
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to read clipboard contents: ', err);
+      return '';
+    }
+  };
+
+  const customControl = (
+    <CodeEditorControl
+      icon={<PasteIcon />}
+      aria-label="Paste content"
+      tooltipProps={{ content: 'Paste content' }}
+      onClick={() => {
+        void pasteFromClipboard().then((text) => setValue(text, true));
+      }}
+      isVisible={code !== ''}
+    />
+  );
 
   return (
     <FormGroup
@@ -55,6 +81,7 @@ const CodeField = ({
           setValue(value, true);
         }}
         isReadOnly={isReadOnly}
+        customControls={showCustomControls ? customControl : undefined}
       />
       {(errorMessage || helperText) && (
         <FormHelperText>
