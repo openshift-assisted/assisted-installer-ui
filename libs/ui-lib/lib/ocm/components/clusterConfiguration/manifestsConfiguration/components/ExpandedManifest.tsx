@@ -69,6 +69,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
             isRequired
             downloadFileName={getDownloadFileName(manifestIdx, value)}
             isReadOnly
+            showCustomControls
           />
         </GridItem>
       </Grid>
