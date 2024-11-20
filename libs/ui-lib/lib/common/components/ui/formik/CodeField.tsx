@@ -3,9 +3,10 @@ import { useField } from 'formik';
 import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
-import { CodeEditor } from '@patternfly/react-code-editor';
+import { CodeEditor, CodeEditorControl } from '@patternfly/react-code-editor';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import PasteIcon from '@patternfly/react-icons/dist/js/icons/paste-icon';
 
 const CodeField = ({
   label,
@@ -21,12 +22,50 @@ const CodeField = ({
   downloadFileName,
   dataTestid,
   isReadOnly,
+  showCustomControls = false,
 }: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
   const errorMessage = useFieldErrorMsg({ name, validate });
 
   const isValid = !errorMessage;
+
+  const pasteFromClipboardFirefox = () => {
+    return new Promise((resolve) => {
+      const handlePaste = (e: ClipboardEvent) => {
+        const text = e?.clipboardData?.getData('text/plain');
+        document.removeEventListener('paste', handlePaste);
+        resolve(text);
+      };
+      document.addEventListener('paste', handlePaste);
+      alert('Use Ctrl+V to paste the content in this browser');
+    });
+  };
+
+  const pasteFromClipboard = async (): Promise<string | undefined> => {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      try {
+        return await navigator.clipboard.readText();
+      } catch (err) {
+        return '';
+      }
+    } else {
+      const text = await pasteFromClipboardFirefox();
+      return text as string;
+    }
+  };
+
+  const customControl = (
+    <CodeEditorControl
+      icon={<PasteIcon />}
+      aria-label="Paste content"
+      tooltipProps={{ content: 'Paste content' }}
+      onClick={() => {
+        void pasteFromClipboard().then((text) => setValue(text, true));
+      }}
+      isVisible
+    />
+  );
 
   return (
     <FormGroup
@@ -55,6 +94,7 @@ const CodeField = ({
           setValue(value, true);
         }}
         isReadOnly={isReadOnly}
+        customControls={showCustomControls ? customControl : undefined}
       />
       {(errorMessage || helperText) && (
         <FormHelperText>
