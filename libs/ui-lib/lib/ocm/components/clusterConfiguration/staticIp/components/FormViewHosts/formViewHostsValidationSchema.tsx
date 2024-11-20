@@ -82,13 +82,17 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     bondPrimaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondInterfaces)),
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
     }),
     bondSecondaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondInterfaces)),
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
     }),
   });
