@@ -42,6 +42,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
     };
 
     const handleModalCancel = () => {
+      setFieldValue(`${fieldName}.useBond`, true);
       setIsModalOpen(false);
     };
     return (
