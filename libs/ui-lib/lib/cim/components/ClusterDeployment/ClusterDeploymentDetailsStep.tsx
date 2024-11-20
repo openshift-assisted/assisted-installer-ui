@@ -11,6 +11,7 @@ import {
   ClusterDetailsValues,
   useFeatureSupportLevel,
   getRichTextValidation,
+  OpenshiftVersionOptionType,
 } from '../../../common';
 
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
@@ -25,35 +26,33 @@ import {
   InfraEnvK8sResource,
 } from '../../types';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
-import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { isCIMFlow, getGridSpans } from './helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type UseDetailsFormikArgs = {
-  clusterImages: ClusterImageSetK8sResource[];
   usedClusterNames: string[];
+  ocpVersions: OpenshiftVersionOptionType[];
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
   infraEnv?: InfraEnvK8sResource;
-  isNutanix: boolean;
 };
 
 export const useDetailsFormik = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  clusterImages,
   usedClusterNames,
   infraEnv,
-  isNutanix,
+  ocpVersions,
 }: UseDetailsFormikArgs): [
   ClusterDetailsValues & { networkType: 'OpenShiftSDN' | 'OVNKubernetes' },
   Lazy,
 ] => {
   const { t } = useTranslation();
   const featureSupportLevels = useFeatureSupportLevel();
-  const ocpVersions = getOCPVersions(clusterImages, isNutanix);
+  const isEdit = !!clusterDeployment || !!agentClusterInstall;
+
   const cluster = React.useMemo(
     () =>
       clusterDeployment && agentClusterInstall
@@ -66,6 +65,7 @@ export const useDetailsFormik = ({
         : undefined,
     [agentClusterInstall, clusterDeployment, agents, infraEnv],
   );
+
   const initialValues = React.useMemo(
     () => {
       const initValues = getClusterDetailsInitialValues({
@@ -85,7 +85,6 @@ export const useDetailsFormik = ({
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  const isEdit = !!clusterDeployment || !!agentClusterInstall;
   const validationSchema = React.useMemo(
     () =>
       getClusterDetailsValidationSchema({
@@ -117,14 +116,15 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const { t } = useTranslation();
+  const ocpVersions = getOCPVersions(clusterImages, isNutanix);
+
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterDeployment,
+    ocpVersions,
     agentClusterInstall,
     agents,
-    clusterImages,
     usedClusterNames,
     infraEnv,
-    isNutanix,
   });
   const next = () =>
     isCIMFlow(clusterDeployment)

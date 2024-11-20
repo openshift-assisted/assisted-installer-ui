@@ -4,6 +4,7 @@ import {
   AgentClusterInstallK8sResource,
   ClusterImageSetK8sResource,
   ClusterVersionK8sResource,
+  OsImage,
 } from '../../types';
 import { OpenshiftVersionOptionType } from '../../../common';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
@@ -51,7 +52,12 @@ export const isValidImageSet = (cis: ClusterImageSetK8sResource, architectures?:
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
   isNutanix?: boolean | undefined,
+  osImages?: OsImage[],
 ): OpenshiftVersionOptionType[] => {
+  const ocpImageVersions = Array.from(
+    new Set(osImages?.map((osImage) => osImage.openshiftVersion)),
+  );
+
   const versions = clusterImageSets
     .filter((clusterImageSet) =>
       isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined),
@@ -67,6 +73,10 @@ export const getOCPVersions = (
         supportLevel: 'production', // getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel),
       };
     })
+    .filter((ocpVersion) => {
+      const ver = ocpVersion.version.split('.').slice(0, 2).join('.');
+      return !!ocpImageVersions.length ? ocpImageVersions.includes(ver) : true;
+    })
     .sort(
       (versionA, versionB) => /* descending */ -1 * versionA.label.localeCompare(versionB.label),
     );
@@ -75,6 +85,7 @@ export const getOCPVersions = (
     // make sure that the pre-selected one is the first-one after sorting
     versions[0].default = true;
   }
+
   const deduped = uniqBy(versions, (v) => v.version);
   return deduped;
 };
@@ -86,6 +97,7 @@ export const getSelectedVersion = (
   const selectedClusterImage = clusterImages.find(
     (ci) => ci.metadata?.name === agentClusterInstall?.spec?.imageSetRef?.name,
   );
+
   return selectedClusterImage
     ? getOCPVersions([selectedClusterImage])?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
