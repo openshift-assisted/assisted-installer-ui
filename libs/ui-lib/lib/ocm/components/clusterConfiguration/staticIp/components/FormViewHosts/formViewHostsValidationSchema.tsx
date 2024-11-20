@@ -26,13 +26,29 @@ const getAllIpv6Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
 
 const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
   values: FormViewHostsValues,
-) => values.hosts.map((host) => host.macAddress);
+) => {
+  return values.hosts.map((host) => host.macAddress);
+};
+
+const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
+  values: FormViewHostsValues,
+) => {
+  return values.hosts.flatMap((host) => [
+    host.bondPrimaryInterface.toLowerCase(),
+    host.bondSecondaryInterface.toLowerCase(),
+  ]);
+};
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
   Yup.object({
-    macAddress: macAddressValidationSchema
-      .required(requiredMsg)
-      .concat(getUniqueValidationSchema(getAllMacAddresses)),
+    macAddress: Yup.mixed().when('useBond', {
+      is: false,
+      then: () =>
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllMacAddresses)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
     ips: Yup.object({
       ipv4: showIpv4(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
@@ -62,6 +78,18 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
               ),
             )
         : Yup.string(),
+    }),
+    bondPrimaryInterface: Yup.mixed().when('useBond', {
+      is: true,
+      then: () =>
+        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondInterfaces)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
+    bondSecondaryInterface: Yup.mixed().when('useBond', {
+      is: true,
+      then: () =>
+        macAddressValidationSchema.concat(getUniqueValidationSchema(getAllBondInterfaces)),
+      otherwise: () => Yup.mixed().notRequired(),
     }),
   });
 

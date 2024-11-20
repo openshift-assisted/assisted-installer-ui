@@ -2,6 +2,7 @@ import { dump } from 'js-yaml';
 import {
   HostStaticNetworkConfig,
   InfraEnv,
+  MacInterfaceMap,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ProtocolVersion,
@@ -34,6 +35,8 @@ import { getMachineNetworkCidr } from './machineNetwork';
 import { getEmptyHostIps } from './emptyData';
 
 const REAL_NIC_NAME = 'eth0';
+const REAL_NIC_NAME_1 = 'eth1';
+const BOND_NIC_NAME = 'bond0';
 
 const getPrefixLength = (
   networkWide: FormViewNetworkWideValues,
@@ -54,6 +57,8 @@ const toYamlWithComments = (json: object, comments: string[]) => {
 const getNmstateObject = (
   networkWide: FormViewNetworkWideValues,
   hostIps: Partial<HostIps>,
+  bondType?: string,
+  hasBondsConfigured?: boolean,
 ): Nmstate => {
   const interfaces: NmstateInterface[] = [];
   const routeConfigs: NmstateRoutesConfig[] = [];
@@ -63,9 +68,8 @@ const getNmstateObject = (
   for (const protocolVersion of getShownProtocolVersions(networkWide.protocolType)) {
     const hostIp = hostIps[protocolVersion];
     let nicName = '';
-
     if (hostIp) {
-      nicName = REAL_NIC_NAME;
+      nicName = bondType && hasBondsConfigured ? BOND_NIC_NAME : REAL_NIC_NAME;
       realProtocolConfigs[protocolVersion] = getNmstateProtocolConfig(
         hostIp,
         getPrefixLength(networkWide, protocolVersion),
@@ -79,7 +83,9 @@ const getNmstateObject = (
         ),
       };
       nicName = getDummyNicName(protocolVersion);
-      interfaces.push(getInterface(nicName, protocolConfigs, networkWide));
+      interfaces.push(
+        getInterface(nicName, protocolConfigs, networkWide, bondType, hasBondsConfigured),
+      );
     }
 
     routeConfigs.push(
@@ -94,7 +100,15 @@ const getNmstateObject = (
   }
 
   if (Object.keys(realProtocolConfigs).length > 0) {
-    interfaces.unshift(getInterface(REAL_NIC_NAME, realProtocolConfigs, networkWide));
+    interfaces.unshift(
+      getInterface(
+        bondType && hasBondsConfigured ? BOND_NIC_NAME : REAL_NIC_NAME,
+        realProtocolConfigs,
+        networkWide,
+        bondType,
+        hasBondsConfigured,
+      ),
+    );
   }
 
   const nmstate = {
@@ -119,7 +133,12 @@ const toYaml = (
     );
   }
   const hostIps = formHostData ? formHostData.ips : getEmptyHostIps();
-  const nmstate = getNmstateObject(networkWideConfiguration, hostIps);
+  const bondType = formHostData ? formHostData.bondType : '';
+  const hasBondsConfigured =
+    formHostData &&
+    formHostData.bondPrimaryInterface !== '' &&
+    formHostData.bondSecondaryInterface !== '';
+  const nmstate = getNmstateObject(networkWideConfiguration, hostIps, bondType, hasBondsConfigured);
   return toYamlWithComments(nmstate, comments);
 };
 
@@ -137,16 +156,38 @@ const formDataToInfraEnvField = (formData: StaticFormData): HostStaticNetworkCon
     for (const host of formData.hosts) {
       ret.push({
         networkYaml: toYaml(formData.networkWide, host),
-        macInterfaceMap: [
-          {
-            macAddress: host.macAddress,
-            logicalNicName: REAL_NIC_NAME,
-          },
-        ],
+        macInterfaceMap: getMapInterfaceMap(host),
       });
     }
   }
   return ret;
+};
+
+export const getMapInterfaceMap = (host: FormViewHost): MacInterfaceMap => {
+  if (
+    host.bondPrimaryInterface &&
+    host.bondPrimaryInterface !== '' &&
+    host.bondSecondaryInterface &&
+    host.bondSecondaryInterface !== ''
+  ) {
+    return [
+      {
+        macAddress: host.bondPrimaryInterface,
+        logicalNicName: REAL_NIC_NAME,
+      },
+      {
+        macAddress: host.bondSecondaryInterface,
+        logicalNicName: REAL_NIC_NAME_1,
+      },
+    ];
+  } else {
+    return [
+      {
+        macAddress: host.macAddress,
+        logicalNicName: REAL_NIC_NAME,
+      },
+    ];
+  }
 };
 
 export const formViewHostsToInfraEnvField = (

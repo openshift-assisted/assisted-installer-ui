@@ -63,12 +63,15 @@ export const networkingPage = {
   },
   waitForNetworkStatusToNotContain: (text, timeout = Cypress.env('HOST_READY_TIMEOUT')) => {
     cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
-      cy.wrap(row).find('td[data-testid="nic-status"]', { timeout }).should('not.contain', text),
+      cy.wrap(row).find('td[data-testid="host-status"]', { timeout }).should('not.contain', text),
     );
   },
   waitForNetworkStatus: (status, timeout = Cypress.env('HOST_READY_TIMEOUT')) => {
     cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
-      cy.wrap(row).find('td[data-testid="nic-status"]', { timeout }).should('contain.text', status),
+      cy
+        .wrap(row)
+        .find('td[data-testid="host-status"]', { timeout })
+        .should('contain.text', status),
     );
   },
   waitForHostNetworkStatusInsufficient: (
@@ -77,7 +80,7 @@ export const networkingPage = {
   ) => {
     // host row index starts at 0 and increments by 2
     cy.newByDataTestId(`host-row-${idx}`).within(() => {
-      cy.newByDataTestId('nic-status', timeout).should('contain.text', 'Insufficient');
+      cy.newByDataTestId('host-status', timeout).should('contain.text', 'Insufficient');
     });
   },
   getClusterNetworkCidr: () => {
