@@ -16,13 +16,13 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import { SNOControlGroup } from '../../../common';
 import { getNetworkType } from '../helpers';
-
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
   forceOpenshiftVersion?: string;
   extensionAfter?: { [key: string]: React.ReactElement };
   versions: OpenshiftVersionOptionType[];
   isNutanix?: boolean;
+  cpuArchitectures?: string[];
 };
 
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -49,6 +49,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   forceOpenshiftVersion,
   extensionAfter,
   isNutanix,
+  cpuArchitectures,
 }) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode } = values;
@@ -112,7 +113,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <>
           <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
-          <CpuArchitectureDropdown isDisabled={isEditFlow} />
+          <CpuArchitectureDropdown isDisabled={isEditFlow} cpuArchitectures={cpuArchitectures} />
         </>
       )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
