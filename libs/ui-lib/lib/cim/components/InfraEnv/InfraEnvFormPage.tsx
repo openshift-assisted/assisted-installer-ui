@@ -49,6 +49,8 @@ import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
+import OpenshiftVersionDropdown from './OpenshiftVersionDropdown';
+import { OsImage } from '../../types';
 
 export type EnvironmentStepFormValues = {
   name: string;
@@ -67,6 +69,7 @@ export type EnvironmentStepFormValues = {
   >;
   enableNtpSources: boolean;
   additionalNtpSources: string;
+  osImageVersion?: string;
 };
 
 const validationSchema = (usedNames: string[], t: TFunction) =>
@@ -116,6 +119,7 @@ const initialValues: EnvironmentStepFormValues = {
   cpuArchitecture: CpuArchitecture.x86,
   enableNtpSources: false,
   additionalNtpSources: '',
+  osImageVersion: '',
 };
 
 type InfraEnvFormProps = {
@@ -123,6 +127,7 @@ type InfraEnvFormProps = {
   pullSecret?: string;
   sshPublicKey?: string;
   docVersion: string;
+  osImages?: OsImage[];
 };
 
 const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
@@ -131,6 +136,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
   pullSecret,
   sshPublicKey,
   docVersion,
+  osImages,
 }) => {
   const { values, setFieldValue } = useFormikContext<EnvironmentStepFormValues>();
   const { t } = useTranslation();
@@ -222,6 +228,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
             </Flex>
           </FormGroup>
           <CpuArchitectureDropdown />
+          {!!osImages && <OpenshiftVersionDropdown osImages={osImages} />}
           <RichInputField
             label={t('ai:Location')}
             name="location"
@@ -276,6 +283,7 @@ type InfraEnvFormPageProps = InfraEnvFormProps & {
   pullSecret?: string;
   sshPublicKey?: string;
   docVersion: string;
+  osImages?: OsImage[];
 };
 
 export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
