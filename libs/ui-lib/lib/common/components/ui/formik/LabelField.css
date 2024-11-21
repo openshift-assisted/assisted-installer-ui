@@ -6,6 +6,11 @@
   border: 1px solid transparent;
   outline: none;
   width: 100%;
+  background-color: initial;
+}
+
+.label-field__input::placeholder {
+  color: var(--pf-c-form-control--placeholder--Color);
 }
 
 .label-field .react-autosuggest__suggestions-list {
