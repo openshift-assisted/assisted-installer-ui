@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { useFormikContext } from 'formik';
-import {
-  getFieldId,
-  PopoverIcon,
-  OPENSHIFT_AI_REQUIREMENTS_LINK,
-  OPENSHIFT_AI_LINK,
-  OperatorsValues,
-} from '../../../../common';
+import { getFieldId, PopoverIcon, OPENSHIFT_AI_LINK, OperatorsValues } from '../../../../common';
+import OpenShiftAIRequirements from './OpenShiftAIRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -25,16 +20,12 @@ const OpenShiftAILabel = ({ disabledReason, supportLevel }: OpenShiftAILabelProp
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install OpenShift AI </span>
+        <span>Install OpenShift AI bundle </span>
       </Tooltip>
       <PopoverIcon
         component={'a'}
-        headerContent="Additional requirements"
-        bodyContent={
-          <a href={OPENSHIFT_AI_REQUIREMENTS_LINK} target="_blank" rel="noopener noreferrer">
-            Learn more about the requirements for OpenShift AI <ExternalLinkAltIcon />.
-          </a>
-        }
+        headerContent="Requirements and dependencies"
+        bodyContent={<OpenShiftAIRequirements />}
       />
       <NewFeatureSupportLevelBadge featureId="OPENSHIFT_AI" supportLevel={supportLevel} />
     </>
