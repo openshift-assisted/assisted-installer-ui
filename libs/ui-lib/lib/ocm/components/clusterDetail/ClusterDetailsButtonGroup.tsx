@@ -41,8 +41,8 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
       direction={{ default: 'row' }}
       justifyContent={{ default: 'justifyContentFlexStart' }}
     >
-      <FlexItem>
-        <RenderIf condition={cluster.status === 'error'}>
+      <RenderIf condition={cluster.status === 'error'}>
+        <FlexItem>
           <Button
             id={getID('button-reset-cluster')}
             variant={ButtonVariant.danger}
@@ -50,18 +50,22 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
           >
             Reset Cluster
           </Button>
-        </RenderIf>
-        <RenderIf
-          condition={showKubeConfig && hasConsoleUrlAndNoError && canOpenConsole(cluster.status)}
-        >
+        </FlexItem>
+      </RenderIf>
+      <RenderIf
+        condition={showKubeConfig && hasConsoleUrlAndNoError && canOpenConsole(cluster.status)}
+      >
+        <FlexItem>
           <LaunchOpenshiftConsoleButton
             isDisabled={false}
             cluster={cluster}
             consoleUrl={credentials?.consoleUrl}
             id={getID('button-launch-console')}
           />
-        </RenderIf>
-        <RenderIf condition={canAbortInstallation(cluster)}>
+        </FlexItem>
+      </RenderIf>
+      <RenderIf condition={canAbortInstallation(cluster)}>
+        <FlexItem>
           <Button
             data-testid="cluster-installation-abort-button"
             variant={ButtonVariant.danger}
@@ -70,8 +74,8 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
           >
             Abort installation
           </Button>
-        </RenderIf>
-      </FlexItem>
+        </FlexItem>
+      </RenderIf>
       <FlexItem>
         <KubeconfigDownload
           status={cluster.status}
