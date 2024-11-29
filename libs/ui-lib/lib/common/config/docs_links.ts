@@ -67,6 +67,9 @@ export const HOST_REQUIREMENTS_LINK = 'https://access.redhat.com/solutions/48856
 export const ODF_REQUIREMENTS_LINK =
   'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
 
+export const OPENSHIFT_AI_REQUIREMENTS_LINK =
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/installing_the_openshift_ai_cloud_service/requirements-for-openshift-ai_install#requirements-for-openshift-ai_install';
+
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
@@ -98,3 +101,6 @@ export const getCiscoIntersightLink = (downloadIsoUrl: string) =>
 
 export const MTV_LINK =
   'https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/2.7/';
+
+export const OPENSHIFT_AI_LINK =
+  'https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai';

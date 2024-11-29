@@ -612,7 +612,13 @@ export type ClusterValidationId =
   | 'mce-requirements-satisfied'
   | 'mtv-requirements-satisfied'
   | 'network-type-valid'
-  | 'platform-requirements-satisfied';
+  | 'platform-requirements-satisfied'
+  | 'node-feature-discovery-requirements-satisfied'
+  | 'nvidia-gpu-requirements-satisfied'
+  | 'pipelines-requirements-satisfied'
+  | 'servicemesh-requirements-satisfied'
+  | 'serverless-requirements-satisfied'
+  | 'openshift-ai-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -993,7 +999,13 @@ export type FeatureSupportLevelId =
   | 'SKIP_MCO_REBOOT'
   | 'EXTERNAL_PLATFORM'
   | 'OVN_NETWORK_TYPE'
-  | 'SDN_NETWORK_TYPE';
+  | 'SDN_NETWORK_TYPE'
+  | 'NODE_FEATURE_DISCOVERY'
+  | 'NVIDIA_GPU'
+  | 'PIPELINES'
+  | 'SERVICEMESH'
+  | 'SERVERLESS'
+  | 'OPENSHIFT_AI';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1536,7 +1548,14 @@ export type HostValidationId =
   | 'compatible-agent'
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk'
-  | 'no-ip-collisions-in-network';
+  | 'no-ip-collisions-in-network'
+  | 'no-iscsi-nic-belongs-to-machine-cidr'
+  | 'node-feature-discovery-requirements-satisfied'
+  | 'nvidia-gpu-requirements-satisfied'
+  | 'pipelines-requirements-satisfied'
+  | 'servicemesh-requirements-satisfied'
+  | 'serverless-requirements-satisfied'
+  | 'openshift-ai-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
