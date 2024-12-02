@@ -26,7 +26,7 @@ import CpuArchitectureDropdown from './CpuArchitectureDropdown';
 import { OcmBaseDomainField } from './OcmBaseDomainField';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { useOpenshiftVersions } from '../../hooks';
+import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
 import { ExternalPlatformDropdown } from './platformIntegration/ExternalPlatformDropdown';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
@@ -64,9 +64,8 @@ export const OcmClusterDetailsFormFields = ({
 
   const { t } = useTranslation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const isOracleCloudPlatformIntegrationEnabled = useFeature('ASSISTED_INSTALLER_PLATFORM_OCI');
   const { openshiftVersion, platform } = values;
-  const { getCpuArchitectures } = useOpenshiftVersions();
+  const { getCpuArchitectures } = useOpenshiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
   const featureSupportLevelData = useSupportLevelsAPI(
@@ -107,6 +106,13 @@ export const OcmClusterDetailsFormFields = ({
         featureSupportLevelData ?? undefined,
       ),
       false,
+    );
+    setFieldValue(
+      'isSNODevPreview',
+      featureSupportLevelContext.getFeatureSupportLevel(
+        'SNO',
+        featureSupportLevelData ?? undefined,
+      ) === 'dev-preview',
     );
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
@@ -169,7 +175,6 @@ export const OcmClusterDetailsFormFields = ({
         <ExternalPlatformDropdown
           onChange={handleExternalPartnerIntegrationsChange}
           cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
-          showOciOption={isOracleCloudPlatformIntegrationEnabled}
           featureSupportLevelData={featureSupportLevelData}
           isSNO={isSNO({ highAvailabilityMode })}
         />
@@ -191,6 +196,7 @@ export const OcmClusterDetailsFormFields = ({
         values={values}
         isDisabled={isPullSecretSet}
         isSNO={isSNO({ highAvailabilityMode })}
+        docVersion={openshiftVersion}
       />
     </Form>
   );

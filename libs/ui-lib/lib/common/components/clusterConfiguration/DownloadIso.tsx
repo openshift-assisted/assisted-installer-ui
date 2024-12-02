@@ -15,12 +15,14 @@ import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
 import { StaticIPInfo } from './DiscoveryImageConfigForm';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { getCiscoIntersightLink } from '../../config';
 
 export type DownloadISOProps = {
   hasDHCP?: boolean;
   isSNO?: boolean;
   fileName?: string;
-  downloadUrl?: string;
+  downloadUrl: string;
   onClose: () => void;
   onReset?: () => void;
   docVersion?: string;
@@ -58,6 +60,17 @@ const DownloadIso = ({
               <StaticIPInfo docVersion={docVersion} />
             </StackItem>
           )}
+          <StackItem>
+            <Button
+              variant="link"
+              icon={<ExternalLinkAltIcon />}
+              iconPosition="right"
+              isInline
+              onClick={() => window.open(getCiscoIntersightLink(downloadUrl), '_blank', 'noopener')}
+            >
+              {t('ai:Add hosts from Cisco Intersight')}
+            </Button>
+          </StackItem>
           <StackItem>
             <DetailList>
               <DetailItem

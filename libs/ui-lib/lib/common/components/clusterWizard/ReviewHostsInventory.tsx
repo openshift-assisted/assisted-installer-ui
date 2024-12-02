@@ -1,9 +1,10 @@
-import { Table, TableBody, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
+import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import type { Inventory, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getEnabledHosts } from '../hosts';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { fileSize, stringToJSON } from '../../utils';
+import { genericTableRowKey } from '../ui';
 
 const ReviewHostsInventory = ({ hosts = [] }: { hosts?: Host[] }) => {
   const rows = React.useMemo(() => {
@@ -29,31 +30,41 @@ const ReviewHostsInventory = ({ hosts = [] }: { hosts?: Host[] }) => {
 
     return [
       {
-        cells: ['Hosts', summary.count],
+        cells: [{ title: 'Hosts' }, { title: summary.count }],
+        rowId: 'hosts',
       },
       {
-        cells: ['Total cores', summary.cores],
+        cells: [{ title: 'Total cores' }, { title: summary.cores }],
+        rowId: 'total-cores',
       },
       {
-        cells: ['Total memory', fileSize(summary.memory, 2, 'iec')],
+        cells: [{ title: 'Total memory' }, { title: fileSize(summary.memory, 2, 'iec') }],
+        rowId: 'total-memory',
       },
       {
-        cells: ['Total storage', fileSize(summary.fs, 2, 'si')],
+        cells: [{ title: 'Total storage' }, { title: fileSize(summary.fs, 2, 'si') }],
+        rowId: 'total-storage',
       },
     ];
   }, [hosts]);
 
   return (
     <Table
-      rows={rows}
       data-testid="review-host-inventory-table"
-      cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
       aria-label="Cluster summary table"
       className="review-table"
     >
-      <TableBody />
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={genericTableRowKey(row.rowId)}>
+            {row.cells.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`}>{cell.title}</Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 };

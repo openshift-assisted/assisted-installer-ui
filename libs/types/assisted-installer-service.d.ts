@@ -363,6 +363,10 @@ export interface Cluster {
    */
   tags?: string;
   'last-installation-preparation'?: LastInstallationPreparation;
+  /**
+   * Indication if organization soft timeouts is enabled for the cluster.
+   */
+  orgSoftTimeoutsEnabled?: boolean;
 }
 export interface ClusterCreateParams {
   /**
@@ -581,8 +585,7 @@ export interface ClusterProgressInfo {
   finalizingStagePercentage?: number;
   finalizingStage?: FinalizingStage;
   finalizingStageStartedAt?: string; // date-time
-  nodeUpdaterStartedAt?: string; // date-time
-  nodeUpdaterFinishedAt?: string; // date-time
+  finalizingStageTimedOut?: boolean;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -607,8 +610,15 @@ export type ClusterValidationId =
   | 'cnv-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
+  | 'mtv-requirements-satisfied'
   | 'network-type-valid'
-  | 'platform-requirements-satisfied';
+  | 'platform-requirements-satisfied'
+  | 'node-feature-discovery-requirements-satisfied'
+  | 'nvidia-gpu-requirements-satisfied'
+  | 'pipelines-requirements-satisfied'
+  | 'servicemesh-requirements-satisfied'
+  | 'serverless-requirements-satisfied'
+  | 'openshift-ai-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -691,7 +701,7 @@ export interface CreateManifestParams {
   /**
    * The name of the manifest to customize the installed OCP cluster.
    */
-  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  fileName: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * base64 encoded manifest content.
    */
@@ -767,6 +777,7 @@ export interface Disk {
   sizeBytes?: number;
   bootable?: boolean;
   removable?: boolean;
+  partitionTypes?: string;
   /**
    * Whether the disk appears to be an installation media or not
    */
@@ -787,6 +798,7 @@ export interface Disk {
    * A comma-separated list of disk names that this disk belongs to
    */
   holders?: string;
+  iscsi?: Iscsi;
 }
 export interface DiskConfigParams {
   id: string;
@@ -865,6 +877,10 @@ export interface DomainResolutionResponse {
      * The IPv6 addresses of the domain, empty if none
      */
     ipv6Addresses?: string /* ipv6 */[];
+    /**
+     * The cnames that were resolved for the domain, empty if none
+     */
+    cnames?: string[];
   }[];
 }
 /**
@@ -967,6 +983,7 @@ export type FeatureSupportLevelId =
   | 'LSO'
   | 'CNV'
   | 'MCE'
+  | 'MTV'
   | 'NUTANIX_INTEGRATION'
   | 'BAREMETAL_PLATFORM'
   | 'NONE_PLATFORM'
@@ -982,17 +999,23 @@ export type FeatureSupportLevelId =
   | 'SKIP_MCO_REBOOT'
   | 'EXTERNAL_PLATFORM'
   | 'OVN_NETWORK_TYPE'
-  | 'SDN_NETWORK_TYPE';
+  | 'SDN_NETWORK_TYPE'
+  | 'NODE_FEATURE_DISCOVERY'
+  | 'NVIDIA_GPU'
+  | 'PIPELINES'
+  | 'SERVICEMESH'
+  | 'SERVERLESS'
+  | 'OPENSHIFT_AI';
 /**
  * Cluster finalizing stage managed by controller
  */
 export type FinalizingStage =
-  | 'Waiting for finalizing'
   | 'Waiting for cluster operators'
   | 'Adding router ca'
-  | 'Waiting for olm operators'
-  | 'Applying manifests'
+  | 'Applying olm manifests'
+  | 'Waiting for olm operators csv initialization'
   | 'Waiting for olm operators csv'
+  | 'Waiting for OLM operator setup jobs'
   | 'Done';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
@@ -1140,6 +1163,10 @@ export interface Host {
    * The last time the host's agent communicated with the service.
    */
   checkedInAt?: string; // date-time
+  /**
+   * Indicate that connection to assisted service was timed out when soft timeout is enabled.
+   */
+  connectionTimedOut?: boolean;
   /**
    * The last time the host's agent tried to register in the service.
    */
@@ -1344,6 +1371,10 @@ export interface HostRegistrationResponse {
    */
   checkedInAt?: string; // date-time
   /**
+   * Indicate that connection to assisted service was timed out when soft timeout is enabled.
+   */
+  connectionTimedOut?: boolean;
+  /**
    * The last time the host's agent tried to register in the service.
    */
   registeredAt?: string; // date-time
@@ -1467,6 +1498,10 @@ export interface HostUpdateParams {
    */
   ignitionEndpointToken?: string;
   /**
+   * JSON-formatted string of additional HTTP headers when fetching the ignition.
+   */
+  ignitionEndpointHttpHeaders?: IgnitionEndpointHttpHeadersParams[];
+  /**
    * Labels to be added to the corresponding node.
    */
   nodeLabels?: NodeLabelParams[];
@@ -1495,6 +1530,7 @@ export type HostValidationId =
   | 'odf-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
+  | 'mtv-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
@@ -1512,7 +1548,14 @@ export type HostValidationId =
   | 'compatible-agent'
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk'
-  | 'no-ip-collisions-in-network';
+  | 'no-ip-collisions-in-network'
+  | 'no-iscsi-nic-belongs-to-machine-cidr'
+  | 'node-feature-discovery-requirements-satisfied'
+  | 'nvidia-gpu-requirements-satisfied'
+  | 'pipelines-requirements-satisfied'
+  | 'servicemesh-requirements-satisfied'
+  | 'serverless-requirements-satisfied'
+  | 'openshift-ai-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1525,6 +1568,16 @@ export interface IgnitionEndpoint {
    * base64 encoded CA certficate to be used when contacting the URL via https.
    */
   caCertificate?: string;
+}
+export interface IgnitionEndpointHttpHeadersParams {
+  /**
+   * The key for the http header's key-value pair.
+   */
+  key: string;
+  /**
+   * The value for the http header's key-value pair.
+   */
+  value: string;
 }
 export interface IgnoredValidations {
   /**
@@ -1734,6 +1787,10 @@ export interface InfraEnvUpdateParams {
    * Allows users to change the additionalTrustBundle infra-env field
    */
   additionalTrustBundle?: string;
+  /**
+   * Version of the OS image
+   */
+  openshiftVersion?: string;
 }
 export interface InfraError {
   /**
@@ -1832,6 +1889,10 @@ export interface InstallCmdRequest {
    * If true, assisted service will attempt to skip MCO reboot
    */
   enableSkipMcoReboot?: boolean;
+  /**
+   * If true, notify number of reboots by assisted controller
+   */
+  notifyNumReboots?: boolean;
 }
 export interface InstallerArgsParams {
   /**
@@ -1877,6 +1938,12 @@ export interface IoPerf {
   syncDuration?: number;
 }
 export type Ip = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+export interface Iscsi {
+  /**
+   * Host IP address used to reach iSCSI target
+   */
+  hostIpAddress?: string;
+}
 /**
  * pair of [operation, argument] specifying the argument and what operation should be applied on it.
  */
@@ -2009,6 +2076,10 @@ export interface Manifest {
    * The file name prefaced by the folder that contains it.
    */
   fileName?: string;
+  /**
+   * Describes whether manifest is sourced from a user or created by the system.
+   */
+  manifestSource?: 'user' | 'system';
 }
 export interface Memory {
   physicalBytes?: number;
@@ -2111,7 +2182,7 @@ export interface OpenshiftVersion {
   /**
    * Level of support of the version.
    */
-  supportLevel: 'beta' | 'production' | 'maintenance';
+  supportLevel: 'beta' | 'production' | 'maintenance' | 'end-of-life';
   /**
    * Indication that the version is the recommended one.
    */
@@ -2292,6 +2363,10 @@ export interface RebootForReclaimRequest {
    */
   hostFsMountDir: string;
 }
+/**
+ * Release channel.
+ */
+export type ReleaseChannel = 'candidate' | 'fast' | 'stable' | 'eus';
 export interface ReleaseImage {
   /**
    * Version of the OpenShift cluster.
@@ -2320,9 +2395,20 @@ export interface ReleaseImage {
   /**
    * Level of support of the version.
    */
-  supportLevel?: 'beta' | 'production' | 'maintenance';
+  supportLevel?: 'beta' | 'production' | 'maintenance' | 'end-of-life';
 }
 export type ReleaseImages = ReleaseImage[];
+export interface ReleaseSource {
+  /**
+   * Version of the OpenShift cluster.
+   * example:
+   * 4.14
+   */
+  openshiftVersion: string;
+  multiCpuArchitectures: ('x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x')[];
+  upgradeChannels: UpgradeChannel[];
+}
+export type ReleaseSources = ReleaseSource[];
 export interface Route {
   /**
    * Interface to which packets for this route will be sent
@@ -2462,7 +2548,7 @@ export interface UpdateManifestParams {
   /**
    * The file name for the manifest to modify.
    */
-  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  fileName: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * The new folder for the manifest. Manifests can be placed in 'manifests' or 'openshift' directories.
    */
@@ -2470,7 +2556,7 @@ export interface UpdateManifestParams {
   /**
    * The new file name for the manifest.
    */
-  updatedFileName?: string; // ^[^/]*\.(yaml|yml|json)$
+  updatedFileName?: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * The new base64 encoded manifest content.
    */
@@ -2497,6 +2583,13 @@ export interface UpgradeAgentResponse {
  * Agent upgrade result.
  */
 export type UpgradeAgentResult = 'success' | 'failure';
+export interface UpgradeChannel {
+  /**
+   * The CPU architecture of the image.
+   */
+  cpuArchitecture: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  channels: ReleaseChannel[];
+}
 export interface Usage {
   /**
    * Unique idenftifier of the feature
@@ -2645,6 +2738,10 @@ export interface V2Events {
 export interface V2InfraEnvs {
   clusterId?: string;
   owner?: string;
+}
+export interface V2OpenshiftVersions {
+  version?: string;
+  onlyLatest?: boolean;
 }
 export interface V2SupportLevelsArchitectures {
   openshiftVersion: string;

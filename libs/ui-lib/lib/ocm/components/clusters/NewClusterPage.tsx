@@ -10,24 +10,30 @@ import ClusterLoading from './ClusterLoading';
 import { ClusterUiError } from './ClusterPageErrors';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
+import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
+import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
 
 const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactNode }) => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
-        <ClusterDefaultConfigurationProvider
-          loadingUI={<ClusterLoading />}
-          errorUI={<ClusterUiError />}
-        >
-          <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-            {pageTitleSection}
-            <PageSection variant={PageSectionVariants.light} isFilled>
-              <ClusterWizardContextProvider>
-                <NewClusterWizard />
-              </ClusterWizardContextProvider>
-            </PageSection>
-          </NewFeatureSupportLevelProvider>
-        </ClusterDefaultConfigurationProvider>
+        <ModalDialogsContextProvider>
+          <ClusterDefaultConfigurationProvider
+            loadingUI={<ClusterLoading />}
+            errorUI={<ClusterUiError />}
+          >
+            <OpenshiftVersionsContextProvider>
+              <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
+                {pageTitleSection}
+                <PageSection variant={PageSectionVariants.light} isFilled>
+                  <ClusterWizardContextProvider>
+                    <NewClusterWizard />
+                  </ClusterWizardContextProvider>
+                </PageSection>
+              </NewFeatureSupportLevelProvider>
+            </OpenshiftVersionsContextProvider>
+          </ClusterDefaultConfigurationProvider>
+        </ModalDialogsContextProvider>
       </SentryErrorMonitorContextProvider>
     </AlertsContextProvider>
   );

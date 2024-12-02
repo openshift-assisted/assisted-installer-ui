@@ -6,7 +6,6 @@ export { default as MultiSelectField } from './MultiSelectField';
 export { default as TextAreaSecretField } from './TextAreaSecretField';
 export { default as UploadField } from './UploadField';
 export { default as SwitchField } from './SwitchField';
-export { default as HelperText } from './HelperText';
 export { default as FormikAutoSave, useFormikAutoSave } from './FormikAutoSave';
 export { default as PullSecretField } from './PullSecretField';
 export { default as RadioField } from './RadioField';

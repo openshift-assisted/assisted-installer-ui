@@ -1,10 +1,8 @@
 import type { PayloadAction, SerializedError } from '@reduxjs/toolkit';
 import type { StateSliceWithMeta } from '../../types/state-slice';
 import type { FeatureListType } from '../../../../common/features/featureGate';
-import type { RootStateDay1 } from '../../store-day1';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../../../common/features/featureGate';
-import { externalFeaturesMappings } from '../../../config/external-features';
 import { currentUserAsyncActions } from '../current-user/slice';
 
 const featureFlagsAsyncActions = {
@@ -12,20 +10,6 @@ const featureFlagsAsyncActions = {
     'featureFlags/detectFeatures',
     async (featuresOverride: FeatureListType | null = null, thunkApi) => {
       await thunkApi.dispatch(currentUserAsyncActions.getCapabilitiesAsync());
-      const state = thunkApi.getState() as RootStateDay1;
-      for (const { featureId, capabilityId } of externalFeaturesMappings) {
-        const capability = state.currentUser.data?.organization?.capabilities?.find(
-          (capability) => capability.name === capabilityId,
-        );
-        if (capability) {
-          thunkApi.dispatch(
-            featureFlagsActions.setFeatureFlag({
-              featureId,
-              isEnabled: capability.value === 'true',
-            }),
-          );
-        }
-      }
       if (featuresOverride !== null) {
         for (const [k, v] of Object.entries(featuresOverride)) {
           thunkApi.dispatch(

@@ -1,7 +1,13 @@
 import React from 'react';
 import { useField, useFormikContext } from 'formik';
-import { Grid } from '@patternfly/react-core';
-import { CheckboxField, HelperText, PopoverIcon } from '../ui';
+import {
+  FormGroup,
+  FormHelperText,
+  Grid,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
+import { CheckboxField, PopoverIcon } from '../ui';
 import { TrustedCertificateFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -13,9 +19,17 @@ const FIELD_NAME = 'trustBundle';
 export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
   const { t } = useTranslation();
   return (
-    <HelperText fieldId={fieldId}>
-      {t('ai:Paste in 1 or more PEM formatted certificates that you want the cluster to trust.')}
-    </HelperText>
+    <FormGroup>
+      <FormHelperText>
+        <HelperText id={fieldId}>
+          <HelperTextItem>
+            {t(
+              'ai:Paste in 1 or more PEM formatted certificates that you want the cluster to trust.',
+            )}
+          </HelperTextItem>
+        </HelperText>
+      </FormHelperText>
+    </FormGroup>
   );
 };
 export const CertificateInputFields = () => {

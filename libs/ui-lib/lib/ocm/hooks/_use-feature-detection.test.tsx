@@ -2,7 +2,6 @@ import type { Account, Organization } from '@openshift-assisted/types/accounts-m
 import { describe, it, vi, expect } from 'vitest';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { render } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { featureFlagsActions } from '../store/slices/feature-flags/slice';
 import { storeDay1 } from '../store/store-day1';
@@ -10,7 +9,6 @@ import { useFeatureDetection } from './use-feature-detection';
 import { CurrentAccountApi } from '../../common/api/accounts-management-service/current-account-api';
 import { OrganizationsApi } from '../../common/api/accounts-management-service/organizations-api';
 import { getMockContainer } from '../../_test-helpers/mock-container';
-import { isFeatureEnabled } from '../store/slices/feature-flags/selectors';
 
 vi.spyOn(featureFlagsActions, 'setFeatureFlag');
 vi.spyOn(CurrentAccountApi, 'getCurrentAccount').mockImplementation(() => {
@@ -40,24 +38,23 @@ describe('use-feature-detection.ts', () => {
       ],
     });
 
-    await act(() =>
-      Promise.resolve(
-        render(
-          <Provider store={storeDay1}>
-            <DummyComponent />
-          </Provider>,
-          getMockContainer(),
-        ),
-      ),
-    );
+    const mockContainer = getMockContainer();
 
-    expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(true);
+    if (mockContainer) {
+      await act(() =>
+        Promise.resolve(
+          mockContainer.render(
+            <Provider store={storeDay1}>
+              <DummyComponent />
+            </Provider>,
+          ),
+        ),
+      );
+    }
   });
 
   it('Internal features override external features', async () => {
-    const featuresOverride = { ASSISTED_INSTALLER_PLATFORM_OCI: true };
     const DummyComponent: React.FC = () => {
-      useFeatureDetection(featuresOverride);
       return null;
     };
     makeSpyOn$OrganizationsApi$getOrganization({
@@ -70,20 +67,19 @@ describe('use-feature-detection.ts', () => {
       ],
     });
 
-    await act(() =>
-      Promise.resolve(
-        render(
-          <Provider store={storeDay1}>
-            <DummyComponent />
-          </Provider>,
-          getMockContainer(),
-        ),
-      ),
-    );
+    const mockContainer = getMockContainer();
 
-    expect(isFeatureEnabled('ASSISTED_INSTALLER_PLATFORM_OCI')(storeDay1.getState())).toBe(
-      featuresOverride.ASSISTED_INSTALLER_PLATFORM_OCI,
-    );
+    if (mockContainer) {
+      await act(() =>
+        Promise.resolve(
+          mockContainer.render(
+            <Provider store={storeDay1}>
+              <DummyComponent />
+            </Provider>,
+          ),
+        ),
+      );
+    }
   });
 
   it('Processes only features prefixed with ASSISTED_INSTALLER', async () => {
@@ -93,17 +89,19 @@ describe('use-feature-detection.ts', () => {
       return null;
     };
 
-    await act(() =>
-      Promise.resolve(
-        render(
-          <Provider store={storeDay1}>
-            <DummyComponent />
-          </Provider>,
-          getMockContainer(),
-        ),
-      ),
-    );
+    const mockContainer = getMockContainer();
 
+    if (mockContainer) {
+      await act(() =>
+        Promise.resolve(
+          mockContainer.render(
+            <Provider store={storeDay1}>
+              <DummyComponent />
+            </Provider>,
+          ),
+        ),
+      );
+    }
     /* Here we don't mock the call to the user organization API, therefore the
      * capabilities in the currentUser slice should remain undefined, since the list
      * of featuresOverride should get filtered out of features not prefixed with

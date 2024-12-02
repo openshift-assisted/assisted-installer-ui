@@ -174,6 +174,7 @@ const ClusterWizardContextProvider = ({
     };
 
     const onSetCurrentStepId = (stepId: ClusterWizardStepsType) => {
+      clearAlerts();
       if (isStaticIpStep(currentStepId) && !isStaticIpStep(stepId)) {
         handleMoveFromStaticIp();
       }

@@ -10,7 +10,10 @@ import {
   ListItem,
 } from '@patternfly/react-core';
 import { checkHostValidations, WizardStepsValidationMap } from './validationsInfoUtils';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  LastInstallationPreparation,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { ClusterWizardStepHostStatusDeterminationObject } from '../../types/hosts';
@@ -20,6 +23,7 @@ import {
 } from './validationsInfoUtils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { stringToJSON } from '../../utils';
+import { UISettingsValues } from '../../types';
 
 type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends string> = {
   currentStepId: ClusterWizardStepsType;
@@ -28,6 +32,8 @@ type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends strin
   hosts: ClusterWizardStepHostStatusDeterminationObject[];
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>;
   children?: React.ReactNode;
+  lastInstallationPreparation?: LastInstallationPreparation | undefined;
+  uiSettings?: UISettingsValues;
 };
 
 const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string>({
@@ -37,7 +43,13 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   hosts,
   wizardStepsValidationsMap,
   children,
+  lastInstallationPreparation,
+  uiSettings,
 }: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
+  const [showInstallAlert, setShowInstallAlert] = React.useState(
+    lastInstallationPreparation && lastInstallationPreparation.status === 'failed',
+  );
+
   const { failedClusterValidations, failedHostnameValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
       validationsInfo || {},
@@ -63,6 +75,15 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
       failedHostnameValidations: hostnameValidations,
     };
   }, [validationsInfo, currentStepId, wizardStepsValidationsMap, hosts]);
+
+  React.useEffect(() => {
+    if (
+      lastInstallationPreparation?.reason?.includes('manifest') &&
+      uiSettings?.customManifestsUpdated
+    ) {
+      setShowInstallAlert(false);
+    }
+  }, [lastInstallationPreparation, uiSettings]);
 
   const isClusterReady =
     getWizardStepClusterStatus(
@@ -107,6 +128,15 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
                   )}
                 </FlexItem>
               )}
+            </Flex>
+          </Alert>
+        </AlertGroup>
+      )}
+      {showInstallAlert && (
+        <AlertGroup>
+          <Alert variant={AlertVariant.danger} title="Error in preparing installation" isInline>
+            <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
+              <FlexItem>{lastInstallationPreparation?.reason}</FlexItem>
             </Flex>
           </Alert>
         </AlertGroup>

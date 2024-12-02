@@ -76,20 +76,20 @@ const getInitialValues = ({
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource, t: TFunction) => {
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
-  return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
-    return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
+  return Yup.lazy((values: ClusterDeploymentHostsSelectionValues) => {
+    return Yup.object<ClusterDeploymentHostsSelectionValues>({
       hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema(t),
       useMastersAsWorkers: Yup.boolean().required(t('ai:Required field')),
       autoSelectedHostIds: values.autoSelectHosts
-        ? Yup.array<string>().min(values.hostCount).max(values.hostCount)
-        : Yup.array<string>(),
+        ? Yup.array(Yup.string()).min(values.hostCount).max(values.hostCount)
+        : Yup.array(Yup.string()),
       selectedHostIds: values.autoSelectHosts
-        ? Yup.array<string>()
+        ? Yup.array(Yup.string())
         : isSNOCluster
-        ? Yup.array<string>()
+        ? Yup.array(Yup.string())
             .min(1, t('ai:Please select one host for the cluster.'))
             .max(1, t('ai:Please select one host for the cluster.')) // TODO(jtomasek): replace this with Yup.array().length() after updating Yup
-        : Yup.array<string>().min(3, t('ai:Please select at least 3 hosts for the cluster.')),
+        : Yup.array(Yup.string()).min(3, t('ai:Please select at least 3 hosts for the cluster.')),
     });
   });
 };
@@ -106,7 +106,10 @@ export const useHostsSelectionFormik = ({
   clusterDeployment,
   agentClusterInstall,
   t,
-}: UseHostsSelectionFormikArgs): [ClusterDeploymentHostsSelectionValues, Yup.Lazy] => {
+}: UseHostsSelectionFormikArgs): [
+  ClusterDeploymentHostsSelectionValues,
+  Yup.Lazy<Yup.AnyObject>,
+] => {
   const initialValues = React.useMemo(
     () => getInitialValues({ agents, clusterDeployment, agentClusterInstall }),
     [agentClusterInstall, agents, clusterDeployment],

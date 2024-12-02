@@ -9,14 +9,14 @@ import {
   PreviewSupportLevel,
   isPreviewSupportLevel,
 } from '../../../common/types';
-import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
+import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/docs_links';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { DetailItem } from '../../../common';
+import { DetailItem, UiIcon } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import useOpenshiftVersions from '../../hooks/useOpenshiftVersions';
+import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
 import { TFunction } from 'i18next';
 import {
   NewFeatureSupportLevelData,
@@ -86,13 +86,13 @@ export const LimitedSupportedCluster = ({
   <TextContent>
     {showVersionWarning && (
       <Text>
-        <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
+        <UiIcon size="sm" icon={<InfoCircleIcon color="var(--pf-v5-global--info-color--100)" />} />
         &nbsp;The installed OpenShift version is not production-ready
       </Text>
     )}
     {Object.keys(clusterFeatureSupportLevels).length > 0 && (
       <>
-        <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
+        <UiIcon size="sm" icon={<InfoCircleIcon color="var(--pf-v5-global--info-color--100)" />} />
         &nbsp;Your cluster will be subject to support limitations because it includes:
         <TextList>{getPreviewFeatureList(clusterFeatureSupportLevels)}</TextList>
       </>
@@ -141,7 +141,7 @@ export const getSupportLevelInfo = (
 const SupportLevel = ({ cluster }: SupportLevelProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
-  const { isSupportedOpenShiftVersion } = useOpenshiftVersions();
+  const { isSupportedOpenShiftVersion } = useOpenshiftVersionsContext();
 
   const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
     React.useMemo<SupportLevelMemo>(
@@ -166,7 +166,7 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
           />
         )
       }
-      classNameValue={'pf-u-mb-md'}
+      classNameValue={'pf-v5-u-mb-md'}
       testId="feature-support-levels"
     />
   );

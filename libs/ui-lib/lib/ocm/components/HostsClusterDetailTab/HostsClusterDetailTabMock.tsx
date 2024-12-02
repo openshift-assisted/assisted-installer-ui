@@ -6,7 +6,7 @@ import {
   Grid,
   PageSection,
   PageSectionVariants,
-  Title,
+  EmptyStateHeader,
 } from '@patternfly/react-core';
 import {
   OcmCpuArchitecture,
@@ -16,6 +16,7 @@ import {
 import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
+import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',
@@ -67,9 +68,7 @@ export const HostsClusterDetailTabMock = () => {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
         <EmptyState>
-          <Title headingLevel="h4" size="lg">
-            Mocked environment not detected
-          </Title>
+          <EmptyStateHeader titleText="Mocked environment not detected" headingLevel="h4" />
           <EmptyStateBody>You can only use this page on a mocked environment</EmptyStateBody>
         </EmptyState>
       </PageSection>
@@ -79,11 +78,13 @@ export const HostsClusterDetailTabMock = () => {
   return (
     <PageSection variant={PageSectionVariants.light} isFilled>
       {tabShown ? (
-        <HostsClusterDetailTab
-          cluster={getCluster(tabShown)}
-          allEnabledFeatures={STANDALONE_DEPLOYMENT_ENABLED_FEATURES}
-          isVisible
-        />
+        <OpenshiftVersionsContextProvider>
+          <HostsClusterDetailTab
+            cluster={getCluster(tabShown)}
+            allEnabledFeatures={STANDALONE_DEPLOYMENT_ENABLED_FEATURES}
+            isVisible
+          />
+        </OpenshiftVersionsContextProvider>
       ) : (
         <Grid hasGutter>
           <ToolbarButton variant={ButtonVariant.primary} onClick={() => onAddHosts('no-metrics')}>

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup } from '@patternfly/react-core';
+import { FormGroup } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   architectureData,

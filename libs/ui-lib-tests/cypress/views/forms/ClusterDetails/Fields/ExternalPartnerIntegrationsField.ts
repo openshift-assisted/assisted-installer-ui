@@ -21,7 +21,7 @@ export class ExternalPartnerIntegrationsField {
 
   static findDropdownToggle() {
     return ExternalPartnerIntegrationsField.findDropdown().find(
-      '[data-ouia-component-type="PF4/DropdownToggle"]',
+      '[data-ouia-component-type="PF5/DropdownToggle"]',
     );
   }
 
@@ -32,7 +32,7 @@ export class ExternalPartnerIntegrationsField {
   static findDropdownItems() {
     ExternalPartnerIntegrationsField.findDropdown().click();
     return ExternalPartnerIntegrationsField.findDropdown().find(
-      '.pf-c-dropdown__menu [role="menuitem"]',
+      '.pf-v5-c-dropdown__menu [role="menuitem"]',
     );
   }
 

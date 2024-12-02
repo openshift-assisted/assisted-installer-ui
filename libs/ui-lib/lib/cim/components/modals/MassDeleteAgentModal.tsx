@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Button, Flex, FlexItem, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Link } from 'react-router-dom-v5-compat';
-import { sortable } from '@patternfly/react-table';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
 import {
   getHostname,
@@ -35,7 +34,7 @@ const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const inventory = getInventory(host);
@@ -44,7 +43,9 @@ const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host
         ?.clusterDeploymentName?.name;
       return {
         title: (
-          <div className={assignedToCluster ? 'pf-u-color-200' : undefined}>{computedHostname}</div>
+          <div className={assignedToCluster ? 'pf-v5-u-color-200' : undefined}>
+            {computedHostname}
+          </div>
         ),
         props: { 'data-testid': 'hostname' },
         sortableValue: computedHostname,
@@ -66,7 +67,7 @@ const statusColumn = (
       props: {
         id: 'col-header-status',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);

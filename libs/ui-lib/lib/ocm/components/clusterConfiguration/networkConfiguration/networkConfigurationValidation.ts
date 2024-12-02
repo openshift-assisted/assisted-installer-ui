@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import {
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
-  getDefaultNetworkType,
   HostSubnets,
   isDualStack,
   isSNO,
@@ -14,6 +13,7 @@ import {
   IPV4_STACK,
   DUAL_STACK,
   vipArrayValidationSchema,
+  NETWORK_TYPE_OVN,
 } from '../../../../common';
 import {
   ApiVip,
@@ -42,11 +42,12 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType:
+      cluster.platform?.type === 'none' ||
       (cluster.apiVips && cluster.apiVips.length === 0 && isClusterManagedNetworkingUnsupported) ||
       isSNOCluster
         ? 'userManaged'
         : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
+    networkType: cluster.networkType || NETWORK_TYPE_OVN,
     machineNetworks: cluster.machineNetworks || [],
     stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
     clusterNetworks:
@@ -66,7 +67,7 @@ export const getNetworkConfigurationValidationSchema = (
   initialValues: NetworkConfigurationValues,
   hostSubnets: HostSubnets,
 ) =>
-  Yup.lazy<NetworkConfigurationValues>((values) =>
+  Yup.lazy((values: NetworkConfigurationValues) =>
     Yup.object<NetworkConfigurationValues>().shape({
       apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema<IngressVip>(
@@ -79,28 +80,30 @@ export const getNetworkConfigurationValidationSchema = (
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
           : machineNetworksValidationSchema.when('stackType', {
-              is: IPV4_STACK,
-              then: IPv4ValidationSchema,
-              otherwise:
-                values.machineNetworks &&
-                values.machineNetworks?.length >= 2 &&
-                dualStackValidationSchema('machine networks'),
+              is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+              then: () => machineNetworksValidationSchema.concat(IPv4ValidationSchema),
+              otherwise: () =>
+                values.machineNetworks && values.machineNetworks?.length >= 2
+                  ? machineNetworksValidationSchema.concat(
+                      dualStackValidationSchema('machine networks'),
+                    )
+                  : Yup.array(),
             }),
       clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
-        is: IPV4_STACK,
-        then: IPv4ValidationSchema,
-        otherwise:
-          values.clusterNetworks &&
-          values.clusterNetworks?.length >= 2 &&
-          dualStackValidationSchema('cluster network'),
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
+        otherwise: () =>
+          values.clusterNetworks && values.clusterNetworks?.length >= 2
+            ? clusterNetworksValidationSchema.concat(dualStackValidationSchema('cluster network'))
+            : Yup.array(),
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
-        is: IPV4_STACK,
-        then: IPv4ValidationSchema,
-        otherwise:
-          values.serviceNetworks &&
-          values.serviceNetworks?.length >= 2 &&
-          dualStackValidationSchema('service network'),
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
+        otherwise: () =>
+          values.serviceNetworks && values.serviceNetworks?.length >= 2
+            ? serviceNetworkValidationSchema.concat(dualStackValidationSchema('service network'))
+            : Yup.array(),
       }),
     }),
   );

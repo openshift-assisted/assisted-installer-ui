@@ -2,14 +2,12 @@ import React, { MouseEvent } from 'react';
 import {
   Button,
   ButtonVariant,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
   FormGroup,
   Split,
   SplitItem,
   Tooltip,
 } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import {
@@ -32,7 +30,6 @@ const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
 
 type ExternalPlatformDropdownProps = {
-  showOciOption: boolean;
   onChange: (selectedPlatform: PlatformType) => void;
   cpuArchitecture?: SupportedCpuArchitecture;
   featureSupportLevelData: NewFeatureSupportLevelMap | null;
@@ -70,13 +67,12 @@ const getDisabledReasonForExternalPlatform = (
 };
 
 const getExternalPlatformTypes = (
-  showOciOption: boolean,
   isSNO: boolean,
   newFeatureSupportLevelContext: NewFeatureSupportLevelData,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: SupportedCpuArchitecture,
 ): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => {
-  const platforms = ['none', 'nutanix', showOciOption && 'external', 'vsphere'] as PlatformType[];
+  const platforms = ['none', 'nutanix', 'external', 'vsphere'] as PlatformType[];
 
   return platforms.filter(Boolean).reduce(
     (a, platform) => ({
@@ -118,7 +114,6 @@ const getReasonForDropdownDisabled = (isSNO: boolean, labelCpuArch: string): str
 };
 
 export const ExternalPlatformDropdown = ({
-  showOciOption,
   onChange,
   cpuArchitecture,
   featureSupportLevelData,
@@ -143,7 +138,6 @@ export const ExternalPlatformDropdown = ({
   React.useEffect(() => {
     // Calculate updated externalPlatformTypes based on the dependencies
     const updatedExternalPlatformTypes = getExternalPlatformTypes(
-      showOciOption,
       isSNO,
       newFeatureSupportLevelContext,
       featureSupportLevelData,
@@ -228,10 +222,10 @@ export const ExternalPlatformDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val: boolean) => setOpen(val)}
+        onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
-        className="pf-u-w-100"
+        className="pf-v5-u-w-100"
         isDisabled={dropdownIsDisabled}
       >
         {externalPlatformTypes[field.value as PlatformType]?.label}
@@ -258,7 +252,7 @@ export const ExternalPlatformDropdown = ({
           dropdownItems={enabledItems}
           toggle={toggle}
           isOpen={isOpen}
-          className="pf-u-w-100"
+          className="pf-v5-u-w-100"
           onSelect={onSelect}
           disabled={dropdownIsDisabled}
         />

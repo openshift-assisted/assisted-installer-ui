@@ -12,54 +12,6 @@ import { FeatureSupportLevelData } from '../components/featureSupportLevels/Feat
 import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
 import buildManifest from '@openshift-assisted/ui-lib/package.json';
 
-export const getShortOpenshiftVersion = (ocpVersion?: string) =>
-  ocpVersion?.split('.').slice(0, 2).join('.');
-
-export const ASSISTED_INSTALLER_DOCUMENTATION_LINK =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/index';
-
-export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
-  'https://access.redhat.com/support/policy/updates/openshift#dates';
-export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${
-    getShortOpenshiftVersion(ocpVersion) || '4.13'
-  }/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal`;
-export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
-export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
-export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/assembly_installing-operators#proc_installing-openshift-data-foundation_assembly_installing-operators';
-export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
-
-export const getReportIssueLink = () =>
-  'https://issues.redhat.com/secure/CreateIssue!default.jspa?pid=12332330&issuetype=1&components=12370775';
-
-export const FEEDBACK_FORM_LINK =
-  'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
-
-export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offerings/techpreview';
-
-export const ENCRYPTING_DISK_DURING_INSTALLATION =
-  'https://docs.openshift.com/container-platform/4.7/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing';
-
-export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
-  `${ocpConsoleUrl}/k8s/cluster/nodes`;
-
-export const REDHAT_CONSOLE_OPENSHIFT = 'https://console.redhat.com/openshift';
-
-export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
-
-export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
-
-export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
-
-export const LVMS_LINK =
-  'https://docs.openshift.com/container-platform/4.12/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html';
-
-export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
-
-export const APPROVE_NODES_IN_CL_LINK =
-  'https://docs.openshift.com/container-platform/4.11/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic';
-
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
 
@@ -174,6 +126,14 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
   'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
   'mce-requirements-satisfied': t('ai:Multicluster engine requirements'),
+  'mtv-requirements-satisfied': t('ai:Migration toolkit for virtualization requirements'),
+  'no-iscsi-nic-belongs-to-machine-cidr': t('ai:iSCSI NIC belongs to machine CIDR'),
+  'node-feature-discovery-requirements-satisfied': t('ai:Node Feature Discovery requirements'),
+  'nvidia-gpu-requirements-satisfied': t('ai:NVIDIA GPU requirements'),
+  'pipelines-requirements-satisfied': t('ai:Pipelines requirements'),
+  'serverless-requirements-satisfied': t('ai:Serverless requirements'),
+  'servicemesh-requirements-satisfied': t('ai:Service Mesh requirements'),
+  'openshift-ai-requirements-satisfied': t('ai:OpenShift AI requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -222,6 +182,14 @@ export const hostValidationFailureHints = (
   'no-skip-missing-disk': '',
   'no-ip-collisions-in-network': '',
   'mce-requirements-satisfied': '',
+  'mtv-requirements-satisfied': '',
+  'no-iscsi-nic-belongs-to-machine-cidr': '',
+  'node-feature-discovery-requirements-satisfied': '',
+  'nvidia-gpu-requirements-satisfied': '',
+  'pipelines-requirements-satisfied': '',
+  'serverless-requirements-satisfied': '',
+  'servicemesh-requirements-satisfied': '',
+  'openshift-ai-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
@@ -315,6 +283,13 @@ export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_LVMS = 'lvms';
 export const OPERATOR_NAME_MCE = 'mce';
+export const OPERATOR_NAME_MTV = 'mtv';
+export const OPERATOR_NAME_NODE_FEATURE_DISCOVERY = 'node-feature-discovery';
+export const OPERATOR_NAME_NVIDIA_GPU = 'nvidia-gpu';
+export const OPERATOR_NAME_PIPELINES = 'pipelines';
+export const OPERATOR_NAME_SERVICEMESH = 'servicemesh';
+export const OPERATOR_NAME_SERVERLESS = 'serverless';
+export const OPERATOR_NAME_OPENSHIFT_AI = 'openshift-ai';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -323,6 +298,13 @@ const OperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_OPENSHIFT_AI,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -330,6 +312,13 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_OPENSHIFT_AI,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -365,26 +354,15 @@ export const operatorLabels = (
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
     [OPERATOR_NAME_MCE]: t('ai:Multicluster engine'),
+    [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: t('ai:Node Feature Discovery'),
+    [OPERATOR_NAME_NVIDIA_GPU]: t('ai:NVIDIA GPU'),
+    [OPERATOR_NAME_PIPELINES]: t('ai:Pipelines'),
+    [OPERATOR_NAME_SERVICEMESH]: t('ai:Service Mesh'),
+    [OPERATOR_NAME_SERVERLESS]: t('ai:Serverless'),
+    [OPERATOR_NAME_OPENSHIFT_AI]: t('ai:OpenShift AI'),
   };
 };
 
-export const getOCPStaticIPDocLink = (docVersion = '2.8') =>
-  `https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#on-prem-creating-your-cluster-with-the-cli-nmstateconfig`;
-
 export const AI_UI_TAG = 'ui_ocm';
 
-export const OCP_RELEASES_PAGE = 'openshift/releases';
-
-export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944';
-
-export const CHANGE_ISO_PASSWORD_FILE_LINK =
-  'https://raw.githubusercontent.com/openshift/assisted-service/master/docs/change-iso-password.sh';
-
-export const CUSTOM_MANIFESTS_HELP_LINK =
-  'https://docs.openshift.com/container-platform/4.12/installing/install_config/installing-customizing.html';
-
-export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS =
-  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html-single/assisted_installer_for_openshift_container_platform/index#checking-for-multiple-architectures_expanding-the-cluster';
-
-export const MCE_LINK =
-  'https://docs.openshift.com/container-platform/4.14/architecture/mce-overview-ocp.html';
+export const AI_ASSISTED_MIGRATION_TAG = 'assisted_migration';

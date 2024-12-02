@@ -63,6 +63,8 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   useOdfLogicalVolumeManager: boolean;
   useContainerNativeVirtualization: boolean;
   useMultiClusterEngine: boolean;
+  useMigrationToolkitforVirtualization: boolean;
+  useOpenShiftAI: boolean;
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;

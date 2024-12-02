@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import {
   getFieldId,
@@ -34,12 +34,14 @@ const OdfLabel = ({ disabledReason }: { disabledReason?: string }) => (
 
 const OdfHelperText = () => {
   return (
-    <>
-      Persistent software-defined storage for hybrid applications.{' '}
-      <a href={ODF_LINK} target="_blank" rel="noopener noreferrer">
-        {'Learn more'} <ExternalLinkAltIcon />
-      </a>
-    </>
+    <HelperText>
+      <HelperTextItem variant="indeterminate">
+        Persistent software-defined storage for hybrid applications.{' '}
+        <a href={ODF_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
+      </HelperTextItem>
+    </HelperText>
   );
 };
 

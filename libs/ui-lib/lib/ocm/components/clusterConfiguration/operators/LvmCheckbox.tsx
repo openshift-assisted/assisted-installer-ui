@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import {
   ClusterOperatorProps,
@@ -10,8 +10,8 @@ import {
   OPERATOR_NAME_LVM,
   ExposedOperatorName,
   ExternalLink,
-  LVMS_LINK,
   OPERATOR_NAME_LVMS,
+  getLvmsDocsLink,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
@@ -32,14 +32,22 @@ type LvmLabelProps = ClusterOperatorProps & {
   supportLevel?: SupportLevel;
 };
 
-const LvmHelperText = ({ operatorName }: { operatorName: ExposedOperatorName }) => {
+const LvmHelperText = ({
+  operatorName,
+  docsVersion,
+}: {
+  operatorName: ExposedOperatorName;
+  docsVersion: string;
+}) => {
   return (
-    <>
-      Storage virtualization that offers a more flexible approach for disk space management.{' '}
-      {operatorName === OPERATOR_NAME_LVMS && (
-        <ExternalLink href={LVMS_LINK}>Learn more</ExternalLink>
-      )}
-    </>
+    <HelperText>
+      <HelperTextItem variant="indeterminate">
+        Storage virtualization that offers a more flexible approach for disk space management.{' '}
+        {operatorName === OPERATOR_NAME_LVMS && (
+          <ExternalLink href={getLvmsDocsLink(docsVersion)}>Learn more</ExternalLink>
+        )}
+      </HelperTextItem>
+    </HelperText>
   );
 };
 
@@ -59,7 +67,13 @@ const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: Lv
   );
 };
 
-const LvmCheckbox = ({ clusterId }: ClusterOperatorProps) => {
+const LvmCheckbox = ({
+  clusterId,
+  openshiftVersion,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  openshiftVersion?: ClusterOperatorProps['openshiftVersion'];
+}) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
@@ -101,7 +115,12 @@ const LvmCheckbox = ({ clusterId }: ClusterOperatorProps) => {
             supportLevel={featureSupportLevel.getFeatureSupportLevel('LVM')}
           />
         }
-        helperText={<LvmHelperText operatorName={operatorInfo.operatorName} />}
+        helperText={
+          <LvmHelperText
+            operatorName={operatorInfo.operatorName}
+            docsVersion={openshiftVersion || ''}
+          />
+        }
         isDisabled={!!disabledReason}
       />
     </FormGroup>

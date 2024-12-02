@@ -16,14 +16,14 @@ export type PreviewBadgeProps = {
   className?: string;
   text: string;
   externalLink?: string;
-  popoverText: string;
+  popoverContent: React.ReactNode;
 } & WithTestID;
 
 export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   position = PreviewBadgePosition.inline,
-  className = 'pf-u-ml-md',
+  className = 'pf-v5-u-ml-md',
   text,
-  popoverText,
+  popoverContent,
   externalLink,
   testId,
 }) => {
@@ -31,15 +31,15 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   const { t } = useTranslation();
   switch (position) {
     case PreviewBadgePosition.inlineRight:
-      clsName += ' pf-u-float-right';
+      clsName += ' pf-v5-u-float-right';
       break;
     case PreviewBadgePosition.inline:
-      clsName += ' pf-u-display-inline';
+      clsName += ' pf-v5-u-display-inline';
       break;
   }
   const bodyContent = (
     <>
-      <div style={{ marginBottom: 'var(--pf-global--spacer--sm)' }}>{popoverText}</div>
+      <div style={{ marginBottom: 'var(--pf-v5-global--spacer--sm)' }}>{popoverContent}</div>
       {externalLink && (
         <>
           <ExternalLink href={externalLink}>{t('ai:Learn more')}</ExternalLink>
@@ -53,7 +53,7 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
         <Label
           style={{ cursor: 'pointer' }}
           color="orange"
-          icon={<InfoCircleIcon color="var(--pf-c-label__content--Color)" />}
+          icon={<InfoCircleIcon color="var(--pf-v5-c-label__content--Color)" />}
           className={clsName}
           {...(testId ? { 'data-testid': testId } : {})}
         >

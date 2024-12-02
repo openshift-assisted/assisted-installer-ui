@@ -4,20 +4,18 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarContent,
-  ToolbarFilter,
   InputGroup,
-  Select,
-  SelectOption,
   TextInput,
   ToolbarProps,
   ToolbarFilterProps,
-  SelectProps,
   TextInputProps,
   ButtonVariant,
   Spinner,
   ToolbarGroup,
   Tooltip,
+  InputGroupItem,
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectProps } from '@patternfly/react-core/deprecated';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
@@ -29,6 +27,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useDispatchDay1, useSelectorDay1 } from '../../store';
 import { selectClustersUIState } from '../../store/slices/clusters/selectors';
+import { CustomToolbarFilter } from '../../../common/components/ui/CustomToolbarFilter';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from clusterStatusLabels
@@ -36,7 +35,7 @@ export type ClusterFiltersType = {
 
 type ClustersListToolbarProps = {
   searchString: string;
-  setSearchString: (value: string) => void;
+  setSearchString: TextInputProps['onChange'];
   filters: ClusterFiltersType;
   setFilters: (filters: ClusterFiltersType) => void;
 };
@@ -103,6 +102,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     </>
   );
   const { t } = useTranslation();
+
   return (
     <Toolbar
       id="clusters-list-toolbar"
@@ -113,19 +113,21 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
       <ToolbarContent>
         <ToolbarItem>
           <InputGroup>
-            <TextInput
-              name="search-string"
-              id="search-string"
-              type="search"
-              aria-label="string to be searched in cluster names or ids"
-              onChange={onSearchNameChanged}
-              value={searchString}
-              placeholder="Filter by Name, ID or Base domain"
-              title="Filter by Name, ID or Base domain"
-            />
+            <InputGroupItem isFill>
+              <TextInput
+                name="search-string"
+                id="search-string"
+                type="search"
+                aria-label="string to be searched in cluster names or ids"
+                onChange={onSearchNameChanged}
+                value={searchString}
+                placeholder="Filter by Name, ID or Base domain"
+                title="Filter by Name, ID or Base domain"
+              />
+            </InputGroupItem>
           </InputGroup>
         </ToolbarItem>
-        <ToolbarFilter
+        <CustomToolbarFilter
           chips={filters.status}
           deleteChip={onDeleteChip}
           deleteChipGroup={onDeleteChipGroup}
@@ -149,7 +151,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
               />
             ))}
           </Select>
-        </ToolbarFilter>
+        </CustomToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
           onClick={() => navigate(`~new`)}
@@ -159,7 +161,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
           Create Cluster
         </ToolbarButton>
         {clustersUIState === ResourceUIState.RELOADING && <Spinner size="lg" />}
-        <ToolbarGroup alignment={{ lg: 'alignRight' }}>
+        <ToolbarGroup align={{ lg: 'alignRight' }}>
           <ToolbarButton
             variant={ButtonVariant.plain}
             onClick={() => fetchClusters()}

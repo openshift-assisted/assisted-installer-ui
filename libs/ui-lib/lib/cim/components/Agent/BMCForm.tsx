@@ -67,20 +67,15 @@ const getFieldError = (errors: FormikErrors<MacMappingFieldProps>, fieldName: st
 };
 
 const MacMapping = () => {
-  const [field, { touched, error }] = useField<MacMappingFieldProps>({
+  const [field] = useField<MacMappingFieldProps>({
     name: 'macMapping',
   });
   const { errors } = useFormikContext<MacMappingFieldProps>();
   const fieldId = getFieldId('macMapping', 'input');
-  const isValid = !(touched && error);
   const { t } = useTranslation();
 
   return (
-    <FormGroup
-      fieldId={fieldId}
-      label={t('ai:MAC to interface name mapping')}
-      validated={isValid ? 'default' : 'error'}
-    >
+    <FormGroup fieldId={fieldId} label={t('ai:MAC to interface name mapping')}>
       <FieldArray
         name="macMapping"
         render={({ push, remove }) => (
@@ -161,13 +156,13 @@ const getValidationSchema = (usedHostnames: string[], origHostname: string, t: T
     macMapping: Yup.array().of(
       Yup.object().shape(
         {
-          macAddress: macAddressValidationSchema.when(['name'], {
-            is: (name) => !!name,
-            then: macAddressValidationSchema.required(t('ai:MAC has to be specified')),
+          macAddress: macAddressValidationSchema.when('name', {
+            is: (name: string) => !!name,
+            then: () => macAddressValidationSchema.required(t('ai:MAC has to be specified')),
           }),
-          name: Yup.string().when(['macAddress'], {
-            is: (macAddress) => !!macAddress,
-            then: Yup.string().required(t('ai:Name has to be specified')),
+          name: Yup.string().when('macAddress', {
+            is: (name: string) => !!name,
+            then: () => Yup.string().required(t('ai:Name has to be specified')),
           }),
         },
         [['name', 'macAddress']],

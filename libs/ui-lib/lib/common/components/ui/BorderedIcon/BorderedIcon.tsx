@@ -1,31 +1,31 @@
 import React from 'react';
+import { IconComponentProps } from '@patternfly/react-core';
 import { DownloadIcon } from '@patternfly/react-icons/dist/js/icons/download-icon';
-import { IconSize } from '@patternfly/react-icons/dist/js/createIcon';
 
-export const getPadding = (size: IconSize | keyof typeof IconSize) => {
+export const getPadding = (size: IconComponentProps['size']) => {
   switch (size) {
-    case IconSize.sm:
+    case 'sm':
       return '0.3em';
-    case IconSize.md:
+    case 'md':
       return '1.5em';
-    case IconSize.lg:
+    case 'lg':
       return '2em';
-    case IconSize.xl:
+    case 'xl':
       return '3em';
     default:
       return '1em';
   }
 };
 
-export const getVerticalAlign = (size: IconSize | keyof typeof IconSize) => {
+export const getVerticalAlign = (size: IconComponentProps['size']) => {
   switch (size) {
-    case IconSize.sm:
+    case 'sm':
       return '-0.3em';
-    case IconSize.md:
+    case 'md':
       return '-1.5em';
-    case IconSize.lg:
+    case 'lg':
       return '-2em';
-    case IconSize.xl:
+    case 'xl':
       return '-3em';
     default:
       return '-1em';
@@ -34,10 +34,10 @@ export const getVerticalAlign = (size: IconSize | keyof typeof IconSize) => {
 
 type BorderedIconProps = {
   children: React.ReactElement<React.ComponentProps<typeof DownloadIcon>>;
-  iconSize?: IconSize;
+  iconSize?: IconComponentProps['size'];
 };
 
-const BorderedIcon = ({ children, iconSize = IconSize.sm }: BorderedIconProps) => {
+const BorderedIcon = ({ children, iconSize = 'sm' }: BorderedIconProps) => {
   const style: React.CSSProperties = {
     padding: `${getPadding(iconSize)}`,
     borderRadius: '50%',

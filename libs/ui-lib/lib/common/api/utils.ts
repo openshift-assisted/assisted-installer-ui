@@ -18,7 +18,7 @@ type OnError = (arg0: unknown) => void;
 
 export const handleApiError = (error: unknown, onError?: OnError): void => {
   if (Axios.isCancel(error)) {
-    captureException(error, 'Request canceled', Sentry.Severity.Info);
+    captureException(error, 'Request canceled');
   } else if (isApiError(error)) {
     const config = error.config || { url: '', method: '' };
     let message = `URL: ${JSON.stringify(config.url, null, 1)}\n`;
@@ -102,10 +102,9 @@ export const captureException = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   message?: string,
-  severity: Sentry.Severity = Sentry.Severity.Error,
 ) => {
   if (isInOcm) {
-    message && Sentry.captureMessage(message, severity);
+    message && Sentry.captureMessage(message);
     Sentry.captureException(error);
   } else {
     // severity === Sentry.Severity.Error

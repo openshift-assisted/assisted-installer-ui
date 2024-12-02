@@ -363,10 +363,9 @@ const addCustomManifestsIntercepts = () => {
 };
 
 const addPlatformFeatureIntercepts = () => {
-  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions', (req) => {
+  cy.intercept('GET', '/api/assisted-install/v2/openshift-versions*', (req) => {
     req.reply({
       body: fixtures.openShiftVersions,
-      delay: Cypress.env('OPENSHIFT_VERSIONS_DELAY') ? 3 * 1000 : 0,
     });
   }).as('openshift-versions');
 

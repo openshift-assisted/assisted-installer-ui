@@ -30,12 +30,14 @@ export interface DiskEncryptionControlGroupProps {
   values: DiskEncryptionValues;
   isSNO: boolean;
   isDisabled?: boolean;
+  docVersion?: string;
 }
 
 const DiskEncryptionControlGroup = ({
   values,
   isSNO = false,
   isDisabled = false,
+  docVersion,
 }: DiskEncryptionControlGroupProps) => {
   const {
     enableDiskEncryptionOnMasters,
@@ -108,6 +110,7 @@ const DiskEncryptionControlGroup = ({
               diskEncryptionMode={diskEncryptionMode}
               isDisabled={isDisabled}
               tooltipProps={tooltipProps}
+              docVersion={docVersion || ''}
             />
           </StackItem>
         </RenderIf>

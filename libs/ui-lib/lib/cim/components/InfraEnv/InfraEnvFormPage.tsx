@@ -73,7 +73,7 @@ export type EnvironmentStepFormValues = {
 };
 
 const validationSchema = (usedNames: string[], t: TFunction) =>
-  Yup.lazy<EnvironmentStepFormValues>((values) =>
+  Yup.lazy((values: EnvironmentStepFormValues) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: richNameValidationSchema(t, usedNames),
       location: locationValidationSchema(t).required(t('ai:Location is a required field.')),
@@ -95,8 +95,8 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
         .test(
           'label-equals-validation',
           'Label selector needs to be in a `key=value` form',
-          (values: string[]) =>
-            values.every((value) => {
+          (values) =>
+            (values as string[]).every((value) => {
               const parts = value.split('=');
               return parts.length === 2;
             }),
@@ -353,7 +353,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={submitForm}
                 >
-                  {t('ai:Create')} {isSubmitting && <Spinner isSVG size="md" />}
+                  {t('ai:Create')} {isSubmitting && <Spinner size="md" />}
                 </Button>
                 <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
                   {t('ai:Cancel')}

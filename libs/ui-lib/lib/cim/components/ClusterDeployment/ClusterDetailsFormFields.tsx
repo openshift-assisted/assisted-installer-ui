@@ -104,7 +104,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       ) : (
         <OpenShiftVersionSelect
           versions={versions}
-          onChange={(value) => {
+          onChange={(_event, value) => {
             const ocpVersion = versions.find((v) => v.value === value);
             setFieldValue('networkType', getNetworkType(ocpVersion));
           }}

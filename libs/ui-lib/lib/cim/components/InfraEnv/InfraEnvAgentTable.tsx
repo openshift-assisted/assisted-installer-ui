@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Button, DropdownItem, Stack, StackItem } from '@patternfly/react-core';
+import { Button, Stack, StackItem } from '@patternfly/react-core';
+import { DropdownItem } from '@patternfly/react-core/deprecated';
 import noop from 'lodash-es/noop.js';
 
 import { Host } from '@openshift-assisted/types/assisted-installer-service';

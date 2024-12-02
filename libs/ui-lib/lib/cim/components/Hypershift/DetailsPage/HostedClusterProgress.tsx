@@ -7,12 +7,12 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { HostedClusterK8sResource } from '../types';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { ExternalLink } from '../../../../common';
+import { ExternalLink, UiIcon } from '../../../../common';
 import ConditionsTable from './ConditionsTable';
 
 type HostedClusterProgressProps = {
@@ -36,7 +36,7 @@ const HostedClusterProgress = ({ hostedCluster, launchToOCP }: HostedClusterProg
       availableCondtion?.status === 'True' ? (
         <CheckCircleIcon color={okColor.value} />
       ) : (
-        <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+        <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />
       );
   }
 

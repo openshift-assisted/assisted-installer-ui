@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle, FormGroup, Tooltip } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { architectureData, getFieldId, SupportedCpuArchitecture } from '../../../common';

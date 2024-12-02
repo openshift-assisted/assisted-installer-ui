@@ -113,7 +113,7 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       staticIpPage.dualStackNetworking().click();
 
       testIpv4AndIpv6Addresses.forEach((dnsEntry) => {
-        staticIpPage.networkWideDns().type(dnsEntry);
+        staticIpPage.networkWideDns().clear().type(dnsEntry);
         commonActions.getDNSErrorMessage().should('not.exist');
         staticIpPage.networkWideDns().clear();
       });

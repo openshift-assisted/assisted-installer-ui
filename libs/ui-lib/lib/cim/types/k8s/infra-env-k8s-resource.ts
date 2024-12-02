@@ -25,7 +25,6 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
     additionalNTPSources?: string[];
     cpuArchitecture?: 'x86_64' | 'arm64' | 's390x';
     osImageVersion?: string;
-    imageType?: 'full-iso' | 'minimal-iso';
   };
   status?: {
     agentLabelSelector?: Selector;

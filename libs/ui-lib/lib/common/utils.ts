@@ -4,10 +4,11 @@ import isString from 'lodash-es/isString.js';
 import { loadAll } from 'js-yaml';
 import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_OFFSET_FACTOR } from './configurations';
 
-export const FILENAME_REGEX = /^[^\/]*\.(yaml|yml|json)$/;
+export const FILENAME_REGEX = /^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$/;
+
 export const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
 export const INCORRECT_TYPE_FILE_MESSAGE =
-  'File type is not supported. File type must be yaml, yml or json.';
+  'File type is not supported. File type must be yaml, yml ,json , yaml.patch. or yml.patch.';
 
 export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {

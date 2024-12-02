@@ -32,6 +32,7 @@ const ValidationSection = ({
 }: ClusterValidationSectionProps) => {
   const { currentStepId } = useClusterWizardContext();
   const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
+  const { uiSettings } = useClusterWizardContext();
   const { t } = useTranslation();
 
   let _alertContent = alertContent;
@@ -54,6 +55,8 @@ const ValidationSection = ({
           hosts={cluster?.hosts || []}
           validationsInfo={validationsInfo}
           wizardStepsValidationsMap={wizardStepsValidationsMap}
+          lastInstallationPreparation={cluster['last-installation-preparation']}
+          uiSettings={uiSettings}
         />
       )}
     </AlertGroup>
@@ -80,7 +83,7 @@ const ClusterWizardFooter = ({
   const { alerts } = useAlerts();
   const navigate = useNavigate();
 
-  const handleCancel = React.useCallback(() => navigate('..'), [navigate]);
+  const handleCancel = React.useCallback(() => navigate('/cluster-list'), [navigate]);
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
 

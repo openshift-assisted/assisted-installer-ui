@@ -22,6 +22,7 @@ describe('Create a new cluster with external partner integrations', () => {
     });
 
     it('Should display correct items in the external platform integration dropdown', () => {
+      cy.wait(1000);
       ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItems().each((item) => {
         // Get the expected values from the externalPlatformTypes object
         const platformType = item.parent().attr('id');

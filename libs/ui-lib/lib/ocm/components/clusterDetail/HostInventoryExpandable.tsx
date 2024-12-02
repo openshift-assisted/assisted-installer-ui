@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { hostStatus } from '../../../common';
+import { UiIcon, hostStatus } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
-import { getMostSevereHostStatus } from './utils';
+import { getHostsWithTimeout, getMostSevereHostStatus } from './utils';
 import { ExpandableSection } from '@patternfly/react-core';
 import './HostInventoryExpandable.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 type HostInventoryExpandableProps = {
   cluster: Cluster;
@@ -20,7 +21,7 @@ const ExpandableSectionTitle = ({
 }) => (
   <span>
     {`Host inventory ${hostsCount > 0 ? `(${hostsCount})` : ''}`}
-    {icon && <span className="pf-u-ml-sm">{icon}</span>}
+    {icon && <span className="pf-v5-u-ml-sm">{icon}</span>}
   </span>
 );
 
@@ -31,11 +32,15 @@ const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
   const hostStatusDef = mostSevereHostStatus ? hostStatus(t)[mostSevereHostStatus] : null;
-
+  const someHostHasTimeout = getHostsWithTimeout(hosts);
+  const warningIcon = <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />;
   return (
     <ExpandableSection
       toggleContent={
-        <ExpandableSectionTitle hostsCount={hosts.length} icon={hostStatusDef?.icon} />
+        <ExpandableSectionTitle
+          hostsCount={hosts.length}
+          icon={someHostHasTimeout ? warningIcon : hostStatusDef?.icon}
+        />
       }
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}

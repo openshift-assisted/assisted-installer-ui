@@ -1,8 +1,6 @@
 import * as Yup from 'yup';
 
 import {
-  FormViewHost,
-  HostIps,
   FormViewNetworkWideValues,
   FormViewHostsValues,
   ProtocolVersion,
@@ -28,14 +26,30 @@ const getAllIpv6Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
 
 const getAllMacAddresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
   values: FormViewHostsValues,
-) => values.hosts.map((host) => host.macAddress);
+) => {
+  return values.hosts.map((host) => host.macAddress);
+};
+
+const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
+  values: FormViewHostsValues,
+) => {
+  return values.hosts.flatMap((host) => [
+    host.bondPrimaryInterface.toLowerCase(),
+    host.bondSecondaryInterface.toLowerCase(),
+  ]);
+};
 
 const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
-  Yup.object().shape<FormViewHost>({
-    macAddress: macAddressValidationSchema
-      .required(requiredMsg)
-      .concat(getUniqueValidationSchema(getAllMacAddresses)),
-    ips: Yup.object().shape<HostIps>({
+  Yup.object({
+    macAddress: Yup.mixed().when('useBond', {
+      is: false,
+      then: () =>
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllMacAddresses)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
+    ips: Yup.object({
       ipv4: showIpv4(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
             ProtocolVersion.ipv4,
@@ -65,10 +79,26 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
             )
         : Yup.string(),
     }),
+    bondPrimaryInterface: Yup.mixed().when('useBond', {
+      is: true,
+      then: () =>
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllBondInterfaces)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
+    bondSecondaryInterface: Yup.mixed().when('useBond', {
+      is: true,
+      then: () =>
+        macAddressValidationSchema
+          .required(requiredMsg)
+          .concat(getUniqueValidationSchema(getAllBondInterfaces)),
+      otherwise: () => Yup.mixed().notRequired(),
+    }),
   });
 
 export const getFormViewHostsValidationSchema = (networkWideValues: FormViewNetworkWideValues) => {
   return Yup.object().shape({
-    hosts: Yup.array<FormViewHost>().of(getHostValidationSchema(networkWideValues)),
+    hosts: Yup.array(getHostValidationSchema(networkWideValues)),
   });
 };

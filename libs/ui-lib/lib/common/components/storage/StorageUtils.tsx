@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
-import { getHostRole, getInventory, RoleCell } from '../../index';
+import { getHostRole, getInventory, RoleCell, UiIcon } from '../../index';
 import { TableRow } from '../hosts/AITable';
 import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const SkipFormattingDisks = () => (
@@ -21,7 +19,7 @@ export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<
       props: {
         id: 'col-header-role',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const hostRole = getHostRole(host, t, schedulableMasters);
@@ -40,7 +38,7 @@ export const numberOfDisksColumn: TableRow<Host> = {
     props: {
       id: 'col-header-num-disks',
     },
-    transforms: [sortable],
+    sort: true,
   },
   cell: (host) => {
     const inventory = getInventory(host);
@@ -53,7 +51,7 @@ export const numberOfDisksColumn: TableRow<Host> = {
           {'   '}
           {host.skipFormattingDisks && (
             <Popover bodyContent={<SkipFormattingDisks />} minWidth="20rem" maxWidth="30rem">
-              <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+              <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
             </Popover>
           )}
         </>
@@ -71,14 +69,14 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
       props: {
         id: 'col-header-odf',
       },
-      transforms: [sortable],
+      sort: true,
     },
     cell: (host) => {
       const isMaster = host.role === 'master' || host.suggestedRole === 'master';
       const isExcluded = excludeMasters && isMaster;
       return {
         title: isExcluded ? (
-          <div style={{ color: 'var(--pf-global--disabled-color--100)' }}>Excluded for ODF</div>
+          <div style={{ color: 'var(--pf-v5-global--disabled-color--100)' }}>Excluded for ODF</div>
         ) : (
           'Use ODF'
         ),

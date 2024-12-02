@@ -11,6 +11,9 @@ import {
   Flex,
   FlexItem,
   ButtonVariant,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
 } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import {
@@ -45,6 +48,7 @@ import {
 import { OcmCheckboxField, OcmInputField, OcmRadioField } from '../../../../ui/OcmFormFields';
 
 import '../staticIp.css';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const hostsConfiguredAlert = (
   <Alert
@@ -72,17 +76,15 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
     const cidr = getMachineNetworkCidr(value);
     return getHumanizedSubnetRange(getAddressObject(cidr, protocolVersion));
   }, [value, protocolVersion, errorMessage]);
+  const fieldId = getFieldId(`${fieldName}`, 'input');
   return (
     <FormGroup
       labelIcon={
         <PopoverIcon noVerticalAlign bodyContent="The range of IP addresses of the hosts." />
       }
       label="Machine network"
-      fieldId={getFieldId(`${fieldName}`, 'input')}
+      fieldId={fieldId}
       isRequired
-      helperTextInvalid={errorMessage}
-      validated={errorMessage ? 'error' : 'default'}
-      helperText={machineNetworkHelptext}
       className="machine-network"
     >
       <Flex>
@@ -111,6 +113,19 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
           />
         </FlexItem>
       </Flex>
+      {(errorMessage || machineNetworkHelptext) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={errorMessage ? <ExclamationCircleIcon /> : null}
+              variant={errorMessage ? 'error' : 'default'}
+              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+            >
+              {errorMessage ? errorMessage : machineNetworkHelptext}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

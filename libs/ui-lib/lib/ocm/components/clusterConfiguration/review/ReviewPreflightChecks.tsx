@@ -14,12 +14,15 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
 import { global_info_color_100 as infoColor } from '@patternfly/react-tokens/dist/js/global_info_color_100';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
-
-import { ClusterValidations, DetailItem, DetailList, HostsValidations } from '../../../../common';
+import {
+  ClusterValidations,
+  DetailItem,
+  DetailList,
+  HostsValidations,
+  UiIcon,
+} from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
-import { useOpenshiftVersions } from '../../../hooks';
+import { useOpenshiftVersionsContext } from '../../clusterWizard/OpenshiftVersionsContext';
 import { wizardStepNames } from '../../clusterWizard/constants';
 import {
   ClusterWizardStepsType,
@@ -54,7 +57,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        classNameValue={'pf-u-mb-md'}
+        classNameValue={'pf-v5-u-mb-md'}
         testId="cluster-preflight-checks"
       />
       <DetailItem
@@ -68,7 +71,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        classNameValue={'pf-u-mb-md'}
+        classNameValue={'pf-v5-u-mb-md'}
         testId="host-preflight-checks"
       />
       <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
@@ -103,19 +106,19 @@ const PreflightCheckInfo = ({
 
 const getCheckIcon = (validationStatuses: string[]) => {
   if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
-    return <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+    return <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
   } else if (validationStatuses.includes('warning')) {
-    return <ExclamationTriangleIcon color={warningColor.value} />;
+    return <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
   } else if (validationStatuses.includes('pending')) {
-    return <InfoCircleIcon size="sm" color={infoColor.value} />;
+    return <UiIcon status="info" icon={<InfoCircleIcon />} />;
   }
-  return <CheckCircleIcon color={okColor.value} />;
+  return <UiIcon status="warning" icon={<CheckCircleIcon color={okColor.value} />} />;
 };
 
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
-  const { isSupportedOpenShiftVersion } = useOpenshiftVersions();
+  const { isSupportedOpenShiftVersion } = useOpenshiftVersionsContext();
 
   const { isFullySupported } = React.useMemo<SupportLevelMemo>(
     () => getSupportLevelInfo(cluster, featureSupportLevelData, isSupportedOpenShiftVersion, t),
@@ -125,7 +128,7 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   const supportLevelIcon = isFullySupported ? (
     <CheckCircleIcon color={okColor.value} />
   ) : (
-    <InfoCircleIcon size="sm" color={infoColor.value} />
+    <InfoCircleIcon color={infoColor.value} />
   );
 
   const clusterValidations = React.useMemo(

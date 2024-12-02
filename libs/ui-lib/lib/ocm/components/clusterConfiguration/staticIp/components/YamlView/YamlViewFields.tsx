@@ -34,6 +34,8 @@ const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => 
       mappingValue={mapValue}
       hostIdx={hostIdx}
       hasError={hasError}
+      bondPrimaryInterface=""
+      bondSecondaryInterface=""
     />
   );
 };

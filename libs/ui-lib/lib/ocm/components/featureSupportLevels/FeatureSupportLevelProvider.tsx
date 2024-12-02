@@ -6,7 +6,7 @@ import {
   SupportedCpuArchitecture,
   getDefaultCpuArchitecture,
 } from '../../../common';
-import { useOpenshiftVersions, usePullSecret } from '../../hooks';
+import { usePullSecret } from '../../hooks';
 import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import {
@@ -21,6 +21,7 @@ import {
   SupportLevel,
   SupportLevels,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -43,7 +44,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   openshiftVersion,
   platformType,
 }) => {
-  const { loading: loadingOCPVersions } = useOpenshiftVersions();
+  const { loading: loadingOCPVersions } = useOpenshiftVersionsContext();
   const pullSecret = usePullSecret();
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',

@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { useField, useFormikContext } from 'formik';
-import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
-import { getFieldId, HelperText } from '../../../common';
+import {
+  Checkbox,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Tooltip,
+} from '@patternfly/react-core';
+import { getFieldId } from '../../../common';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { CheckboxFieldProps } from '../../../common/components/ui/formik/types';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -76,12 +83,18 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
             }
             aria-describedby={`${fieldId}-helper`}
             description={
-              <HelperText fieldId={fieldId}>
-                {t('ai:SNO enables you to install OpenShift using only one host.')}
-              </HelperText>
+              <FormGroup>
+                <FormHelperText>
+                  <HelperText id={fieldId}>
+                    <HelperTextItem>
+                      {t('ai:SNO enables you to install OpenShift using only one host.')}
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              </FormGroup>
             }
             isChecked={value === 'None'}
-            onChange={onChanged}
+            onChange={(event, value) => onChanged(value)}
             className="with-tooltip"
           />
         </Tooltip>

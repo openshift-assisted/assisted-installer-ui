@@ -52,14 +52,6 @@ const AutosaveWithParentUpdate = ({
   return null;
 };
 
-const manifestUpdated = (manifest: CustomManifestValues, oldManifest: CustomManifestValues) => {
-  return (
-    oldManifest.filename !== manifest.filename ||
-    oldManifest.folder !== manifest.folder ||
-    oldManifest.manifestYaml !== manifest.manifestYaml
-  );
-};
-
 export const CustomManifestsForm = ({
   onFormStateChange,
   getEmptyValues,
@@ -84,30 +76,32 @@ export const CustomManifestsForm = ({
 
   const handleSubmit: FormikConfig<ManifestFormData>['onSubmit'] = React.useCallback(
     async ({ manifests }, actions) => {
+      clearAlerts();
       if (manifests.length < customManifestsLocalRef.current.length) {
         // submit was triggered by deleting a manifest
-
         customManifestsLocalRef.current = manifests;
         return;
       } else {
-        clearAlerts();
         actions.setSubmitting(true);
 
         for (let index = 0; index < manifests.length; index++) {
           try {
             const manifest = manifests[index];
-            if (index >= (customManifestsLocalRef.current?.length || 0)) {
-              // manifest added
+            if (manifest.created) {
+              // update manifest
+              const oldManifest = customManifestsLocalRef.current[index];
+              await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
+              await updateUISettings({ customManifestsUpdated: true });
+            } else {
+              // add manifest
               await ClustersAPI.createCustomManifest(
                 cluster.id,
                 ClustersService.transformFormViewManifest(manifest),
               );
-            } else {
-              // manifest updated
-              const oldManifest = customManifestsLocalRef.current[index];
 
-              if (manifestUpdated(manifest, oldManifest)) {
-                await ClustersService.updateCustomManifest(oldManifest, manifest, cluster.id);
+              manifests[index].created = true;
+              if (!uiSettings?.customManifestsAdded) {
+                await updateUISettings({ customManifestsAdded: true });
               }
             }
           } catch (error) {
@@ -130,14 +124,11 @@ export const CustomManifestsForm = ({
         }
 
         customManifestsLocalRef.current = manifests;
-        if (!uiSettings?.customManifestsAdded) {
-          await updateUISettings({ customManifestsAdded: true });
-        }
 
         actions.setSubmitting(false);
       }
     },
-    [clearAlerts, uiSettings?.customManifestsAdded, cluster.id, addAlert, updateUISettings],
+    [clearAlerts, cluster.id, uiSettings, updateUISettings, addAlert],
   );
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;

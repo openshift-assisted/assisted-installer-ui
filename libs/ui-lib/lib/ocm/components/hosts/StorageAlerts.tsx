@@ -4,16 +4,18 @@ import {
   FormatDiskWarning,
   getInventory,
   hasEnabledOperators,
+  OPERATOR_NAME_LVM,
   OPERATOR_NAME_ODF,
 } from '../../../common';
 import { isAddHostsCluster, isSomeDisksSkipFormatting } from '../clusters/utils';
-import OdfDisksManualFormattingHint from './OdfDisksManualFormattingHint';
+import OdfLvmDisksManualFormattingHint from './OdfLvmDisksManualFormattingHint';
 import { getDiskLimitation } from '../../../common/components/storage/DisksTable';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint =
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) &&
+    (hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
+      hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)) &&
     !isAddHostsCluster(cluster);
   const someDisksAreSkipFormatting = isSomeDisksSkipFormatting(cluster);
 
@@ -67,7 +69,7 @@ const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
       )}
       {showFormattingHint && (
         <StackItem>
-          <OdfDisksManualFormattingHint />
+          <OdfLvmDisksManualFormattingHint />
         </StackItem>
       )}
       <StackItem>

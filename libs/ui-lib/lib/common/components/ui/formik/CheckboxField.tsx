@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { Checkbox, FormGroup, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Checkbox,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import { CheckboxFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const CheckboxField: React.FC<CheckboxFieldProps> = ({
   label,
@@ -17,40 +23,38 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   const fieldId = getFieldId(props.name, 'checkbox', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
-  const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
+  const fieldHelperText = <HelperText>{helperText}</HelperText>;
 
   return (
-    <Stack id={`form-control__${fieldId}`}>
-      <StackItem>
-        <FormGroup
-          fieldId={fieldId}
-          helperTextInvalid={fieldHelperText}
-          validated={isValid ? 'default' : 'error'}
-        >
-          <Checkbox
-            {...field}
-            {...props}
-            id={fieldId}
-            label={label}
-            aria-describedby={`${fieldId}-helper`}
-            description={fieldHelperText}
-            isValid={isValid}
-            isChecked={field.value as boolean}
-            onChange={(value, event) => {
-              field.onChange(event);
-              onChange && onChange(value, event);
-            }}
-          />
-        </FormGroup>
-      </StackItem>
-      <StackItem>
-        {errorMessage && (
-          <HelperText fieldId={fieldId} isError>
-            {errorMessage}
+    <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>
+      <Checkbox
+        {...field}
+        {...props}
+        id={fieldId}
+        label={label}
+        aria-describedby={`${fieldId}-helper`}
+        description={fieldHelperText}
+        isValid={isValid}
+        isChecked={field.value as boolean}
+        onChange={(event, value) => {
+          field.onChange(event);
+          onChange && onChange(value, event);
+        }}
+      />
+      {errorMessage && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={<ExclamationCircleIcon />}
+              variant="error"
+              id={`${fieldId}-helper-error`}
+            >
+              {errorMessage}
+            </HelperTextItem>
           </HelperText>
-        )}
-      </StackItem>
-    </Stack>
+        </FormHelperText>
+      )}
+    </FormGroup>
   );
 };
 

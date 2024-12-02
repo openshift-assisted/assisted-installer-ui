@@ -12,17 +12,27 @@ const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => (
   <PageSection variant={PageSectionVariants.light}>
     {(clusterName || isInOcm) && (
       <Breadcrumb>
-        <BreadcrumbItem>
-          <Link to={'/'}>Clusters</Link>
-        </BreadcrumbItem>
+        {isInOcm && (
+          <BreadcrumbItem
+            data-testid="cluster-list-breadcrumb"
+            render={() => <Link to={'/cluster-list'}>Cluster List</Link>}
+          />
+        )}
+
         {clusterName ? (
-          <BreadcrumbItem>
+          <BreadcrumbItem data-testid="assisted-clusters-breadcrumb">
             <Link to={`..`}>Assisted Clusters</Link>
           </BreadcrumbItem>
         ) : (
-          <BreadcrumbItem isActive>Assisted Clusters</BreadcrumbItem>
+          <BreadcrumbItem isActive data-testid="assisted-clusters-breadcrumb">
+            Assisted Clusters
+          </BreadcrumbItem>
         )}
-        {clusterName && <BreadcrumbItem isActive>{clusterName}</BreadcrumbItem>}
+        {clusterName && (
+          <BreadcrumbItem data-testid="cluster-breadcrumb" isActive>
+            {clusterName}
+          </BreadcrumbItem>
+        )}
       </Breadcrumb>
     )}
   </PageSection>

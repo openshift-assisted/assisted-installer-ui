@@ -1,15 +1,6 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableVariant,
-  RowWrapperProps,
-  RowWrapper,
-  IRow,
-} from '@patternfly/react-table';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { TableVariant, Tbody, Thead, Table, Th, Tr, Td } from '@patternfly/react-table';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
 import type { Disk, Host, Interface } from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo } from '../../types/hosts';
@@ -63,16 +54,9 @@ const nicsColumns = (t: TFunction) => [
   // { title: 'Product' },
 ];
 
-// eslint-disable-next-line
-const nicsRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
-
-const NICsTableRowWrapper = (props: RowWrapperProps) => (
-  <RowWrapper {...props} data-testid={`nic-row:${(props?.row?.key as string) || ''}`} />
-);
-
 const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }) => {
   const { t } = useTranslation();
-  const rows: IRow[] = interfaces
+  const rows = interfaces
     .sort((nicA, nicB) => nicA.name?.localeCompare(nicB.name || '') || 0)
     .map((nic) => ({
       cells: [
@@ -92,20 +76,33 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
         },
       ],
       key: nic.name,
-    }));
+    })) as { cells: { title: string | React.ReactNode; props?: object }[]; key: string }[];
 
   return (
     <Table
       data-testid={testId}
-      rows={rows}
-      cells={nicsColumns(t)}
       variant={TableVariant.compact}
       aria-label={t("ai:Host's network interfaces table")}
       borders={false}
-      rowWrapper={NICsTableRowWrapper}
     >
-      <TableHeader />
-      <TableBody rowKey={nicsRowKey} />
+      <Thead>
+        <Tr>
+          {nicsColumns(t).map((col, i) => (
+            <Th key={`col-${i}`}>{col.title}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={`nic-row:${row.key}`}>
+            {row.cells?.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`} {...cell.props}>
+                {cell.title}
+              </Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
@@ -7,7 +7,8 @@ import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
-import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
+import { useManagedDomains, useUsedClusterNames } from '../../hooks';
+import { useOpenshiftVersionsContext } from './OpenshiftVersionsContext';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import {
@@ -31,7 +32,12 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const dispatch = useDispatch();
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
   const pullSecret = usePullSecret();
-  const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+  const {
+    error: errorOCPVersions,
+    loading: loadingOCPVersions,
+    latestVersions: versions,
+  } = useOpenshiftVersionsContext();
+  const location = useLocation();
 
   const handleClusterUpdate = React.useCallback(
     async (
@@ -67,7 +73,9 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     async (params: ClusterCreateParamsWithStaticNetworking, addCustomManifests: boolean) => {
       clearAlerts();
       try {
-        const cluster = await ClustersService.create(params);
+        const searchParams = new URLSearchParams(location.search);
+        const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
+        const cluster = await ClustersService.create(params, isAssistedMigration);
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
       } catch (e) {
@@ -79,7 +87,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, navigate, addAlert, dispatch],
+    [clearAlerts, location.search, navigate, addAlert, dispatch],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;

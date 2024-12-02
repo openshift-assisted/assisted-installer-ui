@@ -2,11 +2,10 @@ import React from 'react';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
-import { SelectField } from '../ui';
+import { SelectField, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { SelectFieldProps } from '../ui/formik/types';
 
@@ -26,7 +25,7 @@ const getOpenshiftVersionHelperText =
     if (!versions.length) {
       return (
         <>
-          <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+          <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />
           &nbsp; {t('ai:No release image is available.')}
         </>
       );
@@ -36,10 +35,13 @@ const getOpenshiftVersionHelperText =
       return null;
     }
 
-    if (selectedVersion.supportLevel !== 'production') {
+    if (
+      selectedVersion.supportLevel !== 'production' &&
+      selectedVersion.supportLevel !== 'maintenance'
+    ) {
       return (
         <>
-          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
           &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
           <OpenShiftLifeCycleDatesLink />
         </>
@@ -56,12 +58,10 @@ type OpenShiftVersionSelectProps = {
 const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions, onChange }) => {
   const selectOptions = React.useMemo(
     () =>
-      versions
-        .filter((version) => version.supportLevel !== 'maintenance')
-        .map((version) => ({
-          label: version.label,
-          value: version.value,
-        })),
+      versions.map((version) => ({
+        label: version.label,
+        value: version.value,
+      })),
     [versions],
   );
   const { t } = useTranslation();

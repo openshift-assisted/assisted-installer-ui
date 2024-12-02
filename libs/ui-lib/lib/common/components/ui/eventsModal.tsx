@@ -91,7 +91,7 @@ export const EventsModal = ({
     <Modal
       header={
         <Title headingLevel={'h1'}>
-          {title} {isLoading && <Spinner isSVG size="lg" />}
+          {title} {isLoading && <Spinner size="lg" />}
         </Title>
       }
       isOpen={isOpen}

@@ -5,8 +5,7 @@ import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+
 import {
   ValidationsInfo as ClusterValidationsInfo,
   Validation as ClusterValidation,
@@ -31,6 +30,7 @@ import {
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { getKeys, stringToJSON } from '../../utils';
+import { UiIcon } from '../ui';
 
 const AllValidationsPassed = () => {
   const { t } = useTranslation();
@@ -121,9 +121,9 @@ const FailingValidation = <S extends string>({
 
   let icon;
   if (severity === 'warning') {
-    icon = <ExclamationTriangleIcon color={warningColor.value} />;
+    icon = <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
   } else {
-    icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+    icon = <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
   }
 
   return (

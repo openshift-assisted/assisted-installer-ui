@@ -2,16 +2,31 @@ import {
   HostStaticNetworkConfig,
   MacInterfaceMap,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { ProtocolVersion, StaticIpInfo, StaticIpView } from './dataTypes';
+import {
+  FormViewNetworkWideValues,
+  ProtocolVersion,
+  StaticIpInfo,
+  StaticIpView,
+} from './dataTypes';
 import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';
+import { getShownProtocolVersions } from './protocolVersion';
 
-const DUMMY_MAC = '01:23:45:67:89:AB';
+const DUMMY_MAC_4 = '01:23:45:67:89:AB';
+const DUMMY_MAC_6 = '01:23:45:67:89:AC';
 const DUMMY_NIC_PREFIX = 'DUMMY';
 
 export const getDummyNicName = (protocolVersion: ProtocolVersion) => {
   const protocolNumber = protocolVersion === ProtocolVersion.ipv4 ? 4 : 6;
   return `${DUMMY_NIC_PREFIX}${protocolNumber}`;
+};
+
+export const getDummyMacAddress = (protocolVersion: ProtocolVersion) => {
+  if (protocolVersion === ProtocolVersion.ipv4) {
+    return DUMMY_MAC_4;
+  } else {
+    return DUMMY_MAC_6;
+  }
 };
 
 export const DUMMY_NMSTATE_ADDRESSES = {
@@ -39,8 +54,21 @@ export const getDummyInterfaces = (): NmstateEthernetInterface[] => {
   ];
 };
 
-export const getDummyMacInterfaceMap = (): MacInterfaceMap => {
-  return [{ macAddress: DUMMY_MAC, logicalNicName: getDummyNicName(ProtocolVersion.ipv4) }];
+export const getDummyMacInterfaceMap = (
+  networkWideConfiguration?: FormViewNetworkWideValues,
+): MacInterfaceMap => {
+  const macInterfaceMap = [];
+  if (networkWideConfiguration) {
+    for (const protocolVersion of getShownProtocolVersions(networkWideConfiguration.protocolType)) {
+      macInterfaceMap.push({
+        macAddress: getDummyMacAddress(protocolVersion),
+        logicalNicName: getDummyNicName(protocolVersion),
+      });
+    }
+    return macInterfaceMap;
+  } else {
+    return [{ macAddress: DUMMY_MAC_4, logicalNicName: getDummyNicName(ProtocolVersion.ipv4) }];
+  }
 };
 
 export const isDummyInterface = (nicName: string) => {

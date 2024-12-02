@@ -15,7 +15,6 @@ import {
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../types/clusters';
-import { getErrorMessage } from '../../../utils';
 import { getSubnet } from '../../clusterConfiguration/utils';
 import {
   bmcAddressValidationMessages,
@@ -29,6 +28,7 @@ import {
 import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { selectApiVip, selectIngressVip } from '../../../selectors';
 import { head } from 'lodash-es';
+import { ClusterDetailsValues } from '../../clusterWizard/types';
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -36,7 +36,7 @@ const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
 const CLUSTER_NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const CLUSTER_NAME_VALID_CHARS_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
-  /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
+  /^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+/]+[=]{0,3}( .*)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 
 const PROXY_DNS_REGEX =
@@ -82,30 +82,33 @@ export const nameValidationSchema = (
         : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,
     )
     .when('useRedHatDnsService', {
-      is: true,
-      then: Yup.string().test(
-        'is-name-unique',
-        clusterNameValidationMessagesList.NOT_UNIQUE,
-        (value: string) => {
-          const clusterFullName = `${value}.${baseDnsDomain}`;
-          return !value || !usedClusterNames.includes(clusterFullName);
-        },
-      ),
-      otherwise: Yup.string().test(
-        'is-name-unique',
-        clusterNameValidationMessagesList.NOT_UNIQUE,
-        (value: string) => {
-          // in CIM cluster name is ClusterDeployment CR name which must be unique
-          return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
-        },
-      ),
+      is: (useRedHatDnsService: ClusterDetailsValues['useRedHatDnsService']) =>
+        useRedHatDnsService === true,
+      then: (schema) =>
+        schema.test(
+          'is-name-unique',
+          clusterNameValidationMessagesList.NOT_UNIQUE,
+          (value?: string) => {
+            const clusterFullName = `${value || ''}.${baseDnsDomain}`;
+            return !value || !usedClusterNames.includes(clusterFullName);
+          },
+        ),
+      otherwise: (schema) =>
+        schema.test(
+          'is-name-unique',
+          clusterNameValidationMessagesList.NOT_UNIQUE,
+          (value?: string) => {
+            // in CIM cluster name is ClusterDeployment CR name which must be unique
+            return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
+          },
+        ),
     });
 };
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',
   'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. A single key can be provided only.',
-  (value: string) => {
+  (value?: string) => {
     if (!value) {
       return true;
     }
@@ -117,8 +120,8 @@ export const sshPublicKeyValidationSchema = Yup.string().test(
 export const sshPublicKeyListValidationSchema = Yup.string()
   .test(
     'ssh-public-keys',
-    'SSH public keys separated by newlines must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT].',
-    (value: string) => {
+    'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT].',
+    (value?: string) => {
       if (!value) {
         return true;
       }
@@ -132,7 +135,7 @@ export const sshPublicKeyListValidationSchema = Yup.string()
       // );
     },
   )
-  .test('ssh-public-keys-unique', 'SSH public keys must be unique.', (value: string) => {
+  .test('ssh-public-keys-unique', 'SSH public keys must be unique.', (value?: string) => {
     if (!value) {
       return true;
     }
@@ -143,7 +146,7 @@ export const sshPublicKeyListValidationSchema = Yup.string()
 export const pullSecretValidationSchema = Yup.string().test(
   'is-well-formed-json',
   "Invalid pull secret format. You must use your Red Hat account's pull secret.",
-  (value: string) => {
+  (value?: string) => {
     const isValid = true;
     if (!value) return isValid;
     try {
@@ -169,14 +172,14 @@ const isValidIpWithoutSuffix = (addr: string) => {
 export const ipValidationSchema = Yup.string().test(
   'ip-validation',
   'Not a valid IP address',
-  (value: string) => Address4.isValid(value) || Address6.isValid(value),
+  (value?: string) => Address4.isValid(value || '') || Address6.isValid(value || ''),
 );
 
 export const ipNoSuffixValidationSchema = Yup.string().test(
   'ip-validation-no-suffix',
   'Not a valid IP address',
-  (value: string) => {
-    return isValidIpWithoutSuffix(value);
+  (value?: string) => {
+    return isValidIpWithoutSuffix(value || '');
   },
 );
 
@@ -190,44 +193,40 @@ export const vipRangeValidationSchema = (
   { machineNetworks, hostSubnet }: NetworkConfigurationValues,
   allowSuffix: boolean,
 ) =>
-  Yup.string().test(
-    'vip-validation',
-    'IP Address is outside of selected subnet',
-    function (value: string) {
-      if (!value) {
-        return true;
-      }
+  Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', (value) => {
+    if (!value) {
+      return true;
+    }
 
-      try {
-        const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
-        validator.validateSync(value);
-      } catch (err) {
-        return this.createError({ message: getErrorMessage(err) });
-      }
+    try {
+      const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
+      validator.validateSync(value);
+    } catch (err) {
+      return true;
+    }
 
-      const foundHostSubnets = [];
-      if (machineNetworks) {
-        const cidrs = machineNetworks?.map((network) => network.cidr);
-        foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
-      } else {
-        const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-        if (subnet) {
-          foundHostSubnets.push(subnet);
+    const foundHostSubnets = [];
+    if (machineNetworks) {
+      const cidrs = machineNetworks?.map((network) => network.cidr);
+      foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
+    } else {
+      const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
+      if (subnet) {
+        foundHostSubnets.push(subnet);
+      }
+    }
+    for (const hostSubnet of foundHostSubnets) {
+      if (hostSubnet?.subnet) {
+        // Workaround for bug in CIM backend. hostIDs are empty
+        if (!hostSubnet.hostIDs.length) {
+          return true;
+        } else if (isInSubnet(value, hostSubnet.subnet)) {
+          return true;
         }
       }
-      for (const hostSubnet of foundHostSubnets) {
-        if (hostSubnet?.subnet) {
-          // Workaround for bug in CIM backend. hostIDs are empty
-          if (!hostSubnet.hostIDs.length) {
-            return true;
-          } else if (isInSubnet(value, hostSubnet.subnet)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
-  );
+    }
+    return false;
+  });
 
 const vipUniqueValidationSchema = (
   { ingressVips, apiVips, apiVip, ingressVip }: NetworkConfigurationValues,
@@ -255,8 +254,8 @@ const vipBroadcastValidationSchema = ({ machineNetworks }: NetworkConfigurationV
   Yup.string().test(
     'vip-no-broadcast',
     'The IP address cannot be a network or broadcast address',
-    (value: string) => {
-      const vipAddress = getAddress(value)?.address;
+    (value?: string) => {
+      const vipAddress = getAddress(value || '')?.address;
       const machineNetwork = getAddress((machineNetworks?.length && machineNetworks[0].cidr) || '');
 
       const machineNetworkBroadcast = machineNetwork?.endAddress().address;
@@ -275,8 +274,9 @@ const requiredOnceSet = (initialValue?: string, message?: string) =>
   );
 
 export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingType'], {
-  is: 'clusterManaged',
-  then: Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
+  is: (managedNetworkingType: NetworkConfigurationValues['managedNetworkingType']) =>
+    managedNetworkingType === 'clusterManaged',
+  then: () => Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
 });
 
 export const vipValidationSchema = (
@@ -285,15 +285,14 @@ export const vipValidationSchema = (
   initialValue?: string,
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
-    is: (vipDhcpAllocation, managedNetworkingType) =>
-      !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
-      .concat(vipRangeValidationSchema(hostSubnets, values, true))
-      .concat(vipUniqueValidationSchema(values, false))
-      .when('hostSubnet', {
-        is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
-        then: Yup.string().required('Required. Please provide an IP address'),
-      }),
+    is: (
+      vipDhcpAllocation: NetworkConfigurationValues['vipDhcpAllocation'],
+      managedNetworkingType: NetworkConfigurationValues['managedNetworkingType'],
+    ) => !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
+    then: () =>
+      requiredOnceSet(initialValue, 'Required. Please provide an IP address')
+        .concat(vipRangeValidationSchema(hostSubnets, values, true))
+        .concat(vipUniqueValidationSchema(values, false)),
   });
 
 export const vipNoSuffixValidationSchema = (
@@ -302,27 +301,26 @@ export const vipNoSuffixValidationSchema = (
   initialValues?: ApiVip[] | IngressVip[],
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
-    is: (vipDhcpAllocation, managedNetworkingType) =>
-      !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
-      .concat(ipNoSuffixValidationSchema)
-      .concat(vipRangeValidationSchema(hostSubnets, values, false))
-      .concat(vipBroadcastValidationSchema(values))
-      .concat(vipUniqueValidationSchema(values, true))
-      .when('hostSubnet', {
-        is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
-        then: Yup.string().required('Required. Please provide an IP address'),
-      }),
+    is: (
+      vipDhcpAllocation: NetworkConfigurationValues['vipDhcpAllocation'],
+      managedNetworkingType: NetworkConfigurationValues['managedNetworkingType'],
+    ) => !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
+    then: () =>
+      requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
+        .concat(ipNoSuffixValidationSchema)
+        .concat(vipRangeValidationSchema(hostSubnets, values, false))
+        .concat(vipBroadcastValidationSchema(values))
+        .concat(vipUniqueValidationSchema(values, true)),
   });
 
-export const vipArrayValidationSchema = <T>(
+export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
   initialValues?: ApiVip[] | IngressVip[],
 ) =>
   (values.apiVips?.length && values.managedNetworkingType === 'clusterManaged'
     ? Yup.array<T>().of(
-        Yup.object().shape({
+        Yup.object({
           clusterId: Yup.string(),
           ip: vipNoSuffixValidationSchema(hostSubnets, values, initialValues),
         }),
@@ -340,17 +338,17 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     .test(
       'valid-ip-address',
       'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
-      (value: string): boolean => !!value && (isCIDR.v4(value) || isCIDR.v6(value)),
+      (value?: string): boolean => !!value && (isCIDR.v4(value) || isCIDR.v6(value)),
     )
     .test(
       'valid-netmask',
       'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
-      (value: string) => {
+      (value?: string) => {
         const suffix = parseInt((value || '').split('/')[1]);
 
         return (
-          (isCIDR.v4(value) && 0 < suffix && suffix < 26) ||
-          (isCIDR.v6(value) && 7 < suffix && suffix < 129)
+          (isCIDR.v4(value || '') && 0 < suffix && suffix < 26) ||
+          (isCIDR.v6(value || '') && 7 < suffix && suffix < 129)
         );
       },
     )
@@ -401,7 +399,7 @@ export const dnsNameValidationSchema = Yup.string()
   .test(
     'dns-name-label-length',
     'Single label of the DNS name can not be longer than 63 characters.',
-    (value: string) => (value || '').split('.').every((label: string) => label.length <= 63),
+    (value?: string) => (value || '').split('.').every((label: string) => label.length <= 63),
   )
   .matches(DNS_NAME_REGEX, {
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
@@ -411,9 +409,9 @@ export const dnsNameValidationSchema = Yup.string()
 export const baseDomainValidationSchema = Yup.string().test(
   'dns-name-label-length',
   'Every single host component in the base domain name cannot contain more than 63 characters and must not contain spaces.',
-  (value: string) => {
+  (value?: string) => {
     // Check if the value contains any spaces
-    if (/\s/.test(value)) {
+    if (/\s/.test(value as string)) {
       return false; // Value contains spaces, validation fails
     }
 
@@ -466,7 +464,7 @@ export const richNameValidationSchema = (t: TFunction, usedNames: string[], orig
     .test(
       nameValidationMessagesList.INVALID_START_END,
       nameValidationMessagesList.INVALID_START_END,
-      (value: string) => {
+      (value?: string) => {
         const trimmed = value?.trim();
         if (!trimmed) {
           return true;
@@ -505,7 +503,7 @@ export const richHostnameValidationSchema = (
     .test(
       hostnameValidationMessagesList.INVALID_START_END,
       hostnameValidationMessagesList.INVALID_START_END,
-      (value: string) => {
+      (value?: string) => {
         const trimmed = value?.trim();
         if (!trimmed) {
           return true;
@@ -548,7 +546,7 @@ export const httpProxyValidationSchema = ({
   const validation = Yup.string().test(
     'http-proxy-validation',
     httpProxyValidationMessage,
-    (value: string) => {
+    (value?: string) => {
       if (!value) {
         return true;
       }
@@ -577,8 +575,8 @@ export const httpProxyValidationSchema = ({
   );
 };
 
-const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
-  if (value.match(dnsRegex)) {
+const isIPorDN = (value?: string, dnsRegex = DNS_NAME_REGEX) => {
+  if ((value as string).match(dnsRegex)) {
     return true;
   }
   try {
@@ -592,7 +590,7 @@ const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
 export const noProxyValidationSchema = Yup.string().test(
   'no-proxy-validation',
   'Provide a comma separated list of valid DNS names or IP addresses.',
-  (value: string) => {
+  (value?: string) => {
     if (!value || value === '*') {
       return true;
     }
@@ -610,7 +608,7 @@ export const ntpSourceValidationSchema = Yup.string()
   .test(
     'ntp-source-validation',
     'Provide a comma separated list of valid DNS names or IP addresses.',
-    (value: string) => {
+    (value?: string) => {
       if (!value || value === '') {
         return true;
       }
@@ -622,7 +620,7 @@ export const ntpSourceValidationSchema = Yup.string()
   .test(
     'ntp-source-validation-unique',
     'DNS names and IP addresses must be unique.',
-    (value: string) => {
+    (value?: string) => {
       if (!value || value === '') {
         return true;
       }
@@ -634,7 +632,7 @@ export const ntpSourceValidationSchema = Yup.string()
 export const day2ApiVipValidationSchema = Yup.string().test(
   'day2-api-vip',
   'Provide a valid DNS name or IP Address',
-  (value: string) => {
+  (value?: string) => {
     if (!value) {
       return true;
     }
@@ -658,7 +656,7 @@ export const locationValidationSchema = (t: TFunction) => {
     .test(
       locationValidationMessagesList.INVALID_START_END,
       locationValidationMessagesList.INVALID_START_END,
-      (value: string) => {
+      (value?: string) => {
         const trimmed = value?.trim();
         if (!trimmed) {
           return true;
@@ -721,5 +719,5 @@ export const dualStackValidationSchema = (field: string) =>
 export const IPv4ValidationSchema = Yup.array().test(
   'single-stack',
   `All network subnets must be IPv4.`,
-  (values: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
+  (values?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
 );

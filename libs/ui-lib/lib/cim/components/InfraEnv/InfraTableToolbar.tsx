@@ -3,15 +3,17 @@ import {
   Grid,
   GridItem,
   SearchInput,
-  Select,
-  SelectGroup,
-  SelectOption,
-  SelectVariant,
   Split,
   SplitItem,
   ToolbarFilter,
   ToolbarItem,
 } from '@patternfly/react-core';
+import {
+  Select,
+  SelectGroup,
+  SelectOption,
+  SelectVariant,
+} from '@patternfly/react-core/deprecated';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import * as React from 'react';
 import { HostStatus, HostStatusDef } from '../../../common/components/hosts/types';
@@ -119,7 +121,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
           <Select
             variant={SelectVariant.checkbox}
             aria-label={t('ai:Status')}
-            onToggle={setStatusFilterOpen}
+            onToggle={(_event, value) => setStatusFilterOpen(value)}
             onSelect={(e, value) => {
               // eslint-disable-next-line
               if ((e.target as any).checked) {

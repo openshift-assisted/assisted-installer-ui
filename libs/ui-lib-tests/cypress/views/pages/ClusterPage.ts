@@ -10,7 +10,7 @@ export class ClusterPage {
   }
 
   static visit(options?: Partial<Cypress.VisitOptions>) {
-    cy.visit(`/clusters/${Cypress.env('clusterId')}`, options);
+    cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`, options);
   }
 
   get body() {
@@ -18,7 +18,7 @@ export class ClusterPage {
   }
 
   get wizardBody() {
-    return cy.get('.pf-c-wizard__main-body');
+    return cy.get('.pf-v5-c-wizard__main-body');
   }
 
   get wizardFooter() {

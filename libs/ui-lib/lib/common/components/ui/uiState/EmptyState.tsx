@@ -5,8 +5,8 @@ import {
   EmptyStateBody,
   Bullseye,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
   EmptyStateIconProps,
+  EmptyStateActions,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 
@@ -31,9 +31,7 @@ const EmptyState: React.FC<Props> = ({
       <Title headingLevel="h2">{title}</Title>
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
       {primaryAction}
-      {secondaryActions && (
-        <EmptyStateSecondaryActions>{secondaryActions}</EmptyStateSecondaryActions>
-      )}
+      {secondaryActions && <EmptyStateActions>{secondaryActions}</EmptyStateActions>}
     </PFEmptyState>
   </Bullseye>
 );

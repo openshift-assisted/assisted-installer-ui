@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { useFormikContext } from 'formik';
 import {
@@ -13,16 +13,24 @@ import CnvHostRequirements from './CnvHostRequirements';
 import { getCnvIncompatibleWithLvmReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
+
+type CnvLabelProps = {
+  clusterId: string;
+  disabledReason?: string;
+  isVersionEqualsOrMajorThan4_15: boolean;
+  supportLevel?: SupportLevel;
+};
 
 const CnvLabel = ({
   clusterId,
   disabledReason,
-}: {
-  clusterId: ClusterOperatorProps['clusterId'];
-  disabledReason?: string;
-}) => {
+  isVersionEqualsOrMajorThan4_15,
+  supportLevel,
+}: CnvLabelProps) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -31,24 +39,38 @@ const CnvLabel = ({
       <PopoverIcon
         component={'a'}
         headerContent="Additional requirements"
-        bodyContent={<CnvHostRequirements clusterId={clusterId} />}
+        bodyContent={
+          <CnvHostRequirements
+            clusterId={clusterId}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+          />
+        }
       />
+      <NewFeatureSupportLevelBadge featureId="CNV" supportLevel={supportLevel} />
     </>
   );
 };
 
 const CnvHelperText = () => {
   return (
-    <>
-      Run virtual machines alongside containers on one platform.{' '}
-      <a href={CNV_LINK} target="_blank" rel="noopener noreferrer">
-        {'Learn more'} <ExternalLinkAltIcon />
-      </a>
-    </>
+    <HelperText>
+      <HelperTextItem variant="indeterminate">
+        Run virtual machines alongside containers on one platform.{' '}
+        <a href={CNV_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
+      </HelperTextItem>
+    </HelperText>
   );
 };
 
-const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
+const CnvCheckbox = ({
+  clusterId,
+  isVersionEqualsOrMajorThan4_15,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  isVersionEqualsOrMajorThan4_15: boolean;
+}) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
@@ -68,7 +90,14 @@ const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={CNV_FIELD_NAME}
-        label={<CnvLabel clusterId={clusterId} disabledReason={disabledReason} />}
+        label={
+          <CnvLabel
+            clusterId={clusterId}
+            disabledReason={disabledReason}
+            isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
+            supportLevel={featureSupportLevel.getFeatureSupportLevel('CNV')}
+          />
+        }
         helperText={<CnvHelperText />}
         isDisabled={!!disabledReason}
       />

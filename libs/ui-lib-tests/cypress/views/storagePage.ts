@@ -3,7 +3,7 @@ export const storagePage = {
     numMasters: number = Cypress.env('NUM_MASTERS'),
     numWorkers: number = Cypress.env('NUM_WORKERS'),
   ) => {
-    cy.get('td[data-label="ODF Usage"]')
+    cy.get('td[data-testid="use-odf"]')
       .should('have.length', numMasters + numWorkers)
       .each((hostRole, idx) => {
         const isMaster = idx <= numMasters - 1;
@@ -18,7 +18,7 @@ export const storagePage = {
     numMasters: number = Cypress.env('NUM_MASTERS'),
     numWorkers: number = Cypress.env('NUM_WORKERS'),
   ) => {
-    cy.get('td[data-label="Number of disks"]')
+    cy.get('td[data-testid="disk-number"]')
       .should('have.length', numMasters + numWorkers)
       .each((hostDisk) => {
         expect(hostDisk).to.contain('3');
@@ -28,7 +28,7 @@ export const storagePage = {
     return cy.get(`input[id="select-formatted-${hostId}-${indexSelect}"]`);
   },
   validateSkipFormattingDisks: (hostId: string, numDisks: number) => {
-    cy.get("td[data-label='Format?']").should('have.length', numDisks);
+    cy.get("tr.pf-m-expanded td[data-testid='disk-formatted']").should('have.length', numDisks);
     //Checking if checkboxes are checked/unchecked
     storagePage.getSkipFormattingCheckbox(hostId, 0).should('not.be.checked');
     storagePage.getSkipFormattingCheckbox(hostId, 1).should('be.checked');
@@ -39,11 +39,11 @@ export const storagePage = {
     storagePage.getSkipFormattingCheckbox(hostId, 2).should('be.disabled');
   },
   validateSkipFormattingWarning: () => {
-    cy.get('.pf-c-alert__title').should(
+    cy.get('.pf-v5-c-alert__title').should(
       'contain.text',
       'There might be issues with the boot order',
     );
-    cy.get('.pf-c-alert__description').should(
+    cy.get('.pf-v5-c-alert__description').should(
       'contain.text',
       'You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention might be required during OpenShift installation.',
     );
@@ -52,7 +52,9 @@ export const storagePage = {
     //If a disk is skip formatting validate that warning icon is shown
     cy.get(`[data-testid="disk-row-${diskId}"] [data-testid="disk-name"]`).within(
       (/* $diskRow */) => {
-        cy.get('[role="img"]').should('have.attr', 'fill', '#f0ab00');
+        cy.get('[role="img"]')
+          .parent()
+          .should('have.attr', 'class', 'pf-v5-c-icon__content pf-m-warning');
       },
     );
   },

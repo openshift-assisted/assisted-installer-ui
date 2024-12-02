@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import { WizardNavItem, WizardNavItemProps } from '@patternfly/react-core';
+import { WizardNavItem, WizardNavItemProps } from '@patternfly/react-core/deprecated';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import UiIcon from './UiIcon';
 
 const getNavItemContent = (
   content: ReactNode,
@@ -13,10 +13,10 @@ const getNavItemContent = (
     return (
       <>
         {content}
-        <ExclamationCircleIcon
+        <UiIcon
+          status="danger"
           className="wizard-nav-item-warning-icon"
-          color={dangerColor.value}
-          size="sm"
+          icon={<ExclamationCircleIcon />}
         />
       </>
     );

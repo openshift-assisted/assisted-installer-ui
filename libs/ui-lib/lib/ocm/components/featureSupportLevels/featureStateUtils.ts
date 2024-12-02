@@ -18,6 +18,7 @@ const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
+const OPENSHIFT_AI_OPERATOR_LABEL = 'OpenShift AI';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -31,7 +32,7 @@ export const getCnvIncompatibleWithLvmReason = (
     lvmSupport !== 'supported';
   // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   return mustDisableCnv
-    ? `Currently, you can not install ${CNV_OPERATOR_LABEL} operator at the same time as ${LVM_OPERATOR_LABEL} operator.`
+    ? `Currently, you cannot install ${CNV_OPERATOR_LABEL} operator at the same time as ${LVM_OPERATOR_LABEL} operator.`
     : undefined;
 };
 
@@ -40,14 +41,9 @@ export const getLvmIncompatibleWithCnvReason = (
   lvmSupport: SupportLevel | undefined,
 ) => {
   const hasSelectedCnv = operatorValues.useContainerNativeVirtualization;
-  const hasSelectedLVMS = operatorValues.useOdfLogicalVolumeManager;
-  // In versions which support for LVMS (4.12+), LVMS needs to be installed together with CNV
-  if (hasSelectedCnv && hasSelectedLVMS) {
-    return `${LVMS_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
-  }
   // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   if (hasSelectedCnv && lvmSupport !== 'supported') {
-    return `Currently, you can not install ${LVM_OPERATOR_LABEL} operator at the same time as ${CNV_OPERATOR_LABEL} operator.`;
+    return `Currently, you cannot install ${LVM_OPERATOR_LABEL} operator at the same time as ${CNV_OPERATOR_LABEL} operator.`;
   }
   return undefined;
 };
@@ -96,15 +92,20 @@ const getOdfDisabledReason = (
 const getCnvDisabledReason = (
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
+  platformType?: PlatformType,
 ) => {
   if (!activeFeatureConfiguration) {
     return undefined;
+  }
+  if (platformType === 'nutanix') {
+    return `${CNV_OPERATOR_LABEL} is not available when Nutanix platform type is selected.`;
   }
   if (!isSupported) {
     const cpuArchitectureLabel =
       architectureData[
         activeFeatureConfiguration.underlyingCpuArchitecture as SupportedCpuArchitecture
       ].label;
+
     return `${CNV_OPERATOR_LABEL} is not available when ${
       cpuArchitectureLabel
         ? cpuArchitectureLabel
@@ -118,11 +119,15 @@ const getCnvDisabledReason = (
 const getLvmDisabledReason = (
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
+  platformType?: PlatformType,
 ) => {
   if (!activeFeatureConfiguration) {
     return undefined;
   }
   const operatorLabel = isSupported ? LVMS_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
+  if (platformType === 'nutanix') {
+    return `${operatorLabel} is not supported when Nutanix platform type is selected.`;
+  }
   if (!isSupported) {
     return `${operatorLabel} is not supported in this OpenShift version.`;
   }
@@ -165,13 +170,24 @@ export const getNewFeatureDisabledReason = (
       return getArmDisabledReason(cluster);
     }
     case 'CNV': {
-      return getCnvDisabledReason(activeFeatureConfiguration, isSupported);
+      return getCnvDisabledReason(
+        activeFeatureConfiguration,
+        isSupported,
+        platformType ?? cluster?.platform?.type,
+      );
     }
     case 'LVM': {
-      return getLvmDisabledReason(activeFeatureConfiguration, isSupported);
+      return getLvmDisabledReason(
+        activeFeatureConfiguration,
+        isSupported,
+        platformType ?? cluster?.platform?.type,
+      );
     }
     case 'ODF': {
       return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
+    }
+    case 'OPENSHIFT_AI': {
+      return getOpenShiftAIDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
@@ -185,6 +201,9 @@ export const getNewFeatureDisabledReason = (
       return getOciDisabledReason(cpuArchitecture, isSupported);
     }
     case 'MCE': {
+      if (platformType === 'nutanix') {
+        return 'Multicluster engine is not supported with Nutanix platform type.';
+      }
       if (!isSupported) {
         return 'Multicluster engine is not supported in this OpenShift version.';
       }
@@ -206,6 +225,11 @@ export const getNewFeatureDisabledReason = (
         }`;
       }
     }
+    case 'MTV': {
+      if (!isSupported) {
+        return 'Migration Toolkit for Virtualization is not supported in this OpenShift version';
+      }
+    }
     default: {
       return undefined;
     }
@@ -223,7 +247,7 @@ export const getOdfIncompatibleWithLvmsReason = (operatorValues: OperatorsValues
   const mustDisableOdf = operatorValues.useOdfLogicalVolumeManager;
   // In versions >= 4.15, it's not possible to select ODF + LVMS
   return mustDisableOdf
-    ? `Currently, you can not install ${ODF_OPERATOR_LABEL} operator at the same time as ${LVMS_OPERATOR_LABEL} operator.`
+    ? `Currently, you cannot install ${ODF_OPERATOR_LABEL} operator at the same time as ${LVMS_OPERATOR_LABEL} operator.`
     : undefined;
 };
 
@@ -231,6 +255,28 @@ export const getLvmsIncompatibleWithOdfReason = (operatorValues: OperatorsValues
   const mustDisableLvms = operatorValues.useOpenShiftDataFoundation;
   // In versions >= 4.15, it's not possible to select ODF + LVMS
   return mustDisableLvms
-    ? `Currently, you can not install ${LVMS_OPERATOR_LABEL} operator at the same time as ${ODF_OPERATOR_LABEL} operator.`
+    ? `Currently, you cannot install ${LVMS_OPERATOR_LABEL} operator at the same time as ${ODF_OPERATOR_LABEL} operator.`
     : undefined;
+};
+
+const getOpenShiftAIDisabledReason = (
+  cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  isSupported: boolean,
+) => {
+  if (!cluster) {
+    return undefined;
+  }
+
+  const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
+  if (isArm) {
+    return `${OPENSHIFT_AI_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
+  }
+  if (isSNO(cluster)) {
+    return `${OPENSHIFT_AI_OPERATOR_LABEL} is not available when deploying a Single Node OpenShift.`;
+  }
+  if (!isSupported) {
+    return `The installer cannot currently enable ${OPENSHIFT_AI_OPERATOR_LABEL} with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.`;
+  }
+  return undefined;
 };

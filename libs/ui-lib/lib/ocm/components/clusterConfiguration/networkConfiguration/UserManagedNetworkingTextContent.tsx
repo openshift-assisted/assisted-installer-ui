@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, ListItem, Text, TextContent } from '@patternfly/react-core';
 import { ExternalLink } from '../../../../common/components/ui';
-import { getOpenShiftNetworkingDocsLink } from '../../../../common/config/constants';
+import { getOpenShiftNetworkingDocsLink } from '../../../../common/config/docs_links';
 
 export interface UserManagedNetworkingTextContentProps {
   shouldDisplayLoadBalancersBullet?: boolean;

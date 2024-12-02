@@ -3,6 +3,7 @@ import { Button, ButtonVariant, Tooltip, TooltipProps } from '@patternfly/react-
 import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
 import './RemovableField.css';
 import classnames from 'classnames';
+import UiIcon from '../UiIcon';
 
 interface RemovableFieldProps {
   onRemove: VoidFunction;
@@ -33,7 +34,7 @@ const RemovableField: React.FC<RemovableFieldProps & Omit<TooltipProps, 'content
           onClick={onRemove}
           data-testid={removeButtonDataTestId}
         >
-          <MinusCircleIcon size="sm" />
+          <UiIcon size="sm" icon={<MinusCircleIcon />} />
         </Button>
       }
       className={classnames('ai-remove-button__tooltip ', className)}

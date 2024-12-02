@@ -14,11 +14,11 @@ import {
   HelperTextItem,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { PrismCode, SimpleAIPrismTheme } from '../ui';
+import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
-import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
+import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/docs_links';
 import * as Sentry from '@sentry/browser';
 
 export const DiscoveryTroubleshootingModalContent = () => {
@@ -208,7 +208,7 @@ export const HostsNotShowingLink = ({
     <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
       {!isInline && (
         <>
-          <InfoCircleIcon size="sm" />
+          <UiIcon size="sm" icon={<InfoCircleIcon />} />
           &nbsp;
         </>
       )}

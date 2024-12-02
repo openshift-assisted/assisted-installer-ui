@@ -7,6 +7,7 @@ import HostRequirements, {
   HostRequirementsListProps,
 } from '../../../common/components/hosts/HostRequirements';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { UiIcon } from '../../../common';
 
 type HostData = {
   cpu_cores: number;
@@ -77,7 +78,7 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
         isInline
         className="host-requirements-link"
       >
-        <InfoCircleIcon size="sm" />
+        <UiIcon size="sm" status="warning" icon={<InfoCircleIcon />} />
         &nbsp;{t('ai:Minimum hardware requirements')}
       </Button>
       <MinimalHWRequirementsModal

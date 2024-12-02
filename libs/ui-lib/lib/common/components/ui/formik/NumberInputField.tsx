@@ -2,16 +2,17 @@ import * as React from 'react';
 import { useField } from 'formik';
 import {
   FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   NumberInput,
   NumberInputProps,
   Split,
   SplitItem,
-  Stack,
-  StackItem,
 } from '@patternfly/react-core';
 import { NumberInputFieldProps } from './types';
 import { getFieldId } from './utils';
-import HelperText from './HelperText';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 // eslint-disable-next-line react/display-name
 const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
@@ -63,47 +64,39 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
       doChange(isNaN(targetValue) ? 0 : Number(targetValue));
     };
 
-    const fieldHelperText = <HelperText fieldId={fieldId}>{helperText}</HelperText>;
-
     return (
-      <Stack>
-        <StackItem>
-          <FormGroup
-            fieldId={fieldId}
-            label={label}
-            helperText={fieldHelperText}
-            helperTextInvalid={fieldHelperText}
-            validated={isValid ? 'default' : 'error'}
-            isRequired={isRequired}
-            labelIcon={labelIcon}
-          >
-            <Split>
-              <SplitItem isFilled>
-                <NumberInput
-                  {...props}
-                  value={field.value}
-                  onMinus={onMinus}
-                  onChange={handleChange}
-                  onPlus={onPlus}
-                  min={minValue}
-                  max={maxValue}
-                  ref={ref}
-                  id={fieldId}
-                  aria-describedby={`${fieldId}-helper`}
-                />
-              </SplitItem>
-              <SplitItem>{children}</SplitItem>
-            </Split>
-          </FormGroup>
-        </StackItem>
-        <StackItem>
-          {errorMessage && (
-            <HelperText fieldId={fieldId} isError>
-              {errorMessage}
+      <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+        <Split>
+          <SplitItem isFilled>
+            <NumberInput
+              {...props}
+              value={field.value}
+              onMinus={onMinus}
+              onChange={handleChange}
+              onPlus={onPlus}
+              min={minValue}
+              max={maxValue}
+              ref={ref}
+              id={fieldId}
+              aria-describedby={`${fieldId}-helper`}
+            />
+          </SplitItem>
+          <SplitItem>{children}</SplitItem>
+        </Split>
+        {(errorMessage || helperText) && (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem
+                icon={errorMessage && <ExclamationCircleIcon />}
+                variant={errorMessage ? 'error' : 'default'}
+                id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              >
+                {errorMessage ? errorMessage : helperText}
+              </HelperTextItem>
             </HelperText>
-          )}
-        </StackItem>
-      </Stack>
+          </FormHelperText>
+        )}
+      </FormGroup>
     );
   },
 );
