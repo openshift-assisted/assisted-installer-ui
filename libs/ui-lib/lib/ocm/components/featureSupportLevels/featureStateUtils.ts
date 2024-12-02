@@ -18,6 +18,7 @@ const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
+const OPENSHIFT_AI_OPERATOR_LABEL = 'OpenShift AI';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -185,6 +186,9 @@ export const getNewFeatureDisabledReason = (
     case 'ODF': {
       return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
+    case 'OPENSHIFT_AI': {
+      return getOpenShiftAIDisabledReason(cluster, activeFeatureConfiguration, isSupported);
+    }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
     }
@@ -253,4 +257,26 @@ export const getLvmsIncompatibleWithOdfReason = (operatorValues: OperatorsValues
   return mustDisableLvms
     ? `Currently, you cannot install ${LVMS_OPERATOR_LABEL} operator at the same time as ${ODF_OPERATOR_LABEL} operator.`
     : undefined;
+};
+
+const getOpenShiftAIDisabledReason = (
+  cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  isSupported: boolean,
+) => {
+  if (!cluster) {
+    return undefined;
+  }
+
+  const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
+  if (isArm) {
+    return `${OPENSHIFT_AI_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
+  }
+  if (isSNO(cluster)) {
+    return `${OPENSHIFT_AI_OPERATOR_LABEL} is not available when deploying a Single Node OpenShift.`;
+  }
+  if (!isSupported) {
+    return `The installer cannot currently enable ${OPENSHIFT_AI_OPERATOR_LABEL} with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.`;
+  }
+  return undefined;
 };
