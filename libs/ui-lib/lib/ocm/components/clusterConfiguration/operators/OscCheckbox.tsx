@@ -46,7 +46,9 @@ const OscHelperText = () => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
-        Run sandboxed containers.{' '}
+        OpenShift sandboxed containers support for OpenShift Container Platform provides users with
+        built-in support for running Kata Containers as an additional optional runtime. It provides
+        an additional virtualization machine(VM) isolation layer for pods.{' '}
         <a href={OSC_LINK} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
