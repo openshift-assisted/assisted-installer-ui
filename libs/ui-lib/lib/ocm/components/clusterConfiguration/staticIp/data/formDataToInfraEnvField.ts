@@ -74,6 +74,20 @@ const getNmstateObject = (
         hostIp,
         getPrefixLength(networkWide, protocolVersion),
       );
+      if (networkWide.useVlan && networkWide.vlanId) {
+        if (bondType && hasBondsConfigured) {
+          interfaces.push(
+            getInterface(
+              BOND_NIC_NAME,
+              realProtocolConfigs,
+              networkWide,
+              bondType,
+              hasBondsConfigured,
+              true,
+            ),
+          );
+        }
+      }
     } else {
       //this happens when a host was particall configured, or not configured at all
       const protocolConfigs = {
@@ -86,6 +100,20 @@ const getNmstateObject = (
       interfaces.push(
         getInterface(nicName, protocolConfigs, networkWide, bondType, hasBondsConfigured),
       );
+      if (bondType && hasBondsConfigured) {
+        interfaces.push(
+          getInterface(
+            BOND_NIC_NAME,
+            protocolConfigs,
+            networkWide,
+            bondType,
+            hasBondsConfigured,
+            true,
+          ),
+        );
+      }
+      // eslint-disable-next-line no-console
+      console.log(interfaces);
     }
 
     routeConfigs.push(
