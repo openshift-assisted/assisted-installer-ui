@@ -81,6 +81,7 @@ export const getClusterDetailsInitialValues = ({
     platform: cluster?.platform?.type || 'none',
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
+    controlPlaneCount: '3',
   };
 };
 

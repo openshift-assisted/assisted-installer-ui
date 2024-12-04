@@ -7,6 +7,7 @@ import { OpenShiftVersionField } from './Fields/OpenShiftVersionField';
 import { PullSecretField } from './Fields/PullSecretField';
 import { CpuArchitectureField } from './Fields/CpuArchitectureField';
 import { SnoField } from './Fields/SnoField';
+import { ControlPlaneNodesField } from './Fields/ControlPlaneNodesField';
 
 export class ClusterDetailsForm {
   static readonly alias = `@${ClusterDetailsForm.name}`;
@@ -51,5 +52,9 @@ export class ClusterDetailsForm {
 
   static get snoField() {
     return SnoField.init(ClusterDetailsForm.alias);
+  }
+
+  static get controlPlaneNodesField() {
+    return ControlPlaneNodesField.init(ClusterDetailsForm.alias);
   }
 }
