@@ -22,13 +22,13 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
 
     staticIpPage.getFormViewSelect().should('be.checked');
     staticIpPage.getAddMoreHosts().should('be.disabled');
-    staticIpPage.hostSpecificMacAddress(0).type('00:00:5e:00:53:af');
+    staticIpPage.hostSpecificMacAddress(0).clear().type('00:00:5e:00:53:af');
     staticIpPage.hostSpecificIpv4Address(0).type('192.168.2.38');
 
     staticIpPage.hostSpecificMacAddress(1).should('not.exist');
     staticIpPage.getAddMoreHosts().should('be.enabled');
     staticIpPage.getAddMoreHosts().click();
-    staticIpPage.hostSpecificMacAddress(1).type('00:00:5e:00:53:ae');
+    staticIpPage.hostSpecificMacAddress(1).clear().type('00:00:5e:00:53:ae');
     staticIpPage.hostSpecificIpv4Address(1).type('192.168.2.39');
 
     commonActions.verifyNextIsEnabled();
