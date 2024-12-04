@@ -24,3 +24,4 @@ Cypress.env(
 );
 Cypress.env('baseDnsDomainFieldHelperErrorId', '#form-input-baseDnsDomain-field-helper-error');
 Cypress.env('pullSecretFieldHelperErrorId', '#form-input-pullSecret-field-helper-error');
+Cypress.env('controlPlaneNodesFieldId', '#form-input-controlPlaneCount-field');

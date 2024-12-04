@@ -2,7 +2,7 @@ import React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useField } from 'formik';
-import { PopoverIcon } from '../../../common';
+import { getFieldId, PopoverIcon } from '../../../common';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
@@ -10,7 +10,7 @@ import {
 import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
-const fieldId = `form-control__${INPUT_NAME}`;
+const fieldId = getFieldId(INPUT_NAME, 'input');
 const DEFAULT_VALUE = '3';
 
 export const ControlPlaneNodesLabel = () => {
@@ -110,7 +110,11 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
 
   return (
     <>
-      <FormGroup label={<ControlPlaneNodesLabel />} fieldId={fieldId}>
+      <FormGroup
+        id={`form-control__${fieldId}`}
+        label={<ControlPlaneNodesLabel />}
+        fieldId={fieldId}
+      >
         <Tooltip
           content="This option is not available with the current configurations. Make sure that OpenShift version is 4.18 or newer, CPU architecture is x86_64 and no external platform integration is selected."
           hidden={isControlPlanesNodesOptionAvailable}
