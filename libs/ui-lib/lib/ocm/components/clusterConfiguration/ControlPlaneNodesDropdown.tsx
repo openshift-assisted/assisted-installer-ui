@@ -33,16 +33,20 @@ interface ControlPlaneNodesDropdownProps {
   featureSupportLevelData?: NewFeatureSupportLevelMap;
 }
 
-const isDropdownEnabled = (
+const isDropdownItemEnabled = (
+  controlPlaneNodeCount: string,
   openshiftVersion: string,
   cpuArch: string,
   platform: string,
 ): boolean => {
-  return (
-    parseFloat(openshiftVersion) >= 4.18 &&
-    cpuArch === 'x86_64' &&
-    (platform === 'none' || platform === 'baremetal')
-  );
+  if (controlPlaneNodeCount === '4' || controlPlaneNodeCount === '5') {
+    return (
+      parseFloat(openshiftVersion) >= 4.18 &&
+      cpuArch === 'x86_64' &&
+      (platform === 'none' || platform === 'baremetal')
+    );
+  }
+  return true;
 };
 
 const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
@@ -68,18 +72,15 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     featureSupportLevelData,
   );
 
+  const disabledReason =
+    'This option is not available with the current configurations. Make sure that OpenShift version is 4.18 or newer, CPU architecture is x86_64 and no external platform integration is selected.';
+
   const options: ControlPlaneNodesOption[] = [
     { value: '1', label: '1 (Single Node OpenShift - not highly available cluster)' },
     { value: '3', label: '3 (highly available cluster)' },
     { value: '4', label: '4 (highly available cluster+)' },
     { value: '5', label: '5 (highly available cluster++)' },
   ];
-
-  const isControlPlanesNodesOptionAvailable = isDropdownEnabled(
-    openshiftVersion,
-    cpuArch,
-    platform,
-  );
 
   React.useEffect(() => {
     if (!field.value) {
@@ -93,17 +94,19 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     setOpen(false);
   };
 
-  const dropdownItems = options.map(({ value, label }) => (
-    <DropdownItem key={value} id={value} isAriaDisabled={!isControlPlanesNodesOptionAvailable}>
-      <div>{label}</div>
-    </DropdownItem>
-  ));
+  const dropdownItems = options.map(({ value, label }) => {
+    const isItemEnabled = isDropdownItemEnabled(value, openshiftVersion, cpuArch, platform);
+    return (
+      <DropdownItem key={value} id={value} isAriaDisabled={!isItemEnabled}>
+        <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
+          <div>{label}</div>
+        </Tooltip>
+      </DropdownItem>
+    );
+  });
 
   const toggle = (
-    <DropdownToggle
-      onToggle={(_, val) => setOpen(val)}
-      isDisabled={!isControlPlanesNodesOptionAvailable}
-    >
+    <DropdownToggle onToggle={(_, val) => setOpen(val)}>
       {options.find((opt) => opt.value === field.value)?.label || 'Select'}
     </DropdownToggle>
   );
@@ -115,18 +118,13 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
         label={<ControlPlaneNodesLabel />}
         fieldId={fieldId}
       >
-        <Tooltip
-          content="This option is not available with the current configurations. Make sure that OpenShift version is 4.18 or newer, CPU architecture is x86_64 and no external platform integration is selected."
-          hidden={isControlPlanesNodesOptionAvailable}
-        >
-          <Dropdown
-            id={fieldId}
-            isOpen={isOpen}
-            toggle={toggle}
-            dropdownItems={dropdownItems}
-            onSelect={onSelect}
-          />
-        </Tooltip>
+        <Dropdown
+          id={fieldId}
+          isOpen={isOpen}
+          toggle={toggle}
+          dropdownItems={dropdownItems}
+          onSelect={onSelect}
+        />
       </FormGroup>
       {field.value === '1' && (
         <OcmSNODisclaimer
