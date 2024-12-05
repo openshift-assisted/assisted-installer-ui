@@ -15,6 +15,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
 import { InfraEnvK8sResource } from '../../types';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
+import { ImageType } from '@openshift-assisted/types/./assisted-installer-service';
 
 type AddHostModalStepType = 'config' | 'download';
 
@@ -30,6 +31,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
+  const imageType = (infraEnv.spec?.imageType as ImageType) || 'minimal-iso';
 
   const isoDialog = agentClusterInstall ? 'config' : 'download';
   const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
@@ -66,8 +68,8 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           <DiscoveryImageConfigForm
             onCancel={onClose}
             handleSubmit={handleIsoConfigSubmit}
-            hideDiscoveryImageType={true} // So far configured by env variable on backend
-            imageType="full-iso" // So far the only option for CIM
+            hideDiscoveryImageType={false} 
+            imageType={imageType}
             sshPublicKey={sshPublicKey}
             httpProxy={httpProxy}
             httpsProxy={httpsProxy}

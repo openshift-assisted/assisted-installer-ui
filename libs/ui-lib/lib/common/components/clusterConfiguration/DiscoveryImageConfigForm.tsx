@@ -116,17 +116,6 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
           <>
             <ModalBoxBody>
               <Stack hasGutter>
-                <StackItem>
-                  <Alert
-                    variant={AlertVariant.info}
-                    isInline
-                    title={
-                      isIPXE
-                        ? t('ai:To add hosts to the cluster, generate iPXE script.')
-                        : t('ai:To add hosts to the cluster, generate a Discovery ISO.')
-                    }
-                  />
-                </StackItem>
                 {hasDHCP === false && (
                   <StackItem>
                     <StaticIPInfo docVersion={docVersion} />
@@ -134,8 +123,17 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 )}
                 <StackItem>
                   <Form>
-                    <AlertFormikError status={status as StatusErrorType} />
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
+                    <Alert
+                      variant={AlertVariant.info}
+                      isInline
+                      title={
+                        isIPXE
+                          ? t('ai:To add hosts to the cluster, generate iPXE script.')
+                          : t('ai:To add hosts to the cluster, generate a Discovery ISO.')
+                      }
+                    />
+                    <AlertFormikError status={status as StatusErrorType} />
                     <UploadSSH />
                     <ProxyFields />
                   </Form>
@@ -152,8 +150,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 {isSubmitting
                   ? t('ai:Generating')
                   : isIPXE
-                  ? t('ai:Generate script file')
-                  : t('ai:Generate Discovery ISO')}
+                    ? t('ai:Generate script file')
+                    : t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}
