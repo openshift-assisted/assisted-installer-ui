@@ -16,7 +16,16 @@ const DEFAULT_VALUE = '3';
 export const ControlPlaneNodesLabel = () => {
   return (
     <>
-      Number of control plane nodes <PopoverIcon bodyContent={<>Info control plane nodes</>} />
+      Number of control plane nodes{' '}
+      <PopoverIcon
+        bodyContent={
+          <>
+            Control plane nodes manage workloads, maintain cluster state, and ensure stability.
+            Using more than three nodes boosts fault tolerance and availability, reducing downtime
+            during failures.
+          </>
+        }
+      />
     </>
   );
 };
@@ -27,32 +36,20 @@ interface ControlPlaneNodesOption {
 }
 
 interface ControlPlaneNodesDropdownProps {
-  openshiftVersion: string;
-  cpuArch: string;
-  platform: string;
-  featureSupportLevelData?: NewFeatureSupportLevelMap;
+  featureSupportLevelData?: NewFeatureSupportLevelMap | null;
 }
 
 const isDropdownItemEnabled = (
   controlPlaneNodeCount: string,
-  openshiftVersion: string,
-  cpuArch: string,
-  platform: string,
+  isNonStandardControlPlaneEnabled: boolean,
 ): boolean => {
   if (controlPlaneNodeCount === '4' || controlPlaneNodeCount === '5') {
-    return (
-      parseFloat(openshiftVersion) >= 4.18 &&
-      cpuArch === 'x86_64' &&
-      (platform === 'none' || platform === 'baremetal')
-    );
+    return isNonStandardControlPlaneEnabled;
   }
   return true;
 };
 
 const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
-  openshiftVersion,
-  cpuArch,
-  platform,
   featureSupportLevelData,
 }) => {
   const [field, , { setValue }] = useField<string>(INPUT_NAME);
@@ -61,19 +58,24 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
 
   const snoSupportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
     'SNO',
-    featureSupportLevelData,
+    featureSupportLevelData ?? undefined,
   );
   const snoExpansion = newFeatureSupportLevelContext.isFeatureSupported(
     'SINGLE_NODE_EXPANSION',
-    featureSupportLevelData,
+    featureSupportLevelData ?? undefined,
   );
   const isDisabled = newFeatureSupportLevelContext.isFeatureDisabled(
     'SNO',
-    featureSupportLevelData,
+    featureSupportLevelData ?? undefined,
   );
 
   const disabledReason =
     'This option is not available with the current configurations. Make sure that OpenShift version is 4.18 or newer, CPU architecture is x86_64 and no external platform integration is selected.';
+
+  const isNonStandardControlPlaneEnabled = newFeatureSupportLevelContext.isFeatureSupported(
+    'NON_STANDARD_HA_CONTROL_PLANE',
+    featureSupportLevelData ?? undefined,
+  );
 
   const options: ControlPlaneNodesOption[] = [
     { value: '1', label: '1 (Single Node OpenShift - not highly available cluster)' },
@@ -95,7 +97,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   };
 
   const dropdownItems = options.map(({ value, label }) => {
-    const isItemEnabled = isDropdownItemEnabled(value, openshiftVersion, cpuArch, platform);
+    const isItemEnabled = isDropdownItemEnabled(value, isNonStandardControlPlaneEnabled);
     return (
       <DropdownItem key={value} id={value} isAriaDisabled={!isItemEnabled}>
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">

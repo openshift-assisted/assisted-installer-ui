@@ -180,11 +180,7 @@ export const OcmClusterDetailsFormFields = ({
           {values.controlPlaneCount}
         </StaticTextField>
       ) : (
-        <ControlPlaneNodesDropdown
-          openshiftVersion={openshiftVersion}
-          cpuArch={values.cpuArchitecture as SupportedCpuArchitecture}
-          platform={platform}
-        />
+        <ControlPlaneNodesDropdown featureSupportLevelData={featureSupportLevelData} />
       )}
       <CustomManifestCheckbox clusterId={clusterId || ''} isDisabled={platform === 'external'} />
 

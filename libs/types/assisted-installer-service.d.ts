@@ -368,6 +368,10 @@ export interface Cluster {
    * Indication if organization soft timeouts is enabled for the cluster.
    */
   orgSoftTimeoutsEnabled?: boolean;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface ClusterCreateParams {
   /**
@@ -375,7 +379,7 @@ export interface ClusterCreateParams {
    */
   name: string;
   /**
-   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * (DEPRECATED) Please use 'controlPlaneCount' instead. Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
    *
    */
@@ -494,7 +498,7 @@ export interface ClusterCreateParams {
    */
   tags?: string;
   /**
-   * The amount of control planes which should be part of the cluster.
+   * Specifies the required number of control plane nodes that should be part of the cluster.
    */
   controlPlaneCount?: number;
 }
@@ -2734,7 +2738,7 @@ export interface V2ClusterUpdateParams {
    */
   tags?: string;
   /**
-   * The amount of control planes which should be part of the cluster.
+   * Specifies the required number of control plane nodes that should be part of the cluster.
    */
   controlPlaneCount?: number;
 }
