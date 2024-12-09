@@ -31,9 +31,10 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
 
       clusterDetailsPage.inputClusterName();
       clusterDetailsPage.inputBaseDnsDomain();
-      clusterDetailsPage.inputOpenshiftVersion();
+      clusterDetailsPage.inputOpenshiftVersion('4.18');
 
-      clusterDetailsPage.enableSno();
+      clusterDetailsPage.openControlPlaneNodesDropdown();
+      clusterDetailsPage.selectControlPlaneNodeOption('1');
       clusterDetailsPage.inputPullSecret();
 
       // Create the cluster and store its ID when moving to the next step
