@@ -10,7 +10,10 @@ import {
   PopoverIcon,
 } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
-import { getCnvIncompatibleWithLvmReason } from '../../featureSupportLevels/featureStateUtils';
+import {
+  getCnvDisabledWithMtvReason,
+  getCnvIncompatibleWithLvmReason,
+} from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -82,6 +85,9 @@ const CnvCheckbox = ({
     if (!reason) {
       const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
       reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
+    }
+    if (!reason) {
+      reason = getCnvDisabledWithMtvReason(values);
     }
     setDisabledReason(reason);
   }, [values, featureSupportLevel]);
