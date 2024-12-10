@@ -48,6 +48,7 @@ describe('Create a new cluster and show correct validations for every field', ()
     const malformedJsonPullSecret = '{{}}';
     let pullSecretError =
       "Invalid pull secret format. You must use your Red Hat account's pull secret";
+    clusterDetailsPage.clearPullSecret();
     clusterDetailsPage.inputPullSecret(malformedJsonPullSecret);
     clusterDetailsPage.clickClusterDetailsBody();
     clusterDetailsPage.validateInputPullSecretFieldHelper(pullSecretError);
@@ -58,6 +59,7 @@ describe('Create a new cluster and show correct validations for every field', ()
     // Need to set valid name and DNS
     clusterDetailsPage.inputClusterName();
     clusterDetailsPage.inputBaseDnsDomain();
+    clusterDetailsPage.clearPullSecret();
     clusterDetailsPage.inputPullSecret(invalidPullSecret);
 
     const errorSuffix = Cypress.env('OCM_USER')

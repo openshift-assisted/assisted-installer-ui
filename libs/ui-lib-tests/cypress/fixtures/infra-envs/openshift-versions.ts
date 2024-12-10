@@ -47,6 +47,11 @@ const versions: Record<string, Version> = {
     display_name: 'OpenShift 4.15.2',
     support_level: 'production',
   },
+  '4.18': {
+    cpu_architectures: [x86, arm64, s390x, ppc64le],
+    display_name: 'OpenShift 4.18',
+    support_level: 'production',
+  },
 };
 
 expect(
