@@ -19,6 +19,7 @@ const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
 const OPENSHIFT_AI_OPERATOR_LABEL = 'OpenShift AI';
+const OSC_OPERATOR_LABEL = 'OpenShift sandboxed containers';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -134,6 +135,20 @@ const getLvmDisabledReason = (
   return undefined;
 };
 
+const getOscDisabledReason = (
+  cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  isSupported: boolean,
+) => {
+  if (!cluster) {
+    return undefined;
+  }
+  if (!isSupported) {
+    return `${OSC_OPERATOR_LABEL} is not supported in this OpenShift version.`;
+  }
+  return undefined;
+};
+
 const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => {
   if (!cluster) {
     return undefined;
@@ -188,6 +203,9 @@ export const getNewFeatureDisabledReason = (
     }
     case 'OPENSHIFT_AI': {
       return getOpenShiftAIDisabledReason(cluster, activeFeatureConfiguration, isSupported);
+    }
+    case 'OSC': {
+      return getOscDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
