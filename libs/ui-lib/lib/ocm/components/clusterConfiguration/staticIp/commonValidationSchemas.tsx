@@ -34,7 +34,10 @@ export const getUniqueValidationSchema = <FormValues,>(
           message: 'Unexpected error: Failed to get values to test uniqueness',
         });
       }
-      return values.filter((currentValue) => currentValue === value).length === 1;
+      return (
+        values.filter((currentValue) => currentValue.toLowerCase() === value?.toLowerCase())
+          .length === 1
+      );
     },
   );
 };
