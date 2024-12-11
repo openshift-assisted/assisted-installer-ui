@@ -149,7 +149,7 @@ const getFormViewHost = (
     }
   }
 
-  if (!realInterfaces) {
+  if (realInterfaces.length === 0) {
     //handle case 2
     return null;
   }
