@@ -14,8 +14,8 @@ import {
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
-import { SNOControlGroup } from '../../../common';
 import { getNetworkType } from '../helpers';
+import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
   forceOpenshiftVersion?: string;
@@ -52,7 +52,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   cpuArchitectures,
 }) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
-  const { name, baseDnsDomain, highAvailabilityMode } = values;
+  const { name, baseDnsDomain } = values;
 
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
@@ -110,11 +110,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           }}
         />
       )}
+      <ControlPlaneNodesDropdown isNutanix={isNutanix} isDisabled={isEditFlow} />
       {!isNutanix && (
-        <>
-          <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
-          <CpuArchitectureDropdown isDisabled={isEditFlow} cpuArchitectures={cpuArchitectures} />
-        </>
+        <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}
