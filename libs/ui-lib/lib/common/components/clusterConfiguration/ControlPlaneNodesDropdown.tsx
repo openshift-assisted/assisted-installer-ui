@@ -21,7 +21,7 @@ const ControlPlaneNodesDropdown = ({
   isNutanix?: boolean;
 }) => {
   const { t } = useTranslation();
-  const [{ name, value }, , { setValue }] = useField<string | ''>('controlPlaneAgents');
+  const [{ name, value }, , { setValue }] = useField<string>('controlPlaneAgents');
   const [current, setCurrent] = React.useState<string>('3');
 
   const options: ControlPlaneNodesOption[] = [
