@@ -52,7 +52,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   cpuArchitectures,
 }) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
-  const { name, baseDnsDomain } = values;
+  const { name, baseDnsDomain, cpuArchitecture, openshiftVersion } = values;
 
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
@@ -110,7 +110,12 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           }}
         />
       )}
-      <ControlPlaneNodesDropdown isNutanix={isNutanix} isDisabled={isEditFlow} />
+      <ControlPlaneNodesDropdown
+        isNutanix={isNutanix}
+        isDisabled={isEditFlow}
+        cpuArchitecture={cpuArchitecture}
+        openshiftVersion={openshiftVersion}
+      />
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
