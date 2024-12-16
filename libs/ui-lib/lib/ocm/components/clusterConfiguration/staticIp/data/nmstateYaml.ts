@@ -119,7 +119,6 @@ export const getInterface = (
       name: nicName,
       type: NmstateInterfaceType.BOND,
       state: 'up',
-      ...protocolConfigs,
       'link-aggregation': {
         mode: bondType,
         options: {
