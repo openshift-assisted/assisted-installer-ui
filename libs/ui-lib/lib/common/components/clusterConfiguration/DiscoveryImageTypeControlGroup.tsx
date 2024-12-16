@@ -21,7 +21,7 @@ const DiscoveryImageTypeControlGroup = () => {
   const { t } = useTranslation();
   return (
     <Flex>
-      <FlexItem  spacer={{ default: 'spacer3xl' }}>
+      <FlexItem spacer={{ default: 'spacer3xl' }}>
         <RadioField
           name={GROUP_NAME}
           id={'minimal-iso'}

@@ -123,7 +123,6 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 )}
                 <StackItem>
                   <Form>
-                   
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
                     <AlertFormikError status={status as StatusErrorType} />
                     <Alert
