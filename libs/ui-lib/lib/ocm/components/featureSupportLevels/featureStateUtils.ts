@@ -252,6 +252,14 @@ export const getOdfIncompatibleWithLvmsReason = (operatorValues: OperatorsValues
     : undefined;
 };
 
+export const getOpenShiftAIIncompatibleWithLvmsReason = (operatorValues: OperatorsValues) => {
+  // Currently OpenShift AI requires ODF, and that is incompatible with LVM.
+  const mustDisableOpenShiftAI = operatorValues.useOdfLogicalVolumeManager;
+  return mustDisableOpenShiftAI
+    ? `Currently the ${OPENSHIFT_AI_OPERATOR_LABEL} requires ${ODF_OPERATOR_LABEL}, and you cannot install that at the same time as ${LVMS_OPERATOR_LABEL} operator.`
+    : undefined;
+};
+
 export const getLvmsIncompatibleWithOdfReason = (operatorValues: OperatorsValues) => {
   const mustDisableLvms = operatorValues.useOpenShiftDataFoundation;
   // In versions >= 4.15, it's not possible to select ODF + LVMS

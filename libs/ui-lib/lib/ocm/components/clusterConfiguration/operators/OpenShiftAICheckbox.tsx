@@ -8,6 +8,7 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import { getOpenShiftAIIncompatibleWithLvmsReason } from '../../featureSupportLevels/featureStateUtils';
 
 const OPENSHIFT_AI_FIELD_NAME = 'useOpenShiftAI';
 
@@ -52,7 +53,10 @@ const OpenShiftAICheckbox = () => {
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
-    const disabledReason = featureSupportLevel.getFeatureDisabledReason('OPENSHIFT_AI');
+    let disabledReason = featureSupportLevel.getFeatureDisabledReason('OPENSHIFT_AI');
+    if (!disabledReason) {
+      disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
+    }
     setDisabledReason(disabledReason);
   }, [values, featureSupportLevel]);
 

@@ -104,8 +104,9 @@ export const getInterface = (
   networkWide: FormViewNetworkWideValues,
   bondType?: string,
   hasBondsConfigured?: boolean,
+  createBondInterface?: boolean,
 ): NmstateInterface => {
-  if (networkWide.useVlan && networkWide.vlanId) {
+  if (networkWide.useVlan && networkWide.vlanId && !createBondInterface) {
     return {
       name: getVlanNicName(nicName, networkWide.vlanId),
       type: NmstateInterfaceType.VLAN,
@@ -118,7 +119,6 @@ export const getInterface = (
       name: nicName,
       type: NmstateInterfaceType.BOND,
       state: 'up',
-      ...protocolConfigs,
       'link-aggregation': {
         mode: bondType,
         options: {
