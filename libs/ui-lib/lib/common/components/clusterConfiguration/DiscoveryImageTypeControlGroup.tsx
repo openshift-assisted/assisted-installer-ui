@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, StackItem } from '@patternfly/react-core';
+import { Flex, FlexItem } from '@patternfly/react-core';
 import { PopoverIcon, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -20,38 +20,38 @@ const DiscoveryImageTypeControlGroupLabel = ({
 const DiscoveryImageTypeControlGroup = () => {
   const { t } = useTranslation();
   return (
-    <Stack hasGutter>
-      <StackItem>
+    <Flex>
+      <FlexItem  spacer={{ default: 'spacer3xl' }}>
         <RadioField
           name={GROUP_NAME}
           id={'minimal-iso'}
           value={'minimal-iso'}
           label={
             <DiscoveryImageTypeControlGroupLabel
-              text={t('ai:Minimal image file: Provision with virtual media')}
+              text={t('ai:Minimal image file')}
               popoverContent={t(
                 "ai:Recommended option. The generated discovery ISO will be smaller, but will need to download additional data during boot. This option is useful if ISO storage capacity is limited or if it's being served over a constrained network.",
               )}
             />
           }
         />
-      </StackItem>
-      <StackItem>
+      </FlexItem>
+      <FlexItem>
         <RadioField
           name={GROUP_NAME}
           id={'full-iso'}
           value={'full-iso'}
           label={
             <DiscoveryImageTypeControlGroupLabel
-              text={t('ai:Full image file: Provision with physical media')}
+              text={t('ai:Full image file')}
               popoverContent={t(
                 'ai:The generated discovery ISO will contain everything needed to boot.',
               )}
             />
           }
         />
-      </StackItem>
-    </Stack>
+      </FlexItem>
+    </Flex>
   );
 };
 
