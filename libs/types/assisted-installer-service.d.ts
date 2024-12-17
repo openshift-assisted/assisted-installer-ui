@@ -83,6 +83,7 @@ export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
   commandLine?: string;
+  secureBootState?: SecureBootState;
 }
 export interface Cluster {
   /**
@@ -367,6 +368,10 @@ export interface Cluster {
    * Indication if organization soft timeouts is enabled for the cluster.
    */
   orgSoftTimeoutsEnabled?: boolean;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface ClusterCreateParams {
   /**
@@ -374,7 +379,7 @@ export interface ClusterCreateParams {
    */
   name: string;
   /**
-   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * (DEPRECATED) Please use 'controlPlaneCount' instead. Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
    *
    */
@@ -492,6 +497,10 @@ export interface ClusterCreateParams {
    * A comma-separated list of tags that are associated to the cluster.
    */
   tags?: string;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -643,6 +652,7 @@ export interface ConnectivityRemoteHost {
   hostId?: string; // uuid
   l2Connectivity?: L2Connectivity[];
   l3Connectivity?: L3Connectivity[];
+  mtuReport?: MtuReport[];
 }
 export interface ConnectivityReport {
   remoteHosts?: ConnectivityRemoteHost[];
@@ -1005,7 +1015,8 @@ export type FeatureSupportLevelId =
   | 'PIPELINES'
   | 'SERVICEMESH'
   | 'SERVERLESS'
-  | 'OPENSHIFT_AI';
+  | 'OPENSHIFT_AI'
+  | 'NON_STANDARD_HA_CONTROL_PLANE';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -2131,6 +2142,11 @@ export interface MonitoredOperator {
   statusUpdatedAt?: string; // date-time
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
+export interface MtuReport {
+  outgoingNic?: string;
+  remoteIpAddress?: string;
+  mtuSuccessful?: boolean;
+}
 export interface NextStepCmdRequest {
   /**
    * Infra env id
@@ -2431,6 +2447,7 @@ export interface Route {
    */
   metric?: number; // int32
 }
+export type SecureBootState = 'Unknown' | 'NotSupported' | 'Enabled' | 'Disabled';
 /**
  * IP address block for service IP blocks.
  */
@@ -2720,6 +2737,10 @@ export interface V2ClusterUpdateParams {
    * A comma-separated list of tags that are associated to the cluster.
    */
   tags?: string;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface V2Events {
   clusterId?: string;
