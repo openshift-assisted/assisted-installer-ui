@@ -627,7 +627,8 @@ export type ClusterValidationId =
   | 'pipelines-requirements-satisfied'
   | 'servicemesh-requirements-satisfied'
   | 'serverless-requirements-satisfied'
-  | 'openshift-ai-requirements-satisfied';
+  | 'openshift-ai-requirements-satisfied'
+  | 'osc-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1016,7 +1017,9 @@ export type FeatureSupportLevelId =
   | 'SERVICEMESH'
   | 'SERVERLESS'
   | 'OPENSHIFT_AI'
+  | 'OSC'
   | 'NON_STANDARD_HA_CONTROL_PLANE';
+
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1566,7 +1569,8 @@ export type HostValidationId =
   | 'pipelines-requirements-satisfied'
   | 'servicemesh-requirements-satisfied'
   | 'serverless-requirements-satisfied'
-  | 'openshift-ai-requirements-satisfied';
+  | 'openshift-ai-requirements-satisfied'
+  | 'osc-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */

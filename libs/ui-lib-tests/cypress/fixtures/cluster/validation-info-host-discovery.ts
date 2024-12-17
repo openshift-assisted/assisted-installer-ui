@@ -34,6 +34,11 @@ const operatorValidations = [
     status: 'success',
     message: 'openshift-ai is disabled',
   },
+  {
+    id: 'osc-requirements-satisfied',
+    status: 'success',
+    message: 'osc is disabled',
+  },
 ];
 
 const hostValidationsInfo = {
