@@ -19,6 +19,7 @@ const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
 const OPENSHIFT_AI_OPERATOR_LABEL = 'OpenShift AI';
+const MTV_OPERATOR_LABEL = 'Migration Toolkit for Virtualization';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -287,4 +288,13 @@ const getOpenShiftAIDisabledReason = (
     return `The installer cannot currently enable ${OPENSHIFT_AI_OPERATOR_LABEL} with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.`;
   }
   return undefined;
+};
+
+export const getCnvDisabledWithMtvReason = (operatorValues: OperatorsValues) => {
+  const mustDisableCnv =
+    operatorValues.useContainerNativeVirtualization &&
+    operatorValues.useMigrationToolkitforVirtualization;
+  return mustDisableCnv
+    ? `Currently, you need to install ${CNV_OPERATOR_LABEL} operator at the same time as ${MTV_OPERATOR_LABEL} operator.`
+    : undefined;
 };
