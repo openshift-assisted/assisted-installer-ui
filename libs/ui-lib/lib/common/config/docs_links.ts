@@ -109,3 +109,8 @@ export const OPENSHIFT_AI_LINK =
   'https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai';
 
 export const OSC_LINK = 'https://docs.redhat.com/en/documentation/openshift_sandboxed_containers';
+
+export const getMtuLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/networking/changing-cluster-network-mtu#nw-cluster-mtu-change-about_changing-cluster-network-mtu`;

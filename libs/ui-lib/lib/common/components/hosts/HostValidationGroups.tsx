@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { Fragment, ReactElement } from 'react';
 import { Alert, AlertGroup, AlertVariant, Level, LevelItem } from '@patternfly/react-core';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
@@ -9,6 +10,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { Host, HostValidationId } from '@openshift-assisted/types/assisted-installer-service';
 import { Validation, ValidationsInfo } from '../../types/hosts';
 import {
+  getMtuLink,
   hostValidationFailureHints,
   hostValidationGroupLabels,
   hostValidationLabels,
@@ -19,6 +21,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { getKeys } from '../../utils';
 
 import './HostValidationGroups.css';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 export type AdditionNtpSourcePropsType = {
   AdditionalNTPSourcesDialogToggleComponent?: React.FC;
@@ -39,6 +42,7 @@ export type ValidationInfoActionProps = AdditionNtpSourcePropsType &
 
 type HostValidationGroupsProps = ValidationInfoActionProps & {
   validationsInfo: ValidationsInfo;
+  openshiftVersion?: string;
 };
 
 type ValidationGroupAlertProps = ValidationInfoActionProps & {
@@ -145,6 +149,34 @@ const ApiVipConnectivityAlert = ({
   );
 };
 
+const MtuInfoLink = ({ docsVersion }: { docsVersion: string }) => {
+  const { t } = useTranslation();
+  return (
+    <a href={getMtuLink(docsVersion)} target="_blank" rel="noopener noreferrer">
+      {t('ai:Learn more about MTU (maximum transmission unit)')} <ExternalLinkAltIcon />.
+    </a>
+  );
+};
+
+const MtuSyncAlert = ({
+  variant,
+  validation,
+  docsVersion,
+}: {
+  variant: AlertVariant;
+  validation: Validation;
+  docsVersion: string;
+}) => {
+  const { t } = useTranslation();
+  return (
+    <Alert title={t('ai:MTU (maximum transmission unit) failure')} variant={variant} isInline>
+      {toSentence(validation.message)} {hostValidationFailureHints(t)[validation.id]}
+      <br />
+      {<MtuInfoLink docsVersion={docsVersion} />}
+    </Alert>
+  );
+};
+
 const ValidationGroupAlerts = ({
   validations,
   title,
@@ -153,7 +185,8 @@ const ValidationGroupAlerts = ({
   AdditionalNTPSourcesDialogToggleComponent,
   UpdateDay2ApiVipDialogToggleComponent,
   host,
-}: ValidationGroupAlertProps) => {
+  openshiftVersion,
+}: ValidationGroupAlertProps & { openshiftVersion?: string }) => {
   if (!validations.length) {
     return null;
   }
@@ -162,6 +195,7 @@ const ValidationGroupAlerts = ({
     ['hostname-valid']: undefined,
     ['ntp-synced']: undefined,
     ['ignition-downloadable']: undefined,
+    ['mtu-valid']: undefined,
   };
   const alerts = [];
   const validationsWithoutActions: Validation[] = [];
@@ -210,6 +244,16 @@ const ValidationGroupAlerts = ({
       />,
     );
   }
+  if (validationsWithActions['mtu-valid'] && AdditionalNTPSourcesDialogToggleComponent) {
+    alerts.push(
+      <MtuSyncAlert
+        validation={validationsWithActions['mtu-valid']}
+        variant={variant}
+        key="mtu-sync-alert"
+        docsVersion={openshiftVersion || '4.17'}
+      />,
+    );
+  }
   if (validationsWithoutActions.length > 0) {
     alerts.push(
       <ValidationsAlert
@@ -223,20 +267,26 @@ const ValidationGroupAlerts = ({
   return <AlertGroup>{alerts}</AlertGroup>;
 };
 
-export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidationGroupsProps) => {
+export const HostValidationGroups = ({
+  validationsInfo,
+  openshiftVersion,
+  ...props
+}: HostValidationGroupsProps) => {
   const { t } = useTranslation();
   return (
     <>
       {getKeys(validationsInfo).map((groupName) => {
         const validations = validationsInfo[groupName] || [];
-
+        // eslint-disable-next-line no-console
+        console.log(validations);
         const pendingValidations = validations.filter(
           (v) => v.status === 'pending' && v.id !== 'ntp-synced',
         );
         const failedValidations = validations.filter(
           (v) => (v.status === 'failure' || v.status === 'error') && v.id !== 'ntp-synced',
         );
-
+        console.log('FAILED');
+        console.log(failedValidations);
         const softValidations = validations.filter(
           (v) => ['pending', 'failure', 'error'].includes(v.status) && v.id === 'ntp-synced',
         );
@@ -261,7 +311,7 @@ export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidati
             </>
           );
         };
-
+        console.log(getValidationGroupState());
         const groupLabel = hostValidationGroupLabels(t)[groupName] as string;
         return (
           <Fragment key={groupName}>
@@ -279,11 +329,13 @@ export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidati
                     variant={AlertVariant.info}
                     title={t('ai:Pending validations:')}
                     validations={pendingValidations}
+                    openshiftVersion={openshiftVersion}
                     {...props}
                   />
                   <ValidationGroupAlerts
                     variant={AlertVariant.info}
                     validations={softValidations}
+                    openshiftVersion={openshiftVersion}
                     title={''}
                     {...props}
                   />
@@ -294,6 +346,7 @@ export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidati
               variant={AlertVariant.warning}
               title={t('ai:Failed validations:')}
               validations={failedValidations}
+              openshiftVersion={openshiftVersion}
               {...props}
             />
           </Fragment>

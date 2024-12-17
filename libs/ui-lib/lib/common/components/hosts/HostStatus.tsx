@@ -57,7 +57,8 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   const { host } = props;
   const { status, statusInfo } = host;
   const { t } = useTranslation();
-
+  // eslint-disable-next-line no-console
+  console.log(status);
   if (['installing-in-progress'].includes(status)) {
     return (
       <TextContent>
@@ -141,7 +142,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
             <Text>{details}</Text>
           </TextContent>
         )}
-        <HostValidationGroups {...props} />
+        <HostValidationGroups openshiftVersion={openshiftVersion} {...props} />
       </StackItem>
     </Stack>
   );

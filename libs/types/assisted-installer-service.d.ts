@@ -620,6 +620,7 @@ export type ClusterValidationId =
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
   | 'mtv-requirements-satisfied'
+  | 'osc-requirements-satisfied'
   | 'network-type-valid'
   | 'platform-requirements-satisfied'
   | 'node-feature-discovery-requirements-satisfied'
@@ -628,7 +629,7 @@ export type ClusterValidationId =
   | 'servicemesh-requirements-satisfied'
   | 'serverless-requirements-satisfied'
   | 'openshift-ai-requirements-satisfied'
-  | 'osc-requirements-satisfied';
+  | 'authorino-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -995,6 +996,7 @@ export type FeatureSupportLevelId =
   | 'CNV'
   | 'MCE'
   | 'MTV'
+  | 'OSC'
   | 'NUTANIX_INTEGRATION'
   | 'BAREMETAL_PLATFORM'
   | 'NONE_PLATFORM'
@@ -1017,9 +1019,8 @@ export type FeatureSupportLevelId =
   | 'SERVICEMESH'
   | 'SERVERLESS'
   | 'OPENSHIFT_AI'
-  | 'OSC'
-  | 'NON_STANDARD_HA_CONTROL_PLANE';
-
+  | 'NON_STANDARD_HA_CONTROL_PLANE'
+  | 'AUTHORINO';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1545,6 +1546,7 @@ export type HostValidationId =
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
   | 'mtv-requirements-satisfied'
+  | 'osc-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
@@ -1570,7 +1572,8 @@ export type HostValidationId =
   | 'servicemesh-requirements-satisfied'
   | 'serverless-requirements-satisfied'
   | 'openshift-ai-requirements-satisfied'
-  | 'osc-requirements-satisfied';
+  | 'authorino-requirements-satisfied'
+  | 'mtu-valid';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
