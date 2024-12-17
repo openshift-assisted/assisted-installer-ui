@@ -1017,7 +1017,7 @@ export type FeatureSupportLevelId =
   | 'SERVICEMESH'
   | 'SERVERLESS'
   | 'OPENSHIFT_AI'
-  | 'OSC';
+  | 'OSC'
   | 'NON_STANDARD_HA_CONTROL_PLANE';
 
 /**
