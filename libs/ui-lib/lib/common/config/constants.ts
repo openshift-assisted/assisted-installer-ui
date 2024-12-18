@@ -135,6 +135,8 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'servicemesh-requirements-satisfied': t('ai:Service Mesh requirements'),
   'openshift-ai-requirements-satisfied': t('ai:OpenShift AI requirements'),
   'osc-requirements-satisfied': t('ai:OpenShift sandboxed containers requirements'),
+  'mtu-valid': t('ai:MTU requirements'),
+  'authorino-requirements-satisfied': '',
 });
 
 export const hostValidationFailureHints = (
@@ -192,6 +194,8 @@ export const hostValidationFailureHints = (
   'servicemesh-requirements-satisfied': '',
   'openshift-ai-requirements-satisfied': '',
   'osc-requirements-satisfied': '',
+  'authorino-requirements-satisfied': '',
+  'mtu-valid': '',
 });
 
 export const clusterValidationLabels = (

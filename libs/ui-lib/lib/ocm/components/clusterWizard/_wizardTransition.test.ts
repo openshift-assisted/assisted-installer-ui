@@ -200,6 +200,11 @@ const flatValidationHostsDiscovery: HostValidation[] = [
     message: 'a host validation message',
     status: 'success',
   },
+  {
+    id: 'mtu-valid',
+    message: 'a host validation message',
+    status: 'success',
+  },
 ];
 
 const flatValidationHostsStorage: HostValidation[] = [

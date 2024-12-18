@@ -77,6 +77,11 @@ const hostValidationsInfo = {
       status: 'pending',
       message: 'Not enough information to calculate host majority groups',
     },
+    {
+      id: 'mtu-valid',
+      status: 'success',
+      message: '',
+    },
   ],
 };
 
