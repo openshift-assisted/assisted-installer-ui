@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { Fragment, ReactElement } from 'react';
 import { Alert, AlertGroup, AlertVariant, Level, LevelItem } from '@patternfly/react-core';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
@@ -277,16 +276,12 @@ export const HostValidationGroups = ({
     <>
       {getKeys(validationsInfo).map((groupName) => {
         const validations = validationsInfo[groupName] || [];
-        // eslint-disable-next-line no-console
-        console.log(validations);
         const pendingValidations = validations.filter(
           (v) => v.status === 'pending' && v.id !== 'ntp-synced',
         );
         const failedValidations = validations.filter(
           (v) => (v.status === 'failure' || v.status === 'error') && v.id !== 'ntp-synced',
         );
-        console.log('FAILED');
-        console.log(failedValidations);
         const softValidations = validations.filter(
           (v) => ['pending', 'failure', 'error'].includes(v.status) && v.id === 'ntp-synced',
         );
@@ -311,7 +306,6 @@ export const HostValidationGroups = ({
             </>
           );
         };
-        console.log(getValidationGroupState());
         const groupLabel = hostValidationGroupLabels(t)[groupName] as string;
         return (
           <Fragment key={groupName}>
