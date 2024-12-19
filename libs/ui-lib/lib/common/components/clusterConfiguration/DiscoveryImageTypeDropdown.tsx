@@ -13,7 +13,8 @@ import {
   DiscoveryImageType,
   SupportedCpuArchitecture,
   getFieldId,
-} from '../../../common';
+} from '../..';
+import { ImageType } from '@openshift-assisted/types/./assisted-installer-service';
 
 export const discoveryImageTypes: Record<DiscoveryImageType, string> = {
   'minimal-iso': 'Minimal image file - Download an ISO that fetches content on boot',
@@ -22,7 +23,7 @@ export const discoveryImageTypes: Record<DiscoveryImageType, string> = {
 };
 
 type DiscoveryImageTypeDropdownProps = {
-  name: string;
+  id: string;
   defaultValue: string | undefined;
   onChange: (isIpxeSelected: boolean) => void;
   selectedCpuArchitecture?: SupportedCpuArchitecture;
@@ -30,13 +31,13 @@ type DiscoveryImageTypeDropdownProps = {
 };
 
 export const DiscoveryImageTypeDropdown = ({
-  name,
+  id,
   defaultValue,
   onChange,
   selectedCpuArchitecture,
   isDisabled = false,
 }: DiscoveryImageTypeDropdownProps) => {
-  const [field, { value }, { setValue }] = useField<DiscoveryImageType>(name);
+  const [{ name, value }, , { setValue }] = useField<ImageType>('imageType');
   const [isOpen, setOpen] = React.useState(false);
   const [current, setCurrent] = React.useState(defaultValue);
   const fieldId = getFieldId(name, 'input');
@@ -76,14 +77,14 @@ export const DiscoveryImageTypeDropdown = ({
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const imageTypeSelection = event?.currentTarget.id as DiscoveryImageType;
+      const imageTypeSelection = event?.currentTarget.id as ImageType;
       const currentValue = imageTypeSelection
         ? discoveryImageTypes[imageTypeSelection]
         : defaultValue;
       setCurrent(currentValue ? currentValue : '');
       setValue(imageTypeSelection);
       setOpen(false);
-      onChange(imageTypeSelection === 'discovery-image-ipxe');
+    //  onChange(imageTypeSelection === 'discovery-image-ipxe');
     },
     [setCurrent, setOpen, defaultValue, setValue, onChange],
   );
@@ -104,9 +105,9 @@ export const DiscoveryImageTypeDropdown = ({
   );
 
   return (
-    <FormGroup fieldId={fieldId} label={'Provisioning type'}>
+    <FormGroup isInline fieldId={fieldId} label={'Provisioning type'}>
       <Dropdown
-        {...field}
+        // {...field}
         name={name}
         id={fieldId}
         dropdownItems={dropdownItems}

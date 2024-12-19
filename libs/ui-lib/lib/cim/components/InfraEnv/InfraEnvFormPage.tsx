@@ -51,6 +51,8 @@ import { TFunction } from 'i18next';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import OpenshiftVersionDropdown from './OpenshiftVersionDropdown';
 import { OsImage } from '../../types';
+import DiscoveryImageTypeDropdown from '../../../common/components/clusterConfiguration/DiscoveryImageTypeDropdown';
+import { ImageType } from '@openshift-assisted/types/./assisted-installer-service';
 
 export type EnvironmentStepFormValues = {
   name: string;
@@ -67,6 +69,7 @@ export type EnvironmentStepFormValues = {
     CpuArchitecture,
     CpuArchitecture.x86 | CpuArchitecture.ARM | CpuArchitecture.s390x
   >;
+  imageType: ImageType;
   enableNtpSources: boolean;
   additionalNtpSources: string;
   osImageVersion?: string;
@@ -120,6 +123,7 @@ const initialValues: EnvironmentStepFormValues = {
   enableNtpSources: false,
   additionalNtpSources: '',
   osImageVersion: '',
+  imageType: 'minimal-iso',
 };
 
 type InfraEnvFormProps = {
@@ -228,6 +232,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
             </Flex>
           </FormGroup>
           <CpuArchitectureDropdown />
+          <DiscoveryImageTypeDropdown id="imageType" defaultValue={'minimal-iso'} onChange={()=>{return;}} />
           {!!osImages && <OpenshiftVersionDropdown osImages={osImages} />}
           <RichInputField
             label={t('ai:Location')}
@@ -304,6 +309,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
       validate={getRichTextValidation(validationSchema(usedNames, t))}
       onSubmit={async (values: EnvironmentStepFormValues) => {
         try {
+          alert(values);
           await onSubmit?.(values);
           onFinish?.(values);
         } catch (e) {

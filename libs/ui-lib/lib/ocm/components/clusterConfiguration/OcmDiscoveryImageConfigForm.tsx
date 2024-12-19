@@ -33,7 +33,7 @@ import {
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
+import DiscoveryImageTypeDropdown, { discoveryImageTypes } from '../../../common/components/clusterConfiguration/DiscoveryImageTypeDropdown';
 import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
 
 export interface OcmImageCreateParams {
@@ -150,7 +150,7 @@ export const OcmDiscoveryImageConfigForm = ({
                 <StackItem>
                   <Form>
                     <DiscoveryImageTypeDropdown
-                      name="imageType"
+                      id="imageType"
                       defaultValue={discoveryImageTypes[imageTypeValue]}
                       onChange={updateDiscoveryButtonAndAlertText}
                       selectedCpuArchitecture={selectedCpuArchitecture}
