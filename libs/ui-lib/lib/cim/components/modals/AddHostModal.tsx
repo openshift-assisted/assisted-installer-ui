@@ -31,8 +31,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
   const imageType = infraEnv.spec?.imageType || 'minimal-iso';
 
-  const isoDialog = agentClusterInstall ? 'config' : 'download';
-  const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
+  const [dialogType, setDialogType] = React.useState<AddHostModalStepType>('config');
   const { t } = useTranslation();
   const handleIsoConfigSubmit = async (
     values: DiscoveryImageFormValues,
