@@ -506,7 +506,7 @@
   "ai:Memory capacity": "Capacidad de memoria",
   "ai:Message": "Mensaje",
   "ai:Metal3 operator is not configured": "El operador Metal3 no está configurado",
-  "ai:Minimal image file": "Archivo de imagen mínimo",
+  "ai:Minimal image file: Provision with virtual media": "Archivo de imagen mínimo: suministro con medios virtuales",
   "ai:Minimal value is 10Gi": "El valor mínimo es 10Gi",
   "ai:Minimal value is 1Gi": "El valor mínimo es 1Gi",
   "ai:Minimum CPU cores": "Núcleos de CPU mínimos",
