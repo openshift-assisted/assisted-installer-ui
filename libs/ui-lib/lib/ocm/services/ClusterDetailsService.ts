@@ -21,7 +21,6 @@ import {
   ManagedDomain,
   PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
-import toNumber from 'lodash-es/toNumber';
 
 const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
   const params = new URLSearchParams(urlSearchParams);
@@ -37,7 +36,7 @@ const ClusterDetailsService = {
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
     const params: ClusterCreateParamsWithStaticNetworking = {
       name: values.name,
-      controlPlaneCount: toNumber(values.controlPlaneCount),
+      controlPlaneCount: values.controlPlaneCount,
       openshiftVersion: values.openshiftVersion,
       pullSecret: values.pullSecret,
       baseDnsDomain: values.baseDnsDomain,
