@@ -16,6 +16,9 @@ import {
 } from './dataTypes';
 import findLastIndex from 'lodash-es/findLastIndex.js';
 
+const REAL_NIC_NAME = 'eth0';
+const REAL_NIC_NAME_1 = 'eth1';
+
 const ROUTE_DESTINATIONS = {
   ipv4: '0.0.0.0/0',
   ipv6: '::/0',
@@ -99,14 +102,30 @@ export const getInterface = (
   nicName: string,
   protocolConfigs: NmstateProtocolConfigs,
   networkWide: FormViewNetworkWideValues,
+  bondType?: string,
+  hasBondsConfigured?: boolean,
+  createBondInterface?: boolean,
 ): NmstateInterface => {
-  if (networkWide.useVlan && networkWide.vlanId) {
+  if (networkWide.useVlan && networkWide.vlanId && !createBondInterface) {
     return {
       name: getVlanNicName(nicName, networkWide.vlanId),
       type: NmstateInterfaceType.VLAN,
       state: 'up',
       vlan: { 'base-iface': nicName, id: networkWide.vlanId },
       ...protocolConfigs,
+    };
+  } else if (bondType && hasBondsConfigured) {
+    return {
+      name: nicName,
+      type: NmstateInterfaceType.BOND,
+      state: 'up',
+      'link-aggregation': {
+        mode: bondType,
+        options: {
+          miimon: '100',
+        },
+        port: [REAL_NIC_NAME, REAL_NIC_NAME_1],
+      },
     };
   } else {
     return {

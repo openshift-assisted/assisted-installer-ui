@@ -14,7 +14,7 @@ import omit from 'lodash-es/omit.js';
 import ClustersAPI from '../../common/api/assisted-service/ClustersAPI';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { AI_UI_TAG } from '../../common/config/constants';
+import { AI_ASSISTED_MIGRATION_TAG, AI_UI_TAG } from '../../common/config/constants';
 import { isInOcm } from '../../common/api/axiosClient';
 
 const ClustersService = {
@@ -22,7 +22,10 @@ const ClustersService = {
     return hosts.find((host) => host.id === hostId);
   },
 
-  async create(params: ClusterCreateParamsWithStaticNetworking) {
+  async create(params: ClusterCreateParamsWithStaticNetworking, isAssistedMigration?: boolean) {
+    if (isAssistedMigration) {
+      params.tags = AI_ASSISTED_MIGRATION_TAG;
+    }
     const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
     const infraEnvCreateParams: InfraEnvCreateParams = {
       name: `${params.name}_infra-env`,

@@ -171,6 +171,9 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'odf-requirements-satisfied',
       'lvm-requirements-satisfied',
       'cnv-requirements-satisfied',
+      'nvidia-gpu-requirements-satisfied',
+      'openshift-ai-requirements-satisfied',
+      'osc-requirements-satisfied',
     ],
   },
   host: {
@@ -183,6 +186,10 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'odf-requirements-satisfied',
       'lvm-requirements-satisfied',
       'cnv-requirements-satisfied',
+      'nvidia-gpu-requirements-satisfied',
+      'openshift-ai-requirements-satisfied',
+      'osc-requirements-satisfied',
+      'mtu-valid',
     ],
   },
   softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk'],
@@ -221,7 +228,7 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   // Alternatively we would have to whitelist network validations instead of using group
   // TODO(mlibra): remove that container-images-available from soft validations and let backend drive it via disabling it.
   //   Depends on: https://issues.redhat.com/browse/MGMT-5265
-  softValidationIds: ['ntp-synced', 'container-images-available'],
+  softValidationIds: ['ntp-synced', 'container-images-available', 'mtu-valid'],
 };
 
 const reviewStepValidationsMap: WizardStepValidationMap = {

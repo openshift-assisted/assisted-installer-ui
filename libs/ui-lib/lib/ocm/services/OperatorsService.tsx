@@ -6,6 +6,9 @@ import {
   OPERATOR_NAME_LVM,
   OperatorName,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
+  OPERATOR_NAME_OPENSHIFT_AI,
+  OPERATOR_NAME_OSC,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import { getKeys } from '../../common/utils';
@@ -35,6 +38,9 @@ const OperatorsService = {
     setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
     setOperator(OPERATOR_NAME_ODF, values.useOpenShiftDataFoundation);
     setOperator(OPERATOR_NAME_MCE, values.useMultiClusterEngine);
+    setOperator(OPERATOR_NAME_MTV, values.useMigrationToolkitforVirtualization);
+    setOperator(OPERATOR_NAME_OPENSHIFT_AI, values.useOpenShiftAI);
+    setOperator(OPERATOR_NAME_OSC, values.useOsc);
 
     // TODO: remove following once the LSO option is exposed to the user
     if (!hasActiveOperators(values)) {
@@ -53,14 +59,24 @@ const OperatorsService = {
     uiOperators: OperatorCreateParams[],
     updatedOperators: Cluster['monitoredOperators'],
   ): Partial<OperatorsValues> {
-    // LVM operator can be automatically selected depending on Openshift version + other operators
-    const prevInactive = uiOperators?.find((op) => op.name === OPERATOR_NAME_LVM) === undefined;
-    const nowActive = updatedOperators?.find((op) => op.name === OPERATOR_NAME_LVM) !== undefined;
-
     const updates: Partial<OperatorsValues> = {};
-    if (prevInactive && nowActive) {
+
+    // LVM operator can be automatically selected depending on Openshift version + other operators
+    const lvmPrevInactive = uiOperators?.find((op) => op.name === OPERATOR_NAME_LVM) === undefined;
+    const lvmNowActive =
+      updatedOperators?.find((op) => op.name === OPERATOR_NAME_LVM) !== undefined;
+    if (lvmPrevInactive && lvmNowActive) {
       updates.useOdfLogicalVolumeManager = true;
     }
+
+    // ODF operator will be automatically selected when the OpenShift AI operator is selected:
+    const odfPrevInactive = uiOperators?.find((op) => op.name === OPERATOR_NAME_ODF) === undefined;
+    const odfNowActive =
+      updatedOperators?.find((op) => op.name === OPERATOR_NAME_ODF) !== undefined;
+    if (odfPrevInactive && odfNowActive) {
+      updates.useOpenShiftDataFoundation = true;
+    }
+
     return updates;
   },
 };

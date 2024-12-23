@@ -24,6 +24,21 @@ const operatorValidations = [
     status: 'success',
     message: 'lvm is disabled',
   },
+  {
+    id: 'nvidia-gpu-requirements-satisfied',
+    status: 'success',
+    message: 'nvidia-gpu is disabled',
+  },
+  {
+    id: 'openshift-ai-requirements-satisfied',
+    status: 'success',
+    message: 'openshift-ai is disabled',
+  },
+  {
+    id: 'osc-requirements-satisfied',
+    status: 'success',
+    message: 'osc is disabled',
+  },
 ];
 
 const hostValidationsInfo = {
@@ -61,6 +76,11 @@ const hostValidationsInfo = {
       id: 'belongs-to-majority-group',
       status: 'pending',
       message: 'Not enough information to calculate host majority groups',
+    },
+    {
+      id: 'mtu-valid',
+      status: 'success',
+      message: '',
     },
   ],
 };

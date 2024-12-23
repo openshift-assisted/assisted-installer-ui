@@ -80,6 +80,8 @@ export const getClusterDetailsInitialValues = ({
     cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
     platform: cluster?.platform?.type || 'none',
     customOpenshiftSelect: null,
+    userManagedNetworking: cluster?.userManagedNetworking || false,
+    controlPlaneCount: cluster?.controlPlaneCount?.toString() || '3',
   };
 };
 

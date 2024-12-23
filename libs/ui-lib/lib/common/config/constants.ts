@@ -126,6 +126,17 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
   'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
   'mce-requirements-satisfied': t('ai:Multicluster engine requirements'),
+  'mtv-requirements-satisfied': t('ai:Migration toolkit for virtualization requirements'),
+  'no-iscsi-nic-belongs-to-machine-cidr': t('ai:iSCSI NIC belongs to machine CIDR'),
+  'node-feature-discovery-requirements-satisfied': t('ai:Node Feature Discovery requirements'),
+  'nvidia-gpu-requirements-satisfied': t('ai:NVIDIA GPU requirements'),
+  'pipelines-requirements-satisfied': t('ai:Pipelines requirements'),
+  'serverless-requirements-satisfied': t('ai:Serverless requirements'),
+  'servicemesh-requirements-satisfied': t('ai:Service Mesh requirements'),
+  'openshift-ai-requirements-satisfied': t('ai:OpenShift AI requirements'),
+  'osc-requirements-satisfied': t('ai:OpenShift sandboxed containers requirements'),
+  'mtu-valid': t('ai:MTU requirements'),
+  'authorino-requirements-satisfied': '',
 });
 
 export const hostValidationFailureHints = (
@@ -174,6 +185,17 @@ export const hostValidationFailureHints = (
   'no-skip-missing-disk': '',
   'no-ip-collisions-in-network': '',
   'mce-requirements-satisfied': '',
+  'mtv-requirements-satisfied': '',
+  'no-iscsi-nic-belongs-to-machine-cidr': '',
+  'node-feature-discovery-requirements-satisfied': '',
+  'nvidia-gpu-requirements-satisfied': '',
+  'pipelines-requirements-satisfied': '',
+  'serverless-requirements-satisfied': '',
+  'servicemesh-requirements-satisfied': '',
+  'openshift-ai-requirements-satisfied': '',
+  'osc-requirements-satisfied': '',
+  'authorino-requirements-satisfied': '',
+  'mtu-valid': '',
 });
 
 export const clusterValidationLabels = (
@@ -267,6 +289,14 @@ export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_LVMS = 'lvms';
 export const OPERATOR_NAME_MCE = 'mce';
+export const OPERATOR_NAME_MTV = 'mtv';
+export const OPERATOR_NAME_NODE_FEATURE_DISCOVERY = 'node-feature-discovery';
+export const OPERATOR_NAME_NVIDIA_GPU = 'nvidia-gpu';
+export const OPERATOR_NAME_PIPELINES = 'pipelines';
+export const OPERATOR_NAME_SERVICEMESH = 'servicemesh';
+export const OPERATOR_NAME_SERVERLESS = 'serverless';
+export const OPERATOR_NAME_OPENSHIFT_AI = 'openshift-ai';
+export const OPERATOR_NAME_OSC = 'osc';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -275,6 +305,14 @@ const OperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_OPENSHIFT_AI,
+  OPERATOR_NAME_OSC,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -282,6 +320,14 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_LVMS,
   OPERATOR_NAME_MCE,
+  OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_OPENSHIFT_AI,
+  OPERATOR_NAME_OSC,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -317,7 +363,16 @@ export const operatorLabels = (
       ? t('ai:Logical Volume Manager Storage')
       : t('ai:Logical Volume Manager'),
     [OPERATOR_NAME_MCE]: t('ai:Multicluster engine'),
+    [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: t('ai:Node Feature Discovery'),
+    [OPERATOR_NAME_NVIDIA_GPU]: t('ai:NVIDIA GPU'),
+    [OPERATOR_NAME_PIPELINES]: t('ai:Pipelines'),
+    [OPERATOR_NAME_SERVICEMESH]: t('ai:Service Mesh'),
+    [OPERATOR_NAME_SERVERLESS]: t('ai:Serverless'),
+    [OPERATOR_NAME_OPENSHIFT_AI]: t('ai:OpenShift AI'),
+    [OPERATOR_NAME_OSC]: t('ai:OpenShift sandboxed containers'),
   };
 };
 
 export const AI_UI_TAG = 'ui_ocm';
+
+export const AI_ASSISTED_MIGRATION_TAG = 'assisted_migration';

@@ -24,6 +24,8 @@ import {
   isVlanInterface,
   NmstateEthernetInterface,
   NmstateVlanInterface,
+  NmstateBondInterface,
+  NmstateInterfaceType,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
 
@@ -38,12 +40,9 @@ type ParsedFormViewYaml = {
   nmstate: Nmstate;
 };
 
-const findFirstRealInterface = (interfaces: NmstateInterface[]): NmstateInterface | undefined => {
-  return interfaces.find(
-    (currentInterface) => !isDummyInterface(currentInterface.name),
-  ) as unknown as NmstateInterface | undefined;
+const findAllRealInterfaces = (interfaces: NmstateInterface[]): NmstateInterface[] => {
+  return interfaces.filter((currentInterface) => !isDummyInterface(currentInterface.name));
 };
-
 const parseYaml = (yaml: string): ParsedFormViewYaml => {
   const lines = yaml.split('\n');
   const lastCommentIdx = findLastIndex(lines, (line) => line.startsWith(YAML_COMMENT_CHAR));
@@ -64,7 +63,7 @@ const getVlanId = (interfaces: NmstateInterface[]): number | null => {
 };
 
 const getIpAddress = (
-  networkInterface: NmstateEthernetInterface | NmstateVlanInterface,
+  networkInterface: NmstateEthernetInterface | NmstateVlanInterface | NmstateBondInterface,
   protocolVersion: ProtocolVersion,
 ): string => {
   const ipAddressData = networkInterface[protocolVersion];
@@ -131,9 +130,26 @@ const getFormViewHost = (
   }
 
   const { nmstate } = parseYaml(infraEnvHost.networkYaml);
-  const realInterface = findFirstRealInterface(nmstate.interfaces);
 
-  if (!realInterface) {
+  const realInterfaces = findAllRealInterfaces(nmstate.interfaces);
+  const firstInterface = realInterfaces[0];
+  const secondInterface = realInterfaces[1]; // Puede ser undefined
+
+  let bondInterface: NmstateInterface | undefined;
+  let nonBondInterface: NmstateInterface | undefined;
+
+  if (firstInterface) {
+    if (firstInterface.type === NmstateInterfaceType.BOND) {
+      bondInterface = firstInterface;
+      nonBondInterface = secondInterface;
+    } else {
+      nonBondInterface = firstInterface;
+      bondInterface =
+        secondInterface?.type === NmstateInterfaceType.BOND ? secondInterface : undefined;
+    }
+  }
+
+  if (realInterfaces.length === 0) {
     //handle case 2
     return null;
   }
@@ -145,11 +161,26 @@ const getFormViewHost = (
       ipv4: '',
       ipv6: '',
     },
+    bondType: 'active-backup',
+    bondPrimaryInterface: '',
+    bondSecondaryInterface: '',
+    useBond: false,
   };
 
-  for (const protocolVersion of getShownProtocolVersions(protocolType)) {
-    ret.ips[protocolVersion] = getIpAddress(realInterface, protocolVersion);
+  if (bondInterface?.type === NmstateInterfaceType.BOND) {
+    ret.useBond = true;
+    ret.bondType = bondInterface['link-aggregation'].mode;
+    ret.bondPrimaryInterface = infraEnvHost.macInterfaceMap[0].macAddress ?? '';
+    ret.bondSecondaryInterface = infraEnvHost.macInterfaceMap[1].macAddress ?? '';
   }
+
+  for (const protocolVersion of getShownProtocolVersions(protocolType)) {
+    const interfaceToUse = nonBondInterface || bondInterface;
+    if (interfaceToUse) {
+      ret.ips[protocolVersion] = getIpAddress(interfaceToUse, protocolVersion);
+    }
+  }
+
   return ret;
 };
 

@@ -83,6 +83,7 @@ export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
   commandLine?: string;
+  secureBootState?: SecureBootState;
 }
 export interface Cluster {
   /**
@@ -367,6 +368,10 @@ export interface Cluster {
    * Indication if organization soft timeouts is enabled for the cluster.
    */
   orgSoftTimeoutsEnabled?: boolean;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface ClusterCreateParams {
   /**
@@ -374,7 +379,7 @@ export interface ClusterCreateParams {
    */
   name: string;
   /**
-   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * (DEPRECATED) Please use 'controlPlaneCount' instead. Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
    *
    */
@@ -492,6 +497,10 @@ export interface ClusterCreateParams {
    * A comma-separated list of tags that are associated to the cluster.
    */
   tags?: string;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -610,8 +619,17 @@ export type ClusterValidationId =
   | 'cnv-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
+  | 'mtv-requirements-satisfied'
+  | 'osc-requirements-satisfied'
   | 'network-type-valid'
-  | 'platform-requirements-satisfied';
+  | 'platform-requirements-satisfied'
+  | 'node-feature-discovery-requirements-satisfied'
+  | 'nvidia-gpu-requirements-satisfied'
+  | 'pipelines-requirements-satisfied'
+  | 'servicemesh-requirements-satisfied'
+  | 'serverless-requirements-satisfied'
+  | 'openshift-ai-requirements-satisfied'
+  | 'authorino-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -636,6 +654,7 @@ export interface ConnectivityRemoteHost {
   hostId?: string; // uuid
   l2Connectivity?: L2Connectivity[];
   l3Connectivity?: L3Connectivity[];
+  mtuReport?: MtuReport[];
 }
 export interface ConnectivityReport {
   remoteHosts?: ConnectivityRemoteHost[];
@@ -694,7 +713,7 @@ export interface CreateManifestParams {
   /**
    * The name of the manifest to customize the installed OCP cluster.
    */
-  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  fileName: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * base64 encoded manifest content.
    */
@@ -770,6 +789,7 @@ export interface Disk {
   sizeBytes?: number;
   bootable?: boolean;
   removable?: boolean;
+  partitionTypes?: string;
   /**
    * Whether the disk appears to be an installation media or not
    */
@@ -790,6 +810,7 @@ export interface Disk {
    * A comma-separated list of disk names that this disk belongs to
    */
   holders?: string;
+  iscsi?: Iscsi;
 }
 export interface DiskConfigParams {
   id: string;
@@ -868,6 +889,10 @@ export interface DomainResolutionResponse {
      * The IPv6 addresses of the domain, empty if none
      */
     ipv6Addresses?: string /* ipv6 */[];
+    /**
+     * The cnames that were resolved for the domain, empty if none
+     */
+    cnames?: string[];
   }[];
 }
 /**
@@ -970,6 +995,8 @@ export type FeatureSupportLevelId =
   | 'LSO'
   | 'CNV'
   | 'MCE'
+  | 'MTV'
+  | 'OSC'
   | 'NUTANIX_INTEGRATION'
   | 'BAREMETAL_PLATFORM'
   | 'NONE_PLATFORM'
@@ -985,7 +1012,15 @@ export type FeatureSupportLevelId =
   | 'SKIP_MCO_REBOOT'
   | 'EXTERNAL_PLATFORM'
   | 'OVN_NETWORK_TYPE'
-  | 'SDN_NETWORK_TYPE';
+  | 'SDN_NETWORK_TYPE'
+  | 'NODE_FEATURE_DISCOVERY'
+  | 'NVIDIA_GPU'
+  | 'PIPELINES'
+  | 'SERVICEMESH'
+  | 'SERVERLESS'
+  | 'OPENSHIFT_AI'
+  | 'NON_STANDARD_HA_CONTROL_PLANE'
+  | 'AUTHORINO';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -995,6 +1030,7 @@ export type FinalizingStage =
   | 'Applying olm manifests'
   | 'Waiting for olm operators csv initialization'
   | 'Waiting for olm operators csv'
+  | 'Waiting for OLM operator setup jobs'
   | 'Done';
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest =
@@ -1509,6 +1545,8 @@ export type HostValidationId =
   | 'odf-requirements-satisfied'
   | 'lvm-requirements-satisfied'
   | 'mce-requirements-satisfied'
+  | 'mtv-requirements-satisfied'
+  | 'osc-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
@@ -1526,7 +1564,16 @@ export type HostValidationId =
   | 'compatible-agent'
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk'
-  | 'no-ip-collisions-in-network';
+  | 'no-ip-collisions-in-network'
+  | 'no-iscsi-nic-belongs-to-machine-cidr'
+  | 'node-feature-discovery-requirements-satisfied'
+  | 'nvidia-gpu-requirements-satisfied'
+  | 'pipelines-requirements-satisfied'
+  | 'servicemesh-requirements-satisfied'
+  | 'serverless-requirements-satisfied'
+  | 'openshift-ai-requirements-satisfied'
+  | 'authorino-requirements-satisfied'
+  | 'mtu-valid';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1758,6 +1805,10 @@ export interface InfraEnvUpdateParams {
    * Allows users to change the additionalTrustBundle infra-env field
    */
   additionalTrustBundle?: string;
+  /**
+   * Version of the OS image
+   */
+  openshiftVersion?: string;
 }
 export interface InfraError {
   /**
@@ -1856,6 +1907,10 @@ export interface InstallCmdRequest {
    * If true, assisted service will attempt to skip MCO reboot
    */
   enableSkipMcoReboot?: boolean;
+  /**
+   * If true, notify number of reboots by assisted controller
+   */
+  notifyNumReboots?: boolean;
 }
 export interface InstallerArgsParams {
   /**
@@ -1901,6 +1956,12 @@ export interface IoPerf {
   syncDuration?: number;
 }
 export type Ip = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+export interface Iscsi {
+  /**
+   * Host IP address used to reach iSCSI target
+   */
+  hostIpAddress?: string;
+}
 /**
  * pair of [operation, argument] specifying the argument and what operation should be applied on it.
  */
@@ -2033,6 +2094,10 @@ export interface Manifest {
    * The file name prefaced by the folder that contains it.
    */
   fileName?: string;
+  /**
+   * Describes whether manifest is sourced from a user or created by the system.
+   */
+  manifestSource?: 'user' | 'system';
 }
 export interface Memory {
   physicalBytes?: number;
@@ -2084,6 +2149,11 @@ export interface MonitoredOperator {
   statusUpdatedAt?: string; // date-time
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
+export interface MtuReport {
+  outgoingNic?: string;
+  remoteIpAddress?: string;
+  mtuSuccessful?: boolean;
+}
 export interface NextStepCmdRequest {
   /**
    * Infra env id
@@ -2384,6 +2454,7 @@ export interface Route {
    */
   metric?: number; // int32
 }
+export type SecureBootState = 'Unknown' | 'NotSupported' | 'Enabled' | 'Disabled';
 /**
  * IP address block for service IP blocks.
  */
@@ -2501,7 +2572,7 @@ export interface UpdateManifestParams {
   /**
    * The file name for the manifest to modify.
    */
-  fileName: string; // ^[^/]*\.(yaml|yml|json)$
+  fileName: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * The new folder for the manifest. Manifests can be placed in 'manifests' or 'openshift' directories.
    */
@@ -2509,7 +2580,7 @@ export interface UpdateManifestParams {
   /**
    * The new file name for the manifest.
    */
-  updatedFileName?: string; // ^[^/]*\.(yaml|yml|json)$
+  updatedFileName?: string; // ^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$
   /**
    * The new base64 encoded manifest content.
    */
@@ -2673,6 +2744,10 @@ export interface V2ClusterUpdateParams {
    * A comma-separated list of tags that are associated to the cluster.
    */
   tags?: string;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface V2Events {
   clusterId?: string;
@@ -2691,6 +2766,10 @@ export interface V2Events {
 export interface V2InfraEnvs {
   clusterId?: string;
   owner?: string;
+}
+export interface V2OpenshiftVersions {
+  version?: string;
+  onlyLatest?: boolean;
 }
 export interface V2SupportLevelsArchitectures {
   openshiftVersion: string;

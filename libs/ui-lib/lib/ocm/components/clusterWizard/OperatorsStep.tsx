@@ -8,6 +8,9 @@ import LvmCheckbox from '../clusterConfiguration/operators/LvmCheckbox';
 import MceCheckbox from '../clusterConfiguration/operators/MceCheckbox';
 import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
 import { isOCPVersionEqualsOrMajor } from '../utils';
+import MtvOperatorCheckbox from '../clusterConfiguration/operators/MtvOperatorCheckbox';
+import OpenShiftAICheckbox from '../clusterConfiguration/operators/OpenShiftAICheckbox';
+import OscCheckbox from '../clusterConfiguration/operators/OscCheckbox';
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
@@ -22,6 +25,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </StackItem>
       <StackItem>
         <CnvCheckbox {...props} isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15} />
+      </StackItem>
+      <StackItem>
+        <MtvOperatorCheckbox clusterId={props.clusterId} />
       </StackItem>
       <StackItem>
         <MceCheckbox
@@ -42,6 +48,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       ) : (
         <StackItem>{isSNO ? <LvmCheckbox {...props} /> : <OdfCheckbox />}</StackItem>
       )}
+
+      <OpenShiftAICheckbox />
+      <OscCheckbox />
     </Stack>
   );
 };

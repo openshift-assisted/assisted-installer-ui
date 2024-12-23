@@ -23,7 +23,8 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
     };
     nmStateConfigLabelSelector?: Selector;
     additionalNTPSources?: string[];
-    cpuArchitecture?: 'x86_64' | 'arm64';
+    cpuArchitecture?: 'x86_64' | 'arm64' | 's390x';
+    osImageVersion?: string;
   };
   status?: {
     agentLabelSelector?: Selector;

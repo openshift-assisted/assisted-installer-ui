@@ -7,11 +7,14 @@ import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { useDetailsFormik } from './ClusterDeploymentDetailsStep';
 import { ClusterDetailsFormFieldsProps } from './ClusterDetailsFormFields';
+import { OsImage } from '../../types';
+import { getOCPVersions } from '../helpers';
 
 type DetailsFormBodyProps = {
   clusterImages: ClusterImageSetK8sResource[];
   onValuesChanged: (values: ClusterDetailsValues, initRender: boolean) => void;
   extensionAfter: ClusterDetailsFormFieldsProps['extensionAfter'];
+  osImages?: OsImage[];
   isNutanix?: boolean;
 };
 
@@ -20,6 +23,7 @@ const DetailsFormBody: React.FC<DetailsFormBodyProps> = ({
   clusterImages,
   extensionAfter,
   isNutanix,
+  osImages,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const initRenderRef = React.useRef(true);
@@ -33,6 +37,7 @@ const DetailsFormBody: React.FC<DetailsFormBodyProps> = ({
       clusterImages={clusterImages}
       extensionAfter={extensionAfter}
       isNutanix={isNutanix}
+      osImages={osImages}
     />
   );
 };
@@ -46,13 +51,17 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
   clusterImages,
   formRef,
   usedClusterNames,
+  osImages,
+  isNutanix,
   ...rest
 }) => {
+  const ocpVersions = getOCPVersions(clusterImages, !!isNutanix, osImages);
+
   const [initialValues, validationSchema] = useDetailsFormik({
-    clusterImages,
+    ocpVersions,
     usedClusterNames,
-    isNutanix: !!rest.isNutanix,
   });
+
   return (
     <Formik
       initialValues={initialValues}
@@ -60,7 +69,12 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
       innerRef={formRef}
       onSubmit={noop}
     >
-      <DetailsFormBody clusterImages={clusterImages} {...rest} />
+      <DetailsFormBody
+        clusterImages={clusterImages}
+        osImages={osImages}
+        isNutanix={isNutanix}
+        {...rest}
+      />
     </Formik>
   );
 };

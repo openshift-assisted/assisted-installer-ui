@@ -1,32 +1,34 @@
 import React from 'react';
 import {
-  RowWrapper,
-  RowWrapperProps,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  BaseCellProps,
+  ActionsColumn,
+  ThProps,
   SortByDirection,
-  ISortBy,
-  OnSort,
   IRow,
-  IActionsResolver,
-  cellWidth,
-  breakWord,
-  sortable,
+  ISortBy,
+  TrProps,
 } from '@patternfly/react-table';
-import { Table, TableProps, TableHeader, TableBody } from '@patternfly/react-table/deprecated';
-import { ClusterTableRows } from '../../../common/types/clusters';
-import DeleteClusterModal from './DeleteClusterModal';
-import { clusterStatusLabels, rowSorter, HumanizedSortable } from '../../../common';
-import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   ClusterRowDataProps,
   getClusterTableStatusCell,
 } from '../../store/slices/clusters/selectors';
+import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
+import {
+  clusterStatusLabels,
+  ClusterTableRows,
+  HumanizedSortable,
+  rowSorter,
+} from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import DeleteClusterModal from './DeleteClusterModal';
 
 type DeleteClusterID = Pick<ClusterRowDataProps, 'id' | 'name'>;
-
-const rowKey = ({ rowData }: { rowData?: { props?: ClusterRowDataProps } }): string | undefined =>
-  rowData?.props?.id;
-
 const STORAGE_KEY_CLUSTERS_FILTER = 'assisted-installer-cluster-list-filters';
 
 interface ClustersTableProps {
@@ -34,56 +36,35 @@ interface ClustersTableProps {
   deleteCluster: (id: string) => Promise<void>;
 }
 
-type TablePropsCellType = TableProps['cells'][0];
 type StoredFilters = { filters: ClusterFiltersType; sortBy: ISortBy; searchString: string };
 
-const columnConfig: TablePropsCellType = {
-  transforms: [sortable],
-  cellTransforms: [],
-  formatters: [],
-  cellFormatters: [],
-  props: {},
-};
-
-const columns: TablePropsCellType[] = [
-  {
-    title: 'Name',
-    dataLabel: 'Name',
-    ...columnConfig,
-    transforms: columnConfig?.transforms?.concat(cellWidth(20)),
-    cellTransforms: columnConfig?.cellTransforms?.concat(breakWord),
-  },
-  {
-    title: 'Base domain',
-    dataLabel: 'Base domain',
-    ...columnConfig,
-    transforms: columnConfig?.transforms?.concat(cellWidth(40)),
-    cellTransforms: columnConfig?.cellTransforms?.concat(breakWord),
-  },
-  { title: 'Version', dataLabel: 'Version', ...columnConfig },
-  { title: 'Status', dataLabel: 'Status', ...columnConfig },
-  { title: 'Hosts', dataLabel: 'Hosts', ...columnConfig },
-  { title: 'Created at', dataLabel: 'Created at', ...columnConfig },
+const columns = [
+  { title: 'Name', cellWidth: 20 },
+  { title: 'Base domain', cellWidth: 40 },
+  { title: 'Version' },
+  { title: 'Status' },
+  { title: 'Hosts' },
+  { title: 'Created at' },
 ];
 
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
 
-const ClusterRowWrapper = (_props: RowWrapperProps) => {
-  const name = (_props?.row?.props as ClusterRowDataProps | undefined)?.name || '';
-  const props = {
-    ..._props,
+const getRowProps = (props?: ClusterRowDataProps) => {
+  const name = props?.name || '';
+  return {
+    ...props,
     id: `cluster-row-${name}`,
     'data-testid': `cluster-row-${name}`,
-  };
-  return <RowWrapper {...props} />;
+  } as Omit<TrProps, 'ref'>;
 };
 
-const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
-  const [deleteClusterID, setDeleteClusterID] = React.useState<DeleteClusterID>();
+const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
   const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: 0, // Name-column
     direction: SortByDirection.asc,
   });
+
+  const [deleteClusterID, setDeleteClusterID] = React.useState<DeleteClusterID>();
   const [isDeleteInProgress, setDeleteInProgress] = React.useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
@@ -93,6 +74,14 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   });
 
   const { t } = useTranslation();
+
+  const getSortParams = (columnIndex: number): ThProps['sort'] => ({
+    sortBy,
+    onSort: (_event, index, direction) => {
+      setSortBy({ index, direction });
+    },
+    columnIndex,
+  });
 
   React.useEffect(() => {
     const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
@@ -114,35 +103,6 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
       JSON.stringify({ filters, sortBy, searchString }),
     );
   }, [filters, sortBy, searchString]);
-
-  const actionResolver: IActionsResolver = React.useCallback(
-    (rowData) => {
-      const props = rowData.props as ClusterRowDataProps;
-      return [
-        {
-          title: 'Delete',
-          id: `button-delete-${props.name}`,
-          isDisabled:
-            getClusterTableStatusCell(rowData).sortableValue === clusterStatusLabels(t).installing,
-          onClick: (/*event: React.MouseEvent, rowIndex: number, rowData: IRowData*/) => {
-            setDeleteClusterID({ id: props.id, name: props.name });
-            setDeleteModalOpen(true);
-          },
-        },
-      ];
-    },
-    [t],
-  );
-
-  const onSort: OnSort = React.useCallback(
-    (_event, index, direction) => {
-      setSortBy({
-        index,
-        direction,
-      });
-    },
-    [setSortBy],
-  );
 
   const rowFilter = React.useCallback(
     (row: IRow) => {
@@ -198,18 +158,56 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         filters={filters}
         setFilters={setFilters}
       />
-      <Table
-        rows={sortedRows}
-        cells={columns}
-        actionResolver={actionResolver}
-        aria-label="Clusters table"
-        sortBy={sortBy}
-        onSort={onSort}
-        rowWrapper={ClusterRowWrapper}
-        data-testid={'clusters-table'}
-      >
-        <TableHeader />
-        <TableBody rowKey={rowKey} />
+      <Table aria-label="Clusters table" data-testid={'clusters-table'}>
+        <Thead>
+          <Tr>
+            {columns.map((col, i) => (
+              <Th
+                key={`col-${i}`}
+                width={col.cellWidth as BaseCellProps['width']}
+                sort={getSortParams(i)}
+              >
+                {col.title}
+              </Th>
+            ))}
+            <Th key="col-action" />
+          </Tr>
+        </Thead>
+        <Tbody>
+          {sortedRows.map((row, i) => (
+            <Tr {...getRowProps(row.props as ClusterRowDataProps)} key={`row-${i}`}>
+              {row.cells?.map((cell, j) => (
+                <Td
+                  dataLabel={columns[j].title}
+                  key={`cell-${i}-${j}`}
+                  {...(cell as HumanizedSortable).props}
+                >
+                  {(cell as HumanizedSortable)?.title}
+                </Td>
+              ))}
+              <Td isActionCell>
+                <ActionsColumn
+                  items={[
+                    {
+                      title: 'Delete',
+                      id: `button-delete-${(row.props as ClusterRowDataProps).name}`,
+                      isDisabled:
+                        getClusterTableStatusCell(row).sortableValue ===
+                        clusterStatusLabels(t).installing,
+                      onClick: () => {
+                        setDeleteClusterID({
+                          id: (row.props as ClusterRowDataProps).id,
+                          name: (row.props as ClusterRowDataProps).name,
+                        });
+                        setDeleteModalOpen(true);
+                      },
+                    },
+                  ]}
+                />
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
       </Table>
       <DeleteClusterModal
         name={deleteClusterID?.name || ''}
