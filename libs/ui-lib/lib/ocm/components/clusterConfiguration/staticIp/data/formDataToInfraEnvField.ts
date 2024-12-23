@@ -112,8 +112,6 @@ const getNmstateObject = (
           ),
         );
       }
-      // eslint-disable-next-line no-console
-      console.log(interfaces);
     }
 
     routeConfigs.push(
