@@ -110,12 +110,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           }}
         />
       )}
-      <ControlPlaneNodesDropdown
-        isNutanix={isNutanix}
-        isDisabled={isEditFlow}
-        cpuArchitecture={cpuArchitecture}
-        openshiftVersion={openshiftVersion}
-      />
+      <ControlPlaneNodesDropdown isNutanix={isNutanix} isDisabled={isEditFlow} />
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
