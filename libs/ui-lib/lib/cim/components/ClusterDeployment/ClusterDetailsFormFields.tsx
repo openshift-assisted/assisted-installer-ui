@@ -52,7 +52,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   cpuArchitectures,
 }) => {
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
-  const { name, baseDnsDomain, cpuArchitecture, openshiftVersion } = values;
+  const { name, baseDnsDomain } = values;
 
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
