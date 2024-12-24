@@ -171,7 +171,7 @@ export const OcmClusterDetailsFormFields = ({
           onChange={handleExternalPartnerIntegrationsChange}
           cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
           featureSupportLevelData={featureSupportLevelData}
-          isSNO={values.controlPlaneCount === '1'}
+          isSNO={values.controlPlaneCount === 1}
         />
       )}
 
@@ -197,7 +197,7 @@ export const OcmClusterDetailsFormFields = ({
       <DiskEncryptionControlGroup
         values={values}
         isDisabled={isPullSecretSet}
-        isSNO={values.controlPlaneCount === '1'}
+        isSNO={values.controlPlaneCount === 1}
         docVersion={openshiftVersion}
       />
     </Form>
