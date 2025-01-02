@@ -145,35 +145,45 @@ const AssistedInstallerDetailCard = ({
 
   const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
 
-  return (
-    <HistoryRouter history={history} basename={basename}>
-      <AlertsContextProvider>
-        <OpenshiftVersionsContextProvider>
-          <SentryErrorMonitorContextProvider>
-            <ModalDialogsContextProvider>
-              <ClusterDefaultConfigurationProvider
-                loadingUI={<LoadingCard />}
-                errorUI={<LoadingDefaultConfigFailedCard />}
+  const clusterDetailCard = (
+    <AlertsContextProvider>
+      <OpenshiftVersionsContextProvider>
+        <SentryErrorMonitorContextProvider>
+          <ModalDialogsContextProvider>
+            <ClusterDefaultConfigurationProvider
+              loadingUI={<LoadingCard />}
+              errorUI={<LoadingDefaultConfigFailedCard />}
+            >
+              <NewFeatureSupportLevelProvider
+                loadingUi={<LoadingCard />}
+                cluster={cluster}
+                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
+                openshiftVersion={cluster.openshiftVersion}
+                platformType={cluster.platform?.type}
               >
-                <NewFeatureSupportLevelProvider
-                  loadingUi={<LoadingCard />}
-                  cluster={cluster}
-                  cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                  openshiftVersion={cluster.openshiftVersion}
-                  platformType={cluster.platform?.type}
-                >
-                  {content}
-                </NewFeatureSupportLevelProvider>
-                {isOutdatedClusterData && <ClusterPollingErrorModal />}
-                <CancelInstallationModal />
-                <ResetClusterModal />
-                <DiscoveryImageModal />
-              </ClusterDefaultConfigurationProvider>
-            </ModalDialogsContextProvider>
-          </SentryErrorMonitorContextProvider>
-        </OpenshiftVersionsContextProvider>
-      </AlertsContextProvider>
-    </HistoryRouter>
+                {content}
+              </NewFeatureSupportLevelProvider>
+              {isOutdatedClusterData && <ClusterPollingErrorModal />}
+              <CancelInstallationModal />
+              <ResetClusterModal />
+              <DiscoveryImageModal />
+            </ClusterDefaultConfigurationProvider>
+          </ModalDialogsContextProvider>
+        </SentryErrorMonitorContextProvider>
+      </OpenshiftVersionsContextProvider>
+    </AlertsContextProvider>
+  );
+
+  return (
+    <>
+      {history && history.action ? (
+        <HistoryRouter history={history} basename={basename}>
+          {clusterDetailCard}
+        </HistoryRouter>
+      ) : (
+        clusterDetailCard
+      )}
+    </>
   );
 };
 
