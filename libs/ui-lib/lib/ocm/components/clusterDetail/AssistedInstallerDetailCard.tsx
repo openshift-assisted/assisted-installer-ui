@@ -176,8 +176,8 @@ const AssistedInstallerDetailCard = ({
 
   return (
     <>
-      {history && history.action ? (
-        <HistoryRouter history={history} basename={basename}>
+      {history ? (
+        <HistoryRouter history={history} basename={basename || '/'}>
           {clusterDetailCard}
         </HistoryRouter>
       ) : (
