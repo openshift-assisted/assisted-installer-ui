@@ -30,12 +30,14 @@ const OpenshiftVersionDropdown = ({ osImages }: { osImages: OsImage[] }) => {
     }
   }, [filteredImages.length, setValue, t, value]);
 
+  console.log(cpuArchitecture, architectureData[cpuArchitecture as SupportedCpuArchitecture].label);
+
   return (
     <FormGroup isInline fieldId={fieldId} label={t('ai:OpenShift version')}>
       <Tooltip
         content={t(
           'ai:No OpenShift images available for selected CPU architecture {{cpuArchitecture}}.',
-          architectureData[cpuArchitecture as SupportedCpuArchitecture].label,
+          { cpuArchitecture: architectureData[cpuArchitecture as SupportedCpuArchitecture].label },
         )}
         hidden={!!filteredImages.length}
       >
