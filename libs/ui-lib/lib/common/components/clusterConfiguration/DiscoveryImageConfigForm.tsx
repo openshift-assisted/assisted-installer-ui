@@ -115,7 +115,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
         return (
           <>
             <ModalBoxBody>
-              <Stack hasGutter>               
+              <Stack hasGutter>
                 {hasDHCP === false && (
                   <StackItem>
                     <StaticIPInfo docVersion={docVersion} />
@@ -133,7 +133,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                           ? t('ai:To add hosts to the cluster, generate iPXE script.')
                           : t('ai:To add hosts to the cluster, generate a Discovery ISO.')
                       }
-                    />                
+                    />
                     <UploadSSH />
                     <ProxyFields />
                   </Form>

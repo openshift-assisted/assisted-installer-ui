@@ -1,5 +1,5 @@
 import React from 'react';
-import {Flex, FlexItem } from '@patternfly/react-core';
+import { Flex, FlexItem } from '@patternfly/react-core';
 import { PopoverIcon, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
