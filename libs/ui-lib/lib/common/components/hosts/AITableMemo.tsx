@@ -94,7 +94,7 @@ export const AITableMemo = React.memo(
                     </Td>
                   ))}
 
-                  {row.actions && (
+                  {!!row.actions?.length && (
                     <Td isActionCell>
                       <ActionsColumn
                         items={row.actions}
