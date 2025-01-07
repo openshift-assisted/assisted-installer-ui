@@ -78,7 +78,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   );
 
   const options: ControlPlaneNodesOption[] = [
-    { value: '1', label: '1 (Single Node OpenShift - not highly available cluster)' },
+    { value: '1', label: '1 (Single Node OpenShift)' },
     { value: '3', label: '3 (highly available cluster)' },
     { value: '4', label: '4 (highly available cluster+)' },
     { value: '5', label: '5 (highly available cluster++)' },
