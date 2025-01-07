@@ -189,7 +189,6 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'nvidia-gpu-requirements-satisfied',
       'openshift-ai-requirements-satisfied',
       'osc-requirements-satisfied',
-      'mtu-valid',
     ],
   },
   softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk'],
