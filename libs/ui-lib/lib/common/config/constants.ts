@@ -370,6 +370,7 @@ export const operatorLabels = (
     [OPERATOR_NAME_SERVERLESS]: t('ai:Serverless'),
     [OPERATOR_NAME_OPENSHIFT_AI]: t('ai:OpenShift AI'),
     [OPERATOR_NAME_OSC]: t('ai:OpenShift sandboxed containers'),
+    [OPERATOR_NAME_MTV]: t('ai:Migration Toolkit for Virtualization'),
   };
 };
 
