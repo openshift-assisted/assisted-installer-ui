@@ -65,7 +65,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           <DiscoveryImageConfigForm
             onCancel={onClose}
             handleSubmit={handleIsoConfigSubmit}
-            hideDiscoveryImageType={false}
+            hideDiscoveryImageType={isIPXE}
             imageType={imageType}
             sshPublicKey={sshPublicKey}
             httpProxy={httpProxy}
