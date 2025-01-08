@@ -170,6 +170,7 @@ export const getAICluster = ({
     validationsInfo: JSON.stringify(agentClusterInstall?.status?.validationsInfo || {}),
     cpuArchitecture: getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv),
     networkType: agentClusterInstall?.spec?.networking.networkType,
+    controlPlaneCount: agentClusterInstall?.spec?.provisionRequirements.controlPlaneAgents || 3,
   };
   /*
   aiCluster.agentSelectorMasterLabels =
