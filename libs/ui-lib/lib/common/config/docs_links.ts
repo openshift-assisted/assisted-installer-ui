@@ -70,6 +70,9 @@ export const ODF_REQUIREMENTS_LINK =
 export const OPENSHIFT_AI_REQUIREMENTS_LINK =
   'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/installing_the_openshift_ai_cloud_service/requirements-for-openshift-ai_install#requirements-for-openshift-ai_install';
 
+export const OSC_REQUIREMENTS_LINK =
+  'https://docs.redhat.com/en/documentation/openshift_sandboxed_containers/1.8/html/user_guide/deploying-osc-bare-metal#osc-resource-requirements_deploying-bare-metal';
+
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
@@ -104,3 +107,10 @@ export const MTV_LINK =
 
 export const OPENSHIFT_AI_LINK =
   'https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai';
+
+export const OSC_LINK = 'https://docs.redhat.com/en/documentation/openshift_sandboxed_containers';
+
+export const getMtuLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/networking/changing-cluster-network-mtu#nw-cluster-mtu-change-about_changing-cluster-network-mtu`;

@@ -10,7 +10,7 @@
     "@patternfly/react-table": "5.2.0",
     "@patternfly/react-tokens": "5.2.0",
     "@reduxjs/toolkit": "^1.9.1",
-    "@sentry/browser": "^5.9 || ^6",
+    "@sentry/browser": "^7.119",
     "axios": ">=0.22.0 <2.0.0",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",

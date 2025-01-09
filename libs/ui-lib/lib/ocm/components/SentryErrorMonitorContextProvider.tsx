@@ -7,7 +7,6 @@ import {
 import { handleApiError } from '../../common/api';
 import { isApiError } from '../../common/api/utils';
 import { captureException } from '../sentry';
-import * as Sentry from '@sentry/browser';
 
 export const SentryErrorMonitorContextProvider: React.FC = ({ children }) => {
   const exceptionReporter: ExceptionReporter = (
@@ -18,7 +17,7 @@ export const SentryErrorMonitorContextProvider: React.FC = ({ children }) => {
     if (isApiError(error)) {
       handleApiError(error);
     } else {
-      captureException(error, message, severity as Sentry.Severity);
+      captureException(error, message, severity);
     }
   };
   return (
