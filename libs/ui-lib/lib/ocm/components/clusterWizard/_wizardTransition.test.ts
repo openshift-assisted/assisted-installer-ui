@@ -83,11 +83,6 @@ const validationInfoHostsDisovery: ValidationsInfo = {
       status: 'success',
     },
     {
-      id: 'osc-requirements-satisfied',
-      message: 'a validation message',
-      status: 'success',
-    },
-    {
       id: 'api-vips-defined',
       message: 'a validation unrelated to the canNextHostDiscovery',
       status: 'error',
@@ -192,16 +187,6 @@ const flatValidationHostsDiscovery: HostValidation[] = [
   },
   {
     id: 'openshift-ai-requirements-satisfied',
-    message: 'a host validation message',
-    status: 'success',
-  },
-  {
-    id: 'osc-requirements-satisfied',
-    message: 'a host validation message',
-    status: 'success',
-  },
-  {
-    id: 'mtu-valid',
     message: 'a host validation message',
     status: 'success',
   },

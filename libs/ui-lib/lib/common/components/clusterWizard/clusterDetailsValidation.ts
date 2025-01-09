@@ -16,7 +16,6 @@ import {
 } from '../ui';
 import { ClusterDetailsValues } from './types';
 import { FeatureSupportLevelData } from '../featureSupportLevels';
-import toNumber from 'lodash-es/toNumber';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -82,7 +81,6 @@ export const getClusterDetailsInitialValues = ({
     platform: cluster?.platform?.type || 'none',
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
-    controlPlaneCount: cluster?.controlPlaneCount?.toString() || '3',
   };
 };
 
@@ -120,20 +118,20 @@ export const getClusterDetailsValidationSchema = ({
         ? baseDomainValidationSchema.required('Required')
         : dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
-      SNODisclaimer: Yup.boolean().when(['controlPlaneCount', 'openshiftVersion'], {
+      SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
         is: (
-          controlPlaneCount: Cluster['controlPlaneCount'],
+          highAvailabilityMode: Cluster['highAvailabilityMode'],
           openshiftVersion: Cluster['openshiftVersion'],
         ) => {
           const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
-          const versionToUse = selectedVersion?.value ?? openshiftVersion;
           if (featureSupportLevels) {
-            return toNumber(controlPlaneCount) === 1 && versionToUse && featureSupportLevels
-              ? featureSupportLevels.getFeatureSupportLevel(versionToUse, 'SNO') === 'dev-preview'
+            return highAvailabilityMode === 'None' && selectedVersion && featureSupportLevels
+              ? featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO') ===
+                  'dev-preview'
               : false;
           } else {
-            return toNumber(controlPlaneCount) === 1 && versionToUse && values.isSNODevPreview;
+            return highAvailabilityMode === 'None' && selectedVersion && values.isSNODevPreview;
           }
         },
         then: () =>

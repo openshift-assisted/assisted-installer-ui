@@ -16,7 +16,7 @@ import './ReviewCluster.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
-  const { addAlert, clearAlerts } = useAlerts();
+  const { addAlert } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
@@ -40,7 +40,6 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   }, [cluster, isStartingInstallation, isViewerMode, clusterWizardContext]);
 
   const handleClusterInstall = async () => {
-    clearAlerts();
     setIsStartingInstallation(true);
     try {
       const { data } = await ClustersService.install(cluster.id, cluster.tags);

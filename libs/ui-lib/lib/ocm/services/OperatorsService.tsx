@@ -8,7 +8,6 @@ import {
   OPERATOR_NAME_MCE,
   OPERATOR_NAME_MTV,
   OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import { getKeys } from '../../common/utils';
@@ -40,7 +39,6 @@ const OperatorsService = {
     setOperator(OPERATOR_NAME_MCE, values.useMultiClusterEngine);
     setOperator(OPERATOR_NAME_MTV, values.useMigrationToolkitforVirtualization);
     setOperator(OPERATOR_NAME_OPENSHIFT_AI, values.useOpenShiftAI);
-    setOperator(OPERATOR_NAME_OSC, values.useOsc);
 
     // TODO: remove following once the LSO option is exposed to the user
     if (!hasActiveOperators(values)) {

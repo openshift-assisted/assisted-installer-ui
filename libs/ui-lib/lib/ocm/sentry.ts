@@ -1,12 +1,11 @@
 import * as Sentry from '@sentry/browser';
-import { SeverityLevel } from '@sentry/types';
 import { isInOcm } from '../common/api/axiosClient';
 
 export const captureException = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   message?: string,
-  severity: SeverityLevel = 'error',
+  severity: Sentry.Severity = Sentry.Severity.Error,
 ) => {
   if (isInOcm) {
     message && Sentry.captureMessage(message, severity);

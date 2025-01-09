@@ -65,7 +65,6 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   useMultiClusterEngine: boolean;
   useMigrationToolkitforVirtualization: boolean;
   useOpenShiftAI: boolean;
-  useOsc: boolean;
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;

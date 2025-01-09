@@ -134,9 +134,6 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'serverless-requirements-satisfied': t('ai:Serverless requirements'),
   'servicemesh-requirements-satisfied': t('ai:Service Mesh requirements'),
   'openshift-ai-requirements-satisfied': t('ai:OpenShift AI requirements'),
-  'osc-requirements-satisfied': t('ai:OpenShift sandboxed containers requirements'),
-  'mtu-valid': t('ai:MTU requirements'),
-  'authorino-requirements-satisfied': '',
 });
 
 export const hostValidationFailureHints = (
@@ -193,9 +190,6 @@ export const hostValidationFailureHints = (
   'serverless-requirements-satisfied': '',
   'servicemesh-requirements-satisfied': '',
   'openshift-ai-requirements-satisfied': '',
-  'osc-requirements-satisfied': '',
-  'authorino-requirements-satisfied': '',
-  'mtu-valid': '',
 });
 
 export const clusterValidationLabels = (
@@ -296,7 +290,6 @@ export const OPERATOR_NAME_PIPELINES = 'pipelines';
 export const OPERATOR_NAME_SERVICEMESH = 'servicemesh';
 export const OPERATOR_NAME_SERVERLESS = 'serverless';
 export const OPERATOR_NAME_OPENSHIFT_AI = 'openshift-ai';
-export const OPERATOR_NAME_OSC = 'osc';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -312,7 +305,6 @@ const OperatorNames = [
   OPERATOR_NAME_SERVICEMESH,
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -327,7 +319,6 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_SERVICEMESH,
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -369,8 +360,6 @@ export const operatorLabels = (
     [OPERATOR_NAME_SERVICEMESH]: t('ai:Service Mesh'),
     [OPERATOR_NAME_SERVERLESS]: t('ai:Serverless'),
     [OPERATOR_NAME_OPENSHIFT_AI]: t('ai:OpenShift AI'),
-    [OPERATOR_NAME_OSC]: t('ai:OpenShift sandboxed containers'),
-    [OPERATOR_NAME_MTV]: t('ai:Migration Toolkit for Virtualization'),
   };
 };
 

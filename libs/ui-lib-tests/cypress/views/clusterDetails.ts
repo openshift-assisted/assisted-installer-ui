@@ -58,6 +58,13 @@ export const clusterDetailsPage = {
   inputBaseDnsDomain: (dns = Cypress.env('DNS_DOMAIN_NAME')) => {
     clusterDetailsPage.getBaseDnsDomain().clear().type(dns).should('have.value', dns);
   },
+  getSno: () => {
+    return cy.get(Cypress.env('highAvailabilityModeFieldId'));
+  },
+  enableSno: () => {
+    clusterDetailsPage.getSno().scrollIntoView().should('be.visible').check();
+    clusterDetailsPage.getSno().should('be.checked');
+  },
   getStaticIpNetworkConfig: () => {
     return cy.get(Cypress.env('staticIpNetworkConfigFieldId'));
   },
@@ -135,14 +142,5 @@ export const clusterDetailsPage = {
   },
   validateInputPullSecretFieldHelper: (msg) => {
     cy.get(Cypress.env('pullSecretFieldHelperErrorId')).should('contain', msg);
-  },
-  openControlPlaneNodesDropdown: () => {
-    cy.get(`${Cypress.env('controlPlaneNodesFieldId')} > button.pf-v5-c-dropdown__toggle`).click();
-  },
-  selectControlPlaneNodeOption: (controlPlaneCount) => {
-    cy.get(`ul.pf-v5-c-dropdown__menu li[id=${controlPlaneCount}] a`).click();
-    cy.get(`${Cypress.env('controlPlaneNodesFieldId')} .pf-v5-c-dropdown__toggle-text`)
-      .invoke('text')
-      .should('match', new RegExp(controlPlaneCount, 'i'));
   },
 };

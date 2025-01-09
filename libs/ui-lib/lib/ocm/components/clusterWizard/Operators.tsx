@@ -11,7 +11,6 @@ import {
   OPERATOR_NAME_MTV,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
   OperatorsValues,
   selectMonitoredOperators,
   useAlerts,
@@ -39,7 +38,6 @@ export const getOperatorsInitialValues = (
     useMultiClusterEngine: isOperatorEnabled([OPERATOR_NAME_MCE]),
     useMigrationToolkitforVirtualization: isOperatorEnabled([OPERATOR_NAME_MTV]),
     useOpenShiftAI: isOperatorEnabled([OPERATOR_NAME_OPENSHIFT_AI]),
-    useOsc: isOperatorEnabled([OPERATOR_NAME_OSC]),
   };
 };
 

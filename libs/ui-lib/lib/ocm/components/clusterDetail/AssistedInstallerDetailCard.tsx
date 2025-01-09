@@ -145,45 +145,35 @@ const AssistedInstallerDetailCard = ({
 
   const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
 
-  const clusterDetailCard = (
-    <AlertsContextProvider>
-      <OpenshiftVersionsContextProvider>
-        <SentryErrorMonitorContextProvider>
-          <ModalDialogsContextProvider>
-            <ClusterDefaultConfigurationProvider
-              loadingUI={<LoadingCard />}
-              errorUI={<LoadingDefaultConfigFailedCard />}
-            >
-              <NewFeatureSupportLevelProvider
-                loadingUi={<LoadingCard />}
-                cluster={cluster}
-                cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
-                openshiftVersion={cluster.openshiftVersion}
-                platformType={cluster.platform?.type}
-              >
-                {content}
-              </NewFeatureSupportLevelProvider>
-              {isOutdatedClusterData && <ClusterPollingErrorModal />}
-              <CancelInstallationModal />
-              <ResetClusterModal />
-              <DiscoveryImageModal />
-            </ClusterDefaultConfigurationProvider>
-          </ModalDialogsContextProvider>
-        </SentryErrorMonitorContextProvider>
-      </OpenshiftVersionsContextProvider>
-    </AlertsContextProvider>
-  );
-
   return (
-    <>
-      {history ? (
-        <HistoryRouter history={history} basename={basename || '/'}>
-          {clusterDetailCard}
-        </HistoryRouter>
-      ) : (
-        clusterDetailCard
-      )}
-    </>
+    <HistoryRouter history={history} basename={basename}>
+      <AlertsContextProvider>
+        <OpenshiftVersionsContextProvider>
+          <SentryErrorMonitorContextProvider>
+            <ModalDialogsContextProvider>
+              <ClusterDefaultConfigurationProvider
+                loadingUI={<LoadingCard />}
+                errorUI={<LoadingDefaultConfigFailedCard />}
+              >
+                <NewFeatureSupportLevelProvider
+                  loadingUi={<LoadingCard />}
+                  cluster={cluster}
+                  cpuArchitecture={infraEnv.cpuArchitecture as CpuArchitecture}
+                  openshiftVersion={cluster.openshiftVersion}
+                  platformType={cluster.platform?.type}
+                >
+                  {content}
+                </NewFeatureSupportLevelProvider>
+                {isOutdatedClusterData && <ClusterPollingErrorModal />}
+                <CancelInstallationModal />
+                <ResetClusterModal />
+                <DiscoveryImageModal />
+              </ClusterDefaultConfigurationProvider>
+            </ModalDialogsContextProvider>
+          </SentryErrorMonitorContextProvider>
+        </OpenshiftVersionsContextProvider>
+      </AlertsContextProvider>
+    </HistoryRouter>
   );
 };
 

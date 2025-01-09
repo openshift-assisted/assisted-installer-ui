@@ -119,7 +119,7 @@ export const getInterface = (
       name: nicName,
       type: NmstateInterfaceType.BOND,
       state: 'up',
-      ...(networkWide.useVlan ? {} : protocolConfigs),
+      ...protocolConfigs,
       'link-aggregation': {
         mode: bondType,
         options: {
