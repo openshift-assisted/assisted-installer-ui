@@ -1,7 +1,14 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
-import { CpuArchitecture, DownloadIso, ErrorState, isSNO, ToolbarButton } from '../../../common';
+import {
+  AI_CISCO_INTERSIGHT_TAG,
+  CpuArchitecture,
+  DownloadIso,
+  ErrorState,
+  isSNO,
+  ToolbarButton,
+} from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
@@ -9,6 +16,9 @@ import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
 import './DiscoveryImageModal.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { ClustersService } from '../../services';
+import { useDispatch } from 'react-redux';
+import { updateCluster } from '../../store/slices/current-cluster/slice';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -49,6 +59,8 @@ export const DiscoveryImageModal = () => {
   const { getIsoImageUrl } = useInfraEnvImageUrl();
   const { getIpxeImageUrl } = useInfraEnvIpxeImageUrl();
 
+  const dispatch = useDispatch();
+
   const onImageReady = React.useCallback(async () => {
     // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
     const { url, error } = await getIsoImageUrl(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
@@ -72,6 +84,16 @@ export const DiscoveryImageModal = () => {
     setIpxeDownloadUrl('');
     setIpxeSelected(true);
   }, []);
+
+  const updateTagsForCiscoIntersight = async (cluster: Cluster) => {
+    try {
+      const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
+        tags: AI_CISCO_INTERSIGHT_TAG,
+      });
+
+      dispatch(updateCluster(updatedCluster));
+    } catch (e) {}
+  };
 
   if (!cluster) {
     return null;
@@ -98,6 +120,7 @@ export const DiscoveryImageModal = () => {
           isSNO={isSNOCluster}
           onReset={onReset}
           onClose={close}
+          updateTagsForCiscoIntersight={() => updateTagsForCiscoIntersight(cluster)}
         />
       ) : ipxeDownloadUrl ? (
         <DownloadIpxeScript
