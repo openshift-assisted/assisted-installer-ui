@@ -26,6 +26,7 @@ export type DownloadISOProps = {
   onClose: () => void;
   onReset?: () => void;
   docVersion?: string;
+  updateTagsForCiscoIntersight?: () => void;
 };
 
 const DownloadIso = ({
@@ -36,9 +37,16 @@ const DownloadIso = ({
   hasDHCP,
   isSNO = false,
   docVersion,
+  updateTagsForCiscoIntersight,
 }: DownloadISOProps) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl || ''}'`;
   const { t } = useTranslation();
+
+  const openCiscoIntersightHostsLink = (downloadUrl: string) => {
+    updateTagsForCiscoIntersight ? updateTagsForCiscoIntersight() : '';
+    window.open(getCiscoIntersightLink(downloadUrl), '_blank', 'noopener');
+  };
+
   return (
     <>
       <ModalBoxBody>
@@ -66,7 +74,7 @@ const DownloadIso = ({
               icon={<ExternalLinkAltIcon />}
               iconPosition="right"
               isInline
-              onClick={() => window.open(getCiscoIntersightLink(downloadUrl), '_blank', 'noopener')}
+              onClick={() => openCiscoIntersightHostsLink(downloadUrl)}
             >
               {t('ai:Add hosts from Cisco Intersight')}
             </Button>
