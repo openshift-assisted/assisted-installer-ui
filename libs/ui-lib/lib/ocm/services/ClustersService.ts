@@ -14,7 +14,11 @@ import omit from 'lodash-es/omit.js';
 import ClustersAPI from '../../common/api/assisted-service/ClustersAPI';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { AI_ASSISTED_MIGRATION_TAG, AI_UI_TAG } from '../../common/config/constants';
+import {
+  AI_ASSISTED_MIGRATION_TAG,
+  AI_CISCO_INTERSIGHT_TAG,
+  AI_UI_TAG,
+} from '../../common/config/constants';
 import { isInOcm } from '../../common/api/axiosClient';
 
 const ClustersService = {
@@ -94,7 +98,12 @@ const ClustersService = {
   ): V2ClusterUpdateParams {
     const tags = clusterTags?.split(',') || <string[]>[];
     if (tags.includes(AI_UI_TAG)) {
-      delete params.tags;
+      if (params.tags && params.tags.includes(AI_CISCO_INTERSIGHT_TAG)) {
+        tags?.push(AI_CISCO_INTERSIGHT_TAG);
+        params.tags = tags?.join(',');
+      } else {
+        delete params.tags;
+      }
     } else {
       tags?.push(AI_UI_TAG);
       params.tags = tags?.join(',');
