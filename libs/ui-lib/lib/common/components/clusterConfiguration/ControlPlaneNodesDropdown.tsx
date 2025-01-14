@@ -24,7 +24,7 @@ const ControlPlaneNodesDropdown = ({
 }) => {
   const { t } = useTranslation();
   const [{ name, value: selectedValue }, , { setValue }] = useField<number | 3>(
-    'controlPlaneAgents',
+    'controlPlaneCount',
   );
 
   const options: ControlPlaneNodesOption[] = [
@@ -72,7 +72,7 @@ const ControlPlaneNodesDropdown = ({
             {selectedValue ? selectedValue : '3'}
           </DropdownToggle>
         }
-        name="controlPlaneAgents"
+        name="controlPlaneCount"
         isOpen={controlPlanelOpen}
         onSelect={onControlPlaneSelect}
         dropdownItems={dropdownItems}
@@ -81,7 +81,7 @@ const ControlPlaneNodesDropdown = ({
     </FormGroup>
   ) : (
     <StaticField
-      name={'controlPlaneAgents'}
+      name={'controlPlaneCount'}
       label={t('ai:Number of control plane nodes')}
       isRequired
     >
