@@ -16,8 +16,7 @@ export const INFRAENV_GENERATED_AI_FLOW = 'agentBareMetal-generated-infraenv-ai-
 export const CPU_ARCHITECTURE_ANNOTATION_KEY = 'agentBareMetal-cpuArchitecture';
 
 export const getInfraEnvDocs = (docVersion: string) =>
-  `https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#enable-cim`;
-
+  `https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#enable-cim-prerequisites`;
 export const BMH_HOSTNAME_ANNOTATION = 'bmac.agent-install.openshift.io/hostname';
 
 export const OCP_VERSION_MAJOR_MINOR = 'hive.openshift.io/version-major-minor';

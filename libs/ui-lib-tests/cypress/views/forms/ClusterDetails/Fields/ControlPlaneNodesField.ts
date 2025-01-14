@@ -18,7 +18,7 @@ export class ControlPlaneNodesField {
     return cy.get(ControlPlaneNodesField.alias).find('#form-input-controlPlaneCount-field');
   }
 
-  static selectControlPlaneNode(controlPlaneCount: string) {
+  static selectControlPlaneNode(controlPlaneCount: number) {
     ControlPlaneNodesField.findDropdown().click();
     ControlPlaneNodesField.findDropdown().within(() => {
       cy.findByRole('menuitem', { name: new RegExp(`${controlPlaneCount}`, 'i') }).click();
