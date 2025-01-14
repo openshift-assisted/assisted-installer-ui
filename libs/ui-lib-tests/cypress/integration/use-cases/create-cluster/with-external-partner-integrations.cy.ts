@@ -101,14 +101,14 @@ describe('Create a new cluster with external partner integrations', () => {
 
     it('Validate that Nutanix option is disabled when we choose SNO option', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.18');
-      ClusterDetailsForm.controlPlaneNodesField.selectControlPlaneNode('1');
+      ClusterDetailsForm.controlPlaneNodesField.selectControlPlaneNode(1);
       ClusterDetailsForm.externalPartnerIntegrationsField
         .findDropdownItem('Nutanix')
         .should('have.class', 'pf-m-aria-disabled');
     });
     it('Validate that all dropdown is disabled in case we choose IBM/Z(s390x) architecture + SNO', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.18');
-      ClusterDetailsForm.controlPlaneNodesField.selectControlPlaneNode('1');
+      ClusterDetailsForm.controlPlaneNodesField.selectControlPlaneNode(1);
       ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
       ClusterDetailsForm.externalPartnerIntegrationsField
         .findDropdownToggle()
