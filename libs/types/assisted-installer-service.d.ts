@@ -367,6 +367,10 @@ export interface Cluster {
    * Indication if organization soft timeouts is enabled for the cluster.
    */
   orgSoftTimeoutsEnabled?: boolean;
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
 }
 export interface ClusterCreateParams {
   /**
