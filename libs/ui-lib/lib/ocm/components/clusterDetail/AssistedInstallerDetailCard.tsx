@@ -181,7 +181,7 @@ const AssistedInstallerDetailCard = ({
           {clusterDetailCard}
         </HistoryRouter>
       ) : (
-        clusterDetailCard
+        <BrowserRouter>{clusterDetailCard}</BrowserRouter>
       )}
     </>
   );

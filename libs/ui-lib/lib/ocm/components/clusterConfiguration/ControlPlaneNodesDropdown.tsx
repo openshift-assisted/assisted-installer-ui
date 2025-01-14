@@ -8,10 +8,11 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
+import toNumber from 'lodash-es/toNumber';
 
 const INPUT_NAME = 'controlPlaneCount';
 const fieldId = getFieldId(INPUT_NAME, 'input');
-const DEFAULT_VALUE = '3';
+const DEFAULT_VALUE = 3;
 
 export const ControlPlaneNodesLabel = () => {
   return (
@@ -31,7 +32,7 @@ export const ControlPlaneNodesLabel = () => {
 };
 
 interface ControlPlaneNodesOption {
-  value: string;
+  value: number;
   label: string;
 }
 
@@ -40,10 +41,10 @@ interface ControlPlaneNodesDropdownProps {
 }
 
 const isDropdownItemEnabled = (
-  controlPlaneNodeCount: string,
+  controlPlaneNodeCount: number,
   isNonStandardControlPlaneEnabled: boolean,
 ): boolean => {
-  if (controlPlaneNodeCount === '4' || controlPlaneNodeCount === '5') {
+  if (controlPlaneNodeCount === 4 || controlPlaneNodeCount === 5) {
     return isNonStandardControlPlaneEnabled;
   }
   return true;
@@ -52,7 +53,7 @@ const isDropdownItemEnabled = (
 const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   featureSupportLevelData,
 }) => {
-  const [field, , { setValue }] = useField<string>(INPUT_NAME);
+  const [field, , { setValue }] = useField<number>(INPUT_NAME);
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
 
@@ -78,10 +79,10 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   );
 
   const options: ControlPlaneNodesOption[] = [
-    { value: '1', label: '1 (Single Node OpenShift - not highly available cluster)' },
-    { value: '3', label: '3 (highly available cluster)' },
-    { value: '4', label: '4 (highly available cluster+)' },
-    { value: '5', label: '5 (highly available cluster++)' },
+    { value: 1, label: '1 (Single Node OpenShift)' },
+    { value: 3, label: '3 (highly available cluster)' },
+    { value: 4, label: '4 (highly available cluster+)' },
+    { value: 5, label: '5 (highly available cluster++)' },
   ];
 
   React.useEffect(() => {
@@ -92,14 +93,14 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
 
   const onSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {
     const selectedValue = event?.currentTarget.id as string;
-    setValue(selectedValue);
+    setValue(toNumber(selectedValue));
     setOpen(false);
   };
 
   const dropdownItems = options.map(({ value, label }) => {
     const isItemEnabled = isDropdownItemEnabled(value, isNonStandardControlPlaneEnabled);
     return (
-      <DropdownItem key={value} id={value} isAriaDisabled={!isItemEnabled}>
+      <DropdownItem key={value} id={value.toString()} isAriaDisabled={!isItemEnabled}>
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
           <div>{label}</div>
         </Tooltip>
@@ -128,7 +129,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
           onSelect={onSelect}
         />
       </FormGroup>
-      {field.value === '1' && (
+      {field.value === 1 && (
         <OcmSNODisclaimer
           isDisabled={isDisabled}
           snoSupportLevel={snoSupportLevel || 'supported'}
