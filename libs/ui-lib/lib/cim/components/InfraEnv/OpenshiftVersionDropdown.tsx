@@ -35,7 +35,7 @@ const OpenshiftVersionDropdown = ({ osImages }: { osImages: OsImage[] }) => {
       <Tooltip
         content={t(
           'ai:No OpenShift images available for selected CPU architecture {{cpuArchitecture}}.',
-          architectureData[cpuArchitecture as SupportedCpuArchitecture].label,
+          { cpuArchitecture: architectureData[cpuArchitecture as SupportedCpuArchitecture].label },
         )}
         hidden={!!filteredImages.length}
       >
