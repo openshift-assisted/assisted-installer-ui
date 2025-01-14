@@ -30,9 +30,8 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
-
-  const isoDialog = agentClusterInstall ? 'config' : 'download';
-  const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
+  const imageType = infraEnv.spec?.imageType || 'minimal-iso';
+  const [dialogType, setDialogType] = React.useState<AddHostModalStepType>('config');
   const { t } = useTranslation();
   const handleIsoConfigSubmit = async (
     values: DiscoveryImageFormValues,
@@ -66,8 +65,8 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           <DiscoveryImageConfigForm
             onCancel={onClose}
             handleSubmit={handleIsoConfigSubmit}
-            hideDiscoveryImageType={true} // So far configured by env variable on backend
-            imageType="full-iso" // So far the only option for CIM
+            hideDiscoveryImageType={isIPXE}
+            imageType={imageType}
             sshPublicKey={sshPublicKey}
             httpProxy={httpProxy}
             httpsProxy={httpsProxy}
