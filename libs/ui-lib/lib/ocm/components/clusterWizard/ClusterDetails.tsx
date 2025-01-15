@@ -78,6 +78,10 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         const cluster = await ClustersService.create(params, isAssistedMigration);
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
+        //TO-DO: Assisted-Migration. Provisional code. Needs to be removed when MTV integration be finished
+        if (isAssistedMigration) {
+          await ClustersService.createClusterManifestsForAssistedMigration(cluster.id);
+        }
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
