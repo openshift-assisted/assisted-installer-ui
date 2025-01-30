@@ -1,17 +1,8 @@
-import * as Yup from 'yup';
 import {
   Cluster,
   ClusterDefaultConfig,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { HostSubnets, NetworkConfigurationValues } from '../../../common/types/clusters';
-import {
-  hostPrefixValidationSchema,
-  hostSubnetValidationSchema,
-  ipBlockValidationSchema,
-  sshPublicKeyValidationSchema,
-  vipValidationSchema,
-} from '../../../common/components/ui';
-
+import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   getSubnetFromMachineNetworkCidr,
   getHostSubnets,

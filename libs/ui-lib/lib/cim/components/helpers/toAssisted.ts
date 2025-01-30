@@ -144,8 +144,8 @@ export const getAICluster = ({
           ]
         : [],
     ingressVips:
-      agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.apiVIP
-        ? [{ ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.apiVIP }]
+      agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP
+        ? [{ ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP }]
         : [],
     highAvailabilityMode:
       agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
