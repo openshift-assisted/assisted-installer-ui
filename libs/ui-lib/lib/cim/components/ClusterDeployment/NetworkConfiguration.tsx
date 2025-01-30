@@ -97,12 +97,12 @@ const NetworkConfiguration = ({
 
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVip', '', shouldValidate);
-      setFieldValue('apiVip', '', shouldValidate);
+      setFieldValue('ingressVips', [], shouldValidate);
+      setFieldValue('apiVips', [], shouldValidate);
     } else {
-      if (!values.vipDhcpAllocation && touched.hostSubnet) {
-        validateField('ingressVip');
-        validateField('apiVip');
+      if (!values.vipDhcpAllocation) {
+        validateField('ingressVips');
+        validateField('apiVips');
       }
     }
   }, [
