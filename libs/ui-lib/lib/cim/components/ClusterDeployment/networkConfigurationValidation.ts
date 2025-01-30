@@ -63,19 +63,3 @@ export const getNetworkInitialValues = (
     networkType: cluster.networkType || NETWORK_TYPE_OVN,
   };
 };
-
-export const getNetworkConfigurationValidationSchema = (
-  initialValues: NetworkConfigurationValues,
-  hostSubnets: HostSubnets,
-) =>
-  Yup.lazy((values: NetworkConfigurationValues) =>
-    Yup.object<NetworkConfigurationValues>().shape({
-      clusterNetworkHostPrefix: hostPrefixValidationSchema(values.clusterNetworkCidr),
-      clusterNetworkCidr: ipBlockValidationSchema(values.serviceNetworkCidr),
-      serviceNetworkCidr: ipBlockValidationSchema(values.clusterNetworkCidr),
-      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
-      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
-      sshPublicKey: sshPublicKeyValidationSchema,
-      hostSubnet: hostSubnetValidationSchema,
-    }),
-  );
