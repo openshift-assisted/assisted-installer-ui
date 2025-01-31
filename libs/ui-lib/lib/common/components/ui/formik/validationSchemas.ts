@@ -3,6 +3,8 @@ import { Address4, Address6 } from 'ip-address';
 import isCIDR from 'is-cidr';
 import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
+import { head } from 'lodash-es';
+import parseUrl from 'parse-url';
 
 import { TFunction } from 'i18next';
 import {
@@ -28,7 +30,6 @@ import {
 } from './constants';
 import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { selectApiVip, selectIngressVip } from '../../../selectors';
-import { head } from 'lodash-es';
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -45,10 +46,6 @@ const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
 const HOST_NAME_REGEX = /^[^.]{1,63}(?:[.][^.]{1,63})*$/;
-
-// Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
-const BMC_REGEX =
-  /^((redfish-virtualmedia|idrac-virtualmedia)(\+https?)?:(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
 export const nameValidationSchema = (
@@ -645,10 +642,16 @@ export const day2ApiVipValidationSchema = Yup.string().test(
 export const bmcAddressValidationSchema = (t: TFunction) => {
   const bmcAddressValidationMessagesList = bmcAddressValidationMessages(t);
 
-  return Yup.string().required().matches(BMC_REGEX, {
-    message: bmcAddressValidationMessagesList.INVALID_VALUE,
-    excludeEmptyString: true,
-  });
+  return Yup.string()
+    .required()
+    .test('valid-bmc-address', bmcAddressValidationMessagesList.INVALID_VALUE, (val: string) => {
+      try {
+        const url = parseUrl(val);
+        return ['redfish-virtualmedia', 'idrac-virtualmedia'].includes(url.protocol as string);
+      } catch (error) {
+        return false;
+      }
+    });
 };
 export const locationValidationSchema = (t: TFunction) => {
   const locationValidationMessagesList = locationValidationMessages(t);
