@@ -25,6 +25,7 @@
     "is-in-subnet": "^4",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
+    "parse-url": "^9.2.0",
     "prism-react-renderer": "^1.1.1",
     "react-error-boundary": "^3.1.4",
     "react-measure": "^2.5.2",
