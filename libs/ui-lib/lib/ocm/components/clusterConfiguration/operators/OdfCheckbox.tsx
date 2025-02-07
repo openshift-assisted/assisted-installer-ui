@@ -45,11 +45,11 @@ const OdfHelperText = () => {
   );
 };
 
-const OdfCheckbox = () => {
+const OdfCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const { values } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+  const [disabledReasonOdf, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
     let disabledReason = featureSupportLevelContext.getFeatureDisabledReason('ODF');
@@ -59,12 +59,16 @@ const OdfCheckbox = () => {
     setDisabledReason(disabledReason);
   }, [values, featureSupportLevelContext]);
 
+  React.useEffect(() => {
+    setDisabledReason(disabledReason);
+  }, [disabledReason]);
+
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={ODF_FIELD_NAME}
-        label={<OdfLabel disabledReason={disabledReason} />}
-        isDisabled={!!disabledReason}
+        label={<OdfLabel disabledReason={disabledReasonOdf} />}
+        isDisabled={!!disabledReasonOdf}
         helperText={<OdfHelperText />}
       />
     </FormGroup>

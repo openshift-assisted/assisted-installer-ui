@@ -88,9 +88,20 @@ export interface Boot {
 }
 export interface Bundle {
   /**
-   * The name of the bundle.
+   * Unique identifier of the bundle, for example `virtualization` or `openshift-ai-nvidia`.
    */
-  name?: string;
+  id?: string;
+  /**
+   * Short human friendly description for the bundle, usually only a few words, for example `Virtualization` or
+   * `OpenShift AI (NVIDIA)`.
+   *
+   */
+  title?: string;
+  /**
+   * Longer human friendly description for the bundle, usually one or more sentences.
+   *
+   */
+  description?: string;
   /**
    * List of operators associated with the bundle.
    */
@@ -1889,6 +1900,10 @@ export interface InstallCmdRequest {
    *
    */
   highAvailabilityMode?: 'Full' | 'None';
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
   proxy?: Proxy;
   /**
    * Check CVO status if needed
@@ -2186,7 +2201,7 @@ export interface MonitoredOperator {
    */
   statusUpdatedAt?: string; // date-time
   /**
-   * List of bundles associated with the operator. Can be empty.
+   * List of identifier of the bundles associated with the operator. Can be empty.
    */
   bundles?: string[];
 }

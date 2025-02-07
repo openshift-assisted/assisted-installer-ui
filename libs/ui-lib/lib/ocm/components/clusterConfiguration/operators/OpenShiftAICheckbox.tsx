@@ -46,11 +46,11 @@ const OpenShiftAIHelperText = () => {
   );
 };
 
-const OpenShiftAICheckbox = () => {
+const OpenShiftAICheckbox = ({ disabledReason }: { disabledReason?: string }) => {
   const featureSupportLevel = useNewFeatureSupportLevel();
   const { values } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(OPENSHIFT_AI_FIELD_NAME, 'input');
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+  const [disabledReasonAI, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
     let disabledReason = featureSupportLevel.getFeatureDisabledReason('OPENSHIFT_AI');
@@ -60,17 +60,21 @@ const OpenShiftAICheckbox = () => {
     setDisabledReason(disabledReason);
   }, [values, featureSupportLevel]);
 
+  React.useEffect(() => {
+    setDisabledReason(disabledReason);
+  }, [disabledReason]);
+
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={OPENSHIFT_AI_FIELD_NAME}
         label={
           <OpenShiftAILabel
-            disabledReason={disabledReason}
+            disabledReason={disabledReasonAI}
             supportLevel={featureSupportLevel.getFeatureSupportLevel('OPENSHIFT_AI')}
           />
         }
-        isDisabled={!!disabledReason}
+        isDisabled={!!disabledReasonAI}
         helperText={<OpenShiftAIHelperText />}
       />
     </FormGroup>
