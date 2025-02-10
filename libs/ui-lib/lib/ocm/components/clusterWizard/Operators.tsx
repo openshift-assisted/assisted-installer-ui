@@ -59,24 +59,6 @@ export const getOperatorsInitialValues = (
   };
 };
 
-export const mapOperatorsToFieldIds: { [key: string]: string } = {
-  [OPERATOR_NAME_ODF]: 'useOpenShiftDataFoundation',
-  [OPERATOR_NAME_LVM]: 'useOdfLogicalVolumeManager',
-  [OPERATOR_NAME_CNV]: 'useContainerNativeVirtualization',
-  [OPERATOR_NAME_MCE]: 'useMultiClusterEngine',
-  [OPERATOR_NAME_MTV]: 'useMigrationToolkitforVirtualization',
-  [OPERATOR_NAME_OPENSHIFT_AI]: 'useOpenShiftAI',
-  [OPERATOR_NAME_OSC]: 'useOsc',
-  [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: 'useNodeFeatureDiscovery',
-  [OPERATOR_NAME_NMSTATE]: 'useNmstate',
-  [OPERATOR_NAME_LSO]: 'useLso',
-  [OPERATOR_NAME_SERVERLESS]: 'useServerless',
-  [OPERATOR_NAME_AUTHORINO]: 'useAuthorino',
-  [OPERATOR_NAME_PIPELINES]: 'usePipelines',
-  [OPERATOR_NAME_SERVICEMESH]: 'useServicemesh',
-  [OPERATOR_NAME_NVIDIA_GPU]: 'useNvidiaGpu',
-};
-
 const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();

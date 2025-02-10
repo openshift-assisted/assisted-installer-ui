@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -90,13 +88,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       bundle.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const filteredOperators = Object.entries(operatorComponentMap)
-    .map(([key, component]) => ({
-      component: component,
-      label: key,
-    }))
-    .filter((op) => op.label.toLowerCase().includes(searchTerm.toLowerCase()));
-
   useEffect(() => {
     if (uiSettings?.bundlesSelected) {
       setSelectedBundles(
@@ -131,38 +122,37 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   }, [props.monitoredOperators]);
 
   const handleBundleSelection = async (bundleId: string, operators: string[], checked: boolean) => {
-    if (!uiSettings?.bundlesSelected) {
-      if (checked) await updateUISettings({ bundlesSelected: [bundleId] });
+    let bundlesSelected = uiSettings?.bundlesSelected ? [...uiSettings.bundlesSelected] : [];
+    let newBundleOperators = [...bundleOperators];
+
+    if (checked) {
+      // Agregar el bundle si se marca
+      bundlesSelected.push(bundleId);
+      operators.forEach((op) => {
+        if (!newBundleOperators.includes(op)) {
+          newBundleOperators.push(op);
+          const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
+          setFieldValue(fieldId, checked);
+        }
+      });
     } else {
-      let bundlesSelected = [...uiSettings.bundlesSelected];
-
-      if (checked) {
-        // Agregar el bundle si se marca
-        bundlesSelected.push(bundleId);
-      } else {
-        // Eliminar el bundle si se desmarca
-        bundlesSelected = bundlesSelected.filter((id) => id !== bundleId);
-      }
-
-      await updateUISettings({ bundlesSelected });
+      // Eliminar el bundle si se desmarca
+      bundlesSelected = bundlesSelected.filter((id) => id !== bundleId);
+      newBundleOperators = newBundleOperators.filter((op) => !operators.includes(op));
+      operators.forEach((op) => {
+        const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
+        setFieldValue(fieldId, checked);
+      });
     }
+
+    await updateUISettings({ bundlesSelected });
 
     setSelectedBundles((prev) => ({
       ...prev,
       [bundleId]: checked,
     }));
 
-    if (checked) {
-      setBundleOperators(() => {
-        const newSelection: string[] = [];
-        operators.forEach((op) => {
-          const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
-          setFieldValue(fieldId, checked);
-          newSelection.push(op);
-        });
-        return newSelection;
-      });
-    }
+    setBundleOperators(newBundleOperators);
   };
 
   const getBundleLabel = (title: string | undefined, operators: string[] | undefined) => {
@@ -247,10 +237,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       >
         <Stack hasGutter data-testid={'operators-form'}>
           {supportedOperators.map((operatorKey) => {
-            // eslint-disable-next-line no-console
-            console.log('Hola');
-            console.log(operatorKey);
-            console.log(bundleOperators);
             const isOperatorSelected = bundleOperators.includes(operatorKey);
             const OperatorComponent = operatorComponentMap[operatorKey];
             if (!OperatorComponent) {
