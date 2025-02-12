@@ -122,7 +122,7 @@ export const VirtualIPControlGroup = ({
         <>
           <FormikStaticField
             label={t('ai:API IP')}
-            name="apiVip"
+            name="apiVips.0.ip"
             helperText={apiVipHelperText}
             value={selectApiVip(cluster)}
             isValid={!apiVipFailedValidationMessage}
@@ -136,7 +136,7 @@ export const VirtualIPControlGroup = ({
           </FormikStaticField>
           <FormikStaticField
             label={t('ai:Ingress IP')}
-            name="ingressVip"
+            name="ingressVips.0.ip"
             helperText={ingressVipHelperText}
             value={selectIngressVip(cluster)}
             isValid={!ingressVipFailedValidationMessage}
@@ -153,13 +153,13 @@ export const VirtualIPControlGroup = ({
         <>
           <InputField
             label={t('ai:API IP')}
-            name="apiVip"
+            name="apiVips.0.ip"
             helperText={apiVipHelperText}
             isRequired
             isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
           />
           <InputField
-            name="ingressVip"
+            name="ingressVips.0.ip"
             label={t('ai:Ingress IP')}
             helperText={ingressVipHelperText}
             isRequired

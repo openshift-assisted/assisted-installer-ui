@@ -1,17 +1,8 @@
-import * as Yup from 'yup';
 import {
   Cluster,
   ClusterDefaultConfig,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { HostSubnets, NetworkConfigurationValues } from '../../../common/types/clusters';
-import {
-  hostPrefixValidationSchema,
-  hostSubnetValidationSchema,
-  ipBlockValidationSchema,
-  sshPublicKeyValidationSchema,
-  vipValidationSchema,
-} from '../../../common/components/ui';
-
+import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   getSubnetFromMachineNetworkCidr,
   getHostSubnets,
@@ -63,19 +54,3 @@ export const getNetworkInitialValues = (
     networkType: cluster.networkType || NETWORK_TYPE_OVN,
   };
 };
-
-export const getNetworkConfigurationValidationSchema = (
-  initialValues: NetworkConfigurationValues,
-  hostSubnets: HostSubnets,
-) =>
-  Yup.lazy((values: NetworkConfigurationValues) =>
-    Yup.object<NetworkConfigurationValues>().shape({
-      clusterNetworkHostPrefix: hostPrefixValidationSchema(values.clusterNetworkCidr),
-      clusterNetworkCidr: ipBlockValidationSchema(values.serviceNetworkCidr),
-      serviceNetworkCidr: ipBlockValidationSchema(values.clusterNetworkCidr),
-      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
-      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
-      sshPublicKey: sshPublicKeyValidationSchema,
-      hostSubnet: hostSubnetValidationSchema,
-    }),
-  );
