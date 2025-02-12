@@ -191,7 +191,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'osc-requirements-satisfied',
     ],
   },
-  softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk'],
+  softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk', 'compatible-agent'],
 };
 
 const storageStepValidationsMap: WizardStepValidationMap = {
