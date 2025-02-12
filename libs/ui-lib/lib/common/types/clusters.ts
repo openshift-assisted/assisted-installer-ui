@@ -66,6 +66,14 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   useMigrationToolkitforVirtualization: boolean;
   useOpenShiftAI: boolean;
   useOsc: boolean;
+  useNodeFeatureDiscovery: boolean;
+  useNmstate: boolean;
+  useLso: boolean;
+  useServerless: boolean;
+  useAuthorino: boolean;
+  usePipelines: boolean;
+  useServicemesh: boolean;
+  useNvidiaGpu: boolean;
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;

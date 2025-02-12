@@ -104,6 +104,7 @@
   "ai:arm64 is not supported in this OpenShift version": "arm64 is not supported in this OpenShift version",
   "ai:At least 3 hosts are required, capable of functioning as control plane nodes.": "At least 3 hosts are required that are capable of functioning as control plane nodes.",
   "ai:Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.": "Authentication is provided by the Discovery ISO, so a password is not required when you access your host using SSH. The optional -i parameter can be used to specify the private key that matches the public key that is provided when generating Discovery ISO.",
+  "ai:Authorino": "Authorino",
   "ai:Auto synchronized NTP (Network Time Protocol) sources": "Auto synchronized NTP (Network Time Protocol) sources",
   "ai:Auto-assign": "Auto-assign",
   "ai:Auto-select hosts": "Auto-select hosts",

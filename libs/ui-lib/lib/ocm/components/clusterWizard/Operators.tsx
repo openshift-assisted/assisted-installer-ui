@@ -5,13 +5,21 @@ import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   ClusterWizardStep,
   getFormikErrorFields,
+  OPERATOR_NAME_AUTHORINO,
   OPERATOR_NAME_CNV,
+  OPERATOR_NAME_LSO,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_MCE,
   OPERATOR_NAME_MTV,
+  OPERATOR_NAME_NMSTATE,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NVIDIA_GPU,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_OPENSHIFT_AI,
   OPERATOR_NAME_OSC,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_SERVICEMESH,
   OperatorsValues,
   selectMonitoredOperators,
   useAlerts,
@@ -40,6 +48,14 @@ export const getOperatorsInitialValues = (
     useMigrationToolkitforVirtualization: isOperatorEnabled([OPERATOR_NAME_MTV]),
     useOpenShiftAI: isOperatorEnabled([OPERATOR_NAME_OPENSHIFT_AI]),
     useOsc: isOperatorEnabled([OPERATOR_NAME_OSC]),
+    useNodeFeatureDiscovery: isOperatorEnabled([OPERATOR_NAME_NODE_FEATURE_DISCOVERY]),
+    useNmstate: isOperatorEnabled([OPERATOR_NAME_NMSTATE]),
+    useLso: isOperatorEnabled([OPERATOR_NAME_LSO]),
+    useServerless: isOperatorEnabled([OPERATOR_NAME_SERVERLESS]),
+    useAuthorino: isOperatorEnabled([OPERATOR_NAME_AUTHORINO]),
+    usePipelines: isOperatorEnabled([OPERATOR_NAME_PIPELINES]),
+    useServicemesh: isOperatorEnabled([OPERATOR_NAME_SERVICEMESH]),
+    useNvidiaGpu: isOperatorEnabled([OPERATOR_NAME_NVIDIA_GPU]),
   };
 };
 
@@ -80,7 +96,11 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
         />
       }
     >
-      <OperatorsStep clusterId={cluster.id} openshiftVersion={cluster.openshiftVersion} />
+      <OperatorsStep
+        clusterId={cluster.id}
+        openshiftVersion={cluster.openshiftVersion}
+        monitoredOperators={cluster.monitoredOperators}
+      />
     </ClusterWizardStep>
   );
 };

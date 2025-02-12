@@ -49,11 +49,19 @@ const MtvHelperText = () => {
   );
 };
 
-const MtvCheckbox = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
+const MtvCheckbox = ({
+  clusterId,
+  disabledReason,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  disabledReason?: string;
+}) => {
+  // eslint-disable-next-line no-console
+  console.log(disabledReason);
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(Mtv_FIELD_NAME, 'input');
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+  const [disabledReasonMtv, setDisabledReason] = useState<string | undefined>('');
 
   const selectCNVOperator = (checked: boolean) => {
     setFieldValue('useContainerNativeVirtualization', checked);
@@ -61,15 +69,19 @@ const MtvCheckbox = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId
 
   React.useEffect(() => {
     const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MTV');
-    setDisabledReason(disabledReason);
+    if (disabledReason !== undefined) setDisabledReason(disabledReason);
   }, [values, featureSupportLevelContext]);
+
+  React.useEffect(() => {
+    setDisabledReason(disabledReason);
+  }, [disabledReason]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={Mtv_FIELD_NAME}
-        label={<MtvLabel disabledReason={disabledReason} clusterId={clusterId} />}
-        isDisabled={!!disabledReason}
+        label={<MtvLabel disabledReason={disabledReasonMtv} clusterId={clusterId} />}
+        isDisabled={!!disabledReasonMtv}
         helperText={<MtvHelperText />}
         onChange={selectCNVOperator}
       />
