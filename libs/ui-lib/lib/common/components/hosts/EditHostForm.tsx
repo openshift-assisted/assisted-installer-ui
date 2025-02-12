@@ -134,6 +134,7 @@ const EditHostForm = ({
               data-testid="change-hostname-form__button-change"
               type={ButtonType.submit}
               isDisabled={isSubmitting || !isValid || !dirty}
+              isLoading={isSubmitting}
             >
               {t('ai:Change')}
             </Button>

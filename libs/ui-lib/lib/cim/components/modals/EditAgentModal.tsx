@@ -7,11 +7,12 @@ const EditAgentModal: React.FC<EditAgentModalProps> = ({ agent, onSave, ...rest 
   const [host] = agent ? getAIHosts([agent]) : [];
   return (
     <EditHostModal
+      isOpen
       host={host}
       inventory={agent?.status?.inventory}
       {...rest}
       onSave={async ({ hostname }) => {
-        agent && (await onSave(agent, hostname));
+        agent && (await onSave(host, hostname));
         rest.onClose();
       }}
     />

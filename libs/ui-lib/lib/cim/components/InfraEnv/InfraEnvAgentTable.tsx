@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Button, Stack, StackItem } from '@patternfly/react-core';
 import { DropdownItem } from '@patternfly/react-core/deprecated';
-import noop from 'lodash-es/noop.js';
 
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
@@ -33,12 +32,12 @@ import {
 } from '../../../common';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
-import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import InfraTableToolbar from './InfraTableToolbar';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
+import { onAgentChangeHostname } from '../helpers';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;
@@ -205,19 +204,6 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     <DeleteHostAction key="delete" onDeleteHost={() => setMassDeleteOpen(!isMassDeleteOpen)} />,
   ];
 
-  const onAgentChangeHostname: MassChangeHostnameModalProps['onChangeHostname'] = async (
-    host,
-    hostname,
-  ) => {
-    const agent = agents.find((a) => a.metadata?.uid === host.id);
-    if (agent) {
-      return onChangeHostname(agent, hostname);
-    } else {
-      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
-      return bmh ? onChangeBMHHostname(bmh, hostname) : noop;
-    }
-  };
-
   const paginationProps = usePagination(hosts.length);
 
   return (
@@ -272,7 +258,12 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           isOpen={isMassChangeHostOpen}
           hosts={hosts}
           selectedHostIDs={selectedHostIDs}
-          onChangeHostname={onAgentChangeHostname}
+          onChangeHostname={onAgentChangeHostname(
+            agents,
+            bareMetalHosts,
+            onChangeHostname,
+            onChangeBMHHostname,
+          )}
           onClose={() => setMassChangeHostOpen(false)}
           canChangeHostname={canChangeHostname(agents, agentStatuses, bareMetalHosts, t)}
         />

@@ -15,7 +15,7 @@ import {
   HostsNotShowingLink,
   VMRebootConfigurationInfo,
 } from '../../../common';
-import { getIsSNOCluster } from '../helpers';
+import { getIsSNOCluster, onAgentChangeHostname } from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import { ClusterDeploymentHostsDiscoveryProps } from './types';
 import { EditBMHModal, EditAgentModal } from '../modals';
@@ -57,7 +57,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   infraEnv,
   infraNMStates,
   usedHostnames,
-  onSaveAgent,
+  onChangeHostname,
   onEditRole,
   onSetInstallationDiskId,
   onSaveBMH,
@@ -119,7 +119,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
                 onEditRole={onEditRole}
                 onSetInstallationDiskId={onSetInstallationDiskId}
                 onEditBMH={setEditBMH}
-                onChangeHostname={onSaveAgent}
+                onChangeHostname={onChangeHostname}
                 onChangeBMHHostname={onChangeBMHHostname}
                 onApprove={onApproveAgent}
                 width={contentRect.bounds?.width}
@@ -138,13 +138,19 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           fetchSecret={fetchSecret}
           usedHostnames={usedHostnames || []}
         />
-        <EditAgentModal
-          isOpen={!!editAgent}
-          onClose={() => setEditAgent(undefined)}
-          usedHostnames={usedHostnames}
-          agent={editAgent}
-          onSave={onSaveAgent}
-        />
+        {editAgent && (
+          <EditAgentModal
+            onClose={() => setEditAgent(undefined)}
+            usedHostnames={usedHostnames}
+            agent={editAgent}
+            onSave={onAgentChangeHostname(
+              agents,
+              bareMetalHosts,
+              onChangeHostname,
+              onChangeBMHHostname,
+            )}
+          />
+        )}
       </GridItem>
       <DiscoveryTroubleshootingModal
         isOpen={isDiscoveryHintModalOpen}
