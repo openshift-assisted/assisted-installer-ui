@@ -2,7 +2,12 @@ import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { TableVariant, Tbody, Thead, Table, Th, Tr, Td } from '@patternfly/react-table';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import type { Disk, Host, Interface } from '@openshift-assisted/types/assisted-installer-service';
+import type {
+  Disk,
+  Host,
+  Interface,
+  Gpu,
+} from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo } from '../../types/hosts';
 import type { WithTestID } from '../../types/index';
 import { DASH } from '../constants';
@@ -107,6 +112,62 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
   );
 };
 
+type GpusTableProps = {
+  gpus: Gpu[];
+};
+
+const gpusColumns = (t: TFunction) => [
+  { title: t('ai:Vendor') },
+  { title: t('ai:Vendor ID') },
+  { title: t('ai:Model') },
+  { title: t('ai:Device ID') },
+  { title: t('ai:Address') },
+];
+
+const GpusTable: React.FC<GpusTableProps & WithTestID> = ({ gpus: gpus, testId }) => {
+  const { t } = useTranslation();
+  const rows = gpus
+    .sort((gpuA, gpuB) => gpuA.name?.localeCompare(gpuB.name || '') || 0)
+    .map((gpu) => ({
+      cells: [
+        { title: gpu.vendor, props: { 'data-testid': 'gpu-vendor' } },
+        { title: gpu.vendorId, props: { 'data-testid': 'gpu-vendor-id' } },
+        { title: gpu.name, props: { 'data-testid': 'gpu-name' } },
+        { title: gpu.deviceId, props: { 'data-testid': 'gpu-device-id' } },
+        { title: gpu.address, props: { 'data-testid': 'gpu-address' } },
+      ],
+      key: gpu.name,
+    })) as { cells: { title: string | React.ReactNode; props?: object }[]; key: string }[];
+
+  return (
+    <Table
+      data-testid={testId}
+      variant={TableVariant.compact}
+      aria-label={t("ai:Host's graphics processing units table")}
+      borders={false}
+    >
+      <Thead>
+        <Tr>
+          {gpusColumns(t).map((col, i) => (
+            <Th key={`col-${i}`}>{col.title}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {rows.map((row, i) => (
+          <Tr key={`gpu-row:${row.key}`}>
+            {row.cells?.map((cell, j) => (
+              <Td key={`cell-${i}-${j}`} {...cell.props}>
+                {cell.title}
+              </Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  );
+};
+
 export const HostDetail = ({
   host,
   canEditDisks,
@@ -124,6 +185,7 @@ export const HostDetail = ({
   );
   const rowInfo = getHostRowHardwareInfo(inventory);
   const nics = inventory.interfaces || [];
+  const gpus = inventory.gpus || [];
 
   let bmcAddress = inventory.bmcAddress;
   if (inventory.bmcV6address) {
@@ -218,6 +280,14 @@ export const HostDetail = ({
       <GridItem>
         <NicsTable interfaces={nics} testId={'nics-table'} />
       </GridItem>
+      {gpus.length > 0 && (
+        <div>
+          <SectionTitle testId={'gpus-section'} title={t('ai:GPU', { count: gpus.length })} />
+          <GridItem>
+            <GpusTable gpus={gpus} testId={'gpus-table'} />
+          </GridItem>
+        </div>
+      )}
     </Grid>
   );
 };
