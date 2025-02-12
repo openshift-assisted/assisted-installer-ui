@@ -33,6 +33,16 @@ import {
 } from '../clusterConfiguration/operators/SupportedOperators';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { useFormikContext } from 'formik';
+import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+
+const operatorsThatCanNotBeInstalledAlone = [
+  'nvdia-gpu',
+  'pipelines',
+  'servicemesh',
+  'serverless',
+  'authorino',
+  'lso',
+];
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
@@ -158,7 +168,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const getBundleLabel = (title: string | undefined, operators: string[] | undefined) => {
     return (
       <>
-        <span>{title}</span>
+        <span>{title} </span>
         <PopoverIcon
           component={'a'}
           bodyContent={
@@ -189,7 +199,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           <FlexItem>
             <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
           </FlexItem>
-          <FlexItem>
+          <FlexItem hidden>
             <TextInput
               value={searchTerm}
               type="text"
@@ -209,19 +219,44 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       <Gallery hasGutter minWidths={{ default: '350px' }} maxWidths={{ default: '2fr' }}>
         {filteredBundles.map((bundle) => (
           <GalleryItem key={bundle.id}>
-            <Card>
-              <CardTitle>
-                {getBundleLabel(bundle.title, bundle.operators)}
+            <Card
+              style={bundle.id && selectedBundles[bundle.id] ? { border: '1px solid #004080' } : {}}
+            >
+              <CardTitle
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {getBundleLabel(bundle.title, bundle.operators)}
+                </div>
                 <Checkbox
                   id={`bundle-${bundle.id || ''}`}
                   isChecked={bundle.id ? selectedBundles[bundle.id] : false}
                   onChange={(_event, checked) =>
                     void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
                   }
-                  style={{ marginLeft: '140px' }}
                 />
               </CardTitle>
-              <CardBody>{bundle.description}</CardBody>
+              <CardBody
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: '100%',
+                }}
+              >
+                <div>{bundle.description}</div>
+
+                {/* Badge aligned to the bottom-left */}
+
+                <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
+                  {bundle.id === 'openshift-ai-nvidia' && (
+                    <NewFeatureSupportLevelBadge
+                      featureId="OPENSHIFT_AI"
+                      supportLevel="dev-preview"
+                    />
+                  )}
+                </div>
+              </CardBody>
             </Card>
           </GalleryItem>
         ))}
@@ -238,6 +273,8 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         <Stack hasGutter data-testid={'operators-form'}>
           {supportedOperators.map((operatorKey) => {
             const isOperatorSelected = bundleOperators.includes(operatorKey);
+            const isOperatorPartOfAIBundle =
+              operatorsThatCanNotBeInstalledAlone.includes(operatorKey);
             const OperatorComponent = operatorComponentMap[operatorKey];
             if (!OperatorComponent) {
               return null;
@@ -251,7 +288,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                   isSNO={isSNO}
                   disabledReason={
                     isOperatorSelected
-                      ? 'You cannot disable this operator because it is part of a bundle'
+                      ? 'This operator is part of a bundle and cannot be deselected.'
+                      : isOperatorPartOfAIBundle
+                      ? 'This operator cannot be installed as a standalone'
                       : ''
                   }
                 />

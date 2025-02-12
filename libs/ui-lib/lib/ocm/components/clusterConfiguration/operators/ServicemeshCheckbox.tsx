@@ -9,7 +9,7 @@ const ServiceMeshLabel = ({ disabledReason }: { disabledReason?: string }) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Service Mesh</span>
+        <span>Install Service Mesh </span>
       </Tooltip>
       <PopoverIcon
         id={SERVICEMESH_FIELD_NAME}

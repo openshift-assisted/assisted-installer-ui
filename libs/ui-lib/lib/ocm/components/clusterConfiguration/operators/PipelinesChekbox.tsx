@@ -9,7 +9,7 @@ const PipelinesLabel = ({ disabledReason }: { disabledReason?: string }) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Pipelines</span>
+        <span>Install Pipelines </span>
       </Tooltip>
       <PopoverIcon
         id={PIPELINES_FIELD_NAME}

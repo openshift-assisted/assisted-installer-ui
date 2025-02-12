@@ -9,7 +9,7 @@ const NodeFeatureDiscoveryLabel = ({ disabledReason }: { disabledReason?: string
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Node Feature Discovery</span>
+        <span>Install Node Feature Discovery </span>
       </Tooltip>
       <PopoverIcon
         id={NODEFEATUREDISCOVERY_FIELD_NAME}

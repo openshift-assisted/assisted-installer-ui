@@ -70,15 +70,17 @@ const CnvHelperText = () => {
 const CnvCheckbox = ({
   clusterId,
   isVersionEqualsOrMajorThan4_15,
+  disabledReason,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   isVersionEqualsOrMajorThan4_15: boolean;
+  disabledReason?: string;
 }) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
   const { values } = useFormikContext<OperatorsValues>();
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+  const [disabledReasonCnv, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
     let reason = featureSupportLevel.getFeatureDisabledReason('CNV');
@@ -99,13 +101,13 @@ const CnvCheckbox = ({
         label={
           <CnvLabel
             clusterId={clusterId}
-            disabledReason={disabledReason}
+            disabledReason={disabledReason ? disabledReason : disabledReasonCnv}
             isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
             supportLevel={featureSupportLevel.getFeatureSupportLevel('CNV')}
           />
         }
         helperText={<CnvHelperText />}
-        isDisabled={!!disabledReason}
+        isDisabled={!!disabledReason || !!disabledReasonCnv}
       />
     </FormGroup>
   );

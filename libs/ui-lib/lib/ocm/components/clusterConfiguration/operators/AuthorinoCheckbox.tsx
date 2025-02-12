@@ -9,7 +9,7 @@ const AuthorinoLabel = ({ disabledReason }: { disabledReason?: string }) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Authorino</span>
+        <span>Install Authorino </span>
       </Tooltip>
       <PopoverIcon
         id={AUTHORINO_FIELD_NAME}

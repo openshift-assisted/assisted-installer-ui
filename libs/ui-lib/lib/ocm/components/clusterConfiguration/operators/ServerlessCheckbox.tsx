@@ -9,7 +9,7 @@ const ServerlessLabel = ({ disabledReason }: { disabledReason?: string }) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Serverless</span>
+        <span>Install Serverless </span>
       </Tooltip>
       <PopoverIcon
         id={SERVERLESS_FIELD_NAME}

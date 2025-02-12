@@ -9,7 +9,7 @@ const LsoLabel = ({ disabledReason }: { disabledReason?: string }) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Local Storage Operator</span>
+        <span>Install Local Storage Operator </span>
       </Tooltip>
       <PopoverIcon
         id={LSO_FIELD_NAME}

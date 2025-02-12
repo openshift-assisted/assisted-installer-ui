@@ -9,7 +9,7 @@ const NvidiaGpuLabel = ({ disabledReason }: { disabledReason?: string }) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install NVIDIA GPU</span>
+        <span>Install NVIDIA GPU </span>
       </Tooltip>
       <PopoverIcon
         id={NVIDIAGPU_FIELD_NAME}
