@@ -12,10 +12,18 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { useFormikContext } from 'formik';
 import { getOdfIncompatibleWithLvmsReason } from '../../featureSupportLevels/featureStateUtils';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
-const OdfLabel = ({ disabledReason }: { disabledReason?: string }) => (
+const OdfLabel = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel;
+}) => (
   <>
     <Tooltip hidden={!disabledReason} content={disabledReason}>
       <span>Install OpenShift Data Foundation </span>
@@ -29,6 +37,7 @@ const OdfLabel = ({ disabledReason }: { disabledReason?: string }) => (
         </a>
       }
     />
+    <NewFeatureSupportLevelBadge featureId="ODF" supportLevel={supportLevel} />
   </>
 );
 
@@ -67,7 +76,12 @@ const OdfCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={ODF_FIELD_NAME}
-        label={<OdfLabel disabledReason={disabledReasonOdf} />}
+        label={
+          <OdfLabel
+            disabledReason={disabledReasonOdf}
+            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('ODF')}
+          />
+        }
         isDisabled={!!disabledReasonOdf}
         helperText={<OdfHelperText />}
       />

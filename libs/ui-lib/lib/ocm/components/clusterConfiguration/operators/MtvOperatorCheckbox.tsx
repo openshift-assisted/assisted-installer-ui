@@ -12,15 +12,19 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { useFormikContext } from 'formik';
 import MtvRequirements from './MtvRequirements';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const Mtv_FIELD_NAME = 'useMigrationToolkitforVirtualization';
 
 const MtvLabel = ({
   disabledReason,
   clusterId,
+  supportLevel,
 }: {
   disabledReason?: string;
   clusterId: string;
+  supportLevel?: SupportLevel;
 }) => (
   <>
     <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -31,6 +35,7 @@ const MtvLabel = ({
       headerContent="Additional requirements"
       bodyContent={<MtvRequirements clusterId={clusterId} />}
     />
+    <NewFeatureSupportLevelBadge featureId="MTV" supportLevel={supportLevel} />
   </>
 );
 
@@ -80,7 +85,13 @@ const MtvCheckbox = ({
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={Mtv_FIELD_NAME}
-        label={<MtvLabel disabledReason={disabledReasonMtv} clusterId={clusterId} />}
+        label={
+          <MtvLabel
+            disabledReason={disabledReasonMtv}
+            clusterId={clusterId}
+            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('MTV')}
+          />
+        }
         isDisabled={!!disabledReasonMtv}
         helperText={<MtvHelperText />}
         onChange={selectCNVOperator}

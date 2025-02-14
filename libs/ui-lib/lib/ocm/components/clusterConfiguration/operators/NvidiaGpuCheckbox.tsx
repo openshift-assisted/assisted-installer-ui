@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { getFieldId, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const NVIDIAGPU_FIELD_NAME = 'useNvidiaGpu';
 
-const NvidiaGpuLabel = ({ disabledReason }: { disabledReason?: string }) => {
+const NvidiaGpuLabel = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel;
+}) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -16,6 +25,7 @@ const NvidiaGpuLabel = ({ disabledReason }: { disabledReason?: string }) => {
         component={'a'}
         bodyContent={'No additional requirements needed'}
       />
+      <NewFeatureSupportLevelBadge featureId="NVIDIA_GPU" supportLevel={supportLevel} />
     </>
   );
 };
@@ -32,13 +42,25 @@ const NvidiaGpuHelperText = () => {
 
 const NvidiaGpuCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
   const fieldId = getFieldId(NVIDIAGPU_FIELD_NAME, 'input');
+  const featureSupportLevel = useNewFeatureSupportLevel();
+  const [disabledReasonNvidia, setDisabledReason] = useState<string | undefined>();
+
+  React.useEffect(() => {
+    const reason = featureSupportLevel.getFeatureDisabledReason('NVIDIA_GPU');
+    setDisabledReason(reason);
+  }, [featureSupportLevel]);
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={NVIDIAGPU_FIELD_NAME}
-        label={<NvidiaGpuLabel disabledReason={disabledReason} />}
+        label={
+          <NvidiaGpuLabel
+            disabledReason={disabledReason ? disabledReason : disabledReasonNvidia}
+            supportLevel={featureSupportLevel.getFeatureSupportLevel('NVIDIA_GPU')}
+          />
+        }
         helperText={<NvidiaGpuHelperText />}
-        isDisabled={!!disabledReason}
+        isDisabled={!!disabledReason || !!disabledReasonNvidia}
       />
     </FormGroup>
   );
