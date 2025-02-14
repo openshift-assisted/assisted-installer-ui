@@ -5,6 +5,8 @@ import { getFieldId, PopoverIcon, getMceDocsLink, ClusterOperatorProps } from '.
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import MceRequirements from './MceRequirements';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 
 const MCE_FIELD_NAME = 'useMultiClusterEngine';
 
@@ -12,10 +14,12 @@ const MceLabel = ({
   disabledReason,
   isVersionEqualsOrMajorThan4_15,
   clusterId,
+  supportLevel,
 }: {
   disabledReason?: string;
   isVersionEqualsOrMajorThan4_15: boolean;
   clusterId: ClusterOperatorProps['clusterId'];
+  supportLevel?: SupportLevel;
 }) => {
   return (
     <>
@@ -33,6 +37,7 @@ const MceLabel = ({
           />
         }
       />
+      <NewFeatureSupportLevelBadge featureId="MCE" supportLevel={supportLevel} />
     </>
   );
 };
@@ -71,6 +76,7 @@ const MceCheckbox = ({
             disabledReason={disabledReason}
             isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
             clusterId={clusterId}
+            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('MCE')}
           />
         }
         isDisabled={!!disabledReason}

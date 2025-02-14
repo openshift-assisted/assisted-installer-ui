@@ -15,6 +15,7 @@ import PipelinesCheckbox from './PipelinesChekbox';
 import ServiceMeshCheckbox from './ServicemeshCheckbox';
 import NvidiaGpuCheckbox from './NvidiaGpuCheckbox';
 import {
+  FeatureId,
   OPERATOR_NAME_AUTHORINO,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LSO,
@@ -87,4 +88,22 @@ export const mapOperatorsToFieldIds: { [key: string]: string } = {
   [OPERATOR_NAME_PIPELINES]: 'usePipelines',
   [OPERATOR_NAME_SERVICEMESH]: 'useServicemesh',
   [OPERATOR_NAME_NVIDIA_GPU]: 'useNvidiaGpu',
+};
+
+export const mapOperatorIdToFeatureId: { [key: string]: FeatureId } = {
+  [OPERATOR_NAME_ODF]: 'ODF',
+  [OPERATOR_NAME_LVM]: 'LVM',
+  [OPERATOR_NAME_CNV]: 'CNV',
+  [OPERATOR_NAME_MCE]: 'MCE',
+  [OPERATOR_NAME_MTV]: 'MTV',
+  [OPERATOR_NAME_OPENSHIFT_AI]: 'OPENSHIFT_AI',
+  [OPERATOR_NAME_OSC]: 'OSC',
+  [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: 'NODE_FEATURE_DISCOVERY',
+  [OPERATOR_NAME_NMSTATE]: 'NMSTATE',
+  [OPERATOR_NAME_LSO]: 'LSO',
+  [OPERATOR_NAME_SERVERLESS]: 'SERVERLESS',
+  [OPERATOR_NAME_AUTHORINO]: 'AUTHORINO',
+  [OPERATOR_NAME_PIPELINES]: 'PIPELINES',
+  [OPERATOR_NAME_SERVICEMESH]: 'SERVICEMESH',
+  [OPERATOR_NAME_NVIDIA_GPU]: 'NVIDIA_GPU',
 };

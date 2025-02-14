@@ -14,6 +14,7 @@ import {
   StackItem,
   TextInput,
   Title,
+  Tooltip,
 } from '@patternfly/react-core';
 import {
   ClusterOperatorProps,
@@ -28,12 +29,14 @@ import BundleService from '../../services/BundleService';
 import { Bundle } from '@openshift-assisted/types/./assisted-installer-service';
 import { OperatorsService } from '../../services';
 import {
+  mapOperatorIdToFeatureId,
   mapOperatorsToFieldIds,
   operatorComponentMap,
 } from '../clusterConfiguration/operators/SupportedOperators';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { useFormikContext } from 'formik';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 const operatorsThatCanNotBeInstalledAlone = [
   'nvdia-gpu',
@@ -61,6 +64,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const [bundleOperators, setBundleOperators] = useState<string[]>([]);
   const { updateUISettings, uiSettings } = useClusterWizardContext();
   const { setFieldValue } = useFormikContext<OperatorsValues>();
+  const featureSupportLevelData = useNewFeatureSupportLevel();
 
   useEffect(() => {
     const fetchBundles = async () => {
@@ -81,8 +85,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
     const fetchSupportedOperators = async () => {
       try {
         const fetchedOperators = await OperatorsService.getSupportedOperators();
+        const sortedOperators = fetchedOperators.sort((a, b) => a.localeCompare(b));
 
-        setSupportedOperators(fetchedOperators);
+        setSupportedOperators(sortedOperators);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error al obtener los operators:', error);
@@ -189,6 +194,15 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </>
     );
   };
+  const bundleHasOperatorsNotSupported = (operators: string[] | undefined) => {
+    return (
+      operators?.some(
+        (operator) =>
+          !featureSupportLevelData.isFeatureSupported(mapOperatorIdToFeatureId[operator]),
+      ) ?? false
+    );
+  };
+
   return (
     <Stack hasGutter data-testid={'operators-page'}>
       <StackItem>
@@ -219,45 +233,56 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       <Gallery hasGutter minWidths={{ default: '350px' }} maxWidths={{ default: '2fr' }}>
         {filteredBundles.map((bundle) => (
           <GalleryItem key={bundle.id}>
-            <Card
-              style={bundle.id && selectedBundles[bundle.id] ? { border: '1px solid #004080' } : {}}
+            <Tooltip
+              content="Some operators in this bundle are not supported with the current configuration"
+              hidden={!bundleHasOperatorsNotSupported(bundle.operators)}
             >
-              <CardTitle
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              <Card
+                style={
+                  bundle.id && selectedBundles[bundle.id]
+                    ? { border: '1px solid #004080', height: '200px' }
+                    : { height: '200px' }
+                }
+                isDisabled={bundleHasOperatorsNotSupported(bundle.operators)}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {getBundleLabel(bundle.title, bundle.operators)}
-                </div>
-                <Checkbox
-                  id={`bundle-${bundle.id || ''}`}
-                  isChecked={bundle.id ? selectedBundles[bundle.id] : false}
-                  onChange={(_event, checked) =>
-                    void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
-                  }
-                />
-              </CardTitle>
-              <CardBody
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  height: '100%',
-                }}
-              >
-                <div>{bundle.description}</div>
+                <CardTitle
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {getBundleLabel(bundle.title, bundle.operators)}
+                  </div>
+                  <Checkbox
+                    id={`bundle-${bundle.id || ''}`}
+                    isChecked={bundle.id ? selectedBundles[bundle.id] : false}
+                    onChange={(_event, checked) =>
+                      void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
+                    }
+                    isDisabled={bundleHasOperatorsNotSupported(bundle.operators)}
+                  />
+                </CardTitle>
+                <CardBody
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    height: '100%',
+                  }}
+                >
+                  <div>{bundle.description}</div>
 
-                {/* Badge aligned to the bottom-left */}
+                  {/* Badge aligned to the bottom-left */}
 
-                <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
-                  {bundle.id === 'openshift-ai-nvidia' && (
-                    <NewFeatureSupportLevelBadge
-                      featureId="OPENSHIFT_AI"
-                      supportLevel="dev-preview"
-                    />
-                  )}
-                </div>
-              </CardBody>
-            </Card>
+                  <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
+                    {bundle.id === 'openshift-ai-nvidia' && (
+                      <NewFeatureSupportLevelBadge
+                        featureId="OPENSHIFT_AI"
+                        supportLevel="dev-preview"
+                      />
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+            </Tooltip>
           </GalleryItem>
         ))}
       </Gallery>

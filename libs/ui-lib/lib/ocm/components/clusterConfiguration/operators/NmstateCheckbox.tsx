@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { getFieldId, PopoverIcon, ClusterOperatorProps } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NmstateRequirements from './NmstateRequirements';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const NMSTATE_FIELD_NAME = 'useNmstate';
 
 const NmstateLabel = ({
   disabledReason,
   clusterId,
+  supportLevel,
 }: {
   disabledReason?: string;
   clusterId: ClusterOperatorProps['clusterId'];
+  supportLevel?: SupportLevel;
 }) => {
   return (
     <>
@@ -24,6 +29,7 @@ const NmstateLabel = ({
         headerContent="Additional requirements"
         bodyContent={<NmstateRequirements clusterId={clusterId} />}
       />
+      <NewFeatureSupportLevelBadge featureId="NMSTATE" supportLevel={supportLevel} />
     </>
   );
 };
@@ -47,13 +53,26 @@ const NmstateCheckbox = ({
   disabledReason?: string;
 }) => {
   const fieldId = getFieldId(NMSTATE_FIELD_NAME, 'input');
+  const featureSupportLevel = useNewFeatureSupportLevel();
+  const [disabledReasonNmstate, setDisabledReason] = useState<string | undefined>();
+
+  React.useEffect(() => {
+    const reason = featureSupportLevel.getFeatureDisabledReason('NMSTATE');
+    setDisabledReason(reason);
+  }, [featureSupportLevel]);
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={NMSTATE_FIELD_NAME}
-        label={<NmstateLabel clusterId={clusterId} disabledReason={disabledReason} />}
+        label={
+          <NmstateLabel
+            clusterId={clusterId}
+            disabledReason={disabledReason ? disabledReason : disabledReasonNmstate}
+            supportLevel={featureSupportLevel.getFeatureSupportLevel('NMSTATE')}
+          />
+        }
         helperText={<NmstateHelperText />}
-        isDisabled={!!disabledReason}
+        isDisabled={!!disabledReason || !!disabledReasonNmstate}
       />
     </FormGroup>
   );
