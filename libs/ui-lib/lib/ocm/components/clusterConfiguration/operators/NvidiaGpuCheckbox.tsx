@@ -23,7 +23,7 @@ const NvidiaGpuLabel = ({
       <PopoverIcon
         id={NVIDIAGPU_FIELD_NAME}
         component={'a'}
-        bodyContent={'No additional requirements needed'}
+        bodyContent={'Requires at least one supported NVIDIA GPU'}
       />
       <NewFeatureSupportLevelBadge featureId="NVIDIA_GPU" supportLevel={supportLevel} />
     </>

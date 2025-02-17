@@ -273,7 +273,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                   {/* Badge aligned to the bottom-left */}
 
                   <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
-                    {bundle.id === 'openshift-ai-nvidia' && (
+                    {(bundle.id === 'openshift-ai-nvidia' || bundle.id === 'openshift-ai-amd') && (
                       <NewFeatureSupportLevelBadge
                         featureId="OPENSHIFT_AI"
                         supportLevel="dev-preview"
