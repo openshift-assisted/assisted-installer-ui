@@ -74,6 +74,8 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   usePipelines: boolean;
   useServicemesh: boolean;
   useNvidiaGpu: boolean;
+  useAmdGpu: boolean;
+  useKmm: boolean;
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;
