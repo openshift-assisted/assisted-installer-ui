@@ -76,7 +76,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
               />{' '}
               <OcmInputField
                 name={`${fieldName}.bondSecondaryInterface`}
-                label="Port 2 MAC Adddress"
+                label="Port 2 MAC Address"
                 data-testid={`bond-secondary-interface-${hostIdx}`}
                 isRequired
               />
