@@ -33,7 +33,7 @@ export const hostRoles = (t: TFunction): HostRole[] => [
   },
   {
     value: 'worker',
-    label: t('ai:Worker'),
+    label: t('ai:Worker', { count: 1 }),
     description: t(
       'ai:Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
     ),
