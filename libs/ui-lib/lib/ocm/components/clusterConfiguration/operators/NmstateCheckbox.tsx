@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { getFieldId, PopoverIcon, ClusterOperatorProps } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NmstateRequirements from './NmstateRequirements';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const NMSTATE_FIELD_NAME = 'useNmstate';
 
@@ -48,18 +47,14 @@ const NmstateHelperText = () => {
 const NmstateCheckbox = ({
   clusterId,
   disabledReason,
+  supportLevel,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
 }) => {
   const fieldId = getFieldId(NMSTATE_FIELD_NAME, 'input');
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const [disabledReasonNmstate, setDisabledReason] = useState<string | undefined>();
 
-  React.useEffect(() => {
-    const reason = featureSupportLevel.getFeatureDisabledReason('NMSTATE');
-    setDisabledReason(reason);
-  }, [featureSupportLevel]);
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
@@ -67,12 +62,12 @@ const NmstateCheckbox = ({
         label={
           <NmstateLabel
             clusterId={clusterId}
-            disabledReason={disabledReason ? disabledReason : disabledReasonNmstate}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('NMSTATE')}
+            disabledReason={disabledReason}
+            supportLevel={supportLevel}
           />
         }
         helperText={<NmstateHelperText />}
-        isDisabled={!!disabledReason || !!disabledReasonNmstate}
+        isDisabled={!!disabledReason}
       />
     </FormGroup>
   );

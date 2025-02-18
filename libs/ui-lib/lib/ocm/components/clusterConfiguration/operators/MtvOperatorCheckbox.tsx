@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import {
@@ -9,7 +9,6 @@ import {
   ClusterOperatorProps,
 } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { useFormikContext } from 'formik';
 import MtvRequirements from './MtvRequirements';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -57,29 +56,18 @@ const MtvHelperText = () => {
 const MtvCheckbox = ({
   clusterId,
   disabledReason,
+  supportLevel,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
 }) => {
-  // eslint-disable-next-line no-console
-  console.log(disabledReason);
-  const featureSupportLevelContext = useNewFeatureSupportLevel();
-  const { values, setFieldValue } = useFormikContext<OperatorsValues>();
+  const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(Mtv_FIELD_NAME, 'input');
-  const [disabledReasonMtv, setDisabledReason] = useState<string | undefined>('');
 
   const selectCNVOperator = (checked: boolean) => {
     setFieldValue('useContainerNativeVirtualization', checked);
   };
-
-  React.useEffect(() => {
-    const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MTV');
-    if (disabledReason !== undefined) setDisabledReason(disabledReason);
-  }, [values, featureSupportLevelContext]);
-
-  React.useEffect(() => {
-    setDisabledReason(disabledReason);
-  }, [disabledReason]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
@@ -87,12 +75,12 @@ const MtvCheckbox = ({
         name={Mtv_FIELD_NAME}
         label={
           <MtvLabel
-            disabledReason={disabledReasonMtv}
+            disabledReason={disabledReason}
             clusterId={clusterId}
-            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('MTV')}
+            supportLevel={supportLevel}
           />
         }
-        isDisabled={!!disabledReasonMtv}
+        isDisabled={!!disabledReason}
         helperText={<MtvHelperText />}
         onChange={selectCNVOperator}
       />
