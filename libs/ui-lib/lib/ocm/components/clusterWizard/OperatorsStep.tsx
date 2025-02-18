@@ -277,8 +277,17 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         {filteredBundles.map((bundle) => (
           <GalleryItem key={bundle.id}>
             <Tooltip
-              content="Some operators in this bundle are not supported with the current configuration"
-              hidden={!bundleHasOperatorsNotSupported(bundle.operators)}
+              content={
+                bundleHasOperatorsNotSupported(bundle.operators)
+                  ? 'Some operators in this bundle are not supported with the current configuration.'
+                  : isSNO && bundle.id === 'openshift-ai-nvidia'
+                  ? 'This bundle is not available when deploying a Single Node OpenShift.'
+                  : ''
+              }
+              hidden={
+                !bundleHasOperatorsNotSupported(bundle.operators) &&
+                !(isSNO && bundle.id === 'openshift-ai-nvidia')
+              }
             >
               <Card
                 style={
@@ -286,7 +295,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                     ? { border: '1px solid #004080', height: '200px' }
                     : { height: '200px' }
                 }
-                isDisabled={bundleHasOperatorsNotSupported(bundle.operators)}
+                isDisabled={
+                  bundleHasOperatorsNotSupported(bundle.operators) ||
+                  (isSNO && bundle.id === 'openshift-ai-nvidia')
+                }
               >
                 <CardTitle
                   style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
@@ -300,7 +312,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                     onChange={(_event, checked) =>
                       void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
                     }
-                    isDisabled={bundleHasOperatorsNotSupported(bundle.operators)}
+                    isDisabled={
+                      bundleHasOperatorsNotSupported(bundle.operators) ||
+                      (isSNO && bundle.id === 'openshift-ai-nvidia')
+                    }
                   />
                 </CardTitle>
                 <CardBody
