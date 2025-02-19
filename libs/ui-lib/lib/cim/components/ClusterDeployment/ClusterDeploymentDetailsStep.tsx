@@ -1,7 +1,7 @@
 import React from 'react';
 import { Formik } from 'formik';
 import { Lazy } from 'yup';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Grid, GridItem, useWizardContext } from '@patternfly/react-core';
 
 import {
   useAlerts,
@@ -15,9 +15,6 @@ import {
 } from '../../../common';
 
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
-import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
-import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
-import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
 import { getAICluster, getNetworkType, getOCPVersions } from '../helpers';
 import {
   AgentClusterInstallK8sResource,
@@ -25,8 +22,10 @@ import {
   ClusterDeploymentK8sResource,
   InfraEnvK8sResource,
 } from '../../types';
-import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
-import { isCIMFlow, getGridSpans } from './helpers';
+import ClusterDeploymentDetailsForm, {
+  ClusterDeploymentDetailsFormWrapper,
+} from './ClusterDeploymentDetailsForm';
+import { getGridSpans } from './helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type UseDetailsFormikArgs = {
@@ -108,15 +107,16 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   agents,
   usedClusterNames,
   onSaveDetails,
-  onClose,
   isPreviewOpen,
   infraEnv,
   isNutanix,
 }) => {
-  const { addAlert } = useAlerts();
-  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const { t } = useTranslation();
+  const { addAlert } = useAlerts();
+  const { goToNextStep } = useWizardContext();
+
   const ocpVersions = getOCPVersions(clusterImages, isNutanix);
+  const gridSpans = getGridSpans(isPreviewOpen);
 
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterDeployment,
@@ -126,15 +126,11 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     usedClusterNames,
     infraEnv,
   });
-  const next = () =>
-    isCIMFlow(clusterDeployment)
-      ? setCurrentStepId('hosts-selection')
-      : setCurrentStepId('hosts-discovery');
 
   const handleSubmit = async (values: ClusterDeploymentDetailsValues) => {
     try {
       await onSaveDetails(values);
-      next();
+      await goToNextStep();
     } catch (error) {
       addAlert({
         title: t('ai:Failed to save ClusterDeployment'),
@@ -149,45 +145,21 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
       validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, dirty }) => {
-        const handleOnNext = () => {
-          if (dirty) {
-            void submitForm();
-          } else {
-            next();
-          }
-        };
-
-        const footer = (
-          <ClusterDeploymentWizardFooter
-            agentClusterInstall={agentClusterInstall}
-            isSubmitting={isSubmitting}
-            isNextDisabled={!isValid || isValidating || isSubmitting}
-            onNext={handleOnNext}
-            onCancel={onClose}
-          />
-        );
-
-        const gridSpans = getGridSpans(isPreviewOpen);
-
-        return (
-          <ClusterDeploymentWizardStep footer={footer}>
-            <Grid hasGutter>
-              <GridItem>
-                <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
-              </GridItem>
-              <GridItem {...gridSpans}>
-                <ClusterDeploymentDetailsForm
-                  agentClusterInstall={agentClusterInstall}
-                  clusterDeployment={clusterDeployment}
-                  clusterImages={clusterImages}
-                  isNutanix={isNutanix}
-                />
-              </GridItem>
-            </Grid>
-          </ClusterDeploymentWizardStep>
-        );
-      }}
+      <Grid hasGutter>
+        <GridItem>
+          <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
+        </GridItem>
+        <GridItem {...gridSpans}>
+          <ClusterDeploymentDetailsFormWrapper>
+            <ClusterDeploymentDetailsForm
+              agentClusterInstall={agentClusterInstall}
+              clusterDeployment={clusterDeployment}
+              clusterImages={clusterImages}
+              isNutanix={isNutanix}
+            />
+          </ClusterDeploymentDetailsFormWrapper>
+        </GridItem>
+      </Grid>
     </Formik>
   );
 };
