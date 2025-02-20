@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { getFieldId, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 
@@ -40,27 +39,22 @@ const LsoHelperText = () => {
   );
 };
 
-const LsoCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
+const LsoCheckbox = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
   const fieldId = getFieldId(LSO_FIELD_NAME, 'input');
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const [disabledReasonLso, setDisabledReason] = useState<string | undefined>();
 
-  React.useEffect(() => {
-    const reason = featureSupportLevel.getFeatureDisabledReason('LSO');
-    setDisabledReason(reason);
-  }, [featureSupportLevel]);
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={LSO_FIELD_NAME}
-        label={
-          <LsoLabel
-            disabledReason={disabledReason ? disabledReason : disabledReasonLso}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('LSO')}
-          />
-        }
+        label={<LsoLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
         helperText={<LsoHelperText />}
-        isDisabled={!!disabledReason || !!disabledReasonLso}
+        isDisabled={!!disabledReason}
       />
     </FormGroup>
   );

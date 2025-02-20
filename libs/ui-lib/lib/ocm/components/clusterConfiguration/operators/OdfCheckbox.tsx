@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import {
-  getFieldId,
-  PopoverIcon,
-  ODF_REQUIREMENTS_LINK,
-  ODF_LINK,
-  OperatorsValues,
-} from '../../../../common';
+import { getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK, ODF_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
-import { useFormikContext } from 'formik';
-import { getOdfIncompatibleWithLvmsReason } from '../../featureSupportLevels/featureStateUtils';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 
@@ -54,35 +45,21 @@ const OdfHelperText = () => {
   );
 };
 
-const OdfCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
-  const featureSupportLevelContext = useNewFeatureSupportLevel();
-  const { values } = useFormikContext<OperatorsValues>();
+const OdfCheckbox = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
   const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
-  const [disabledReasonOdf, setDisabledReason] = useState<string | undefined>();
-
-  React.useEffect(() => {
-    let disabledReason = featureSupportLevelContext.getFeatureDisabledReason('ODF');
-    if (!disabledReason) {
-      disabledReason = getOdfIncompatibleWithLvmsReason(values);
-    }
-    setDisabledReason(disabledReason);
-  }, [values, featureSupportLevelContext]);
-
-  React.useEffect(() => {
-    setDisabledReason(disabledReason);
-  }, [disabledReason]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={ODF_FIELD_NAME}
-        label={
-          <OdfLabel
-            disabledReason={disabledReasonOdf}
-            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('ODF')}
-          />
-        }
-        isDisabled={!!disabledReasonOdf}
+        label={<OdfLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
+        isDisabled={!!disabledReason}
         helperText={<OdfHelperText />}
       />
     </FormGroup>

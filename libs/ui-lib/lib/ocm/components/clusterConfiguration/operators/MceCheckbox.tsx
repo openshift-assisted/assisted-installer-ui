@@ -3,7 +3,6 @@ import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/reac
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { getFieldId, PopoverIcon, getMceDocsLink, ClusterOperatorProps } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import MceRequirements from './MceRequirements';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -59,14 +58,16 @@ const MceCheckbox = ({
   clusterId,
   isVersionEqualsOrMajorThan4_15,
   openshiftVersion,
+  supportLevel,
+  disabledReason,
 }: {
   isVersionEqualsOrMajorThan4_15: boolean;
   openshiftVersion?: string;
   clusterId: ClusterOperatorProps['clusterId'];
+  supportLevel?: SupportLevel | undefined;
+  disabledReason?: string;
 }) => {
-  const featureSupportLevelContext = useNewFeatureSupportLevel();
   const fieldId = getFieldId(MCE_FIELD_NAME, 'input');
-  const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MCE');
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
@@ -76,7 +77,7 @@ const MceCheckbox = ({
             disabledReason={disabledReason}
             isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
             clusterId={clusterId}
-            supportLevel={featureSupportLevelContext.getFeatureSupportLevel('MCE')}
+            supportLevel={supportLevel}
           />
         }
         isDisabled={!!disabledReason}

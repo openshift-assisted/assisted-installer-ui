@@ -32,6 +32,7 @@ import {
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_SERVICEMESH,
 } from '../../../../common';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 
 interface OperatorProps {
   clusterId: string;
@@ -39,6 +40,7 @@ interface OperatorProps {
   isVersionEqualsOrMajorThan4_15: boolean;
   isSNO: boolean;
   disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
 }
 
 export interface ComponentItem {
@@ -51,19 +53,13 @@ export const operatorComponentMap: Record<string, (props: OperatorProps) => JSX.
     <CnvCheckbox {...props} isVersionEqualsOrMajorThan4_15={props.isVersionEqualsOrMajorThan4_15} />
   ),
   mtv: (props) => <MtvOperatorCheckbox {...props} />,
-  mce: (props) => (
-    <MceCheckbox
-      clusterId={props.clusterId}
-      isVersionEqualsOrMajorThan4_15={props.isVersionEqualsOrMajorThan4_15}
-      openshiftVersion={props.openshiftVersion}
-    />
-  ),
+  mce: (props) => <MceCheckbox {...props} />,
   lvm: (props) => <LvmCheckbox {...props} />,
   odf: (props) => <OdfCheckbox {...props} />,
   'openshift-ai': (props) => <OpenShiftAICheckbox {...props} />,
-  osc: () => <OscCheckbox />,
+  osc: (props) => <OscCheckbox {...props} />,
   lso: (props) => <LsoCheckbox {...props} />,
-  'node-feature-discovery': () => <NodeFeatureDiscoveryCheckbox />,
+  'node-feature-discovery': (props) => <NodeFeatureDiscoveryCheckbox {...props} />,
   nmstate: (props) => <NmstateCheckbox {...props} />,
   serverless: (props) => <ServerlessCheckbox {...props} />,
   authorino: (props) => <AuthorinoCheckbox {...props} />,
