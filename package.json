@@ -39,6 +39,7 @@
     "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
     "test:unit": "yarn workspaces foreach -v run test",
     "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
+    "start:assisted_disconnected_ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui serve",
     "start:watch_mode": "yarn build:all && yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales 'yarn _build:ui-lib' 'yarn _yalc:push'",
     "start:vitest-ui": "vitest --ui"
   },

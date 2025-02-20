@@ -1,17 +1,15 @@
-name: Push to master or release tag
+name: Assisted Disconnected UI - Push to master or release tag
 
 on:
   push:
     branches:
       - master
     tags:
-      - 'v*'
-      - '!v*-cim'
-      - '!v*-virt'
+      - 'v*-dis'
 
 env:
   QUAY_ORG: quay.io/edge-infrastructure
-  QUAY_REPO: assisted-installer-ui
+  QUAY_REPO: assisted-disconnected-ui
 
 jobs:
   preflight-check:
@@ -35,7 +33,7 @@ jobs:
           echo "skip=${skip}" >> $GITHUB_OUTPUT
           echo "skip=${skip}"
 
-  publish-assisted-ui:
+  publish-assisted-disconnected-ui:
     needs: preflight-check
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -80,7 +78,7 @@ jobs:
             AIUI_APP_VERSION=${{ env.AIUI_APP_VERSION }}
             AIUI_APP_GIT_SHA=${{ github.sha }}
             AIUI_APP_IMAGE_REPO=${{ env.QUAY_ORG }}/${{ env.QUAY_REPO }}
-          containerfiles: apps/assisted-ui/Containerfile
+          containerfiles: apps/assisted-disconnected-ui/Containerfile
           context: .
 
       - name: Push to Quay.io
