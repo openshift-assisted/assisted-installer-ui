@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { useFormikContext } from 'formik';
-import {
-  getFieldId,
-  PopoverIcon,
-  OSC_REQUIREMENTS_LINK,
-  OSC_LINK,
-  OperatorsValues,
-} from '../../../../common';
+import { getFieldId, PopoverIcon, OSC_REQUIREMENTS_LINK, OSC_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -57,27 +49,20 @@ const OscHelperText = () => {
   );
 };
 
-const OscCheckbox = () => {
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const { values } = useFormikContext<OperatorsValues>();
+const OscCheckbox = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
   const fieldId = getFieldId(OSC_FIELD_NAME, 'input');
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
-
-  React.useEffect(() => {
-    const disabledReason = featureSupportLevel.getFeatureDisabledReason('OSC');
-    setDisabledReason(disabledReason);
-  }, [values, featureSupportLevel]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={OSC_FIELD_NAME}
-        label={
-          <OscLabel
-            disabledReason={disabledReason}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('OSC')}
-          />
-        }
+        label={<OscLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
         isDisabled={!!disabledReason}
         helperText={<OscHelperText />}
       />

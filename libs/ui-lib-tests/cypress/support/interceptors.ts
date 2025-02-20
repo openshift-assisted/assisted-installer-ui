@@ -7,6 +7,7 @@ const { day2FlowIds } = fixtures;
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
 const allClustersApiPath = '/api/assisted-install/v2/clusters/';
+const allOperatorsApiPath = '/api/assisted-install/v2/operators/';
 
 const x86 = 'x86_64';
 const arm = 'arm64';
@@ -139,6 +140,17 @@ const mockUISettingsResponse: HttpRequestInterceptor = (req) => {
   } else {
     req.reply('""');
   }
+};
+
+const mockBundlesResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  console.log(fixtureMapping);
+  req.reply(fixtureMapping?.bundles || []);
+};
+
+const mockSupportedOperators: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  req.reply(fixtureMapping?.supported_operators || []);
 };
 
 const setScenarioEnvVars = (activeScenario) => {
@@ -403,6 +415,10 @@ const addAdditionalIntercepts = () => {
   cy.intercept('POST', '/api/accounts_mgmt/v1/access_token', (req) => {
     req.reply(fixtures.pullSecret);
   });
+  cy.intercept('GET', `${allOperatorsApiPath}/bundles`, mockBundlesResponse).as('bundles');
+  cy.intercept('GET', '/api/assisted-install/v2/supported-operators', mockSupportedOperators).as(
+    'supported-operators',
+  );
 };
 
 const addEventsIntercepts = () => {

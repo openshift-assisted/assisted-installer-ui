@@ -3,6 +3,7 @@ import { isoDownloadedClusterBuilder } from '../create-sno/2-iso-downloaded';
 import { hostDiscoveredBuilder } from '../create-sno/3-host-discovered';
 import { hostRenamedBuilder } from '../create-sno/4-host-renamed';
 import { clusterReadyBuilder } from '../create-sno/5-cluster-ready';
+import { bundles, supported_operators } from '../cluster/base-cluster';
 
 const isoDownloadedCluster = isoDownloadedClusterBuilder(multinodeCluster);
 const hostDiscoveredCluster = () => hostDiscoveredBuilder(isoDownloadedCluster);
@@ -21,6 +22,8 @@ const createMultinodeFixtureMapping = {
     READY_TO_INSTALL: readyToInstallCluster,
     default: multinodeCluster,
   },
+  bundles: bundles,
+  supported_operators: supported_operators,
 };
 
 export { createMultinodeFixtureMapping };
