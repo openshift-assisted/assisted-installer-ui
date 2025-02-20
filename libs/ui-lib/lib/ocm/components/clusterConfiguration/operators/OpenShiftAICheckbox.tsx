@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { useFormikContext } from 'formik';
-import { getFieldId, PopoverIcon, OPENSHIFT_AI_LINK, OperatorsValues } from '../../../../common';
+import { getFieldId, PopoverIcon, OPENSHIFT_AI_LINK } from '../../../../common';
 import OpenShiftAIRequirements from './OpenShiftAIRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
-import { getOpenShiftAIIncompatibleWithLvmsReason } from '../../featureSupportLevels/featureStateUtils';
 
 const OPENSHIFT_AI_FIELD_NAME = 'useOpenShiftAI';
 
@@ -21,7 +18,7 @@ const OpenShiftAILabel = ({ disabledReason, supportLevel }: OpenShiftAILabelProp
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install OpenShift AI bundle </span>
+        <span>Install OpenShift AI </span>
       </Tooltip>
       <PopoverIcon
         component={'a'}
@@ -46,30 +43,20 @@ const OpenShiftAIHelperText = () => {
   );
 };
 
-const OpenShiftAICheckbox = () => {
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const { values } = useFormikContext<OperatorsValues>();
+const OpenShiftAICheckbox = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
   const fieldId = getFieldId(OPENSHIFT_AI_FIELD_NAME, 'input');
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
-
-  React.useEffect(() => {
-    let disabledReason = featureSupportLevel.getFeatureDisabledReason('OPENSHIFT_AI');
-    if (!disabledReason) {
-      disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
-    }
-    setDisabledReason(disabledReason);
-  }, [values, featureSupportLevel]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={OPENSHIFT_AI_FIELD_NAME}
-        label={
-          <OpenShiftAILabel
-            disabledReason={disabledReason}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('OPENSHIFT_AI')}
-          />
-        }
+        label={<OpenShiftAILabel disabledReason={disabledReason} supportLevel={supportLevel} />}
         isDisabled={!!disabledReason}
         helperText={<OpenShiftAIHelperText />}
       />

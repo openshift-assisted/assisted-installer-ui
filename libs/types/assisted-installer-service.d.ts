@@ -84,6 +84,28 @@ export interface Boot {
   pxeInterface?: string;
   commandLine?: string;
   secureBootState?: SecureBootState;
+  deviceType?: 'persistent' | 'ephemeral';
+}
+export interface Bundle {
+  /**
+   * Unique identifier of the bundle, for example `virtualization` or `openshift-ai-nvidia`.
+   */
+  id?: string;
+  /**
+   * Short human friendly description for the bundle, usually only a few words, for example `Virtualization` or
+   * `OpenShift AI (NVIDIA)`.
+   *
+   */
+  title?: string;
+  /**
+   * Longer human friendly description for the bundle, usually one or more sentences.
+   *
+   */
+  description?: string;
+  /**
+   * List of operators associated with the bundle.
+   */
+  operators?: string[];
 }
 export interface Cluster {
   /**
@@ -372,6 +394,7 @@ export interface Cluster {
    * Specifies the required number of control plane nodes that should be part of the cluster.
    */
   controlPlaneCount?: number;
+  loadBalancer?: LoadBalancer;
 }
 export interface ClusterCreateParams {
   /**
@@ -454,6 +477,8 @@ export interface ClusterCreateParams {
   additionalNtpSource?: string;
   /**
    * List of OLM operators to be installed.
+   * For the full list of supported operators, check the endpoint `/v2/supported-operators`:
+   *
    */
   olmOperators?: OperatorCreateParams[];
   /**
@@ -501,6 +526,7 @@ export interface ClusterCreateParams {
    * Specifies the required number of control plane nodes that should be part of the cluster.
    */
   controlPlaneCount?: number;
+  loadBalancer?: LoadBalancer;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -629,7 +655,8 @@ export type ClusterValidationId =
   | 'servicemesh-requirements-satisfied'
   | 'serverless-requirements-satisfied'
   | 'openshift-ai-requirements-satisfied'
-  | 'authorino-requirements-satisfied';
+  | 'authorino-requirements-satisfied'
+  | 'nmstate-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1020,7 +1047,9 @@ export type FeatureSupportLevelId =
   | 'SERVERLESS'
   | 'OPENSHIFT_AI'
   | 'NON_STANDARD_HA_CONTROL_PLANE'
-  | 'AUTHORINO';
+  | 'AUTHORINO'
+  | 'USER_MANAGED_LOAD_BALANCER'
+  | 'NMSTATE';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1573,7 +1602,8 @@ export type HostValidationId =
   | 'serverless-requirements-satisfied'
   | 'openshift-ai-requirements-satisfied'
   | 'authorino-requirements-satisfied'
-  | 'mtu-valid';
+  | 'mtu-valid'
+  | 'nmstate-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1870,6 +1900,10 @@ export interface InstallCmdRequest {
    *
    */
   highAvailabilityMode?: 'Full' | 'None';
+  /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  controlPlaneCount?: number;
   proxy?: Proxy;
   /**
    * Check CVO status if needed
@@ -1911,6 +1945,10 @@ export interface InstallCmdRequest {
    * If true, notify number of reboots by assisted controller
    */
   notifyNumReboots?: boolean;
+  /**
+   * CoreOS container image to use if installing to the local device
+   */
+  coreosImage?: string;
 }
 export interface InstallerArgsParams {
   /**
@@ -2023,6 +2061,21 @@ export type ListManifests = Manifest[];
 export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
+}
+export interface LoadBalancer {
+  /**
+   * Indicates if the load balancer will be managed by the cluster or by the user. This is optional and The
+   * default is `cluster-managed`.
+   *
+   * `cluster-managed` means that the cluster will start the components that assign the API and ingress VIPs to the
+   * nodes of the cluster automatically.
+   *
+   * `user-managed` means that the user is responsible for configuring an external load balancer and assign the
+   * API and ingress VIPs to it. Note that this configuration needs to be completed before starting the
+   * installation of the cluster, as it is needed during the installation process.
+   *
+   */
+  type?: 'cluster-managed' | 'user-managed';
 }
 export interface LogsGatherCmdRequest {
   /**
@@ -2147,6 +2200,10 @@ export interface MonitoredOperator {
    * Time at which the operator was last updated.
    */
   statusUpdatedAt?: string; // date-time
+  /**
+   * List of identifier of the bundles associated with the operator. Can be empty.
+   */
+  bundles?: string[];
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
 export interface MtuReport {
@@ -2706,6 +2763,8 @@ export interface V2ClusterUpdateParams {
   additionalNtpSource?: string;
   /**
    * List of OLM operators to be installed.
+   * For the full list of supported operators, check the endpoint `/v2/supported-operators`:
+   *
    */
   olmOperators?: OperatorCreateParams[];
   /**
@@ -2748,6 +2807,7 @@ export interface V2ClusterUpdateParams {
    * Specifies the required number of control plane nodes that should be part of the cluster.
    */
   controlPlaneCount?: number;
+  loadBalancer?: LoadBalancer;
 }
 export interface V2Events {
   clusterId?: string;

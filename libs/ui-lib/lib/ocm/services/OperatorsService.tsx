@@ -9,17 +9,20 @@ import {
   OPERATOR_NAME_MTV,
   OPERATOR_NAME_OPENSHIFT_AI,
   OPERATOR_NAME_OSC,
+  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+  OPERATOR_NAME_NMSTATE,
+  OPERATOR_NAME_SERVERLESS,
+  OPERATOR_NAME_AUTHORINO,
+  OPERATOR_NAME_PIPELINES,
+  OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_NVIDIA_GPU,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
-import { getKeys } from '../../common/utils';
 import {
   Cluster,
   OperatorCreateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
-
-const hasActiveOperators = (values: OperatorsValues) => {
-  return getKeys(values).some((operatorParam) => values[operatorParam]);
-};
+import OperatorsAPI from '../../common/api/assisted-service/OperatorsAPI';
 
 const OperatorsService = {
   getOLMOperators(values: OperatorsValues, cluster: Cluster): OperatorCreateParams[] {
@@ -41,11 +44,14 @@ const OperatorsService = {
     setOperator(OPERATOR_NAME_MTV, values.useMigrationToolkitforVirtualization);
     setOperator(OPERATOR_NAME_OPENSHIFT_AI, values.useOpenShiftAI);
     setOperator(OPERATOR_NAME_OSC, values.useOsc);
-
-    // TODO: remove following once the LSO option is exposed to the user
-    if (!hasActiveOperators(values)) {
-      setOperator(OPERATOR_NAME_LSO, false);
-    }
+    setOperator(OPERATOR_NAME_NODE_FEATURE_DISCOVERY, values.useNodeFeatureDiscovery);
+    setOperator(OPERATOR_NAME_NMSTATE, values.useNmstate);
+    setOperator(OPERATOR_NAME_LSO, values.useLso);
+    setOperator(OPERATOR_NAME_SERVERLESS, values.useServerless);
+    setOperator(OPERATOR_NAME_AUTHORINO, values.useAuthorino);
+    setOperator(OPERATOR_NAME_PIPELINES, values.usePipelines);
+    setOperator(OPERATOR_NAME_SERVICEMESH, values.useServicemesh);
+    setOperator(OPERATOR_NAME_NVIDIA_GPU, values.useNvidiaGpu);
 
     return Object.values(enabledOlmOperatorsByName);
   },
@@ -78,6 +84,11 @@ const OperatorsService = {
     }
 
     return updates;
+  },
+
+  async getSupportedOperators(): Promise<string[]> {
+    const { data: operators } = await OperatorsAPI.list();
+    return operators;
   },
 };
 export default OperatorsService;
