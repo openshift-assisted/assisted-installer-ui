@@ -68,7 +68,7 @@ export const ODF_REQUIREMENTS_LINK =
   'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
 
 export const OPENSHIFT_AI_REQUIREMENTS_LINK =
-  'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/installing_the_openshift_ai_cloud_service/requirements-for-openshift-ai_install#requirements-for-openshift-ai_install';
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#requirements-for-openshift-ai-self-managed_install';
 
 export const OSC_REQUIREMENTS_LINK =
   'https://docs.redhat.com/en/documentation/openshift_sandboxed_containers/1.8/html/user_guide/deploying-osc-bare-metal#osc-resource-requirements_deploying-bare-metal';

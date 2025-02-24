@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import {
@@ -9,18 +9,21 @@ import {
   ClusterOperatorProps,
 } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { useFormikContext } from 'formik';
 import MtvRequirements from './MtvRequirements';
+import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const Mtv_FIELD_NAME = 'useMigrationToolkitforVirtualization';
 
 const MtvLabel = ({
   disabledReason,
   clusterId,
+  supportLevel,
 }: {
   disabledReason?: string;
   clusterId: string;
+  supportLevel?: SupportLevel;
 }) => (
   <>
     <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -31,6 +34,7 @@ const MtvLabel = ({
       headerContent="Additional requirements"
       bodyContent={<MtvRequirements clusterId={clusterId} />}
     />
+    <NewFeatureSupportLevelBadge featureId="MTV" supportLevel={supportLevel} />
   </>
 );
 
@@ -49,26 +53,33 @@ const MtvHelperText = () => {
   );
 };
 
-const MtvCheckbox = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
-  const featureSupportLevelContext = useNewFeatureSupportLevel();
-  const { values, setFieldValue } = useFormikContext<OperatorsValues>();
+const MtvCheckbox = ({
+  clusterId,
+  disabledReason,
+  supportLevel,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
+  const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(Mtv_FIELD_NAME, 'input');
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   const selectCNVOperator = (checked: boolean) => {
     setFieldValue('useContainerNativeVirtualization', checked);
   };
 
-  React.useEffect(() => {
-    const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('MTV');
-    setDisabledReason(disabledReason);
-  }, [values, featureSupportLevelContext]);
-
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={Mtv_FIELD_NAME}
-        label={<MtvLabel disabledReason={disabledReason} clusterId={clusterId} />}
+        label={
+          <MtvLabel
+            disabledReason={disabledReason}
+            clusterId={clusterId}
+            supportLevel={supportLevel}
+          />
+        }
         isDisabled={!!disabledReason}
         helperText={<MtvHelperText />}
         onChange={selectCNVOperator}

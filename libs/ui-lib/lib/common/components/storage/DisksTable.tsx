@@ -151,11 +151,10 @@ const DisksTable = ({
     .sort((a, b) => {
       const aVal = (a.holders || a.name) as string;
       const bVal = (b.holders || b.name) as string;
-
       return aVal?.localeCompare(bVal) || 0;
     })
-    .map((disk, index) => ({
-      cells: [
+    .map((disk, index) => {
+      const rowCells = [
         {
           title: (
             <DiskName
@@ -180,27 +179,34 @@ const DisksTable = ({
           props: { 'data-testid': 'disk-role' },
         },
         { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
-        isEditable && {
-          title: (
-            <FormatDiskCheckbox
-              host={host}
-              diskId={disk.id}
-              installationDiskId={installationDiskId}
-              index={index}
-              updateDiskSkipFormatting={updateDiskSkipFormatting}
-            />
-          ),
-          props: { 'data-testid': 'disk-formatted' },
-        },
+        isEditable
+          ? {
+              title: (
+                <FormatDiskCheckbox
+                  host={host}
+                  diskId={disk.id}
+                  installationDiskId={installationDiskId}
+                  index={index}
+                  updateDiskSkipFormatting={updateDiskSkipFormatting}
+                />
+              ),
+              props: { 'data-testid': 'disk-formatted' },
+            }
+          : null,
         { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
         { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
         { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
         { title: disk.model, props: { 'data-testid': 'disk-model' } },
         { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
-      ],
-      key: disk.path,
-    })) as { key: string; cells: { title: string | React.ReactNode; props: object }[] }[];
+      ].filter(Boolean); // Remove null values to keep alignment
 
+      return { key: disk.path, cells: rowCells } as {
+        key: string;
+        cells: { title: string | React.ReactNode; props: object }[];
+      };
+    });
+  // eslint-disable-next-line no-console
+  console.log(rows);
   return (
     <Table data-testid={testId} variant={TableVariant.compact} aria-label="Host's disks table">
       <Thead>
@@ -212,6 +218,7 @@ const DisksTable = ({
       </Thead>
       <Tbody>
         {rows.map((row, i) => (
+          // eslint-disable-next-line no-console
           <Tr key={`disk-row-${row.key}`} data-testid={`disk-row-${row.key}`}>
             {row.cells.map((cell, j) => (
               <Td key={`cell-${i}-${j}`} {...cell.props}>
