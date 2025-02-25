@@ -1,6 +1,14 @@
 import React from 'react';
 import { Formik, useFormikContext } from 'formik';
-import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertVariant,
+  Grid,
+  GridItem,
+  useWizardContext,
+  useWizardFooter,
+  WizardFooter,
+} from '@patternfly/react-core';
 
 import {
   useAlerts,
@@ -8,6 +16,7 @@ import {
   FormikAutoSave,
   getFormikErrorFields,
   clusterFieldLabels,
+  Alerts,
 } from '../../../common';
 
 import {
@@ -15,20 +24,18 @@ import {
   AgentTableActions,
   ClusterDeploymentNetworkingValues,
 } from './types';
-import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
-import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
-import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentNetworkingForm from './ClusterDeploymentNetworkingForm';
-import { isAgentOfCluster, isCIMFlow } from './helpers';
+import { isAgentOfCluster } from './helpers';
 import { useInfraEnvProxies, useNetworkingFormik } from './use-networking-formik';
 import { canNextFromNetworkingStep } from './wizardTransition';
 import { AgentK8sResource } from '../../types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { ValidationSection } from './components/ValidationSection';
+import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 
 type NetworkingFormProps = {
   clusterDeployment: ClusterDeploymentDetailsNetworkingProps['clusterDeployment'];
   agentClusterInstall: ClusterDeploymentDetailsNetworkingProps['agentClusterInstall'];
-  onClose: ClusterDeploymentDetailsNetworkingProps['onClose'];
   agents: AgentK8sResource[];
   fetchInfraEnv: ClusterDeploymentDetailsNetworkingProps['fetchInfraEnv'];
   onEditHost: AgentTableActions['onEditHost'];
@@ -38,18 +45,21 @@ type NetworkingFormProps = {
   isNutanix: ClusterDeploymentDetailsNetworkingProps['isNutanix'];
 };
 
-const NetworkingForm: React.FC<NetworkingFormProps> = ({
+export const NetworkingForm = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  onClose,
   fetchInfraEnv,
   onEditHost,
   onEditRole,
   isPreviewOpen,
   onSetInstallationDiskId,
   isNutanix,
-}) => {
+}: NetworkingFormProps) => {
+  const { t } = useTranslation();
+  const { activeStep, goToPrevStep, goToNextStep, close } = useWizardContext();
+  const { syncError } = React.useContext(ClusterDeploymentWizardContext);
+  const { alerts } = useAlerts();
   const [showFormErrors, setShowFormErrors] = React.useState(false);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
   const [nextRequested, setNextRequested] = React.useState(false);
@@ -59,16 +69,13 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
   });
   const { isValid, isValidating, isSubmitting, validateForm, setTouched, errors, touched, values } =
     useFormikContext<ClusterDeploymentNetworkingValues>();
-  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  const canContinue = canNextFromNetworkingStep(agentClusterInstall, agents);
+  const canContinue = React.useMemo(
+    () => canNextFromNetworkingStep(agentClusterInstall, agents),
+    [agentClusterInstall, agents],
+  );
 
-  const onBack = () =>
-    isCIMFlow(clusterDeployment)
-      ? setCurrentStepId('hosts-selection')
-      : setCurrentStepId('hosts-discovery');
-
-  const onNext = async () => {
+  const onNext = React.useCallback(async () => {
     if (!showFormErrors) {
       const errors = await validateForm();
       setTouched(
@@ -83,57 +90,72 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
       }
     }
     setNextRequested(true);
-  };
+  }, [setTouched, showFormErrors, validateForm]);
 
   React.useEffect(() => {
     setNextRequested(false);
     setShowClusterErrors(false);
-  }, [values.apiVip, values.ingressVip]);
+  }, [values.apiVips, values.ingressVips]);
 
   React.useEffect(() => {
     if (nextRequested) {
       setShowClusterErrors(true);
       if (canContinue) {
-        setCurrentStepId('review');
+        void goToNextStep();
       }
     }
-  }, [nextRequested, canContinue, setCurrentStepId]);
+  }, [nextRequested, canContinue, goToNextStep]);
 
-  const onSyncError = React.useCallback(() => setNextRequested(false), []);
+  React.useEffect(() => {
+    if (syncError) {
+      setNextRequested(false);
+    }
+  }, [syncError]);
 
   const errorFields = getFormikErrorFields(errors, touched);
-  const { t } = useTranslation();
-  const footer = (
-    <ClusterDeploymentWizardFooter
-      agentClusterInstall={agentClusterInstall}
-      agents={agents}
-      isSubmitting={isSubmitting}
-      isNextDisabled={
-        nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
-      }
-      showClusterErrors={!errorFields.length && showClusterErrors}
-      onBack={onBack}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onNext={onNext}
-      onCancel={onClose}
-      nextButtonText="Next"
-      onSyncError={onSyncError}
-    >
-      {showFormErrors && !!errorFields.length && (
-        <Alert
-          variant={AlertVariant.danger}
-          title={t('ai:Provided cluster configuration is not valid')}
-          isInline
-        >
-          {t('ai:The following fields are invalid or missing')}:{' '}
-          {errorFields.map((field: string) => clusterFieldLabels(t)[field] || field).join(', ')}.
-        </Alert>
-      )}
-    </ClusterDeploymentWizardFooter>
+
+  const submittingText = React.useMemo(() => {
+    if (isSubmitting) {
+      return t('ai:Saving changes...');
+    } else if (isValidating || nextRequested) {
+      return t('ai:Validating...');
+    }
+    return undefined;
+  }, [isSubmitting, isValidating, nextRequested, t]);
+
+  const footer = React.useMemo(
+    () => (
+      <WizardFooter
+        activeStep={activeStep}
+        onNext={onNext}
+        isNextDisabled={
+          nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
+        }
+        nextButtonProps={{ isLoading: !!submittingText }}
+        nextButtonText={submittingText || t('ai:Next')}
+        onBack={goToPrevStep}
+        onClose={close}
+      />
+    ),
+    [
+      activeStep,
+      onNext,
+      nextRequested,
+      isSubmitting,
+      showFormErrors,
+      isValid,
+      isValidating,
+      submittingText,
+      goToPrevStep,
+      close,
+      t,
+    ],
   );
 
+  useWizardFooter(footer);
+
   return (
-    <ClusterDeploymentWizardStep footer={footer}>
+    <>
       <Grid hasGutter>
         <GridItem>
           <ClusterWizardStepHeader>{t('ai:Networking')}</ClusterWizardStepHeader>
@@ -154,19 +176,49 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
             isNutanix={isNutanix}
           />
         </GridItem>
+
+        {showFormErrors && !!errorFields.length && (
+          <GridItem>
+            <Alert
+              variant={AlertVariant.danger}
+              title={t('ai:Provided cluster configuration is not valid')}
+              isInline
+            >
+              {t('ai:The following fields are invalid or missing')}:{' '}
+              {errorFields.map((field: string) => clusterFieldLabels(t)[field] || field).join(', ')}
+              .
+            </Alert>
+          </GridItem>
+        )}
+
+        {(showClusterErrors || showFormErrors) && !!alerts.length && (
+          <GridItem>
+            <Alerts />
+          </GridItem>
+        )}
+
+        {syncError && (
+          <GridItem>
+            <ValidationSection currentStepId={'networking'} hosts={[]}>
+              <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+                {syncError}
+              </Alert>
+            </ValidationSection>
+          </GridItem>
+        )}
       </Grid>
       <FormikAutoSave />
-    </ClusterDeploymentWizardStep>
+    </>
   );
 };
 
-const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworkingProps> = ({
+const ClusterDeploymentNetworkingStep = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
   onSaveNetworking,
   ...rest
-}) => {
+}: ClusterDeploymentDetailsNetworkingProps) => {
   const { addAlert } = useAlerts();
 
   const cdName = clusterDeployment?.metadata?.name;

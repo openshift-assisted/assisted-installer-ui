@@ -30,8 +30,10 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
         .find('[role="menuitem"]')
         .each((versionItem, index) => {
           //TODO: test adaptations for new feature about custom OCP releases
-          if (index < 7) {
-            expect(versionItem.parent()).to.have.id(expectedVersionIds[index]);
+          if (index > 0) {
+            expect(versionItem.parent()).to.have.id(expectedVersionIds[index -1]);
+          } else {
+            expect(versionItem.parent()).to.have.id('all-versions');
           }
         });
     });

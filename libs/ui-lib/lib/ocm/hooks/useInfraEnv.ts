@@ -1,5 +1,5 @@
 import React from 'react';
-import { useInfraEnvId } from '.';
+import useInfraEnvId from './useInfraEnvId';
 import { CpuArchitecture } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
