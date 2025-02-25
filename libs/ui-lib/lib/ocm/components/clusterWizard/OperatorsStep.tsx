@@ -20,6 +20,8 @@ import {
   ClusterOperatorProps,
   ClusterWizardStepHeader,
   numberOfEnabledOperators,
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_ODF,
   OperatorsValues,
   PopoverIcon,
 } from '../../../common';
@@ -156,6 +158,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           newBundleOperators.push(op);
           const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
           setFieldValue(fieldId, checked);
+          if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
+            setFieldValue('useLso', checked);
+          }
         }
       });
     } else {
@@ -165,6 +170,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       operators.forEach((op) => {
         const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
         setFieldValue(fieldId, checked);
+        if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
+          setFieldValue('useLso', checked);
+        }
       });
     }
 
