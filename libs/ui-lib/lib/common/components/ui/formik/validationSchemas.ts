@@ -318,7 +318,7 @@ export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
   values: NetworkConfigurationValues,
   initialValues?: ApiVip[] | IngressVip[],
 ) =>
-  (values.apiVips?.length && values.managedNetworkingType === 'clusterManaged'
+  (values.managedNetworkingType === 'clusterManaged'
     ? Yup.array<T>().of(
         Yup.object({
           clusterId: Yup.string(),

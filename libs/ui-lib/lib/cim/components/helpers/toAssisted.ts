@@ -140,14 +140,18 @@ export const getAICluster = ({
     name: clusterDeployment.spec?.clusterName,
     baseDnsDomain: clusterDeployment.spec?.baseDomain,
     openshiftVersion: installVersion,
-    apiVips: [
-      {
-        ip: agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP,
-      },
-    ],
-    ingressVips: [
-      { ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.apiVIP },
-    ],
+    apiVips:
+      agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP
+        ? [
+            {
+              ip: agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP,
+            },
+          ]
+        : [],
+    ingressVips:
+      agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP
+        ? [{ ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP }]
+        : [],
     highAvailabilityMode:
       agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
     status,
