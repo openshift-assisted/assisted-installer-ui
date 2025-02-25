@@ -15,6 +15,9 @@ export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
 
 export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offerings/techpreview';
 
+export const DEVELOPER_SUPPORT_LEVEL_LINK =
+  'https://access.redhat.com/support/offerings/devpreview';
+
 export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
 
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
