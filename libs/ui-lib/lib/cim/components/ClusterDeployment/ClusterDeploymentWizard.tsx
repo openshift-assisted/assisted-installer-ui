@@ -25,6 +25,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
+  bareMetalHosts,
   clusterImages,
   aiConfigMap,
   infraEnv,
@@ -37,6 +38,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveISOParams,
   onCreateBMH,
   isNutanix,
+  onChangeBMHHostname,
   ...rest
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
@@ -83,15 +85,12 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               clusterDeployment={clusterDeployment}
               agentClusterInstall={agentClusterInstall}
               agents={agents}
-              bareMetalHosts={[] /* TODO(mlibra) */}
+              bareMetalHosts={bareMetalHosts}
               aiConfigMap={aiConfigMap}
               infraEnv={infraEnv}
               fetchSecret={fetchSecret}
               onClose={onClose}
-              onChangeBMHHostname={(bmh, _hostname) => {
-                // console.log('onChangeBMHHostname is not implemented: ', hostname);
-                return Promise.resolve(bmh);
-              }}
+              onChangeBMHHostname={onChangeBMHHostname}
               onEditRole={hostActions.onEditRole}
               onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
               onDeleteHost={hostActions.onDeleteHost}
