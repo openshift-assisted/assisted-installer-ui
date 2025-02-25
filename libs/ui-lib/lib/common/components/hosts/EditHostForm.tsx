@@ -56,6 +56,7 @@ const EditHostForm = ({
   onHostSaveError,
   getEditErrorMessage,
 }: EditHostFormProps) => {
+  const { t } = useTranslation();
   const hostnameInputRef = React.useRef<HTMLInputElement>();
   const [isSaveInProgress, setIsSaveInProgress] = React.useState<boolean>(false);
 
@@ -71,7 +72,7 @@ const EditHostForm = ({
     hostId: host.id,
     hostname: requestedHostname || '',
   };
-  const { t } = useTranslation();
+
   return (
     <Formik
       validateOnMount
@@ -110,11 +111,19 @@ const EditHostForm = ({
                 status={status as StatusErrorType}
                 onClose={() => setStatus({ error: null })}
               />
-              <Alert
-                variant={AlertVariant.info}
-                title={t('ai:This name will replace the original discovered hostname.')}
-                isInline
-              />
+              {canHostnameBeChanged(host.status) ? (
+                <Alert
+                  variant={AlertVariant.info}
+                  title={t('ai:This name will replace the original discovered hostname.')}
+                  isInline
+                />
+              ) : (
+                <Alert
+                  variant={AlertVariant.warning}
+                  title={t('ai:The hostname cannot be changed.')}
+                  isInline
+                />
+              )}
               <StaticTextField name="discoveredHostname" label={t('ai:Discovered hostname')}>
                 {hostname || ''}
               </StaticTextField>
