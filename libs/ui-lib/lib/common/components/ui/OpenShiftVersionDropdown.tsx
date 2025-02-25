@@ -107,6 +107,18 @@ export const OpenShiftVersionDropdown = ({
   });
 
   const dropdownGroup = [
+    <DropdownGroup key="all-available-versions">
+      <DropdownItem key="all-versions" id="all-versions">
+        <Button
+          id="show-all-versions"
+          variant="link"
+          onClick={() => showOpenshiftVersionModal()}
+          isInline
+        >
+          Show all available versions
+        </Button>
+      </DropdownItem>
+    </DropdownGroup>,
     <DropdownGroup label="Latest releases" key="latest-releases">
       {dropdownItems}
     </DropdownGroup>,
@@ -116,18 +128,6 @@ export const OpenShiftVersionDropdown = ({
       hidden={customDropdownItems.length === 0}
     >
       {customDropdownItems}
-    </DropdownGroup>,
-    <DropdownGroup key="all-available-versions">
-      <DropdownItem key="all-versions" id="all-versions">
-        <Button
-          variant="link"
-          isInline
-          onClick={() => showOpenshiftVersionModal()}
-          id="show-all-versions"
-        >
-          Show all available versions
-        </Button>
-      </DropdownItem>
     </DropdownGroup>,
   ];
 
