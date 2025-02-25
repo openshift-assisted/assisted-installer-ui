@@ -133,11 +133,11 @@ export type HostedClusterK8sResource = K8sResourceCommon & {
         endpointAccess: 'Public';
         kubeCloudControllerCreds: { name?: string };
         nodePoolManagementCreds: { name?: string };
-        region: 'us-west-2';
+        region: string;
         resourceTags: [
           {
-            key: 'kubernetes.io/cluster/feng-hs-scale-74zxh';
-            value: 'owned';
+            key: string;
+            value: string;
           },
         ];
       };
@@ -155,6 +155,9 @@ export type HostedClusterK8sResource = K8sResourceCommon & {
   status?: {
     conditions?: StatusCondition<string>[];
     kubeconfig?: {
+      name: string;
+    };
+    customkubeconfig?: {
       name: string;
     };
     kubeadminPassword?: {
