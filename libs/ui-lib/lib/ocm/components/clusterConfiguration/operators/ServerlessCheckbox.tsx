@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { getFieldId, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
@@ -40,27 +39,22 @@ const ServerlessHelperText = () => {
   );
 };
 
-const ServerlessCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
+const ServerlessCheckbox = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
   const fieldId = getFieldId(SERVERLESS_FIELD_NAME, 'input');
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const [disabledReasonServerless, setDisabledReason] = useState<string | undefined>();
 
-  React.useEffect(() => {
-    const reason = featureSupportLevel.getFeatureDisabledReason('SERVERLESS');
-    setDisabledReason(reason);
-  }, [featureSupportLevel]);
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={SERVERLESS_FIELD_NAME}
-        label={
-          <ServerlessLabel
-            disabledReason={disabledReason ? disabledReason : disabledReasonServerless}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('SERVERLESS')}
-          />
-        }
+        label={<ServerlessLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
         helperText={<ServerlessHelperText />}
-        isDisabled={!!disabledReason || !!disabledReasonServerless}
+        isDisabled={!!disabledReason}
       />
     </FormGroup>
   );

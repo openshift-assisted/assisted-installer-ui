@@ -37,6 +37,14 @@ import { useClusterWizardContext } from './ClusterWizardContext';
 import { useFormikContext } from 'formik';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import {
+  getCnvDisabledWithMtvReason,
+  getCnvIncompatibleWithLvmReason,
+  getLvmIncompatibleWithCnvReason,
+  getLvmsIncompatibleWithOdfReason,
+  getOdfIncompatibleWithLvmsReason,
+  getOpenShiftAIIncompatibleWithLvmsReason,
+} from '../featureSupportLevels/featureStateUtils';
 
 const operatorsThatCanNotBeInstalledAlone = [
   'nvdia-gpu',
@@ -63,7 +71,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const [selectedBundles, setSelectedBundles] = useState<{ [key: string]: boolean }>({});
   const [bundleOperators, setBundleOperators] = useState<string[]>([]);
   const { updateUISettings, uiSettings } = useClusterWizardContext();
-  const { setFieldValue } = useFormikContext<OperatorsValues>();
+  const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const featureSupportLevelData = useNewFeatureSupportLevel();
 
   useEffect(() => {
@@ -203,6 +211,41 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
     );
   };
 
+  const getDisabledReasonForOperator = (operatorKey: string, values: OperatorsValues) => {
+    let disabledReason = featureSupportLevelData.getFeatureDisabledReason(
+      mapOperatorIdToFeatureId[operatorKey],
+    );
+    if (operatorKey === 'cnv') {
+      if (!disabledReason) {
+        const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
+        disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
+      }
+      if (!disabledReason) {
+        disabledReason = getCnvDisabledWithMtvReason(values);
+      }
+    }
+    if (operatorKey === 'lvm') {
+      if (!disabledReason) {
+        const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
+        disabledReason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+        if (!disabledReason) {
+          disabledReason = getLvmsIncompatibleWithOdfReason(values);
+        }
+      }
+    }
+    if (operatorKey === 'odf') {
+      if (!disabledReason) {
+        disabledReason = getOdfIncompatibleWithLvmsReason(values);
+      }
+    }
+    if (operatorKey === 'openshift-ai') {
+      if (!disabledReason) {
+        disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
+      }
+    }
+    return disabledReason;
+  };
+
   return (
     <Stack hasGutter data-testid={'operators-page'}>
       <StackItem>
@@ -234,8 +277,17 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         {filteredBundles.map((bundle) => (
           <GalleryItem key={bundle.id}>
             <Tooltip
-              content="Some operators in this bundle are not supported with the current configuration"
-              hidden={!bundleHasOperatorsNotSupported(bundle.operators)}
+              content={
+                bundleHasOperatorsNotSupported(bundle.operators)
+                  ? 'Some operators in this bundle are not supported with the current configuration.'
+                  : isSNO && bundle.id === 'openshift-ai-nvidia'
+                  ? 'This bundle is not available when deploying a Single Node OpenShift.'
+                  : ''
+              }
+              hidden={
+                !bundleHasOperatorsNotSupported(bundle.operators) &&
+                !(isSNO && bundle.id === 'openshift-ai-nvidia')
+              }
             >
               <Card
                 style={
@@ -243,7 +295,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                     ? { border: '1px solid #004080', height: '200px' }
                     : { height: '200px' }
                 }
-                isDisabled={bundleHasOperatorsNotSupported(bundle.operators)}
+                isDisabled={
+                  bundleHasOperatorsNotSupported(bundle.operators) ||
+                  (isSNO && bundle.id === 'openshift-ai-nvidia')
+                }
               >
                 <CardTitle
                   style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
@@ -257,7 +312,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                     onChange={(_event, checked) =>
                       void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
                     }
-                    isDisabled={bundleHasOperatorsNotSupported(bundle.operators)}
+                    isDisabled={
+                      bundleHasOperatorsNotSupported(bundle.operators) ||
+                      (isSNO && bundle.id === 'openshift-ai-nvidia')
+                    }
                   />
                 </CardTitle>
                 <CardBody
@@ -300,6 +358,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
             const isOperatorSelected = bundleOperators.includes(operatorKey);
             const isOperatorPartOfAIBundle =
               operatorsThatCanNotBeInstalledAlone.includes(operatorKey);
+            const disabledReason = getDisabledReasonForOperator(operatorKey, values);
+            const featureSupportLevel = featureSupportLevelData.getFeatureSupportLevel(
+              mapOperatorIdToFeatureId[operatorKey],
+            );
             const OperatorComponent = operatorComponentMap[operatorKey];
             if (!OperatorComponent) {
               return null;
@@ -316,8 +378,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                       ? 'This operator is part of a bundle and cannot be deselected.'
                       : isOperatorPartOfAIBundle
                       ? 'This operator cannot be installed as a standalone'
-                      : ''
+                      : disabledReason
                   }
+                  supportLevel={featureSupportLevel}
                 />
               </StackItem>
             );

@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { getFieldId, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const PIPELINES_FIELD_NAME = 'usePipelines';
 
@@ -41,27 +40,22 @@ const PipelinesHelperText = () => {
   );
 };
 
-const PipelinesCheckbox = ({ disabledReason }: { disabledReason?: string }) => {
+const PipelinesCheckbox = ({
+  disabledReason,
+  supportLevel,
+}: {
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
+}) => {
   const fieldId = getFieldId(PIPELINES_FIELD_NAME, 'input');
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const [disabledReasonPipelines, setDisabledReason] = useState<string | undefined>();
 
-  React.useEffect(() => {
-    const reason = featureSupportLevel.getFeatureDisabledReason('PIPELINES');
-    setDisabledReason(reason);
-  }, [featureSupportLevel]);
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
         name={PIPELINES_FIELD_NAME}
-        label={
-          <PipelinesLabel
-            disabledReason={disabledReason ? disabledReason : disabledReasonPipelines}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('PIPELINES')}
-          />
-        }
+        label={<PipelinesLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
         helperText={<PipelinesHelperText />}
-        isDisabled={!!disabledReason || !!disabledReasonPipelines}
+        isDisabled={!!disabledReason}
       />
     </FormGroup>
   );
