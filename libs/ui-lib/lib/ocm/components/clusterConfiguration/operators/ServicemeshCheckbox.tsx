@@ -5,7 +5,7 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
-const SERVICEMESH_FIELD_NAME = 'useServiceMesh';
+const SERVICEMESH_FIELD_NAME = 'useServicemesh';
 
 const ServiceMeshLabel = ({
   disabledReason,
