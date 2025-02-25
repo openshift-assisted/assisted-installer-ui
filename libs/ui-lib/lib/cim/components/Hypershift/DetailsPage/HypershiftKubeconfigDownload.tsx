@@ -15,8 +15,10 @@ const HypershiftKubeconfigDownload = ({
   fetchSecret,
 }: HypershiftKubeconfigDownloadProps) => {
   const { t } = useTranslation();
+  const kubeconfigSecretName = hostedCluster.status?.customkubeconfig
+    ? hostedCluster.status.customkubeconfig?.name
+    : hostedCluster.status?.kubeconfig?.name;
   const handleKubeconfigDownload = async () => {
-    const kubeconfigSecretName = hostedCluster.status?.kubeconfig?.name;
     const kubeconfigSecretNamespace = hostedCluster.metadata?.namespace;
 
     if (kubeconfigSecretName && kubeconfigSecretNamespace) {
@@ -41,7 +43,7 @@ const HypershiftKubeconfigDownload = ({
       variant={ButtonVariant.secondary}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={handleKubeconfigDownload}
-      isDisabled={!hostedCluster.status?.kubeconfig?.name}
+      isDisabled={!kubeconfigSecretName}
     >
       {t('ai:Download kubeconfig')}
     </Button>
