@@ -7,7 +7,7 @@ import (
 
 var (
 	BridgePort     = ":" + getEnvVar("BRIDGE_PORT", "3001")
-	AssistedApiUrl = getEnvUrlVar("AIUI_APP_API_URL", "")
+	AssistedApiUrl = getEnvUrlVar("AIUI_APP_API_URL", "http://localhost:8090")
 	ApiInsecure    = getEnvVar("API_INSECURE_SKIP_VERIFY", "false")
 	TlsKeyPath     = getEnvVar("TLS_KEY", "")
 	TlsCertPath    = getEnvVar("TLS_CERT", "")
