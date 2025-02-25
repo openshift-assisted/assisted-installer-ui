@@ -16,6 +16,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import { getNetworkType } from '../helpers';
 import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+import { ExternalPlatformsDropdown } from '../../../common/components/clusterConfiguration/ExternalPlatformsDropdown';
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
   forceOpenshiftVersion?: string;
@@ -111,6 +112,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         />
       )}
       <ControlPlaneNodesDropdown isNutanix={isNutanix} isDisabled={isEditFlow} />
+
+      <ExternalPlatformsDropdown isEditFlow={isEditFlow} />
+
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}

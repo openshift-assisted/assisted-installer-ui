@@ -1,6 +1,11 @@
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import { AgentK8sResource } from '../../types/k8s/agent';
-import { Cluster, Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  Host,
+  Inventory,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getAgentStatusKey, getClusterStatus } from './status';
@@ -135,14 +140,18 @@ export const getAICluster = ({
     name: clusterDeployment.spec?.clusterName,
     baseDnsDomain: clusterDeployment.spec?.baseDomain,
     openshiftVersion: installVersion,
-    apiVips: [
-      {
-        ip: agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP,
-      },
-    ],
-    ingressVips: [
-      { ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.apiVIP },
-    ],
+    apiVips:
+      agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP
+        ? [
+            {
+              ip: agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP,
+            },
+          ]
+        : [],
+    ingressVips:
+      agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP
+        ? [{ ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP }]
+        : [],
     highAvailabilityMode:
       agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
     status,
@@ -171,6 +180,9 @@ export const getAICluster = ({
     cpuArchitecture: getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv),
     networkType: agentClusterInstall?.spec?.networking.networkType,
     controlPlaneCount: agentClusterInstall?.spec?.provisionRequirements.controlPlaneAgents || 3,
+    platform: {
+      type: (agentClusterInstall?.spec?.platformType?.toLowerCase() || 'none') as PlatformType,
+    },
   };
   /*
   aiCluster.agentSelectorMasterLabels =

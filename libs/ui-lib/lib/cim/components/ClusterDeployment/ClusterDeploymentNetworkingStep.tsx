@@ -88,7 +88,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
   React.useEffect(() => {
     setNextRequested(false);
     setShowClusterErrors(false);
-  }, [values.apiVip, values.ingressVip]);
+  }, [values.apiVips, values.ingressVips]);
 
   React.useEffect(() => {
     if (nextRequested) {
