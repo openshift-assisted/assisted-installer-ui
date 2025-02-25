@@ -1,16 +1,21 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, useAlerts } from '../../../common';
+import {
+  Alert,
+  AlertVariant,
+  Grid,
+  GridItem,
+  useWizardContext,
+  useWizardFooter,
+  WizardFooter,
+} from '@patternfly/react-core';
+import { Alerts, ClusterWizardStepHeader, useAlerts } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
 } from '../../types';
-import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
-import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
-import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
 import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
 import {
   ClusterDeploymentHostSelectionStepProps,
@@ -25,6 +30,8 @@ import {
 import { canNextFromHostSelectionStep } from './wizardTransition';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { ValidationSection } from './components/ValidationSection';
+import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 
 const getInitialValues = ({
   agents,
@@ -138,14 +145,15 @@ type HostSelectionFormProps = Omit<ClusterDeploymentHostSelectionStepProps, 'onS
 const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   agents,
   agentClusterInstall,
-  onClose,
   clusterDeployment,
   aiConfigMap,
   onEditRole: onEditRoleInit,
   onSetInstallationDiskId,
   isNutanix,
 }) => {
-  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
+  const { activeStep, goToNextStep, goToPrevStep, close } = useWizardContext();
+  const { syncError } = React.useContext(ClusterDeploymentWizardContext);
+  const { alerts } = useAlerts();
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
   const {
     values,
@@ -186,7 +194,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     setShowClusterErrors(false);
   }, []);
 
-  const onNext = async () => {
+  const onNext = React.useCallback(async () => {
     if (!showFormErrors) {
       setShowFormErrors(true);
       const errors = await validateForm();
@@ -202,7 +210,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     }
     void submitForm();
     setNextRequested(true);
-  };
+  }, [setTouched, showFormErrors, submitForm, validateForm]);
 
   React.useEffect(() => {
     if (nextRequested && !isSubmitting) {
@@ -223,71 +231,106 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       ) {
         setShowClusterErrors(true);
         if (canNextFromHostSelectionStep(agentClusterInstall, selectedAgents)) {
-          setCurrentStepId('networking');
+          void goToNextStep();
         }
       }
     }
-  }, [nextRequested, selectedAgents, agentClusterInstall, setCurrentStepId, isSubmitting, t]);
+  }, [nextRequested, selectedAgents, agentClusterInstall, isSubmitting, t, goToNextStep]);
 
-  let submittingText: string | undefined = undefined;
+  const submittingText = React.useMemo(() => {
+    if (isSubmitting) {
+      return t('ai:Saving changes...');
+    } else if (nextRequested && !showClusterErrors) {
+      return t('ai:Binding hosts...');
+    }
+    return undefined;
+  }, [isSubmitting, nextRequested, showClusterErrors, t]);
 
-  if (isSubmitting) {
-    submittingText = t('ai:Saving changes...');
-  } else if (nextRequested && !showClusterErrors) {
-    submittingText = t('ai:Binding hosts...');
-  }
+  React.useEffect(() => {
+    if (syncError) {
+      setNextRequested(false);
+    }
+  }, [syncError]);
 
-  const onSyncError = React.useCallback(() => setNextRequested(false), []);
-
-  const footer = (
-    <ClusterDeploymentWizardFooter
-      agentClusterInstall={agentClusterInstall}
-      agents={selectedAgents}
-      isSubmitting={!!submittingText}
-      submittingText={submittingText}
-      isNextDisabled={
-        nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
-      }
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onNext={onNext}
-      onBack={() => setCurrentStepId('cluster-details')}
-      onCancel={onClose}
-      showClusterErrors={showClusterErrors}
-      onSyncError={onSyncError}
-    >
-      {showFormErrors && errors.selectedHostIds && touched.selectedHostIds && (
-        <Alert
-          variant={AlertVariant.danger}
-          title={t('ai:Provided cluster configuration is not valid')}
-          isInline
-        >
-          {errors.selectedHostIds}
+  const errorsSection = (
+    <ValidationSection currentStepId={'cluster-details'} hosts={[]}>
+      {syncError && (
+        <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+          {syncError}
         </Alert>
       )}
-    </ClusterDeploymentWizardFooter>
+    </ValidationSection>
   );
 
+  const footer = React.useMemo(
+    () => (
+      <WizardFooter
+        activeStep={activeStep}
+        onNext={onNext}
+        isNextDisabled={
+          nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false) // ||
+          // !!syncError
+        }
+        nextButtonText={submittingText || t('ai:Next')}
+        nextButtonProps={{ isLoading: !!submittingText }}
+        onBack={goToPrevStep}
+        onClose={close}
+      />
+    ),
+    [
+      activeStep,
+      onNext,
+      nextRequested,
+      isSubmitting,
+      showFormErrors,
+      isValid,
+      isValidating,
+      submittingText,
+      t,
+      goToPrevStep,
+      close,
+    ],
+  );
+
+  useWizardFooter(footer);
+
   return (
-    <ClusterDeploymentWizardStep footer={footer}>
-      <Grid hasGutter>
+    <Grid hasGutter>
+      <GridItem>
+        <ClusterWizardStepHeader>{t('ai:Cluster hosts')}</ClusterWizardStepHeader>
+      </GridItem>
+      <GridItem>
+        <ClusterDeploymentHostsSelection
+          agentClusterInstall={agentClusterInstall}
+          agents={agents}
+          clusterDeployment={clusterDeployment}
+          aiConfigMap={aiConfigMap}
+          onEditRole={onEditRole}
+          onSetInstallationDiskId={onSetInstallationDiskId}
+          onAutoSelectChange={onAutoSelectChange}
+          onHostSelect={onHostSelect}
+          isNutanix={isNutanix}
+        />
+      </GridItem>
+      {(showClusterErrors || showFormErrors) && !!alerts.length && (
         <GridItem>
-          <ClusterWizardStepHeader>{t('ai:Cluster hosts')}</ClusterWizardStepHeader>
+          <Alerts />
         </GridItem>
+      )}
+
+      {syncError && <GridItem>{errorsSection}</GridItem>}
+      {showFormErrors && errors.selectedHostIds && touched.selectedHostIds && (
         <GridItem>
-          <ClusterDeploymentHostsSelection
-            agentClusterInstall={agentClusterInstall}
-            agents={agents}
-            clusterDeployment={clusterDeployment}
-            aiConfigMap={aiConfigMap}
-            onEditRole={onEditRole}
-            onSetInstallationDiskId={onSetInstallationDiskId}
-            onAutoSelectChange={onAutoSelectChange}
-            onHostSelect={onHostSelect}
-            isNutanix={isNutanix}
-          />
+          <Alert
+            variant={AlertVariant.danger}
+            title={t('ai:Provided cluster configuration is not valid')}
+            isInline
+          >
+            {errors.selectedHostIds}
+          </Alert>
         </GridItem>
-      </Grid>
-    </ClusterDeploymentWizardStep>
+      )}
+    </Grid>
   );
 };
 
