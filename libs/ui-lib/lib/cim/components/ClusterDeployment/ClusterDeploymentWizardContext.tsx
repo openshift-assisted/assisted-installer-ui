@@ -1,20 +1,33 @@
 import React from 'react';
-import { ClusterDeploymentK8sResource } from '../../types';
-import { ClusterDeploymentWizardStepsType } from './types';
+import { AgentClusterInstallK8sResource } from '../../types';
 
 type ClusterDeploymentWizardContextType = {
-  currentStepId: ClusterDeploymentWizardStepsType;
-  setCurrentStepId: (stepId: ClusterDeploymentWizardStepsType) => void;
-  clusterDeployment?: ClusterDeploymentK8sResource;
+  syncError?: string;
 };
 
-const ClusterDeploymentWizardContext = React.createContext<ClusterDeploymentWizardContextType>({
-  currentStepId: 'cluster-details',
-  setCurrentStepId: () => {
-    // console.error(
-    //   'Tried to use ClusterDeploymentWizardContext but there was no provider rendered.',
-    // );
-  },
-});
+export const ClusterDeploymentWizardContext =
+  React.createContext<ClusterDeploymentWizardContextType>({
+    syncError: undefined,
+  });
 
-export default ClusterDeploymentWizardContext;
+export const ClusterDeploymentWizardContextProvider = ({
+  children,
+  agentClusterInstall,
+}: {
+  children: React.ReactNode;
+  agentClusterInstall?: AgentClusterInstallK8sResource;
+}) => {
+  const syncError = React.useMemo(
+    () =>
+      agentClusterInstall?.status?.conditions?.find(
+        (c) => c.type === 'SpecSynced' && c.status === 'False',
+      )?.message,
+    [agentClusterInstall?.status?.conditions],
+  );
+
+  return (
+    <ClusterDeploymentWizardContext.Provider value={{ syncError }}>
+      {children}
+    </ClusterDeploymentWizardContext.Provider>
+  );
+};

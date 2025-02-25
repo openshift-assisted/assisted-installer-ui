@@ -1,28 +1,37 @@
 import React from 'react';
 import uniq from 'lodash-es/uniq.js';
-import { Grid, GridItem, Alert, AlertVariant, List, ListItem } from '@patternfly/react-core';
+import {
+  Grid,
+  GridItem,
+  Alert,
+  AlertVariant,
+  List,
+  ListItem,
+  useWizardFooter,
+  WizardFooter,
+  useWizardContext,
+} from '@patternfly/react-core';
 
-import { ClusterWizardStepHeader } from '../../../common';
-import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
-import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
-import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
+import { Alerts, ClusterWizardStepHeader } from '../../../common';
 import { ClusterDeploymentHostsDiscoveryStepProps } from './types';
 import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
 import { getAgentsHostsNames, isAgentOfInfraEnv } from './helpers';
 import { getIsSNOCluster, getWizardStepAgentStatus } from '../helpers';
 import { canNextFromHostDiscoveryStep } from './wizardTransition';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { ValidationSection } from './components/ValidationSection';
+import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 
-const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
+const ClusterDeploymentHostsDiscoveryStep = ({
   agentClusterInstall,
   agents: allAgents,
   infraEnv,
   onSaveHostsDiscovery,
-  onClose,
   ...rest
-}) => {
+}: ClusterDeploymentHostsDiscoveryStepProps) => {
   const { t } = useTranslation();
-  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
+  const { syncError } = React.useContext(ClusterDeploymentWizardContext);
+  const { activeStep, goToNextStep, goToPrevStep, close } = useWizardContext();
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
   const [nextRequested, setNextRequested] = React.useState(false);
   const [showFormErrors, setShowFormErrors] = React.useState(false);
@@ -61,7 +70,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     errors.push(t('ai:Some hosts are not ready.'));
   }
 
-  const onNext = async () => {
+  const onNext = React.useCallback(async () => {
     if (!showFormErrors) {
       setShowFormErrors(true);
       if (errors.length) {
@@ -70,7 +79,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     }
     await onSaveHostsDiscovery();
     setNextRequested(true);
-  };
+  }, [errors.length, onSaveHostsDiscovery, showFormErrors]);
 
   React.useEffect(() => {
     setNextRequested(false);
@@ -86,31 +95,68 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         if (canNextFromHostDiscoveryStep(agentClusterInstall, infraEnvAgents)) {
-          setCurrentStepId('networking');
+          void goToNextStep();
         }
       }
     }
-  }, [nextRequested, infraEnvAgents, agentClusterInstall, setCurrentStepId, agentsNotHealthy]);
+  }, [nextRequested, infraEnvAgents, agentClusterInstall, agentsNotHealthy, goToNextStep]);
 
-  const submittingText =
-    nextRequested && !showClusterErrors ? t('ai:Saving changes...') : undefined;
+  const submittingText = React.useMemo(
+    () => (nextRequested && !showClusterErrors ? t('ai:Saving changes...') : undefined),
+    [nextRequested, showClusterErrors, t],
+  );
 
-  const onSyncError = React.useCallback(() => setNextRequested(false), []);
+  React.useEffect(() => {
+    if (syncError) {
+      setNextRequested(false);
+    }
+  }, [syncError]);
 
-  const footer = (
-    <ClusterDeploymentWizardFooter
-      agentClusterInstall={agentClusterInstall}
-      agents={infraEnvAgents}
-      isSubmitting={!!submittingText}
-      submittingText={submittingText}
-      isNextDisabled={nextRequested || (showFormErrors ? !!errors.length : false)}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onNext={onNext}
-      onBack={() => setCurrentStepId('cluster-details')}
-      showClusterErrors={showClusterErrors}
-      onSyncError={onSyncError}
-      onCancel={onClose}
-    >
+  const footer = React.useMemo(
+    () => (
+      <WizardFooter
+        activeStep={activeStep}
+        onNext={onNext}
+        isNextDisabled={nextRequested || (showFormErrors ? !!errors.length : false)}
+        nextButtonText={submittingText || t('ai:Next')}
+        nextButtonProps={{ isLoading: !!submittingText }}
+        onBack={goToPrevStep}
+        onClose={close}
+      />
+    ),
+    [
+      activeStep,
+      close,
+      errors.length,
+      goToPrevStep,
+      nextRequested,
+      onNext,
+      showFormErrors,
+      submittingText,
+      t,
+    ],
+  );
+  useWizardFooter(footer);
+
+  return (
+    <Grid hasGutter>
+      <GridItem>
+        <ClusterWizardStepHeader>{t('ai:Cluster hosts')}</ClusterWizardStepHeader>
+      </GridItem>
+      <GridItem>
+        <ClusterDeploymentHostsDiscovery
+          agentClusterInstall={agentClusterInstall}
+          agents={infraEnvAgents}
+          infraEnv={infraEnv}
+          usedHostnames={usedHostnames}
+          {...rest}
+        />
+      </GridItem>
+      {showClusterErrors && !!errors.length && (
+        <GridItem>
+          <Alerts />
+        </GridItem>
+      )}
       {showFormErrors && !!errors.length && (
         <Alert
           variant={AlertVariant.danger}
@@ -124,27 +170,17 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
           </List>
         </Alert>
       )}
-    </ClusterDeploymentWizardFooter>
-  );
 
-  return (
-    <ClusterDeploymentWizardStep footer={footer}>
-      <Grid hasGutter>
+      {!!syncError && (
         <GridItem>
-          <ClusterWizardStepHeader>{t('ai:Cluster hosts')}</ClusterWizardStepHeader>
+          <ValidationSection currentStepId={'hosts-selection'} hosts={[]}>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+              {syncError}
+            </Alert>
+          </ValidationSection>
         </GridItem>
-        <GridItem>
-          <ClusterDeploymentHostsDiscovery
-            agentClusterInstall={agentClusterInstall}
-            agents={infraEnvAgents}
-            infraEnv={infraEnv}
-            usedHostnames={usedHostnames}
-            {...rest}
-          />
-        </GridItem>
-      </Grid>
-    </ClusterDeploymentWizardStep>
+      )}
+    </Grid>
   );
 };
-
 export default ClusterDeploymentHostsDiscoveryStep;

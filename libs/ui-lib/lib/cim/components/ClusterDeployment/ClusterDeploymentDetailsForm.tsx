@@ -1,5 +1,13 @@
 import * as React from 'react';
-import { Alert, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertVariant,
+  Stack,
+  StackItem,
+  useWizardContext,
+  useWizardFooter,
+  WizardFooter,
+} from '@patternfly/react-core';
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource, OsImage } from '../../types';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { getOCPVersions, getSelectedVersion } from '../helpers';
@@ -10,6 +18,8 @@ import {
 } from './ClusterDetailsFormFields';
 import { useFormikContext } from 'formik';
 import { ClusterDetailsValues, CpuArchitecture, SupportedCpuArchitecture } from '../../../common';
+import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
+import { ValidationSection } from './components/ValidationSection';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -18,6 +28,56 @@ type ClusterDeploymentDetailsFormProps = {
   extensionAfter?: ClusterDetailsFormFieldsProps['extensionAfter'];
   isNutanix?: boolean;
   osImages?: OsImage[];
+};
+
+export const ClusterDeploymentDetailsFormWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const { activeStep, goToPrevStep, goToNextStep, close } = useWizardContext();
+  const { syncError } = React.useContext(ClusterDeploymentWizardContext);
+  const { submitForm, isSubmitting, isValid, isValidating, dirty } =
+    useFormikContext<ClusterDetailsValues>();
+  const { t } = useTranslation();
+
+  const handleOnNext = () => {
+    if (dirty) {
+      void submitForm();
+    } else {
+      void goToNextStep();
+    }
+  };
+
+  const footer = (
+    <WizardFooter
+      activeStep={activeStep}
+      onNext={handleOnNext}
+      isNextDisabled={!isValid || isValidating || isSubmitting}
+      nextButtonProps={{ isLoading: isSubmitting }}
+      nextButtonText={t('ai:Next')}
+      onBack={goToPrevStep}
+      onClose={close}
+      isBackHidden
+    />
+  );
+
+  useWizardFooter(footer);
+
+  return (
+    <Stack hasGutter>
+      {children}
+      {syncError && (
+        <StackItem>
+          <ValidationSection currentStepId={'networking'} hosts={[]}>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+              {syncError}
+            </Alert>
+          </ValidationSection>
+        </StackItem>
+      )}
+    </Stack>
+  );
 };
 
 const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
@@ -59,7 +119,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   }, [osImages, ocpVersions, values.openshiftVersion]);
 
   return (
-    <Stack hasGutter>
+    <>
       {isEditFlow && (
         <StackItem>
           <Alert
@@ -79,7 +139,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           cpuArchitectures={cpuArchitectures}
         />
       </StackItem>
-    </Stack>
+    </>
   );
 };
 
