@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { useFormikContext } from 'formik';
 import {
   ClusterOperatorProps,
   getFieldId,
   PopoverIcon,
   operatorLabels,
-  OperatorsValues,
   OPERATOR_NAME_LVM,
   ExposedOperatorName,
   ExternalLink,
@@ -16,10 +14,6 @@ import {
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import {
-  getLvmIncompatibleWithCnvReason,
-  getLvmsIncompatibleWithOdfReason,
-} from '../../featureSupportLevels/featureStateUtils';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
@@ -70,38 +64,26 @@ const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: Lv
 const LvmCheckbox = ({
   clusterId,
   openshiftVersion,
+  disabledReason,
+  supportLevel,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   openshiftVersion?: ClusterOperatorProps['openshiftVersion'];
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
 }) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
   const { t } = useTranslation();
-  const { values } = useFormikContext<OperatorsValues>();
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   const operatorInfo = React.useMemo(() => {
-    const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
-
     const operatorLabel = operatorLabels(t, featureSupportLevel)[OPERATOR_NAME_LVM];
     return {
-      lvmSupport,
       operatorLabel,
-      operatorName: lvmSupport === 'supported' ? OPERATOR_NAME_LVMS : OPERATOR_NAME_LVM,
+      operatorName: supportLevel === 'supported' ? OPERATOR_NAME_LVMS : OPERATOR_NAME_LVM,
     };
-  }, [t, featureSupportLevel]);
-
-  React.useEffect(() => {
-    let reason = featureSupportLevel.getFeatureDisabledReason('LVM');
-    if (!reason) {
-      reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
-      if (!reason) {
-        reason = getLvmsIncompatibleWithOdfReason(values);
-      }
-    }
-    setDisabledReason(reason);
-  }, [values, featureSupportLevel, operatorInfo.lvmSupport]);
+  }, [featureSupportLevel, supportLevel, t]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
@@ -112,7 +94,7 @@ const LvmCheckbox = ({
             clusterId={clusterId}
             operatorLabel={operatorInfo.operatorLabel}
             disabledReason={disabledReason}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('LVM')}
+            supportLevel={supportLevel}
           />
         }
         helperText={

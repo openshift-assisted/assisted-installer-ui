@@ -249,6 +249,46 @@ export const getNewFeatureDisabledReason = (
         return 'Migration Toolkit for Virtualization is not supported in this OpenShift version';
       }
     }
+    case 'AUTHORINO': {
+      if (!isSupported) {
+        return `Authorino is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'LSO': {
+      if (!isSupported) {
+        return `Lso is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'NMSTATE': {
+      if (!isSupported) {
+        return `Nmstate is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'NODE_FEATURE_DISCOVERY': {
+      if (!isSupported) {
+        return `Node Feature Discovery is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'NVIDIA_GPU': {
+      if (!isSupported) {
+        return `NVIDIA GPU is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'PIPELINES': {
+      if (!isSupported) {
+        return `Pipelines is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'SERVERLESS': {
+      if (!isSupported) {
+        return `Serverless is not available with the selected CPU architecture.`;
+      }
+    }
+    case 'SERVICEMESH': {
+      if (!isSupported) {
+        return `Service mesh is not available with the selected CPU architecture.`;
+      }
+    }
     default: {
       return undefined;
     }

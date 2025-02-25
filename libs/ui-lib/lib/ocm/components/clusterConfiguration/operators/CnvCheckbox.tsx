@@ -1,21 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { useFormikContext } from 'formik';
-import {
-  ClusterOperatorProps,
-  CNV_LINK,
-  getFieldId,
-  OperatorsValues,
-  PopoverIcon,
-} from '../../../../common';
+import { ClusterOperatorProps, CNV_LINK, getFieldId, PopoverIcon } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
-import {
-  getCnvDisabledWithMtvReason,
-  getCnvIncompatibleWithLvmReason,
-} from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -70,27 +58,15 @@ const CnvHelperText = () => {
 const CnvCheckbox = ({
   clusterId,
   isVersionEqualsOrMajorThan4_15,
+  disabledReason,
+  supportLevel,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   isVersionEqualsOrMajorThan4_15: boolean;
+  disabledReason?: string;
+  supportLevel?: SupportLevel | undefined;
 }) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
-
-  const featureSupportLevel = useNewFeatureSupportLevel();
-  const { values } = useFormikContext<OperatorsValues>();
-  const [disabledReason, setDisabledReason] = useState<string | undefined>();
-
-  React.useEffect(() => {
-    let reason = featureSupportLevel.getFeatureDisabledReason('CNV');
-    if (!reason) {
-      const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
-      reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
-    }
-    if (!reason) {
-      reason = getCnvDisabledWithMtvReason(values);
-    }
-    setDisabledReason(reason);
-  }, [values, featureSupportLevel]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
@@ -101,7 +77,7 @@ const CnvCheckbox = ({
             clusterId={clusterId}
             disabledReason={disabledReason}
             isVersionEqualsOrMajorThan4_15={isVersionEqualsOrMajorThan4_15}
-            supportLevel={featureSupportLevel.getFeatureSupportLevel('CNV')}
+            supportLevel={supportLevel}
           />
         }
         helperText={<CnvHelperText />}
