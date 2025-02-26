@@ -48,6 +48,8 @@ import {
   getOdfIncompatibleWithLvmsReason,
   getOpenShiftAIIncompatibleWithLvmsReason,
 } from '../featureSupportLevels/featureStateUtils';
+import OpenshiftAINvidiaRequirements from '../clusterConfiguration/operators/OpenshiftAINvidiaRequirements';
+import VirtualizationRequirements from '../clusterConfiguration/operators/VirtualizationRequirements';
 
 const operatorsThatCanNotBeInstalledAlone = [
   'nvdia-gpu',
@@ -189,7 +191,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
     setBundleOperators(newBundleOperators);
   };
 
-  const getBundleLabel = (title: string | undefined, operators: string[] | undefined) => {
+  const getBundleLabel = (title: string | undefined) => {
     return (
       <>
         <span>{title} </span>
@@ -197,15 +199,11 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           component={'a'}
           bodyContent={
             <>
-              <h3>{'Bundle operators'}</h3>
-              {operators && operators.length > 0 ? (
-                <ul>
-                  {operators.map((operator, index) => (
-                    <li key={index}>{operator}</li>
-                  ))}
-                </ul>
+              <span style={{ fontSize: '1.1em' }}>{'Requirements and dependencies'}</span>
+              {title === 'Virtualization' ? (
+                <VirtualizationRequirements />
               ) : (
-                <p>No operators available</p>
+                <OpenshiftAINvidiaRequirements />
               )}
             </>
           }
@@ -352,7 +350,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {getBundleLabel(bundle.title, bundle.operators)}
+                      {getBundleLabel(bundle.title)}
                     </div>
                     <Checkbox
                       id={`bundle-${bundle.id || ''}`}
