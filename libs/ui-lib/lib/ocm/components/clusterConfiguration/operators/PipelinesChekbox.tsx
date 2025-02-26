@@ -1,9 +1,10 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon } from '../../../../common';
+import { getFieldId, PIPELINES_OPERATOR_LINK, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const PIPELINES_FIELD_NAME = 'usePipelines';
 
@@ -35,6 +36,9 @@ const PipelinesHelperText = () => {
       <HelperTextItem variant="indeterminate">
         Cloud-native continuous integration and delivery (CI/CD) solution for building pipelines
         using Tekton.{' '}
+        <a href={PIPELINES_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
       </HelperTextItem>
     </HelperText>
   );
