@@ -1,9 +1,10 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon } from '../../../../common';
+import { AUTHORINO_OPERATOR_LINK, getFieldId, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const AUTHORINO_FIELD_NAME = 'useAuthorino';
 
@@ -34,6 +35,9 @@ const AuthorinoHelperText = () => {
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Lightweigth external authorization service for tailor-made Zero Trust API security.{' '}
+        <a href={AUTHORINO_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
       </HelperTextItem>
     </HelperText>
   );

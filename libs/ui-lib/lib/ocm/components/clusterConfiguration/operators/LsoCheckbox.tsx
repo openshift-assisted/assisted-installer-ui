@@ -1,9 +1,10 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon } from '../../../../common';
+import { getFieldId, LOCAL_STORAGE_OPERATOR_LINK, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const LSO_FIELD_NAME = 'useLso';
 
@@ -34,6 +35,9 @@ const LsoHelperText = () => {
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Allows provisioning of persistent storage by using local volumes.{' '}
+        <a href={LOCAL_STORAGE_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
       </HelperTextItem>
     </HelperText>
   );
