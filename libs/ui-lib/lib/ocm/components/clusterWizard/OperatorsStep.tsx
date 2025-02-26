@@ -76,6 +76,8 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const { updateUISettings, uiSettings } = useClusterWizardContext();
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const featureSupportLevelData = useNewFeatureSupportLevel();
+  const [hasUnsupportedOperators, setHasUnsupportedOperators] = useState<boolean>(false);
+  const [hasIncompatibleOperators, setHasIncompatibleOperators] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchBundles = async () => {
@@ -211,61 +213,79 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </>
     );
   };
-  const bundleHasOperatorsNotSupported = (operators: string[] | undefined) => {
-    return (
-      operators?.some(
-        (operator) =>
-          !featureSupportLevelData.isFeatureSupported(mapOperatorIdToFeatureId[operator]),
-      ) ?? false
-    );
-  };
 
-  const bundleHasOperatorsNotCompatibles = (
-    operators: string[] | undefined,
-    values: OperatorsValues,
-  ) => {
-    return (
-      operators?.some((operatorKey) => {
-        const disabledReason = getDisabledReasonForOperator(operatorKey, values);
-        return disabledReason !== undefined;
-      }) ?? false
-    );
-  };
+  const bundleHasOperatorsNotSupported = React.useCallback(
+    (operators: string[] | undefined) => {
+      return (
+        operators?.some(
+          (operator) =>
+            !featureSupportLevelData.isFeatureSupported(mapOperatorIdToFeatureId[operator]),
+        ) ?? false
+      );
+    },
+    [featureSupportLevelData],
+  );
 
-  const getDisabledReasonForOperator = (operatorKey: string, values: OperatorsValues) => {
-    let disabledReason = featureSupportLevelData.getFeatureDisabledReason(
-      mapOperatorIdToFeatureId[operatorKey],
-    );
-    if (operatorKey === 'cnv') {
-      if (!disabledReason) {
-        const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
-        disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
-      }
-      if (!disabledReason) {
-        disabledReason = getCnvDisabledWithMtvReason(values);
-      }
-    }
-    if (operatorKey === 'lvm') {
-      if (!disabledReason) {
-        const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
-        disabledReason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+  const getDisabledReasonForOperator = React.useCallback(
+    (operatorKey: string, values: OperatorsValues) => {
+      let disabledReason = featureSupportLevelData.getFeatureDisabledReason(
+        mapOperatorIdToFeatureId[operatorKey],
+      );
+      if (operatorKey === 'cnv') {
         if (!disabledReason) {
-          disabledReason = getLvmsIncompatibleWithOdfReason(values);
+          const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
+          disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
+        }
+        if (!disabledReason) {
+          disabledReason = getCnvDisabledWithMtvReason(values);
         }
       }
-    }
-    if (operatorKey === 'odf') {
-      if (!disabledReason) {
-        disabledReason = getOdfIncompatibleWithLvmsReason(values);
+      if (operatorKey === 'lvm') {
+        if (!disabledReason) {
+          const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
+          disabledReason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+          if (!disabledReason) {
+            disabledReason = getLvmsIncompatibleWithOdfReason(values);
+          }
+        }
       }
-    }
-    if (operatorKey === 'openshift-ai') {
-      if (!disabledReason) {
-        disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
+      if (operatorKey === 'odf') {
+        if (!disabledReason) {
+          disabledReason = getOdfIncompatibleWithLvmsReason(values);
+        }
       }
-    }
-    return disabledReason;
-  };
+      if (operatorKey === 'openshift-ai') {
+        if (!disabledReason) {
+          disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
+        }
+      }
+      return disabledReason;
+    },
+    [featureSupportLevelData],
+  );
+
+  const bundleHasOperatorsNotCompatibles = React.useCallback(
+    (operators: string[] | undefined, values: OperatorsValues) => {
+      return (
+        operators?.some((operatorKey) => {
+          const disabledReason = getDisabledReasonForOperator(operatorKey, values);
+          console.log(disabledReason);
+          return disabledReason !== undefined;
+        }) ?? false
+      );
+    },
+    [getDisabledReasonForOperator],
+  );
+
+  useEffect(() => {
+    setHasUnsupportedOperators(
+      bundles.some((bundle) => bundleHasOperatorsNotSupported(bundle.operators)),
+    );
+
+    setHasIncompatibleOperators(
+      bundles.some((bundle) => bundleHasOperatorsNotCompatibles(bundle.operators, values)),
+    );
+  }, [values, bundles, bundleHasOperatorsNotSupported, bundleHasOperatorsNotCompatibles]);
 
   return (
     <Stack hasGutter data-testid={'operators-page'}>
@@ -296,11 +316,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       {/* Mostrar bundles como tarjetas */}
       <Gallery hasGutter minWidths={{ default: '350px' }} maxWidths={{ default: '2fr' }}>
         {filteredBundles.map((bundle) => {
-          const hasUnsupportedOperators = bundleHasOperatorsNotSupported(bundle.operators);
-          const hasIncompatibleOperators = bundleHasOperatorsNotCompatibles(
-            bundle.operators,
-            values,
-          );
           const isSnoAndBlockedBundle = isSNO && bundle.id === 'openshift-ai-nvidia';
 
           const tooltipContent = hasUnsupportedOperators
