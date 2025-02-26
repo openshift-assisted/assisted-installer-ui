@@ -114,3 +114,26 @@ export const getMtuLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
     ocpVersion,
   )}/html/networking/changing-cluster-network-mtu#nw-cluster-mtu-change-about_changing-cluster-network-mtu`;
+
+export const AUTHORINO_OPERATOR_LINK = 'https://github.com/Kuadrant/authorino-operator';
+
+export const LOCAL_STORAGE_OPERATOR_LINK =
+  'https://docs.openshift.com/container-platform/4.17/storage/persistent_storage/persistent_storage_local/ways-to-provision-local-storage.html';
+
+export const NMSTATE_OPERATOR_LINK =
+  'https://docs.openshift.com/container-platform/4.17/networking/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator.html';
+
+export const NODE_FEATURE_DISCOVERY_OPERATOR_LINK =
+  'https://docs.openshift.com/container-platform/4.17/hardware_enablement/psap-node-feature-discovery-operator.html';
+
+export const NVIDIA_GPU_OPERATOR_LINK =
+  'https://docs.openshift.com/container-platform/4.17/virt/virtual_machines/advanced_vm_management/virt-configuring-virtual-gpus.html';
+
+export const PIPELINES_OPERATOR_LINK =
+  'https://docs.openshift.com/pipelines/1.17/install_config/installing-pipelines.html';
+
+export const SERVICE_MESH_OPERATOR_LINK =
+  'https://docs.openshift.com/container-platform/4.17/service_mesh/v1x/preparing-ossm-installation.html';
+
+export const SERVERLESS_OPERATOR_LINK =
+  'https://docs.openshift.com/serverless/1.28/install/install-serverless-operator.html#serverless-install-web-console_install-serverless-operator';

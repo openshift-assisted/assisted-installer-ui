@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -20,6 +21,8 @@ import {
   ClusterOperatorProps,
   ClusterWizardStepHeader,
   numberOfEnabledOperators,
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_ODF,
   OperatorsValues,
   PopoverIcon,
 } from '../../../common';
@@ -156,6 +159,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           newBundleOperators.push(op);
           const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
           setFieldValue(fieldId, checked);
+          if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
+            setFieldValue('useLso', checked);
+          }
         }
       });
     } else {
@@ -165,6 +171,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       operators.forEach((op) => {
         const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
         setFieldValue(fieldId, checked);
+        if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
+          setFieldValue('useLso', checked);
+        }
       });
     }
 
@@ -208,6 +217,18 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         (operator) =>
           !featureSupportLevelData.isFeatureSupported(mapOperatorIdToFeatureId[operator]),
       ) ?? false
+    );
+  };
+
+  const bundleHasOperatorsNotCompatibles = (
+    operators: string[] | undefined,
+    values: OperatorsValues,
+  ) => {
+    return (
+      operators?.some((operatorKey) => {
+        const disabledReason = getDisabledReasonForOperator(operatorKey, values);
+        return disabledReason !== undefined;
+      }) ?? false
     );
   };
 
@@ -274,75 +295,86 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </StackItem>
       {/* Mostrar bundles como tarjetas */}
       <Gallery hasGutter minWidths={{ default: '350px' }} maxWidths={{ default: '2fr' }}>
-        {filteredBundles.map((bundle) => (
-          <GalleryItem key={bundle.id}>
-            <Tooltip
-              content={
-                bundleHasOperatorsNotSupported(bundle.operators)
-                  ? 'Some operators in this bundle are not supported with the current configuration.'
-                  : isSNO && bundle.id === 'openshift-ai-nvidia'
-                  ? 'This bundle is not available when deploying a Single Node OpenShift.'
-                  : ''
-              }
-              hidden={
-                !bundleHasOperatorsNotSupported(bundle.operators) &&
-                !(isSNO && bundle.id === 'openshift-ai-nvidia')
-              }
-            >
-              <Card
-                style={
-                  bundle.id && selectedBundles[bundle.id]
-                    ? { border: '1px solid #004080', height: '200px' }
-                    : { height: '200px' }
-                }
-                isDisabled={
-                  bundleHasOperatorsNotSupported(bundle.operators) ||
-                  (isSNO && bundle.id === 'openshift-ai-nvidia')
+        {filteredBundles.map((bundle) => {
+          const hasUnsupportedOperators = bundleHasOperatorsNotSupported(bundle.operators);
+          const hasIncompatibleOperators = bundleHasOperatorsNotCompatibles(
+            bundle.operators,
+            values,
+          );
+          const isSnoAndBlockedBundle = isSNO && bundle.id === 'openshift-ai-nvidia';
+
+          const tooltipContent = hasUnsupportedOperators
+            ? 'Some operators in this bundle are not supported with the current configuration.'
+            : hasIncompatibleOperators
+            ? 'Some operators in this bundle can not be installed with some single operators selected.'
+            : isSnoAndBlockedBundle
+            ? 'This bundle is not available when deploying a Single Node OpenShift.'
+            : '';
+
+          return (
+            <GalleryItem key={bundle.id}>
+              <Tooltip
+                content={tooltipContent}
+                hidden={
+                  !hasUnsupportedOperators && !hasIncompatibleOperators && !isSnoAndBlockedBundle
                 }
               >
-                <CardTitle
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                <Card
+                  style={
+                    bundle.id && selectedBundles[bundle.id]
+                      ? { border: '1px solid #004080', height: '200px' }
+                      : { height: '200px' }
+                  }
+                  isDisabled={
+                    hasUnsupportedOperators || hasIncompatibleOperators || isSnoAndBlockedBundle
+                  }
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {getBundleLabel(bundle.title, bundle.operators)}
-                  </div>
-                  <Checkbox
-                    id={`bundle-${bundle.id || ''}`}
-                    isChecked={bundle.id ? selectedBundles[bundle.id] : false}
-                    onChange={(_event, checked) =>
-                      void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
-                    }
-                    isDisabled={
-                      bundleHasOperatorsNotSupported(bundle.operators) ||
-                      (isSNO && bundle.id === 'openshift-ai-nvidia')
-                    }
-                  />
-                </CardTitle>
-                <CardBody
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    height: '100%',
-                  }}
-                >
-                  <div>{bundle.description}</div>
+                  <CardTitle
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {getBundleLabel(bundle.title, bundle.operators)}
+                    </div>
+                    <Checkbox
+                      id={`bundle-${bundle.id || ''}`}
+                      isChecked={bundle.id ? selectedBundles[bundle.id] : false}
+                      onChange={(_event, checked) =>
+                        void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
+                      }
+                      isDisabled={
+                        hasUnsupportedOperators || hasIncompatibleOperators || isSnoAndBlockedBundle
+                      }
+                    />
+                  </CardTitle>
+                  <CardBody
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      height: '100%',
+                    }}
+                  >
+                    <div>{bundle.description}</div>
 
-                  {/* Badge aligned to the bottom-left */}
-
-                  <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
-                    {bundle.id === 'openshift-ai-nvidia' && (
-                      <NewFeatureSupportLevelBadge
-                        featureId="OPENSHIFT_AI"
-                        supportLevel="dev-preview"
-                      />
-                    )}
-                  </div>
-                </CardBody>
-              </Card>
-            </Tooltip>
-          </GalleryItem>
-        ))}
+                    {/* Badge aligned to the bottom-left */}
+                    <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
+                      {bundle.id === 'openshift-ai-nvidia' && (
+                        <NewFeatureSupportLevelBadge
+                          featureId="OPENSHIFT_AI"
+                          supportLevel="dev-preview"
+                        />
+                      )}
+                    </div>
+                  </CardBody>
+                </Card>
+              </Tooltip>
+            </GalleryItem>
+          );
+        })}
       </Gallery>
       <ExpandableSection
         toggleText={`Single Operators (${supportedOperators.length} | ${
