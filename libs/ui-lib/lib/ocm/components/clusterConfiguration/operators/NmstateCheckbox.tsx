@@ -1,11 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import {
-  getFieldId,
-  PopoverIcon,
-  ClusterOperatorProps,
-  NMSTATE_OPERATOR_LINK,
-} from '../../../../common';
+import { getFieldId, PopoverIcon, ClusterOperatorProps, getNmstateLink } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NmstateRequirements from './NmstateRequirements';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -39,13 +34,13 @@ const NmstateLabel = ({
   );
 };
 
-const NmstateHelperText = () => {
+const NmstateHelperText = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Provides users with functionality to configure various network interface types, DNS, and
         routing on cluster nodes.{' '}
-        <a href={NMSTATE_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+        <a href={getNmstateLink(openshiftVersion)} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -57,10 +52,12 @@ const NmstateCheckbox = ({
   clusterId,
   disabledReason,
   supportLevel,
+  openshiftVersion,
 }: {
   clusterId: ClusterOperatorProps['clusterId'];
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
+  openshiftVersion?: string;
 }) => {
   const fieldId = getFieldId(NMSTATE_FIELD_NAME, 'input');
 
@@ -75,7 +72,7 @@ const NmstateCheckbox = ({
             supportLevel={supportLevel}
           />
         }
-        helperText={<NmstateHelperText />}
+        helperText={<NmstateHelperText openshiftVersion={openshiftVersion || '4.17'} />}
         isDisabled={!!disabledReason}
       />
     </FormGroup>
