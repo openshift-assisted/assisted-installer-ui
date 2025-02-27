@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:latest as ui-build
+FROM registry.ci.openshift.org/edge-infrastructure/nodejs-18-minimal:latest as ui-build
 USER root
 RUN microdnf install -y rsync git
 
@@ -10,13 +10,13 @@ RUN git config --global --add safe.directory /app
 RUN npm install -g corepack@0.24.1
 RUN yarn install --immutable && yarn build:all
 
-FROM registry.access.redhat.com/ubi9/go-toolset:1.22 as proxy-build
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.23-openshift-4.19 as proxy-build
 WORKDIR /app
 COPY apps/assisted-disconnected-ui/proxy /app
 USER 0
 RUN go build
 
-FROM registry.access.redhat.com/ubi9/ubi-micro
+FROM registry.ci.openshift.org/ocp/ubi-micro:9
 COPY --from=ui-build /app/apps/assisted-disconnected-ui/build /app/proxy/dist
 COPY --from=proxy-build /app/assisted-disconnected-ui /app/proxy
 WORKDIR /app/proxy
