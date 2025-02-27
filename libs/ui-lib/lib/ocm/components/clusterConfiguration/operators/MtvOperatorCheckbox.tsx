@@ -13,6 +13,7 @@ import { useFormikContext } from 'formik';
 import MtvRequirements from './MtvRequirements';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const Mtv_FIELD_NAME = 'useMigrationToolkitforVirtualization';
 
@@ -64,9 +65,11 @@ const MtvCheckbox = ({
 }) => {
   const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(Mtv_FIELD_NAME, 'input');
+  const featureSupportLevelData = useNewFeatureSupportLevel();
 
   const selectCNVOperator = (checked: boolean) => {
-    setFieldValue('useContainerNativeVirtualization', checked);
+    if (featureSupportLevelData.isFeatureSupported('CNV'))
+      setFieldValue('useContainerNativeVirtualization', checked);
   };
 
   return (
