@@ -1,10 +1,16 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon, ClusterOperatorProps } from '../../../../common';
+import {
+  getFieldId,
+  PopoverIcon,
+  ClusterOperatorProps,
+  NMSTATE_OPERATOR_LINK,
+} from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NmstateRequirements from './NmstateRequirements';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const NMSTATE_FIELD_NAME = 'useNmstate';
 
@@ -39,6 +45,9 @@ const NmstateHelperText = () => {
       <HelperTextItem variant="indeterminate">
         Provides users with functionality to configure various network interface types, DNS, and
         routing on cluster nodes.{' '}
+        <a href={NMSTATE_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
       </HelperTextItem>
     </HelperText>
   );

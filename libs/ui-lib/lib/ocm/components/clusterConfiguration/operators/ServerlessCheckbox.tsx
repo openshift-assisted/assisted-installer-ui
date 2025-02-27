@@ -1,9 +1,10 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon } from '../../../../common';
+import { getFieldId, PopoverIcon, SERVERLESS_OPERATOR_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const SERVERLESS_FIELD_NAME = 'useServerless';
 
@@ -34,6 +35,9 @@ const ServerlessHelperText = () => {
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Deploy workflow applications based on the CNCF Serverless Workflow specification.{' '}
+        <a href={SERVERLESS_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
       </HelperTextItem>
     </HelperText>
   );

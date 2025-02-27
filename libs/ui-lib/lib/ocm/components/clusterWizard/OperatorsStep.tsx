@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -20,6 +21,8 @@ import {
   ClusterOperatorProps,
   ClusterWizardStepHeader,
   numberOfEnabledOperators,
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_ODF,
   OperatorsValues,
   PopoverIcon,
 } from '../../../common';
@@ -45,6 +48,8 @@ import {
   getOdfIncompatibleWithLvmsReason,
   getOpenShiftAIIncompatibleWithLvmsReason,
 } from '../featureSupportLevels/featureStateUtils';
+import OpenshiftAINvidiaRequirements from '../clusterConfiguration/operators/OpenshiftAINvidiaRequirements';
+import VirtualizationRequirements from '../clusterConfiguration/operators/VirtualizationRequirements';
 
 const operatorsThatCanNotBeInstalledAlone = [
   'nvdia-gpu',
@@ -73,6 +78,8 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const { updateUISettings, uiSettings } = useClusterWizardContext();
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const featureSupportLevelData = useNewFeatureSupportLevel();
+  const [hasUnsupportedOperators, setHasUnsupportedOperators] = useState<boolean>(false);
+  const [hasIncompatibleOperators, setHasIncompatibleOperators] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchBundles = async () => {
@@ -156,6 +163,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           newBundleOperators.push(op);
           const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
           setFieldValue(fieldId, checked);
+          if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
+            setFieldValue('useLso', checked);
+          }
         }
       });
     } else {
@@ -165,6 +175,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       operators.forEach((op) => {
         const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
         setFieldValue(fieldId, checked);
+        if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
+          setFieldValue('useLso', checked);
+        }
       });
     }
 
@@ -178,7 +191,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
     setBundleOperators(newBundleOperators);
   };
 
-  const getBundleLabel = (title: string | undefined, operators: string[] | undefined) => {
+  const getBundleLabel = (title: string | undefined) => {
     return (
       <>
         <span>{title} </span>
@@ -186,15 +199,11 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           component={'a'}
           bodyContent={
             <>
-              <h3>{'Bundle operators'}</h3>
-              {operators && operators.length > 0 ? (
-                <ul>
-                  {operators.map((operator, index) => (
-                    <li key={index}>{operator}</li>
-                  ))}
-                </ul>
+              <span style={{ fontSize: '1.1em' }}>{'Requirements and dependencies'}</span>
+              {title === 'Virtualization' ? (
+                <VirtualizationRequirements />
               ) : (
-                <p>No operators available</p>
+                <OpenshiftAINvidiaRequirements />
               )}
             </>
           }
@@ -202,49 +211,79 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </>
     );
   };
-  const bundleHasOperatorsNotSupported = (operators: string[] | undefined) => {
-    return (
-      operators?.some(
-        (operator) =>
-          !featureSupportLevelData.isFeatureSupported(mapOperatorIdToFeatureId[operator]),
-      ) ?? false
-    );
-  };
 
-  const getDisabledReasonForOperator = (operatorKey: string, values: OperatorsValues) => {
-    let disabledReason = featureSupportLevelData.getFeatureDisabledReason(
-      mapOperatorIdToFeatureId[operatorKey],
-    );
-    if (operatorKey === 'cnv') {
-      if (!disabledReason) {
-        const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
-        disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
-      }
-      if (!disabledReason) {
-        disabledReason = getCnvDisabledWithMtvReason(values);
-      }
-    }
-    if (operatorKey === 'lvm') {
-      if (!disabledReason) {
-        const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
-        disabledReason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+  const bundleHasOperatorsNotSupported = React.useCallback(
+    (operators: string[] | undefined) => {
+      return (
+        operators?.some(
+          (operator) =>
+            !featureSupportLevelData.isFeatureSupported(mapOperatorIdToFeatureId[operator]),
+        ) ?? false
+      );
+    },
+    [featureSupportLevelData],
+  );
+
+  const getDisabledReasonForOperator = React.useCallback(
+    (operatorKey: string, values: OperatorsValues) => {
+      let disabledReason = featureSupportLevelData.getFeatureDisabledReason(
+        mapOperatorIdToFeatureId[operatorKey],
+      );
+      if (operatorKey === 'cnv') {
         if (!disabledReason) {
-          disabledReason = getLvmsIncompatibleWithOdfReason(values);
+          const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
+          disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
+        }
+        if (!disabledReason) {
+          disabledReason = getCnvDisabledWithMtvReason(values);
         }
       }
-    }
-    if (operatorKey === 'odf') {
-      if (!disabledReason) {
-        disabledReason = getOdfIncompatibleWithLvmsReason(values);
+      if (operatorKey === 'lvm') {
+        if (!disabledReason) {
+          const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
+          disabledReason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+          if (!disabledReason) {
+            disabledReason = getLvmsIncompatibleWithOdfReason(values);
+          }
+        }
       }
-    }
-    if (operatorKey === 'openshift-ai') {
-      if (!disabledReason) {
-        disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
+      if (operatorKey === 'odf') {
+        if (!disabledReason) {
+          disabledReason = getOdfIncompatibleWithLvmsReason(values);
+        }
       }
-    }
-    return disabledReason;
-  };
+      if (operatorKey === 'openshift-ai') {
+        if (!disabledReason) {
+          disabledReason = getOpenShiftAIIncompatibleWithLvmsReason(values);
+        }
+      }
+      return disabledReason;
+    },
+    [featureSupportLevelData],
+  );
+
+  const bundleHasOperatorsNotCompatibles = React.useCallback(
+    (operators: string[] | undefined, values: OperatorsValues) => {
+      return (
+        operators?.some((operatorKey) => {
+          const disabledReason = getDisabledReasonForOperator(operatorKey, values);
+          console.log(disabledReason);
+          return disabledReason !== undefined;
+        }) ?? false
+      );
+    },
+    [getDisabledReasonForOperator],
+  );
+
+  useEffect(() => {
+    setHasUnsupportedOperators(
+      bundles.some((bundle) => bundleHasOperatorsNotSupported(bundle.operators)),
+    );
+
+    setHasIncompatibleOperators(
+      bundles.some((bundle) => bundleHasOperatorsNotCompatibles(bundle.operators, values)),
+    );
+  }, [values, bundles, bundleHasOperatorsNotSupported, bundleHasOperatorsNotCompatibles]);
 
   return (
     <Stack hasGutter data-testid={'operators-page'}>
@@ -274,75 +313,81 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       </StackItem>
       {/* Mostrar bundles como tarjetas */}
       <Gallery hasGutter minWidths={{ default: '350px' }} maxWidths={{ default: '2fr' }}>
-        {filteredBundles.map((bundle) => (
-          <GalleryItem key={bundle.id}>
-            <Tooltip
-              content={
-                bundleHasOperatorsNotSupported(bundle.operators)
-                  ? 'Some operators in this bundle are not supported with the current configuration.'
-                  : isSNO && bundle.id === 'openshift-ai-nvidia'
-                  ? 'This bundle is not available when deploying a Single Node OpenShift.'
-                  : ''
-              }
-              hidden={
-                !bundleHasOperatorsNotSupported(bundle.operators) &&
-                !(isSNO && bundle.id === 'openshift-ai-nvidia')
-              }
-            >
-              <Card
-                style={
-                  bundle.id && selectedBundles[bundle.id]
-                    ? { border: '1px solid #004080', height: '200px' }
-                    : { height: '200px' }
-                }
-                isDisabled={
-                  bundleHasOperatorsNotSupported(bundle.operators) ||
-                  (isSNO && bundle.id === 'openshift-ai-nvidia')
+        {filteredBundles.map((bundle) => {
+          const isSnoAndBlockedBundle = isSNO && bundle.id === 'openshift-ai-nvidia';
+
+          const tooltipContent = hasUnsupportedOperators
+            ? 'Some operators in this bundle are not supported with the current configuration.'
+            : hasIncompatibleOperators
+            ? 'Some operators in this bundle can not be installed with some single operators selected.'
+            : isSnoAndBlockedBundle
+            ? 'This bundle is not available when deploying a Single Node OpenShift.'
+            : '';
+
+          return (
+            <GalleryItem key={bundle.id}>
+              <Tooltip
+                content={tooltipContent}
+                hidden={
+                  !hasUnsupportedOperators && !hasIncompatibleOperators && !isSnoAndBlockedBundle
                 }
               >
-                <CardTitle
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                <Card
+                  style={
+                    bundle.id && selectedBundles[bundle.id]
+                      ? { border: '1px solid #004080', height: '200px' }
+                      : { height: '200px' }
+                  }
+                  isDisabled={
+                    hasUnsupportedOperators || hasIncompatibleOperators || isSnoAndBlockedBundle
+                  }
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {getBundleLabel(bundle.title, bundle.operators)}
-                  </div>
-                  <Checkbox
-                    id={`bundle-${bundle.id || ''}`}
-                    isChecked={bundle.id ? selectedBundles[bundle.id] : false}
-                    onChange={(_event, checked) =>
-                      void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
-                    }
-                    isDisabled={
-                      bundleHasOperatorsNotSupported(bundle.operators) ||
-                      (isSNO && bundle.id === 'openshift-ai-nvidia')
-                    }
-                  />
-                </CardTitle>
-                <CardBody
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    height: '100%',
-                  }}
-                >
-                  <div>{bundle.description}</div>
+                  <CardTitle
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {getBundleLabel(bundle.title)}
+                    </div>
+                    <Checkbox
+                      id={`bundle-${bundle.id || ''}`}
+                      isChecked={bundle.id ? selectedBundles[bundle.id] : false}
+                      onChange={(_event, checked) =>
+                        void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
+                      }
+                      isDisabled={
+                        hasUnsupportedOperators || hasIncompatibleOperators || isSnoAndBlockedBundle
+                      }
+                    />
+                  </CardTitle>
+                  <CardBody
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      height: '100%',
+                    }}
+                  >
+                    <div>{bundle.description}</div>
 
-                  {/* Badge aligned to the bottom-left */}
-
-                  <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
-                    {bundle.id === 'openshift-ai-nvidia' && (
-                      <NewFeatureSupportLevelBadge
-                        featureId="OPENSHIFT_AI"
-                        supportLevel="dev-preview"
-                      />
-                    )}
-                  </div>
-                </CardBody>
-              </Card>
-            </Tooltip>
-          </GalleryItem>
-        ))}
+                    {/* Badge aligned to the bottom-left */}
+                    <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
+                      {bundle.id === 'openshift-ai-nvidia' && (
+                        <NewFeatureSupportLevelBadge
+                          featureId="OPENSHIFT_AI"
+                          supportLevel="dev-preview"
+                        />
+                      )}
+                    </div>
+                  </CardBody>
+                </Card>
+              </Tooltip>
+            </GalleryItem>
+          );
+        })}
       </Gallery>
       <ExpandableSection
         toggleText={`Single Operators (${supportedOperators.length} | ${

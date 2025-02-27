@@ -1,11 +1,18 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { ClusterOperatorProps, CNV_LINK, getFieldId, PopoverIcon } from '../../../../common';
+import {
+  ClusterOperatorProps,
+  CNV_LINK,
+  getFieldId,
+  OperatorsValues,
+  PopoverIcon,
+} from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import { useFormikContext } from 'formik';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 
@@ -66,8 +73,11 @@ const CnvCheckbox = ({
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
 }) => {
+  const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
-
+  const selectLsoOperator = (checked: boolean) => {
+    setFieldValue('useLso', checked);
+  };
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
@@ -82,6 +92,7 @@ const CnvCheckbox = ({
         }
         helperText={<CnvHelperText />}
         isDisabled={!!disabledReason}
+        onChange={selectLsoOperator}
       />
     </FormGroup>
   );

@@ -1,10 +1,17 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK, ODF_LINK } from '../../../../common';
+import {
+  getFieldId,
+  PopoverIcon,
+  ODF_REQUIREMENTS_LINK,
+  ODF_LINK,
+  OperatorsValues,
+} from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import { useFormikContext } from 'formik';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
@@ -52,8 +59,11 @@ const OdfCheckbox = ({
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
 }) => {
+  const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
-
+  const selectLsoOperator = (checked: boolean) => {
+    setFieldValue('useLso', checked);
+  };
   return (
     <FormGroup isInline fieldId={fieldId}>
       <OcmCheckboxField
@@ -61,6 +71,7 @@ const OdfCheckbox = ({
         label={<OdfLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
         isDisabled={!!disabledReason}
         helperText={<OdfHelperText />}
+        onChange={selectLsoOperator}
       />
     </FormGroup>
   );

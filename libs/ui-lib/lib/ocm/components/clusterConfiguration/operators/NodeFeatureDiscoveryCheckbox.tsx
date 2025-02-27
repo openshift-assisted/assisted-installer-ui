@@ -1,9 +1,10 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon } from '../../../../common';
+import { getFieldId, NODE_FEATURE_DISCOVERY_OPERATOR_LINK, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const NODEFEATUREDISCOVERY_FIELD_NAME = 'useNodeFeatureDiscovery';
 
@@ -35,6 +36,9 @@ const NodeFeatureDiscoveryHelperText = () => {
       <HelperTextItem variant="indeterminate">
         Manage the detection of hardware features and configuration by labeling nodes with
         hardware-specific information.{' '}
+        <a href={NODE_FEATURE_DISCOVERY_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
       </HelperTextItem>
     </HelperText>
   );
