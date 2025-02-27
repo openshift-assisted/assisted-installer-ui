@@ -75,8 +75,9 @@ const CnvCheckbox = ({
 }) => {
   const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
-  const selectLsoOperator = (checked: boolean) => {
+  const selectOperatorsNeeded = (checked: boolean) => {
     setFieldValue('useLso', checked);
+    setFieldValue('useMigrationToolkitforVirtualization', checked);
   };
   return (
     <FormGroup isInline fieldId={fieldId}>
@@ -92,7 +93,7 @@ const CnvCheckbox = ({
         }
         helperText={<CnvHelperText />}
         isDisabled={!!disabledReason}
-        onChange={selectLsoOperator}
+        onChange={selectOperatorsNeeded}
       />
     </FormGroup>
   );
