@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { FormGroup, Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import { getFieldId, PopoverIcon } from '../../../../../../common';
 import HostSummary from '../CollapsedHost';
-import { FormViewHost, StaticProtocolType } from '../../data/dataTypes';
+import { FormViewHost, FormViewHostsValues, StaticProtocolType } from '../../data/dataTypes';
 import { getProtocolVersionLabel, getShownProtocolVersions } from '../../data/protocolVersion';
 import { getEmptyFormViewHost } from '../../data/emptyData';
 import { OcmCheckboxField, OcmInputField } from '../../../../ui/OcmFormFields';
@@ -15,10 +15,37 @@ import BondsConfirmationModal from './BondsConfirmationModal';
 const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
   const Component: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
-    const { setFieldValue } = useFormikContext();
+    const { setFieldValue, values, setTouched, touched } = useFormikContext();
     const [bondPrimaryField] = useField(`${fieldName}.bondPrimaryInterface`);
     const [bondSecondaryField] = useField(`${fieldName}.bondSecondaryInterface`);
     const [useBond] = useField(`${fieldName}.useBond`);
+
+    const setAllTouched = useCallback(() => {
+      const typedValues = values as FormViewHostsValues;
+      const hosts = typedValues.hosts;
+      const host = hosts[hostIdx];
+      const hostTouchedFields: { [x: string]: boolean | { [x: string]: boolean } }[] = [];
+
+      Object.keys(host).forEach((key) => {
+        if (key === 'ips') {
+          const ips = host[key];
+          const ipTouchedFields: { [x: string]: boolean } = {};
+          Object.keys(ips).forEach((ipKey) => {
+            ipTouchedFields[ipKey] = true;
+          });
+          hostTouchedFields[hostIdx] = { ...hostTouchedFields[hostIdx], [key]: ipTouchedFields };
+        } else {
+          hostTouchedFields[hostIdx] = { ...hostTouchedFields[hostIdx], [key]: true };
+        }
+      });
+      setTouched({
+        ...touched,
+        ['hosts']: hostTouchedFields,
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => setAllTouched(), [setAllTouched]);
 
     const handleUseBondChange = (checked: boolean) => {
       if (!checked) {

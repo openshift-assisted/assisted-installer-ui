@@ -89,13 +89,7 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validate={validate}
-      validateOnMount
-      enableReinitialize
-    >
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate} validateOnMount>
       <Form>
         {children}
         <AutosaveWithParentUpdate<StaticIpFormValues>
