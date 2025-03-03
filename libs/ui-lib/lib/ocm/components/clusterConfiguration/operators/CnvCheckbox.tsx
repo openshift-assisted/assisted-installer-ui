@@ -13,6 +13,7 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { useFormikContext } from 'formik';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 
@@ -73,10 +74,13 @@ const CnvCheckbox = ({
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
 }) => {
+  const featureSupportLevelData = useNewFeatureSupportLevel();
   const { setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
-  const selectLsoOperator = (checked: boolean) => {
-    setFieldValue('useLso', checked);
+  const selectOperatorsNeeded = (checked: boolean) => {
+    if (featureSupportLevelData.isFeatureSupported('LSO')) setFieldValue('useLso', checked);
+    if (featureSupportLevelData.isFeatureSupported('MTV'))
+      setFieldValue('useMigrationToolkitforVirtualization', checked);
   };
   return (
     <FormGroup isInline fieldId={fieldId}>
@@ -92,7 +96,7 @@ const CnvCheckbox = ({
         }
         helperText={<CnvHelperText />}
         isDisabled={!!disabledReason}
-        onChange={selectLsoOperator}
+        onChange={selectOperatorsNeeded}
       />
     </FormGroup>
   );

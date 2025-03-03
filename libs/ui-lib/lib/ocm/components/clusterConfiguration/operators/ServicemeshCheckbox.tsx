@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon, SERVICE_MESH_OPERATOR_LINK } from '../../../../common';
+import { getFieldId, getServiceMeshLink, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -30,12 +30,12 @@ const ServiceMeshLabel = ({
   );
 };
 
-const ServiceMeshHelperText = () => {
+const ServiceMeshHelperText = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Platform that provides behavioral insight and operational control over a service mesh.{' '}
-        <a href={SERVICE_MESH_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+        <a href={getServiceMeshLink(openshiftVersion)} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -46,9 +46,11 @@ const ServiceMeshHelperText = () => {
 const ServiceMeshCheckbox = ({
   disabledReason,
   supportLevel,
+  openshiftVersion,
 }: {
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
+  openshiftVersion?: string;
 }) => {
   const fieldId = getFieldId(SERVICEMESH_FIELD_NAME, 'input');
 
@@ -57,7 +59,7 @@ const ServiceMeshCheckbox = ({
       <OcmCheckboxField
         name={SERVICEMESH_FIELD_NAME}
         label={<ServiceMeshLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
-        helperText={<ServiceMeshHelperText />}
+        helperText={<ServiceMeshHelperText openshiftVersion={openshiftVersion || '4.17'} />}
         isDisabled={!!disabledReason}
       />
     </FormGroup>

@@ -164,7 +164,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
           setFieldValue(fieldId, checked);
           if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
-            setFieldValue('useLso', checked);
+            if (featureSupportLevelData.isFeatureSupported('LSO')) setFieldValue('useLso', checked);
           }
         }
       });
@@ -176,7 +176,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
         setFieldValue(fieldId, checked);
         if (op === OPERATOR_NAME_CNV || op === OPERATOR_NAME_ODF) {
-          setFieldValue('useLso', checked);
+          if (featureSupportLevelData.isFeatureSupported('LSO')) setFieldValue('useLso', checked);
         }
       });
     }
@@ -235,7 +235,9 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
         }
         if (!disabledReason) {
-          disabledReason = getCnvDisabledWithMtvReason(values);
+          if (featureSupportLevelData.isFeatureSupported('MTV')) {
+            disabledReason = getCnvDisabledWithMtvReason(values);
+          }
         }
       }
       if (operatorKey === 'lvm') {

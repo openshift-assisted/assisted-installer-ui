@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, LOCAL_STORAGE_OPERATOR_LINK, PopoverIcon } from '../../../../common';
+import { getFieldId, getLsoLink, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -30,12 +30,12 @@ const LsoLabel = ({
   );
 };
 
-const LsoHelperText = () => {
+const LsoHelperText = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Allows provisioning of persistent storage by using local volumes.{' '}
-        <a href={LOCAL_STORAGE_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+        <a href={getLsoLink(openshiftVersion)} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -46,9 +46,11 @@ const LsoHelperText = () => {
 const LsoCheckbox = ({
   disabledReason,
   supportLevel,
+  openshiftVersion,
 }: {
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
+  openshiftVersion?: string;
 }) => {
   const fieldId = getFieldId(LSO_FIELD_NAME, 'input');
 
@@ -57,7 +59,7 @@ const LsoCheckbox = ({
       <OcmCheckboxField
         name={LSO_FIELD_NAME}
         label={<LsoLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
-        helperText={<LsoHelperText />}
+        helperText={<LsoHelperText openshiftVersion={openshiftVersion || '4.17'} />}
         isDisabled={!!disabledReason}
       />
     </FormGroup>

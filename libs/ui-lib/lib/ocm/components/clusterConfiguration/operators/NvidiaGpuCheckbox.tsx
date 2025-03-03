@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, NVIDIA_GPU_OPERATOR_LINK, PopoverIcon } from '../../../../common';
+import { getFieldId, getNvidiaGpuLink, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -30,12 +30,12 @@ const NvidiaGpuLabel = ({
   );
 };
 
-const NvidiaGpuHelperText = () => {
+const NvidiaGpuHelperText = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Automate the management of NVIDIA software components needed to provision and monitor GPUs.{' '}
-        <a href={NVIDIA_GPU_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+        <a href={getNvidiaGpuLink(openshiftVersion)} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -46,9 +46,11 @@ const NvidiaGpuHelperText = () => {
 const NvidiaGpuCheckbox = ({
   disabledReason,
   supportLevel,
+  openshiftVersion,
 }: {
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
+  openshiftVersion?: string;
 }) => {
   const fieldId = getFieldId(NVIDIAGPU_FIELD_NAME, 'input');
 
@@ -57,7 +59,7 @@ const NvidiaGpuCheckbox = ({
       <OcmCheckboxField
         name={NVIDIAGPU_FIELD_NAME}
         label={<NvidiaGpuLabel disabledReason={disabledReason} supportLevel={supportLevel} />}
-        helperText={<NvidiaGpuHelperText />}
+        helperText={<NvidiaGpuHelperText openshiftVersion={openshiftVersion || '4.17'} />}
         isDisabled={!!disabledReason}
       />
     </FormGroup>
