@@ -18,11 +18,22 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
 }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const emptyValues = React.useMemo(() => getEmptyValues(), []);
-  const { isSubmitting, isValid, touched, errors, values } = useFormikContext<StaticIpFormValues>();
+  const { isSubmitting, isValid, touched, errors, values, initialValues, submitForm } =
+    useFormikContext<StaticIpFormValues>();
+
   const isEmpty = React.useMemo<boolean>(() => {
     return isEqual(values, emptyValues);
   }, [values, emptyValues]);
+
   const isAutoSaveRunning = useFormikAutoSave();
+
+  React.useEffect(() => {
+    if (!isEqual(emptyValues, initialValues)) {
+      void submitForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   React.useEffect(() => {
     onFormStateChange({ isSubmitting, isAutoSaveRunning, isValid, touched, errors, isEmpty });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,13 +100,7 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validate={validate}
-      validateOnMount
-      enableReinitialize
-    >
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate} validateOnMount>
       <Form>
         {children}
         <AutosaveWithParentUpdate<StaticIpFormValues>
