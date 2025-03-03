@@ -14,10 +14,14 @@ import AuthorinoCheckbox from './AuthorinoCheckbox';
 import PipelinesCheckbox from './PipelinesChekbox';
 import ServiceMeshCheckbox from './ServicemeshCheckbox';
 import NvidiaGpuCheckbox from './NvidiaGpuCheckbox';
+import AmdGpuCheckbox from './AmdGpuCheckbox';
+import KmmCheckbox from './KmmCheckbox';
 import {
   FeatureId,
+  OPERATOR_NAME_AMD_GPU,
   OPERATOR_NAME_AUTHORINO,
   OPERATOR_NAME_CNV,
+  OPERATOR_NAME_KMM,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_MCE,
@@ -66,6 +70,8 @@ export const operatorComponentMap: Record<string, (props: OperatorProps) => JSX.
   pipelines: (props) => <PipelinesCheckbox {...props} />,
   servicemesh: (props) => <ServiceMeshCheckbox {...props} />,
   'nvidia-gpu': (props) => <NvidiaGpuCheckbox {...props} />,
+  'amd-gpu': (props) => <AmdGpuCheckbox {...props} />,
+  kmm: (props) => <KmmCheckbox {...props} />,
 };
 
 export const mapOperatorsToFieldIds: { [key: string]: string } = {
@@ -84,6 +90,8 @@ export const mapOperatorsToFieldIds: { [key: string]: string } = {
   [OPERATOR_NAME_PIPELINES]: 'usePipelines',
   [OPERATOR_NAME_SERVICEMESH]: 'useServicemesh',
   [OPERATOR_NAME_NVIDIA_GPU]: 'useNvidiaGpu',
+  [OPERATOR_NAME_AMD_GPU]: 'useAmdGpu',
+  [OPERATOR_NAME_KMM]: 'useKmm',
 };
 
 export const mapOperatorIdToFeatureId: { [key: string]: FeatureId } = {

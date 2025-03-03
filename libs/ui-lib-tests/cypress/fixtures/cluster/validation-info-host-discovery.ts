@@ -39,6 +39,11 @@ const operatorValidations = [
     status: 'success',
     message: 'osc is disabled',
   },
+  {
+    id: 'amd-gpu-requirements-satisfied',
+    status: 'success',
+    message: 'amd-gpu is disabled',
+  },
 ];
 
 const hostValidationsInfo = {

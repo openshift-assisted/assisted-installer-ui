@@ -92,6 +92,11 @@ const validationInfoHostsDisovery: ValidationsInfo = {
       message: 'a validation unrelated to the canNextHostDiscovery',
       status: 'error',
     },
+    {
+      id: 'amd-gpu-requirements-satisfied',
+      message: 'a validation message',
+      status: 'success',
+    },
   ],
 };
 
@@ -202,6 +207,11 @@ const flatValidationHostsDiscovery: HostValidation[] = [
   },
   {
     id: 'mtu-valid',
+    message: 'a host validation message',
+    status: 'success',
+  },
+  {
+    id: 'amd-gpu-requirements-satisfied',
     message: 'a host validation message',
     status: 'success',
   },
