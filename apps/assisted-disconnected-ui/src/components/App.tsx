@@ -5,7 +5,6 @@ import '../i18n';
 import Wizard from './Wizard';
 import { Provider } from 'react-redux';
 import { Store } from '@openshift-assisted/ui-lib/ocm';
-import EditWizard from './EditWizard';
 
 export const App: React.FC = () => {
   const header = (
@@ -30,7 +29,6 @@ export const App: React.FC = () => {
         <Page header={header} isManagedSidebar defaultManagedSidebarIsOpen={false}>
           <Routes>
             <Route path="/" element={<Wizard />} />
-            <Route path=":clusterId" element={<EditWizard />} />
           </Routes>
         </Page>
       </Provider>
