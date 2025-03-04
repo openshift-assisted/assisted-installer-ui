@@ -12,6 +12,7 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import { useFormikContext } from 'formik';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
@@ -60,9 +61,10 @@ const OdfCheckbox = ({
   supportLevel?: SupportLevel | undefined;
 }) => {
   const { setFieldValue } = useFormikContext<OperatorsValues>();
+  const featureSupportLevelData = useNewFeatureSupportLevel();
   const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
   const selectLsoOperator = (checked: boolean) => {
-    setFieldValue('useLso', checked);
+    if (featureSupportLevelData.isFeatureSupported('LSO')) setFieldValue('useLso', checked);
   };
   return (
     <FormGroup isInline fieldId={fieldId}>

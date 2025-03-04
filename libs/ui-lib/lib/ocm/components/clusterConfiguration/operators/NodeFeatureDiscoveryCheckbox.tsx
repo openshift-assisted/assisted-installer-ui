@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, NODE_FEATURE_DISCOVERY_OPERATOR_LINK, PopoverIcon } from '../../../../common';
+import { getFieldId, getNodeFeatureDiscoveryLink, PopoverIcon } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -30,13 +30,17 @@ const NodeFeatureDiscoveryLabel = ({
   );
 };
 
-const NodeFeatureDiscoveryHelperText = () => {
+const NodeFeatureDiscoveryHelperText = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
         Manage the detection of hardware features and configuration by labeling nodes with
         hardware-specific information.{' '}
-        <a href={NODE_FEATURE_DISCOVERY_OPERATOR_LINK} target="_blank" rel="noopener noreferrer">
+        <a
+          href={getNodeFeatureDiscoveryLink(openshiftVersion)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {'Learn more'} <ExternalLinkAltIcon />
         </a>
       </HelperTextItem>
@@ -47,9 +51,11 @@ const NodeFeatureDiscoveryHelperText = () => {
 const NodeFeatureDiscoveryCheckbox = ({
   disabledReason,
   supportLevel,
+  openshiftVersion,
 }: {
   disabledReason?: string;
   supportLevel?: SupportLevel | undefined;
+  openshiftVersion?: string;
 }) => {
   const fieldId = getFieldId(NODEFEATUREDISCOVERY_FIELD_NAME, 'input');
 
@@ -60,7 +66,9 @@ const NodeFeatureDiscoveryCheckbox = ({
         label={
           <NodeFeatureDiscoveryLabel disabledReason={disabledReason} supportLevel={supportLevel} />
         }
-        helperText={<NodeFeatureDiscoveryHelperText />}
+        helperText={
+          <NodeFeatureDiscoveryHelperText openshiftVersion={openshiftVersion || '4.17'} />
+        }
         isDisabled={!!disabledReason}
       />
     </FormGroup>
