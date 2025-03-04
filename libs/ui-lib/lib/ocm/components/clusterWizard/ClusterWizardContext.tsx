@@ -18,6 +18,7 @@ export type ClusterWizardContextType = {
   setWizardPerPage: (perPage: number) => void;
   updateUISettings: (data: UISettingsValues) => Promise<void>;
   uiSettings?: UISettingsValues;
+  isDisconnectedMode: boolean;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

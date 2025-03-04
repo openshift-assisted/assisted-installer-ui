@@ -83,16 +83,18 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
               </Button>
             </ActionListItem>
           )}
-          <ActionListItem>
-            <Button
-              variant={ButtonVariant.link}
-              name="cancel"
-              onClick={onCancel}
-              isDisabled={false}
-            >
-              {t('ai:Cancel')}
-            </Button>
-          </ActionListItem>
+          {onCancel && (
+            <ActionListItem>
+              <Button
+                variant={ButtonVariant.link}
+                name="cancel"
+                onClick={onCancel}
+                isDisabled={false}
+              >
+                {t('ai:Cancel')}
+              </Button>
+            </ActionListItem>
+          )}
           {isSubmitting && (
             <ActionListItem>
               <Text component={TextVariants.small}>
