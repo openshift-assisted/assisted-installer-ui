@@ -82,6 +82,7 @@ const ClusterWizardFooter = ({
 }: ClusterWizardFooterProps) => {
   const { alerts } = useAlerts();
   const navigate = useNavigate();
+  const { isDisconnectedMode } = useClusterWizardContext();
 
   const handleCancel = React.useCallback(() => navigate('/cluster-list'), [navigate]);
 
@@ -100,7 +101,7 @@ const ClusterWizardFooter = ({
     <WizardFooter
       alerts={alertsSection}
       errors={errorsSection}
-      onCancel={onCancel || handleCancel}
+      onCancel={isDisconnectedMode ? undefined : onCancel || handleCancel}
       leftExtraActions={additionalActions}
       cluster={cluster}
       onFetchEvents={onFetchEvents}
