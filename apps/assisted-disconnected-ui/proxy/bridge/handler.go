@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -9,7 +10,10 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/openshift-assisted/assisted-disconnected-ui/config"
+	"github.com/openshift-assisted/assisted-disconnected-ui/log"
 )
+
+const AssistedPingEndpoint = "/api/assisted-install/v2/clusters"
 
 type handler struct {
 	target *url.URL
@@ -46,12 +50,25 @@ func createReverseProxy(apiURL string) (*url.URL, *httputil.ReverseProxy) {
 	return target, proxy
 }
 
-func NewAssistedAPIHandler(tlsConfig *tls.Config) handler {
-	target, proxy := createReverseProxy(config.AssistedApiUrl)
+func NewAssistedAPIHandler(tlsConfig *tls.Config) (*handler, error) {
+	client := http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
+	}
+	resp, err := client.Get(fmt.Sprintf("%s%s", config.AssistedApiUrl, AssistedPingEndpoint))
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to Assisted Installer: %w", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected response code from Assisted Installer: %v", resp.StatusCode)
+	}
+	log.GetLog().Info("Successfuly connected to Assisted Installer")
+	target, proxy := createReverseProxy(fmt.Sprintf("%s/api", config.AssistedApiUrl))
 
 	proxy.Transport = &http.Transport{
 		TLSClientConfig: tlsConfig,
 	}
 
-	return handler{target: target, proxy: proxy}
+	return &handler{target: target, proxy: proxy}, nil
 }
