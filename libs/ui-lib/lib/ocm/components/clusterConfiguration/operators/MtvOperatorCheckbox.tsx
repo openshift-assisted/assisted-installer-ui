@@ -70,6 +70,7 @@ const MtvCheckbox = ({
   const selectCNVOperator = (checked: boolean) => {
     if (featureSupportLevelData.isFeatureSupported('CNV'))
       setFieldValue('useContainerNativeVirtualization', checked);
+    if (featureSupportLevelData.isFeatureSupported('LSO')) setFieldValue('useLso', checked);
   };
 
   return (
