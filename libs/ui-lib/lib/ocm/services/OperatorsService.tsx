@@ -16,6 +16,8 @@ import {
   OPERATOR_NAME_PIPELINES,
   OPERATOR_NAME_SERVICEMESH,
   OPERATOR_NAME_NVIDIA_GPU,
+  OPERATOR_NAME_AMD_GPU,
+  OPERATOR_NAME_KMM,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import {
@@ -52,6 +54,8 @@ const OperatorsService = {
     setOperator(OPERATOR_NAME_PIPELINES, values.usePipelines);
     setOperator(OPERATOR_NAME_SERVICEMESH, values.useServicemesh);
     setOperator(OPERATOR_NAME_NVIDIA_GPU, values.useNvidiaGpu);
+    setOperator(OPERATOR_NAME_AMD_GPU, values.useAmdGpu);
+    setOperator(OPERATOR_NAME_KMM, values.useKmm);
 
     return Object.values(enabledOlmOperatorsByName);
   },

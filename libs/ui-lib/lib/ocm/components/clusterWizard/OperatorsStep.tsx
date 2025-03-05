@@ -49,6 +49,7 @@ import {
   getOpenShiftAIIncompatibleWithLvmsReason,
 } from '../featureSupportLevels/featureStateUtils';
 import OpenshiftAINvidiaRequirements from '../clusterConfiguration/operators/OpenshiftAINvidiaRequirements';
+import OpenshiftAIAmdRequirements from '../clusterConfiguration/operators/OpenshiftAIAmdRequirements';
 import VirtualizationRequirements from '../clusterConfiguration/operators/VirtualizationRequirements';
 
 const operatorsThatCanNotBeInstalledAlone = [
@@ -191,23 +192,34 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
     setBundleOperators(newBundleOperators);
   };
 
-  const getBundleLabel = (title: string | undefined) => {
+  const getBundleLabel = (bundle: Bundle) => {
+    let requirements: React.ReactElement | null = null;
+    switch (bundle.id) {
+      case 'virtualization':
+        requirements = <VirtualizationRequirements />;
+        break;
+      case 'openshift-ai-nvidia':
+        requirements = <OpenshiftAINvidiaRequirements />;
+        break;
+      case 'openshift-ai-amd':
+        requirements = <OpenshiftAIAmdRequirements />;
+        break;
+    }
+
     return (
       <>
-        <span>{title} </span>
-        <PopoverIcon
-          component={'a'}
-          bodyContent={
-            <>
-              <span style={{ fontSize: '1.1em' }}>{'Requirements and dependencies'}</span>
-              {title === 'Virtualization' ? (
-                <VirtualizationRequirements />
-              ) : (
-                <OpenshiftAINvidiaRequirements />
-              )}
-            </>
-          }
-        />
+        <span>{bundle.title} </span>
+        {requirements && (
+          <PopoverIcon
+            component={'a'}
+            bodyContent={
+              <>
+                <span style={{ fontSize: '1.1em' }}>{'Requirements and dependencies'}</span>
+                {requirements}
+              </>
+            }
+          />
+        )}
       </>
     );
   };
@@ -316,14 +328,15 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       {/* Mostrar bundles como tarjetas */}
       <Gallery hasGutter minWidths={{ default: '350px' }} maxWidths={{ default: '2fr' }}>
         {filteredBundles.map((bundle) => {
-          const isSnoAndBlockedBundle = isSNO && bundle.id === 'openshift-ai-nvidia';
+          const isSnoAndBlockedBundle =
+            isSNO && (bundle.id === 'openshift-ai-nvidia' || bundle.id === 'openshift-ai-amd');
 
           const tooltipContent = hasUnsupportedOperators
             ? 'Some operators in this bundle are not supported with the current configuration.'
-            : hasIncompatibleOperators
-            ? 'Some operators in this bundle can not be installed with some single operators selected.'
             : isSnoAndBlockedBundle
             ? 'This bundle is not available when deploying a Single Node OpenShift.'
+            : hasIncompatibleOperators
+            ? 'Some operators in this bundle can not be installed with some single operators selected.'
             : '';
 
           return (
@@ -352,7 +365,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {getBundleLabel(bundle.title)}
+                      {getBundleLabel(bundle)}
                     </div>
                     <Checkbox
                       id={`bundle-${bundle.id || ''}`}
@@ -377,7 +390,8 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
 
                     {/* Badge aligned to the bottom-left */}
                     <div style={{ marginTop: '10px', alignSelf: 'flex-end', height: '25px' }}>
-                      {bundle.id === 'openshift-ai-nvidia' && (
+                      {(bundle.id === 'openshift-ai-nvidia' ||
+                        bundle.id === 'openshift-ai-amd') && (
                         <NewFeatureSupportLevelBadge
                           featureId="OPENSHIFT_AI"
                           supportLevel="dev-preview"
