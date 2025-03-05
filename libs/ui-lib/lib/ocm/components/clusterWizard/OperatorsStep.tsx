@@ -79,8 +79,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   const { updateUISettings, uiSettings } = useClusterWizardContext();
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const featureSupportLevelData = useNewFeatureSupportLevel();
-  const [hasUnsupportedOperators, setHasUnsupportedOperators] = useState<boolean>(false);
-  const [hasIncompatibleOperators, setHasIncompatibleOperators] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchBundles = async () => {
@@ -277,27 +275,19 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   );
 
   const bundleHasOperatorsNotCompatibles = React.useCallback(
-    (operators: string[] | undefined, values: OperatorsValues) => {
-      return (
-        operators?.some((operatorKey) => {
-          const disabledReason = getDisabledReasonForOperator(operatorKey, values);
-          console.log(disabledReason);
-          return disabledReason !== undefined;
-        }) ?? false
-      );
+    (operators: string[] | undefined, values: OperatorsValues, isSelected: boolean) => {
+      if (!isSelected) {
+        return (
+          operators?.some((operatorKey) => {
+            const disabledReason = getDisabledReasonForOperator(operatorKey, values);
+            console.log(disabledReason);
+            return disabledReason !== undefined;
+          }) ?? false
+        );
+      } else return false;
     },
     [getDisabledReasonForOperator],
   );
-
-  useEffect(() => {
-    setHasUnsupportedOperators(
-      bundles.some((bundle) => bundleHasOperatorsNotSupported(bundle.operators)),
-    );
-
-    setHasIncompatibleOperators(
-      bundles.some((bundle) => bundleHasOperatorsNotCompatibles(bundle.operators, values)),
-    );
-  }, [values, bundles, bundleHasOperatorsNotSupported, bundleHasOperatorsNotCompatibles]);
 
   return (
     <Stack hasGutter data-testid={'operators-page'}>
@@ -330,7 +320,12 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         {filteredBundles.map((bundle) => {
           const isSnoAndBlockedBundle =
             isSNO && (bundle.id === 'openshift-ai-nvidia' || bundle.id === 'openshift-ai-amd');
-
+          const hasUnsupportedOperators = bundleHasOperatorsNotSupported(bundle.operators);
+          const hasIncompatibleOperators = bundleHasOperatorsNotCompatibles(
+            bundle.operators,
+            values,
+            bundle.id ? selectedBundles[bundle.id] : false,
+          );
           const tooltipContent = hasUnsupportedOperators
             ? 'Some operators in this bundle are not supported with the current configuration.'
             : isSnoAndBlockedBundle
