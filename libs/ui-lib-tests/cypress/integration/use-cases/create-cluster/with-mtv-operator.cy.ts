@@ -26,7 +26,11 @@ describe(`Create cluster with MTV operator enabled`, () => {
       commonActions.toNextStepAfter('Operators');
 
       cy.wait('@update-cluster').then(({ request }) => {
-        expect(request.body.olm_operators).to.deep.equal([{ name: 'cnv' }, { name: 'mtv' }]);
+        expect(request.body.olm_operators).to.deep.equal([
+          { name: 'cnv' },
+          { name: 'mtv' },
+          { name: 'lso' },
+        ]);
       });
     });
   });
