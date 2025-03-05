@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom-v5-compat';
 import { Brand, Masthead, MastheadBrand, MastheadMain, Page } from '@patternfly/react-core';
 import '../i18n';
-import Wizard from './Wizard';
+import { CreateClusterWizard, EditClusterWizard } from './Wizard';
 import { Provider } from 'react-redux';
 import { Store } from '@openshift-assisted/ui-lib/ocm';
 
@@ -28,7 +28,8 @@ export const App: React.FC = () => {
       <Provider store={Store.storeDay1}>
         <Page header={header} isManagedSidebar defaultManagedSidebarIsOpen={false}>
           <Routes>
-            <Route path="/" element={<Wizard />} />
+            <Route path="/" element={<CreateClusterWizard />} />
+            <Route path="/:clusterId" element={<EditClusterWizard />} />
           </Routes>
         </Page>
       </Provider>

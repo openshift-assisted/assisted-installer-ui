@@ -10,10 +10,9 @@ export const useCluster = (): [string | undefined, boolean, boolean] => {
     const fetchAsync = async () => {
       try {
         const result = await ClustersAPI.list();
-        if (!result.data.length) {
-          setError(true);
+        if (result.data.length) {
+          setClusterId(result.data[0].id);
         }
-        setClusterId(result.data[0].id);
       } catch {
         setError(true);
       } finally {
