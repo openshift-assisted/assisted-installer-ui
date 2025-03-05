@@ -656,7 +656,9 @@ export type ClusterValidationId =
   | 'serverless-requirements-satisfied'
   | 'openshift-ai-requirements-satisfied'
   | 'authorino-requirements-satisfied'
-  | 'nmstate-requirements-satisfied';
+  | 'nmstate-requirements-satisfied'
+  | 'amd-gpu-requirements-satisfied'
+  | 'kmm-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1049,7 +1051,9 @@ export type FeatureSupportLevelId =
   | 'NON_STANDARD_HA_CONTROL_PLANE'
   | 'AUTHORINO'
   | 'USER_MANAGED_LOAD_BALANCER'
-  | 'NMSTATE';
+  | 'NMSTATE'
+  | 'AMD_GPU'
+  | 'KMM';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1603,7 +1607,9 @@ export type HostValidationId =
   | 'openshift-ai-requirements-satisfied'
   | 'authorino-requirements-satisfied'
   | 'mtu-valid'
-  | 'nmstate-requirements-satisfied';
+  | 'nmstate-requirements-satisfied'
+  | 'amd-gpu-requirements-satisfied'
+  | 'kmm-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
