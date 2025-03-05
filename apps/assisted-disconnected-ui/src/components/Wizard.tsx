@@ -16,10 +16,13 @@ import {
   ClusterUiError,
   OpenshiftVersionsContextProvider,
   NewFeatureSupportLevelProvider,
+  NewClusterWizard,
 } from '@openshift-assisted/ui-lib/ocm';
 import { Alert, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
-const EditCluster = ({ clusterId }: { clusterId: string }) => {
+export const EditClusterWizard = () => {
+  const { clusterId } = useParams() as { clusterId: string };
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
   const pullSecret = '';
   const {
@@ -37,11 +40,11 @@ const EditCluster = ({ clusterId }: { clusterId: string }) => {
     cluster?.openshiftVersion,
   );
 
-  if (uiState === ResourceUIState.LOADING || infraEnvLoading || !cluster || !infraEnv) {
+  if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <ClusterLoading />;
   }
 
-  if (uiState === ResourceUIState.POLLING_ERROR || infraEnvError) {
+  if (uiState === ResourceUIState.POLLING_ERROR || infraEnvError || !cluster || !infraEnv) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
@@ -82,19 +85,34 @@ const EditCluster = ({ clusterId }: { clusterId: string }) => {
   );
 };
 
-const Wizard = () => {
+export const CreateClusterWizard = () => {
   const [clusterId, isLoading, error] = useCluster();
+  const navigate = useNavigate();
   if (isLoading) {
     return <ClusterLoading />;
   }
-  if (error || !clusterId) {
+
+  if (error) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
-        <Alert isInline variant="danger" title="No cluster available" />
+        <Alert isInline variant="danger" title="Failed to fetch clusters" />
       </PageSection>
     );
   }
-  return <EditCluster clusterId={clusterId} />;
-};
 
-export default Wizard;
+  if (clusterId) {
+    navigate(`/${clusterId}`);
+  }
+
+  return (
+    <AlertsContextProvider>
+      <ClusterWizardContextProvider isDisconnectedMode={true}>
+        <OpenshiftVersionsContextProvider>
+          <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
+            <NewClusterWizard />
+          </NewFeatureSupportLevelProvider>
+        </OpenshiftVersionsContextProvider>
+      </ClusterWizardContextProvider>
+    </AlertsContextProvider>
+  );
+};
