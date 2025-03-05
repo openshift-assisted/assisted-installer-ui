@@ -21,7 +21,14 @@ import { Alert, PageSection, PageSectionVariants } from '@patternfly/react-core'
 
 const EditCluster = ({ clusterId }: { clusterId: string }) => {
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
-  const pullSecret = '';
+  const pullSecret = `{
+    auths: {
+      'cloud.openshift.com': {
+        auth: 'Zm9vYmFyOmZvbwo=',
+        email: 'foo@foo.com',
+      },
+    },
+  }`;
   const {
     infraEnv,
     isLoading: infraEnvLoading,
