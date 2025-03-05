@@ -5,8 +5,10 @@ import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   ClusterWizardStep,
   getFormikErrorFields,
+  OPERATOR_NAME_AMD_GPU,
   OPERATOR_NAME_AUTHORINO,
   OPERATOR_NAME_CNV,
+  OPERATOR_NAME_KMM,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_MCE,
@@ -56,6 +58,8 @@ export const getOperatorsInitialValues = (
     usePipelines: isOperatorEnabled([OPERATOR_NAME_PIPELINES]),
     useServicemesh: isOperatorEnabled([OPERATOR_NAME_SERVICEMESH]),
     useNvidiaGpu: isOperatorEnabled([OPERATOR_NAME_NVIDIA_GPU]),
+    useAmdGpu: isOperatorEnabled([OPERATOR_NAME_AMD_GPU]),
+    useKmm: isOperatorEnabled([OPERATOR_NAME_KMM]),
   };
 };
 
