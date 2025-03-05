@@ -15,6 +15,7 @@ import ClusterWizardStepValidationsAlert from '../../../common/components/cluste
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -82,7 +83,7 @@ const ClusterWizardFooter = ({
 }: ClusterWizardFooterProps) => {
   const { alerts } = useAlerts();
   const navigate = useNavigate();
-  const { isDisconnectedMode } = useClusterWizardContext();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const handleCancel = React.useCallback(() => navigate('/cluster-list'), [navigate]);
 
@@ -101,7 +102,7 @@ const ClusterWizardFooter = ({
     <WizardFooter
       alerts={alertsSection}
       errors={errorsSection}
-      onCancel={isDisconnectedMode ? undefined : onCancel || handleCancel}
+      onCancel={isSingleClusterFeatureEnabled ? undefined : onCancel || handleCancel}
       leftExtraActions={additionalActions}
       cluster={cluster}
       onFetchEvents={onFetchEvents}

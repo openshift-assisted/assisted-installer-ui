@@ -1,10 +1,27 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom-v5-compat';
 import { Brand, Masthead, MastheadBrand, MastheadMain, Page } from '@patternfly/react-core';
-import '../i18n';
-import { CreateClusterWizard, EditClusterWizard } from './Wizard';
 import { Provider } from 'react-redux';
-import { Store } from '@openshift-assisted/ui-lib/ocm';
+import { Store, useFeatureDetection } from '@openshift-assisted/ui-lib/ocm';
+import { FeatureListType } from '@openshift-assisted/ui-lib/lib/common';
+
+import CreateClusterWizard from './CreateClusterWizard';
+import ClusterPage from './ClusterPage';
+import '../i18n';
+
+const features: FeatureListType = {
+  ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: true,
+};
+
+const AppRouter = () => {
+  useFeatureDetection(features);
+  return (
+    <Routes>
+      <Route path="/" element={<CreateClusterWizard />} />
+      <Route path="/:clusterId" element={<ClusterPage />} />
+    </Routes>
+  );
+};
 
 export const App: React.FC = () => {
   const header = (
@@ -27,10 +44,7 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <Provider store={Store.storeDay1}>
         <Page header={header} isManagedSidebar defaultManagedSidebarIsOpen={false}>
-          <Routes>
-            <Route path="/" element={<CreateClusterWizard />} />
-            <Route path="/:clusterId" element={<EditClusterWizard />} />
-          </Routes>
+          <AppRouter />
         </Page>
       </Provider>
     </BrowserRouter>

@@ -133,7 +133,6 @@ export const OcmClusterDetailsFormFields = ({
 
       <OcmBaseDomainField managedDomains={managedDomains} clusterExists={clusterExists} />
 
-      {/* TODO(mlibra): For single-cluster: We will probably change this to just a static text */}
       {forceOpenshiftVersion ? (
         <OcmOpenShiftVersion
           versions={versions}
@@ -184,15 +183,12 @@ export const OcmClusterDetailsFormFields = ({
       )}
       <CustomManifestCheckbox clusterId={clusterId || ''} isDisabled={platform === 'external'} />
 
-      {
-        // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
-        !isSingleClusterFeatureEnabled && (
-          <HostsNetworkConfigurationControlGroup
-            clusterExists={clusterExists}
-            isDisabled={platform === 'external'}
-          />
-        )
-      }
+      {!isSingleClusterFeatureEnabled && (
+        <HostsNetworkConfigurationControlGroup
+          clusterExists={clusterExists}
+          isDisabled={platform === 'external'}
+        />
+      )}
 
       <DiskEncryptionControlGroup
         values={values}

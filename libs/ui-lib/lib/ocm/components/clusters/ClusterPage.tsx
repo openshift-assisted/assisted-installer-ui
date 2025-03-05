@@ -42,9 +42,6 @@ const ClusterPageGeneric = ({
   clusterId: string;
   showBreadcrumbs?: boolean;
 }) => {
-  if (!clusterId) {
-    // console.error('ClusterPageGeneric: missing clusterId');
-  }
   const fetchCluster = useFetchCluster(clusterId);
   const dispatch = useDispatch();
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
