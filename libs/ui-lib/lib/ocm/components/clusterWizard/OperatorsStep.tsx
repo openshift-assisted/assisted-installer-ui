@@ -333,10 +333,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
 
           const tooltipContent = hasUnsupportedOperators
             ? 'Some operators in this bundle are not supported with the current configuration.'
-            : hasIncompatibleOperators
-            ? 'Some operators in this bundle can not be installed with some single operators selected.'
             : isSnoAndBlockedBundle
             ? 'This bundle is not available when deploying a Single Node OpenShift.'
+            : hasIncompatibleOperators
+            ? 'Some operators in this bundle can not be installed with some single operators selected.'
             : '';
 
           return (
