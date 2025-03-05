@@ -1,17 +1,57 @@
-import { AlertsContextProvider } from '@openshift-assisted/ui-lib/common';
+import { useCluster } from '../hooks/useCluster';
 import {
-  ModalDialogsContextProvider,
-  OpenshiftVersionsContextProvider,
-  ClusterUiError,
-  ClusterDefaultConfigurationProvider,
+  AlertsContextProvider,
+  CpuArchitecture,
+  ErrorState,
+  ResourceUIState,
+} from '@openshift-assisted/ui-lib/common';
+import {
   ClusterLoading,
   ClusterWizardContextProvider,
-  NewClusterWizard,
+  useClusterPolling,
+  ClusterWizard,
+  useInfraEnv,
+  ModalDialogsContextProvider,
+  ClusterDefaultConfigurationProvider,
+  ClusterUiError,
+  OpenshiftVersionsContextProvider,
   NewFeatureSupportLevelProvider,
 } from '@openshift-assisted/ui-lib/ocm';
-import { PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { Alert, PageSection, PageSectionVariants } from '@patternfly/react-core';
 
-const Wizard = () => {
+const EditCluster = ({ clusterId }: { clusterId: string }) => {
+  const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
+  const pullSecret = '';
+  const {
+    infraEnv,
+    isLoading: infraEnvLoading,
+    error: infraEnvError,
+    updateInfraEnv,
+  } = useInfraEnv(
+    clusterId,
+    cluster?.cpuArchitecture
+      ? (cluster.cpuArchitecture as CpuArchitecture)
+      : CpuArchitecture.USE_DAY1_ARCHITECTURE,
+    cluster?.name,
+    pullSecret,
+    cluster?.openshiftVersion,
+  );
+
+  if (uiState === ResourceUIState.LOADING || infraEnvLoading || !cluster || !infraEnv) {
+    return <ClusterLoading />;
+  }
+
+  if (uiState === ResourceUIState.POLLING_ERROR || infraEnvError) {
+    return (
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <ErrorState
+          title="Failed to fetch the cluster"
+          content={errorDetail?.message || infraEnvError}
+        />
+      </PageSection>
+    );
+  }
+
   return (
     <AlertsContextProvider>
       <ModalDialogsContextProvider>
@@ -21,9 +61,17 @@ const Wizard = () => {
         >
           <OpenshiftVersionsContextProvider>
             <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-              <PageSection variant={PageSectionVariants.light} isFilled>
-                <ClusterWizardContextProvider>
-                  <NewClusterWizard />
+              <PageSection variant={PageSectionVariants.light}>
+                <ClusterWizardContextProvider
+                  cluster={cluster}
+                  infraEnv={infraEnv}
+                  isDisconnectedMode={true}
+                >
+                  <ClusterWizard
+                    cluster={cluster}
+                    infraEnv={infraEnv}
+                    updateInfraEnv={updateInfraEnv}
+                  />
                 </ClusterWizardContextProvider>
               </PageSection>
             </NewFeatureSupportLevelProvider>
@@ -32,6 +80,21 @@ const Wizard = () => {
       </ModalDialogsContextProvider>
     </AlertsContextProvider>
   );
+};
+
+const Wizard = () => {
+  const [clusterId, isLoading, error] = useCluster();
+  if (isLoading) {
+    return <ClusterLoading />;
+  }
+  if (error || !clusterId) {
+    return (
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <Alert isInline variant="danger" title="No cluster available" />
+      </PageSection>
+    );
+  }
+  return <EditCluster clusterId={clusterId} />;
 };
 
 export default Wizard;

@@ -14,15 +14,19 @@ import (
 )
 
 func main() {
+	log := log.InitLogs()
+
 	tlsConfig, err := bridge.GetTlsConfig()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	log := log.InitLogs()
-	router := mux.NewRouter()
+	apiHandler, err := bridge.NewAssistedAPIHandler(tlsConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	apiHandler := bridge.NewAssistedAPIHandler(tlsConfig)
+	router := mux.NewRouter()
 	router.PathPrefix("/api/{forward:.*}").Handler(apiHandler)
 
 	spa := server.SpaHandler{}
@@ -33,12 +37,11 @@ func main() {
 	if config.TlsKeyPath != "" && config.TlsCertPath != "" {
 		cert, err := tls.LoadX509KeyPair(config.TlsCertPath, config.TlsKeyPath)
 		if err != nil {
-			panic(err)
+			log.Fatal("failed to load TLS certs: %w", err)
 		}
 		serverTlsconfig = &tls.Config{
 			Certificates: []tls.Certificate{cert},
 		}
-
 	}
 
 	srv := &http.Server{
