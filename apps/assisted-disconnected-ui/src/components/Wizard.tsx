@@ -24,7 +24,14 @@ import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 export const EditClusterWizard = () => {
   const { clusterId } = useParams() as { clusterId: string };
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
-  const pullSecret = '';
+  const pullSecret = `{
+    auths: {
+      'cloud.openshift.com': {
+        auth: 'Zm9vYmFyOmZvbwo=',
+        email: 'foo@foo.com',
+      },
+    },
+  }`;
   const {
     infraEnv,
     isLoading: infraEnvLoading,
