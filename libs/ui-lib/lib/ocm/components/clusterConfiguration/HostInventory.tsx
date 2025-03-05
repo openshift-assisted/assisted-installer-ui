@@ -24,14 +24,12 @@ import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeature } from '../../hooks/use-feature';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 
 const schedulableMastersTooltip =
   'Workloads must be run on control plane nodes when less than 5 hosts are discovered';
 
 const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const { isDisconnectedMode } = useClusterWizardContext();
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -46,7 +44,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <ClusterWizardStepHeader>Host discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        {!isViewerMode && !isSingleClusterFeatureEnabled && !isDisconnectedMode && (
+        {!isViewerMode && !isSingleClusterFeatureEnabled && (
           <TextContent>
             <Text component="p">
               <DiscoveryImageModalButton
