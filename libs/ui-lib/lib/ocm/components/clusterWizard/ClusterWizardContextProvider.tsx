@@ -69,8 +69,7 @@ const getWizardStepIds = (
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
   }
   if (isSingleClusterFeatureEnabled) {
-    // tentatively removed, proper waiting on support by backend
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'operators', 1);
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['kubeconfig-download']);
   }
 
   return stepsCopy;
