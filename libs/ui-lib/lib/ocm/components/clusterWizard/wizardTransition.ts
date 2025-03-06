@@ -174,6 +174,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'nvidia-gpu-requirements-satisfied',
       'openshift-ai-requirements-satisfied',
       'osc-requirements-satisfied',
+      'amd-gpu-requirements-satisfied',
     ],
   },
   host: {
@@ -189,6 +190,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'nvidia-gpu-requirements-satisfied',
       'openshift-ai-requirements-satisfied',
       'osc-requirements-satisfied',
+      'amd-gpu-requirements-satisfied',
     ],
   },
   softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk', 'compatible-agent'],

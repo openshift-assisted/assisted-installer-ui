@@ -138,6 +138,8 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'mtu-valid': t('ai:MTU requirements'),
   'authorino-requirements-satisfied': '',
   'nmstate-requirements-satisfied': '',
+  'amd-gpu-requirements-satisfied': t('ai:AMD GPU requirements'),
+  'kmm-requirements-satisfied': t('ai:Kernel Module Management requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -198,6 +200,8 @@ export const hostValidationFailureHints = (
   'authorino-requirements-satisfied': '',
   'mtu-valid': '',
   'nmstate-requirements-satisfied': '',
+  'amd-gpu-requirements-satisfied': '',
+  'kmm-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
@@ -301,6 +305,8 @@ export const OPERATOR_NAME_OPENSHIFT_AI = 'openshift-ai';
 export const OPERATOR_NAME_OSC = 'osc';
 export const OPERATOR_NAME_NMSTATE = 'nmstate';
 export const OPERATOR_NAME_AUTHORINO = 'authorino';
+export const OPERATOR_NAME_AMD_GPU = 'amd-gpu';
+export const OPERATOR_NAME_KMM = 'kmm';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -319,6 +325,8 @@ const OperatorNames = [
   OPERATOR_NAME_OSC,
   OPERATOR_NAME_NMSTATE,
   OPERATOR_NAME_AUTHORINO,
+  OPERATOR_NAME_AMD_GPU,
+  OPERATOR_NAME_KMM,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -336,6 +344,8 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_OSC,
   OPERATOR_NAME_NMSTATE,
   OPERATOR_NAME_AUTHORINO,
+  OPERATOR_NAME_AMD_GPU,
+  OPERATOR_NAME_KMM,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -381,6 +391,8 @@ export const operatorLabels = (
     [OPERATOR_NAME_MTV]: t('ai:Migration Toolkit for Virtualization'),
     [OPERATOR_NAME_NMSTATE]: t('ai:NMState'),
     [OPERATOR_NAME_AUTHORINO]: t('ai:Authorino'),
+    [OPERATOR_NAME_AMD_GPU]: t('ai:AMD GPU'),
+    [OPERATOR_NAME_KMM]: t('ai:Kernel Module Management'),
   };
 };
 
