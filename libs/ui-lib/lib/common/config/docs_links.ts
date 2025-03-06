@@ -1,7 +1,12 @@
 const DEFAULT_OPENSHIFT_DOCS_VERSION = '4.15';
 
-export const getShortOpenshiftVersion = (ocpVersion?: string) =>
-  ocpVersion ? ocpVersion.split('.').slice(0, 2).join('.') : DEFAULT_OPENSHIFT_DOCS_VERSION;
+export const getShortOpenshiftVersion = (ocpVersion?: string) => {
+  let shortOcpVersion = ocpVersion
+    ? ocpVersion.split('.').slice(0, 2).join('.')
+    : DEFAULT_OPENSHIFT_DOCS_VERSION;
+  if (shortOcpVersion < '4.14') shortOcpVersion = '4.14';
+  return shortOcpVersion;
+};
 
 export const getYearForAssistedInstallerDocumentationLink = () => {
   return new Date().getFullYear();
