@@ -80,12 +80,10 @@ const ClusterWizardContextProvider = ({
   cluster,
   infraEnv,
   permissions,
-  isDisconnectedMode = false,
 }: PropsWithChildren<{
   cluster?: Cluster;
   infraEnv?: InfraEnv;
   permissions?: AssistedInstallerOCMPermissionTypesListType;
-  isDisconnectedMode?: boolean;
 }>) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
@@ -249,7 +247,6 @@ const ClusterWizardContextProvider = ({
       setWizardPerPage,
       uiSettings,
       updateUISettings,
-      isDisconnectedMode,
     };
   }, [
     wizardStepIds,
@@ -261,7 +258,6 @@ const ClusterWizardContextProvider = ({
     clearAlerts,
     uiSettings,
     updateUISettings,
-    isDisconnectedMode,
   ]);
 
   if (!contextValue) {
