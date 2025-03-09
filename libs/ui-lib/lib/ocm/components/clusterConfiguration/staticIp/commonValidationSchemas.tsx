@@ -234,7 +234,7 @@ export const getIpIsNotNetworkOrBroadcastAddressSchema = (
     (value) => {
       const subnetAddr = getAddressObject(subnet, protocolVersion);
       if (!subnetAddr) {
-        return false;
+        return true;
       } else {
         const subnetStart = subnetAddr?.startAddress().correctForm();
         const subnetEnd = subnetAddr?.endAddress().correctForm();
