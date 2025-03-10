@@ -8,6 +8,8 @@ import { Tooltip } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
+import './InfraEnvHostsTabAgentsWarning.css';
+
 export type InfraEnvHostsTabAgentsWarning = {
   infraAgents: AgentK8sResource[];
   infraBMHs: BareMetalHostK8sResource[];
@@ -53,7 +55,7 @@ const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarning> = (
       <Tooltip content={t('ai:{{count}} host has problems', { count: hostsWithProblemsCount })}>
         <ExclamationTriangleIcon
           color={warningColor.value}
-          className="infra-env-hosts-tab-title__icon"
+          className="cim-infra-env-hosts-tab-title__icon"
         />
       </Tooltip>
     );

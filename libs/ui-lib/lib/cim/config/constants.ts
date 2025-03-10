@@ -1,6 +1,8 @@
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { FeatureId } from '../../common';
 
+export const DOC_VERSION = '2.13';
+
 type FeatureConfig = {
   featureId: FeatureId;
   supportLevel: SupportLevel;
