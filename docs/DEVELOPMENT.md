@@ -101,7 +101,7 @@ Follow these steps if you want to test the `libs/ui-lib` integration within `sto
    the following commands:
    ```bash
    cd frontend
-   yalc add @openshift-assisted/ui-lib
+   yalc link @openshift-assisted/ui-lib
    yalc link @openshift-assisted/locales
    yalc link @openshift-assisted/types
    ```
