@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -88,7 +87,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         setBundles(fetchedBundles);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error al obtener los bundles:', error);
+        console.error('Error getting bundles:', error);
       }
     };
 
@@ -104,7 +103,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         setSupportedOperators(sortedOperators);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error al obtener los operators:', error);
+        console.error('Error getting operators:', error);
       }
     };
 
@@ -280,7 +279,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         return (
           operators?.some((operatorKey) => {
             const disabledReason = getDisabledReasonForOperator(operatorKey, values);
-            console.log(disabledReason);
             return disabledReason !== undefined;
           }) ?? false
         );
@@ -326,20 +324,28 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
             values,
             bundle.id ? selectedBundles[bundle.id] : false,
           );
+          const hasAnotherAIBundleSelected =
+            (bundle.id === 'openshift-ai-nvidia' && selectedBundles['openshift-ai-amd']) ||
+            (bundle.id === 'openshift-ai-amd' && selectedBundles['openshift-ai-nvidia']);
+
           const tooltipContent = hasUnsupportedOperators
             ? 'Some operators in this bundle are not supported with the current configuration.'
             : isSnoAndBlockedBundle
             ? 'This bundle is not available when deploying a Single Node OpenShift.'
             : hasIncompatibleOperators
             ? 'Some operators in this bundle can not be installed with some single operators selected.'
+            : hasAnotherAIBundleSelected
+            ? 'This bundle cannot be selected because you already have another Openshift AI bundle selected.'
             : '';
-
           return (
             <GalleryItem key={bundle.id}>
               <Tooltip
                 content={tooltipContent}
                 hidden={
-                  !hasUnsupportedOperators && !hasIncompatibleOperators && !isSnoAndBlockedBundle
+                  !hasUnsupportedOperators &&
+                  !hasIncompatibleOperators &&
+                  !isSnoAndBlockedBundle &&
+                  !hasAnotherAIBundleSelected
                 }
               >
                 <Card
@@ -349,7 +355,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                       : { height: '200px' }
                   }
                   isDisabled={
-                    hasUnsupportedOperators || hasIncompatibleOperators || isSnoAndBlockedBundle
+                    hasUnsupportedOperators ||
+                    hasIncompatibleOperators ||
+                    isSnoAndBlockedBundle ||
+                    hasAnotherAIBundleSelected
                   }
                 >
                   <CardTitle
@@ -369,7 +378,10 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                         void handleBundleSelection(bundle.id || '', bundle.operators || [], checked)
                       }
                       isDisabled={
-                        hasUnsupportedOperators || hasIncompatibleOperators || isSnoAndBlockedBundle
+                        hasUnsupportedOperators ||
+                        hasIncompatibleOperators ||
+                        isSnoAndBlockedBundle ||
+                        hasAnotherAIBundleSelected
                       }
                     />
                   </CardTitle>
