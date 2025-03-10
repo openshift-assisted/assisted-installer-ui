@@ -289,6 +289,11 @@ export const getNewFeatureDisabledReason = (
         return `Service mesh is not available with the selected CPU architecture.`;
       }
     }
+    case 'AMD_GPU': {
+      if (!isSupported) {
+        return `AMD GPU is not available with the selected CPU architecture.`;
+      }
+    }
     default: {
       return undefined;
     }
