@@ -6,11 +6,18 @@ import {
   ClusterVersionK8sResource,
   OsImage,
 } from '../../types';
-import { OpenshiftVersionOptionType } from '../../../common';
+import { CpuArchitecture, OpenshiftVersionOptionType } from '../../../common';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
-  const match = /.+:(.*)-/gm.exec(releaseImage);
+  const match = /.+:(.*)/gm.exec(releaseImage);
+  if (match && match.length > 1 && match[1]) {
+    return match[1];
+  }
+};
+
+const getCPUArchFromReleaseImage = (releaseImage = '') => {
+  const match = /.+:.*-(.*)/gm.exec(releaseImage);
   if (match && match.length > 1 && match[1]) {
     return match[1];
   }
@@ -37,8 +44,12 @@ const getSupportLevelFromChannel = (
 
 export const supportedNutanixPlatforms = ['x86_64', 'x86-64'];
 
-export const isValidImageSet = (cis: ClusterImageSetK8sResource, architectures?: string[]) => {
-  if (cis.metadata?.labels?.visible !== 'true') {
+export const isValidImageSet = (
+  cis: ClusterImageSetK8sResource,
+  architectures?: string[],
+  extended?: boolean,
+) => {
+  if (!extended && cis.metadata?.labels?.visible !== 'true') {
     return false;
   }
   if (!architectures) {
@@ -53,6 +64,7 @@ export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
   isNutanix?: boolean | undefined,
   osImages?: OsImage[],
+  extended?: boolean,
 ): OpenshiftVersionOptionType[] => {
   const ocpImageVersions = Array.from(
     new Set(osImages?.map((osImage) => osImage.openshiftVersion)),
@@ -60,10 +72,11 @@ export const getOCPVersions = (
 
   const versions = clusterImageSets
     .filter((clusterImageSet) =>
-      isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined),
+      isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined, extended),
     )
     .map((clusterImageSet): OpenshiftVersionOptionType => {
       const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
+      const cpuArch = getCPUArchFromReleaseImage(clusterImageSet.spec?.releaseImage);
       return {
         label: `OpenShift ${version ? version : (clusterImageSet.metadata?.name as string)}`,
         version: version || clusterImageSet.metadata?.name || '',
@@ -71,6 +84,7 @@ export const getOCPVersions = (
         default: false,
         // (rawagner) ACM does not have the warning so changing to 'production'
         supportLevel: 'production', // getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel),
+        cpuArchitectures: cpuArch ? [cpuArch as CpuArchitecture] : undefined,
       };
     })
     .filter((ocpVersion) => {

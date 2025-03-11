@@ -23,7 +23,7 @@ const OcmOpenShiftVersion = ({
 }: OcmOpenShiftVersionProps) => {
   return (
     <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-      Openshift{' '}
+      OpenShift{' '}
       {getOpenshiftVersionText({
         openshiftVersion,
         cpuArchitecture: clusterCpuArchitecture as ClusterCpuArchitecture,

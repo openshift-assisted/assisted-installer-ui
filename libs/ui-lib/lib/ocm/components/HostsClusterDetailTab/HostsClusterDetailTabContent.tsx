@@ -23,7 +23,7 @@ import {
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -156,7 +156,7 @@ export const HostsClusterDetailTabContent = ({
       ocpConsoleUrl={ocmCluster?.console?.url}
       canEdit={ocmCluster.canEdit}
     >
-      <OpenshiftVersionsContextProvider>
+      <OpenShiftVersionsContextProvider>
         <NewFeatureSupportLevelProvider
           loadingUi={<LoadingState />}
           cluster={day2Cluster}
@@ -166,7 +166,7 @@ export const HostsClusterDetailTabContent = ({
         >
           <AddHosts />
         </NewFeatureSupportLevelProvider>
-      </OpenshiftVersionsContextProvider>
+      </OpenShiftVersionsContextProvider>
     </AddHostsContextProvider>
   );
 };

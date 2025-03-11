@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
+import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
-import OpenShiftVersionSelect from '../../../common/components/clusterConfiguration/OpenShiftVersionSelect';
 import { PullSecret } from '../../../common/components/clusters';
 import { OpenshiftVersionOptionType } from '../../../common/types';
 import {
@@ -14,13 +14,14 @@ import {
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
-import { getNetworkType } from '../helpers';
 import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
   forceOpenshiftVersion?: string;
   extensionAfter?: { [key: string]: React.ReactElement };
   versions: OpenshiftVersionOptionType[];
+  allVersions: OpenshiftVersionOptionType[];
   isNutanix?: boolean;
   cpuArchitectures?: string[];
 };
@@ -46,13 +47,39 @@ export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string
 export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   isEditFlow,
   versions,
+  allVersions,
   forceOpenshiftVersion,
   extensionAfter,
   isNutanix,
   cpuArchitectures,
 }) => {
-  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
+  const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
+  const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
+
+  const selectOptions = React.useMemo(
+    () =>
+      versions.map((version) => ({
+        label: version.label,
+        value: version.value,
+      })),
+    [versions],
+  );
+
+  const additionalSelectOptions = React.useMemo(() => {
+    if (
+      values.customOpenshiftSelect &&
+      !selectOptions.some((option) => option.value === values.customOpenshiftSelect?.value)
+    ) {
+      return [
+        {
+          value: values.customOpenshiftSelect.value,
+          label: values.customOpenshiftSelect.label,
+        },
+      ];
+    }
+    return [];
+  }, [selectOptions, values.customOpenshiftSelect]);
 
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
@@ -102,13 +129,22 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           {t('ai:OpenShift')} {forceOpenshiftVersion}
         </StaticTextField>
       ) : (
-        <OpenShiftVersionSelect
-          versions={versions}
-          onChange={(_event, value) => {
-            const ocpVersion = versions.find((v) => v.value === value);
-            setFieldValue('networkType', getNetworkType(ocpVersion));
-          }}
-        />
+        <>
+          <OpenShiftVersionDropdown
+            name="openshiftVersion"
+            items={selectOptions}
+            versions={versions}
+            showReleasesLink={false}
+            showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
+            customItems={additionalSelectOptions}
+          />
+          {openshiftVersionModalOpen && (
+            <OpenShiftVersionModal
+              allVersions={allVersions}
+              setOpenshiftVersionModalOpen={setOpenshiftVersionModalOpen}
+            />
+          )}
+        </>
       )}
       <ControlPlaneNodesDropdown isNutanix={isNutanix} isDisabled={isEditFlow} />
       {!isNutanix && (

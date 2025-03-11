@@ -335,7 +335,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
             : hasIncompatibleOperators
             ? 'Some operators in this bundle can not be installed with some single operators selected.'
             : hasAnotherAIBundleSelected
-            ? 'This bundle cannot be selected because you already have another Openshift AI bundle selected.'
+            ? 'This bundle cannot be selected because you already have another OpenShift AI bundle selected.'
             : '';
           return (
             <GalleryItem key={bundle.id}>
