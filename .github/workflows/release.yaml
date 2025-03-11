@@ -12,16 +12,16 @@ jobs:
   publish-to-npm:
     runs-on: ubuntu-latest
     steps:
-      - name: Check workflow runs in a release branch
+      - name: Check workflow runs in a release branch or is CIM release
         run: |
-          if [[ "${{ github.event.release.target_commitish }}" != *releases* ]]; then
-            echo "Expecting to be in a release branch, but we are in: ${{ github.event.release.target_commitish }}"
+          if [[ "${{ github.event.release.target_commitish }}" != *releases* || ! "$GITHUB_REF_NAME" =~ -cim$ ]]; then
+            echo "OCM: Expecting to be in a release branch, but we are in: ${{ github.event.release.target_commitish }}"
+            echo "CIM: Not a CIM release, since tag does not end with '-cim'. Tag is: $GITHUB_REF_NAME"
             exit 1
           fi
 
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
           ref: ${{ github.event.release.target_commitish }}
           fetch-depth: 0
 
@@ -78,14 +78,3 @@ jobs:
               echo "Retrying..."
             done
           done
-
-      - name: Update the repo
-        run: |
-          for LIB in $(echo ${LIBS}); do
-            git add libs/"${LIB}"/package.json
-          done
-          git add apps/assisted-ui/package.json
-          git commit -m "Version ${GITHUB_REF_NAME}"
-          git tag -f -a ${GITHUB_REF_NAME} -m "${GITHUB_REF_NAME}"
-          git push origin ${GITHUB_REF_NAME} --force
-          git push origin ${{ github.event.release.target_commitish }} --force
