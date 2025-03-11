@@ -22,7 +22,7 @@ import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
 import { ClusterDetailsValues, ItemDropdown } from '../clusterWizard';
-import './OpenshiftVersionDropdown.css';
+import './OpenShiftVersionDropdown.css';
 
 export type HelperTextType = (value: string | undefined, inModal?: boolean) => JSX.Element | null;
 
@@ -30,7 +30,7 @@ type OpenShiftVersionDropdownProps = {
   name: string;
   items: ItemDropdown;
   versions: OpenshiftVersionOptionType[];
-  getHelperText: HelperTextType;
+  getHelperText?: HelperTextType;
   showReleasesLink: boolean;
   showOpenshiftVersionModal: () => void;
   customItems: ItemDropdown;
@@ -159,7 +159,7 @@ export const OpenShiftVersionDropdown = ({
     [setOpen, current, isDisabled],
   );
 
-  const helperText = getHelperText(field.value);
+  const helperText = getHelperText && getHelperText(field.value);
 
   return (
     <FormGroup
