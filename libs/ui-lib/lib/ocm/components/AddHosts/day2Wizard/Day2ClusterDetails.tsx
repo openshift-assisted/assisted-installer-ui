@@ -24,7 +24,7 @@ import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
 import { usePullSecret } from '../../../hooks';
-import { useOpenshiftVersionsContext } from '../../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
 import {
   Cluster,
   InfraEnv,
@@ -87,7 +87,7 @@ const Day2ClusterDetails = () => {
   const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>(null);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [isAlternativeCpuSelected, setIsAlternativeCpuSelected] = React.useState(false);
-  const { getCpuArchitectures } = useOpenshiftVersionsContext();
+  const { getCpuArchitectures } = useOpenShiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(day2Cluster.openshiftVersion);
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   const [errorState, setErrorState] = React.useState<Error | null>(null);

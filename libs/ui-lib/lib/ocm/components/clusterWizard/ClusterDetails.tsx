@@ -8,7 +8,7 @@ import { setServerUpdateError, updateCluster } from '../../store/slices/current-
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
 import { useManagedDomains, useUsedClusterNames } from '../../hooks';
-import { useOpenshiftVersionsContext } from './OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from './OpenShiftVersionsContext';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import {
@@ -36,7 +36,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     error: errorOCPVersions,
     loading: loadingOCPVersions,
     latestVersions: versions,
-  } = useOpenshiftVersionsContext();
+  } = useOpenShiftVersionsContext();
   const location = useLocation();
 
   const handleClusterUpdate = React.useCallback(

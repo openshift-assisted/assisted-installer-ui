@@ -33,7 +33,7 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
-import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
 const ClusterPageGeneric = ({
   clusterId,
@@ -69,9 +69,9 @@ const ClusterPageGeneric = ({
       };
       return (
         <AddHostsContextProvider cluster={cluster} resetCluster={onReset}>
-          <OpenshiftVersionsContextProvider>
+          <OpenShiftVersionsContextProvider>
             <AddHosts />
-          </OpenshiftVersionsContextProvider>
+          </OpenShiftVersionsContextProvider>
         </AddHostsContextProvider>
       );
     } else if (
@@ -167,7 +167,7 @@ const ClusterPageGeneric = ({
                 loadingUI={<ClusterLoading />}
                 errorUI={<ClusterUiError />}
               >
-                <OpenshiftVersionsContextProvider>
+                <OpenShiftVersionsContextProvider>
                   <NewFeatureSupportLevelProvider
                     loadingUi={<ClusterLoading />}
                     cluster={cluster}
@@ -185,7 +185,7 @@ const ClusterPageGeneric = ({
                     <ResetClusterModal />
                     <DiscoveryImageModal />
                   </NewFeatureSupportLevelProvider>
-                </OpenshiftVersionsContextProvider>
+                </OpenShiftVersionsContextProvider>
               </ClusterDefaultConfigurationProvider>
             </ModalDialogsContextProvider>
           </SentryErrorMonitorContextProvider>

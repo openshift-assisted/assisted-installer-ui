@@ -8,7 +8,7 @@ import { getKeys } from '../../../common/utils';
 const supportedVersionLevels = ['production', 'maintenance'];
 
 type OpenShiftVersion = Cluster['openshiftVersion'];
-type OpenshiftVersionsContextType = {
+type OpenShiftVersionsContextType = {
   allVersions: OpenshiftVersionOptionType[];
   latestVersions: OpenshiftVersionOptionType[];
   isSupportedOpenShiftVersion: (version: OpenShiftVersion) => boolean;
@@ -17,9 +17,9 @@ type OpenshiftVersionsContextType = {
   loading: boolean;
 };
 
-const OpenshiftVersionsContext = createContext<OpenshiftVersionsContextType | null>(null);
+const OpenShiftVersionsContext = createContext<OpenShiftVersionsContextType | null>(null);
 
-export const OpenshiftVersionsContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const OpenShiftVersionsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [allVersions, setAllVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [latestVersions, setLatestVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [error, setError] = React.useState<{ title: string; message: string }>();
@@ -107,7 +107,7 @@ export const OpenshiftVersionsContextProvider = ({ children }: { children: React
   );
 
   return (
-    <OpenshiftVersionsContext.Provider
+    <OpenShiftVersionsContext.Provider
       value={{
         allVersions,
         latestVersions,
@@ -118,14 +118,14 @@ export const OpenshiftVersionsContextProvider = ({ children }: { children: React
       }}
     >
       {children}
-    </OpenshiftVersionsContext.Provider>
+    </OpenShiftVersionsContext.Provider>
   );
 };
 
-export const useOpenshiftVersionsContext = () => {
-  const context = React.useContext(OpenshiftVersionsContext);
+export const useOpenShiftVersionsContext = () => {
+  const context = React.useContext(OpenShiftVersionsContext);
   if (!context) {
-    throw new Error('useOpenshiftVersionsContext must be used within OpenshiftVersionsContext');
+    throw new Error('useOpenShiftVersionsContext must be used within OpenShiftVersionsContext');
   }
   return context;
 };

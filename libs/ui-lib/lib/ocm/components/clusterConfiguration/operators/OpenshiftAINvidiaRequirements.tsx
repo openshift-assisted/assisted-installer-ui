@@ -18,7 +18,7 @@ const OpenshiftAINvidiaRequirements = () => {
       </List>
       Bundle operators:
       <List>
-        <ListItem>Openshift AI</ListItem>
+        <ListItem>OpenShift AI</ListItem>
         <ListItem>OpenShift Data Foundation</ListItem>
         <ListItem>NVIDIA GPU</ListItem>
         <ListItem>Node Feature Discovery</ListItem>

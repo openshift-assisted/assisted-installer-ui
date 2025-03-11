@@ -9,7 +9,7 @@ import {
 import { isInOcm } from '../../../common/api';
 import { useFormikContext } from 'formik';
 import { getOpenshiftVersionHelperText } from './OpenshiftVersionHelperText';
-import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
 
 type OcmOpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];
@@ -53,7 +53,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
     return [];
   }, [selectOptions, customOpenshiftSelect]);
 
-  const { allVersions } = useOpenshiftVersionsContext();
+  const { allVersions } = useOpenShiftVersionsContext();
 
   const getHelperText = (value: string | undefined, inModal?: boolean) => {
     return getOpenshiftVersionHelperText(allVersions, value, t, inModal);

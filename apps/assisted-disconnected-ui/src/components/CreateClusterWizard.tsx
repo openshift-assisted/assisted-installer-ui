@@ -3,7 +3,7 @@ import { AlertsContextProvider } from '@openshift-assisted/ui-lib/common';
 import {
   ClusterLoading,
   ClusterWizardContextProvider,
-  OpenshiftVersionsContextProvider,
+  OpenShiftVersionsContextProvider,
   NewFeatureSupportLevelProvider,
   NewClusterWizard,
 } from '@openshift-assisted/ui-lib/ocm';
@@ -32,11 +32,11 @@ const CreateClusterWizard = () => {
   return (
     <AlertsContextProvider>
       <ClusterWizardContextProvider>
-        <OpenshiftVersionsContextProvider>
+        <OpenShiftVersionsContextProvider>
           <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
             <NewClusterWizard />
           </NewFeatureSupportLevelProvider>
-        </OpenshiftVersionsContextProvider>
+        </OpenShiftVersionsContextProvider>
       </ClusterWizardContextProvider>
     </AlertsContextProvider>
   );

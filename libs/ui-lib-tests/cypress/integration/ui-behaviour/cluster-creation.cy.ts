@@ -18,7 +18,7 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
   });
 
   describe('OpenShiftVersion tests', () => {
-    it('Should have the correct values for the Openshift versions', () => {
+    it('Should have the correct values for the OpenShift versions', () => {
       commonActions.visitNewClusterPage();
       clusterDetailsPage.inputOpenshiftVersion();
 
