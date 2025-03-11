@@ -12,6 +12,9 @@ export * from './PreviewBadge';
 export * from './TechnologyPreview';
 export * from './DeveloperPreview';
 
+export * from './OpenShiftVersionDropdown';
+export * from './OpenShiftVersionModal';
+
 export * from './utils';
 
 export { default as PopoverIcon } from './PopoverIcon';

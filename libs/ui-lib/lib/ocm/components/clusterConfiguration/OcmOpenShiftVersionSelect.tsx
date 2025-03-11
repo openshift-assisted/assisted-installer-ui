@@ -1,9 +1,12 @@
 import React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { OpenshiftVersionOptionType, ClusterDetailsValues } from '../../../common';
+import {
+  OpenshiftVersionOptionType,
+  ClusterDetailsValues,
+  OpenShiftVersionDropdown,
+  OpenShiftVersionModal,
+} from '../../../common';
 import { isInOcm } from '../../../common/api';
-import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
-import { OpenShiftVersionModal } from './OpenShiftVersionModal';
 import { useFormikContext } from 'formik';
 import { getOpenshiftVersionHelperText } from './OpenshiftVersionHelperText';
 import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
@@ -69,6 +72,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
       />
       {isOpenshiftVersionModalOpen && (
         <OpenShiftVersionModal
+          allVersions={allVersions}
           setOpenshiftVersionModalOpen={setIsOpenshiftVersionModalOpen}
           getHelperText={getHelperText}
         />

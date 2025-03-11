@@ -1,0 +1,9 @@
+#form-input-openshiftVersion-field .pf-v5-c-dropdown__menu {
+  max-height: 22vh;
+  overflow: auto;
+}
+
+#form-input-openshiftVersion-field .pf-v5-c-dropdown__menu ul {
+  list-style: none;
+  padding-left: 0;
+}
