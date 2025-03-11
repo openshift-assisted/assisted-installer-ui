@@ -16,7 +16,7 @@ import {
 import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
-import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',
@@ -78,13 +78,13 @@ export const HostsClusterDetailTabMock = () => {
   return (
     <PageSection variant={PageSectionVariants.light} isFilled>
       {tabShown ? (
-        <OpenshiftVersionsContextProvider>
+        <OpenShiftVersionsContextProvider>
           <HostsClusterDetailTab
             cluster={getCluster(tabShown)}
             allEnabledFeatures={STANDALONE_DEPLOYMENT_ENABLED_FEATURES}
             isVisible
           />
-        </OpenshiftVersionsContextProvider>
+        </OpenShiftVersionsContextProvider>
       ) : (
         <Grid hasGutter>
           <ToolbarButton variant={ButtonVariant.primary} onClick={() => onAddHosts('no-metrics')}>

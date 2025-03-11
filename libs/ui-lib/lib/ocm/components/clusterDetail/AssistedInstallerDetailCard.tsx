@@ -28,7 +28,7 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
-import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 import {
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
@@ -148,7 +148,7 @@ const AssistedInstallerDetailCard = ({
   return (
     <HistoryRouter history={history} basename={basename}>
       <AlertsContextProvider>
-        <OpenshiftVersionsContextProvider>
+        <OpenShiftVersionsContextProvider>
           <SentryErrorMonitorContextProvider>
             <ModalDialogsContextProvider>
               <ClusterDefaultConfigurationProvider
@@ -171,7 +171,7 @@ const AssistedInstallerDetailCard = ({
               </ClusterDefaultConfigurationProvider>
             </ModalDialogsContextProvider>
           </SentryErrorMonitorContextProvider>
-        </OpenshiftVersionsContextProvider>
+        </OpenShiftVersionsContextProvider>
       </AlertsContextProvider>
     </HistoryRouter>
   );

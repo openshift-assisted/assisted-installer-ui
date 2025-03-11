@@ -49,7 +49,7 @@ const OperatorsService = {
   },
 
   /**
-   * Depending on the Openshift version and certain selected operators, the
+   * Depending on the OpenShift version and certain selected operators, the
    * Backend can activate some other operators.
    * We need to synchronise them back to the form
    */
@@ -59,7 +59,7 @@ const OperatorsService = {
   ): Partial<OperatorsValues> {
     const updates: Partial<OperatorsValues> = {};
 
-    // LVM operator can be automatically selected depending on Openshift version + other operators
+    // LVM operator can be automatically selected depending on OpenShift version + other operators
     const lvmPrevInactive = uiOperators?.find((op) => op.name === OPERATOR_NAME_LVM) === undefined;
     const lvmNowActive =
       updatedOperators?.find((op) => op.name === OPERATOR_NAME_LVM) !== undefined;

@@ -11,7 +11,7 @@ import { ClusterUiError } from './ClusterPageErrors';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
-import { OpenshiftVersionsContextProvider } from '../clusterWizard/OpenshiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
 const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactNode }) => {
   return (
@@ -22,7 +22,7 @@ const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactN
             loadingUI={<ClusterLoading />}
             errorUI={<ClusterUiError />}
           >
-            <OpenshiftVersionsContextProvider>
+            <OpenShiftVersionsContextProvider>
               <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
                 {pageTitleSection}
                 <PageSection variant={PageSectionVariants.light} isFilled>
@@ -31,7 +31,7 @@ const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactN
                   </ClusterWizardContextProvider>
                 </PageSection>
               </NewFeatureSupportLevelProvider>
-            </OpenshiftVersionsContextProvider>
+            </OpenShiftVersionsContextProvider>
           </ClusterDefaultConfigurationProvider>
         </ModalDialogsContextProvider>
       </SentryErrorMonitorContextProvider>

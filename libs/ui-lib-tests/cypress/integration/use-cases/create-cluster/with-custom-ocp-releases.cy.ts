@@ -44,7 +44,7 @@ describe('Assisted Installer UI behaviour - cluster creation with custom OCP rel
       customOCPModal.getSearchResponse('No results found');
     });
 
-    it('Should search a custom OCP version and is shown in the Openshift dropdown modal', () => {
+    it('Should search a custom OCP version and is shown in the OpenShift dropdown modal', () => {
       commonActions.visitNewClusterPage();
       clusterDetailsPage.openOpenshiftVersionDropdown();
       clusterDetailsPage.clickLinkAllAvailableVersions();

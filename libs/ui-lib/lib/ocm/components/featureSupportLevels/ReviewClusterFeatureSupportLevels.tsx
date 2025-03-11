@@ -16,7 +16,7 @@ import { DetailItem, UiIcon } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
 import { TFunction } from 'i18next';
 import {
   NewFeatureSupportLevelData,
@@ -141,7 +141,7 @@ export const getSupportLevelInfo = (
 const SupportLevel = ({ cluster }: SupportLevelProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
-  const { isSupportedOpenShiftVersion } = useOpenshiftVersionsContext();
+  const { isSupportedOpenShiftVersion } = useOpenShiftVersionsContext();
 
   const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
     React.useMemo<SupportLevelMemo>(

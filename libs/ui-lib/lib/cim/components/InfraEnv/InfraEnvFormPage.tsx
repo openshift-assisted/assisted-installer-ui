@@ -49,7 +49,7 @@ import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
-import OpenshiftVersionDropdown from './OpenshiftVersionDropdown';
+import InfraEnvOpenShiftVersionDropdown from './InfraEnvOpenShiftVersionDropdown';
 import { OsImage } from '../../types';
 
 export type EnvironmentStepFormValues = {
@@ -228,7 +228,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
             </Flex>
           </FormGroup>
           <CpuArchitectureDropdown />
-          {!!osImages && <OpenshiftVersionDropdown osImages={osImages} />}
+          {!!osImages && <InfraEnvOpenShiftVersionDropdown osImages={osImages} />}
           <RichInputField
             label={t('ai:Location')}
             name="location"
