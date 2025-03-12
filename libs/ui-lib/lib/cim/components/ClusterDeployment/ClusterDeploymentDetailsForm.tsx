@@ -41,25 +41,28 @@ export const ClusterDeploymentDetailsFormWrapper = ({
     useFormikContext<ClusterDetailsValues>();
   const { t } = useTranslation();
 
-  const handleOnNext = () => {
+  const handleOnNext = React.useCallback(() => {
     if (dirty) {
       void submitForm();
     } else {
       void goToNextStep();
     }
-  };
+  }, [dirty, goToNextStep, submitForm]);
 
-  const footer = (
-    <WizardFooter
-      activeStep={activeStep}
-      onNext={handleOnNext}
-      isNextDisabled={!isValid || isValidating || isSubmitting}
-      nextButtonProps={{ isLoading: isSubmitting }}
-      nextButtonText={t('ai:Next')}
-      onBack={goToPrevStep}
-      onClose={close}
-      isBackHidden
-    />
+  const footer = React.useMemo(
+    () => (
+      <WizardFooter
+        activeStep={activeStep}
+        onNext={handleOnNext}
+        isNextDisabled={!isValid || isValidating || isSubmitting}
+        nextButtonProps={{ isLoading: isSubmitting }}
+        nextButtonText={t('ai:Next')}
+        onBack={goToPrevStep}
+        onClose={close}
+        isBackHidden
+      />
+    ),
+    [activeStep, close, goToPrevStep, handleOnNext, isSubmitting, isValid, isValidating, t],
   );
 
   useWizardFooter(footer);
