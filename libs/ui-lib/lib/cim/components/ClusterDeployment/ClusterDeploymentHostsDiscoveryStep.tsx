@@ -117,7 +117,7 @@ const ClusterDeploymentHostsDiscoveryStep = ({
       <WizardFooter
         activeStep={activeStep}
         onNext={onNext}
-        isNextDisabled={nextRequested || (showFormErrors ? !!errors.length : false)}
+        isNextDisabled={nextRequested || !!syncError || (showFormErrors ? !!errors.length : false)}
         nextButtonText={submittingText || t('ai:Next')}
         nextButtonProps={{ isLoading: !!submittingText }}
         onBack={goToPrevStep}
@@ -133,6 +133,7 @@ const ClusterDeploymentHostsDiscoveryStep = ({
       onNext,
       showFormErrors,
       submittingText,
+      syncError,
       t,
     ],
   );

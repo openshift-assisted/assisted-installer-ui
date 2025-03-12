@@ -15,6 +15,7 @@ import './AddHostDropdown.css';
 import { PopoverIcon } from '../../../common';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom-v5-compat';
+import { ClusterDeploymentWizardContext } from '../ClusterDeployment/ClusterDeploymentWizardContext';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
 
@@ -45,6 +46,7 @@ const AddHostDropdown = ({
   onCreateBmcByYaml,
   provisioningConfigResult,
 }: AddHostDropdownProps) => {
+  const { syncError } = React.useContext(ClusterDeploymentWizardContext);
   const [addModalType, setAddModalType] = React.useState<ModalType>(undefined);
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
   const [provisioningConfig, provisioningConfigLoaded, provisioningConfigError] =
@@ -59,6 +61,7 @@ const AddHostDropdown = ({
             id="dropdown-basic"
             onToggle={(_event, value) => setIsKebabOpen(value)}
             toggleVariant="primary"
+            isDisabled={!!syncError}
           >
             {t('ai:Add hosts')}
           </DropdownToggle>
