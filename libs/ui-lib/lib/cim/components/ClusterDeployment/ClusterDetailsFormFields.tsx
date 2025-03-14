@@ -24,6 +24,7 @@ export type ClusterDetailsFormFieldsProps = {
   allVersions: OpenshiftVersionOptionType[];
   isNutanix?: boolean;
   cpuArchitectures?: string[];
+  allowHighlyAvailable?: boolean;
 };
 
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -52,6 +53,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   extensionAfter,
   isNutanix,
   cpuArchitectures,
+  allowHighlyAvailable,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
@@ -146,7 +148,10 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           )}
         </>
       )}
-      <ControlPlaneNodesDropdown isNutanix={isNutanix} isDisabled={isEditFlow} />
+      <ControlPlaneNodesDropdown
+        isDisabled={isEditFlow}
+        allowHighlyAvailable={allowHighlyAvailable}
+      />
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
