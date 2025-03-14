@@ -157,7 +157,7 @@ export type HostedClusterK8sResource = K8sResourceCommon & {
     kubeconfig?: {
       name: string;
     };
-    customkubeconfig?: {
+    customKubeconfig?: {
       name: string;
     };
     kubeadminPassword?: {
