@@ -11,21 +11,17 @@ interface ControlPlaneNodesOption {
   label: string;
 }
 
-const isDropdownItemEnabled = (controlPlaneNodeCount: number, isNutanix?: boolean): boolean => {
-  return (controlPlaneNodeCount === 1 && !isNutanix) || controlPlaneNodeCount !== 1;
-};
-
 const ControlPlaneNodesDropdown = ({
   isDisabled = false,
-  isNutanix,
+  allowHighlyAvailable,
 }: {
   isDisabled?: boolean;
-  isNutanix?: boolean;
+  allowHighlyAvailable?: boolean;
 }) => {
   const { t } = useTranslation();
-  const [{ name, value: selectedValue }, , { setValue }] = useField<number | 3>(
-    'controlPlaneCount',
-  );
+  const [{ name, value: selectedValue }, , { setValue }] = useField<number>('controlPlaneCount');
+  const [controlPlanelOpen, setControlPlanelOpen] = React.useState(false);
+  const fieldId = getFieldId(name, 'input');
 
   const options: ControlPlaneNodesOption[] = [
     { value: 1, label: t('ai:1 (Single Node OpenShift - not highly available cluster)') },
@@ -34,14 +30,21 @@ const ControlPlaneNodesDropdown = ({
     { value: 5, label: t('ai:5 (highly available cluster++)') },
   ];
 
+  React.useEffect(() => {
+    if (!allowHighlyAvailable && [4, 5].includes(selectedValue)) {
+      setValue(3);
+    }
+  }, [allowHighlyAvailable, selectedValue, setValue]);
+
   const dropdownItems = options.map(({ value, label }) => {
-    const isItemEnabled = isDropdownItemEnabled(value, isNutanix);
-    const disabledReason = t('ai:This option is not available for Nutanix platform');
+    const isItemEnabled = [1, 3].includes(value) || allowHighlyAvailable;
+    const disabledReason = t('ai:This option is not available with the selected OpenShift version');
     return (
       <DropdownItem
         key={value}
         id={value.toString()}
         isAriaDisabled={!isItemEnabled}
+        isDisabled={!isItemEnabled}
         selected={selectedValue === value}
         value={value}
       >
@@ -51,9 +54,6 @@ const ControlPlaneNodesDropdown = ({
       </DropdownItem>
     );
   });
-
-  const [controlPlanelOpen, setControlPlanelOpen] = React.useState(false);
-  const fieldId = getFieldId(name, 'input');
 
   const onControlPlaneSelect = (e?: React.SyntheticEvent<HTMLDivElement>) => {
     const val = e?.currentTarget.id as string;

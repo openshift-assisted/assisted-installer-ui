@@ -824,7 +824,7 @@
   "ai:This IP is being allocated by the DHCP server": "This IP is being allocated by the DHCP server",
   "ai:This IP was allocated by the DHCP server.": "This IP was allocated by the DHCP server.",
   "ai:This name will replace the original discovered hostname.": "This name will replace the original discovered hostname.",
-  "ai:This option is not available for Nutanix platform": "This option is not available for Nutanix platform",
+  "ai:This option is not available with the selected OpenShift version": "This option is not available with the selected OpenShift version",
   "ai:This option is not editable after the draft cluster is created": "This option is not editable after the draft cluster is created",
   "ai:this script.": "this script.",
   "ai:This stage may take a while to finish. To view detailed information, click the events log link below.": "This stage might take a while to finish. To view detailed information, click the events log link.",
