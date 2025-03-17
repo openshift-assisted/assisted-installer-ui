@@ -31,6 +31,7 @@ import {
   InfraEnv,
   ManagedDomain,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -64,6 +65,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   } = props;
 
   const clusterWizardContext = useClusterWizardContext();
+  const isSingleCluster = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
@@ -83,11 +85,11 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
         await handleClusterUpdate(cluster.id, params, values.addCustomManifest);
       } else {
-        const params = ClusterDetailsService.getClusterCreateParams(values);
+        const params = ClusterDetailsService.getClusterCreateParams(values, isSingleCluster);
         await handleClusterCreate(params, values.addCustomManifest);
       }
     },
-    [cluster, handleClusterCreate, handleClusterUpdate],
+    [cluster, handleClusterCreate, handleClusterUpdate, isSingleCluster],
   );
 
   const handleOnNext = React.useCallback(
