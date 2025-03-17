@@ -113,7 +113,7 @@ export const getSelectedVersion = (
   );
 
   return selectedClusterImage
-    ? getOCPVersions([selectedClusterImage])?.[0]?.version
+    ? getOCPVersions([selectedClusterImage], undefined, undefined, true)?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
 };
 
