@@ -26,7 +26,7 @@ import CpuArchitectureDropdown from './CpuArchitectureDropdown';
 import { OcmBaseDomainField } from './OcmBaseDomainField';
 import OcmSNOControlGroup from './OcmSNOControlGroup';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
 import { ExternalPlatformDropdown } from './platformIntegration/ExternalPlatformDropdown';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
@@ -65,7 +65,7 @@ export const OcmClusterDetailsFormFields = ({
   const { t } = useTranslation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { openshiftVersion, platform } = values;
-  const { getCpuArchitectures } = useOpenshiftVersionsContext();
+  const { getCpuArchitectures } = useOpenShiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
   const featureSupportLevelData = useSupportLevelsAPI(

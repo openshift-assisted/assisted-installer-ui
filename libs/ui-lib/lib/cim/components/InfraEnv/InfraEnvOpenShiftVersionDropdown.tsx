@@ -6,7 +6,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { architectureData, getFieldId, SupportedCpuArchitecture } from '../../../common';
 import { OsImage } from '../../types';
 
-const OpenshiftVersionDropdown = ({ osImages }: { osImages: OsImage[] }) => {
+const InfraEnvOpenShiftVersionDropdown = ({ osImages }: { osImages: OsImage[] }) => {
   const { t } = useTranslation();
   const [{ name, value }, , { setValue }] = useField<string>('osImageVersion');
   const [{ value: cpuArchitecture }] = useField<string>('cpuArchitecture');
@@ -69,4 +69,4 @@ const OpenshiftVersionDropdown = ({ osImages }: { osImages: OsImage[] }) => {
   );
 };
 
-export default OpenshiftVersionDropdown;
+export default InfraEnvOpenShiftVersionDropdown;

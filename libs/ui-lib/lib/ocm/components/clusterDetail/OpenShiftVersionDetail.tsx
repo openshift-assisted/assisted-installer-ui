@@ -1,6 +1,6 @@
 import React from 'react';
 import { UiIcon, getOpenshiftVersionText } from '../../../common';
-import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -28,7 +28,7 @@ const UnsupportedVersion = ({ version }: { version: string }) => {
 
 const OpenShiftVersionDetail = ({ cluster }: { cluster: Cluster }) => {
   const { openshiftVersion } = cluster;
-  const { isSupportedOpenShiftVersion, latestVersions: versions } = useOpenshiftVersionsContext();
+  const { isSupportedOpenShiftVersion, latestVersions: versions } = useOpenShiftVersionsContext();
   const isSupported = isSupportedOpenShiftVersion(openshiftVersion);
 
   const version = React.useMemo(() => {

@@ -22,11 +22,11 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type OpenshiftSelectWithSearchProps = {
   versions: OpenshiftVersionOptionType[];
-  getHelperText: HelperTextType;
+  getHelperText?: HelperTextType;
   setCustomOpenshiftSelect: Dispatch<SetStateAction<OpenshiftVersionOptionType | undefined>>;
 };
 
-export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectWithSearchProps> = ({
+export const OpenShiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectWithSearchProps> = ({
   versions,
   getHelperText,
   setCustomOpenshiftSelect,
@@ -232,7 +232,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
     </MenuToggle>
   );
 
-  const helperText = getHelperText(selected, true);
+  const helperText = getHelperText && getHelperText(selected, true);
 
   return (
     <>
@@ -285,7 +285,7 @@ export const OpenshiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
         <HelperText>
           <HelperTextItem variant="default">
             {helperText ??
-              'Select an Openshift version from the list or use the type ahead to narrow down the list.'}
+              'Select an OpenShift version from the list or use the type ahead to narrow down the list.'}
           </HelperTextItem>
         </HelperText>
       </FormHelperText>

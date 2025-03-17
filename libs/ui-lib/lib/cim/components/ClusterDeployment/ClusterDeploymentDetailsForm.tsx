@@ -92,8 +92,13 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   osImages,
 }) => {
   const { t } = useTranslation();
-  const ocpVersions = React.useMemo(
+  const versions = React.useMemo(
     () => getOCPVersions(clusterImages, isNutanix, osImages),
+    [clusterImages, isNutanix, osImages],
+  );
+
+  const allVersions = React.useMemo(
+    () => getOCPVersions(clusterImages, isNutanix, osImages, true),
     [clusterImages, isNutanix, osImages],
   );
 
@@ -110,7 +115,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
       return cpuArchitectures;
     }
 
-    const openshiftVersion = ocpVersions
+    const openshiftVersion = versions
       .find((ver) => ver.value === values.openshiftVersion)
       ?.version.split('.')
       .slice(0, 2)
@@ -119,7 +124,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
     return osImages
       .filter((osImage) => osImage.openshiftVersion === openshiftVersion)
       .map((osImage) => osImage.cpuArchitecture as SupportedCpuArchitecture);
-  }, [osImages, ocpVersions, values.openshiftVersion]);
+  }, [osImages, versions, values.openshiftVersion]);
 
   return (
     <>
@@ -134,7 +139,8 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
       )}
       <StackItem>
         <ClusterDetailsFormFields
-          versions={ocpVersions}
+          versions={versions}
+          allVersions={allVersions}
           isEditFlow={isEditFlow}
           forceOpenshiftVersion={forceOpenshiftVersion}
           extensionAfter={extensionAfter}

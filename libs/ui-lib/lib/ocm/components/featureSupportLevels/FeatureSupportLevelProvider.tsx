@@ -21,7 +21,7 @@ import {
   SupportLevel,
   SupportLevels,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useOpenshiftVersionsContext } from '../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -44,7 +44,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   openshiftVersion,
   platformType,
 }) => {
-  const { loading: loadingOCPVersions } = useOpenshiftVersionsContext();
+  const { loading: loadingOCPVersions } = useOpenShiftVersionsContext();
   const pullSecret = usePullSecret();
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',

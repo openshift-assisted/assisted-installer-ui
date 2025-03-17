@@ -84,7 +84,7 @@ apply for `libs/locales` as well.
    [README file](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md) in order
    to set up their dev-environment.
 
-## Integrating with the Openshift Console for ACM and MCE (aka CIM)
+## Integrating with the OpenShift Console for ACM and MCE (aka CIM)
 
 Some components of the Assisted Installer UI are integrated into the Central Infrastructure
 Management project (a.k.a. [stolostron/console](https://github.com/stolostron/console)).

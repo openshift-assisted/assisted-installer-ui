@@ -14,7 +14,7 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
 
-const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
+const CNV_OPERATOR_LABEL = 'OpenShift Virtualization';
 const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
 const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';

@@ -22,7 +22,7 @@ import {
   UiIcon,
 } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
-import { useOpenshiftVersionsContext } from '../../clusterWizard/OpenshiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
 import { wizardStepNames } from '../../clusterWizard/constants';
 import {
   ClusterWizardStepsType,
@@ -118,7 +118,7 @@ const getCheckIcon = (validationStatuses: string[]) => {
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
-  const { isSupportedOpenShiftVersion } = useOpenshiftVersionsContext();
+  const { isSupportedOpenShiftVersion } = useOpenShiftVersionsContext();
 
   const { isFullySupported } = React.useMemo<SupportLevelMemo>(
     () => getSupportLevelInfo(cluster, featureSupportLevelData, isSupportedOpenShiftVersion, t),
