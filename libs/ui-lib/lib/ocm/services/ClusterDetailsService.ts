@@ -34,10 +34,14 @@ const getExistingClusterCpuArchitecture = (infraEnv: InfraEnv) => {
 };
 
 const ClusterDetailsService = {
-  getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
+  getClusterCreateParams(
+    values: OcmClusterDetailsValues,
+    isSingleCluster: boolean,
+  ): ClusterCreateParamsWithStaticNetworking {
+    const controlPlaneCount = toNumber(values.controlPlaneCount);
     const params: ClusterCreateParamsWithStaticNetworking = {
       name: values.name,
-      controlPlaneCount: toNumber(values.controlPlaneCount),
+      controlPlaneCount,
       openshiftVersion: values.openshiftVersion,
       pullSecret: values.pullSecret,
       baseDnsDomain: values.baseDnsDomain,
@@ -56,7 +60,7 @@ const ClusterDetailsService = {
       },
     };
 
-    if (!values.isCMNSupported) {
+    if (!values.isCMNSupported || (isSingleCluster && controlPlaneCount !== 1)) {
       params.userManagedNetworking = true;
     }
 
