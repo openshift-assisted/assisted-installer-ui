@@ -20,6 +20,7 @@ export type WizardFooterGenericProps = {
   onNext?: () => void;
   onBack?: () => void;
   onCancel?: () => void;
+  onReset?: () => void;
   isNextDisabled?: boolean;
   isBackDisabled?: boolean;
   isSubmitting?: boolean;
@@ -41,6 +42,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   onNext,
   onBack,
   onCancel,
+  onReset,
   isNextDisabled,
   isBackDisabled,
   leftExtraActions,
@@ -92,6 +94,18 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 isDisabled={false}
               >
                 {t('ai:Cancel')}
+              </Button>
+            </ActionListItem>
+          )}
+          {onReset && cluster && (
+            <ActionListItem>
+              <Button
+                variant={ButtonVariant.link}
+                name="reset"
+                onClick={onReset}
+                isDisabled={isSubmitting}
+              >
+                {t('ai:Reset')}
               </Button>
             </ActionListItem>
           )}

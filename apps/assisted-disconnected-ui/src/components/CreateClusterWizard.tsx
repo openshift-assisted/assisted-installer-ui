@@ -6,9 +6,11 @@ import {
   OpenShiftVersionsContextProvider,
   NewFeatureSupportLevelProvider,
   NewClusterWizard,
+  ModalDialogsContextProvider,
 } from '@openshift-assisted/ui-lib/ocm';
 import { Alert, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import ResetSingleClusterModal from './ResetSingleClusterModal';
 
 const CreateClusterWizard = () => {
   const [clusterId, isLoading, error] = useCluster();
@@ -32,11 +34,14 @@ const CreateClusterWizard = () => {
   return (
     <AlertsContextProvider>
       <ClusterWizardContextProvider>
-        <OpenShiftVersionsContextProvider>
-          <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-            <NewClusterWizard />
-          </NewFeatureSupportLevelProvider>
-        </OpenShiftVersionsContextProvider>
+        <ModalDialogsContextProvider>
+          <OpenShiftVersionsContextProvider>
+            <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
+              <NewClusterWizard />
+              <ResetSingleClusterModal />
+            </NewFeatureSupportLevelProvider>
+          </OpenShiftVersionsContextProvider>
+        </ModalDialogsContextProvider>
       </ClusterWizardContextProvider>
     </AlertsContextProvider>
   );

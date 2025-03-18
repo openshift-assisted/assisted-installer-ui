@@ -38,9 +38,11 @@ import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVers
 const ClusterPageGeneric = ({
   clusterId,
   showBreadcrumbs = false,
+  resetModal,
 }: {
   clusterId: string;
   showBreadcrumbs?: boolean;
+  resetModal?: React.ReactNode;
 }) => {
   const fetchCluster = useFetchCluster(clusterId);
   const dispatch = useDispatch();
@@ -183,6 +185,7 @@ const ClusterPageGeneric = ({
                     {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
                     <CancelInstallationModal />
                     <ResetClusterModal />
+                    {resetModal}
                     <DiscoveryImageModal />
                   </NewFeatureSupportLevelProvider>
                 </OpenShiftVersionsContextProvider>
@@ -197,9 +200,15 @@ const ClusterPageGeneric = ({
   return <Navigate to="/clusters" />;
 };
 
-export const SingleClusterPage = ({ clusterId }: { clusterId: string }) => (
+export const SingleClusterPage = ({
+  clusterId,
+  resetModal,
+}: {
+  clusterId: string;
+  resetModal: React.ReactNode;
+}) => (
   <AlertsContextProvider>
-    <ClusterPageGeneric clusterId={clusterId} />
+    <ClusterPageGeneric clusterId={clusterId} resetModal={resetModal} />
   </AlertsContextProvider>
 );
 
