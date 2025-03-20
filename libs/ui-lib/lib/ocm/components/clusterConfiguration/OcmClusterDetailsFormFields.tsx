@@ -144,7 +144,7 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <OcmOpenShiftVersionSelect versions={versions} />
       )}
-      {clusterExists ? (
+      {clusterExists || isSingleClusterFeatureEnabled ? (
         <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
           {cpuArchitecture}
         </StaticTextField>
