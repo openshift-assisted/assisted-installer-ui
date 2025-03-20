@@ -17,9 +17,10 @@ import {
   ClusterDetailsFormFieldsProps,
 } from './ClusterDetailsFormFields';
 import { useFormikContext } from 'formik';
-import { ClusterDetailsValues, CpuArchitecture, SupportedCpuArchitecture } from '../../../common';
+import { ClusterDetailsValues, CpuArchitecture } from '../../../common';
 import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 import { ValidationSection } from './components/ValidationSection';
+import { toNumber } from 'lodash-es';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -109,22 +110,17 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
 
   const { values } = useFormikContext<ClusterDetailsValues>();
 
-  const cpuArchitectures = React.useMemo(() => {
+  const [cpuArchitectures, allowHighlyAvailable] = React.useMemo(() => {
     const cpuArchitectures = [CpuArchitecture.x86, CpuArchitecture.ARM, CpuArchitecture.s390x];
-    if (!osImages) {
-      return cpuArchitectures;
-    }
+    const version = allVersions.find((ver) => ver.value === values.openshiftVersion);
+    const isMulti = version?.cpuArchitectures?.[0] === CpuArchitecture.MULTI;
 
-    const openshiftVersion = versions
-      .find((ver) => ver.value === values.openshiftVersion)
-      ?.version.split('.')
-      .slice(0, 2)
-      .join('.');
-
-    return osImages
-      .filter((osImage) => osImage.openshiftVersion === openshiftVersion)
-      .map((osImage) => osImage.cpuArchitecture as SupportedCpuArchitecture);
-  }, [osImages, versions, values.openshiftVersion]);
+    const highlyAvailableSupported = toNumber(version?.version?.split('.')?.[1]) >= 18;
+    return [
+      isMulti ? cpuArchitectures : version?.cpuArchitectures,
+      highlyAvailableSupported && !isMulti,
+    ];
+  }, [allVersions, values.openshiftVersion]);
 
   return (
     <>
@@ -146,6 +142,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           extensionAfter={extensionAfter}
           isNutanix={isNutanix}
           cpuArchitectures={cpuArchitectures}
+          allowHighlyAvailable={allowHighlyAvailable}
         />
       </StackItem>
     </>
