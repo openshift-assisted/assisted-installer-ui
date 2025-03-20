@@ -101,6 +101,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
     const fieldId = getFieldId(props.name, 'input', idPostfix);
     const isValid = !(touched && error?.length);
 
+    const errorMessage = isValid ? '' : error[0];
     return (
       <FormGroup
         id={`form-control__${fieldId}`}
@@ -163,14 +164,15 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
             </Popover>
           </InputGroupItem>
         </InputGroup>
-        {helperText && (
+        {(errorMessage || helperText) && (
           <FormHelperText>
             <HelperText>
               <HelperTextItem
+                icon={errorMessage && <ExclamationCircleIcon />}
                 variant={isValid ? 'default' : 'error'}
                 id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
               >
-                {helperText}
+                {errorMessage ? errorMessage : helperText}
               </HelperTextItem>
             </HelperText>
           </FormHelperText>
