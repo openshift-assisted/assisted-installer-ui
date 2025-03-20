@@ -20,11 +20,13 @@ import {
 import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
 import { PlatformType, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  NewFeatureSupportLevelData,
+  GetFeatureDisabledReason,
+  GetFeatureSupportLevel,
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { useFeature } from '../../../hooks/use-feature';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');
@@ -45,7 +47,7 @@ export type ExternalPlatformInfo = {
 
 const getDisabledReasonForExternalPlatform = (
   isSNO: boolean,
-  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  getFeatureDisabledReason: GetFeatureDisabledReason,
   platform: PlatformType,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: SupportedCpuArchitecture,
@@ -58,7 +60,7 @@ const getDisabledReasonForExternalPlatform = (
   ) {
     return `Plaform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
   } else {
-    return newFeatureSupportLevelContext.getFeatureDisabledReason(
+    return getFeatureDisabledReason(
       ExternalPlaformIds[platform] as FeatureId,
       featureSupportLevelData ?? undefined,
       cpuArchitecture,
@@ -66,35 +68,47 @@ const getDisabledReasonForExternalPlatform = (
   }
 };
 
+const isAvailablePlatform = (platform: PlatformType, isDisconnected?: boolean) => {
+  if (isDisconnected && platform === 'nutanix') {
+    return false;
+  }
+  return platform !== undefined;
+};
+
 const getExternalPlatformTypes = (
   isSNO: boolean,
-  newFeatureSupportLevelContext: NewFeatureSupportLevelData,
+  getFeatureSupportLevel: GetFeatureSupportLevel,
+  getFeatureDisabledReason: GetFeatureDisabledReason,
   featureSupportLevelData?: NewFeatureSupportLevelMap | null,
   cpuArchitecture?: SupportedCpuArchitecture,
+  isDisconnected?: boolean,
 ): Partial<{ [key in PlatformType]: ExternalPlatformInfo }> => {
   const platforms = ['none', 'nutanix', 'external', 'vsphere'] as PlatformType[];
 
-  return platforms.filter(Boolean).reduce(
-    (a, platform) => ({
-      ...a,
-      [platform]: {
-        label: ExternalPlatformLabels[platform],
-        href: ExternalPlatformLinks[platform],
-        disabledReason: getDisabledReasonForExternalPlatform(
-          isSNO,
-          newFeatureSupportLevelContext,
-          platform,
-          featureSupportLevelData ?? undefined,
-          cpuArchitecture,
-        ),
-        supportLevel: newFeatureSupportLevelContext.getFeatureSupportLevel(
-          ExternalPlaformIds[platform] as FeatureId,
-          featureSupportLevelData ?? undefined,
-        ),
-      },
-    }),
-    {},
-  );
+  const newPlatform = platforms
+    .filter((platform) => isAvailablePlatform(platform, isDisconnected))
+    .reduce(
+      (a, platform) => ({
+        ...a,
+        [platform]: {
+          label: ExternalPlatformLabels[platform],
+          href: ExternalPlatformLinks[platform],
+          disabledReason: getDisabledReasonForExternalPlatform(
+            isSNO,
+            getFeatureDisabledReason,
+            platform,
+            featureSupportLevelData ?? undefined,
+            cpuArchitecture,
+          ),
+          supportLevel: getFeatureSupportLevel(
+            ExternalPlaformIds[platform] as FeatureId,
+            featureSupportLevelData ?? undefined,
+          ),
+        },
+      }),
+      {},
+    );
+  return newPlatform;
 };
 
 export const areAllExternalPlatformIntegrationDisabled = (
@@ -124,30 +138,41 @@ export const ExternalPlatformDropdown = ({
   const [externalPlatformTypes, setExternalPlatformTypes] = React.useState<
     Partial<{ [key in PlatformType]: ExternalPlatformInfo }>
   >({});
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const tooltipDropdownDisabled = getReasonForDropdownDisabled(
     isSNO,
     cpuArchitecture ? architectureData[cpuArchitecture].label : '',
   );
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string): void => {
     event.stopPropagation(); // Stop event propagation here
     window.open(href, '_blank');
   };
-  const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
+
+  const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();
+
   React.useEffect(() => {
     // Calculate updated externalPlatformTypes based on the dependencies
     const updatedExternalPlatformTypes = getExternalPlatformTypes(
       isSNO,
-      newFeatureSupportLevelContext,
+      getFeatureSupportLevel,
+      getFeatureDisabledReason,
       featureSupportLevelData,
       cpuArchitecture,
+      isSingleClusterFeatureEnabled,
     );
 
     // Update the state with the new externalPlatformTypes
     setExternalPlatformTypes(updatedExternalPlatformTypes);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [featureSupportLevelData, cpuArchitecture, isSNO]);
+  }, [
+    featureSupportLevelData,
+    cpuArchitecture,
+    isSNO,
+    isSingleClusterFeatureEnabled,
+    getFeatureSupportLevel,
+    getFeatureDisabledReason,
+  ]);
 
   const dropdownIsDisabled = React.useMemo(() => {
     return areAllExternalPlatformIntegrationDisabled(externalPlatformTypes);
