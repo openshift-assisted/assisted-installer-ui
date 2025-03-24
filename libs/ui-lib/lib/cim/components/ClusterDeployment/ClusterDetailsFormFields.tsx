@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../common/components/clusters';
-import { OpenshiftVersionOptionType } from '../../../common/types';
+import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
 import {
   InputField,
   RichInputField,
@@ -23,7 +23,7 @@ export type ClusterDetailsFormFieldsProps = {
   versions: OpenshiftVersionOptionType[];
   allVersions: OpenshiftVersionOptionType[];
   isNutanix?: boolean;
-  cpuArchitectures?: string[];
+  cpuArchitectures?: SupportedCpuArchitecture[];
   allowHighlyAvailable?: boolean;
 };
 
