@@ -9,4 +9,5 @@ export * from './config';
 export * from './features';
 export * from './reducers';
 export * from './selectors';
+export * from './hooks';
 export { ResourceUIState } from './types/resource-ui-state';
