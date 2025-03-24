@@ -31,6 +31,7 @@ import {
   InfraEnv,
   ManagedDomain,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -67,6 +68,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
@@ -175,7 +177,11 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields
                   versions={ocpVersions}
-                  forceOpenshiftVersion={cluster?.openshiftVersion}
+                  forceOpenshiftVersion={
+                    isSingleClusterFeatureEnabled
+                      ? ocpVersions[0].version
+                      : cluster?.openshiftVersion
+                  }
                   isPullSecretSet={!!cluster?.pullSecretSet}
                   defaultPullSecret={pullSecret}
                   isOcm={isInOcm}
