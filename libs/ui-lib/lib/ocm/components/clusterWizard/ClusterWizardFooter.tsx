@@ -16,6 +16,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeature } from '../../hooks/use-feature';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -84,8 +85,14 @@ const ClusterWizardFooter = ({
   const { alerts } = useAlerts();
   const navigate = useNavigate();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const { currentStepId } = useClusterWizardContext();
+  const { resetSingleClusterDialog } = useModalDialogsContext();
 
   const handleCancel = React.useCallback(() => navigate('/cluster-list'), [navigate]);
+
+  const handleReset = React.useCallback(() => {
+    resetSingleClusterDialog.open({ cluster });
+  }, [resetSingleClusterDialog, cluster]);
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
 
@@ -103,6 +110,11 @@ const ClusterWizardFooter = ({
       alerts={alertsSection}
       errors={errorsSection}
       onCancel={isSingleClusterFeatureEnabled ? undefined : onCancel || handleCancel}
+      onReset={
+        isSingleClusterFeatureEnabled && currentStepId !== 'cluster-details'
+          ? handleReset
+          : undefined
+      }
       leftExtraActions={additionalActions}
       cluster={cluster}
       onFetchEvents={onFetchEvents}
