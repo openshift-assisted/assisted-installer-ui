@@ -93,7 +93,6 @@ const ResetSingleClusterModal: React.FC = () => {
             <Alert isInline variant="danger" title={error.title}>
               {error.message}
             </Alert>
-            ;
           </StackItem>
         )}
       </Stack>
