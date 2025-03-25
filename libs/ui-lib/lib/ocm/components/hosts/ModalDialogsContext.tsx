@@ -40,6 +40,10 @@ type MassDeleteHostDialogProps = {
   reloadCluster: VoidFunction;
 };
 
+type ResetSingleClusterDialogProps = {
+  cluster?: Cluster;
+};
+
 type ModalDialogsDataTypes = {
   eventsDialog: HostIdAndHostname;
   editHostDialog: EditHostProps;
@@ -53,6 +57,7 @@ type ModalDialogsDataTypes = {
   UpdateDay2ApiVipDialog: void;
   massUpdateHostnameDialog: MassUpdateHostnameDialogProps;
   massDeleteHostDialog: MassDeleteHostDialogProps;
+  resetSingleClusterDialog: ResetSingleClusterDialogProps;
 };
 
 type DialogId =
@@ -67,7 +72,8 @@ type DialogId =
   | 'day2DiscoveryImageDialog'
   | 'UpdateDay2ApiVipDialog'
   | 'massUpdateHostnameDialog'
-  | 'massDeleteHostDialog';
+  | 'massDeleteHostDialog'
+  | 'resetSingleClusterDialog';
 
 export type ModalDialogsContextType = {
   [key in DialogId]: {
@@ -91,6 +97,7 @@ const dialogIds: DialogId[] = [
   'UpdateDay2ApiVipDialog',
   'massUpdateHostnameDialog',
   'massDeleteHostDialog',
+  'resetSingleClusterDialog',
 ];
 
 const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);

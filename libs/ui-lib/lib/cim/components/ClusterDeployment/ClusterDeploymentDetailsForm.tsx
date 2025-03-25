@@ -17,7 +17,7 @@ import {
   ClusterDetailsFormFieldsProps,
 } from './ClusterDetailsFormFields';
 import { useFormikContext } from 'formik';
-import { ClusterDetailsValues, CpuArchitecture } from '../../../common';
+import { ClusterDetailsValues, CpuArchitecture, SupportedCpuArchitecture } from '../../../common';
 import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 import { ValidationSection } from './components/ValidationSection';
 import { toNumber } from 'lodash-es';
@@ -117,7 +117,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
 
     const highlyAvailableSupported = toNumber(version?.version?.split('.')?.[1]) >= 18;
     return [
-      isMulti ? cpuArchitectures : version?.cpuArchitectures,
+      (isMulti ? cpuArchitectures : version?.cpuArchitectures) as SupportedCpuArchitecture[],
       highlyAvailableSupported && !isMulti,
     ];
   }, [allVersions, values.openshiftVersion]);
