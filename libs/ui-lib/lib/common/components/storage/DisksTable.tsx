@@ -205,8 +205,6 @@ const DisksTable = ({
         cells: { title: string | React.ReactNode; props: object }[];
       };
     });
-  // eslint-disable-next-line no-console
-  console.log(rows);
   return (
     <Table data-testid={testId} variant={TableVariant.compact} aria-label="Host's disks table">
       <Thead>
