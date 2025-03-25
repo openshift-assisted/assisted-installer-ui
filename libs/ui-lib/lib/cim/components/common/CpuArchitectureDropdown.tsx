@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { FormGroup } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import { Dropdown, DropdownItem, FormGroup, MenuToggle } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   architectureData,
@@ -12,30 +11,18 @@ import {
 import { useField } from 'formik';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
 
-const allDropdownItems = {
-  [CpuArchitecture.x86]: (
-    <DropdownItem key={'x86_64'} id="x86_64" description={architectureData['x86_64'].description}>
-      {architectureData['x86_64'].label}
-    </DropdownItem>
-  ),
-  [CpuArchitecture.ARM]: (
-    <DropdownItem key={'arm64'} id="arm64" description={architectureData['arm64'].description}>
-      {architectureData['arm64'].label}
-    </DropdownItem>
-  ),
-  [CpuArchitecture.s390x]: (
-    <DropdownItem key={'s390x'} id="s390x" description={architectureData['s390x'].description}>
-      {architectureData['s390x'].label}
-    </DropdownItem>
-  ),
-};
+const cimCpuArchitectures = [
+  CpuArchitecture.x86,
+  CpuArchitecture.ARM,
+  CpuArchitecture.s390x,
+] as SupportedCpuArchitecture[];
 
 const CpuArchitectureDropdown = ({
   isDisabled = false,
   cpuArchitectures,
 }: {
   isDisabled?: boolean;
-  cpuArchitectures?: string[];
+  cpuArchitectures?: SupportedCpuArchitecture[];
 }) => {
   const { t } = useTranslation();
   const [{ name, value }, , { setValue }] = useField<SupportedCpuArchitecture | ''>(
@@ -45,7 +32,7 @@ const CpuArchitectureDropdown = ({
   const fieldId = getFieldId(name, 'input');
   const { setValue: setUserManagedNetworking } = useFormikHelpers<boolean>('userManagedNetworking');
 
-  const onCpuArchSelect = (e?: React.SyntheticEvent<HTMLDivElement>) => {
+  const onCpuArchSelect = (e?: React.MouseEvent<Element, MouseEvent>) => {
     const val = e?.currentTarget.id as SupportedCpuArchitecture;
     setValue(val);
     setUserManagedNetworking(val === CpuArchitecture.s390x);
@@ -53,36 +40,60 @@ const CpuArchitectureDropdown = ({
     setCpuArchOpen(false);
   };
 
-  const dropdownItems = React.useMemo(() => {
-    if (!cpuArchitectures) {
-      return Object.values(allDropdownItems);
-    } else {
-      return Object.entries(allDropdownItems)
-        .filter(([key, _]) => cpuArchitectures.includes(key))
-        .map(([_, val]) => val);
-    }
-  }, [cpuArchitectures]);
+  const dropdownItems = React.useMemo(
+    () =>
+      cimCpuArchitectures.map((arch) => {
+        const isItemEnabled = !cpuArchitectures || cpuArchitectures.includes(arch);
+        const disabledReason = t(
+          'ai:This option is not available with the selected OpenShift version',
+        );
+        return (
+          <DropdownItem
+            key={arch}
+            id={arch}
+            isAriaDisabled={!isItemEnabled}
+            selected={arch === value}
+            description={architectureData[arch].description}
+            tooltipProps={{ content: disabledReason, position: 'top' }}
+            onClick={(e: React.MouseEvent) => e.preventDefault()}
+          >
+            {architectureData[arch].label}
+          </DropdownItem>
+        );
+      }),
+    [cpuArchitectures, t, value],
+  );
 
   React.useEffect(() => {
     if (!isDisabled && value !== '' && cpuArchitectures && !cpuArchitectures?.includes(value)) {
-      setValue('');
+      const defaultVal = cpuArchitectures?.[0] || CpuArchitecture.x86;
+      setValue(defaultVal);
     }
   }, [cpuArchitectures, isDisabled, setValue, value]);
 
   return !isDisabled ? (
-    <FormGroup isInline fieldId={fieldId} label={t('ai:CPU architecture')} isRequired>
+    <FormGroup
+      isInline
+      fieldId={fieldId}
+      label={t('ai:CPU architecture')}
+      isRequired
+      name={'cpuArchiteture'}
+    >
       <Dropdown
-        toggle={
-          <DropdownToggle onToggle={() => setCpuArchOpen(!cpuArchOpen)} className="pf-u-w-100">
+        toggle={(toggleRef) => (
+          <MenuToggle
+            ref={toggleRef}
+            onClick={() => setCpuArchOpen(!cpuArchOpen)}
+            className="pf-u-w-100"
+          >
             {value ? architectureData[value].label : t('ai:CPU architecture')}
-          </DropdownToggle>
-        }
-        name="cpuArchitecture"
+          </MenuToggle>
+        )}
         isOpen={cpuArchOpen}
         onSelect={onCpuArchSelect}
-        dropdownItems={dropdownItems}
-        className="pf-u-w-100"
-      />
+      >
+        {dropdownItems}
+      </Dropdown>
     </FormGroup>
   ) : (
     <StaticField name={'cpuArchitecture'} label={t('ai:CPU architecture')} isRequired>
