@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Popover } from '@patternfly/react-core';
+import { Button, ButtonVariant, Flex, Popover } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
@@ -60,21 +60,27 @@ const HostPropertyValidationPopover: React.FC<HostPropertyValidationPopoverProps
     if (showFailure && validation.status === 'failure') {
       return (
         <ValidationPopover validation={validation} actions={failureActions}>
-          <ExclamationCircleIcon color={dangerColor.value} /> {children}
+          <Flex columnGap={{ default: 'columnGapSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+            <ExclamationCircleIcon color={dangerColor.value} /> {children}
+          </Flex>
         </ValidationPopover>
       );
     }
     if (showPending && validation.status === 'pending') {
       return (
         <ValidationPopover validation={validation} actions={pendingActions}>
-          <PendingIcon /> {children}
+          <Flex columnGap={{ default: 'columnGapSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+            <PendingIcon /> {children}
+          </Flex>
         </ValidationPopover>
       );
     }
     if (showSuccess && validation.status === 'success') {
       return (
         <>
-          <CheckCircleIcon color={successColor.value} /> {children}
+          <Flex columnGap={{ default: 'columnGapSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+            <CheckCircleIcon color={successColor.value} /> {children}
+          </Flex>
         </>
       );
     }
