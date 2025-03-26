@@ -11,6 +11,7 @@ var (
 	ApiInsecure    = getEnvVar("API_INSECURE_SKIP_VERIFY", "false")
 	TlsKeyPath     = getEnvVar("TLS_KEY", "")
 	TlsCertPath    = getEnvVar("TLS_CERT", "")
+	ResetFilePath  = getEnvVar("RESET_FILE_PATH", "")
 )
 
 func getEnvUrlVar(key string, defaultValue string) string {

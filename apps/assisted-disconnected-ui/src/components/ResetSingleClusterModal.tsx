@@ -37,9 +37,17 @@ const ResetSingleClusterModal: React.FC = () => {
   };
 
   const handleResetAsync = async () => {
+    setError(undefined);
+    setIsLoading(true);
     try {
-      setError(undefined);
-      setIsLoading(true);
+      const resp = await fetch('/api/reset');
+      if (!resp.ok) {
+        setError({
+          title: t('ai:Failed to reset cluster installation'),
+          message: t('ai:Unexpected error'),
+        });
+        return;
+      }
       await ClustersService.remove(cluster.id);
       navigate(`/`);
     } catch (e) {

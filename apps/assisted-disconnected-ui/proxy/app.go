@@ -27,7 +27,8 @@ func main() {
 	}
 
 	router := mux.NewRouter()
-	router.PathPrefix("/api/{forward:.*}").Handler(apiHandler)
+	router.PathPrefix("/api/reset").HandlerFunc(bridge.ResetClusterHandler)
+	router.PathPrefix("/api/assisted-install/{forward:.*}").Handler(apiHandler)
 
 	spa := server.SpaHandler{}
 	router.PathPrefix("/").Handler(server.GzipHandler(spa))
