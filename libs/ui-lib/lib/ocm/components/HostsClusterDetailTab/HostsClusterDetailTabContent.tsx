@@ -33,6 +33,9 @@ export const HostsClusterDetailTabContent = ({
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const ocmClusterMemo = React.useMemo(() => ocmCluster, []);
+
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
     setDay2Cluster(null);
@@ -53,19 +56,20 @@ export const HostsClusterDetailTabContent = ({
       setDay2Cluster(null);
       return;
     }
-    const day1ClusterHostCount = ocmCluster?.metrics?.nodes?.total || 0;
-    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
+
+    const day1ClusterHostCount = ocmClusterMemo?.metrics?.nodes?.total || 0;
+    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmClusterMemo);
     if (day1ClusterHostCount === 0 || !openshiftClusterId) {
       setError(<UnableToAddHostsError onTryAgain={handleClickTryAgainLink} />);
     }
 
     if (!day2Cluster && pullSecret) {
-      const { apiVipDnsname, errorType } = getApiVipDnsName(ocmCluster);
+      const { apiVipDnsname, errorType } = getApiVipDnsName(ocmClusterMemo);
       if (errorType) {
         const wrongUrlMessage =
           errorType === 'console'
-            ? `Cluster Console URL is not valid (${ocmCluster.console?.url || ''})`
-            : `Cluster API URL is not valid (${ocmCluster.api?.url || ''})`;
+            ? `Cluster Console URL is not valid (${ocmClusterMemo.console?.url || ''})`
+            : `Cluster API URL is not valid (${ocmClusterMemo.api?.url || ''})`;
         setError(
           <>
             {wrongUrlMessage}, you can{' '}
@@ -85,11 +89,11 @@ export const HostsClusterDetailTabContent = ({
 
       const loadDay2Cluster = async () => {
         try {
-          const day2Cluster = await Day2ClusterService.fetchCluster(ocmCluster, pullSecret);
+          const day2Cluster = await Day2ClusterService.fetchCluster(ocmClusterMemo, pullSecret);
 
           const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
             day2Cluster,
-            ocmCluster,
+            ocmClusterMemo,
           );
           setDay2Cluster(aiCluster ?? null);
         } catch (e) {
@@ -103,13 +107,12 @@ export const HostsClusterDetailTabContent = ({
               />,
             );
           }
-          return;
         }
       };
 
       void loadDay2Cluster();
     }
-  }, [ocmCluster, pullSecret, day2Cluster, setDay2Cluster, isVisible, handleClickTryAgainLink]);
+  }, [pullSecret, day2Cluster, setDay2Cluster, isVisible, handleClickTryAgainLink, ocmClusterMemo]);
 
   const refreshCluster = React.useCallback(async () => {
     if (!day2Cluster?.id) {
