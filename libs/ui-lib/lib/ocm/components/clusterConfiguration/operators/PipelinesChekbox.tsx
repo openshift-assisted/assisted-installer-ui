@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PIPELINES_OPERATOR_LINK, PopoverIcon } from '../../../../common';
+import { getFieldId, PIPELINES_OPERATOR_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -18,13 +18,8 @@ const PipelinesLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Pipelines </span>
+        <span>Pipelines </span>
       </Tooltip>
-      <PopoverIcon
-        id={PIPELINES_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
       <NewFeatureSupportLevelBadge featureId="PIPELINES" supportLevel={supportLevel} />
     </>
   );
