@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, getServiceMeshLink, PopoverIcon } from '../../../../common';
+import { getFieldId, getServiceMeshLink } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -18,13 +18,8 @@ const ServiceMeshLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Service Mesh </span>
+        <span>Service Mesh </span>
       </Tooltip>
-      <PopoverIcon
-        id={SERVICEMESH_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
       <NewFeatureSupportLevelBadge featureId="SERVICEMESH" supportLevel={supportLevel} />
     </>
   );

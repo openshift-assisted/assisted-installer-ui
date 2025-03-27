@@ -90,6 +90,9 @@ export const OSC_REQUIREMENTS_LINK =
 
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
+export const KMM_LINK =
+  'https://docs.redhat.com/en/documentation/openshift_container_platform/4.12/html/specialized_hardware_and_driver_enablement/kernel-module-management-operator';
+
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
 export const getMceDocsLink = (ocpVersion?: string) =>

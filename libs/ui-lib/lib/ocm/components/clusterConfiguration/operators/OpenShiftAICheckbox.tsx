@@ -18,7 +18,7 @@ const OpenShiftAILabel = ({ disabledReason, supportLevel }: OpenShiftAILabelProp
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install OpenShift AI </span>
+        <span>OpenShift AI </span>
       </Tooltip>
       <PopoverIcon
         component={'a'}

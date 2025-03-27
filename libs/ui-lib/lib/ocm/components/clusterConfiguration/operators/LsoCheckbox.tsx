@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, getLsoLink, PopoverIcon } from '../../../../common';
+import { getFieldId, getLsoLink } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -18,13 +18,8 @@ const LsoLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Local Storage Operator </span>
+        <span>Local Storage Operator </span>
       </Tooltip>
-      <PopoverIcon
-        id={LSO_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
       <NewFeatureSupportLevelBadge featureId="LSO" supportLevel={supportLevel} />
     </>
   );
