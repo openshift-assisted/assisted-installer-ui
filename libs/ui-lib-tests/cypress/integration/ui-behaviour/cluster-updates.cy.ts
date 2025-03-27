@@ -36,6 +36,7 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
       Cypress.env('AI_ERROR_CLUSTER_PATCH', true);
 
       navbar.clickOnNavItem('Operators');
+      operatorsPage.singleOperatorsToggle().click();
       operatorsPage.openshiftVirtualization().click();
       cy.wait('@update-cluster').then(() => {
         commonActions.getDangerAlert().should('exist');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { AUTHORINO_OPERATOR_LINK, getFieldId, PopoverIcon } from '../../../../common';
+import { AUTHORINO_OPERATOR_LINK, getFieldId } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -18,13 +18,9 @@ const AuthorinoLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Authorino </span>
+        <span>Authorino </span>
       </Tooltip>
-      <PopoverIcon
-        id={AUTHORINO_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
+
       <NewFeatureSupportLevelBadge featureId="AUTHORINO" supportLevel={supportLevel} />
     </>
   );

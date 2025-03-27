@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon } from '../../../../common';
+import { getFieldId, KMM_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
 const KMM_FIELD_NAME = 'useKmm';
 
@@ -18,13 +19,8 @@ const KmmLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Kernel Module Management </span>
+        <span>Kernel Module Management </span>
       </Tooltip>
-      <PopoverIcon
-        id={KMM_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
       <NewFeatureSupportLevelBadge featureId="KMM" supportLevel={supportLevel} />
     </>
   );
@@ -33,7 +29,12 @@ const KmmLabel = ({
 const KmmHelperText = () => {
   return (
     <HelperText>
-      <HelperTextItem variant="indeterminate">Management of kernel modules. </HelperTextItem>
+      <HelperTextItem variant="indeterminate">
+        Management of kernel modules.{' '}
+        <a href={KMM_LINK} target="_blank" rel="noopener noreferrer">
+          {'Learn more'} <ExternalLinkAltIcon />
+        </a>
+      </HelperTextItem>
     </HelperText>
   );
 };

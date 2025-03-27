@@ -22,7 +22,7 @@ describe(`Create cluster with MTV operator enabled`, () => {
       OperatorsForm.mtvOperatorControl.findHelperText();
     });
     it('The user can select the MTV checkbox', () => {
-      OperatorsForm.mtvOperatorControl.findLabel().click();
+      OperatorsForm.mtvOperatorControl.findLabel().click({ force: true });
       commonActions.toNextStepAfter('Operators');
 
       cy.wait('@update-cluster').then(({ request }) => {

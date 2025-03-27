@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon, SERVERLESS_OPERATOR_LINK } from '../../../../common';
+import { getFieldId, SERVERLESS_OPERATOR_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -18,13 +18,8 @@ const ServerlessLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Serverless </span>
+        <span>Serverless </span>
       </Tooltip>
-      <PopoverIcon
-        id={SERVERLESS_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
       <NewFeatureSupportLevelBadge featureId="SERVERLESS" supportLevel={supportLevel} />
     </>
   );

@@ -25,7 +25,7 @@ const OdfLabel = ({
 }) => (
   <>
     <Tooltip hidden={!disabledReason} content={disabledReason}>
-      <span>Install OpenShift Data Foundation </span>
+      <span>OpenShift Data Foundation </span>
     </Tooltip>
     <PopoverIcon
       component={'a'}
