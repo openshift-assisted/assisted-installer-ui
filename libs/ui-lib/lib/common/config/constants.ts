@@ -140,6 +140,11 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'nmstate-requirements-satisfied': '',
   'amd-gpu-requirements-satisfied': t('ai:AMD GPU requirements'),
   'kmm-requirements-satisfied': t('ai:Kernel Module Management requirements'),
+  'node-healthcheck-requirements-satisfied': t('ai:Node Healthcheck requirements'),
+  'self-node-remediation-requirements-satisfied': t('ai:Self Node Remediation requirements'),
+  'fence-agents-remediation-requirements-satisfied': t('ai:Fence Agents Remediation requirements'),
+  'node-maintenance-requirements-satisfied': t('ai:Node Maintenance requirements'),
+  'kube-descheduler-requirements-satisfied': t('ai:Kube Descheduler requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -202,6 +207,11 @@ export const hostValidationFailureHints = (
   'nmstate-requirements-satisfied': '',
   'amd-gpu-requirements-satisfied': '',
   'kmm-requirements-satisfied': '',
+  'node-healthcheck-requirements-satisfied': '',
+  'self-node-remediation-requirements-satisfied': '',
+  'fence-agents-remediation-requirements-satisfied': '',
+  'node-maintenance-requirements-satisfied': '',
+  'kube-descheduler-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
@@ -307,6 +317,11 @@ export const OPERATOR_NAME_NMSTATE = 'nmstate';
 export const OPERATOR_NAME_AUTHORINO = 'authorino';
 export const OPERATOR_NAME_AMD_GPU = 'amd-gpu';
 export const OPERATOR_NAME_KMM = 'kmm';
+export const OPERATOR_NAME_NODE_HEALTHCHECK = 'node-healthcheck';
+export const OPERATOR_NAME_SELF_NODE_REMEDIATION = 'self-node-remediation';
+export const OPERATOR_NAME_FENCE_AGENTS_REMEDIATION = 'fence-agents-remediation';
+export const OPERATOR_NAME_NODE_MAINTENANCE = 'node-maintenance';
+export const OPERATOR_NAME_KUBE_DESCHEDULER = 'kube-descheduler';
 
 const OperatorNames = [
   OPERATOR_NAME_CNV,
@@ -327,6 +342,11 @@ const OperatorNames = [
   OPERATOR_NAME_AUTHORINO,
   OPERATOR_NAME_AMD_GPU,
   OPERATOR_NAME_KMM,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_SELF_NODE_REMEDIATION,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+  OPERATOR_NAME_NODE_MAINTENANCE,
+  OPERATOR_NAME_KUBE_DESCHEDULER,
 ];
 export const ExposedOperatorNames = [
   OPERATOR_NAME_CNV,
@@ -346,6 +366,11 @@ export const ExposedOperatorNames = [
   OPERATOR_NAME_AUTHORINO,
   OPERATOR_NAME_AMD_GPU,
   OPERATOR_NAME_KMM,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_SELF_NODE_REMEDIATION,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+  OPERATOR_NAME_NODE_MAINTENANCE,
+  OPERATOR_NAME_KUBE_DESCHEDULER,
 ];
 
 export type OperatorName = (typeof OperatorNames)[number];
@@ -393,6 +418,11 @@ export const operatorLabels = (
     [OPERATOR_NAME_AUTHORINO]: t('ai:Authorino'),
     [OPERATOR_NAME_AMD_GPU]: t('ai:AMD GPU'),
     [OPERATOR_NAME_KMM]: t('ai:Kernel Module Management'),
+    [OPERATOR_NAME_NODE_HEALTHCHECK]: t('ai:Node Healthcheck'),
+    [OPERATOR_NAME_SELF_NODE_REMEDIATION]: t('ai:Self Node Remediation'),
+    [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: t('ai:Fence Agents Remediation'),
+    [OPERATOR_NAME_NODE_MAINTENANCE]: t('ai:Node Maintenace'),
+    [OPERATOR_NAME_KUBE_DESCHEDULER]: t('ai:Kube Descheduler'),
   };
 };
 

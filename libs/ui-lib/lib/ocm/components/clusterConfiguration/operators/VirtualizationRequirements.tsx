@@ -22,6 +22,11 @@ const VirtualizationRequirements = () => {
         <ListItem>Migration Toolkit for Virtualization</ListItem>
         <ListItem>Nmstate</ListItem>
         <ListItem>Storage operator (either LSO/LVMS)</ListItem>
+        <ListItem>Node Healthcheck</ListItem>
+        <ListItem>Self Node Remediation</ListItem>
+        <ListItem>Fence Agents Remediation</ListItem>
+        <ListItem>Node Maintenance</ListItem>
+        <ListItem>Kube Descheduler</ListItem>
       </List>
     </>
   );

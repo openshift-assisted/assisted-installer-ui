@@ -18,6 +18,11 @@ import {
   OPERATOR_NAME_NVIDIA_GPU,
   OPERATOR_NAME_AMD_GPU,
   OPERATOR_NAME_KMM,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_SELF_NODE_REMEDIATION,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+  OPERATOR_NAME_NODE_MAINTENANCE,
+  OPERATOR_NAME_KUBE_DESCHEDULER,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import {
@@ -56,6 +61,11 @@ const OperatorsService = {
     setOperator(OPERATOR_NAME_NVIDIA_GPU, values.useNvidiaGpu);
     setOperator(OPERATOR_NAME_AMD_GPU, values.useAmdGpu);
     setOperator(OPERATOR_NAME_KMM, values.useKmm);
+    setOperator(OPERATOR_NAME_NODE_HEALTHCHECK, values.useNodeHealthcheck);
+    setOperator(OPERATOR_NAME_SELF_NODE_REMEDIATION, values.useNodeMaintenance);
+    setOperator(OPERATOR_NAME_FENCE_AGENTS_REMEDIATION, values.useFenceAgentsRemediation);
+    setOperator(OPERATOR_NAME_NODE_MAINTENANCE, values.useNodeMaintenance);
+    setOperator(OPERATOR_NAME_KUBE_DESCHEDULER, values.useKubeDescheduler);
 
     return Object.values(enabledOlmOperatorsByName);
   },

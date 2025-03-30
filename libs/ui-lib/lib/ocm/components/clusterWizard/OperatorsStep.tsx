@@ -60,6 +60,11 @@ const operatorsThatCanNotBeInstalledAlone = [
   'lso',
   'amd-gpu',
   'nvidia-gpu',
+  'node-healthcheck',
+  'self-node-remediation',
+  'fence-agents-remediation',
+  'node-maintenance',
+  'kube-descheduler',
 ];
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
@@ -426,7 +431,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         <Stack hasGutter data-testid={'operators-form'}>
           {supportedOperators.map((operatorKey) => {
             const isOperatorSelected = bundleOperators.includes(operatorKey);
-            const isOperatorPartOfAIBundle =
+            const isOperatorNotAllowedAlone =
               operatorsThatCanNotBeInstalledAlone.includes(operatorKey);
             const disabledReason = getDisabledReasonForOperator(operatorKey, values);
             const featureSupportLevel = featureSupportLevelData.getFeatureSupportLevel(
@@ -446,7 +451,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
                   disabledReason={
                     isOperatorSelected
                       ? 'This operator is part of a bundle and cannot be deselected.'
-                      : isOperatorPartOfAIBundle
+                      : isOperatorNotAllowedAlone
                       ? 'This operator cannot be installed as a standalone'
                       : disabledReason
                   }
