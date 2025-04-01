@@ -177,9 +177,6 @@ const ClusterPageGeneric = ({
                     openshiftVersion={cluster.openshiftVersion}
                     platformType={cluster.platform?.type}
                   >
-                    {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
-                    <RebootNodeZeroModal cluster={cluster} />
-                    */}
                     {getContent(cluster, infraEnv)}
                     {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
                     {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
