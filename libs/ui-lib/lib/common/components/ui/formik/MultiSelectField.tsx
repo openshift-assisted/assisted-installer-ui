@@ -1,19 +1,27 @@
 import React from 'react';
 import { useField } from 'formik';
-import Fuse from 'fuse.js';
-import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectOptionProps,
-  SelectProps,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
-import { MultiSelectFieldProps, MultiSelectOption } from './types';
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
+  TextInputGroup,
+  TextInputGroupMain,
+  TextInputGroupUtilities,
+  Button,
+  LabelGroup,
+  Label,
+} from '@patternfly/react-core';
+import { MultiSelectFieldProps } from './types';
 import { getFieldId } from './utils';
-import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import TimesIcon from '@patternfly/react-icons/dist/js/icons/times-icon';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 // Field value is a string[]
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
@@ -29,21 +37,24 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   ...props
 }) => {
   const [isOpen, setOpen] = React.useState(false);
+  const [textValue, setTextValue] = React.useState('');
   const [field, { touched, error }, { setValue }] = useField<string[]>(props.name);
   const fieldId = getFieldId(props.name, 'multiinput', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
   const hText = getHelperText ? getHelperText(field.value?.join(',') || '') : helperText;
+  const { t } = useTranslation();
 
   const onToggle = (isOpen: boolean) => setOpen(isOpen);
   const onClearSelection = () => {
     // onChange && onChange(event);
     setValue([]);
+    setTextValue('');
     onChange && onChange([]);
     setOpen(false);
   };
 
-  const onSelect: SelectProps['onSelect'] = (event, selection) => {
+  const onSelect = (selection: string) => {
     // already selected
     const selected = field.value;
 
@@ -53,7 +64,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         selection as {
           /* TypeScript hack, debug hint: created as part of "selections" array below */ value?: string;
         }
-      ).value || (selection as string);
+      ).value || selection;
 
     let newValue: string[];
     if (selected.includes(selectionValue)) {
@@ -65,61 +76,90 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     onChange && onChange(newValue);
   };
 
-  // list of already selected options
-  const selections: (SelectOptionObject | string)[] = field.value.map((value: string) => {
-    const option = options.find((opt) => opt.value === value);
-    return option
-      ? {
-          value: option.value,
-          toString: () => option.displayName,
-          compareTo: (selectOption: { value: string }) => selectOption.value === value,
-        }
-      : value;
+  const deleteChip = (chip: string) => {
+    const newValue = field.value.filter((val) => val !== chip);
+    setValue(newValue);
+    setTextValue('');
+    onChange && onChange(newValue);
+  };
+
+  const filteredOptions = options.filter((option) => {
+    const value = option.value as string;
+    return (
+      option.displayName.toLowerCase().includes(textValue.toLowerCase()) &&
+      !(field.value || []).includes(value.toString())
+    );
   });
 
-  const children = options
-    .filter((option) => !(field.value || []).includes(option.value.toString()))
-    .map((option) => (
-      <SelectOption key={option.id} id={option.id} value={option.value}>
+  const children = filteredOptions.map((option) => {
+    const value = option.value as string;
+    return (
+      <DropdownItem key={option.id} id={option.id} value={value}>
         {option.displayName}
-      </SelectOption>
-    ));
-
-  const fuse = new Fuse(options, {
-    ignoreLocation: true,
-    keys: ['displayName'],
+      </DropdownItem>
+    );
   });
-  const { t } = useTranslation();
 
   return (
     <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
-      <Select
-        {...field}
-        {...props}
+      <Dropdown
         id={fieldId}
-        variant={SelectVariant.typeaheadMulti}
-        typeAheadAriaLabel={t('ai:Select a state')}
-        validated={isValid ? 'default' : 'error'}
-        aria-describedby={`${fieldId}-helper`}
-        isCreatable={false}
-        placeholderText={placeholderText}
         isOpen={isOpen}
-        onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
-        onSelect={onSelect}
-        onClear={onClearSelection}
-        selections={selections}
-        onFilter={(e, val) => {
-          if (!val || val === '') {
-            return children;
-          }
-          const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
-          return (
-            React.Children.toArray(children) as React.ReactElement<SelectOptionProps>[]
-          ).filter(({ props }) => results.includes(props.id as string));
-        }}
+        onSelect={(event, value) => onSelect(value as string)}
+        onOpenChange={onToggle}
+        toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+          <MenuToggle
+            ref={toggleRef}
+            isFullWidth
+            onClick={() => onToggle(!isOpen)}
+            isExpanded={isOpen}
+            variant="typeahead"
+          >
+            <TextInputGroup>
+              <LabelGroup>
+                {field.value.map((currentChip) => (
+                  <Label
+                    key={currentChip}
+                    variant="outline"
+                    onClose={() => deleteChip(currentChip)}
+                  >
+                    {currentChip}
+                  </Label>
+                ))}
+              </LabelGroup>
+              <TextInputGroupMain
+                placeholder={placeholderText}
+                onClick={() => onToggle(!isOpen)}
+                value={textValue}
+                onChange={(event, value) => setTextValue(value)}
+              />
+              <TextInputGroupUtilities>
+                <Button
+                  variant="plain"
+                  onClick={onClearSelection}
+                  aria-label="Clear button and input"
+                  icon={<TimesIcon />}
+                />
+              </TextInputGroupUtilities>
+            </TextInputGroup>
+          </MenuToggle>
+        )}
+        shouldFocusToggleOnSelect
       >
-        {children}
-      </Select>
+        <DropdownList>
+          {children.length ? (
+            children
+          ) : (
+            <DropdownItem
+              key="No options available"
+              id="No options available"
+              value="No options available"
+            >
+              {t('ai:No options available')}
+            </DropdownItem>
+          )}
+        </DropdownList>
+      </Dropdown>
       {(errorMessage || hText) && (
         <FormHelperText>
           <HelperText>

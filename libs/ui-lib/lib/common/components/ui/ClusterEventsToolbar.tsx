@@ -16,8 +16,12 @@ import {
   Badge,
   TextInputTypes,
   InputGroupItem,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectProps } from '@patternfly/react-core/deprecated';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import type { ClusterEventsFiltersType } from '../../types';
@@ -137,7 +141,7 @@ const ClusterEventsToolbar = ({
     setFilters(nextFilters);
   };
 
-  const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
+  const onHostToggle = () => setHostExpanded(!isHostExpanded);
   const onHostSelect = (value: string, isChecked: boolean) => {
     switch (value) {
       case DELETED_HOSTS:
@@ -157,7 +161,7 @@ const ClusterEventsToolbar = ({
     }
   };
 
-  const onSeverityToggle: SelectProps['onToggle'] = () => setSeverityExpanded(!isSeverityExpanded);
+  const onSeverityToggle = () => setSeverityExpanded(!isSeverityExpanded);
   const onSeveritySelect = (value: string, isChecked: boolean) => {
     onSelect('severities', isChecked, value);
   };
@@ -227,41 +231,56 @@ const ClusterEventsToolbar = ({
             }
             deleteChipGroup={onDeleteChipGroup}
           >
-            <Select
-              variant="checkbox"
-              aria-label="hosts"
-              toggleId="cluster-events-hosts-dropdown-button"
-              onToggle={onHostToggle}
-              onSelect={(e, value) => onHostSelect(value as string, isSelectEventChecked(e))}
-              selections={getSelections()}
-              customBadgeText={hostChips.length}
+            <Dropdown
               isOpen={isHostExpanded}
-              placeholderText={<Placeholder text="Hosts" />}
-              maxHeight={280}
-              zIndex={600}
+              onSelect={(e, value) => onHostSelect(value as string, isSelectEventChecked(e))}
+              onOpenChange={onHostToggle}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  ref={toggleRef}
+                  id="cluster-events-hosts-dropdown-button"
+                  isFullWidth
+                  onClick={onHostToggle}
+                  isExpanded={isHostExpanded}
+                  badge={hostChips.length && <Badge isRead>{hostChips.length}</Badge>}
+                >
+                  <Placeholder text="Hosts" />
+                </MenuToggle>
+              )}
+              shouldFocusToggleOnSelect
             >
-              {[
-                <SelectOption
-                  inputId={`checkbox-${CLUSTER_LEVEL}`}
+              <DropdownList>
+                <DropdownItem
+                  id={`checkbox-${CLUSTER_LEVEL}`}
+                  hasCheckbox
+                  isSelected={getSelections().includes(CLUSTER_LEVEL)}
                   key={CLUSTER_LEVEL}
                   value={CLUSTER_LEVEL}
                 >
                   {t('ai:Cluster-level events')}
-                </SelectOption>,
-                <SelectOption
-                  inputId={`checkbox-${DELETED_HOSTS}`}
+                </DropdownItem>
+                <DropdownItem
+                  id={`checkbox-${DELETED_HOSTS}`}
+                  hasCheckbox
+                  isSelected={getSelections().includes(DELETED_HOSTS)}
                   key={DELETED_HOSTS}
                   value={DELETED_HOSTS}
                 >
                   {t('ai:Deleted hosts')}
-                </SelectOption>,
-                ...sortedHosts.map((host) => (
-                  <SelectOption inputId={`checkbox-${host.id}`} key={host.id} value={host.id}>
+                </DropdownItem>
+                {...sortedHosts.map((host) => (
+                  <DropdownItem
+                    id={`checkbox-${host.id}`}
+                    hasCheckbox
+                    isSelected={getSelections().includes(host.id)}
+                    key={host.id}
+                    value={host.id}
+                  >
                     {host.hostname}
-                  </SelectOption>
-                )),
-              ]}
-            </Select>
+                  </DropdownItem>
+                ))}
+              </DropdownList>
+            </Dropdown>
           </CustomToolbarFilter>
         )}
 
@@ -278,28 +297,42 @@ const ClusterEventsToolbar = ({
           deleteChipGroup={onDeleteChipGroup}
           categoryName="Severity"
         >
-          <Select
-            variant="checkbox"
-            aria-label="Severity"
-            toggleId="cluster-events-severity-dropdown-button"
-            onToggle={onSeverityToggle}
+          <Dropdown
+            isOpen={isSeverityExpanded}
             onSelect={(event, value) =>
               onSeveritySelect(value as string, isSelectEventChecked(event))
             }
-            selections={filters.severities}
-            isOpen={isSeverityExpanded}
-            placeholderText={<Placeholder text="Severity" />}
-          >
-            {EVENT_SEVERITIES.map((severity) => (
-              <SelectOption
-                data-testid={`${severity}-filter-option`}
-                key={severity}
-                value={severity}
+            onOpenChange={onSeverityToggle}
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                id="cluster-events-severity-dropdown-button"
+                isFullWidth
+                onClick={onSeverityToggle}
+                isExpanded={isSeverityExpanded}
+                badge={
+                  filters.severities?.length && <Badge isRead>{filters.severities.length}</Badge>
+                }
               >
-                {capitalize(severity)} <Badge isRead>{severityCounts[severity]}</Badge>
-              </SelectOption>
-            ))}
-          </Select>
+                <Placeholder text="Severity" />
+              </MenuToggle>
+            )}
+            shouldFocusToggleOnSelect
+          >
+            <DropdownList>
+              {EVENT_SEVERITIES.map((severity) => (
+                <DropdownItem
+                  data-testid={`${severity}-filter-option`}
+                  hasCheckbox
+                  isSelected={filters.severities?.includes(severity)}
+                  key={severity}
+                  value={severity}
+                >
+                  {capitalize(severity)} <Badge isRead>{severityCounts[severity]}</Badge>
+                </DropdownItem>
+              ))}
+            </DropdownList>
+          </Dropdown>
         </ToolbarFilter>
 
         <ToolbarItem>
