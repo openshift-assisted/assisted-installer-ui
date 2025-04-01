@@ -49,7 +49,7 @@ const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: Lv
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install {operatorLabel} </span>
+        <span>{operatorLabel} </span>
       </Tooltip>
       <PopoverIcon
         component={'a'}

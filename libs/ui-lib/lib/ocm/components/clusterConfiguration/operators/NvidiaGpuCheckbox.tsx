@@ -18,10 +18,11 @@ const NvidiaGpuLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install NVIDIA GPU </span>
+        <span>NVIDIA GPU </span>
       </Tooltip>
       <PopoverIcon
         id={NVIDIAGPU_FIELD_NAME}
+        headerContent="Additional requirements"
         component={'a'}
         bodyContent={'Requires at least one supported NVIDIA GPU'}
       />

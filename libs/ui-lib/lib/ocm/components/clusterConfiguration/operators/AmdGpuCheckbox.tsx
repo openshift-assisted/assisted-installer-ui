@@ -17,10 +17,11 @@ const AmdGpuLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install AMD GPU </span>
+        <span>AMD GPU </span>
       </Tooltip>
       <PopoverIcon
         id={AMDGPU_FIELD_NAME}
+        headerContent="Additional requirements"
         component={'a'}
         bodyContent={'Requires at least one supported AMD GPU'}
       />

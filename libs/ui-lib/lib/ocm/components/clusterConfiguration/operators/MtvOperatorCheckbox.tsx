@@ -28,7 +28,7 @@ const MtvLabel = ({
 }) => (
   <>
     <Tooltip hidden={!disabledReason} content={disabledReason}>
-      <span>Install Migration Toolkit for Virtualization </span>
+      <span>Migration Toolkit for Virtualization </span>
     </Tooltip>
     <PopoverIcon
       component={'a'}
@@ -43,9 +43,8 @@ const MtvHelperText = () => {
   return (
     <HelperText>
       <HelperTextItem variant="indeterminate">
-        The Migration Toolkit for Virtualization (MTV) enables you to migrate virtual machines from
-        VMware vSphere, Red Hat Virtualization, or OpenStack to OpenShift Virtualization running on
-        Red Hat OpenShift.{' '}
+        This Toolkit (MTV) enables you to migrate virtual machines from VMware vSphere, Red Hat
+        Virtualization, or OpenStack to OpenShift Virtualization running on Red Hat OpenShift.{' '}
         <a href={MTV_LINK} target="_blank" rel="noopener noreferrer">
           {'Learn more'} <ExternalLinkAltIcon />
         </a>

@@ -21,7 +21,7 @@ const NmstateLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install NMState </span>
+        <span>NMState </span>
       </Tooltip>
       <PopoverIcon
         id={NMSTATE_FIELD_NAME}

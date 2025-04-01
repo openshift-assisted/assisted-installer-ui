@@ -48,8 +48,8 @@ import {
   getOpenShiftAIIncompatibleWithLvmsReason,
 } from '../featureSupportLevels/featureStateUtils';
 import OpenshiftAINvidiaRequirements from '../clusterConfiguration/operators/OpenshiftAINvidiaRequirements';
-import OpenshiftAIAmdRequirements from '../clusterConfiguration/operators/OpenshiftAIAmdRequirements';
 import VirtualizationRequirements from '../clusterConfiguration/operators/VirtualizationRequirements';
+import OpenshiftAIAmdRequirements from '../clusterConfiguration/operators/OpenshiftAIAmdRequirements';
 
 const operatorsThatCanNotBeInstalledAlone = [
   'nvdia-gpu',
@@ -58,6 +58,8 @@ const operatorsThatCanNotBeInstalledAlone = [
   'serverless',
   'authorino',
   'lso',
+  'amd-gpu',
+  'nvidia-gpu',
 ];
 
 export const OperatorsStep = (props: ClusterOperatorProps) => {
@@ -68,7 +70,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
   );
 
   const [bundles, setBundles] = useState<Bundle[]>([]);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [supportedOperators, setSupportedOperators] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

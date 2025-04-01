@@ -17,7 +17,7 @@ const OscLabel = ({ disabledReason, supportLevel }: OscLabelProps) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install OpenShift sandboxed containers </span>
+        <span>OpenShift sandboxed containers </span>
       </Tooltip>
       <PopoverIcon
         component={'a'}
