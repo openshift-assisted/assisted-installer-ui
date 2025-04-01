@@ -16,6 +16,11 @@ import ServiceMeshCheckbox from './ServicemeshCheckbox';
 import NvidiaGpuCheckbox from './NvidiaGpuCheckbox';
 import AmdGpuCheckbox from './AmdGpuCheckbox';
 import KmmCheckbox from './KmmCheckbox';
+import NodeHealthcheckCheckbox from './NodeHealthcheckCheckbox';
+import SelfNodeRemediationCheckbox from './SelfNodeRemediationCheckbox';
+import FenceAgentsRemediationCheckbox from './FenceAgentsRemediationCheckbox';
+import NodeMaintenanceCheckbox from './NodeMaintenanceOperatorCheckbox';
+import KubeDeschedulerCheckbox from './KubeDeschedulerCheckbox';
 import {
   FeatureId,
   OPERATOR_NAME_AMD_GPU,
@@ -35,6 +40,11 @@ import {
   OPERATOR_NAME_PIPELINES,
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_SELF_NODE_REMEDIATION,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+  OPERATOR_NAME_NODE_MAINTENANCE,
+  OPERATOR_NAME_KUBE_DESCHEDULER,
 } from '../../../../common';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
 
@@ -72,6 +82,11 @@ export const operatorComponentMap: Record<string, (props: OperatorProps) => JSX.
   'nvidia-gpu': (props) => <NvidiaGpuCheckbox {...props} />,
   'amd-gpu': (props) => <AmdGpuCheckbox {...props} />,
   kmm: (props) => <KmmCheckbox {...props} />,
+  'node-healthcheck': (props) => <NodeHealthcheckCheckbox {...props} />,
+  'self-node-remediation': (props) => <SelfNodeRemediationCheckbox {...props} />,
+  'fence-agents-remediation': (props) => <FenceAgentsRemediationCheckbox {...props} />,
+  'node-maintenance': (props) => <NodeMaintenanceCheckbox {...props} />,
+  'kube-descheduler': (props) => <KubeDeschedulerCheckbox {...props} />,
 };
 
 export const mapOperatorsToFieldIds: { [key: string]: string } = {
@@ -92,6 +107,11 @@ export const mapOperatorsToFieldIds: { [key: string]: string } = {
   [OPERATOR_NAME_NVIDIA_GPU]: 'useNvidiaGpu',
   [OPERATOR_NAME_AMD_GPU]: 'useAmdGpu',
   [OPERATOR_NAME_KMM]: 'useKmm',
+  [OPERATOR_NAME_NODE_HEALTHCHECK]: 'useNodeHealthcheck',
+  [OPERATOR_NAME_SELF_NODE_REMEDIATION]: 'useSelfNodeRemediation',
+  [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: 'useFenceAgentsRemediation',
+  [OPERATOR_NAME_NODE_MAINTENANCE]: 'useNodeMaintenance',
+  [OPERATOR_NAME_KUBE_DESCHEDULER]: 'useKubeDescheduler',
 };
 
 export const mapOperatorIdToFeatureId: { [key: string]: FeatureId } = {
@@ -112,4 +132,9 @@ export const mapOperatorIdToFeatureId: { [key: string]: FeatureId } = {
   [OPERATOR_NAME_NVIDIA_GPU]: 'NVIDIA_GPU',
   [OPERATOR_NAME_AMD_GPU]: 'AMD_GPU',
   [OPERATOR_NAME_KMM]: 'KMM',
+  [OPERATOR_NAME_NODE_HEALTHCHECK]: 'NODE_HEALTHCHECK',
+  [OPERATOR_NAME_SELF_NODE_REMEDIATION]: 'SELF_NODE_REMEDIATION',
+  [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: 'FENCE_AGENTS_REMEDIATION',
+  [OPERATOR_NAME_NODE_MAINTENANCE]: 'NODE_MAINTENANCE',
+  [OPERATOR_NAME_KUBE_DESCHEDULER]: 'KUBE_DESCHEDULER',
 };

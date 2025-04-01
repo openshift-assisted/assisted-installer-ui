@@ -76,6 +76,11 @@ export type OperatorsValues = V2ClusterUpdateParams & {
   useNvidiaGpu: boolean;
   useAmdGpu: boolean;
   useKmm: boolean;
+  useNodeHealthcheck: boolean;
+  useSelfNodeRemediation: boolean;
+  useFenceAgentsRemediation: boolean;
+  useNodeMaintenance: boolean;
+  useKubeDescheduler: boolean;
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;
