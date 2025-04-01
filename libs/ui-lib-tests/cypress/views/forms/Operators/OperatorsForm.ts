@@ -29,7 +29,7 @@ class MceOperatorControl {
   }
 
   static findLabel() {
-    return MceOperatorControl.body.findByText(/install multicluster engine/i);
+    return MceOperatorControl.body.findByText(/Multicluster engine/i);
   }
 
   static findHelperText() {
@@ -60,12 +60,12 @@ class MtvOperatorControl {
   }
 
   static findLabel() {
-    return MtvOperatorControl.body.findByText(/install migration toolkit for virtualization/i);
+    return MtvOperatorControl.body.findByText(/Migration toolkit for virtualization/i);
   }
 
   static findHelperText() {
     return MtvOperatorControl.body.findByText(
-      /The Migration Toolkit for Virtualization \(MTV\) enables you to migrate virtual machines from VMware vSphere, Red Hat Virtualization, or OpenStack to OpenShift Virtualization running on Red Hat OpenShift\./i,
+      /This Toolkit \(MTV\) enables you to migrate virtual machines from VMware vSphere, Red Hat Virtualization, or OpenStack to OpenShift Virtualization running on Red Hat OpenShift\./i,
     );
   }
 }

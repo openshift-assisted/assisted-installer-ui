@@ -1,5 +1,6 @@
 import { commonActions } from '../../../views/common';
 import OperatorsForm from '../../../views/forms/Operators/OperatorsForm';
+import { operatorsPage } from '../../../views/operatorsPage';
 
 describe(`Create cluster with mce operator enabled`, () => {
   const setTestStartSignal = (activeSignal: string) => {
@@ -15,6 +16,7 @@ describe(`Create cluster with mce operator enabled`, () => {
     setTestStartSignal('CLUSTER_CREATED');
     commonActions.visitClusterDetailsPage();
     commonActions.startAtWizardStep('Operators');
+    operatorsPage.singleOperatorsToggle().click();
   });
 
   describe('When the feature is enabled:', () => {

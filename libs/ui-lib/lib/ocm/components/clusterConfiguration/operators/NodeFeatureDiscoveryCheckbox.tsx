@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, HelperText, HelperTextItem, Tooltip } from '@patternfly/react-core';
-import { getFieldId, getNodeFeatureDiscoveryLink, PopoverIcon } from '../../../../common';
+import { getFieldId, getNodeFeatureDiscoveryLink } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { SupportLevel } from '@openshift-assisted/types/./assisted-installer-service';
@@ -18,13 +18,8 @@ const NodeFeatureDiscoveryLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install Node Feature Discovery </span>
+        <span>Node Feature Discovery </span>
       </Tooltip>
-      <PopoverIcon
-        id={NODEFEATUREDISCOVERY_FIELD_NAME}
-        component={'a'}
-        bodyContent={'No additional requirements needed'}
-      />
       <NewFeatureSupportLevelBadge featureId="NODE_FEATURE_DISCOVERY" supportLevel={supportLevel} />
     </>
   );

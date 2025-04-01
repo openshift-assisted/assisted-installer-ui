@@ -23,7 +23,7 @@ const MceLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install multicluster engine </span>
+        <span>Multicluster engine </span>
       </Tooltip>
       <PopoverIcon
         id={MCE_FIELD_NAME}

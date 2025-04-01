@@ -33,7 +33,7 @@ const CnvLabel = ({
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <span>Install OpenShift Virtualization </span>
+        <span>OpenShift Virtualization </span>
       </Tooltip>
       <PopoverIcon
         component={'a'}
