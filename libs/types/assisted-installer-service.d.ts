@@ -658,7 +658,12 @@ export type ClusterValidationId =
   | 'authorino-requirements-satisfied'
   | 'nmstate-requirements-satisfied'
   | 'amd-gpu-requirements-satisfied'
-  | 'kmm-requirements-satisfied';
+  | 'kmm-requirements-satisfied'
+  | 'node-healthcheck-requirements-satisfied'
+  | 'self-node-remediation-requirements-satisfied'
+  | 'fence-agents-remediation-requirements-satisfied'
+  | 'node-maintenance-requirements-satisfied'
+  | 'kube-descheduler-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1053,7 +1058,12 @@ export type FeatureSupportLevelId =
   | 'USER_MANAGED_LOAD_BALANCER'
   | 'NMSTATE'
   | 'AMD_GPU'
-  | 'KMM';
+  | 'KMM'
+  | 'NODE_HEALTHCHECK'
+  | 'SELF_NODE_REMEDIATION'
+  | 'FENCE_AGENTS_REMEDIATION'
+  | 'NODE_MAINTENANCE'
+  | 'KUBE_DESCHEDULER';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1609,7 +1619,12 @@ export type HostValidationId =
   | 'mtu-valid'
   | 'nmstate-requirements-satisfied'
   | 'amd-gpu-requirements-satisfied'
-  | 'kmm-requirements-satisfied';
+  | 'kmm-requirements-satisfied'
+  | 'node-healthcheck-requirements-satisfied'
+  | 'self-node-remediation-requirements-satisfied'
+  | 'fence-agents-remediation-requirements-satisfied'
+  | 'node-maintenance-requirements-satisfied'
+  | 'kube-descheduler-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */

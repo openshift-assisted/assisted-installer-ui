@@ -22,6 +22,11 @@ import {
   OPERATOR_NAME_PIPELINES,
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_SELF_NODE_REMEDIATION,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+  OPERATOR_NAME_NODE_MAINTENANCE,
+  OPERATOR_NAME_KUBE_DESCHEDULER,
   OperatorsValues,
   selectMonitoredOperators,
   useAlerts,
@@ -60,6 +65,11 @@ export const getOperatorsInitialValues = (
     useNvidiaGpu: isOperatorEnabled([OPERATOR_NAME_NVIDIA_GPU]),
     useAmdGpu: isOperatorEnabled([OPERATOR_NAME_AMD_GPU]),
     useKmm: isOperatorEnabled([OPERATOR_NAME_KMM]),
+    useNodeHealthcheck: isOperatorEnabled([OPERATOR_NAME_NODE_HEALTHCHECK]),
+    useSelfNodeRemediation: isOperatorEnabled([OPERATOR_NAME_SELF_NODE_REMEDIATION]),
+    useFenceAgentsRemediation: isOperatorEnabled([OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]),
+    useNodeMaintenance: isOperatorEnabled([OPERATOR_NAME_NODE_MAINTENANCE]),
+    useKubeDescheduler: isOperatorEnabled([OPERATOR_NAME_KUBE_DESCHEDULER]),
   };
 };
 

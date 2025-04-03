@@ -105,6 +105,23 @@ export const getLvmsDocsLink = (ocpVersion?: string) =>
     ocpVersion,
   )}/html/storage/configuring-persistent-storage#overview-of-lvm-storage-functionality_ways-to-provision-local-storage`;
 
+export const NODE_HEALTHCHECK_LINK =
+  'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/node-health-check-operator';
+
+export const SELF_NODE_REMEDIATION_LINK =
+  'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/self-node-remediation-operator-remediate-nodes';
+
+export const FENCE_AGENTS_REMEDIATION_LINK =
+  'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/fence-agents-remediation-operator-remediate-nodes';
+
+export const NODE_MAINTENANCE_LINK =
+  'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/node-maintenance-operator';
+
+export const getKubeDeschedulerLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+    ocpVersion,
+  )}/html/nodes/controlling-pod-placement-onto-nodes-scheduling#descheduler`;
+
 //Others
 export const REDHAT_CONSOLE_OPENSHIFT = 'https://console.redhat.com/openshift';
 
