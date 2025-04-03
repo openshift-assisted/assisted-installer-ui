@@ -826,8 +826,8 @@ __metadata:
     "@openshift-assisted/ui-lib": "workspace:*"
     "@testing-library/cypress": ^9.0.0
     "@types/lodash": ^4.14.121
-    cypress: 13.2.0
-    cypress-file-upload: ^5.0.7
+    cypress: 13.6.2
+    cypress-file-upload: 5.0.8
     cypress-fill-command: ^1.0.2
     lodash: ^4.17.15
     start-server-and-test: ^2.0.0
@@ -3150,7 +3150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-file-upload@npm:^5.0.7":
+"cypress-file-upload@npm:5.0.8":
   version: 5.0.8
   resolution: "cypress-file-upload@npm:5.0.8"
   peerDependencies:
@@ -3166,9 +3166,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:13.2.0":
-  version: 13.2.0
-  resolution: "cypress@npm:13.2.0"
+"cypress@npm:13.6.2":
+  version: 13.6.2
+  resolution: "cypress@npm:13.6.2"
   dependencies:
     "@cypress/request": ^3.0.0
     "@cypress/xvfb": ^1.2.4
@@ -3215,7 +3215,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 7647814f07626bd63e7b8dc4d066179fa40bf492c588bbc2626d983a2baab6cb77c29958dc92442f277e0a8e94866decc51c4de306021739c47e32baf5970219
+  checksum: 70a5db8178c0ebc56377f91bbc7d0ff9804b341da36f45b4997155c15fd200815a749a8470b64d3bf93c2048027a4042d82836a6ce792353f635d173fd5cc3fc
   languageName: node
   linkType: hard
 
