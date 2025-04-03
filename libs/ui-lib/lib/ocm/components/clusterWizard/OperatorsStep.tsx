@@ -427,6 +427,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         } selected)`}
         onToggle={() => setIsExpanded(!isExpanded)}
         isExpanded={isExpanded}
+        data-testid="single-operators-section"
       >
         <Stack hasGutter data-testid={'operators-form'}>
           {supportedOperators.map((operatorKey) => {
