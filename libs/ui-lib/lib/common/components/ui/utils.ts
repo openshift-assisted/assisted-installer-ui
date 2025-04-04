@@ -14,7 +14,9 @@ export const getHumanizedTime = (dateTime?: string) => {
 };
 
 // TypesScript safe
-export const isSelectEventChecked = (event: React.MouseEvent | React.ChangeEvent): boolean => {
-  const target = event.target as { checked?: boolean };
+export const isSelectEventChecked = (
+  event: React.MouseEvent | React.ChangeEvent | undefined,
+): boolean => {
+  const target = event?.target as { checked?: boolean };
   return !!target?.checked;
 };
