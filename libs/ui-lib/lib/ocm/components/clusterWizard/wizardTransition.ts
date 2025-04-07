@@ -73,14 +73,10 @@ export const getClusterWizardFirstStep = (
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
   hosts?: Host[] | undefined,
-  isSingleClusterFeatureEnabled?: boolean,
   customManifestsStepNeedsToBeFilled?: boolean,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
-    if (isSingleClusterFeatureEnabled) {
-      return 'host-discovery';
-    }
     return 'operators';
   }
 
