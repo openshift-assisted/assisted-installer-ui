@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Check workflow runs in a release branch or is CIM release
         run: |
-          if [[ "${{ github.event.release.target_commitish }}" != *releases* || ! "$GITHUB_REF_NAME" =~ -cim$ ]]; then
+          if [[ "${{ github.event.release.target_commitish }}" != *releases* && ! "$GITHUB_REF_NAME" =~ -cim$ ]]; then
             echo "OCM: Expecting to be in a release branch, but we are in: ${{ github.event.release.target_commitish }}"
             echo "CIM: Not a CIM release, since tag does not end with '-cim'. Tag is: $GITHUB_REF_NAME"
             exit 1
