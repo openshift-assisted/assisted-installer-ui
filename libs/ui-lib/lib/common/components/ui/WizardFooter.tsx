@@ -26,6 +26,7 @@ export type WizardFooterGenericProps = {
   isSubmitting?: boolean;
   submittingText?: string;
   nextButtonText?: string;
+  isNextButtonLoading?: boolean;
 };
 
 type WizardFooterProps = WizardFooterGenericProps & {
@@ -51,6 +52,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   nextButtonText,
   cluster,
   onFetchEvents,
+  isNextButtonLoading,
 }) => {
   const { t } = useTranslation();
   submittingText = submittingText || t('ai:Saving changes...');
@@ -68,6 +70,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 name="next"
                 onClick={onNext}
                 isDisabled={isNextDisabled}
+                isLoading={isNextButtonLoading}
               >
                 {nextButtonText || t('ai:Next')}
               </Button>
