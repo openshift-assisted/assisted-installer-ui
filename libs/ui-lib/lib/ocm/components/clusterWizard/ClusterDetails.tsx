@@ -3,7 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
 import { usePullSecret } from '../../hooks';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
+import {
+  ClustersAPI,
+  getApiErrorMessage,
+  handleApiError,
+  isUnknownServerError,
+} from '../../../common/api';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
@@ -18,6 +23,7 @@ import {
   UISettingService,
 } from '../../services';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -38,6 +44,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     latestVersions: versions,
   } = useOpenShiftVersionsContext();
   const location = useLocation();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const handleClusterUpdate = React.useCallback(
     async (
@@ -76,6 +83,25 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         const searchParams = new URLSearchParams(location.search);
         const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
         const cluster = await ClustersService.create(params, isAssistedMigration);
+        if (isSingleClusterFeatureEnabled) {
+          try {
+            await ClustersAPI.updateInstallConfig(
+              cluster.id,
+              JSON.stringify(JSON.stringify({ featureSet: 'TechPreviewNoUpgrade' })),
+            );
+          } catch (e) {
+            handleApiError(e, () =>
+              addAlert({
+                title: 'Failed to update install-config',
+                message: getApiErrorMessage(e),
+              }),
+            );
+            if (isUnknownServerError(e as Error)) {
+              dispatch(setServerUpdateError());
+            }
+            return;
+          }
+        }
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
         //TO-DO: Assisted-Migration. Provisional code. Needs to be removed when MTV integration be finished
@@ -91,7 +117,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, location.search, navigate, addAlert, dispatch],
+    [clearAlerts, location.search, navigate, addAlert, dispatch, isSingleClusterFeatureEnabled],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
