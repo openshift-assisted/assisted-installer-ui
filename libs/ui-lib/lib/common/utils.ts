@@ -106,3 +106,8 @@ export const downloadFile = (fileUrl?: string, dataBlob?: Blob, fileName?: strin
   link.click();
   document.body.removeChild(link);
 };
+
+export const getMajorMinorVersion = (version = '') => {
+  const match = /[0-9].[0-9][0-9]?/g.exec(version);
+  return match?.[0] || '';
+};

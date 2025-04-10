@@ -22,6 +22,7 @@ const getDay2ClusterApiPath = () => `${allClustersApiPath}${day2FlowIds.day2.aiC
 const day2InfraEnvDetailsUrl = new RegExp(
   `${getDay2InfraEnvApiPath(x86)}|${getDay2InfraEnvApiPath(arm)}`,
 );
+const getDay1ClusterPreflightRequirementsApiPath = () => `${allClustersApiPath}${Cypress.env('clusterId')}/preflight-requirements`;
 
 const getDay2InfraEnv = (cpuArch: Archs) => fixtures.day2InfraEnvs[cpuArch];
 const getCpuArchitectureParam = (cpuArch: string): Archs | undefined => {
@@ -206,6 +207,20 @@ const addClusterListIntercepts = () => {
     req.reply(fixture);
   });
 };
+
+const addPreflightRequirementsIntercepts = () => {
+  const clusterReqApiPath = getDay1ClusterPreflightRequirementsApiPath();
+  cy.intercept('GET', clusterReqApiPath, { operators: [
+    {
+      operatorName: 'mtv',
+      dependencies: ['cnv']
+    },
+    {
+      operatorName: 'cnv',
+      dependencies: ['lso']
+    }
+  ] }).as('cluster-req');
+}
 
 const addClusterPatchAndDetailsIntercepts = () => {
   const clusterApiPath = getDay1ClusterApiPath();
@@ -470,6 +485,7 @@ const loadDay1Intercepts = () => {
   addDay1InfraEnvIntercepts();
   addDay1HostIntercepts();
   addEventsIntercepts();
+  addPreflightRequirementsIntercepts();
 };
 
 const loadDay2Intercepts = () => {

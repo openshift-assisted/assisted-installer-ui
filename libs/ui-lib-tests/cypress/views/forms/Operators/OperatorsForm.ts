@@ -15,7 +15,7 @@ export default class OperatorsForm {
 /** @private */
 class MceOperatorControl {
   static get body() {
-    return OperatorsForm.body.find('#form-control__form-checkbox-useMultiClusterEngine-field');
+    return OperatorsForm.body.find('#form-control__form-input-mce-field');
   }
 
   static findPopoverButton() {
@@ -25,7 +25,7 @@ class MceOperatorControl {
   }
 
   static findPopoverContent() {
-    return MceOperatorControl.body.scrollIntoView().get('#popover-useMultiClusterEngine-body');
+    return MceOperatorControl.body.scrollIntoView().get('#popover-mce-body');
   }
 
   static findLabel() {
@@ -43,7 +43,7 @@ class MceOperatorControl {
 class MtvOperatorControl {
   static get body() {
     return OperatorsForm.body.find(
-      '#form-control__form-checkbox-useMigrationToolkitforVirtualization-field',
+      '#form-control__form-input-mtv-field',
     );
   }
 
@@ -56,7 +56,7 @@ class MtvOperatorControl {
   static findPopoverContent() {
     return MtvOperatorControl.body
       .scrollIntoView()
-      .get('#popover-useMigrationToolkitforVirtualization-body');
+      .get('#popover-mtv-body');
   }
 
   static findLabel() {

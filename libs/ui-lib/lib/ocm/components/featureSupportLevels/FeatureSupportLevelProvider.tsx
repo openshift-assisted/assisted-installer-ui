@@ -90,7 +90,6 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
       featureId: FeatureId,
       supportLevelDataNew?: NewFeatureSupportLevelMap,
     ): SupportLevel | undefined => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (supportLevelDataNew) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

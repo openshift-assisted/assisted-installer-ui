@@ -1,25 +1,18 @@
 import React from 'react';
 import { Alert, AlertActionLink, Text, TextContent } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
-import { TFunction } from 'i18next';
 import {
   RenderIf,
   toSentence,
   canDownloadClusterLogs,
   getReportIssueLink,
-  operatorLabels,
   useAlerts,
-  OperatorName,
 } from '../../../common';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { isInOcm } from '../../../common/api';
-import {
-  NewFeatureSupportLevelData,
-  useNewFeatureSupportLevel,
-} from '../../../common/components/newFeatureSupportLevels';
 import { Cluster, MonitoredOperator } from '@openshift-assisted/types/assisted-installer-service';
+import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;
@@ -30,26 +23,6 @@ type InstallationProgressWarningProps = {
   failedOperators?: MonitoredOperator[];
   message?: string;
   isCriticalNumberOfWorkersFailed?: boolean;
-};
-
-const getFailedOperatorsNames = (
-  failedOperators: MonitoredOperator[],
-  openshiftVersion: Cluster['openshiftVersion'],
-  featureSupportLevel: NewFeatureSupportLevelData,
-  t: TFunction,
-): string => {
-  let failedOperatorsNames = '';
-  const translatedOperatorLabels = operatorLabels(t, featureSupportLevel);
-  for (let i = 0; i < failedOperators.length; i++) {
-    const operatorName = (failedOperators[i].name as OperatorName) || '';
-    const operatorLabel: string = (operatorName && translatedOperatorLabels[operatorName]) || '';
-    if (i > 0) {
-      if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
-      else failedOperatorsNames += ', ';
-    }
-    failedOperatorsNames += `${operatorLabel} (${operatorName.toUpperCase()})`;
-  }
-  return failedOperatorsNames;
 };
 
 const getFailedHostsMessage = (
@@ -93,8 +66,7 @@ export const HostInstallationWarning = ({
   message,
 }: InstallationProgressWarningProps) => {
   const { addAlert, clearAlerts } = useAlerts();
-  const { t } = useTranslation();
-  const featureSupportLevel = useNewFeatureSupportLevel();
+  const opSpecs = useOperatorSpecs();
 
   return (
     <>
@@ -121,12 +93,7 @@ export const HostInstallationWarning = ({
         </RenderIf>
         <RenderIf condition={failedOperators?.length > 0}>
           <p>
-            {getFailedOperatorsNames(
-              failedOperators,
-              cluster.openshiftVersion,
-              featureSupportLevel,
-              t,
-            )}{' '}
+            {failedOperators.map(({ name }) => opSpecs[name || '']?.title || name).join(' and ')}{' '}
             failed to install. Due to this, the cluster will be degraded, but you can try to install
             the operator from the Operator Hub. Please check the installation log for more
             information.
