@@ -8,6 +8,7 @@ import {
 } from '../../types';
 import { CpuArchitecture, OpenshiftVersionOptionType } from '../../../common';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
+import { getMajorMinorVersion } from '../../../common/utils';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
   const match = /.+:(.*)/gm.exec(releaseImage);
@@ -119,11 +120,6 @@ export const getSelectedVersion = (
 
 export const getCurrentClusterVersion = (cv?: ClusterVersionK8sResource): string | undefined =>
   cv?.status?.history?.[0]?.version || cv?.spec?.desiredUpdate?.version;
-
-export const getMajorMinorVersion = (version = '') => {
-  const match = /[0-9].[0-9][0-9]?/g.exec(version);
-  return match?.[0] || '';
-};
 
 export const getNetworkType = (
   ocpVersion: OpenshiftVersionOptionType | undefined,

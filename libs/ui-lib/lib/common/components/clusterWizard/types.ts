@@ -69,9 +69,9 @@ export type ValidationActionLinkProps<S extends string> = {
   wizardStepNames: { [key in S]: string };
 };
 
-export type ClusterOperatorProps = Pick<Cluster, 'openshiftVersion'> & {
-  clusterId: Cluster['id'];
-} & { monitoredOperators?: Cluster['monitoredOperators'] };
+export type ClusterOperatorProps = {
+  cluster: Cluster;
+};
 
 export type ItemDropdown = {
   label: string;

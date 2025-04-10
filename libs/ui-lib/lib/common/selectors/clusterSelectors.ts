@@ -1,7 +1,6 @@
 import head from 'lodash-es/head.js';
 import { SupportedPlatformIntegrations, ValidationsInfo } from '../types';
 import { Cluster, Ip } from '@openshift-assisted/types/assisted-installer-service';
-import { ExposedOperatorName } from '../config';
 import { stringToJSON } from '../utils';
 
 export const selectMachineNetworkCIDR = ({
@@ -46,7 +45,7 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
 
 export const hasEnabledOperators = (
   monitoredOperators: Cluster['monitoredOperators'],
-  searchOperator: ExposedOperatorName,
+  searchOperator: string,
 ) => {
   return selectMonitoredOperators(monitoredOperators).some(
     (operator) => operator.name && operator.name === searchOperator,

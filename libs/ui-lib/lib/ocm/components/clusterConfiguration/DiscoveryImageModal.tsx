@@ -120,7 +120,7 @@ export const DiscoveryImageModal = () => {
           isSNO={isSNOCluster}
           onReset={onReset}
           onClose={close}
-          updateTagsForCiscoIntersight={() => updateTagsForCiscoIntersight(cluster)}
+          updateTagsForCiscoIntersight={() => void updateTagsForCiscoIntersight(cluster)}
         />
       ) : ipxeDownloadUrl ? (
         <DownloadIpxeScript
