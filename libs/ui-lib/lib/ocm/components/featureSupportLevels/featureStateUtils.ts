@@ -331,6 +331,13 @@ export const getLvmsIncompatibleWithOdfReason = (operatorValues: OperatorsValues
     : undefined;
 };
 
+export const getLvmsIncompatibleWithOpenShiftAIReason = (operatorValues: OperatorsValues) => {
+  const mustDisableLvms = operatorValues.useOpenShiftAI;
+  return mustDisableLvms
+    ? `Currently, you cannot install ${LVMS_OPERATOR_LABEL} operator at the same time as ${OPENSHIFT_AI_OPERATOR_LABEL} operator.`
+    : undefined;
+};
+
 const getOpenShiftAIDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
