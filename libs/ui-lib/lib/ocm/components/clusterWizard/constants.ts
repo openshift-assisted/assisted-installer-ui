@@ -11,7 +11,7 @@ export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   networking: 'Networking',
   'custom-manifests': 'Custom manifests',
   review: 'Review and create',
-  'kubeconfig-download': 'Download Kubeconfig',
+  'credentials-download': 'Download credentials',
 };
 
 export const defaultWizardSteps: ClusterWizardStepsType[] = [

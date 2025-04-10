@@ -29,7 +29,7 @@ export type ClusterWizardStepsType =
   | 'networking'
   | 'review'
   | 'custom-manifests'
-  | 'kubeconfig-download';
+  | 'credentials-download';
 
 const wizardStepsOrder: ClusterWizardStepsType[] = [
   'cluster-details',
@@ -41,7 +41,7 @@ const wizardStepsOrder: ClusterWizardStepsType[] = [
   'storage',
   'networking',
   'custom-manifests',
-  'kubeconfig-download',
+  'credentials-download',
   'review',
 ];
 
@@ -247,7 +247,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-const kubeconfigValidationMap = buildEmptyValidationsMap();
+const credentialsValidationMap = buildEmptyValidationsMap();
 
 const customManifestsValidationsMap = buildEmptyValidationsMap();
 
@@ -262,7 +262,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   storage: storageStepValidationsMap,
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
-  'kubeconfig-download': kubeconfigValidationMap,
+  'credentials-download': credentialsValidationMap,
 };
 
 export const allClusterWizardSoftValidationIds =
