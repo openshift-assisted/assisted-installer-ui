@@ -40,7 +40,6 @@ import { useFormikContext } from 'formik';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import {
-  getCnvDisabledWithMtvReason,
   getCnvIncompatibleWithLvmReason,
   getLvmIncompatibleWithCnvReason,
   getLvmsIncompatibleWithOdfReason,
@@ -249,11 +248,6 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         if (!disabledReason) {
           const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
           disabledReason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
-        }
-        if (!disabledReason) {
-          if (featureSupportLevelData.isFeatureSupported('MTV')) {
-            disabledReason = getCnvDisabledWithMtvReason(values);
-          }
         }
       }
       if (operatorKey === 'lvm') {

@@ -79,6 +79,8 @@ const CnvCheckbox = ({
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
   const selectOperatorsNeeded = (checked: boolean) => {
     if (featureSupportLevelData.isFeatureSupported('LSO')) setFieldValue('useLso', checked);
+    if (featureSupportLevelData.isFeatureSupported('MTV'))
+      setFieldValue('useMigrationToolkitforVirtualization', checked);
   };
   return (
     <FormGroup isInline fieldId={fieldId}>
