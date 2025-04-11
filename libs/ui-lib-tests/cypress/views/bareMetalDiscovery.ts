@@ -21,9 +21,6 @@ export const bareMetalDiscoveryPage = {
   getOdfOperator: () => {
     return cy.get(Cypress.env('useOpenShiftDataFoundation'));
   },
-  getLvmOperator: () => {
-    return cy.get(Cypress.env('useOdfLogicalVolumeManagerField'));
-  },
   platformIntegration: {
     getFullPotentialHint: () => {
       return cy.get('[data-testid="discover-platform-integration-hosts"]', { timeout: 16000 });

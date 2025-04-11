@@ -8,12 +8,7 @@ import {
   HostValidationId,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
-import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
-import type { NewFeatureSupportLevelData } from '../components/newFeatureSupportLevels';
 import buildManifest from '@openshift-assisted/ui-lib/package.json';
-
-// TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
-export const getProductBrandingCode = () => 'redhat';
 
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
@@ -303,7 +298,6 @@ export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
 export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
-export const OPERATOR_NAME_LVMS = 'lvms';
 export const OPERATOR_NAME_MCE = 'mce';
 export const OPERATOR_NAME_MTV = 'mtv';
 export const OPERATOR_NAME_NODE_FEATURE_DISCOVERY = 'node-feature-discovery';
@@ -323,108 +317,20 @@ export const OPERATOR_NAME_FENCE_AGENTS_REMEDIATION = 'fence-agents-remediation'
 export const OPERATOR_NAME_NODE_MAINTENANCE = 'node-maintenance';
 export const OPERATOR_NAME_KUBE_DESCHEDULER = 'kube-descheduler';
 
-const OperatorNames = [
+export const singleClusterOperators = [
   OPERATOR_NAME_CNV,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+  OPERATOR_NAME_NODE_MAINTENANCE,
+  OPERATOR_NAME_MTV,
+  OPERATOR_NAME_KUBE_DESCHEDULER,
+  OPERATOR_NAME_NMSTATE,
+  OPERATOR_NAME_SELF_NODE_REMEDIATION,
+  OPERATOR_NAME_ODF,
   OPERATOR_NAME_LSO,
-  OPERATOR_NAME_ODF,
-  OPERATOR_NAME_LVM,
-  OPERATOR_NAME_LVMS,
-  OPERATOR_NAME_MCE,
-  OPERATOR_NAME_MTV,
-  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
-  OPERATOR_NAME_NVIDIA_GPU,
-  OPERATOR_NAME_PIPELINES,
-  OPERATOR_NAME_SERVICEMESH,
-  OPERATOR_NAME_SERVERLESS,
-  OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
-  OPERATOR_NAME_NMSTATE,
-  OPERATOR_NAME_AUTHORINO,
-  OPERATOR_NAME_AMD_GPU,
-  OPERATOR_NAME_KMM,
-  OPERATOR_NAME_NODE_HEALTHCHECK,
-  OPERATOR_NAME_SELF_NODE_REMEDIATION,
-  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
-  OPERATOR_NAME_NODE_MAINTENANCE,
-  OPERATOR_NAME_KUBE_DESCHEDULER,
-];
-export const ExposedOperatorNames = [
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_ODF,
-  OPERATOR_NAME_LVM,
-  OPERATOR_NAME_LVMS,
-  OPERATOR_NAME_MCE,
-  OPERATOR_NAME_MTV,
-  OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
-  OPERATOR_NAME_NVIDIA_GPU,
-  OPERATOR_NAME_PIPELINES,
-  OPERATOR_NAME_SERVICEMESH,
-  OPERATOR_NAME_SERVERLESS,
-  OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
-  OPERATOR_NAME_NMSTATE,
-  OPERATOR_NAME_AUTHORINO,
-  OPERATOR_NAME_AMD_GPU,
-  OPERATOR_NAME_KMM,
-  OPERATOR_NAME_NODE_HEALTHCHECK,
-  OPERATOR_NAME_SELF_NODE_REMEDIATION,
-  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
-  OPERATOR_NAME_NODE_MAINTENANCE,
-  OPERATOR_NAME_KUBE_DESCHEDULER,
 ];
 
-export type OperatorName = (typeof OperatorNames)[number];
-export type ExposedOperatorName = (typeof ExposedOperatorNames)[number];
-
-export const operatorLabelsCim = (
-  t: TFunction,
-  openshiftVersion: Cluster['openshiftVersion'],
-  featureSupportLevel: FeatureSupportLevelData,
-): { [key in ExposedOperatorName]: string } => {
-  const useLVMS =
-    featureSupportLevel.getFeatureSupportLevel(openshiftVersion || '', 'LVM') === 'supported';
-
-  return {
-    [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
-    [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
-    [OPERATOR_NAME_LVM]: useLVMS
-      ? t('ai:Logical Volume Manager Storage')
-      : t('ai:Logical Volume Manager'),
-  };
-};
-
-export const operatorLabels = (
-  t: TFunction,
-  featureSupportLevel: NewFeatureSupportLevelData,
-): { [key in ExposedOperatorName]: string } => {
-  const useLVMS = featureSupportLevel.getFeatureSupportLevel('LVM') === 'supported';
-
-  return {
-    [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
-    [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
-    [OPERATOR_NAME_LVM]: useLVMS
-      ? t('ai:Logical Volume Manager Storage')
-      : t('ai:Logical Volume Manager'),
-    [OPERATOR_NAME_MCE]: t('ai:Multicluster engine'),
-    [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: t('ai:Node Feature Discovery'),
-    [OPERATOR_NAME_NVIDIA_GPU]: t('ai:NVIDIA GPU'),
-    [OPERATOR_NAME_PIPELINES]: t('ai:Pipelines'),
-    [OPERATOR_NAME_SERVICEMESH]: t('ai:Service Mesh'),
-    [OPERATOR_NAME_SERVERLESS]: t('ai:Serverless'),
-    [OPERATOR_NAME_OPENSHIFT_AI]: t('ai:OpenShift AI'),
-    [OPERATOR_NAME_OSC]: t('ai:OpenShift sandboxed containers'),
-    [OPERATOR_NAME_MTV]: t('ai:Migration Toolkit for Virtualization'),
-    [OPERATOR_NAME_NMSTATE]: t('ai:NMState'),
-    [OPERATOR_NAME_AUTHORINO]: t('ai:Authorino'),
-    [OPERATOR_NAME_AMD_GPU]: t('ai:AMD GPU'),
-    [OPERATOR_NAME_KMM]: t('ai:Kernel Module Management'),
-    [OPERATOR_NAME_NODE_HEALTHCHECK]: t('ai:Node Healthcheck'),
-    [OPERATOR_NAME_SELF_NODE_REMEDIATION]: t('ai:Self Node Remediation'),
-    [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: t('ai:Fence Agents Remediation'),
-    [OPERATOR_NAME_NODE_MAINTENANCE]: t('ai:Node Maintenace'),
-    [OPERATOR_NAME_KUBE_DESCHEDULER]: t('ai:Kube Descheduler'),
-  };
-};
+export const singleClusterBundles = ['virtualization'];
 
 export const AI_UI_TAG = 'ui_ocm';
 

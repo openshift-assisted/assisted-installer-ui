@@ -58,29 +58,9 @@ export type HostDiscoveryValues = V2ClusterUpdateParams & {
 export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;
 };
-export type OperatorsValues = V2ClusterUpdateParams & {
-  useOpenShiftDataFoundation: boolean;
-  useOdfLogicalVolumeManager: boolean;
-  useContainerNativeVirtualization: boolean;
-  useMultiClusterEngine: boolean;
-  useMigrationToolkitforVirtualization: boolean;
-  useOpenShiftAI: boolean;
-  useOsc: boolean;
-  useNodeFeatureDiscovery: boolean;
-  useNmstate: boolean;
-  useLso: boolean;
-  useServerless: boolean;
-  useAuthorino: boolean;
-  usePipelines: boolean;
-  useServicemesh: boolean;
-  useNvidiaGpu: boolean;
-  useAmdGpu: boolean;
-  useKmm: boolean;
-  useNodeHealthcheck: boolean;
-  useSelfNodeRemediation: boolean;
-  useFenceAgentsRemediation: boolean;
-  useNodeMaintenance: boolean;
-  useKubeDescheduler: boolean;
+export type OperatorsValues = {
+  selectedBundles: string[];
+  selectedOperators: string[];
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;

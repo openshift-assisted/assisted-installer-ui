@@ -52,10 +52,7 @@ const OcmClusterProgressItems = ({
           </GridItem>
           <RenderIf condition={olmOperators.length > 0}>
             <GridItem span={3}>
-              <OcmOperatorsProgressItem
-                operators={olmOperators}
-                openshiftVersion={cluster.openshiftVersion}
-              />
+              <OcmOperatorsProgressItem operators={olmOperators} />
             </GridItem>
           </RenderIf>
         </Grid>
