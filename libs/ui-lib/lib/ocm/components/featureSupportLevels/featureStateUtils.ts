@@ -361,7 +361,9 @@ const getOpenShiftAIDisabledReason = (
 };
 
 export const getCnvDisabledWithMtvReason = (operatorValues: OperatorsValues) => {
-  const mustDisableCnv = !operatorValues.useMigrationToolkitforVirtualization;
+  const mustDisableCnv =
+    operatorValues.useContainerNativeVirtualization &&
+    !operatorValues.useMigrationToolkitforVirtualization;
   return mustDisableCnv
     ? `Currently, you need to install ${CNV_OPERATOR_LABEL} operator at the same time as ${MTV_OPERATOR_LABEL} operator.`
     : undefined;
