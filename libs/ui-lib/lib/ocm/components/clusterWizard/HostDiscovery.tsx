@@ -8,6 +8,7 @@ import {
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
+  ClustersAPI,
 } from '../../../common';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -22,6 +23,7 @@ import {
   Cluster,
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeature } from '../../hooks/use-feature';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -29,6 +31,9 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const { addAlert } = useAlerts();
+  const dispatch = useDispatch();
 
   const isNextDisabled =
     !isValid ||
@@ -37,13 +42,36 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
     isSubmitting ||
     !canNextHostDiscovery({ cluster });
 
+  const onNext = React.useCallback(async () => {
+    if (isSingleClusterFeatureEnabled) {
+      try {
+        await ClustersAPI.updateInstallConfig(
+          cluster.id,
+          JSON.stringify(JSON.stringify({ featureSet: 'TechPreviewNoUpgrade' })),
+        );
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({
+            title: 'Failed to update install-config',
+            message: getApiErrorMessage(e),
+          }),
+        );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
+        return;
+      }
+    }
+    clusterWizardContext.moveNext();
+  }, [addAlert, cluster.id, clusterWizardContext, dispatch, isSingleClusterFeatureEnabled]);
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
       isNextDisabled={isNextDisabled}
-      onNext={() => clusterWizardContext.moveNext()}
+      onNext={() => void onNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
