@@ -1,5 +1,12 @@
 import React from 'react';
-import { GridItem, ClipboardCopy, clipboardCopyFunc, Button, Alert } from '@patternfly/react-core';
+import {
+  GridItem,
+  ClipboardCopy,
+  clipboardCopyFunc,
+  Button,
+  Alert,
+  TextInput,
+} from '@patternfly/react-core';
 import { Credentials, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
@@ -98,7 +105,10 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
         )}
         {credentials.username && (
           <>
-            <DetailItem title="Username" value={credentials.username} />
+            <DetailItem
+              title={t('ai:Username')}
+              value={<TextInput value={credentials.username} readOnlyVariant="default" />}
+            />
             <DetailItem
               title={t('ai:Password')}
               value={

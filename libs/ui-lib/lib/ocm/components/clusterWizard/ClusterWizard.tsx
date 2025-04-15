@@ -16,7 +16,7 @@ import {
   InfraEnv,
   InfraEnvUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
-import KubeconfigDownload from './KubeconfigDownload';
+import CredentialsDownload from './CredentialsDownload';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -45,8 +45,8 @@ const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps
       case 'static-ip-network-wide-configurations':
       case 'static-ip-yaml-view':
         return <StaticIp cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />;
-      case 'kubeconfig-download':
-        return <KubeconfigDownload cluster={cluster} />;
+      case 'credentials-download':
+        return <CredentialsDownload cluster={cluster} />;
       case 'cluster-details':
       default:
         return <ClusterDetails cluster={cluster} infraEnv={infraEnv} />;

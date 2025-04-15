@@ -182,3 +182,6 @@ export const getServiceMeshLink = (ocpVersion?: string) =>
 
 export const SERVERLESS_OPERATOR_LINK =
   'https://docs.openshift.com/serverless/1.28/install/install-serverless-operator.html#serverless-install-web-console_install-serverless-operator';
+
+export const KUBECONFIG_INFO_LINK =
+  'https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc#about-switches-between-cli-profiles_managing-cli-profiles';
