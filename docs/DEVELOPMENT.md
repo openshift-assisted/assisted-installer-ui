@@ -68,12 +68,12 @@ apply for `libs/locales` as well.
    ```
 2. Fork and clone the assisted-installer-app project
    ```bash
-   git clone https://github.com/<username>/assisted-installer-app.git
+   git clone git@github.com:openshift-assisted/assisted-installer-app.git
    ```
 3. Inside the assisted-installer-app run the following commands
 
    ```bash
-   npm install
+   npm ci
    yalc link @openshift-assisted/ui-lib
    yalc link @openshift-assisted/locales
    yalc link @openshift-assisted/types
