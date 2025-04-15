@@ -76,10 +76,9 @@ export const getAIHosts = (
   const restBmhs =
     infraEnv && bmhs
       ? bmhs
-          ?.filter((h) =>
-            h.metadata?.namespace === infraEnv.metadata?.namespace &&
-            getInfraEnvNameOfAgent(h) === infraEnv.metadata?.name &&
-            h.metadata?.name
+          ?.filter((h) => h.metadata?.namespace === infraEnv.metadata?.namespace)
+          .filter((h) =>
+            getInfraEnvNameOfAgent(h) === infraEnv.metadata?.name && h.metadata?.name
               ? !bmhAgents.includes(h.metadata.name)
               : true,
           )
