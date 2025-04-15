@@ -155,7 +155,11 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
     });
 
     setSelectedOperators(newSelection);
-  }, [props.monitoredOperators]);
+    newSelection.forEach((op) => {
+      const fieldId = mapOperatorsToFieldIds[op]; // Obtener el ID del campo correspondiente
+      setFieldValue(fieldId, true);
+    });
+  }, [props.monitoredOperators, setFieldValue]);
 
   const handleBundleSelection = async (bundleId: string, operators: string[], checked: boolean) => {
     let bundlesSelected = uiSettings?.bundlesSelected ? [...uiSettings.bundlesSelected] : [];
