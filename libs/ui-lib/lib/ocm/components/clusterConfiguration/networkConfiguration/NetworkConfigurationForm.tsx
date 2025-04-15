@@ -16,6 +16,7 @@ import {
   SecurityFields,
   useAlerts,
   useFormikAutoSave,
+  ClustersAPI,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -45,6 +46,7 @@ import {
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import { useFeature } from '../../../hooks/use-feature';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -65,6 +67,9 @@ const NetworkConfigurationForm: React.FC<{
     useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const { addAlert } = useAlerts();
+  const dispatch = useDispatch();
 
   // DHCP allocation is currently not supported for Nutanix hosts
   // https://issues.redhat.com/browse/MGMT-12382
@@ -79,6 +84,29 @@ const NetworkConfigurationForm: React.FC<{
     }
   }, [isHostsPlatformTypeNutanix, setFieldValue, values.vipDhcpAllocation]);
 
+  const onNext = React.useCallback(async () => {
+    if (isSingleClusterFeatureEnabled) {
+      try {
+        await ClustersAPI.updateInstallConfig(
+          cluster.id,
+          JSON.stringify(JSON.stringify({ featureSet: 'TechPreviewNoUpgrade' })),
+        );
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({
+            title: 'Failed to update install-config',
+            message: getApiErrorMessage(e),
+          }),
+        );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
+        return;
+      }
+    }
+    clusterWizardContext.moveNext();
+  }, [addAlert, cluster.id, clusterWizardContext, dispatch, isSingleClusterFeatureEnabled]);
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
@@ -91,7 +119,7 @@ const NetworkConfigurationForm: React.FC<{
         !isValid ||
         !canNextNetwork({ cluster })
       }
-      onNext={() => clusterWizardContext.moveNext()}
+      onNext={() => void onNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
