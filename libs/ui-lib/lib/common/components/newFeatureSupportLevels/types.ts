@@ -31,6 +31,9 @@ export type NewFeatureSupportLevelData = {
   getFeatureSupportLevel: GetFeatureSupportLevel;
   isFeatureDisabled(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   getFeatureDisabledReason: GetFeatureDisabledReason;
-  isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
+  isFeatureSupported: (
+    featureId: FeatureId,
+    supportLevelData?: NewFeatureSupportLevelMap,
+  ) => boolean;
   activeFeatureConfiguration?: ActiveFeatureConfiguration;
 };

@@ -239,6 +239,12 @@ const ClustersAPI = {
       params,
     );
   },
+
+  updateInstallConfig(clusterId: Cluster['id'], config: string) {
+    return client.patch(`${ClustersAPI.makeBaseURI(clusterId)}/install-config`, config, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  },
 };
 
 export default ClustersAPI;

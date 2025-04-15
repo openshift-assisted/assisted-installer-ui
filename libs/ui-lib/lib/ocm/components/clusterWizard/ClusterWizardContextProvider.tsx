@@ -69,7 +69,7 @@ const getWizardStepIds = (
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
   }
   if (isSingleClusterFeatureEnabled) {
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['kubeconfig-download']);
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['credentials-download']);
   }
 
   return stepsCopy;
@@ -114,7 +114,6 @@ const ClusterWizardContextProvider = ({
         staticIpInfo,
         cluster?.status,
         cluster?.hosts,
-        isSingleClusterFeatureEnabled,
         customManifestsStepNeedsToBeFilled,
       );
 

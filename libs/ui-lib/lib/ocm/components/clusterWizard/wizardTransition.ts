@@ -29,7 +29,7 @@ export type ClusterWizardStepsType =
   | 'networking'
   | 'review'
   | 'custom-manifests'
-  | 'kubeconfig-download';
+  | 'credentials-download';
 
 const wizardStepsOrder: ClusterWizardStepsType[] = [
   'cluster-details',
@@ -41,7 +41,7 @@ const wizardStepsOrder: ClusterWizardStepsType[] = [
   'storage',
   'networking',
   'custom-manifests',
-  'kubeconfig-download',
+  'credentials-download',
   'review',
 ];
 
@@ -73,14 +73,10 @@ export const getClusterWizardFirstStep = (
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
   hosts?: Host[] | undefined,
-  isSingleClusterFeatureEnabled?: boolean,
   customManifestsStepNeedsToBeFilled?: boolean,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
-    if (isSingleClusterFeatureEnabled) {
-      return 'host-discovery';
-    }
     return 'operators';
   }
 
@@ -247,7 +243,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-const kubeconfigValidationMap = buildEmptyValidationsMap();
+const credentialsValidationMap = buildEmptyValidationsMap();
 
 const customManifestsValidationsMap = buildEmptyValidationsMap();
 
@@ -262,7 +258,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   storage: storageStepValidationsMap,
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
-  'kubeconfig-download': kubeconfigValidationMap,
+  'credentials-download': credentialsValidationMap,
 };
 
 export const allClusterWizardSoftValidationIds =
