@@ -66,23 +66,42 @@ apply for `libs/locales` as well.
    ```bash
    yarn start:watch_mode
    ```
-2. Fork and clone the uhc-portal project
+2. Fork and clone the assisted-installer-app project
    ```bash
-   git clone https://gitlab.cee.redhat.com/<username>/uhc-portal.git
+   git clone git@github.com:openshift-assisted/assisted-installer-app.git
    ```
-3. Inside the uhc-portal run the following commands
+3. Inside the assisted-installer-app run the following commands
+
    ```bash
-   yarn install
+   npm ci
    yalc link @openshift-assisted/ui-lib
    yalc link @openshift-assisted/locales
    yalc link @openshift-assisted/types
    ```
-   **Note**: `yalc link` needs to be executed following the `yarn install` command.  
+
+   **Note**: `yalc link` needs to be executed following the `npm install` command.  
    **Be aware that this command updates the project's `package.json` and `yarn.lock` files**.  
    **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
-4. Now you can follow the uhc-portal's
-   [README file](https://gitlab.cee.redhat.com/service/uhc-portal/-/blob/master/README.md) in order
-   to set up their dev-environment.
+
+4. Start the assisted-installer-app project:
+
+   ```bash
+   npm run start:federated
+
+   ```
+
+5. Fork and clone the uhc-portal project
+
+   ```bash
+   git clone git@github.com:RedHatInsights/uhc-portal.git
+   ```
+
+6. Now you can follow the uhc-portal's
+   [README file](https://github.com/RedHatInsights/uhc-portal/blob/master/README.md#running-locally)
+   in order to set up their dev-environment.
+   ```bash
+   yarn start --env ai_standalone
+   ```
 
 ## Integrating with the OpenShift Console for ACM and MCE (aka CIM)
 
