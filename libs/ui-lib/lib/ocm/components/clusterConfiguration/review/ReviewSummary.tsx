@@ -3,15 +3,10 @@ import { ExpandableSection } from '@patternfly/react-core';
 import {
   DetailItem,
   DetailList,
-  hasEnabledOperators,
   isClusterPlatformTypeVM,
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LVM,
-  OPERATOR_NAME_ODF,
   ReviewHostsInventory,
   SupportedPlatformType,
   RenderIf,
-  OPERATOR_NAME_MCE,
 } from '../../../../common';
 import {
   ReviewClusterDetailTable,
@@ -26,11 +21,6 @@ import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests'
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
-  const showOperatorsSummary =
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM) ||
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_MCE);
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
   return (
     <>
@@ -38,11 +28,7 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
         <ReviewClusterDetailTable cluster={cluster} />
       </TableSummaryExpandable>
 
-      {showOperatorsSummary && (
-        <TableSummaryExpandable title={'Operators'} id={'operators-expandable'}>
-          <ReviewOperatorsTable cluster={cluster} />
-        </TableSummaryExpandable>
-      )}
+      <ReviewOperatorsTable cluster={cluster} />
 
       <TableSummaryExpandable title={'Host inventory'} id={'host-inventory-expandable'}>
         <>

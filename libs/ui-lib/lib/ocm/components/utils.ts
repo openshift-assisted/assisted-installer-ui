@@ -5,15 +5,3 @@ export const isOciPlatformType = (cluster: Cluster): boolean => {
     cluster.platform?.type === 'external' && cluster.platform?.external?.platformName === 'oci'
   );
 };
-
-export const getMajorMinorVersion = (version = '') => {
-  const match = /[0-9].[0-9][0-9]?/g.exec(version);
-  return match?.[0] || '';
-};
-
-export const isOCPVersionEqualsOrMajor = (
-  openshiftVersion: string,
-  ocpVersionToCompare: string,
-): boolean => {
-  return parseFloat(getMajorMinorVersion(openshiftVersion)) >= parseFloat(ocpVersionToCompare);
-};
