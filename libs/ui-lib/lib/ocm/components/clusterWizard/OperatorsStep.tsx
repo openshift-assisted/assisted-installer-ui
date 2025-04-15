@@ -44,6 +44,7 @@ import {
   getCnvIncompatibleWithLvmReason,
   getLvmIncompatibleWithCnvReason,
   getLvmsIncompatibleWithOdfReason,
+  getLvmsIncompatibleWithOpenShiftAIReason,
   getOdfIncompatibleWithLvmsReason,
   getOpenShiftAIIncompatibleWithLvmsReason,
 } from '../featureSupportLevels/featureStateUtils';
@@ -260,9 +261,12 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
         if (!disabledReason) {
           const lvmSupport = featureSupportLevelData.getFeatureSupportLevel('LVM');
           disabledReason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
-          if (!disabledReason) {
-            disabledReason = getLvmsIncompatibleWithOdfReason(values);
-          }
+        }
+        if (!disabledReason) {
+          disabledReason = getLvmsIncompatibleWithOdfReason(values);
+        }
+        if (!disabledReason) {
+          disabledReason = getLvmsIncompatibleWithOpenShiftAIReason(values);
         }
       }
       if (operatorKey === 'odf') {
