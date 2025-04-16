@@ -1,7 +1,3 @@
-import './configurations';
-import './styles.css';
-import './utils';
-
 export * from './components';
 export * from './api';
 export * from './types';
@@ -11,3 +7,4 @@ export * from './reducers';
 export * from './selectors';
 export * from './hooks';
 export { ResourceUIState } from './types/resource-ui-state';
+export * from './utils';
