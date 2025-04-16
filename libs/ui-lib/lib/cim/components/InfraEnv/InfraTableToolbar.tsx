@@ -1,19 +1,18 @@
 import {
   Badge,
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
   Grid,
   GridItem,
+  MenuToggle,
+  MenuToggleElement,
   SearchInput,
   Split,
   SplitItem,
   ToolbarFilter,
   ToolbarItem,
 } from '@patternfly/react-core';
-import {
-  Select,
-  SelectGroup,
-  SelectOption,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import * as React from 'react';
 import { HostStatus, HostStatusDef } from '../../../common/components/hosts/types';
@@ -94,6 +93,19 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
   const filterStatuses = React.useMemo(() => getStatusesForFilter(agentStatuses), [agentStatuses]);
   const categoryLabels = getCategoryLabels(t);
 
+  const onStatusFilterToggle = () => setStatusFilterOpen(!statusFilterOpen);
+  const onStatusFilterSelect = (
+    e?: React.MouseEvent<Element, MouseEvent>,
+    value?: string | number,
+  ) => {
+    if (!statusFilter?.includes(value as string)) {
+      const newItems = (statusFilter ? [...statusFilter, value] : [value]) as string[];
+      setStatusFilter(newItems);
+    } else {
+      setStatusFilter(statusFilter?.filter((f) => f !== value));
+    }
+  };
+
   return (
     <TableToolbar
       selectedIDs={selectedHostIDs || []}
@@ -118,34 +130,34 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
           deleteChipGroup={() => setStatusFilter([])}
           categoryName="Status"
         >
-          <Select
-            variant={SelectVariant.checkbox}
-            aria-label={t('ai:Status')}
-            onToggle={(_event, value) => setStatusFilterOpen(value)}
-            onSelect={(e, value) => {
-              // eslint-disable-next-line
-              if ((e.target as any).checked) {
-                const newItems = (statusFilter ? [...statusFilter, value] : [value]) as string[];
-                setStatusFilter(newItems);
-              } else {
-                setStatusFilter(statusFilter?.filter((f) => f !== value));
-              }
-            }}
-            selections={statusFilter}
+          <Dropdown
             isOpen={statusFilterOpen}
-            placeholderText={t('ai:Status')}
-            toggleIcon={<FilterIcon />}
+            onSelect={onStatusFilterSelect}
+            onOpenChange={onStatusFilterToggle}
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                isFullWidth
+                onClick={onStatusFilterToggle}
+                isExpanded={statusFilterOpen}
+                icon={<FilterIcon />}
+              >
+                {t('ai:Status')}
+              </MenuToggle>
+            )}
+            shouldFocusToggleOnSelect
           >
             {[
               <Grid key="statuses" hasGutter className="table-toolbar__dropdown">
                 {Object.keys(filterStatuses).map((category) => (
                   <GridItem key={category} span={4}>
-                    <SelectGroup label={categoryLabels[category as HostStatusDef['category']]}>
+                    <DropdownGroup label={categoryLabels[category as HostStatusDef['category']]}>
                       {Object.keys(filterStatuses[category]).map((label) => (
-                        <SelectOption
+                        <DropdownItem
+                          hasCheckbox
                           key={label}
                           value={label}
-                          isChecked={statusFilter?.includes(label)}
+                          isSelected={statusFilter?.includes(label)}
                         >
                           <Split hasGutter>
                             <SplitItem>{label}</SplitItem>
@@ -153,14 +165,14 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
                               <Badge isRead>{statusCount[label] || 0}</Badge>
                             </SplitItem>
                           </Split>
-                        </SelectOption>
+                        </DropdownItem>
                       ))}
-                    </SelectGroup>
+                    </DropdownGroup>
                   </GridItem>
                 ))}
               </Grid>,
             ]}
-          </Select>
+          </Dropdown>
         </ToolbarFilter>
       </ToolbarItem>
     </TableToolbar>

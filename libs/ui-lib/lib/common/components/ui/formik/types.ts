@@ -7,7 +7,7 @@ import {
   FormSelectProps,
   DropEvent,
 } from '@patternfly/react-core';
-import { SelectOptionProps } from '@patternfly/react-core/deprecated';
+import { DropdownItemProps } from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps } from 'react-dropzone';
 import { CodeEditorProps } from '@patternfly/react-code-editor';
@@ -44,7 +44,7 @@ export interface SelectFieldProps extends FieldProps {
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
-export type MultiSelectOption = SelectOptionProps & { id: string; displayName: string };
+export type MultiSelectOption = DropdownItemProps & { id: string; displayName: string };
 
 export interface MultiSelectFieldProps extends FieldProps {
   options: MultiSelectOption[];
