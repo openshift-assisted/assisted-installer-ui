@@ -328,6 +328,7 @@ export const singleClusterOperators = [
   OPERATOR_NAME_SELF_NODE_REMEDIATION,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_LSO,
+  OPERATOR_NAME_LVM,
 ];
 
 export const singleClusterBundles = ['virtualization'];
