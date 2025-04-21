@@ -15,6 +15,8 @@ import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEv
 import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
 import { Cluster, Credentials } from '@openshift-assisted/types/assisted-installer-service';
 
+import './ClusterDetailsButtonGroup.css';
+
 type ClusterDetailsButtonGroupProps = {
   cluster: Cluster;
   credentials?: Credentials;

@@ -1,7 +1,3 @@
-import './configurations';
-import './styles.css';
-import './utils';
-
 export * from './components';
 export * from './api';
 export * from './types';
