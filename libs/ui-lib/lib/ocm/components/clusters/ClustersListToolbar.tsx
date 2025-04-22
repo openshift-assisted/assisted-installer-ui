@@ -14,8 +14,12 @@ import {
   ToolbarGroup,
   Tooltip,
   InputGroupItem,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectProps } from '@patternfly/react-core/deprecated';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
 import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
@@ -72,8 +76,11 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     });
   };
 
-  const onStatusToggle: SelectProps['onToggle'] = () => setStatusExpanded(!isStatusExpanded);
-  const onStatusSelect: SelectProps['onSelect'] = (event, val) => {
+  const onStatusToggle = () => setStatusExpanded(!isStatusExpanded);
+  const onStatusSelect = (
+    val: string,
+    event?: React.MouseEvent | React.ChangeEvent | undefined,
+  ) => {
     const value = val as Cluster['status'];
     onSelect('status', isSelectEventChecked(event), value);
   };
@@ -133,24 +140,37 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
           deleteChipGroup={onDeleteChipGroup}
           categoryName="status"
         >
-          <Select
-            variant="checkbox"
-            aria-label="status"
-            onToggle={onStatusToggle}
-            onSelect={onStatusSelect}
-            selections={filters.status}
+          <Dropdown
             isOpen={isStatusExpanded}
-            placeholderText={statusPlaceholder}
-            toggleId="cluster-list-filter-status"
+            onSelect={(event, value) => onStatusSelect(value as string, event)}
+            onOpenChange={onStatusToggle}
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                id="cluster-list-filter-status"
+                ref={toggleRef}
+                isFullWidth
+                onClick={onStatusToggle}
+                isExpanded={isStatusExpanded}
+              >
+                {statusPlaceholder}
+              </MenuToggle>
+            )}
+            shouldFocusToggleOnSelect
           >
-            {clusterStatusFilterLabels(t).map((label) => (
-              <SelectOption
-                key={label}
-                value={label}
-                inputId={`cluster-list-filter-status-${label}`}
-              />
-            ))}
-          </Select>
+            <DropdownList>
+              {clusterStatusFilterLabels(t).map((label) => (
+                <DropdownItem
+                  id={`cluster-list-filter-status-${label}`}
+                  hasCheckbox
+                  isSelected={filters.status.includes(label)}
+                  key={label}
+                  value={label}
+                >
+                  {label}
+                </DropdownItem>
+              ))}
+            </DropdownList>
+          </Dropdown>
         </CustomToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
