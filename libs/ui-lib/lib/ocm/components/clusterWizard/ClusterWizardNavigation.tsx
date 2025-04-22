@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { WizardNav } from '@patternfly/react-core/deprecated';
+import { WizardNav } from '@patternfly/react-core';
 import {
   canNextClusterDetails,
   canNextHostDiscovery,
@@ -51,11 +51,11 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   const getNavItem = (idx: number, stepId: ClusterWizardStepsType): ReactNode => {
     return (
       <WizardNavItem
-        step={idx}
+        stepIndex={idx}
         key={stepId}
         id={`wizard-nv-${stepId}`}
         content={wizardStepNames[stepId]}
-        onNavItemClick={() => clusterWizardContext.setCurrentStepId(stepId)}
+        onClick={() => clusterWizardContext.setCurrentStepId(stepId)}
         isCurrent={clusterWizardContext.currentStepId === stepId}
         isDisabled={isStepDisabled(idx, stepId)}
         isValid={() => isStepValid(stepId, cluster)}
@@ -66,14 +66,14 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   const getStaticIpFormViewNavItem = (idx: number): ReactNode => {
     return (
       <WizardNavItem
-        step={idx}
+        stepIndex={idx}
         isExpandable={true}
         content="Static network configurations"
         key="static-network-configuration-form-view"
         isCurrent={isStaticIpStep(clusterWizardContext.currentStepId)}
         isDisabled={isStepIdxAfterCurrent(idx)}
       >
-        <WizardNav returnList>
+        <WizardNav isInnerList>
           {staticIpFormViewSubSteps.map((stepId, subIdx) => {
             return getNavItem(idx + subIdx, stepId);
           })}

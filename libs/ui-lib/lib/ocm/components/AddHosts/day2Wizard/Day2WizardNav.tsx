@@ -1,5 +1,5 @@
 import React from 'react';
-import { WizardNav, WizardNavItem } from '@patternfly/react-core/deprecated';
+import { WizardNav, WizardNavItem } from '@patternfly/react-core';
 import { Day2WizardStepsType, day2WizardStepNames, staticIpFormViewSubSteps } from './constants';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { isStaticIpStep } from '../../clusterWizard/wizardTransition';
@@ -18,10 +18,10 @@ const Day2WizardNav = () => {
   const getNavItem = (idx: number, stepId: Day2WizardStepsType): React.ReactNode => {
     return (
       <WizardNavItem
-        step={idx}
+        stepIndex={idx}
         key={stepId}
         content={day2WizardStepNames[stepId]}
-        onNavItemClick={() => wizardContext.setCurrentStepId(stepId)}
+        onClick={() => wizardContext.setCurrentStepId(stepId)}
         isCurrent={wizardContext.currentStepId === stepId}
         isDisabled={isStepDisabled(idx, stepId)}
       />
@@ -31,14 +31,14 @@ const Day2WizardNav = () => {
   const getStaticIpFormViewNavItem = (idx: number): React.ReactNode => {
     return (
       <WizardNavItem
-        step={idx}
+        stepIndex={idx}
         isExpandable={true}
         content="Static network configurations"
         key="static-network-configuration-form-view"
         isCurrent={isStaticIpStep(wizardContext.currentStepId)}
         isDisabled={isStepIdxAfterCurrent(idx)}
       >
-        <WizardNav returnList>
+        <WizardNav isInnerList>
           {staticIpFormViewSubSteps.map((stepId, subIdx) => {
             return getNavItem(idx + subIdx, stepId);
           })}
