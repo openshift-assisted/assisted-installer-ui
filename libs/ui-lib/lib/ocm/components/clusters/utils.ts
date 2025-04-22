@@ -3,9 +3,7 @@ import {
   LogsState,
   MonitoredOperator,
   MonitoredOperatorsList,
-  OperatorCreateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { selectOlmOperators } from '../../../common';
 
 // The Day2 cluster
 export const isAddHostsCluster = (cluster: Cluster) => cluster.kind === 'AddHostsCluster';
@@ -23,23 +21,6 @@ export const calculateCollectedLogsCount = (cluster: Cluster) => {
 
 export const getBuiltInOperators = (monitoredOperators: MonitoredOperatorsList = []) =>
   monitoredOperators.filter((operator: MonitoredOperator) => operator.operatorType === 'builtin');
-
-export const getOlmOperatorCreateParams = (cluster?: Cluster): OperatorCreateParams[] =>
-  selectOlmOperators(cluster).map((operator) => ({
-    name: operator.name,
-    properties: operator.properties,
-  }));
-
-export const getOlmOperatorCreateParamsByName = (cluster?: Cluster) =>
-  getOlmOperatorCreateParams(cluster).reduce(
-    (result: { [key: string]: OperatorCreateParams }, operator) => {
-      if (operator.name) {
-        result[operator.name] = operator;
-      }
-      return result;
-    },
-    {},
-  );
 
 export const canAbortInstallation = (cluster: Cluster) => {
   const allowedClusterStates: Cluster['status'][] = [

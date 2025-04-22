@@ -9,9 +9,10 @@ import {
 import { ClusterImageSetK8sResource } from '../../types';
 import { featureSupportLevelsACM } from '../../config/constants';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
-import { getOCPVersions, getVersionFromReleaseImage, getMajorMinorVersion } from '../helpers';
+import { getOCPVersions, getVersionFromReleaseImage } from '../helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import { getMajorMinorVersion } from '../../../common/utils';
 
 export type ACMFeatureSupportLevelProvider = PropsWithChildren<{
   clusterImages: ClusterImageSetK8sResource[];

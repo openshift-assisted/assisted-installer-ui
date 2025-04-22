@@ -114,7 +114,6 @@ const ClusterWizardContextProvider = ({
         staticIpInfo,
         cluster?.status,
         cluster?.hosts,
-        isSingleClusterFeatureEnabled,
         customManifestsStepNeedsToBeFilled,
       );
 

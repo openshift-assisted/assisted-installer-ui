@@ -37,7 +37,6 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
 
       navbar.clickOnNavItem('Operators');
       operatorsPage.singleOperatorsToggle().click();
-      operatorsPage.migrationToolkitForVirtualization().click();
       operatorsPage.openshiftVirtualization().click();
       cy.wait('@update-cluster').then(() => {
         commonActions.getDangerAlert().should('exist');
