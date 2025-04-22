@@ -86,6 +86,7 @@ const BundleCard = ({
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const { isFeatureSupported } = useNewFeatureSupportLevel();
   const opSpecs = useOperatorSpecs();
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   const hasUnsupportedOperators = !!bundle.operators?.some((op) => {
     const operatorSpec = opSpecs[op];
@@ -112,19 +113,27 @@ const BundleCard = ({
     : undefined;
 
   const onSelect = (checked: boolean) => {
-    const newBundles = checked
-      ? [...values.selectedBundles, bundle.id || '']
-      : values.selectedBundles.filter((sb) => sb !== bundle.id);
-    setFieldValue('selectedBundles', newBundles);
-    const newOperators = getNewBundleOperators(
-      values.selectedOperators,
-      newBundles,
-      bundles,
-      bundle,
-      preflightRequirements,
-      checked,
-    );
-    setFieldValue('selectedOperators', newOperators);
+    setIsProcessing(true);
+    try {
+      const newBundles = checked
+        ? [...values.selectedBundles, bundle.id || '']
+        : values.selectedBundles.filter((sb) => sb !== bundle.id);
+
+      setFieldValue('selectedBundles', newBundles);
+
+      const newOperators = getNewBundleOperators(
+        values.selectedOperators,
+        newBundles,
+        bundles,
+        bundle,
+        preflightRequirements,
+        checked,
+      );
+
+      setFieldValue('selectedOperators', newOperators);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const isSelected = values.selectedBundles.includes(bundle.id || '');
@@ -132,7 +141,7 @@ const BundleCard = ({
   return (
     <Tooltip content={disabledReason} hidden={!disabledReason}>
       <Card
-        isDisabled={!!disabledReason}
+        isDisabled={!!disabledReason || isProcessing}
         isFullHeight
         isSelectable
         isSelected={isSelected}
