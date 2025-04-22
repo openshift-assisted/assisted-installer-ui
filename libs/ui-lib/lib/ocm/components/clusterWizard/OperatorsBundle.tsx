@@ -19,10 +19,15 @@ import {
   Bundle,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
-import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import NewFeatureSupportLevelBadge, {
+  NewSupportLevelBadgeProps,
+} from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { ExternalLink, OperatorsValues, PopoverIcon, singleClusterBundles } from '../../../common';
 import { useFormikContext } from 'formik';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import {
+  GetFeatureSupportLevel,
+  useNewFeatureSupportLevel,
+} from '../../../common/components/newFeatureSupportLevels';
 import { useFeature } from '../../hooks/use-feature';
 import { useSelector } from 'react-redux';
 import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
@@ -73,6 +78,29 @@ const BundleLabel = ({ bundle }: { bundle: Bundle }) => {
   );
 };
 
+const getBundleSupportLevel = (
+  bundle: Bundle,
+  opSpecs: ReturnType<typeof useOperatorSpecs>,
+  getFeatureSupportLevel: GetFeatureSupportLevel,
+): NewSupportLevelBadgeProps['supportLevel'] => {
+  let supportLevel: NewSupportLevelBadgeProps['supportLevel'] = undefined;
+  if (bundle.operators) {
+    for (const op of bundle.operators) {
+      const operatorSpec = opSpecs[op];
+      if (operatorSpec) {
+        const opSupportLevel = getFeatureSupportLevel(operatorSpec.featureId);
+        if (opSupportLevel === 'dev-preview') {
+          supportLevel = 'dev-preview';
+          break;
+        } else if (opSupportLevel === 'tech-preview') {
+          supportLevel = 'tech-preview';
+        }
+      }
+    }
+  }
+  return supportLevel;
+};
+
 const BundleCard = ({
   bundle,
   bundles,
@@ -84,8 +112,10 @@ const BundleCard = ({
 }) => {
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const isSNO = useSelector(selectIsCurrentClusterSNO);
-  const { isFeatureSupported } = useNewFeatureSupportLevel();
+  const { isFeatureSupported, getFeatureSupportLevel } = useNewFeatureSupportLevel();
   const opSpecs = useOperatorSpecs();
+
+  const supportLevel = getBundleSupportLevel(bundle, opSpecs, getFeatureSupportLevel);
 
   const hasUnsupportedOperators = !!bundle.operators?.some((op) => {
     const operatorSpec = opSpecs[op];
@@ -163,7 +193,7 @@ const BundleCard = ({
                   <SplitItem>
                     <NewFeatureSupportLevelBadge
                       featureId={bundleSpec.featureId}
-                      supportLevel="dev-preview"
+                      supportLevel={supportLevel}
                     />
                   </SplitItem>
                 </Split>
