@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert } from '@patternfly/react-core';
 import {
-  RenderIf,
   REDHAT_CONSOLE_OPENSHIFT,
   canDownloadKubeconfig,
   isSNO,
@@ -16,6 +15,7 @@ import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegrati
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import PostInstallAlert from '../../../common/components/clusterDetail/PostInstallAlert';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -26,6 +26,7 @@ const ClusterDetailStatusMessages = ({
   cluster,
   showAddHostsInfo,
 }: ClusterDetailStatusMessagesProps) => {
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
@@ -43,23 +44,21 @@ const ClusterDetailStatusMessages = ({
 
   return (
     <>
-      <RenderIf
-        condition={
-          typeof inactiveDeletionHours === 'number' && canDownloadKubeconfig(cluster.status)
-        }
-      >
-        <Alert
-          variant="info"
-          isInline
-          title={
-            dateDifference > 0
-              ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
-                `deleted from Assisted Installer's service in ${dateDifference} days.`
-              : `Kubeconfig file was automatically deleted ${inactiveDeletionDays} days after installation.`
-          }
-        />
-      </RenderIf>
-      <RenderIf condition={showAddHostsAlert}>
+      {!isSingleClusterFeatureEnabled &&
+        typeof inactiveDeletionHours === 'number' &&
+        canDownloadKubeconfig(cluster.status) && (
+          <Alert
+            variant="info"
+            isInline
+            title={
+              dateDifference > 0
+                ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
+                  `deleted from Assisted Installer's service in ${dateDifference} days.`
+                : `Kubeconfig file was automatically deleted ${inactiveDeletionDays} days after installation.`
+            }
+          />
+        )}
+      {showAddHostsAlert && (
         <Alert
           variant="info"
           isInline
@@ -76,7 +75,7 @@ const ClusterDetailStatusMessages = ({
             </p>
           }
         />
-      </RenderIf>
+      )}
       {platformLink && <PostInstallAlert link={platformLink} />}
     </>
   );
