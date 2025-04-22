@@ -5,6 +5,7 @@ export * from './components';
 // re-export selected from common
 export * as Reducers from '../common/reducers';
 export * from '../common/api';
+export * from '../common/utils';
 export * from '../common/types';
 export * from '../common/features';
 
