@@ -25,7 +25,7 @@ describe('Create a new cluster with external partner integrations', () => {
       cy.wait(1000);
       ClusterDetailsForm.externalPartnerIntegrationsField.findDropdownItems().each((item) => {
         // Get the expected values from the externalPlatformTypes object
-        const platformType = item.parent().attr('id');
+        const platformType = item.attr('id');
         const { label, href } = externalPlatformTypes[platformType];
 
         // Assert the label
@@ -88,7 +88,7 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
       ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
       ClusterDetailsForm.externalPartnerIntegrationsField
-        .findDropdownToggle()
+        .findExternalPartnerIntegrationsField()
         .should('be.disabled');
     });
 
@@ -96,7 +96,7 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.10');
       ClusterDetailsForm.externalPartnerIntegrationsField
         .findDropdownItem('Nutanix')
-        .should('have.class', 'pf-m-aria-disabled');
+        .should('have.attr', 'aria-disabled', 'true');
     });
 
     it('Validate that Nutanix option is disabled when we choose SNO option', () => {
@@ -104,24 +104,28 @@ describe('Create a new cluster with external partner integrations', () => {
       ClusterDetailsForm.controlPlaneNodesField.selectControlPlaneNode(1);
       ClusterDetailsForm.externalPartnerIntegrationsField
         .findDropdownItem('Nutanix')
-        .should('have.class', 'pf-m-aria-disabled');
+        .should('have.attr', 'aria-disabled', 'true');
     });
     it('Validate that all dropdown is disabled in case we choose IBM/Z(s390x) architecture + SNO', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.18');
       ClusterDetailsForm.controlPlaneNodesField.selectControlPlaneNode(1);
       ClusterDetailsForm.cpuArchitectureField.selectCpuArchitecture('s390x');
       ClusterDetailsForm.externalPartnerIntegrationsField
-        .findDropdownToggle()
+        .findExternalPartnerIntegrationsField()
         .should('be.disabled');
     });
     it('Validate that for OCP version 4.15 we show Technology Preview badge in OCI option', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.15');
-      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdown().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findExternalPartnerIntegrationsField()
+        .click();
       ClusterDetailsForm.externalPartnerIntegrationsField.checkPlatformTechSupportLevel();
     });
     it('Validate that for OCP version 4.14 we show Developer Preview badge in OCI option', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsField.findDropdown().click();
+      ClusterDetailsForm.externalPartnerIntegrationsField
+        .findExternalPartnerIntegrationsField()
+        .click();
       ClusterDetailsForm.externalPartnerIntegrationsField.checkPlatformDevSupportLevel();
     });
   });
