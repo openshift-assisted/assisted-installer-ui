@@ -74,14 +74,16 @@ const CpuArchitectureDropdown = ({
   return !isDisabled ? (
     <FormGroup
       isInline
-      fieldId={fieldId}
+      id={`form-control__${fieldId}`}
       label={t('ai:CPU architecture')}
       isRequired
       name={'cpuArchiteture'}
     >
       <Dropdown
+        id={`${fieldId}-dropdown`}
         toggle={(toggleRef) => (
           <MenuToggle
+            id={fieldId}
             ref={toggleRef}
             onClick={() => setCpuArchOpen(!cpuArchOpen)}
             className="pf-u-w-100"

@@ -11,14 +11,13 @@ import {
   ToolbarItem,
   ToolbarProps,
   Tooltip,
-} from '@patternfly/react-core';
-import {
   Dropdown,
   DropdownItem,
-  DropdownToggle,
-  DropdownToggleCheckbox,
-} from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+  Checkbox,
+} from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './TableToolbar.css';
@@ -72,18 +71,15 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   const actionsDropdown = (
     <Dropdown
       onSelect={onActionsToggle}
-      toggle={
-        <DropdownToggle
-          onToggle={onActionsToggle}
-          toggleIndicator={CaretDownIcon}
-          isDisabled={isDisabled}
-        >
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle ref={toggleRef} isFullWidth onClick={onActionsToggle} isExpanded={actionsOpen}>
           {t('ai:Actions')}
-        </DropdownToggle>
-      }
+        </MenuToggle>
+      )}
       isOpen={actionsOpen}
-      dropdownItems={actions}
-    />
+    >
+      {actions}
+    </Dropdown>
   );
 
   const onSelectAll = () => setSelectedIDs(itemIDs);
@@ -96,32 +92,28 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
             <ToolbarItem>
               <Dropdown
                 onSelect={onSelectToggle}
-                toggle={
-                  <DropdownToggle
-                    splitButtonItems={[
-                      <DropdownToggleCheckbox
-                        id="select-checkbox"
-                        key="select-checkbox"
-                        aria-label={t('ai:Select all')}
-                        onChange={(_event, checked) => (checked ? onSelectAll() : onSelectNone())}
-                        isChecked={isChecked}
-                      >
-                        {selectedIDs.length} {t('ai:selected')}
-                      </DropdownToggleCheckbox>,
-                    ]}
-                    onToggle={onSelectToggle}
-                  />
-                }
+                toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                  <MenuToggle
+                    ref={toggleRef}
+                    isFullWidth
+                    onClick={onSelectToggle}
+                    isExpanded={selectOpen}
+                    badge={<Checkbox isChecked={isChecked} id={''} />}
+                  >
+                    {selectedIDs.length} {t('ai:selected')}
+                  </MenuToggle>
+                )}
                 isOpen={selectOpen}
-                dropdownItems={[
-                  <DropdownItem key="select-all" onClick={onSelectAll}>
+              >
+                <DropdownList>
+                  <DropdownItem id={'select-all'} key="select-all" onClick={onSelectAll}>
                     {t('ai:Select all')}
-                  </DropdownItem>,
-                  <DropdownItem key="select-none" onClick={onSelectNone}>
+                  </DropdownItem>
+                  <DropdownItem id={'select-none'} key="select-none" onClick={onSelectNone}>
                     {t('ai:Select none')}
-                  </DropdownItem>,
-                ]}
-              />
+                  </DropdownItem>
+                </DropdownList>
+              </Dropdown>
             </ToolbarItem>
             {children}
             <ToolbarItem>

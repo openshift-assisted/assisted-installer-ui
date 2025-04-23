@@ -5,15 +5,12 @@ import {
   FormHelperText,
   HelperTextItem,
   Button,
-} from '@patternfly/react-core';
-import {
   DropdownItem,
-  DropdownToggle,
+  MenuToggle,
+  MenuToggleElement,
   Dropdown,
   DropdownGroup,
-  DropdownSeparator,
-} from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+} from '@patternfly/react-core';
 
 import { OpenshiftVersionOptionType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -74,47 +71,32 @@ export const OpenShiftVersionDropdown = ({
   }, [customOpenshiftSelect]);
 
   const parsedVersionsForItems = getParsedVersions(items);
-  let lastY: string | undefined = '';
-  const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
+  const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ versions }) => {
     const items = versions.map(({ value, label }) => (
-      <DropdownItem key={value} id={value}>
+      <DropdownItem key={value} id={value} value={value}>
         {label}
       </DropdownItem>
     ));
-
-    if (lastY !== null && y !== lastY) {
-      items.push(<DropdownSeparator key={`separator-${y || ''}`} />);
-    }
-    lastY = y;
     return items;
   });
 
   const parsedVersionsForCustomItems = getParsedVersions(customItems);
-  let lastCustomY: string | undefined = '';
-  const customDropdownItems = parsedVersionsForCustomItems.parsedVersions.map(({ y, versions }) => {
+  const customDropdownItems = parsedVersionsForCustomItems.parsedVersions.map(({ versions }) => {
     const customItems = versions.map(({ value, label }) => (
-      <DropdownItem key={value} id={value}>
+      <DropdownItem key={value} id={value} value={value}>
         {label}
       </DropdownItem>
     ));
-
-    if (lastCustomY !== null && y !== lastCustomY) {
-      customItems.push(<DropdownSeparator key={`separator-${y || ''}`} />);
-    }
-    lastCustomY = y;
-
     return customItems;
   });
 
   const dropdownGroup = [
-    <DropdownGroup label="Latest releases" key="latest-releases">
-      {dropdownItems}
-    </DropdownGroup>,
-    <DropdownGroup
-      label="Custom releases"
-      key="custom-releases"
-      hidden={customDropdownItems.length === 0}
-    >
+    dropdownItems.length && (
+      <DropdownGroup label="Latest releases" key="latest-releases">
+        {dropdownItems}
+      </DropdownGroup>
+    ),
+    <DropdownGroup label="Custom releases" key="custom-releases">
       {customDropdownItems}
     </DropdownGroup>,
     <DropdownGroup key="all-available-versions">
@@ -132,9 +114,9 @@ export const OpenShiftVersionDropdown = ({
   ];
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const newLabel = event?.currentTarget.innerText;
-      const newValue = event?.currentTarget.id || '';
+    (event?: React.MouseEvent<Element, MouseEvent>, val?: string | number) => {
+      const newLabel = event?.currentTarget.textContent;
+      const newValue = (val as string) || '';
       if (newLabel && newValue !== 'all-versions') {
         setCurrent(newLabel);
         setValue(newValue);
@@ -144,19 +126,18 @@ export const OpenShiftVersionDropdown = ({
     [setValue],
   );
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {current}
-      </DropdownToggle>
-    ),
-    [setOpen, current, isDisabled],
+  const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      id={fieldId}
+      className="pf-u-w-100"
+      ref={toggleRef}
+      isFullWidth
+      onClick={() => setOpen(!isOpen)}
+      isDisabled={isDisabled}
+      isExpanded={isOpen}
+    >
+      {current}
+    </MenuToggle>
   );
 
   const helperText = getHelperText && getHelperText(field.value);
@@ -170,14 +151,17 @@ export const OpenShiftVersionDropdown = ({
     >
       <Dropdown
         {...field}
-        name={name}
-        id={fieldId}
-        onSelect={onSelect}
-        dropdownItems={dropdownGroup}
-        toggle={toggle}
+        id={`${fieldId}-dropdown`}
+        shouldFocusToggleOnSelect
         isOpen={isOpen}
-        className="pf-v5-u-w-100"
-      />
+        onSelect={onSelect}
+        onOpenChange={() => setOpen(!isOpen)}
+        className="pf-u-w-100"
+        toggle={dropdownToggle}
+      >
+        {dropdownGroup}
+      </Dropdown>
+
       {helperText && (
         <FormHelperText>
           <HelperText>

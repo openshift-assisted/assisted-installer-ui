@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, Stack, StackItem } from '@patternfly/react-core';
-import { DropdownItem } from '@patternfly/react-core/deprecated';
+import { DropdownItem } from '@patternfly/react-core';
 
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {

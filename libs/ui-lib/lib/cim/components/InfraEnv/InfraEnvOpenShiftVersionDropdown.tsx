@@ -1,6 +1,13 @@
 import * as React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import {
+  FormGroup,
+  Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { architectureData, getFieldId, SupportedCpuArchitecture } from '../../../common';
@@ -13,9 +20,11 @@ const InfraEnvOpenShiftVersionDropdown = ({ osImages }: { osImages: OsImage[] })
   const [osImageOpen, setOsImageOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
 
-  const onOsImageSelect = (e?: React.SyntheticEvent<HTMLDivElement>) => {
-    const val = e?.currentTarget.id || '';
-    setValue(val);
+  const onOsImageSelect = (
+    event?: React.MouseEvent<Element, MouseEvent>,
+    val?: string | number,
+  ) => {
+    setValue(val ? String(val) : '');
     setOsImageOpen(false);
   };
 
@@ -39,31 +48,35 @@ const InfraEnvOpenShiftVersionDropdown = ({ osImages }: { osImages: OsImage[] })
         )}
         hidden={!!filteredImages.length}
       >
-        <Dropdown
-          toggle={
-            <DropdownToggle
-              onToggle={() => setOsImageOpen(!osImageOpen)}
-              className="pf-u-w-100"
-              isDisabled={!filteredImages.length}
-            >
-              {value ? `OpenShift ${value}` : t('ai:No version selected')}
-            </DropdownToggle>
-          }
-          name="osImageVersion"
-          isOpen={osImageOpen}
-          onSelect={onOsImageSelect}
-          dropdownItems={[
-            <DropdownItem key={'NO_VALUE'} value={''}>
-              {t('ai:No version selected')}
-            </DropdownItem>,
-            ...filteredImages.map((image) => (
-              <DropdownItem key={image.openshiftVersion} id={image.openshiftVersion}>
-                {`OpenShift ${image.openshiftVersion}`}
-              </DropdownItem>
-            )),
-          ]}
-          className="pf-u-w-100"
-        />
+        <div className="pf-u-w-100">
+          <Dropdown
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                isFullWidth
+                onClick={() => setOsImageOpen(!osImageOpen)}
+                isExpanded={osImageOpen}
+                isDisabled={!filteredImages.length}
+              >
+                {value ? `OpenShift ${value}` : t('ai:No version selected')}
+              </MenuToggle>
+            )}
+            isOpen={osImageOpen}
+            onSelect={onOsImageSelect}
+          >
+            <DropdownList className="pf-u-w-100">
+              {filteredImages.map((image) => (
+                <DropdownItem
+                  key={image.openshiftVersion}
+                  id={image.openshiftVersion}
+                  value={image.openshiftVersion}
+                >
+                  {`OpenShift ${image.openshiftVersion}`}
+                </DropdownItem>
+              ))}
+            </DropdownList>
+          </Dropdown>
+        </div>
       </Tooltip>
     </FormGroup>
   );

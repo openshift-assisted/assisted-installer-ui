@@ -82,12 +82,14 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           <DiscoveryInstructions />
         </TextContent>
       </GridItem>
-      <AddHostDropdown
-        infraEnv={infraEnv}
-        agentClusterInstall={agentClusterInstall}
-        usedHostnames={usedHostnames}
-        {...rest}
-      />
+      <GridItem span={5}>
+        <AddHostDropdown
+          infraEnv={infraEnv}
+          agentClusterInstall={agentClusterInstall}
+          usedHostnames={usedHostnames}
+          {...rest}
+        />
+      </GridItem>
       <GridItem>
         <TextContent>
           <Text component="h3">{t('ai:Information and warnings')}</Text>

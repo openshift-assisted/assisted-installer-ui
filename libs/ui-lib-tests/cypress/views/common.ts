@@ -75,7 +75,7 @@ export const commonActions = {
     });
   },
   verifyIsAtStep: (stepTitle: string) => {
-    cy.get('h2', { timeout: 2000 }).should('contain.text', stepTitle);
+    cy.get('h2', { timeout: 3000 }).should('contain.text', stepTitle);
   },
   verifyIsAtSubStep: (subStepTitle: string) => {
     cy.get('h3', { timeout: 2000 }).should('contain.text', subStepTitle);

@@ -14,12 +14,16 @@ export class OpenShiftVersionField {
     return cy.get(OpenShiftVersionField.alias).findByText(/openshift version/i);
   }
 
+  static findOpenshiftVersionField() {
+    return cy.get('#form-input-openshiftVersion-field');
+  }
+
   static findDropdown() {
-    return cy.get(OpenShiftVersionField.alias).find('#form-input-openshiftVersion-field');
+    return cy.get('#form-input-openshiftVersion-field-dropdown');
   }
 
   static selectVersion(version: string) {
-    OpenShiftVersionField.findDropdown().click();
+    OpenShiftVersionField.findOpenshiftVersionField().click();
     OpenShiftVersionField.findDropdown().within(() => {
       cy.findByRole('menuitem', { name: new RegExp(`openshift ${version}`, 'i') }).click();
     });
