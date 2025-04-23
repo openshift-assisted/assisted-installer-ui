@@ -186,19 +186,17 @@ const BundleCard = ({
             <StackItem isFilled>
               <div>{bundle.description}</div>
             </StackItem>
-            {bundleSpec.featureId && (
-              <StackItem>
-                <Split>
-                  <SplitItem isFilled />
-                  <SplitItem>
-                    <NewFeatureSupportLevelBadge
-                      featureId={bundleSpec.featureId}
-                      supportLevel={supportLevel}
-                    />
-                  </SplitItem>
-                </Split>
-              </StackItem>
-            )}
+            <StackItem>
+              <Split>
+                <SplitItem isFilled />
+                <SplitItem>
+                  <NewFeatureSupportLevelBadge
+                    featureId={bundle.id || ''}
+                    supportLevel={supportLevel}
+                  />
+                </SplitItem>
+              </Split>
+            </StackItem>
           </Stack>
         </CardBody>
       </Card>
