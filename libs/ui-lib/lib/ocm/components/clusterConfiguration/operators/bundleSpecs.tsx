@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { List, ListItem } from '@patternfly/react-core';
-import { FeatureId, OPENSHIFT_AI_REQUIREMENTS_LINK } from '../../../../common';
+import { OPENSHIFT_AI_REQUIREMENTS_LINK } from '../../../../common';
 
 export type BundleSpec = {
-  featureId?: FeatureId;
   noSNO?: boolean;
   incompatibleBundles?: string[];
   Description: React.ComponentType;
@@ -28,7 +27,6 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
     ),
   },
   'openshift-ai-nvidia': {
-    featureId: 'OPENSHIFT_AI',
     noSNO: true,
     incompatibleBundles: ['openshift-ai-amd'],
     Description: () => (
@@ -46,7 +44,6 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
     docsLink: OPENSHIFT_AI_REQUIREMENTS_LINK,
   },
   'openshift-ai-amd': {
-    featureId: 'OPENSHIFT_AI',
     noSNO: true,
     incompatibleBundles: ['openshift-ai-nvidia'],
     Description: () => (
