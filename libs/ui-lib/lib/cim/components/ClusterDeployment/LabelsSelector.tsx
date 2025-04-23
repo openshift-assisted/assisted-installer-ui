@@ -1,7 +1,16 @@
 import React from 'react';
 import flatten from 'lodash-es/flatten.js';
-import { Label, LabelGroup, Split, SplitItem } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import {
+  Label,
+  LabelGroup,
+  Split,
+  SplitItem,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 
 import { MultiSelectField } from '../../../common';
@@ -122,23 +131,27 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
       </SplitItem>
       <SplitItem>
         <Dropdown
+          isOpen={addLabelOpen}
           onSelect={() => setAddLabelOpen(false)}
-          toggle={
-            <DropdownToggle
-              toggleIndicator={null}
-              onToggle={(_event, val) => setAddLabelOpen(val)}
-              style={{ padding: 0 }}
+          onOpenChange={() => setAddLabelOpen(!addLabelOpen)}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              variant="plain"
+              className="pf-v5-u-w-100"
+              ref={toggleRef}
+              isFullWidth
+              onClick={() => setAddLabelOpen(!addLabelOpen)}
+              isExpanded={addLabelOpen}
             >
               <Label color="blue" variant="outline" className="pf-m-overflow">
                 {t('ai:Add label')}
               </Label>
-            </DropdownToggle>
-          }
-          isOpen={addLabelOpen}
-          isPlain
-          dropdownItems={children}
-          menuAppendTo={() => document.body}
-        />
+            </MenuToggle>
+          )}
+          shouldFocusToggleOnSelect
+        >
+          <DropdownList>{children}</DropdownList>
+        </Dropdown>
       </SplitItem>
     </Split>
   );

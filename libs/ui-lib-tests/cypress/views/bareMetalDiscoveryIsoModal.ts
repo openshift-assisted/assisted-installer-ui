@@ -92,13 +92,13 @@ export const bareMetalDiscoveryIsoModal = {
     return cy.get(Cypress.env('imageTypeFieldId'));
   },
   openImageTypeDropdown: () => {
-    bareMetalDiscoveryIsoModal.getImageTypeField().find('button.pf-v5-c-dropdown__toggle').click();
+    bareMetalDiscoveryIsoModal.getImageTypeField().click();
   },
   getImageTypeDropdown: () => {
-    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-v5-c-dropdown__menu');
+    return cy.get(`${Cypress.env('imageTypeFieldId')}-dropdown`);
   },
   getSelectedImageType: () => {
-    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-v5-c-dropdown__toggle-text');
+    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-v5-c-menu-toggle__text');
   },
   selectImageType: (typeLabel: string) => {
     bareMetalDiscoveryIsoModal.openImageTypeDropdown();

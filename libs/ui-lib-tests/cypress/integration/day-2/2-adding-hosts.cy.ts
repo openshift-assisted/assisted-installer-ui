@@ -44,8 +44,7 @@ describe(`Assisted Installer Day2 flow`, () => {
     it('Can select a different CPU architecture and move next', () => {
       cy.findByRole('button', { name: 'Add hosts' }).click();
 
-      clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.selectCpuArchitecture('arm64');
+      clusterDetailsPage.selectCpuArchitecture('Arm64');
 
       commonActions.toNextDay2StepAfter('Cluster details');
 

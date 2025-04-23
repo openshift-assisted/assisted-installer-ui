@@ -12,12 +12,16 @@ export class CpuArchitectureField {
     return cy.get(CpuArchitectureField.alias).findByText(/cpu architecture/i);
   }
 
-  static findDropdown() {
+  static findCpuArchitectureField() {
     return cy.get(CpuArchitectureField.alias).find('#form-input-cpuArchitecture-field');
   }
 
+  static findDropdown() {
+    return cy.get(CpuArchitectureField.alias).find('#form-input-cpuArchitecture-field-dropdown');
+  }
+
   static selectCpuArchitecture(cpuArch: string) {
-    CpuArchitectureField.findDropdown().click();
+    CpuArchitectureField.findCpuArchitectureField().click();
     CpuArchitectureField.findDropdown().within(() => {
       cy.findByRole('menuitem', { name: new RegExp(`${cpuArch}`, 'i') }).click();
     });

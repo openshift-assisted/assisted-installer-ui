@@ -1,6 +1,11 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
+} from '@patternfly/react-core';
 import {
   Disk,
   DiskRole as DiskRoleValue,
@@ -83,7 +88,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   ];
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
+    (event?: React.MouseEvent<Element, MouseEvent>) => {
       const asyncFunc = async () => {
         if (event?.currentTarget.id) {
           setDisabled(true);
@@ -98,28 +103,29 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   );
 
   const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId, t);
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        className="pf-v5-c-button pf-m-link pf-m-inline"
-      >
-        {currentRoleLabel}
-      </DropdownToggle>
-    ),
-    [setOpen, currentRoleLabel, isDisabled],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      variant="plainText"
+      ref={toggleRef}
+      isFullWidth
+      onClick={() => setOpen(!isOpen)}
+      isExpanded={isOpen}
+      isDisabled={isDisabled}
+    >
+      {currentRoleLabel}
+    </MenuToggle>
   );
 
   return (
     <Dropdown
+      onOpenChange={() => setOpen(!isOpen)}
       onSelect={onSelect}
-      dropdownItems={dropdownItems}
       toggle={toggle}
       isOpen={isOpen}
       isPlain
-    />
+    >
+      <DropdownList>{dropdownItems}</DropdownList>
+    </Dropdown>
   );
 };
 

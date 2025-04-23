@@ -6,9 +6,12 @@ import {
   Split,
   SplitItem,
   Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
 } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import {
   CpuArchitecture,
@@ -199,7 +202,12 @@ export const ExternalPlatformDropdown = ({
     ] as ExternalPlatformInfo;
 
     return (
-      <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
+      <DropdownItem
+        value={platform}
+        key={platform}
+        id={platform}
+        isAriaDisabled={disabledReason !== undefined}
+      >
         <Split>
           <SplitItem>
             <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
@@ -234,29 +242,17 @@ export const ExternalPlatformDropdown = ({
     );
   });
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const selectedPlatform = event?.currentTarget.id as PlatformType;
-      setValue(selectedPlatform);
-      setOpen(false);
-      onChange(selectedPlatform);
-    },
-    [setOpen, setValue, onChange],
-  );
-
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-        isDisabled={dropdownIsDisabled}
-      >
-        {externalPlatformTypes[field.value as PlatformType]?.label}
-      </DropdownToggle>
-    ),
-    [externalPlatformTypes, field, dropdownIsDisabled],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      id={fieldId}
+      className="pf-v5-u-w-100"
+      ref={toggleRef}
+      onClick={() => setOpen(!isOpen)}
+      isDisabled={dropdownIsDisabled}
+      isExpanded={isOpen}
+    >
+      {externalPlatformTypes[field.value as PlatformType]?.label}
+    </MenuToggle>
   );
 
   return (
@@ -272,15 +268,20 @@ export const ExternalPlatformDropdown = ({
         distance={7}
       >
         <Dropdown
-          {...field}
-          id={fieldId}
-          dropdownItems={enabledItems}
+          id={`${fieldId}-dropdown`}
           toggle={toggle}
           isOpen={isOpen}
-          className="pf-v5-u-w-100"
-          onSelect={onSelect}
-          disabled={dropdownIsDisabled}
-        />
+          onOpenChange={() => setOpen(!isOpen)}
+          onSelect={(event) => {
+            const selectedPlatform = event?.currentTarget.id as PlatformType;
+            setValue(selectedPlatform);
+            setOpen(false);
+            onChange(selectedPlatform);
+          }}
+          shouldFocusToggleOnSelect
+        >
+          <DropdownList>{enabledItems}</DropdownList>
+        </Dropdown>
       </Tooltip>
     </FormGroup>
   );
