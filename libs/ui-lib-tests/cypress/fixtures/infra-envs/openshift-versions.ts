@@ -9,6 +9,7 @@ export const x86 = 'x86_64';
 export const arm64 = 'arm64';
 export const s390x = 's390x';
 export const ppc64le = 'ppc64le';
+export const arm64Text = 'Arm64';
 
 const versions: Record<string, Version> = {
   '4.9': {

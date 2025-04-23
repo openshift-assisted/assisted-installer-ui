@@ -5,11 +5,13 @@ import {
   HelperText,
   HelperTextItem,
   Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
 } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useField, useFormikContext } from 'formik';
 import { ClusterDetailsValues, getFieldId } from '../../../common';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
 import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
@@ -62,25 +64,25 @@ export const OcmBaseDomainField = ({
     ));
   }, [managedDomains]);
 
-  const dropdownToggle = React.useMemo(() => {
+  const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => {
     const selectedDomain = managedDomains.find((d) => d.domain === value);
     return (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
+      <MenuToggle
+        ref={toggleRef}
+        onClick={() => setOpen(!isOpen)}
+        isExpanded={isOpen}
         className="pf-v5-u-w-100"
       >
         {selectedDomain ? getManagedDomainLabel(selectedDomain) : 'Base domain'}
-      </DropdownToggle>
+      </MenuToggle>
     );
-  }, [managedDomains, value]);
+  };
 
   const toggleRedHatDnsService = (checked: boolean) =>
     setValue((checked && managedDomains.map((d) => d.domain)[0]) || '');
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
+    (event?: React.MouseEvent<Element, MouseEvent>): void => {
       const selectedDomain = event?.currentTarget.id || '';
       setValue(selectedDomain);
       setOpen(false);
@@ -111,11 +113,12 @@ export const OcmBaseDomainField = ({
         {useRedHatDnsService ? (
           <Dropdown
             toggle={dropdownToggle}
-            dropdownItems={dropdownItems}
             isOpen={isOpen}
             onSelect={onSelect}
-            className="pf-v5-u-w-100"
-          />
+            onOpenChange={() => setOpen(!isOpen)}
+          >
+            {dropdownItems}
+          </Dropdown>
         ) : (
           <OcmInputField
             name={INPUT_NAME}
