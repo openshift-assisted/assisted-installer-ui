@@ -11,6 +11,7 @@ export type BundleSpec = {
 
 export const bundleSpecs: { [key: string]: BundleSpec } = {
   virtualization: {
+    noSNO: true,
     Description: () => (
       <List>
         <ListItem>
