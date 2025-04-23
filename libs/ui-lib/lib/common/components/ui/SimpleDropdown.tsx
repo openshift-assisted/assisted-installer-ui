@@ -1,11 +1,11 @@
 import React from 'react';
 import {
   DropdownItem,
-  DropdownToggle,
+  MenuToggle,
+  MenuToggleElement,
   Dropdown,
-  DropdownProps,
-} from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+  DropdownPopperProps,
+} from '@patternfly/react-core';
 import { HostRole } from '../../../common/types/hosts';
 import './SimpleDropdown.css';
 
@@ -16,7 +16,7 @@ type SimpleDropdownProps = {
   setValue: (value?: string) => void;
   isDisabled: boolean;
   idPrefix?: string;
-  menuAppendTo?: DropdownProps['menuAppendTo'];
+  menuAppendTo?: DropdownPopperProps['appendTo'];
 };
 
 export const SimpleDropdown = ({
@@ -36,37 +36,38 @@ export const SimpleDropdown = ({
   ));
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
+    (event?: React.MouseEvent<Element, MouseEvent>) => {
       setValue(event?.currentTarget.id);
       setOpen(false);
     },
     [setValue, setOpen],
   );
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}
-        className="role-dropdown"
-      >
-        {current || defaultValue}
-      </DropdownToggle>
-    ),
-    [setOpen, current, isDisabled, defaultValue, idPrefix],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}
+      className="role-dropdown"
+      ref={toggleRef}
+      variant="plainText"
+      onClick={() => setOpen(!isOpen)}
+      isDisabled={isDisabled}
+      isExpanded={isOpen}
+    >
+      {current || defaultValue}
+    </MenuToggle>
   );
 
   return (
     <Dropdown
       onSelect={onSelect}
-      dropdownItems={dropdownItems}
+      onOpenChange={() => setOpen(!isOpen)}
       toggle={toggle}
       isOpen={isOpen}
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
-      menuAppendTo={menuAppendTo}
-    />
+      popperProps={{ appendTo: menuAppendTo }}
+    >
+      {dropdownItems}
+    </Dropdown>
   );
 };

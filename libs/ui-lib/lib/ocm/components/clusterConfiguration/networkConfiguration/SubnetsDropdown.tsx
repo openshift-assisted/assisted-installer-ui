@@ -1,6 +1,5 @@
 import React from 'react';
-import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import { Dropdown, DropdownItem, MenuToggle, MenuToggleElement } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { getFieldId, HostSubnet, NO_SUBNET_SET } from '../../../../common';
 
@@ -64,46 +63,42 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
   }, []);
 
   const dropdownItems = itemsSubnets.map(({ value, label, isDisabled }) => (
-    <DropdownItem key={value} id={value} isDisabled={isDisabled}>
+    <DropdownItem key={value} id={value} isDisabled={isDisabled} value={value}>
       {label}
     </DropdownItem>
   ));
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const currentValue = event?.currentTarget.innerText ?? currentDisplayValue;
-      setCurrentDisplayValue(currentValue);
-      setValue(event?.currentTarget.id);
-      setOpen(false);
-    },
-    [currentDisplayValue, setValue],
-  );
+  const onSelect = (
+    event?: React.MouseEvent<Element, MouseEvent>,
+    value?: string | number,
+  ): void => {
+    setCurrentDisplayValue(value as string);
+    setValue(event?.currentTarget.id);
+    setOpen(false);
+  };
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {currentDisplayValue}
-      </DropdownToggle>
-    ),
-    [setOpen, currentDisplayValue, isDisabled],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={() => setOpen(!isOpen)}
+      isExpanded={isOpen}
+      isDisabled={isDisabled}
+      className="pf-v5-u-w-100"
+    >
+      {currentDisplayValue}
+    </MenuToggle>
   );
 
   return (
     <Dropdown
       {...field}
-      name={name}
       id={fieldId}
+      onOpenChange={() => setOpen(!isOpen)}
       onSelect={onSelect}
-      dropdownItems={dropdownItems}
       toggle={toggle}
       isOpen={isOpen}
-      className="pf-v5-u-w-100"
-    />
+    >
+      {dropdownItems}
+    </Dropdown>
   );
 };
