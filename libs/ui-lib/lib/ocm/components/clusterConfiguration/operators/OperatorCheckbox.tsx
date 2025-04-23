@@ -201,6 +201,7 @@ const OperatorCheckbox = ({
             </HelperText>
           )
         }
+        data-testid={`operator-checkbox-${operatorId}`}
       />
     </FormGroup>
   );
