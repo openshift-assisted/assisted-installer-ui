@@ -1,11 +1,11 @@
 import React from 'react';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
-import { FeatureId, isPreviewSupportLevel } from '../../types';
+import { isPreviewSupportLevel } from '../../types';
 import { TechnologyPreview } from '../ui/TechnologyPreview';
 import { DeveloperPreview } from '../ui/DeveloperPreview';
 
 export type NewSupportLevelBadgeProps = {
-  featureId: FeatureId;
+  featureId: string;
   supportLevel: SupportLevel | undefined;
 };
 
