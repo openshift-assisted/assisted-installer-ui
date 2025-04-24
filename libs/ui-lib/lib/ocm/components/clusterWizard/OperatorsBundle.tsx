@@ -164,6 +164,7 @@ const BundleCard = ({
       <Card
         isDisabled={!!disabledReason}
         isFullHeight
+        isClickable
         isSelectable
         isSelected={isSelected}
         className="ai-bundle-card"
