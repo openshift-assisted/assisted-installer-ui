@@ -27,7 +27,7 @@
   "ai:{{operatorsCountString}} installed": "{{operatorsCountString}} installed",
   "ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching.": "{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} identified.",
   "ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching._plural": "{{selectedAgentsCount}} hosts selected out of {{matchingAgentsCount}} identified.",
-  "ai:* If you close this browser window, the webconsole URL can be found also inside the credentials file you have downloaded. Cluster installation is still in-progress.": "* If you close this browser window, the webconsole URL can be found also inside the credentials file you have downloaded. Cluster installation is still in-progress.",
+  "ai:* If you close this browser window, you will not be able to return.": "* If you close this browser window, you will not be able to return.",
   "ai:<i>This IP will be allocated by the DHCP server</i>": "<i>This IP address is allocated by the DHCP server.</i>",
   "ai:1 (Single Node OpenShift - not highly available cluster)": "1 (Single Node OpenShift - not highly available cluster)",
   "ai:1-{{count}} characters": "1-{{count}} characters",

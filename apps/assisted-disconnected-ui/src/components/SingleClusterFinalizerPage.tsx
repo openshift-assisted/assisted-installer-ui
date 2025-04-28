@@ -35,10 +35,7 @@ const SingleClusterFinalizerPage = ({
           <br />
           {t('ai:Click the webconsole URL below to check if it is up and running.')}
           <br />
-          {t(
-            'ai:* If you close this browser window, the webconsole URL can be found also inside the credentials file you have downloaded. Cluster installation is still in-progress.',
-          )}
-          <br />
+          {t('ai:* If you close this browser window, you will not be able to return.')}
         </EmptyStateBody>
         <EmptyStateFooter>
           {consoleUrl && (
