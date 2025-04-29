@@ -16,7 +16,7 @@ const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) =
     : `custom_manifest_${manifestIdx}`;
 };
 
-const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentProps) => {
+const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestComponentProps) => {
   const [{ value }] = useField<CustomManifestValues>({
     name: fieldName,
   });
@@ -29,37 +29,41 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
       data-testid={`expanded-manifest-${manifestIdx}`}
     >
       <Grid hasGutter span={12}>
-        <GridItem span={6}>
-          <TextInput
-            hidden={true}
-            name={`${fieldName}.fakeId`}
-            data-testid={`fakeId-${manifestIdx}`}
-            id={`fakeId-${manifestIdx}`}
-          />
-          <FolderDropdown name={`${fieldName}.folder`} data-testid={`folder-${manifestIdx}`} />
-        </GridItem>
-        <GridItem span={6}>
-          <OcmInputField
-            name={`${fieldName}.filename`}
-            isRequired
-            data-testid={`filename-${manifestIdx}`}
-            helperText={`Use yaml, yml or JSON file types. File size must not exceed ${fileSize(
-              MAX_FILE_SIZE_BYTES,
-              0,
-              'si',
-            )}.`}
-            label={
-              <>
-                <span>File name</span>{' '}
-                <PopoverIcon
-                  bodyContent={
-                    'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
-                  }
-                />
-              </>
-            }
-          />
-        </GridItem>
+        {!yamlOnly && (
+          <>
+            <GridItem span={6}>
+              <TextInput
+                hidden={true}
+                name={`${fieldName}.fakeId`}
+                data-testid={`fakeId-${manifestIdx}`}
+                id={`fakeId-${manifestIdx}`}
+              />
+              <FolderDropdown name={`${fieldName}.folder`} data-testid={`folder-${manifestIdx}`} />
+            </GridItem>
+            <GridItem span={6}>
+              <OcmInputField
+                name={`${fieldName}.filename`}
+                isRequired
+                data-testid={`filename-${manifestIdx}`}
+                helperText={`Use yaml, yml or JSON file types. File size must not exceed ${fileSize(
+                  MAX_FILE_SIZE_BYTES,
+                  0,
+                  'si',
+                )}.`}
+                label={
+                  <>
+                    <span>File name</span>{' '}
+                    <PopoverIcon
+                      bodyContent={
+                        'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
+                      }
+                    />
+                  </>
+                }
+              />
+            </GridItem>
+          </>
+        )}
         <GridItem span={12}>
           <OcmCodeField
             language={Language.yaml}
