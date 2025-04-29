@@ -17,7 +17,12 @@ import {
   ClusterDetailsFormFieldsProps,
 } from './ClusterDetailsFormFields';
 import { useFormikContext } from 'formik';
-import { ClusterDetailsValues, CpuArchitecture, SupportedCpuArchitecture } from '../../../common';
+import {
+  ClusterDetailsValues,
+  CpuArchitecture,
+  ManifestFormData,
+  SupportedCpuArchitecture,
+} from '../../../common';
 import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 import { ValidationSection } from './components/ValidationSection';
 import { toNumber } from 'lodash-es';
@@ -26,7 +31,6 @@ import {
   ResourcesObject,
   WatchK8sResults,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { ManifestFormData } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];

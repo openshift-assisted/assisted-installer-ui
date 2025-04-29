@@ -2,13 +2,14 @@ import React from 'react';
 import { Language } from '@patternfly/react-code-editor';
 import { ExpandableSection, Grid, GridItem, TextInput } from '@patternfly/react-core';
 import { useField } from 'formik';
-import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
-import { CustomManifestValues } from '../data/dataTypes';
+// todo
+import { OcmInputField, OcmCodeField } from '../../../ocm/components/ui/OcmFormFields';
+import { CustomManifestValues } from './types';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
-import { PopoverIcon } from '../../../../../common';
-import { MAX_FILE_SIZE_BYTES } from '../../../../../common/configurations';
-import { fileSize } from '../../../../../common/utils';
+import { PopoverIcon } from '../..';
+import { MAX_FILE_SIZE_BYTES } from '../../configurations';
+import { fileSize } from '../../utils';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename

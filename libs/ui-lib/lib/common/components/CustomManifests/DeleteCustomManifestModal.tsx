@@ -34,5 +34,3 @@ export const DeleteCustomManifestModal = ({
     }
   </Modal>
 );
-
-export default DeleteCustomManifestModal;

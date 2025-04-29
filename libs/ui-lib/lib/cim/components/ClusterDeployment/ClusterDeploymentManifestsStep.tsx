@@ -12,16 +12,15 @@ import {
   useWizardContext,
   useWizardFooter,
 } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, useTranslation } from '../../../common';
 import { FieldArray, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
-import { AgentClusterInstallK8sResource } from '../../types';
-import { CustomManifestsArray } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/components/CustomManifestsArray';
-import { ManifestFormData } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
 import {
   K8sResourceCommon,
   ResourcesObject,
   WatchK8sResults,
 } from '@openshift-console/dynamic-plugin-sdk';
+import { ClusterWizardStepHeader, ManifestFormData, useTranslation } from '../../../common';
+import { AgentClusterInstallK8sResource } from '../../types';
+import { CustomManifestsArray } from '../../../common/components/CustomManifests/CustomManifestsArray';
 
 const CustomManifestsForm = ({
   agentClusterInstall,
@@ -75,12 +74,10 @@ const CustomManifestsForm = ({
       <FieldArray name="manifests">
         {(arrayProps) => (
           <CustomManifestsArray
-            clusterId={''}
             {...arrayProps}
             yamlOnly
             agentClusterInstall={agentClusterInstall}
             onRemoveManifest={async (manifestId: number) => {
-              console.log('removing manifest', values.manifests[manifestId]);
               values.manifests.splice(manifestId, 1);
               return Promise.resolve();
             }}
