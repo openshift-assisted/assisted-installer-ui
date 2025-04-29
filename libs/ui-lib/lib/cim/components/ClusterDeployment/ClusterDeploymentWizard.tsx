@@ -160,6 +160,7 @@ export const ClusterDeploymentWizard = ({
                     agents={agents}
                     clusterImages={clusterImages}
                     infraEnv={infraEnv}
+                    useCustomManifests={useCustomManifests}
                   />
                 </WizardStep>
               </Wizard>
