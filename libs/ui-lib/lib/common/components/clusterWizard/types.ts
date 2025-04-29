@@ -35,6 +35,7 @@ export type ClusterDetailsValues = {
   customOpenshiftSelect: OpenshiftVersionOptionType | null;
   userManagedNetworking: boolean;
   controlPlaneCount: number;
+  addCustomManifests: boolean;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {

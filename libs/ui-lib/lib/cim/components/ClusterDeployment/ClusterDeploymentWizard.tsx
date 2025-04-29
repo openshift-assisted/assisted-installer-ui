@@ -2,16 +2,17 @@ import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Grid, GridItem, Wizard, WizardStep } from '@patternfly/react-core';
 import { AlertsContextProvider, LoadingState } from '../../../common';
+import { ClusterDeploymentWizardContextProvider } from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
-import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import { ClusterDeploymentWizardProps } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
+import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterDeploymentReviewStep from './ClusterDeploymentReviewStep';
 import { YamlPreview, useYamlPreview } from '../YamlPreview';
+import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { wizardStepNames } from './constants';
-import { ClusterDeploymentWizardContextProvider } from './ClusterDeploymentWizardContext';
+import { ClusterDeploymentWizardProps } from './types';
 import { isCIMFlow } from './helpers';
 
 export const ClusterDeploymentWizard = ({
@@ -32,6 +33,8 @@ export const ClusterDeploymentWizard = ({
   aiConfigMap,
   infraEnv,
   fetchInfraEnv,
+  useCustomManifests,
+  onSyncCustomManifests,
   initialStep,
   isPreviewOpen,
   setPreviewOpen,
@@ -58,6 +61,8 @@ export const ClusterDeploymentWizard = ({
   const startIndex = initialStep ? 4 : 2;
   const stepNames = wizardStepNames(t);
   const isAIFlow = !!infraEnv;
+  const customManifestsStep =
+    agentClusterInstall.metadata?.labels?.['addCustomManifests'] === 'true';
 
   return (
     <Grid style={{ height: '100%' }}>
@@ -87,6 +92,8 @@ export const ClusterDeploymentWizard = ({
                     isPreviewOpen={isPreviewOpen}
                     infraEnv={infraEnv}
                     isNutanix={isNutanix}
+                    useCustomManifests={useCustomManifests}
+                    onSyncCustomManifests={onSyncCustomManifests}
                   />
                 </WizardStep>
                 <WizardStep name={stepNames['automation']} id={'automation'} isDisabled />

@@ -21,6 +21,12 @@ import { ClusterDetailsValues, CpuArchitecture, SupportedCpuArchitecture } from 
 import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 import { ValidationSection } from './components/ValidationSection';
 import { toNumber } from 'lodash-es';
+import {
+  K8sResourceCommon,
+  ResourcesObject,
+  WatchK8sResults,
+} from '@openshift-console/dynamic-plugin-sdk';
+import { ManifestFormData } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -29,6 +35,14 @@ type ClusterDeploymentDetailsFormProps = {
   extensionAfter?: ClusterDetailsFormFieldsProps['extensionAfter'];
   isNutanix?: boolean;
   osImages?: OsImage[];
+  useCustomManifests?: (
+    agentClusterInstall?: AgentClusterInstallK8sResource,
+  ) => WatchK8sResults<ResourcesObject>;
+  onSyncCustomManifests?: (
+    agentClusterInstall: AgentClusterInstallK8sResource,
+    val: ManifestFormData,
+    existingManifests: K8sResourceCommon[],
+  ) => Promise<void>;
 };
 
 export const ClusterDeploymentDetailsFormWrapper = ({
@@ -91,6 +105,8 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   extensionAfter,
   isNutanix,
   osImages,
+  useCustomManifests,
+  onSyncCustomManifests,
 }) => {
   const { t } = useTranslation();
   const versions = React.useMemo(
@@ -143,6 +159,9 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           isNutanix={isNutanix}
           cpuArchitectures={cpuArchitectures}
           allowHighlyAvailable={allowHighlyAvailable}
+          agentClusterInstall={agentClusterInstall}
+          useCustomManifests={useCustomManifests}
+          onSyncCustomManifests={onSyncCustomManifests}
         />
       </StackItem>
     </>

@@ -2,11 +2,17 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
+import {
+  K8sResourceCommon,
+  ResourcesObject,
+  WatchK8sResults,
+} from '@openshift-console/dynamic-plugin-sdk';
 import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../common/components/clusters';
 import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
 import {
+  CheckboxField,
   InputField,
   RichInputField,
   acmClusterNameValidationMessages,
@@ -15,6 +21,9 @@ import { ClusterDetailsValues } from '../../../common/components/clusterWizard/t
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+import { AgentClusterInstallK8sResource } from '../../types';
+import DeleteCustomManifestModal from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/DeleteCustomManifestModal';
+import { ManifestFormData } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -25,6 +34,15 @@ export type ClusterDetailsFormFieldsProps = {
   isNutanix?: boolean;
   cpuArchitectures?: SupportedCpuArchitecture[];
   allowHighlyAvailable?: boolean;
+  agentClusterInstall?: AgentClusterInstallK8sResource;
+  useCustomManifests?: (
+    agentClusterInstall?: AgentClusterInstallK8sResource,
+  ) => WatchK8sResults<ResourcesObject>;
+  onSyncCustomManifests?: (
+    agentClusterInstall: AgentClusterInstallK8sResource,
+    val: ManifestFormData,
+    existingManifests: K8sResourceCommon[],
+  ) => Promise<void>;
 };
 
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -54,10 +72,17 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   isNutanix,
   cpuArchitectures,
   allowHighlyAvailable,
+  agentClusterInstall,
+  useCustomManifests,
+  onSyncCustomManifests,
 }) => {
+  const { t } = useTranslation();
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
+  const customManifests = useCustomManifests?.(agentClusterInstall);
+
+  const [showModal, setShowModal] = React.useState(false);
 
   const selectOptions = React.useMemo(
     () =>
@@ -90,7 +115,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const atListOneDiskEncryptionEnableOn =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
-  const { t } = useTranslation();
   return (
     <Form id="wizard-cluster-details__form">
       {isEditFlow ? (
@@ -155,6 +179,35 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
+
+      <CheckboxField
+        name={'addCustomManifests'}
+        label={'Include custom manifests'}
+        helperText={
+          'Additional manifests will be applied at the install time for advanced configuration of the cluster.'
+        }
+        onChange={(val) => {
+          if (!val && customManifests) {
+            setShowModal(true);
+          }
+        }}
+      />
+
+      <DeleteCustomManifestModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onDelete={() => {
+          if (agentClusterInstall && onSyncCustomManifests) {
+            void onSyncCustomManifests(
+              agentClusterInstall,
+              { manifests: [] },
+              Object.values(customManifests || {}) as K8sResourceCommon[],
+            );
+          }
+          setShowModal(false);
+        }}
+      />
+
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
