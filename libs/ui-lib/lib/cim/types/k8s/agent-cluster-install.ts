@@ -19,6 +19,9 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     clusterDeploymentRef?: {
       name: string;
     };
+    manifestsConfigMapRefs?: {
+      name: string;
+    }[];
     clusterMetadata?: {
       adminKubeconfigSecretRef?: {
         name: string;
