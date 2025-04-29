@@ -12,10 +12,16 @@ import { CustomManifest } from './CustomManifest';
 import { getEmptyManifest, getManifestName } from './utils';
 import { CustomManifestValues } from '../data/dataTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
+import { AgentClusterInstallK8sResource } from '../../../../../cim';
 
 const fieldName = 'manifests';
 
-type CustomManifestsArrayProps = { clusterId: string } & FieldArrayRenderProps;
+type CustomManifestsArrayProps = {
+  clusterId: string;
+  yamlOnly?: boolean;
+  agentClusterInstall?: AgentClusterInstallK8sResource;
+  onRemoveManifest?: (manifestId: number) => Promise<void>;
+} & FieldArrayRenderProps;
 type ExpandedManifests = { [manifestIdx: number]: boolean };
 
 const getExpandedManifestsInitialValue = (numManifests: number): ExpandedManifests => {
@@ -38,28 +44,32 @@ export const CustomManifestsArray = ({
   push,
   remove,
   clusterId,
+  onRemoveManifest,
   ...props
 }: CustomManifestsArrayProps) => {
-  const [field, { error }] = useField<CustomManifestValues[]>({
+  const [{ value }, { error }] = useField<CustomManifestValues[]>({
     name: fieldName,
   });
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [expandedManifests, setExpandedManifests] = React.useState<ExpandedManifests>(
-    getExpandedManifestsDefaultValue(field.value.length),
+    getExpandedManifestsDefaultValue(value.length),
   );
   const [manifestIdxToRemove, setManifestIdxToRemove] = React.useState<number | null>(null);
   const { addAlert } = useAlerts();
 
   const onAddManifest = React.useCallback(() => {
-    const newExpandedManifests = getExpandedManifestsInitialValue(field.value.length + 1);
-    newExpandedManifests[field.value.length] = true;
+    const newExpandedManifests = getExpandedManifestsInitialValue(value.length + 1);
+    newExpandedManifests[value.length] = true;
     setExpandedManifests(newExpandedManifests);
     push(getEmptyManifest());
-  }, [field.value.length, push]);
+  }, [value.length, push]);
 
   const removeManifest = React.useCallback(
-    async (clusterId: string, manifestIdx: number) => {
-      const manifestToRemove = field.value[manifestIdx];
+    async (manifestIdx: number) => {
+      if (onRemoveManifest) {
+        return onRemoveManifest(manifestIdx);
+      }
+      const manifestToRemove = value[manifestIdx];
       if ((manifestToRemove['folder'] as string) !== '' && manifestToRemove['filename'] !== '') {
         try {
           await ClustersAPI.removeCustomManifest(
@@ -67,6 +77,7 @@ export const CustomManifestsArray = ({
             manifestToRemove['folder'] as string,
             manifestToRemove['filename'],
           );
+          remove(manifestIdx);
         } catch (e) {
           handleApiError(e, () =>
             addAlert({
@@ -77,24 +88,23 @@ export const CustomManifestsArray = ({
         }
       }
     },
-    [addAlert, field.value],
+    [onRemoveManifest, value, clusterId, remove, addAlert],
   );
 
   const onConfirm = React.useCallback(async (): Promise<void> => {
     if (manifestIdxToRemove !== null) {
-      await removeManifest(clusterId, manifestIdxToRemove);
-      remove(manifestIdxToRemove);
+      await removeManifest(manifestIdxToRemove);
       setManifestIdxToRemove(null);
     }
-  }, [removeManifest, clusterId, remove, manifestIdxToRemove, setManifestIdxToRemove]);
+  }, [manifestIdxToRemove, removeManifest]);
 
-  if (field.value === undefined) {
+  if (value === undefined) {
     return <LoadingState />;
   }
 
   return (
     <>
-      {field.value.map((_data, manifestIdx) => {
+      {value.map((_data, manifestIdx) => {
         const onToggleExpand = (isExpanded: boolean) => {
           const newExpandedManifests = cloneDeep(expandedManifests);
           newExpandedManifests[manifestIdx] = isExpanded;
@@ -109,7 +119,7 @@ export const CustomManifestsArray = ({
               isDisabled={isViewerMode}
               onRemove={() => setManifestIdxToRemove(manifestIdx)}
               fieldName={fieldName}
-              enableRemoveManifest={field.value.length > 1}
+              enableRemoveManifest={value.length > 1}
               {...props}
             />
 

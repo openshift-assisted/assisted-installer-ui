@@ -7,7 +7,7 @@ import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
-import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
+import { ClusterDeploymentManifestsStep } from './ClusterDeploymentManifestsStep';
 import ClusterDeploymentReviewStep from './ClusterDeploymentReviewStep';
 import { YamlPreview, useYamlPreview } from '../YamlPreview';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
@@ -152,6 +152,15 @@ export const ClusterDeploymentWizard = ({
                     isNutanix={isNutanix}
                   />
                 </WizardStep>
+                {customManifestsStep && (
+                  <WizardStep name={stepNames['custom-manifests']} id="custom-manifests">
+                    <ClusterDeploymentManifestsStep
+                      agentClusterInstall={agentClusterInstall}
+                      useCustomManifests={useCustomManifests}
+                      onSyncCustomManifests={onSyncCustomManifests}
+                    />
+                  </WizardStep>
+                )}
                 <WizardStep name={stepNames['review']} id={'review'}>
                   <ClusterDeploymentReviewStep
                     onFinish={onFinish}

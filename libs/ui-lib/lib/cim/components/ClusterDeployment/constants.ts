@@ -1,6 +1,8 @@
 import { ClusterDeploymentWizardStepsType } from './types';
 import { TFunction } from 'i18next';
 
+type AdditionalWizardSteps = 'installation-type' | 'automation' | 'custom-manifests';
+
 export const clusterHostsSelectionLabel = (t: TFunction): { [key in string]: string } => ({
   hostCount: t('ai:Host Count'),
   masterLabels: t('ai:Host Labels'), // used in both masters-only and "auto-select masters" contexts
@@ -10,7 +12,7 @@ export const clusterHostsSelectionLabel = (t: TFunction): { [key in string]: str
 export const wizardStepNames = (
   t: TFunction,
 ): {
-  [key in ClusterDeploymentWizardStepsType | 'installation-type' | 'automation']: string;
+  [key in ClusterDeploymentWizardStepsType | AdditionalWizardSteps]: string;
 } => ({
   'installation-type': t('ai:Installation type'),
   automation: t('ai:Automation'),
@@ -18,6 +20,7 @@ export const wizardStepNames = (
   'hosts-selection': t('ai:Cluster hosts'),
   'hosts-discovery': t('ai:Cluster hosts'),
   networking: t('ai:Networking'),
+  'custom-manifests': t('ai:Custom manifests'),
   review: t('ai:Review and create'),
 });
 

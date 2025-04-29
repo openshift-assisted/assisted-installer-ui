@@ -25,4 +25,5 @@ export type CustomManifestComponentProps = {
   manifestIdx: number;
   fieldName: string;
   isDisabled?: boolean;
+  yamlOnly?: boolean;
 };

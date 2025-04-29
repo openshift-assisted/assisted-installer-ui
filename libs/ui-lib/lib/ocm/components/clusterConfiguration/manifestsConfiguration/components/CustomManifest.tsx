@@ -14,6 +14,7 @@ type CustomManifestProps = {
   isDisabled: boolean;
   fieldName: string;
   enableRemoveManifest: boolean;
+  yamlOnly?: boolean;
 };
 
 export const RemoveItemButton = ({
@@ -43,6 +44,7 @@ export const CustomManifest = ({
   isExpanded,
   isDisabled,
   enableRemoveManifest,
+  yamlOnly,
 }: CustomManifestProps) => {
   const [showRemoveButton, setShowRemoveButton] = React.useState(false);
   const updateShowRemoveButton = (value: boolean) => {
@@ -90,6 +92,7 @@ export const CustomManifest = ({
           fieldName={manifestFieldName}
           manifestIdx={manifestIdx}
           isDisabled={isDisabled}
+          yamlOnly={yamlOnly}
         />
       ) : (
         <CollapsedManifest manifestIdx={manifestIdx} fieldName={manifestFieldName} />
