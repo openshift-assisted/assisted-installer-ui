@@ -12,7 +12,7 @@ type ConfirmationModalProps = {
   onConfirm: () => void;
 };
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   title,
   titleIconVariant,
   content,
@@ -47,5 +47,3 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     </Modal>
   );
 };
-
-export default ConfirmationModal;

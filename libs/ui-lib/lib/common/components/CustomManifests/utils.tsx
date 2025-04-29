@@ -1,4 +1,4 @@
-import { CustomManifestValues, ListManifestsExtended, ManifestFormData } from '../data/dataTypes';
+import { CustomManifestValues, ListManifestsExtended, ManifestFormData } from './types';
 
 export const getManifestName = (manifestIdx: number) => `Custom manifest ${manifestIdx + 1}`;
 

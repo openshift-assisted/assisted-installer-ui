@@ -22,8 +22,8 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
 import { AgentClusterInstallK8sResource } from '../../types';
-import DeleteCustomManifestModal from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/DeleteCustomManifestModal';
-import { ManifestFormData } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import { DeleteCustomManifestModal } from '../../../common/components/CustomManifests/DeleteCustomManifestModal';
+import { ManifestFormData } from '../../../common/components/CustomManifests/types';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;

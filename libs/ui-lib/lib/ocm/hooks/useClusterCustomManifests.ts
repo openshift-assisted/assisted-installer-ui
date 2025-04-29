@@ -8,7 +8,7 @@ import {
 import { ClustersAPI } from '../services/apis';
 import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { getErrorMessage } from '../../common/utils';
-import { ListManifestsExtended } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import { ListManifestsExtended } from '../../common/components/CustomManifests/types';
 
 const { addAlert } = alertsSlice.actions;
 
