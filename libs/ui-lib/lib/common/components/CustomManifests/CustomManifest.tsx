@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Flex, FlexItem, ExpandableSectionToggle, Button } from '@patternfly/react-core';
 import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
-import { getFormikArrayItemFieldName } from '../../../../../common';
+import { getFormikArrayItemFieldName } from '../..';
 import { getManifestName } from './utils';
 import CollapsedManifest from './CollapsedManifest';
 import ExpandedManifest from './ExpandedManifest';

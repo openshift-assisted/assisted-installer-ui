@@ -22,7 +22,7 @@ import { AgentMachineK8sResource } from '../Hypershift/types';
 import { AddHostDropdownProps, ProvisioningConfigResult } from '../InfraEnv/types';
 import { AddHostModalProps, EditBMHModalProps, UploadActionModalProps } from '../modals/types';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import { ManifestFormData } from '../../../ocm/components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import { ManifestFormData } from '../../../common/components/CustomManifests/types';
 
 export type EditAgentModalProps = {
   agent: AgentK8sResource;

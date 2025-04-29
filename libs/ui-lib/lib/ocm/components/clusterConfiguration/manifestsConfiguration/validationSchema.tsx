@@ -1,14 +1,13 @@
 import * as Yup from 'yup';
-import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
+
 import {
   getMaxFileSizeMessage,
-  validateFileSize,
-  validateFileName,
-  validateFileType,
   INCORRECT_TYPE_FILE_MESSAGE,
-} from '../../../../../common/utils';
-
-import * as yup from 'yup';
+  validateFileName,
+  validateFileSize,
+  validateFileType,
+} from '../../../../common/utils';
+import { CustomManifestValues, ManifestFormData } from '../../../../common';
 
 /* eslint-disable */
 type CustomManifestMapper = (a: CustomManifestValues) => string;
@@ -33,7 +32,7 @@ Yup.addMethod(
       if (!list) return true;
 
       const seen = new Set();
-      const errors: yup.ValidationError[] = [];
+      const errors: Yup.ValidationError[] = [];
 
       list.forEach((item, index) => {
         const mappedValue = mapper(item);
@@ -49,7 +48,7 @@ Yup.addMethod(
       });
 
       if (errors.length > 0) {
-        throw new yup.ValidationError(errors);
+        throw new Yup.ValidationError(errors);
       }
 
       return true;
