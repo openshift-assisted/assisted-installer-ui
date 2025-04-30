@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { List, ListItem } from '@patternfly/react-core';
-import { OPENSHIFT_AI_REQUIREMENTS_LINK } from '../../../../common';
 
 export type BundleSpec = {
   noSNO?: boolean;
@@ -27,36 +26,16 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
       </List>
     ),
   },
-  'openshift-ai-nvidia': {
+  'openshift-ai': {
     noSNO: true,
-    incompatibleBundles: ['openshift-ai-amd'],
+    incompatibleBundles: [],
     Description: () => (
       <List>
-        <ListItem>At least two worker nodes.</ListItem>
         <ListItem>
-          Each worker node requires 32 additional GiB of memory and 8 additional CPUs.
-        </ListItem>
-        <ListItem>At least one supported NVIDIA GPU.</ListItem>
-        <ListItem>
-          Nodes that have NVIDIA GPUs installed need to have secure boot disabled.
+          NVIDIA GPU, AMD GPU and Kernel Module Management may or may not be installed based on the
+          GPU discovered on your hosts.
         </ListItem>
       </List>
     ),
-    docsLink: OPENSHIFT_AI_REQUIREMENTS_LINK,
-  },
-  'openshift-ai-amd': {
-    noSNO: true,
-    incompatibleBundles: ['openshift-ai-nvidia'],
-    Description: () => (
-      <List>
-        <ListItem>At least two worker nodes.</ListItem>
-        <ListItem>
-          Each worker node requires 32 additional GiB of memory and 8 additional CPUs.
-        </ListItem>
-        <ListItem>At least one supported AMD GPU.</ListItem>
-        <ListItem>Nodes that have AMD GPUs installed need to have secure boot disabled.</ListItem>
-      </List>
-    ),
-    docsLink: OPENSHIFT_AI_REQUIREMENTS_LINK,
   },
 };
