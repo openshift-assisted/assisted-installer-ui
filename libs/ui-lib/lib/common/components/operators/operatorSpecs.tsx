@@ -30,6 +30,7 @@ import {
   AUTHORINO_OPERATOR_LINK,
   CNV_LINK,
   FENCE_AGENTS_REMEDIATION_LINK,
+  getKubeDeschedulerLink,
   getLsoLink,
   getLvmsDocsLink,
   getMceDocsLink,
@@ -154,10 +155,10 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
     [OPERATOR_NAME_KUBE_DESCHEDULER]: {
       title: 'Kube Descheduler',
       featureId: 'KUBE_DESCHEDULER',
-      Description: () => (
+      Description: ({ openshiftVersion }) => (
         <>
           Evicts pods to reschedule them onto more suitable nodes.{' '}
-          <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
+          <ExternalLink href={getKubeDeschedulerLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
