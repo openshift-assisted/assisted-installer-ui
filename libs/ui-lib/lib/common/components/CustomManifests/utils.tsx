@@ -1,6 +1,9 @@
+import { TFunction } from 'i18next';
 import { CustomManifestValues, ListManifestsExtended, ManifestFormData } from './types';
 
-export const getManifestName = (manifestIdx: number) => `Custom manifest ${manifestIdx + 1}`;
+export const getManifestName = (manifestIdx: number, t: TFunction) => {
+  return t('ai:Custom manifest {{num}}', { num: manifestIdx + 1 });
+};
 
 export const getFormData = (manifests: ListManifestsExtended): ManifestFormData => {
   return {
