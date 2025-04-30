@@ -7,7 +7,7 @@ import { OcmInputField, OcmCodeField } from '../../../ocm/components/ui/OcmFormF
 import { CustomManifestValues } from './types';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
-import { PopoverIcon } from '../..';
+import { PopoverIcon, useTranslation } from '../..';
 import { MAX_FILE_SIZE_BYTES } from '../../configurations';
 import { fileSize } from '../../utils';
 
@@ -18,6 +18,8 @@ const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) =
 };
 
 const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestComponentProps) => {
+  const { t } = useTranslation();
+
   const [{ value }] = useField<CustomManifestValues>({
     name: fieldName,
   });
@@ -46,18 +48,17 @@ const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestCo
                 name={`${fieldName}.filename`}
                 isRequired
                 data-testid={`filename-${manifestIdx}`}
-                helperText={`Use yaml, yml or JSON file types. File size must not exceed ${fileSize(
-                  MAX_FILE_SIZE_BYTES,
-                  0,
-                  'si',
-                )}.`}
+                helperText={t(
+                  'ai:Use yaml, yml or JSON file types. File size must not exceed {{size}}.',
+                  { size: fileSize(MAX_FILE_SIZE_BYTES, 0, 'si') },
+                )}
                 label={
                   <>
-                    <span>File name</span>{' '}
+                    <span>{t('ai:File name')}</span>{' '}
                     <PopoverIcon
-                      bodyContent={
-                        'File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"'
-                      }
+                      bodyContent={t(
+                        'ai:File name determines order of executing manifests during the installation. For example "manifest1.yaml" will be applied before "manifest2.yaml"',
+                      )}
                     />
                   </>
                 }
@@ -70,7 +71,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestCo
             language={Language.yaml}
             name={`${fieldName}.manifestYaml`}
             dataTestid={`yamlContent-${manifestIdx}`}
-            label="Content"
+            label={t('ai:Content')}
             isRequired
             downloadFileName={getDownloadFileName(manifestIdx, value)}
             isReadOnly

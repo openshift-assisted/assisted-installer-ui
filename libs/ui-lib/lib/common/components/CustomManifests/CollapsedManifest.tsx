@@ -4,8 +4,10 @@ import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circl
 import { useField } from 'formik';
 import { CustomManifestValues } from './types';
 import { CustomManifestComponentProps } from './propTypes';
+import { useTranslation } from '../../hooks';
 
 const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentProps) => {
+  const { t } = useTranslation();
   const [{ value }, { error }] = useField<CustomManifestValues>({
     name: fieldName,
   });
@@ -23,7 +25,7 @@ const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentPr
                   icon={<InfoCircleIcon />}
                   data-testid="manifest-errors-label"
                 >
-                  Missing information
+                  {t('ai:Missing information')}
                 </Label>
               </FlexItem>
             </>

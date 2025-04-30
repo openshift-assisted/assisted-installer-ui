@@ -8,6 +8,7 @@ import { LoadingState, ConfirmationModal } from '../ui';
 import { CustomManifest } from './CustomManifest';
 import { CustomManifestValues } from './types';
 import { getEmptyManifest, getManifestName } from './utils';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const fieldName = 'manifests';
 
@@ -44,6 +45,8 @@ export const CustomManifestsArray = ({
   isViewerMode,
   ...props
 }: CustomManifestsArrayProps) => {
+  const { t } = useTranslation();
+
   const [{ value }, { error }] = useField<CustomManifestValues[]>({
     name: fieldName,
   });
@@ -108,7 +111,7 @@ export const CustomManifestsArray = ({
               data-testid="add-manifest"
               isDisabled={!!error}
             >
-              Add another manifest
+              {t('ai:Add another manifest')}
             </Button>
           </FlexItem>
         </Flex>
@@ -116,15 +119,17 @@ export const CustomManifestsArray = ({
 
       {manifestIdxToRemove !== null && (
         <ConfirmationModal
-          title={`Delete ${getManifestName(manifestIdxToRemove)}?`}
+          title={t('ai:Delete {{name}}?', { name: getManifestName(manifestIdxToRemove, t) })}
           titleIconVariant="warning"
-          confirmationButtonText="Delete"
+          confirmationButtonText={t('ai:Delete')}
           confirmationButtonVariant={ButtonVariant.danger}
           content={
             <>
-              <p>{`All the data entered for ${getManifestName(
-                manifestIdxToRemove,
-              )} will be lost`}</p>
+              <p>
+                {t('ai:All the data entered for {{name}} will be lost', {
+                  name: getManifestName(manifestIdxToRemove, t),
+                })}
+              </p>
             </>
           }
           onClose={() => setManifestIdxToRemove(null)}

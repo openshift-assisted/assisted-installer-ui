@@ -145,8 +145,9 @@ export const ClusterDeploymentManifestsStep = ({
       <GridItem>
         <TextContent>
           <Text component={TextVariants.small}>
-            Upload additional manifests that will be applied at the install time for advanced
-            configuration of the cluster.
+            {t(
+              'ai:Upload additional manifests that will be applied at the install time for advanced configuration of the cluster.',
+            )}
           </Text>
         </TextContent>
       </GridItem>
@@ -154,9 +155,9 @@ export const ClusterDeploymentManifestsStep = ({
         <Alert
           isInline
           variant="warning"
-          title={
-            'No validation is performed for the custom manifest contents. Only include resources that are necessary for initial setup to reduce the chance of installation failures.'
-          }
+          title={t(
+            'ai:No validation is performed for the custom manifest contents. Only include resources that are necessary for initial setup to reduce the chance of installation failures.',
+          )}
         />
       </GridItem>
       <GridItem>
