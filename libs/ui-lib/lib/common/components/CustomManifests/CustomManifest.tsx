@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Flex, FlexItem, ExpandableSectionToggle, Button } from '@patternfly/react-core';
 import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
-import { getFormikArrayItemFieldName } from '../..';
+import { getFormikArrayItemFieldName, useTranslation } from '../..';
 import { getManifestName } from './utils';
 import CollapsedManifest from './CollapsedManifest';
 import ExpandedManifest from './ExpandedManifest';
@@ -46,6 +46,7 @@ export const CustomManifest = ({
   enableRemoveManifest,
   yamlOnly,
 }: CustomManifestProps) => {
+  const { t } = useTranslation();
   const [showRemoveButton, setShowRemoveButton] = React.useState(false);
   const updateShowRemoveButton = (value: boolean) => {
     if (isDisabled) {
@@ -73,7 +74,7 @@ export const CustomManifest = ({
             direction="down"
             data-testid={`toggle-manifest-${manifestIdx}`}
           >
-            {getManifestName(manifestIdx)}
+            {getManifestName(manifestIdx, t)}
           </ExpandableSectionToggle>
         </FlexItem>
         {!isDisabled && enableRemoveManifest && (
