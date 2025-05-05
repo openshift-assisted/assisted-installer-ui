@@ -2,12 +2,10 @@ import React from 'react';
 import { Language } from '@patternfly/react-code-editor';
 import { ExpandableSection, Grid, GridItem, TextInput } from '@patternfly/react-core';
 import { useField } from 'formik';
-// todo
-import { OcmInputField, OcmCodeField } from '../../../ocm/components/ui/OcmFormFields';
 import { CustomManifestValues } from './types';
 import { FolderDropdown } from './FolderDropdown';
 import { CustomManifestComponentProps } from './propTypes';
-import { PopoverIcon, useTranslation } from '../..';
+import { CodeField, InputField, PopoverIcon, useTranslation } from '../..';
 import { MAX_FILE_SIZE_BYTES } from '../../configurations';
 import { fileSize } from '../../utils';
 
@@ -17,7 +15,12 @@ const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) =
     : `custom_manifest_${manifestIdx}`;
 };
 
-const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestComponentProps) => {
+const ExpandedManifest = ({
+  fieldName,
+  manifestIdx,
+  isDisabled,
+  yamlOnly,
+}: CustomManifestComponentProps) => {
   const { t } = useTranslation();
 
   const [{ value }] = useField<CustomManifestValues>({
@@ -44,7 +47,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestCo
               <FolderDropdown name={`${fieldName}.folder`} data-testid={`folder-${manifestIdx}`} />
             </GridItem>
             <GridItem span={6}>
-              <OcmInputField
+              <InputField
                 name={`${fieldName}.filename`}
                 isRequired
                 data-testid={`filename-${manifestIdx}`}
@@ -52,6 +55,7 @@ const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestCo
                   'ai:Use yaml, yml or JSON file types. File size must not exceed {{size}}.',
                   { size: fileSize(MAX_FILE_SIZE_BYTES, 0, 'si') },
                 )}
+                isDisabled={isDisabled}
                 label={
                   <>
                     <span>{t('ai:File name')}</span>{' '}
@@ -67,12 +71,13 @@ const ExpandedManifest = ({ fieldName, manifestIdx, yamlOnly }: CustomManifestCo
           </>
         )}
         <GridItem span={12}>
-          <OcmCodeField
+          <CodeField
             language={Language.yaml}
             name={`${fieldName}.manifestYaml`}
             dataTestid={`yamlContent-${manifestIdx}`}
             label={t('ai:Content')}
             isRequired
+            isDisabled={isDisabled}
             downloadFileName={getDownloadFileName(manifestIdx, value)}
             isReadOnly
             showCustomControls
