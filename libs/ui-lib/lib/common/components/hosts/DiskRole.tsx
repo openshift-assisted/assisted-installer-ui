@@ -1,6 +1,5 @@
 import React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import { Dropdown, DropdownItem, MenuToggle } from '@patternfly/react-core';
 import {
   Disk,
   DiskRole as DiskRoleValue,
@@ -73,6 +72,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
     <DropdownItem
       key="install"
       id="install"
+      value="install"
       isDisabled={!disk.installationEligibility?.eligible}
       description={
         !disk.installationEligibility?.eligible && t('ai:Disk is not eligible for installation')
@@ -83,11 +83,14 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   ];
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
+    (
+      event: React.MouseEvent | React.KeyboardEvent | undefined,
+      value: string | number | undefined,
+    ) => {
       const asyncFunc = async () => {
-        if (event?.currentTarget.id) {
+        if (value) {
           setDisabled(true);
-          await onDiskRole(host.id, disk.id, event.currentTarget.id as DiskRoleValue);
+          await onDiskRole(host.id, disk.id, value as DiskRoleValue);
           setDisabled(false);
         }
         setOpen(false);
@@ -99,27 +102,24 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
 
   const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId, t);
   const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        className="pf-v5-c-button pf-m-link pf-m-inline"
-      >
-        {currentRoleLabel}
-      </DropdownToggle>
-    ),
-    [setOpen, currentRoleLabel, isDisabled],
+    () => (toggleRef: React.RefObject<any>) =>
+      (
+        <MenuToggle
+          ref={toggleRef}
+          onClick={() => setOpen(!isOpen)}
+          isDisabled={isDisabled}
+          className="pf-v5-c-button pf-m-link pf-m-inline"
+        >
+          {currentRoleLabel}
+        </MenuToggle>
+      ),
+    [setOpen, currentRoleLabel, isDisabled, isOpen],
   );
 
   return (
-    <Dropdown
-      onSelect={onSelect}
-      dropdownItems={dropdownItems}
-      toggle={toggle}
-      isOpen={isOpen}
-      isPlain
-    />
+    <Dropdown onSelect={onSelect} toggle={toggle} isOpen={isOpen} isPlain>
+      {dropdownItems}
+    </Dropdown>
   );
 };
 

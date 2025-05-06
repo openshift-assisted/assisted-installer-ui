@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextContent, Text, TextVariants, GridItem } from '@patternfly/react-core';
+import { Content, ContentVariants, GridItem } from '@patternfly/react-core';
 import { WithTestID } from '../../types';
 
 interface SectionTitleProps extends WithTestID {
@@ -8,11 +8,11 @@ interface SectionTitleProps extends WithTestID {
 
 const SectionTitle = ({ title, testId }: SectionTitleProps) => (
   <GridItem>
-    <TextContent>
-      <Text data-testid={testId} component={TextVariants.h3}>
+    <Content>
+      <Content data-testid={testId} component={ContentVariants.h3}>
         {title}
-      </Text>
-    </TextContent>
+      </Content>
+    </Content>
   </GridItem>
 );
 

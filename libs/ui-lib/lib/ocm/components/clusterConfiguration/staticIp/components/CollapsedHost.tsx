@@ -1,12 +1,4 @@
-import {
-  Flex,
-  FlexItem,
-  Label,
-  StackItem,
-  TextContent,
-  TextVariants,
-  Text,
-} from '@patternfly/react-core';
+import { Flex, FlexItem, Label, StackItem, Content, ContentVariants } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import React from 'react';
 
@@ -49,9 +41,9 @@ const HostSummary: React.FC<HostSummaryProps> = ({
       <StackItem data-testid={`collapsed-host-${hostIdx}`}>
         <Flex>
           <FlexItem>
-            <TextContent>
-              <Text component={TextVariants.small}>{title}</Text>
-            </TextContent>
+            <Content>
+              <Content component={ContentVariants.small}>{title}</Content>
+            </Content>
           </FlexItem>
           {hasError && (
             <Label

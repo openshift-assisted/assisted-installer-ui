@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { AboutModal as PFAboutModal, TextContent } from '@patternfly/react-core';
+import { AboutModal as PFAboutModal, Content } from '@patternfly/react-core';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config';
 import redHatLogo from '/logo.svg';
 import { Services, Api, Constants, DetailList, DetailItem } from '@openshift-assisted/ui-lib/ocm';
@@ -64,7 +64,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
       brandImageSrc={redHatLogo}
       brandImageAlt="Assisted Installer Logo"
     >
-      <TextContent>
+      <Content>
         <DetailList>
           <>
             {releaseTag && <DetailItem title="Release tag" value={releaseTag} />}
@@ -93,7 +93,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
             })}
           </>
         </DetailList>
-      </TextContent>
+      </Content>
     </PFAboutModal>
   );
 };

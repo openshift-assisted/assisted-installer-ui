@@ -2,8 +2,7 @@ import React from 'react';
 import {
   Popover,
   Button,
-  Text,
-  TextContent,
+  Content,
   FlexItem,
   Flex,
   Stack,
@@ -59,38 +58,38 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   const { t } = useTranslation();
   if (['installing-in-progress'].includes(status)) {
     return (
-      <TextContent>
+      <Content>
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
   if (['error', 'cancelled', 'installing-pending-user-action'].includes(status)) {
     return (
-      <TextContent>
-        <Text>
+      <Content>
+        <Content component="p">
           {details}
           <br />
           {toSentence(statusInfo)}
-        </Text>
+        </Content>
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
   if (['installed'].includes(status)) {
     return (
-      <TextContent>
-        <Text>{details}</Text>
+      <Content>
+        <Content component="p">{details}</Content>
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
   if (['added-to-existing-cluster'].includes(status)) {
     return (
-      <TextContent>
-        <Text>{details}</Text>
+      <Content>
+        <Content component="p">{details}</Content>
         {!autoCSR && (
           <>
             <br />
@@ -107,7 +106,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
           </>
         )}
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
@@ -125,9 +124,9 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   ) {
     // No additional error messages shown
     return (
-      <TextContent>
-        <Text>{details}</Text>
-      </TextContent>
+      <Content>
+        <Content component="p">{details}</Content>
+      </Content>
     );
   }
 
@@ -136,9 +135,9 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       {additionalPopoverContent}
       <StackItem>
         {details && (
-          <TextContent>
-            <Text>{details}</Text>
-          </TextContent>
+          <Content>
+            <Content component="p">{details}</Content>
+          </Content>
         )}
         <HostValidationGroups openshiftVersion={openshiftVersion} {...props} />
       </StackItem>

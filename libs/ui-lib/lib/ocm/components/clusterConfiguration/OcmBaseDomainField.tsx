@@ -5,8 +5,11 @@ import {
   HelperText,
   HelperTextItem,
   Tooltip,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
 } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { useField, useFormikContext } from 'formik';
 import { ClusterDetailsValues, getFieldId } from '../../../common';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
@@ -55,38 +58,27 @@ export const OcmBaseDomainField = ({
   const [isOpen, setOpen] = React.useState(false);
 
   const dropdownItems = React.useMemo(() => {
-    return managedDomains?.map((d) => (
-      <DropdownItem key={d.domain} id={d.domain}>
-        {getManagedDomainLabel(d)}
-      </DropdownItem>
-    ));
+    return managedDomains
+      ?.filter((d) => d.domain !== undefined) // Filter out undefined domains
+      .map((d) => (
+        <DropdownItem key={d.domain} id={d.domain} onClick={() => onSelect(d.domain!)}>
+          {getManagedDomainLabel(d)}
+        </DropdownItem>
+      ));
   }, [managedDomains]);
 
-  const dropdownToggle = React.useMemo(() => {
-    const selectedDomain = managedDomains.find((d) => d.domain === value);
-    return (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {selectedDomain ? getManagedDomainLabel(selectedDomain) : 'Base domain'}
-      </DropdownToggle>
-    );
-  }, [managedDomains, value]);
-
   const toggleRedHatDnsService = (checked: boolean) =>
-    setValue((checked && managedDomains.map((d) => d.domain)[0]) || '');
+    setValue((checked && managedDomains.map((d) => d.domain).find((d) => d !== undefined)) || '');
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const selectedDomain = event?.currentTarget.id || '';
+    (selectedDomain: string) => {
       setValue(selectedDomain);
       setOpen(false);
     },
     [setValue],
   );
+
+  const selectedDomain = managedDomains.find((d) => d.domain === value);
 
   return (
     <>
@@ -110,12 +102,24 @@ export const OcmBaseDomainField = ({
       >
         {useRedHatDnsService ? (
           <Dropdown
-            toggle={dropdownToggle}
-            dropdownItems={dropdownItems}
+            toggle={(toggleRef: React.RefObject<any>) => (
+              <MenuToggle
+                ref={toggleRef}
+                onClick={() => setOpen(!isOpen)}
+                isExpanded={isOpen}
+                variant="plainText"
+                icon={<CaretDownIcon />}
+                className="pf-v5-u-w-100"
+              >
+                {selectedDomain ? getManagedDomainLabel(selectedDomain) : 'Base domain'}
+              </MenuToggle>
+            )}
             isOpen={isOpen}
-            onSelect={onSelect}
+            onOpenChange={(isOpen: boolean) => setOpen(isOpen)}
             className="pf-v5-u-w-100"
-          />
+          >
+            <DropdownList>{dropdownItems}</DropdownList>
+          </Dropdown>
         ) : (
           <OcmInputField
             name={INPUT_NAME}

@@ -1,7 +1,15 @@
 import React from 'react';
 import flatten from 'lodash-es/flatten.js';
-import { Label, LabelGroup, Split, SplitItem } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import {
+  Label,
+  LabelGroup,
+  Split,
+  SplitItem,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 
 import { MultiSelectField } from '../../../common';
@@ -81,24 +89,25 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
         .includes(option.value as string),
   );
 
-  const children = availableOptions.length
-    ? availableOptions.map((option) => (
-        <DropdownItem
-          key={option.id}
-          id={option.id}
-          onClick={() => {
-            const values = (option.value as string).split('=', 2);
-            setValue([...field.value, { key: values[0], value: values[1] }]);
-          }}
-        >
-          {option.displayName}
-        </DropdownItem>
-      ))
-    : [
-        <DropdownItem key="no-option" isDisabled>
-          {t('ai:No label available')}
-        </DropdownItem>,
-      ];
+  const dropdownItems = availableOptions.length ? (
+    availableOptions.map((option) => (
+      <DropdownItem
+        key={option.id}
+        id={option.id}
+        onClick={() => {
+          const values = (option.value as string).split('=', 2);
+          setValue([...field.value, { key: values[0], value: values[1] }]);
+          setAddLabelOpen(false);
+        }}
+      >
+        {option.displayName}
+      </DropdownItem>
+    ))
+  ) : (
+    <DropdownItem key="no-option" isDisabled>
+      {t('ai:No label available')}
+    </DropdownItem>
+  );
 
   const categoryName = label || t('ai:Filter hosts by existing labels');
 
@@ -123,22 +132,25 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
       <SplitItem>
         <Dropdown
           onSelect={() => setAddLabelOpen(false)}
-          toggle={
-            <DropdownToggle
-              toggleIndicator={null}
-              onToggle={(_event, val) => setAddLabelOpen(val)}
+          toggle={(toggleRef: React.RefObject<any>) => (
+            <MenuToggle
+              ref={toggleRef}
+              onClick={() => setAddLabelOpen(!addLabelOpen)}
+              isExpanded={addLabelOpen}
+              variant="plain"
               style={{ padding: 0 }}
             >
               <Label color="blue" variant="outline" className="pf-m-overflow">
                 {t('ai:Add label')}
               </Label>
-            </DropdownToggle>
-          }
+            </MenuToggle>
+          )}
           isOpen={addLabelOpen}
-          isPlain
-          dropdownItems={children}
-          menuAppendTo={() => document.body}
-        />
+          onOpenChange={(isOpen: boolean) => setAddLabelOpen(isOpen)}
+          className="pf-v5-u-display-inline"
+        >
+          <DropdownList>{dropdownItems}</DropdownList>
+        </Dropdown>
       </SplitItem>
     </Split>
   );

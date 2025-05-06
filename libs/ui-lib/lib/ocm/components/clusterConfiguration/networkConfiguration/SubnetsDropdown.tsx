@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core/deprecated';
+import { Dropdown, MenuToggle, DropdownList, DropdownItem } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import { getFieldId, HostSubnet, NO_SUBNET_SET } from '../../../../common';
@@ -60,50 +60,50 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
         itemsSubnets.length === 2 ? itemsSubnets[1].label : itemsSubnets[0].label;
       setCurrentDisplayValue(defaultValue);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const dropdownItems = itemsSubnets.map(({ value, label, isDisabled }) => (
-    <DropdownItem key={value} id={value} isDisabled={isDisabled}>
-      {label}
-    </DropdownItem>
-  ));
+  }, [field.value, itemsSubnets]);
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const currentValue = event?.currentTarget.innerText ?? currentDisplayValue;
-      setCurrentDisplayValue(currentValue);
-      setValue(event?.currentTarget.id);
+    (value: string, label: string) => {
+      setCurrentDisplayValue(label);
+      setValue(value);
       setOpen(false);
     },
-    [currentDisplayValue, setValue],
+    [setValue],
   );
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {currentDisplayValue}
-      </DropdownToggle>
-    ),
-    [setOpen, currentDisplayValue, isDisabled],
+  const toggle = (toggleRef: React.RefObject<unknown>): React.ReactNode => (
+    <MenuToggle
+      // ref={toggleRef} CODEMODS TODO: fix this
+      isDisabled={isDisabled}
+      onClick={() => setOpen(!isOpen)}
+      icon={<CaretDownIcon />}
+      className="pf-v6-u-w-100"
+    >
+      {currentDisplayValue}
+    </MenuToggle>
   );
 
   return (
     <Dropdown
       {...field}
-      name={name}
       id={fieldId}
-      onSelect={onSelect}
-      dropdownItems={dropdownItems}
-      toggle={toggle}
       isOpen={isOpen}
-      className="pf-v5-u-w-100"
-    />
+      onOpenChange={(isOpen) => setOpen(isDisabled ? false : isOpen)}
+      className="pf-v6-u-w-100"
+      toggle={toggle}
+    >
+      <DropdownList>
+        {itemsSubnets.map(({ value, label, isDisabled, id }) => (
+          <DropdownItem
+            key={value}
+            id={value}
+            isDisabled={isDisabled}
+            onClick={() => onSelect(value, label)}
+          >
+            {label}
+          </DropdownItem>
+        ))}
+      </DropdownList>
+    </Dropdown>
   );
 };

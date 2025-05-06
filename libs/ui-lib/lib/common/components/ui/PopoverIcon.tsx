@@ -27,17 +27,18 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
 }) => (
   <Popover {...props}>
     <Button
+      icon={
+        <Icon isInline={noVerticalAlign}>
+          <IconComponent />
+        </Icon>
+      }
       component={component}
       variant={variant}
       onClick={(e) => e.preventDefault()}
-      className={classNames('pf-v5-c-form__group-label-help', 'pf-v5-u-p-0', buttonClassName)}
+      className={classNames('pf-v5-c-form__group-label-help', 'pf-v5-u-p-0', buttonClassName)} //CODEMODS TODO: check/fix classes
       ouiaId={buttonOuiaId}
       style={buttonStyle}
-    >
-      <Icon isInline={noVerticalAlign}>
-        <IconComponent />
-      </Icon>
-    </Button>
+    />
   </Popover>
 );
 

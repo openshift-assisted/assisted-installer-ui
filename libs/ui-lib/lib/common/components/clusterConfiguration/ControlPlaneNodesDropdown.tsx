@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, Select, SelectList, SelectOption, Tooltip } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { getFieldId, StaticField } from '../..';
 import { useField } from 'formik';
@@ -20,7 +19,7 @@ const ControlPlaneNodesDropdown = ({
 }) => {
   const { t } = useTranslation();
   const [{ name, value: selectedValue }, , { setValue }] = useField<number>('controlPlaneCount');
-  const [controlPlanelOpen, setControlPlanelOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
 
   const options: ControlPlaneNodesOption[] = [
@@ -36,48 +35,54 @@ const ControlPlaneNodesDropdown = ({
     }
   }, [allowHighlyAvailable, selectedValue, setValue]);
 
-  const dropdownItems = options.map(({ value, label }) => {
+  const onSelect = (
+    event: React.MouseEvent<Element, MouseEvent> | undefined,
+    value: string | number | undefined,
+  ) => {
+    if (value !== undefined) {
+      setValue(toNumber(value));
+      setIsOpen(false);
+    }
+  };
+
+  const selectOptions = options.map(({ value, label }) => {
     const isItemEnabled = [1, 3].includes(value) || allowHighlyAvailable;
     const disabledReason = t('ai:This option is not available with the selected OpenShift version');
     return (
-      <DropdownItem
+      <SelectOption
         key={value}
         id={value.toString()}
-        isAriaDisabled={!isItemEnabled}
-        isDisabled={!isItemEnabled}
-        selected={selectedValue === value}
         value={value}
+        isDisabled={!isItemEnabled}
+        isSelected={selectedValue === value}
       >
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
           <div>{label}</div>
         </Tooltip>
-      </DropdownItem>
+      </SelectOption>
     );
   });
 
-  const onControlPlaneSelect = (e?: React.SyntheticEvent<HTMLDivElement>) => {
-    const val = e?.currentTarget.id as string;
-    setValue(toNumber(val));
-    setControlPlanelOpen(false);
-  };
-
   return !isDisabled ? (
     <FormGroup isInline fieldId={fieldId} label={t('ai:Number of control plane nodes')} isRequired>
-      <Dropdown
-        toggle={
-          <DropdownToggle
-            onToggle={() => setControlPlanelOpen(!controlPlanelOpen)}
-            className="pf-u-w-100"
+      <Select
+        isOpen={isOpen}
+        onSelect={onSelect}
+        onOpenChange={(isOpen) => setIsOpen(isOpen)}
+        selected={selectedValue}
+        toggle={(toggleRef) => (
+          <button
+            ref={toggleRef}
+            onClick={() => setIsOpen(!isOpen)}
+            className="pf-v6-c-select__toggle-button pf-u-w-100"
           >
-            {selectedValue ? selectedValue : '3'}
-          </DropdownToggle>
-        }
-        name="controlPlaneCount"
-        isOpen={controlPlanelOpen}
-        onSelect={onControlPlaneSelect}
-        dropdownItems={dropdownItems}
+            {selectedValue || '3'}
+          </button>
+        )}
         className="pf-u-w-100"
-      />
+      >
+        <SelectList>{selectOptions}</SelectList>
+      </Select>
     </FormGroup>
   ) : (
     <StaticField

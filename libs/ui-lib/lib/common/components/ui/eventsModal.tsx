@@ -1,15 +1,10 @@
 import React from 'react';
-import {
-  Button,
-  Modal,
-  ButtonVariant,
-  ModalVariant,
-  ModalBoxBody,
-  Spinner,
-  Title,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Spinner, Title } from '@patternfly/react-core';
+import { Modal, ModalVariant, ModalBoxBody } from '@patternfly/react-core/deprecated';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import {
+  t_temp_dev_tbd as globalWarningColor100 /* CODEMODS: you should update this color token, original v5 token was global_warning_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps, EventsEntityKind } from '../../types';

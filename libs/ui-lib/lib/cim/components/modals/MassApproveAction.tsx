@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DropdownItem } from '@patternfly/react-core/deprecated';
+import { DropdownItem } from '@patternfly/react-core';
 import { AgentK8sResource } from '../../types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 

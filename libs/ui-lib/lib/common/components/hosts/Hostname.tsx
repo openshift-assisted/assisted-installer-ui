@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, ButtonVariant, Flex, FlexItem, Popover } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import {
+  t_temp_dev_tbd as warningColor /* CODEMODS: you should update this color token, original v5 token was global_warning_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import type { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { getHostname } from './utils';
 import { DASH } from '../constants';

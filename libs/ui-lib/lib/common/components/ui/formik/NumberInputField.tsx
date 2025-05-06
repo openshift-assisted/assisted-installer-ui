@@ -65,7 +65,7 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
     };
 
     return (
-      <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+      <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelHelp={labelIcon}>
         <Split>
           <SplitItem isFilled>
             <NumberInput

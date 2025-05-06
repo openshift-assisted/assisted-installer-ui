@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import {
+  t_temp_dev_tbd as warningColor /* CODEMODS: you should update this color token, original v5 token was global_warning_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import { getAgentStatus, getBMHStatus } from '../helpers';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common';

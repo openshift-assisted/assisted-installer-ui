@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import { FormGroup, Grid, Content, ContentVariants } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import { getFieldId, PopoverIcon } from '../../../../../../common';
@@ -149,9 +149,9 @@ export const FormViewHostsFields: React.FC<{ protocolType: StaticProtocolType }>
   const ExpandedHostComponent = getExpandedHostComponent(protocolType);
   return (
     <>
-      <TextContent>
-        <Text component={TextVariants.h3}>Host specific configurations</Text>
-      </TextContent>
+      <Content>
+        <Content component={ContentVariants.h3}>Host specific configurations</Content>
+      </Content>
       <StaticIpHostsArray<FormViewHost>
         CollapsedHostComponent={CollapsedHostComponent}
         ExpandedHostComponent={ExpandedHostComponent}

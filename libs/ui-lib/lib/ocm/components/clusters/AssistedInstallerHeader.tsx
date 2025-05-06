@@ -1,13 +1,13 @@
 import React from 'react';
-import { TextContent, Text, Split, SplitItem } from '@patternfly/react-core';
+import { Content, Split, SplitItem } from '@patternfly/react-core';
 import { ASSISTED_INSTALLER_DOCUMENTATION_LINK, ExternalLink, isInOcm } from '../../../common';
 
 export const AssistedInstallerHeader = () => {
   return (
-    <TextContent>
-      <Text component="h1" className="pf-v5-u-display-inline">
+    <Content>
+      <Content component="h1" className="pf-v5-u-display-inline">
         Install OpenShift with the Assisted Installer
-      </Text>
+      </Content>
       <Split hasGutter>
         <SplitItem>
           <ExternalLink href={ASSISTED_INSTALLER_DOCUMENTATION_LINK}>
@@ -16,12 +16,12 @@ export const AssistedInstallerHeader = () => {
         </SplitItem>
         {isInOcm && (
           <SplitItem>
-            <Text component="a" data-testid="whats-new-link">
+            <Content component="a" data-testid="whats-new-link">
               What's new in Assisted Installer?
-            </Text>
+            </Content>
           </SplitItem>
         )}
       </Split>
-    </TextContent>
+    </Content>
   );
 };

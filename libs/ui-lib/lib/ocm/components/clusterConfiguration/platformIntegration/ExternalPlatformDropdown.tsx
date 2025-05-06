@@ -6,9 +6,10 @@ import {
   Split,
   SplitItem,
   Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
 } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import {
   CpuArchitecture,
@@ -38,7 +39,7 @@ type ExternalPlatformDropdownProps = {
   isSNO: boolean;
 };
 
-export type ExternalPlatformInfo = {
+type ExternalPlatformInfo = {
   label: string;
   href?: string;
   disabledReason?: string;
@@ -58,7 +59,7 @@ const getDisabledReasonForExternalPlatform = (
     isSNO &&
     (cpuArchitecture === CpuArchitecture.ppc64le || cpuArchitecture === CpuArchitecture.s390x)
   ) {
-    return `Plaform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
+    return `Platform integration is not supported for Single-Node OpenShift with the selected CPU architecture.`;
   } else {
     return getFeatureDisabledReason(
       ExternalPlaformIds[platform] as FeatureId,
@@ -145,15 +146,9 @@ export const ExternalPlatformDropdown = ({
     cpuArchitecture ? architectureData[cpuArchitecture].label : '',
   );
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string): void => {
-    event.stopPropagation(); // Stop event propagation here
-    window.open(href, '_blank');
-  };
-
   const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();
 
   React.useEffect(() => {
-    // Calculate updated externalPlatformTypes based on the dependencies
     const updatedExternalPlatformTypes = getExternalPlatformTypes(
       isSNO,
       getFeatureSupportLevel,
@@ -162,8 +157,6 @@ export const ExternalPlatformDropdown = ({
       cpuArchitecture,
       isSingleClusterFeatureEnabled,
     );
-
-    // Update the state with the new externalPlatformTypes
     setExternalPlatformTypes(updatedExternalPlatformTypes);
   }, [
     featureSupportLevelData,
@@ -189,9 +182,22 @@ export const ExternalPlatformDropdown = ({
       setValue('none');
       onChange('none');
     }
+  }, [dropdownIsDisabled, externalPlatformTypes, field.value, setValue, onChange]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dropdownIsDisabled, externalPlatformTypes]);
+  const onSelect = (
+    event: React.MouseEvent | React.KeyboardEvent | undefined,
+    value: string | number | undefined,
+  ) => {
+    const selectedPlatform = (value || 'none') as PlatformType;
+    setValue(selectedPlatform);
+    setOpen(false);
+    onChange(selectedPlatform);
+  };
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string): void => {
+    event.stopPropagation();
+    window.open(href, '_blank');
+  };
 
   const enabledItems = Object.keys(externalPlatformTypes).map((platform) => {
     const { label, href, disabledReason, supportLevel } = externalPlatformTypes[
@@ -199,7 +205,7 @@ export const ExternalPlatformDropdown = ({
     ] as ExternalPlatformInfo;
 
     return (
-      <DropdownItem key={platform} id={platform} isAriaDisabled={disabledReason !== undefined}>
+      <DropdownItem key={platform} value={platform} isAriaDisabled={disabledReason !== undefined}>
         <Split>
           <SplitItem>
             <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
@@ -234,29 +240,20 @@ export const ExternalPlatformDropdown = ({
     );
   });
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const selectedPlatform = event?.currentTarget.id as PlatformType;
-      setValue(selectedPlatform);
-      setOpen(false);
-      onChange(selectedPlatform);
-    },
-    [setOpen, setValue, onChange],
-  );
-
   const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-        isDisabled={dropdownIsDisabled}
-      >
-        {externalPlatformTypes[field.value as PlatformType]?.label}
-      </DropdownToggle>
-    ),
-    [externalPlatformTypes, field, dropdownIsDisabled],
+    () => (toggleRef: React.RefObject<any>) =>
+      (
+        <MenuToggle
+          onClick={() => setOpen(!isOpen)}
+          isDisabled={dropdownIsDisabled}
+          ref={toggleRef}
+          className="pf-v5-u-w-100"
+          isExpanded={isOpen}
+        >
+          {externalPlatformTypes[field.value as PlatformType]?.label || 'Select a platform'}
+        </MenuToggle>
+      ),
+    [externalPlatformTypes, field.value, dropdownIsDisabled, isOpen],
   );
 
   return (
@@ -271,16 +268,9 @@ export const ExternalPlatformDropdown = ({
         position="top"
         distance={7}
       >
-        <Dropdown
-          {...field}
-          id={fieldId}
-          dropdownItems={enabledItems}
-          toggle={toggle}
-          isOpen={isOpen}
-          className="pf-v5-u-w-100"
-          onSelect={onSelect}
-          disabled={dropdownIsDisabled}
-        />
+        <Dropdown onSelect={onSelect} toggle={toggle} isOpen={isOpen} className="pf-v5-u-w-100">
+          {enabledItems}
+        </Dropdown>
       </Tooltip>
     </FormGroup>
   );

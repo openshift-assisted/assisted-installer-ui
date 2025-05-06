@@ -1,7 +1,6 @@
 import React from 'react';
 import { HelperText, FormGroup } from '@patternfly/react-core';
-import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import { Dropdown, DropdownItem, MenuToggle } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { getFieldId } from '../../../../../common/components/ui/formik';
 import { PopoverIcon } from '../../../../../common';
@@ -27,10 +26,10 @@ type FolderDropdownProps = {
 };
 
 const dropdownItems = [
-  <DropdownItem key="manifests" id="manifests">
+  <DropdownItem key="manifests" value="manifests">
     {'manifests'}
   </DropdownItem>,
-  <DropdownItem key="openshift" id="openshift">
+  <DropdownItem key="openshift" value="openshift">
     {'openshift'}
   </DropdownItem>,
 ];
@@ -40,40 +39,34 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
   const [isOpen, setOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      setValue(event?.currentTarget.id as string);
-      setOpen(false);
-    },
-    [setOpen, setValue],
-  );
+  const onSelect = (
+    event: React.MouseEvent | React.KeyboardEvent | undefined,
+    value: string | number | undefined,
+  ) => {
+    setValue((value as string) || 'manifests'); // Default to 'manifests' if undefined
+    setOpen(false);
+  };
 
   const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {value || 'manifests'}
-      </DropdownToggle>
-    ),
-    [setOpen, value],
+    () => (toggleRef: React.RefObject<any>) =>
+      (
+        <MenuToggle
+          onClick={() => setOpen(!isOpen)}
+          ref={toggleRef}
+          className="pf-v5-u-w-100"
+          isExpanded={isOpen}
+        >
+          {value || 'manifests'}
+        </MenuToggle>
+      ),
+    [value, isOpen],
   );
 
   return (
     <FormGroup fieldId={fieldId} label={<FolderLabel />} isRequired>
-      <Dropdown
-        {...field}
-        name={name}
-        id={fieldId}
-        onSelect={onSelect}
-        dropdownItems={dropdownItems}
-        toggle={toggle}
-        isOpen={isOpen}
-        className="pf-v5-u-w-100"
-      />
+      <Dropdown onSelect={onSelect} toggle={toggle} isOpen={isOpen} className="pf-v5-u-w-100">
+        {dropdownItems}
+      </Dropdown>
       <HelperText style={{ display: 'inherit' }}>
         {'Manifests can be placed in "manifests" or "openshift" directories.'}
       </HelperText>

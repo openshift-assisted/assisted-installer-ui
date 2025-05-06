@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  DropdownItem,
-  DropdownToggle,
-  Dropdown,
-  DropdownProps,
-} from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import { Dropdown, DropdownItem, MenuToggle } from '@patternfly/react-core';
 import { HostRole } from '../../../common/types/hosts';
 import './SimpleDropdown.css';
 
@@ -16,7 +10,7 @@ type SimpleDropdownProps = {
   setValue: (value?: string) => void;
   isDisabled: boolean;
   idPrefix?: string;
-  menuAppendTo?: DropdownProps['menuAppendTo'];
+  menuAppendTo?: HTMLElement | (() => HTMLElement) | 'inline' | undefined;
 };
 
 export const SimpleDropdown = ({
@@ -29,44 +23,48 @@ export const SimpleDropdown = ({
   menuAppendTo,
 }: SimpleDropdownProps) => {
   const [isOpen, setOpen] = React.useState(false);
+
   const dropdownItems = items.map(({ value, label, description }) => (
-    <DropdownItem key={value} id={value} description={description}>
-      {label}
+    <DropdownItem key={value} id={value} value={value} description={description}>
+      ({label})
     </DropdownItem>
   ));
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      setValue(event?.currentTarget.id);
-      setOpen(false);
-    },
-    [setValue, setOpen],
-  );
+  const onSelect = (
+    event: React.MouseEvent | React.KeyboardEvent | undefined,
+    value: string | number | undefined,
+  ) => {
+    setValue(value as string);
+    setOpen(false);
+  };
 
   const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}
-        className="role-dropdown"
-      >
-        {current || defaultValue}
-      </DropdownToggle>
-    ),
-    [setOpen, current, isDisabled, defaultValue, idPrefix],
+    () => (toggleRef: React.RefObject<any>) =>
+      (
+        <MenuToggle
+          onClick={() => setOpen(!isDisabled && !isOpen)}
+          isDisabled={isDisabled}
+          ref={toggleRef}
+          id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}
+          className="role-dropdown"
+          isExpanded={isOpen}
+        >
+          {current || defaultValue}
+        </MenuToggle>
+      ),
+    [current, defaultValue, isDisabled, isOpen, idPrefix],
   );
 
   return (
     <Dropdown
       onSelect={onSelect}
-      dropdownItems={dropdownItems}
       toggle={toggle}
       isOpen={isOpen}
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
-      menuAppendTo={menuAppendTo}
-    />
+      popperProps={{ appendTo: menuAppendTo }}
+    >
+      {dropdownItems}
+    </Dropdown>
   );
 };

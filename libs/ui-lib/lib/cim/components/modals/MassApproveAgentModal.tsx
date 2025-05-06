@@ -1,14 +1,6 @@
 import * as React from 'react';
-import {
-  Alert,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Alert, Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
+import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';

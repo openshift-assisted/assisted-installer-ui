@@ -84,7 +84,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
         fieldId="cim-config-form-storage-title"
         label={t('ai:Storage sizes')}
         className="cim-config-form-title"
-        labelIcon={
+        labelHelp={
           <Popover
             bodyContent={t(
               'ai:The storage sizes will be used to store different files and data for cluster creation.',
@@ -118,7 +118,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           <FormGroup
             label={t('ai:Database storage')}
             fieldId="cim-config-form-storage-db"
-            labelIcon={
+            labelHelp={
               <Popover
                 bodyContent={t(
                   'ai:Specify how much storage is allocated for storing files such as database tables and database views for the clusters. Recommended is 10Gi or more. The value can not be updated later.',
@@ -168,7 +168,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           <FormGroup
             label={t('ai:System storage')}
             fieldId="cim-config-form-storage-sys"
-            labelIcon={
+            labelHelp={
               <Popover
                 bodyContent={t(
                   'ai:Specify how much storage is allocated for storing logs, manifests and "kubeconfig" files for the clusters. Recommended is 100Gi or more. The value can not be updated later.',
@@ -218,7 +218,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           <FormGroup
             label={t('ai:Image storage')}
             fieldId="cim-config-form-storage-img"
-            labelIcon={
+            labelHelp={
               <Popover
                 bodyContent={t(
                   'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50Gi or more. The value can not be updated later.',

@@ -1,10 +1,9 @@
 import React from 'react';
+import { ToolbarItem, Content } from '@patternfly/react-core';
 
-import { ToolbarItem, Text } from '@patternfly/react-core';
-
-const ToolbarText: React.FC<React.ComponentProps<typeof Text>> = (props) => (
+const ToolbarText: React.FC<React.ComponentProps<typeof Content>> = (props) => (
   <ToolbarItem>
-    <Text {...props} />
+    <Content component="p" {...props} />
   </ToolbarItem>
 );
 

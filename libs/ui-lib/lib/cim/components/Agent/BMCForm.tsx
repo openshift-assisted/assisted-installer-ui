@@ -10,12 +10,11 @@ import {
   FormGroup,
   Grid,
   GridItem,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Text,
+  Content,
   TextInputTypes,
-  TextVariants,
+  ContentVariants,
 } from '@patternfly/react-core';
+import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import {
   Formik,
   FormikProps,
@@ -81,10 +80,10 @@ const MacMapping = () => {
         render={({ push, remove }) => (
           <Grid hasGutter>
             <GridItem span={5}>
-              <Text component={TextVariants.small}>MAC address</Text>
+              <Content component={ContentVariants.small}>MAC address</Content>
             </GridItem>
             <GridItem span={5}>
-              <Text component={TextVariants.small}>NIC</Text>
+              <Content component={ContentVariants.small}>NIC</Content>
             </GridItem>
             {field.value.map((mac, index) => {
               const macField = `macMapping[${index}].macAddress`;

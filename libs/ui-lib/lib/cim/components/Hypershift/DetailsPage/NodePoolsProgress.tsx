@@ -7,7 +7,9 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
+import {
+  t_temp_dev_tbd as okColor /* CODEMODS: you should update this color token, original v5 token was global_palette_green_500 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 
 import {

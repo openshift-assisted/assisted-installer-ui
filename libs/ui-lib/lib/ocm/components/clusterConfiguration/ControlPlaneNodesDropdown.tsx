@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import { Dropdown, DropdownItem, MenuToggle } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { getFieldId, PopoverIcon } from '../../../common';
 import {
@@ -91,16 +91,19 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     }
   }, [field.value, setValue]);
 
-  const onSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {
-    const selectedValue = event?.currentTarget.id as string;
-    setValue(toNumber(selectedValue));
+  const onSelect = (
+    event: React.MouseEvent | React.KeyboardEvent | undefined,
+    value: string | number | undefined,
+  ) => {
+    const selectedValue = toNumber(value);
+    setValue(selectedValue);
     setOpen(false);
   };
 
   const dropdownItems = options.map(({ value, label }) => {
     const isItemEnabled = isDropdownItemEnabled(value, isNonStandardControlPlaneEnabled);
     return (
-      <DropdownItem key={value} id={value.toString()} isAriaDisabled={!isItemEnabled}>
+      <DropdownItem key={value} id={value.toString()} value={value} isAriaDisabled={!isItemEnabled}>
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
           <div>{label}</div>
         </Tooltip>
@@ -108,10 +111,20 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     );
   });
 
-  const toggle = (
-    <DropdownToggle onToggle={(_, val) => setOpen(val)}>
-      {options.find((opt) => opt.value === field.value)?.label || 'Select'}
-    </DropdownToggle>
+  const toggle = React.useMemo(
+    () => (toggleRef: React.RefObject<any>) =>
+      (
+        <MenuToggle
+          onClick={() => setOpen(!isOpen)}
+          ref={toggleRef}
+          isFullWidth
+          isExpanded={isOpen}
+          isDisabled={isDisabled}
+        >
+          {options.find((opt) => opt.value === field.value)?.label || 'Select'}
+        </MenuToggle>
+      ),
+    [field.value, isOpen, isDisabled],
   );
 
   return (
@@ -121,13 +134,9 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
         label={<ControlPlaneNodesLabel />}
         fieldId={fieldId}
       >
-        <Dropdown
-          id={fieldId}
-          isOpen={isOpen}
-          toggle={toggle}
-          dropdownItems={dropdownItems}
-          onSelect={onSelect}
-        />
+        <Dropdown onSelect={onSelect} toggle={toggle} isOpen={isOpen} className="pf-v5-u-w-100">
+          {dropdownItems}
+        </Dropdown>
       </FormGroup>
       {field.value === 1 && (
         <OcmSNODisclaimer

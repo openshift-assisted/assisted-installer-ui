@@ -3,24 +3,24 @@ import {
   EmptyState,
   EmptyStateBody,
   Bullseye,
-  EmptyStateIcon,
   EmptyStateVariant,
   Button,
   ButtonVariant,
-  EmptyStateIconProps,
   EmptyStateActions,
-  EmptyStateHeader,
   EmptyStateFooter,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens/dist/js/global_danger_color_200';
+import {
+  t_temp_dev_tbd as globalDangerColor200 /* CODEMODS: you should update this color token, original v5 token was global_danger_color_200 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 
 type ErrorStateProps = {
   title?: string;
   content?: React.ReactNode;
   fetchData?: () => void;
-  icon?: EmptyStateIconProps['icon'];
+  icon?: React.ComponentClass<SVGIconProps, any>;
   iconColor?: string;
   primaryAction?: React.ReactNode;
   actions?: React.ReactNode[];
@@ -56,12 +56,7 @@ const ErrorState = ({
 }: ErrorStateProps) => {
   return (
     <Bullseye>
-      <EmptyState variant={variant}>
-        <EmptyStateHeader
-          titleText={<>{title}</>}
-          icon={<EmptyStateIcon icon={icon} color={iconColor} />}
-          headingLevel="h2"
-        />
+      <EmptyState headingLevel="h2" icon={icon} titleText={<>{title}</>} variant={variant}>
         <EmptyStateBody>{content || <DefaultErrorContent fetchData={fetchData} />}</EmptyStateBody>
         <EmptyStateFooter>
           {primaryAction}

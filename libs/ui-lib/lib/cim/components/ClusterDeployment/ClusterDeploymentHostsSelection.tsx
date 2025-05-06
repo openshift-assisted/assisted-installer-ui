@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Grid, GridItem, TextContent, Form } from '@patternfly/react-core';
+import { Grid, GridItem, Content, Form } from '@patternfly/react-core';
 import { SwitchField } from '../../../common';
 import {
   ClusterDeploymentHostsSelectionProps,
@@ -53,13 +53,13 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   return (
     <Grid hasGutter>
       <GridItem>
-        <TextContent>
+        <Content>
           {isSNOCluster
             ? t(
                 'ai:Exactly 1 host is required, capable of functioning both as control plane and worker node.',
               )
             : t('ai:At least 3 hosts are required, capable of functioning as control plane nodes.')}
-        </TextContent>
+        </Content>
       </GridItem>
       {aiConfigMap && (
         <GridItem>

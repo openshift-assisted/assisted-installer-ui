@@ -1,12 +1,13 @@
-import { Split, SplitItem, Spinner } from '@patternfly/react-core';
 import {
+  Split,
+  SplitItem,
+  Spinner,
   Dropdown,
-  DropdownGroup,
   DropdownItem,
-  DropdownItemProps,
-  DropdownSeparator,
-  DropdownToggle,
-} from '@patternfly/react-core/deprecated';
+  DropdownGroup,
+  Divider,
+  Button,
+} from '@patternfly/react-core';
 import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';
@@ -18,14 +19,19 @@ import { Link } from 'react-router-dom-v5-compat';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
 
-const DropdownItemWithLoading = (
-  props: DropdownItemProps & { isLoading: boolean; label: string },
-) => {
+const DropdownItemWithLoading = ({
+  isLoading,
+  label,
+  isDisabled,
+  ...props
+}: { isLoading: boolean; label: string; isDisabled?: boolean } & React.ComponentProps<
+  typeof DropdownItem
+>) => {
   return (
-    <DropdownItem {...props} isDisabled={props.isDisabled || props.isLoading}>
+    <DropdownItem {...props} isDisabled={isDisabled || isLoading}>
       <Split hasGutter>
-        <SplitItem>{props.label}</SplitItem>
-        {props.isLoading && (
+        <SplitItem>{label}</SplitItem>
+        {isLoading && (
           <SplitItem>
             <Spinner size="sm" />
           </SplitItem>
@@ -50,99 +56,101 @@ const AddHostDropdown = ({
   const [provisioningConfig, provisioningConfigLoaded, provisioningConfigError] =
     provisioningConfigResult;
   const { t } = useTranslation();
+
+  const onSelect = (event: React.MouseEvent | undefined, itemId?: string | number) => {
+    setIsKebabOpen(false);
+    switch (itemId) {
+      case 'discovery-iso':
+        setAddModalType('iso');
+        break;
+      case 'ipxe':
+        setAddModalType('ipxe');
+        break;
+      case 'with-credentials':
+        setAddModalType('bmc');
+        break;
+      case 'upload-yaml':
+        setAddModalType('yaml');
+        break;
+    }
+  };
+
   return (
     <>
       <Dropdown
         id="infraenv-actions"
-        toggle={
-          <DropdownToggle
+        isOpen={isKebabOpen}
+        onSelect={onSelect}
+        onOpenChange={(isOpen) => setIsKebabOpen(isOpen)}
+        toggle={(toggleRef) => (
+          <Button
             id="dropdown-basic"
-            onToggle={(_event, value) => setIsKebabOpen(value)}
-            toggleVariant="primary"
+            variant="primary"
+            onClick={() => setIsKebabOpen(!isKebabOpen)}
+            ref={toggleRef}
           >
             {t('ai:Add hosts')}
-          </DropdownToggle>
-        }
-        isOpen={isKebabOpen}
-        dropdownItems={[
-          <DropdownItem
-            key="discovery-iso"
-            onClick={() => {
-              setIsKebabOpen(false);
-              setAddModalType('iso');
-            }}
-            description={t('ai:Discover hosts by booting a discovery image')}
-          >
-            {t('ai:With Discovery ISO')}
-          </DropdownItem>,
-          <DropdownItem
-            key="ipxe"
-            onClick={() => {
-              setIsKebabOpen(false);
-              setAddModalType('ipxe');
-            }}
-            description={t('ai:Use when you have an iPXE server that has already been set up')}
-          >
-            {t('ai:With iPXE')}
-          </DropdownItem>,
-          <DropdownSeparator key="separator" />,
-          <DropdownGroup
-            id="discovery-bmc"
-            key="discovery-bmc"
-            className="ai-discovery-bmc__group"
-            label={
-              <Split hasGutter>
-                <SplitItem>{t('ai:Baseboard Management Controller (BMC)')}</SplitItem>
-                <SplitItem>
-                  {!provisioningConfig && (
-                    <>
-                      {' '}
-                      <PopoverIcon
-                        noVerticalAlign
-                        bodyContent={
-                          <Trans t={t}>
-                            ai:To enable the host's baseboard management controller (BMC) on the hub
-                            cluster, you must first{' '}
-                            <Link to="/k8s/cluster/metal3.io~v1alpha1~Provisioning/~new">
-                              create a provisioning configuration.
-                            </Link>
-                          </Trans>
-                        }
-                      />
-                    </>
-                  )}
-                </SplitItem>
-              </Split>
-            }
-          >
-            <DropdownItemWithLoading
-              key="with-credentials"
-              onClick={() => {
-                setIsKebabOpen(false);
-                setAddModalType('bmc');
-              }}
-              description={t('ai:Discover a single host via Baseboard Management Controller')}
-              label={t('ai:With BMC form')}
-              isLoading={!provisioningConfigLoaded}
-              isDisabled={!provisioningConfig && !provisioningConfigError}
-            />
-            <DropdownItemWithLoading
-              key="upload-yaml"
-              onClick={() => {
-                setIsKebabOpen(false);
-                setAddModalType('yaml');
-              }}
-              description={t(
-                'ai:Discover multiple hosts by providing yaml with Bare Metal Host definitions',
-              )}
-              label={t('ai:By uploading a YAML')}
-              isLoading={!provisioningConfigLoaded}
-              isDisabled={!provisioningConfig && !provisioningConfigError}
-            />
-          </DropdownGroup>,
-        ]}
-        position={'right'}
-      />
+          </Button>
+        )}
+        popperProps={{ position: 'right' }}
+      >
+        <DropdownItem
+          itemId="discovery-iso"
+          description={t('ai:Discover hosts by booting a discovery image')}
+        >
+          {t('ai:With Discovery ISO')}
+        </DropdownItem>
+        <DropdownItem
+          itemId="ipxe"
+          description={t('ai:Use when you have an iPXE server that has already been set up')}
+        >
+          {t('ai:With iPXE')}
+        </DropdownItem>
+        <Divider component="li" />
+        <DropdownGroup
+          label={
+            <Split hasGutter>
+              <SplitItem>{t('ai:Baseboard Management Controller (BMC)')}</SplitItem>
+              <SplitItem>
+                {!provisioningConfig && (
+                  <>
+                    {' '}
+                    <PopoverIcon
+                      noVerticalAlign
+                      bodyContent={
+                        <Trans t={t}>
+                          ai:To enable the host's baseboard management controller (BMC) on the hub
+                          cluster, you must first{' '}
+                          <Link to="/k8s/cluster/metal3.io~v1alpha1~Provisioning/~new">
+                            create a provisioning configuration.
+                          </Link>
+                        </Trans>
+                      }
+                    />
+                  </>
+                )}
+              </SplitItem>
+            </Split>
+          }
+        >
+          <DropdownItemWithLoading
+            itemId="with-credentials"
+            description={t('ai:Discover a single host via Baseboard Management Controller')}
+            label={t('ai:With BMC form')}
+            isLoading={!provisioningConfigLoaded}
+            isDisabled={!provisioningConfig && !provisioningConfigError}
+          />
+          <DropdownItemWithLoading
+            itemId="upload-yaml"
+            description={t(
+              'ai:Discover multiple hosts by providing yaml with Bare Metal Host definitions',
+            )}
+            label={t('ai:By uploading a YAML')}
+            isLoading={!provisioningConfigLoaded}
+            isDisabled={!provisioningConfig && !provisioningConfigError}
+          />
+        </DropdownGroup>
+      </Dropdown>
       {addModalType === 'iso' && (
         <AddHostModal
           infraEnv={infraEnv}

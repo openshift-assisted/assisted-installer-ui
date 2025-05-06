@@ -1,13 +1,6 @@
 import * as React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
+import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 
 import ModalProgress from '../ui/ModalProgress';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';

@@ -59,12 +59,11 @@ export const RemoveItemButton: React.FC<{
 }> = ({ onRemove, showRemoveButton, dataTestId }) => (
   //use css visibility instead of conditional rendering to avoid button jumping when hovering
   <Button
+    icon={<MinusCircleIcon onClick={onRemove} data-testid={dataTestId} />} //CODEMODS TODO: dallas: why onclick on icon instead of button?
     aria-label="remove host"
     style={{ visibility: showRemoveButton ? 'visible' : 'hidden' }}
     variant="plain"
-  >
-    <MinusCircleIcon onClick={onRemove} data-testid={dataTestId} />
-  </Button>
+  />
 );
 
 const getHostName = (hostIdx: number) => `Host ${hostIdx + 1}`;

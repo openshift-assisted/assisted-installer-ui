@@ -3,8 +3,12 @@ import { Host, HostRole } from '@openshift-assisted/types/assisted-installer-ser
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import {
+  t_temp_dev_tbd as dangerColor /* CODEMODS: you should update this color token, original v5 token was global_danger_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
+import {
+  t_temp_dev_tbd as okColor /* CODEMODS: you should update this color token, original v5 token was global_success_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import ClusterProgressItem from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 

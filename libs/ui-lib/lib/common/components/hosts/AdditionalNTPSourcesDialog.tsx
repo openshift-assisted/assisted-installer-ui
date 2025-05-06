@@ -2,14 +2,13 @@ import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
+import { Form, Button } from '@patternfly/react-core';
 import {
-  Form,
   Modal,
   ModalVariant,
   ModalBoxBody,
   ModalBoxFooter,
-  Button,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import {
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,

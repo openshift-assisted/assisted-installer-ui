@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  PageSectionVariants,
   Breadcrumb,
   BreadcrumbItem,
   PageSection,
@@ -9,7 +8,7 @@ import { Link } from 'react-router-dom-v5-compat';
 import { isInOcm } from '../../../common/api';
 
 const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => (
-  <PageSection variant={PageSectionVariants.light}>
+  <PageSection hasBodyWrapper={false} >
     {(clusterName || isInOcm) && (
       <Breadcrumb>
         {isInOcm && (

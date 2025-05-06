@@ -6,11 +6,10 @@ import {
   ButtonVariant,
   ClipboardCopy,
   clipboardCopyFunc,
-  ModalBoxBody,
-  ModalBoxFooter,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
+import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryIpxeInstructions from './DiscoveryIpxeInstructions';
 import { useTranslation } from '../../hooks/use-translation-wrapper';

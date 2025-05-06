@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { PageSectionVariants, PageSection } from '@patternfly/react-core';
+import { PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
@@ -25,7 +25,7 @@ const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactN
             <OpenShiftVersionsContextProvider>
               <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
                 {pageTitleSection}
-                <PageSection variant={PageSectionVariants.light} isFilled>
+                <PageSection hasBodyWrapper={false} isFilled>
                   <ClusterWizardContextProvider>
                     <NewClusterWizard />
                   </ClusterWizardContextProvider>
@@ -42,7 +42,7 @@ const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactN
 const NewClusterTitleSection = () => (
   <>
     <ClusterBreadcrumbs clusterName="New cluster" />
-    <PageSection variant={PageSectionVariants.light}>
+    <PageSection hasBodyWrapper={false}>
       <AssistedInstallerHeader />
     </PageSection>
   </>

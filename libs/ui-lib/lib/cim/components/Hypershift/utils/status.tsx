@@ -2,9 +2,15 @@ import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import React from 'react';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import {
+  t_temp_dev_tbd as okColor /* CODEMODS: you should update this color token, original v5 token was global_palette_green_500 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
+import {
+  t_temp_dev_tbd as dangerColor /* CODEMODS: you should update this color token, original v5 token was global_danger_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
+import {
+  t_temp_dev_tbd as warningColor /* CODEMODS: you should update this color token, original v5 token was global_warning_color_100 */,
+} from '@patternfly/react-tokens/dist/js/t_temp_dev_tbd';
 import { AgentK8sResource } from '../../../types';
 import { getAgentStatus } from '../../helpers';
 import { NodePoolK8sResource } from '../types';

@@ -39,7 +39,7 @@ export const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   }
   const bodyContent = (
     <>
-      <div style={{ marginBottom: 'var(--pf-v5-global--spacer--sm)' }}>{popoverContent}</div>
+      <div style={{ marginBottom: 'var(--pf-t--global--spacer--sm)' }}>{popoverContent}</div>
       {externalLink && (
         <>
           <ExternalLink href={externalLink}>{t('ai:Learn more')}</ExternalLink>

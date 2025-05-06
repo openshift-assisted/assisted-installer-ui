@@ -4,7 +4,7 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exc
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
+// import { t_temp_dev_tbd as okColor /* CODEMODS: you should update this color token, original v5 token was global_palette_green_500 */ } from "@patternfly/react-tokens/dist/js/t_temp_dev_tbd";
 
 import * as React from 'react';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -14,6 +14,8 @@ import { UiIcon } from '../../../../common';
 
 const ignoredConditions = ['Progressing'];
 const reversedConditions = ['Degraded'];
+
+const okColor = { value: 'var(--pf-t--global--icon--color--status--success--default)' }; //CODEMODs TODO: verify this color token
 
 type ConditionsTableProps = {
   conditions?: {

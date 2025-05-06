@@ -8,8 +8,8 @@ import {
   SplitItem,
   Stack,
   StackItem,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
@@ -114,9 +114,9 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
           )}
           {isSubmitting && (
             <ActionListItem>
-              <Text component={TextVariants.small}>
+              <Content component={ContentVariants.small}>
                 <Spinner size="sm" /> {submittingText}
-              </Text>
+              </Content>
             </ActionListItem>
           )}
           <SplitItem isFilled />

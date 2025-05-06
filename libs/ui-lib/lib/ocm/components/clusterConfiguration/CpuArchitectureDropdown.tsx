@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { FormGroup, Split, SplitItem, Tooltip } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import { Dropdown, MenuToggle, DropdownList, DropdownItem } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
 import {
@@ -51,10 +51,8 @@ const CpuArchitectureDropdown = ({
   platformType,
 }: CpuArchitectureDropdownProps) => {
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
-
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
     useField<SupportedCpuArchitecture>(INPUT_NAME);
-
   const [isOpen, setOpen] = React.useState(false);
 
   const prevVersionRef = React.useRef(openshiftVersion);
@@ -74,7 +72,7 @@ const CpuArchitectureDropdown = ({
     if (cpuArchitectures !== undefined) {
       return cpuArchitectures.map((cpuArch) => {
         let isCpuSupported = true;
-        let disabledReason = `This cluster is using the  ${
+        let disabledReason = `This cluster is using the ${
           platformType ? ExternalPlatformLabels[platformType] : ''
         } platform which doesn't allow this CPU architecture.`;
         if (day1CpuArchitecture === CpuArchitecture.ARM) {
@@ -91,23 +89,14 @@ const CpuArchitectureDropdown = ({
           );
         }
 
-        return (
-          <DropdownItem
-            key={cpuArch}
-            id={cpuArch}
-            description={cpuArch ? architectureData[cpuArch].description : ''}
-            isAriaDisabled={!isCpuSupported}
-          >
-            <Split>
-              <SplitItem>
-                <Tooltip hidden={isCpuSupported} content={disabledReason} position="top">
-                  <div>{cpuArch ? architectureData[cpuArch].label : ''}</div>
-                </Tooltip>
-              </SplitItem>
-              <SplitItem isFilled />
-            </Split>
-          </DropdownItem>
-        );
+        return {
+          key: cpuArch,
+          id: cpuArch,
+          label: cpuArch ? architectureData[cpuArch].label : '',
+          description: cpuArch ? architectureData[cpuArch].description : '',
+          isDisabled: !isCpuSupported,
+          disabledReason,
+        };
       });
     }
   }, [
@@ -119,11 +108,10 @@ const CpuArchitectureDropdown = ({
   ]);
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const selectedCpuArch = event?.currentTarget.id as SupportedCpuArchitecture;
+    (selectedCpuArch: SupportedCpuArchitecture, label: string) => {
       setValue(selectedCpuArch);
       setOpen(false);
-      setCurrentCpuArch(architectureData[selectedCpuArch].label);
+      setCurrentCpuArch(label);
       onChange && onChange(selectedCpuArch);
     },
     [setOpen, setValue, onChange],
@@ -147,17 +135,20 @@ const CpuArchitectureDropdown = ({
   }, [cpuArchitectures, openshiftVersion, selectedCpuArchitecture]);
 
   const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val: boolean) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {currentCpuArch}
-      </DropdownToggle>
-    ),
-    [setOpen, currentCpuArch],
+    () =>
+      (toggleRef: RefObject<unknown>): React.ReactNode =>
+        (
+          <MenuToggle
+            // ref={toggleRef} CODEMODS TODO: fix this
+            isDisabled={false}
+            onClick={() => setOpen(!isOpen)}
+            icon={<CaretDownIcon />}
+            className="pf-v6-u-w-100"
+          >
+            {currentCpuArch}
+          </MenuToggle>
+        ),
+    [isOpen, currentCpuArch],
   );
 
   return (
@@ -165,13 +156,35 @@ const CpuArchitectureDropdown = ({
       <Dropdown
         {...field}
         id={fieldId}
-        dropdownItems={enabledItems}
-        toggle={toggle}
         isOpen={isOpen}
-        className="pf-v5-u-w-100"
-        onSelect={onSelect}
-      />
+        onOpenChange={(isOpen) => setOpen(isOpen)}
+        className="pf-v6-u-w-100"
+        toggle={toggle}
+        popperProps={{ appendTo: 'inline' }}
+      >
+        <DropdownList>
+          {enabledItems?.map(({ key, id, label, description, isDisabled, disabledReason }) => (
+            <DropdownItem
+              key={key}
+              id={id}
+              description={description}
+              isDisabled={isDisabled}
+              onClick={() => onSelect(id, label)}
+            >
+              <Split>
+                <SplitItem>
+                  <Tooltip hidden={!isDisabled} content={disabledReason} position="top">
+                    <div>{label}</div>
+                  </Tooltip>
+                </SplitItem>
+                <SplitItem isFilled />
+              </Split>
+            </DropdownItem>
+          ))}
+        </DropdownList>
+      </Dropdown>
     </FormGroup>
   );
 };
+
 export default CpuArchitectureDropdown;

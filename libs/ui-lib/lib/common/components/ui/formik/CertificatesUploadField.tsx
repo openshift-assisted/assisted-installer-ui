@@ -89,7 +89,7 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   };
 
   return (
-    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelHelp={labelIcon}>
       {children}
       <FileUpload
         filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
