@@ -17,9 +17,11 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
           Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes.
         </ListItem>
         <ListItem>
-          Each control plane node requires an additional 1024 MiB of memory and 3 CPUs.
+          Each control plane node requires an additional 1024 MiB of memory and 3 CPU cores.
         </ListItem>
-        <ListItem>Each worker node requires an additional 1024 MiB of memory and 5 CPUs.</ListItem>
+        <ListItem>
+          Each worker node requires an additional 1024 MiB of memory and 5 CPU cores.
+        </ListItem>
         <ListItem>
           Additional resources may be required to support the selected storage operator.
         </ListItem>

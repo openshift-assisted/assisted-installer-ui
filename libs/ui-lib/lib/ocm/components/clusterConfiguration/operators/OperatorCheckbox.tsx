@@ -83,7 +83,7 @@ const OperatorRequirements = ({
                 <ListItem>
                   Each worker node requires an additional {workerRequirements?.ramMib || 360} MiB of
                   memory {workerRequirements?.diskSizeGb ? ',' : ' and'}{' '}
-                  {workerRequirements?.cpuCores || 2} CPUs
+                  {workerRequirements?.cpuCores || 2} CPU cores
                   {workerRequirements?.diskSizeGb
                     ? ` and ${workerRequirements?.diskSizeGb} storage space`
                     : ''}
@@ -93,7 +93,7 @@ const OperatorRequirements = ({
                 <ListItem>
                   Each control plane node requires an additional {masterRequirements?.ramMib || 150}{' '}
                   MiB of memory {masterRequirements?.diskSizeGb ? ',' : ' and'}{' '}
-                  {masterRequirements?.cpuCores || 4} CPUs
+                  {masterRequirements?.cpuCores || 4} CPU cores
                   {masterRequirements?.diskSizeGb
                     ? ` and ${masterRequirements?.diskSizeGb} storage space`
                     : ''}
