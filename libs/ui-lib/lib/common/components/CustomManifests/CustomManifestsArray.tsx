@@ -1,21 +1,24 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Button, ButtonVariant, Divider, Flex, FlexItem } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import { FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash-es/cloneDeep.js';
-import { LoadingState, useAlerts } from '../../../../../common';
-import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
-import { ClustersAPI } from '../../../../services/apis';
-import { getApiErrorMessage, handleApiError } from '../../../../../common/api';
+import { AgentClusterInstallK8sResource } from '../../../cim';
+import { LoadingState, ConfirmationModal } from '../ui';
 import { CustomManifest } from './CustomManifest';
+import { CustomManifestValues } from './types';
 import { getEmptyManifest, getManifestName } from './utils';
-import { CustomManifestValues } from '../data/dataTypes';
-import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const fieldName = 'manifests';
 
-type CustomManifestsArrayProps = { clusterId: string } & FieldArrayRenderProps;
+type CustomManifestsArrayProps = {
+  yamlOnly?: boolean;
+  agentClusterInstall?: AgentClusterInstallK8sResource;
+  onRemoveManifest: (manifestId: number) => Promise<void>;
+  removeManifest?: boolean;
+  isViewerMode?: boolean;
+} & FieldArrayRenderProps;
 type ExpandedManifests = { [manifestIdx: number]: boolean };
 
 const getExpandedManifestsInitialValue = (numManifests: number): ExpandedManifests => {
@@ -37,64 +40,43 @@ const getExpandedManifestsDefaultValue = (numManifests: number): ExpandedManifes
 export const CustomManifestsArray = ({
   push,
   remove,
-  clusterId,
+  onRemoveManifest,
+  removeManifest,
+  isViewerMode,
   ...props
 }: CustomManifestsArrayProps) => {
-  const [field, { error }] = useField<CustomManifestValues[]>({
+  const { t } = useTranslation();
+
+  const [{ value }, { error }] = useField<CustomManifestValues[]>({
     name: fieldName,
   });
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [expandedManifests, setExpandedManifests] = React.useState<ExpandedManifests>(
-    getExpandedManifestsDefaultValue(field.value.length),
+    getExpandedManifestsDefaultValue(value.length),
   );
   const [manifestIdxToRemove, setManifestIdxToRemove] = React.useState<number | null>(null);
-  const { addAlert } = useAlerts();
 
   const onAddManifest = React.useCallback(() => {
-    const newExpandedManifests = getExpandedManifestsInitialValue(field.value.length + 1);
-    newExpandedManifests[field.value.length] = true;
+    const newExpandedManifests = getExpandedManifestsInitialValue(value.length + 1);
+    newExpandedManifests[value.length] = true;
     setExpandedManifests(newExpandedManifests);
     push(getEmptyManifest());
-  }, [field.value.length, push]);
-
-  const removeManifest = React.useCallback(
-    async (clusterId: string, manifestIdx: number) => {
-      const manifestToRemove = field.value[manifestIdx];
-      if ((manifestToRemove['folder'] as string) !== '' && manifestToRemove['filename'] !== '') {
-        try {
-          await ClustersAPI.removeCustomManifest(
-            clusterId,
-            manifestToRemove['folder'] as string,
-            manifestToRemove['filename'],
-          );
-        } catch (e) {
-          handleApiError(e, () =>
-            addAlert({
-              title: 'Manifest could not be deleted',
-              message: getApiErrorMessage(e),
-            }),
-          );
-        }
-      }
-    },
-    [addAlert, field.value],
-  );
+  }, [value.length, push]);
 
   const onConfirm = React.useCallback(async (): Promise<void> => {
     if (manifestIdxToRemove !== null) {
-      await removeManifest(clusterId, manifestIdxToRemove);
-      remove(manifestIdxToRemove);
+      await onRemoveManifest(manifestIdxToRemove);
+      removeManifest && remove(manifestIdxToRemove);
       setManifestIdxToRemove(null);
     }
-  }, [removeManifest, clusterId, remove, manifestIdxToRemove, setManifestIdxToRemove]);
+  }, [manifestIdxToRemove, onRemoveManifest, remove, removeManifest]);
 
-  if (field.value === undefined) {
+  if (value === undefined) {
     return <LoadingState />;
   }
 
   return (
     <>
-      {field.value.map((_data, manifestIdx) => {
+      {value.map((_data, manifestIdx) => {
         const onToggleExpand = (isExpanded: boolean) => {
           const newExpandedManifests = cloneDeep(expandedManifests);
           newExpandedManifests[manifestIdx] = isExpanded;
@@ -106,10 +88,10 @@ export const CustomManifestsArray = ({
               manifestIdx={manifestIdx}
               onToggleExpand={onToggleExpand}
               isExpanded={expandedManifests[manifestIdx]}
-              isDisabled={isViewerMode}
+              isDisabled={!!isViewerMode}
               onRemove={() => setManifestIdxToRemove(manifestIdx)}
               fieldName={fieldName}
-              enableRemoveManifest={field.value.length > 1}
+              enableRemoveManifest={value.length > 1}
               {...props}
             />
 
@@ -129,7 +111,7 @@ export const CustomManifestsArray = ({
               data-testid="add-manifest"
               isDisabled={!!error}
             >
-              Add another manifest
+              {t('ai:Add another manifest')}
             </Button>
           </FlexItem>
         </Flex>
@@ -137,15 +119,17 @@ export const CustomManifestsArray = ({
 
       {manifestIdxToRemove !== null && (
         <ConfirmationModal
-          title={`Delete ${getManifestName(manifestIdxToRemove)}?`}
+          title={t('ai:Delete {{name}}?', { name: getManifestName(manifestIdxToRemove, t) })}
           titleIconVariant="warning"
-          confirmationButtonText="Delete"
+          confirmationButtonText={t('ai:Delete')}
           confirmationButtonVariant={ButtonVariant.danger}
           content={
             <>
-              <p>{`All the data entered for ${getManifestName(
-                manifestIdxToRemove,
-              )} will be lost`}</p>
+              <p>
+                {t('ai:All the data entered for {{name}} will be lost', {
+                  name: getManifestName(manifestIdxToRemove, t),
+                })}
+              </p>
             </>
           }
           onClose={() => setManifestIdxToRemove(null)}
