@@ -17,7 +17,7 @@ export const getTotalCompute = (selectedAgents: AgentK8sResource[], t: TFunction
     },
   );
 
-  return t('ai:{{cpus}} CPUs | {{memory}} Memory', {
+  return t('ai:{{cpus}} CPU cores | {{memory}} Memory', {
     cpus: totals.cpus,
     memory: fileSize(totals.memory, 2, 'iec'),
   });

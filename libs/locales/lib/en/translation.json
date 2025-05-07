@@ -23,7 +23,7 @@
   "ai:{{count}} worker failed_plural": "{{count}} workers failed",
   "ai:{{count}} worker installed": "{{count}} worker installed",
   "ai:{{count}} worker installed_plural": "{{count}} workers installed",
-  "ai:{{cpus}} CPUs | {{memory}} Memory": "{{cpus}} CPUs | {{memory}} Memory",
+  "ai:{{cpus}} CPU cores | {{memory}} Memory": "{{cpus}} CPU cores | {{memory}} Memory",
   "ai:{{operatorsCountString}} installed": "{{operatorsCountString}} installed",
   "ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching.": "{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} identified.",
   "ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching._plural": "{{selectedAgentsCount}} hosts selected out of {{matchingAgentsCount}} identified.",
