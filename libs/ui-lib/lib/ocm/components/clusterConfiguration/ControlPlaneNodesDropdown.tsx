@@ -1,6 +1,13 @@
 import React from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
+import {
+  FormGroup,
+  Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 import { getFieldId, PopoverIcon } from '../../../common';
 import {
@@ -91,7 +98,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     }
   }, [field.value, setValue]);
 
-  const onSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {
+  const onSelect = (event?: React.MouseEvent<Element, MouseEvent>): void => {
     const selectedValue = event?.currentTarget.id as string;
     setValue(toNumber(selectedValue));
     setOpen(false);
@@ -108,10 +115,10 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     );
   });
 
-  const toggle = (
-    <DropdownToggle onToggle={(_, val) => setOpen(val)}>
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle id={fieldId} ref={toggleRef} onClick={() => setOpen(!isOpen)} isExpanded={isOpen}>
       {options.find((opt) => opt.value === field.value)?.label || 'Select'}
-    </DropdownToggle>
+    </MenuToggle>
   );
 
   return (
@@ -121,13 +128,9 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
         label={<ControlPlaneNodesLabel />}
         fieldId={fieldId}
       >
-        <Dropdown
-          id={fieldId}
-          isOpen={isOpen}
-          toggle={toggle}
-          dropdownItems={dropdownItems}
-          onSelect={onSelect}
-        />
+        <Dropdown id={`${fieldId}-dropdown`} isOpen={isOpen} toggle={toggle} onSelect={onSelect}>
+          <DropdownList>{dropdownItems}</DropdownList>
+        </Dropdown>
       </FormGroup>
       {field.value === 1 && (
         <OcmSNODisclaimer

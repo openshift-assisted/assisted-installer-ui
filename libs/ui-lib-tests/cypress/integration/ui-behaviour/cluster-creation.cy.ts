@@ -2,6 +2,8 @@ import { commonActions } from '../../views/common';
 import { clusterDetailsPage } from '../../views/clusterDetails';
 import * as versionsFixtures from '../../fixtures/infra-envs/openshift-versions';
 
+const arm64Text = versionsFixtures.arm64.charAt(0).toUpperCase() + versionsFixtures.arm64.slice(1);
+
 describe('Assisted Installer UI behaviour - cluster creation', () => {
   const setTestStartSignal = (activeSignal: string) => {
     cy.setTestEnvironment({
@@ -31,7 +33,7 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
         .each((versionItem, index) => {
           //TODO: test adaptations for new feature about custom OCP releases
           if (index < 7) {
-            expect(versionItem.parent()).to.have.id(expectedVersionIds[index]);
+            expect(versionItem).to.have.id(expectedVersionIds[index]);
           }
         });
     });
@@ -52,13 +54,15 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
       clusterDetailsPage.openCpuArchitectureDropdown();
       clusterDetailsPage.CpuArchitectureNotExists(versionsFixtures.arm64);
       clusterDetailsPage.CpuArchitectureExists(versionsFixtures.x86);
+      clusterDetailsPage.openCpuArchitectureDropdown();
       clusterDetailsPage.selectCpuArchitecture(versionsFixtures.x86);
 
       clusterDetailsPage.inputOpenshiftVersion(versionsFixtures.getVersionWithArmSupport());
       clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.CpuArchitectureExists(versionsFixtures.arm64);
+      clusterDetailsPage.CpuArchitectureExists(arm64Text);
       clusterDetailsPage.CpuArchitectureExists(versionsFixtures.x86);
-      clusterDetailsPage.selectCpuArchitecture(versionsFixtures.arm64);
+      clusterDetailsPage.openCpuArchitectureDropdown();
+      clusterDetailsPage.selectCpuArchitecture(arm64Text);
     });
   });
 });
