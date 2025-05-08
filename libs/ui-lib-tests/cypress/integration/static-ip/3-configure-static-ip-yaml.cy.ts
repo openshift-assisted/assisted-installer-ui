@@ -70,7 +70,6 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
 
     it('Can show the correct type view', () => {
       commonActions.verifyIsAtStep('Static network configurations');
-      staticIpPage.getYamlViewSelect().should('be.enabled');
     });
 
     it('Can show the existing static IP configuration', () => {

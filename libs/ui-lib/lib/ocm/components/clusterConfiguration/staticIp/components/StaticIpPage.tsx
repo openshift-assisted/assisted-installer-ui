@@ -62,10 +62,10 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
     switch (clusterWizardContext.currentStepId) {
       case 'static-ip-yaml-view':
         return <YamlView {...viewProps} />;
-      case 'static-ip-host-configurations':
-        return <FormViewHosts {...viewProps} />;
       case 'static-ip-network-wide-configurations':
         return <FormViewNetworkWide {...viewProps} />;
+      case 'static-ip-host-configurations':
+        return <FormViewHosts {...viewProps} />;
       default:
         throw `Unexpected wizard step id ${clusterWizardContext.currentStepId} when entering static ip page`;
     }
@@ -85,11 +85,13 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
         </Text>
       </TextContent>
 
-      <StaticIpViewRadioGroup
-        initialView={initialStaticIpInfo.view}
-        confirmOnChangeView={confirmOnChangeView}
-        onChangeView={onChangeView}
-      />
+      {clusterWizardContext.currentStepId === 'static-ip-network-wide-configurations' && (
+        <StaticIpViewRadioGroup
+          initialView={initialStaticIpInfo.view}
+          confirmOnChangeView={confirmOnChangeView}
+          onChangeView={onChangeView}
+        />
+      )}
       {initialStaticIpInfo.isDataComplete && isoRegenerationAlert}
       {content}
     </Grid>
