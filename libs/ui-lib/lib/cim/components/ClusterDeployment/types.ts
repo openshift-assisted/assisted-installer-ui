@@ -1,8 +1,4 @@
-import {
-  K8sResourceCommon,
-  ResourcesObject,
-  WatchK8sResults,
-} from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { CpuArchitecture } from '../../../common';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
@@ -22,7 +18,6 @@ import { AgentMachineK8sResource } from '../Hypershift/types';
 import { AddHostDropdownProps, ProvisioningConfigResult } from '../InfraEnv/types';
 import { AddHostModalProps, EditBMHModalProps, UploadActionModalProps } from '../modals/types';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import { ManifestFormData } from '../../../common/components/CustomManifests/types';
 
 export type EditAgentModalProps = {
   agent: AgentK8sResource;
@@ -91,14 +86,6 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;
   isPreviewOpen: boolean;
   isNutanix: boolean;
-  useCustomManifests: (
-    agentClusterInstall?: AgentClusterInstallK8sResource,
-  ) => WatchK8sResults<ResourcesObject>;
-  onSyncCustomManifests: (
-    agentClusterInstall: AgentClusterInstallK8sResource,
-    val: ManifestFormData,
-    existingManifests: K8sResourceCommon[],
-  ) => Promise<void>;
 };
 
 export type ClusterDeploymentDetailsNetworkingProps = Pick<
@@ -158,16 +145,6 @@ export type ClusterDeploymentWizardProps = {
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv?: InfraEnvK8sResource;
   infraNMStates: NMStateK8sResource[];
-
-  useCustomManifests: (
-    agentClusterInstall?: AgentClusterInstallK8sResource,
-  ) => WatchK8sResults<ResourcesObject>;
-  onSyncCustomManifests: (
-    agentClusterInstall: AgentClusterInstallK8sResource,
-    val: ManifestFormData,
-    existingManifests: K8sResourceCommon[],
-  ) => Promise<void>;
-
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   initialStep?: ClusterDeploymentWizardStepsType;
   isPreviewOpen: boolean;

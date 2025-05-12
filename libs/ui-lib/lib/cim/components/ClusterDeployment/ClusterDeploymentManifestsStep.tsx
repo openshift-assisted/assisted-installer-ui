@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { dump } from 'js-yaml';
+import { dump, load } from 'js-yaml';
 import {
   Alert,
   Grid,
@@ -11,39 +11,38 @@ import {
   WizardFooter,
   useWizardContext,
   useWizardFooter,
+  AlertVariant,
+  AlertGroup,
 } from '@patternfly/react-core';
 import { FieldArray, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import {
-  K8sResourceCommon,
-  ResourcesObject,
-  WatchK8sResults,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { ClusterWizardStepHeader, ManifestFormData, useTranslation } from '../../../common';
+  ClusterWizardStepHeader,
+  ManifestFormData,
+  useAlerts,
+  useTranslation,
+} from '../../../common';
 import { AgentClusterInstallK8sResource } from '../../types';
 import { CustomManifestsArray } from '../../../common/components/CustomManifests/CustomManifestsArray';
+import { CustomManifestService } from '../../services/CustomManifestService';
+import { ValidationSection } from './components/ValidationSection';
+import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 
 const CustomManifestsForm = ({
   agentClusterInstall,
+  isLoading,
 }: {
   agentClusterInstall: AgentClusterInstallK8sResource;
-  onSyncCustomManifests: (
-    agentClusterInstall: AgentClusterInstallK8sResource,
-    val: ManifestFormData,
-    existingManifests: K8sResourceCommon[],
-  ) => Promise<void>;
+  isLoading?: boolean;
 }) => {
   const { t } = useTranslation();
-  const { activeStep, goToNextStep, goToPrevStep, close } = useWizardContext();
+  const { activeStep, goToPrevStep, close } = useWizardContext();
+  const { clearAlerts } = useAlerts();
   const { values, isValid, isSubmitting, submitForm } = useFormikContext<ManifestFormData>();
 
   const handleSubmit = React.useCallback(async () => {
-    try {
-      await submitForm();
-      await goToNextStep();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [goToNextStep, submitForm]);
+    await submitForm();
+  }, [submitForm]);
 
   const submittingText = React.useMemo(() => {
     if (isSubmitting) {
@@ -60,11 +59,24 @@ const CustomManifestsForm = ({
         isNextDisabled={isSubmitting || !isValid}
         nextButtonText={submittingText || t('ai:Next')}
         nextButtonProps={{ isLoading: !!submittingText }}
-        onBack={goToPrevStep}
+        onBack={() => {
+          clearAlerts();
+          void goToPrevStep();
+        }}
         onClose={close}
       />
     ),
-    [activeStep, handleSubmit, isSubmitting, isValid, submittingText, t, goToPrevStep, close],
+    [
+      activeStep,
+      handleSubmit,
+      isSubmitting,
+      isValid,
+      submittingText,
+      t,
+      close,
+      clearAlerts,
+      goToPrevStep,
+    ],
   );
 
   useWizardFooter(footer);
@@ -75,6 +87,7 @@ const CustomManifestsForm = ({
         {(arrayProps) => (
           <CustomManifestsArray
             {...arrayProps}
+            isLoading={isLoading}
             yamlOnly
             agentClusterInstall={agentClusterInstall}
             onRemoveManifest={async (manifestId: number) => {
@@ -90,51 +103,55 @@ const CustomManifestsForm = ({
 
 export const ClusterDeploymentManifestsStep = ({
   agentClusterInstall,
-  useCustomManifests,
-  onSyncCustomManifests,
 }: {
   agentClusterInstall: AgentClusterInstallK8sResource;
-  useCustomManifests: (
-    agentClusterInstall?: AgentClusterInstallK8sResource,
-  ) => WatchK8sResults<ResourcesObject>;
-  onSyncCustomManifests: (
-    agentClusterInstall: AgentClusterInstallK8sResource,
-    val: ManifestFormData,
-    existingManifests: K8sResourceCommon[],
-  ) => Promise<void>;
 }) => {
+  const { syncError } = React.useContext(ClusterDeploymentWizardContext);
+
   const { t } = useTranslation();
-  const customManifests = useCustomManifests(agentClusterInstall);
+  const { goToNextStep } = useWizardContext();
+  const { alerts, addAlert, clearAlerts } = useAlerts();
+
+  const { customManifests, isLoading } =
+    CustomManifestService.useCustomManifests(agentClusterInstall);
+
   const initialValues = React.useMemo(
     () =>
       ({
-        manifests: Object.values(customManifests || {})?.length
-          ? Object.values(customManifests || {}).map((manifest) => ({
-              manifestYaml: manifest?.data ? dump(manifest?.data) : '',
-              filename: (manifest.data as K8sResourceCommon)?.metadata?.name || '',
-              created: true,
-              folder: 'manifests',
-            }))
-          : [{ manifestYaml: '', filename: '', created: false, folder: 'manifests' }],
+        manifests:
+          customManifests.length && !isLoading
+            ? customManifests.map((manifest) => ({
+                manifestYaml: !!manifest ? dump(manifest) : '',
+                filename: (manifest as K8sResourceCommon)?.metadata?.name || '',
+                created: true,
+                folder: 'manifests',
+              }))
+            : [{ manifestYaml: '', filename: '', created: false, folder: 'manifests' }],
       } as ManifestFormData),
-    [customManifests],
+    [customManifests, isLoading],
   );
 
   const handleSubmit = async (
     values: ManifestFormData,
     _formikHelpers: FormikHelpers<ManifestFormData>,
   ) => {
-    try {
-      await onSyncCustomManifests(
-        agentClusterInstall,
-        values,
-        Object.values(customManifests || {}).map(
-          (manifest: { data?: object }) => manifest.data,
-        ) as K8sResourceCommon[],
-      );
-    } catch (e) {
-      console.error(e);
-    }
+    clearAlerts();
+    await CustomManifestService.onSyncCustomManifests(
+      agentClusterInstall,
+      values,
+      customManifests as K8sResourceCommon[],
+      () => {
+        clearAlerts();
+        void goToNextStep();
+      },
+      (e: { message?: string }) => {
+        addAlert({
+          title: t('ai:Failed to save custom manifests'),
+          message: e.message || '',
+          variant: AlertVariant.danger,
+        });
+      },
+    );
   };
 
   return (
@@ -163,21 +180,57 @@ export const ClusterDeploymentManifestsStep = ({
       <GridItem>
         <Formik
           initialValues={initialValues}
+          enableReinitialize
+          validateOnMount
           validationSchema={Yup.object({
             manifests: Yup.array().of(
               Yup.object({
-                manifestYaml: Yup.string().required(),
+                manifestYaml: Yup.string()
+                  .required()
+                  .test('metadata-name', t('ai:metadata.name is required.'), (val) => {
+                    try {
+                      const manifest = load(val) as K8sResourceCommon;
+                      return !!manifest.metadata?.name;
+                    } catch (error) {
+                      return false;
+                    }
+                  })
+                  .test('kind', t('ai:Custom manifest must be of MachineConfig kind.'), (val) => {
+                    try {
+                      const manifest = load(val) as K8sResourceCommon;
+                      return manifest.kind === 'MachineConfig';
+                    } catch (error) {
+                      return false;
+                    }
+                  }),
               }),
             ),
           })}
           onSubmit={handleSubmit}
         >
-          <CustomManifestsForm
-            agentClusterInstall={agentClusterInstall}
-            onSyncCustomManifests={onSyncCustomManifests}
-          />
+          <CustomManifestsForm isLoading={isLoading} agentClusterInstall={agentClusterInstall} />
         </Formik>
       </GridItem>
+      {!!alerts.length && (
+        <GridItem>
+          <AlertGroup>
+            {alerts.map((alert) => (
+              <Alert key={alert.key} title={alert.title} variant={alert.variant} isInline>
+                {alert.message}
+              </Alert>
+            ))}
+          </AlertGroup>
+        </GridItem>
+      )}
+      {syncError && (
+        <GridItem>
+          <ValidationSection currentStepId={'review'} hosts={[]}>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+              {syncError}
+            </Alert>
+          </ValidationSection>
+        </GridItem>
+      )}
     </Grid>
   );
 };
