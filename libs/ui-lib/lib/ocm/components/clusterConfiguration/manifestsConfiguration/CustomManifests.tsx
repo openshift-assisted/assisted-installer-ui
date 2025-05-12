@@ -73,25 +73,32 @@ const CustomManifestsForm = ({
   const { values } = useFormikContext<ManifestFormData>();
   const { addAlert } = useAlerts();
 
-  const onRemoveManifest = async (manifestId: number) => {
-    const manifestToRemove = values.manifests[manifestId];
-    if ((manifestToRemove['folder'] as string) !== '' && manifestToRemove['filename'] !== '') {
-      try {
-        await ClustersAPI.removeCustomManifest(
-          clusterId,
-          manifestToRemove['folder'] as string,
-          manifestToRemove['filename'],
-        );
-      } catch (e) {
-        handleApiError(e, () =>
-          addAlert({
-            title: 'Manifest could not be deleted',
-            message: getApiErrorMessage(e),
-          }),
-        );
+  const onRemoveManifest = React.useCallback(
+    async (manifestId: number) => {
+      const manifestToRemove = values.manifests[manifestId];
+      if (
+        manifestToRemove &&
+        (manifestToRemove['folder'] as string) !== '' &&
+        manifestToRemove['filename'] !== ''
+      ) {
+        try {
+          await ClustersAPI.removeCustomManifest(
+            clusterId,
+            manifestToRemove['folder'] as string,
+            manifestToRemove['filename'],
+          );
+        } catch (e) {
+          handleApiError(e, () =>
+            addAlert({
+              title: 'Manifest could not be deleted',
+              message: getApiErrorMessage(e),
+            }),
+          );
+        }
       }
-    }
-  };
+    },
+    [addAlert, clusterId, values.manifests],
+  );
 
   const renderManifests = React.useCallback(
     (arrayRenderProps: FieldArrayRenderProps) => (
@@ -102,8 +109,7 @@ const CustomManifestsForm = ({
         )}
       />
     ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [isViewerMode, onRemoveManifest],
   );
 
   return (

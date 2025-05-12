@@ -9,7 +9,6 @@ import {
   WizardFooter,
 } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
-import { ResourcesObject, WatchK8sResults } from '@openshift-console/dynamic-plugin-sdk';
 import { canNextFromReviewStep } from './wizardTransition';
 import {
   AgentClusterInstallK8sResource,
@@ -47,9 +46,6 @@ type ClusterDeploymentReviewStepProps = {
   onFinish: () => Promise<any>;
   clusterImages: ClusterImageSetK8sResource[];
   infraEnv?: InfraEnvK8sResource;
-  useCustomManifests: (
-    agentClusterInstall?: AgentClusterInstallK8sResource,
-  ) => WatchK8sResults<ResourcesObject>;
 };
 
 const ClusterDeploymentReviewStep = ({
@@ -59,7 +55,6 @@ const ClusterDeploymentReviewStep = ({
   clusterDeployment,
   clusterImages,
   infraEnv,
-  useCustomManifests,
 }: ClusterDeploymentReviewStepProps) => {
   const { addAlert, clearAlerts } = useAlerts();
   const { activeStep, goToPrevStep, goToStepByName, close } = useWizardContext();
@@ -68,9 +63,8 @@ const ClusterDeploymentReviewStep = ({
   const cdName = clusterDeployment.metadata?.name;
   const cdNamespace = clusterDeployment.metadata?.namespace;
   const cpuArchitecture = getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv);
-
-  const customManifests = useCustomManifests(agentClusterInstall);
-  const customManifestNames = React.useMemo(() => Object.keys(customManifests), [customManifests]);
+  const customManifestNames =
+    agentClusterInstall.spec?.manifestsConfigMapRefs?.map((manifest) => manifest.name) || [];
 
   const clusterAgents = React.useMemo(
     () => agents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
@@ -159,8 +153,8 @@ const ClusterDeploymentReviewStep = ({
               value={
                 <Table variant={TableVariant.compact} borders={false}>
                   <Tbody>
-                    {customManifestNames.map((name) => (
-                      <Tr key={name}>
+                    {customManifestNames.map((name, id) => (
+                      <Tr key={`custom-manifest-${id}`}>
                         <Td>{name}</Td>
                       </Tr>
                     ))}

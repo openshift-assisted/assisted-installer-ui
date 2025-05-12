@@ -112,8 +112,6 @@ const ClusterDeploymentDetailsStep = ({
   isPreviewOpen,
   infraEnv,
   isNutanix,
-  useCustomManifests,
-  onSyncCustomManifests,
 }: ClusterDeploymentDetailsStepProps) => {
   const { t } = useTranslation();
   const { addAlert } = useAlerts();
@@ -160,8 +158,6 @@ const ClusterDeploymentDetailsStep = ({
               clusterDeployment={clusterDeployment}
               clusterImages={clusterImages}
               isNutanix={isNutanix}
-              useCustomManifests={useCustomManifests}
-              onSyncCustomManifests={onSyncCustomManifests}
             />
           </ClusterDeploymentDetailsFormWrapper>
         </GridItem>

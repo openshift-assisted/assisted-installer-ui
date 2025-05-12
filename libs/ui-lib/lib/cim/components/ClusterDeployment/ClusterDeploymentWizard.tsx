@@ -33,8 +33,6 @@ export const ClusterDeploymentWizard = ({
   aiConfigMap,
   infraEnv,
   fetchInfraEnv,
-  useCustomManifests,
-  onSyncCustomManifests,
   initialStep,
   isPreviewOpen,
   setPreviewOpen,
@@ -92,8 +90,6 @@ export const ClusterDeploymentWizard = ({
                     isPreviewOpen={isPreviewOpen}
                     infraEnv={infraEnv}
                     isNutanix={isNutanix}
-                    useCustomManifests={useCustomManifests}
-                    onSyncCustomManifests={onSyncCustomManifests}
                   />
                 </WizardStep>
                 <WizardStep name={stepNames['automation']} id={'automation'} isDisabled />
@@ -154,11 +150,7 @@ export const ClusterDeploymentWizard = ({
                 </WizardStep>
                 {customManifestsStep && (
                   <WizardStep name={stepNames['custom-manifests']} id="custom-manifests">
-                    <ClusterDeploymentManifestsStep
-                      agentClusterInstall={agentClusterInstall}
-                      useCustomManifests={useCustomManifests}
-                      onSyncCustomManifests={onSyncCustomManifests}
-                    />
+                    <ClusterDeploymentManifestsStep agentClusterInstall={agentClusterInstall} />
                   </WizardStep>
                 )}
                 <WizardStep name={stepNames['review']} id={'review'}>
@@ -169,7 +161,6 @@ export const ClusterDeploymentWizard = ({
                     agents={agents}
                     clusterImages={clusterImages}
                     infraEnv={infraEnv}
-                    useCustomManifests={useCustomManifests}
                   />
                 </WizardStep>
               </Wizard>

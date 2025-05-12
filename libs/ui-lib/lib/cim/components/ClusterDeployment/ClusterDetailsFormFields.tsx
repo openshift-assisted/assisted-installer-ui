@@ -2,11 +2,7 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import {
-  K8sResourceCommon,
-  ResourcesObject,
-  WatchK8sResults,
-} from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../common/components/clusters';
@@ -23,7 +19,7 @@ import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
 import { AgentClusterInstallK8sResource } from '../../types';
 import { DeleteCustomManifestModal } from '../../../common/components/CustomManifests/DeleteCustomManifestModal';
-import { ManifestFormData } from '../../../common/components/CustomManifests/types';
+import { CustomManifestService } from '../../services/CustomManifestService';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -35,14 +31,6 @@ export type ClusterDetailsFormFieldsProps = {
   cpuArchitectures?: SupportedCpuArchitecture[];
   allowHighlyAvailable?: boolean;
   agentClusterInstall?: AgentClusterInstallK8sResource;
-  useCustomManifests?: (
-    agentClusterInstall?: AgentClusterInstallK8sResource,
-  ) => WatchK8sResults<ResourcesObject>;
-  onSyncCustomManifests?: (
-    agentClusterInstall: AgentClusterInstallK8sResource,
-    val: ManifestFormData,
-    existingManifests: K8sResourceCommon[],
-  ) => Promise<void>;
 };
 
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -73,16 +61,26 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   cpuArchitectures,
   allowHighlyAvailable,
   agentClusterInstall,
-  useCustomManifests,
-  onSyncCustomManifests,
 }) => {
   const { t } = useTranslation();
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
-  const customManifests = useCustomManifests?.(agentClusterInstall);
+  const { customManifests, isLoading } =
+    CustomManifestService.useCustomManifests(agentClusterInstall);
 
   const [showModal, setShowModal] = React.useState(false);
+
+  const onDeleteManifests = React.useCallback(() => {
+    if (agentClusterInstall && !isLoading) {
+      void CustomManifestService.onSyncCustomManifests(
+        agentClusterInstall,
+        { manifests: [] },
+        customManifests as K8sResourceCommon[],
+      );
+      setShowModal(false);
+    }
+  }, [agentClusterInstall, customManifests, isLoading]);
 
   const selectOptions = React.useMemo(
     () =>
@@ -196,16 +194,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       <DeleteCustomManifestModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        onDelete={() => {
-          if (agentClusterInstall && onSyncCustomManifests) {
-            void onSyncCustomManifests(
-              agentClusterInstall,
-              { manifests: [] },
-              Object.values(customManifests || {}) as K8sResourceCommon[],
-            );
-          }
-          setShowModal(false);
-        }}
+        onDelete={onDeleteManifests}
       />
 
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}

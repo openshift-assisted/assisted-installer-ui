@@ -18,6 +18,7 @@ type CustomManifestsArrayProps = {
   onRemoveManifest: (manifestId: number) => Promise<void>;
   removeManifest?: boolean;
   isViewerMode?: boolean;
+  isLoading?: boolean;
 } & FieldArrayRenderProps;
 type ExpandedManifests = { [manifestIdx: number]: boolean };
 
@@ -43,6 +44,7 @@ export const CustomManifestsArray = ({
   onRemoveManifest,
   removeManifest,
   isViewerMode,
+  isLoading,
   ...props
 }: CustomManifestsArrayProps) => {
   const { t } = useTranslation();
@@ -70,7 +72,7 @@ export const CustomManifestsArray = ({
     }
   }, [manifestIdxToRemove, onRemoveManifest, remove, removeManifest]);
 
-  if (value === undefined) {
+  if (isLoading) {
     return <LoadingState />;
   }
 
