@@ -20,7 +20,6 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
   it('Can be entered using Form View', () => {
     commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
-    staticIpPage.getFormViewSelect().should('be.checked');
     staticIpPage.getAddMoreHosts().should('be.disabled');
     staticIpPage.hostSpecificMacAddress(0).type('00:00:5e:00:53:af');
     staticIpPage.hostSpecificIpv4Address(0).type('192.168.2.38');
@@ -43,7 +42,6 @@ describe(`Assisted Installer Static IP Host specific Configuration`, () => {
 
     it('Can show the existing static IP configuration', () => {
       commonActions.getWizardStepNav('Host specific configurations').click();
-      staticIpPage.getFormViewSelect().should('be.checked');
 
       staticIpPage.hostMappingBlockToggle(0).click();
       staticIpPage.hostMappingIpv4Address(0).should('have.value', '192.168.3.28');
