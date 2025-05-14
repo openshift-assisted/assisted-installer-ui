@@ -1,11 +1,13 @@
+import React from 'react';
 import { Flex, FlexItem, Label, StackItem } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { useField } from 'formik';
-import React from 'react';
-import { CustomManifestValues } from '../data/dataTypes';
+import { CustomManifestValues } from './types';
 import { CustomManifestComponentProps } from './propTypes';
+import { useTranslation } from '../../hooks';
 
 const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentProps) => {
+  const { t } = useTranslation();
   const [{ value }, { error }] = useField<CustomManifestValues>({
     name: fieldName,
   });
@@ -23,7 +25,7 @@ const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentPr
                   icon={<InfoCircleIcon />}
                   data-testid="manifest-errors-label"
                 >
-                  Missing information
+                  {t('ai:Missing information')}
                 </Label>
               </FlexItem>
             </>

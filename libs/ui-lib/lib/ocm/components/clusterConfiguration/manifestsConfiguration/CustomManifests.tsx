@@ -17,15 +17,22 @@ import {
   handleApiError,
   useAlerts,
   useFormikAutoSave,
-} from '../../../../../common';
-import { CustomManifestsFormProps } from './propTypes';
-import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
-import useClusterCustomManifests from '../../../../hooks/useClusterCustomManifests';
-import { ClustersService } from '../../../../services';
-import { CustomManifestsArray } from './CustomManifestsArray';
-import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
-import { ClustersAPI } from '../../../../services/apis';
+} from '../../../../common';
+import {
+  CustomManifestFormState,
+  CustomManifestsFormProps,
+} from '../../../../common/components/CustomManifests/propTypes';
+import {
+  CustomManifestValues,
+  ManifestFormData,
+} from '../../../../common/components/CustomManifests/types';
+import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests';
+import { ClustersService } from '../../../services';
+import { CustomManifestsArray } from '../../../../common/components/CustomManifests/CustomManifestsArray';
+import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
+import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
+import { ClustersAPI } from '../../../services/apis';
+import { Cluster } from '@openshift-assisted/types/./assisted-installer-service';
 
 const fieldName = 'manifests';
 
@@ -52,7 +59,71 @@ const AutosaveWithParentUpdate = ({
   return null;
 };
 
-export const CustomManifestsForm = ({
+const CustomManifestsForm = ({
+  clusterId,
+  onFormStateChange,
+  getEmptyValues,
+}: {
+  clusterId: Cluster['id'];
+  onFormStateChange(formState: CustomManifestFormState): void;
+  getEmptyValues(): ManifestFormData;
+}) => {
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+
+  const { values } = useFormikContext<ManifestFormData>();
+  const { addAlert } = useAlerts();
+
+  const onRemoveManifest = React.useCallback(
+    async (manifestId: number) => {
+      const manifestToRemove = values.manifests[manifestId];
+      if (
+        manifestToRemove &&
+        (manifestToRemove['folder'] as string) !== '' &&
+        manifestToRemove['filename'] !== ''
+      ) {
+        try {
+          await ClustersAPI.removeCustomManifest(
+            clusterId,
+            manifestToRemove['folder'] as string,
+            manifestToRemove['filename'],
+          );
+        } catch (e) {
+          handleApiError(e, () =>
+            addAlert({
+              title: 'Manifest could not be deleted',
+              message: getApiErrorMessage(e),
+            }),
+          );
+        }
+      }
+    },
+    [addAlert, clusterId, values.manifests],
+  );
+
+  const renderManifests = React.useCallback(
+    (arrayRenderProps: FieldArrayRenderProps) => (
+      <CustomManifestsArray
+        {...Object.assign(
+          { onRemoveManifest, removeManifest: true, isViewerMode },
+          arrayRenderProps,
+        )}
+      />
+    ),
+    [isViewerMode, onRemoveManifest],
+  );
+
+  return (
+    <Form>
+      <FieldArray name={fieldName} render={renderManifests} />
+      <AutosaveWithParentUpdate
+        onFormStateChange={onFormStateChange}
+        getEmptyValues={getEmptyValues}
+      />
+    </Form>
+  );
+};
+
+export const CustomManifests = ({
   onFormStateChange,
   getEmptyValues,
   cluster,
@@ -142,14 +213,6 @@ export const CustomManifestsForm = ({
     }
   };
 
-  const renderManifests = React.useCallback(
-    (arrayRenderProps: FieldArrayRenderProps) => (
-      <CustomManifestsArray {...Object.assign({ clusterId: cluster.id }, arrayRenderProps)} />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
   if (error) {
     return <ErrorState />;
   }
@@ -167,13 +230,11 @@ export const CustomManifestsForm = ({
       validateOnMount
       validateOnChange
     >
-      <Form>
-        <FieldArray name={fieldName} render={renderManifests} />
-        <AutosaveWithParentUpdate
-          onFormStateChange={onFormStateChange}
-          getEmptyValues={getEmptyValues}
-        />
-      </Form>
+      <CustomManifestsForm
+        clusterId={cluster.id}
+        onFormStateChange={onFormStateChange}
+        getEmptyValues={getEmptyValues}
+      />
     </Formik>
   );
 };

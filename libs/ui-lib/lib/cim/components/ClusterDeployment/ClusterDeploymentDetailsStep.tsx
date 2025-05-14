@@ -71,6 +71,8 @@ export const useDetailsFormik = ({
         managedDomains: [], // not supported
         cluster,
         ocpVersions,
+        addCustomManifests:
+          agentClusterInstall?.metadata?.labels?.['addCustomManifests'] === 'true',
       });
 
       const ocpVersion = ocpVersions.find(
@@ -100,7 +102,7 @@ export const useDetailsFormik = ({
   return [initialValues, validationSchema];
 };
 
-const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> = ({
+const ClusterDeploymentDetailsStep = ({
   clusterImages,
   clusterDeployment,
   agentClusterInstall,
@@ -110,7 +112,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   isPreviewOpen,
   infraEnv,
   isNutanix,
-}) => {
+}: ClusterDeploymentDetailsStepProps) => {
   const { t } = useTranslation();
   const { addAlert } = useAlerts();
   const { goToNextStep } = useWizardContext();

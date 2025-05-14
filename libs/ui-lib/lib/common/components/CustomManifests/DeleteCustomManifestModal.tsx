@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Modal, Button, ModalVariant } from '@patternfly/react-core';
 
-const DeleteCustomManifestModal = ({
+export const DeleteCustomManifestModal = ({
   isOpen,
   onClose,
   onDelete,
@@ -34,5 +34,3 @@ const DeleteCustomManifestModal = ({
     }
   </Modal>
 );
-
-export default DeleteCustomManifestModal;

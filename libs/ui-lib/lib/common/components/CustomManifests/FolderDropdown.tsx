@@ -3,20 +3,19 @@ import { HelperText, FormGroup } from '@patternfly/react-core';
 import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core/deprecated';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import { useField } from 'formik';
-import { getFieldId } from '../../../../../common/components/ui/formik';
-import { PopoverIcon } from '../../../../../common';
+import { getFieldId } from '../ui/formik';
+import { PopoverIcon, useTranslation } from '../..';
 
 const FolderLabel = () => {
+  const { t } = useTranslation();
+
   return (
     <>
-      Folder{' '}
+      {t('ai:Folder')}{' '}
       <PopoverIcon
-        bodyContent={
-          <>
-            To overwrite an existing manifest, save the new manifest in the same folder with the
-            same name.
-          </>
-        }
+        bodyContent={t(
+          'ai:To overwrite an existing manifest, save the new manifest in the same folder with the same name.',
+        )}
       />
     </>
   );
@@ -36,6 +35,8 @@ const dropdownItems = [
 ];
 
 export const FolderDropdown = ({ name }: FolderDropdownProps) => {
+  const { t } = useTranslation();
+
   const [field, { value }, { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
@@ -75,7 +76,7 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
         className="pf-v5-u-w-100"
       />
       <HelperText style={{ display: 'inherit' }}>
-        {'Manifests can be placed in "manifests" or "openshift" directories.'}
+        {t('ai:Manifests can be placed in "manifests" or "openshift" directories.')}
       </HelperText>
     </FormGroup>
   );
