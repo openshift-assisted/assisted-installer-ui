@@ -63,6 +63,7 @@ type ScaleUpModalProps = {
   onChangeBMHHostname: (bmh: BareMetalHostK8sResource, hostname: string) => Promise<unknown>;
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   isNutanix: boolean;
+  onEditHostRole: (agent: AgentK8sResource, role: string | undefined) => Promise<AgentK8sResource>;
 };
 
 const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
@@ -76,6 +77,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   onChangeBMHHostname,
   onSetInstallationDiskId,
   isNutanix,
+  onEditHostRole,
 }) => {
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
   const [error, setError] = React.useState<string | undefined>();
@@ -123,8 +125,8 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   return (
     <>
       <Modal
-        aria-label={t('ai:Add worker host dialog')}
-        title={t('ai:Add worker hosts')}
+        aria-label={t('ai:Add host dialog')}
+        title={t('ai:Add hosts')}
         isOpen={isOpen}
         onClose={onClose}
         hasNoBodyWrapper
@@ -145,6 +147,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                       <ScaleUpForm
                         agents={agents}
                         onEditHost={setEditAgent}
+                        onEditRole={onEditHostRole}
                         onSetInstallationDiskId={onSetInstallationDiskId}
                         isNutanix={isNutanix}
                       />

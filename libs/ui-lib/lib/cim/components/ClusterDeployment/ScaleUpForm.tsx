@@ -14,6 +14,7 @@ import RadioField from '../../../common/components/ui/formik/RadioField';
 type ScaleUpFormProps = {
   agents: AgentK8sResource[];
   onEditHost: AgentTableActions['onEditHost'];
+  onEditRole: AgentTableActions['onEditRole'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   isNutanix: boolean;
 };
@@ -21,6 +22,7 @@ type ScaleUpFormProps = {
 const ScaleUpForm: React.FC<ScaleUpFormProps> = ({
   agents,
   onEditHost,
+  onEditRole,
   onSetInstallationDiskId,
   isNutanix,
 }) => {
@@ -73,6 +75,7 @@ const ScaleUpForm: React.FC<ScaleUpFormProps> = ({
         <ClusterDeploymentHostsSelectionAdvanced<ScaleUpFormValues>
           availableAgents={availableAgents}
           onEditHost={onEditHost}
+          onEditRole={onEditRole}
           onSetInstallationDiskId={onSetInstallationDiskId}
         />
       )}
