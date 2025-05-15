@@ -33,7 +33,6 @@ describe(`Assisted Installer SNO Cluster Installation`, () => {
       clusterDetailsPage.inputBaseDnsDomain();
       clusterDetailsPage.inputOpenshiftVersion('4.18');
 
-      clusterDetailsPage.openControlPlaneNodesDropdown();
       clusterDetailsPage.selectControlPlaneNodeOption('1');
       clusterDetailsPage.inputPullSecret();
 

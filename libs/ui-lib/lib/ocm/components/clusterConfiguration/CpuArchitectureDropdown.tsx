@@ -1,7 +1,14 @@
 import React from 'react';
-import { FormGroup, Split, SplitItem, Tooltip } from '@patternfly/react-core';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import {
+  FormGroup,
+  Split,
+  SplitItem,
+  Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 import {
   architectureData,
@@ -119,7 +126,7 @@ const CpuArchitectureDropdown = ({
   ]);
 
   const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
+    (event?: React.MouseEvent<Element, MouseEvent>): void => {
       const selectedCpuArch = event?.currentTarget.id as SupportedCpuArchitecture;
       setValue(selectedCpuArch);
       setOpen(false);
@@ -146,31 +153,30 @@ const CpuArchitectureDropdown = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cpuArchitectures, openshiftVersion, selectedCpuArchitecture]);
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val: boolean) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {currentCpuArch}
-      </DropdownToggle>
-    ),
-    [setOpen, currentCpuArch],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      id={fieldId}
+      ref={toggleRef}
+      onClick={() => setOpen(!isOpen)}
+      isExpanded={isOpen}
+      className="pf-v5-u-w-100"
+    >
+      {currentCpuArch}
+    </MenuToggle>
   );
 
   return (
     <FormGroup id={`form-control__${fieldId}`} fieldId={fieldId} label={'CPU architecture'}>
       <Dropdown
         {...field}
-        id={fieldId}
-        dropdownItems={enabledItems}
+        id={`${fieldId}-dropdown`}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-v5-u-w-100"
         onSelect={onSelect}
-      />
+        onOpenChange={() => setOpen(!isOpen)}
+      >
+        {enabledItems}
+      </Dropdown>
     </FormGroup>
   );
 };
