@@ -1,12 +1,11 @@
 import type React from 'react';
-import { Brand } from '@patternfly/react-core';
-import { PageHeader, PageHeaderTools } from '@patternfly/react-core/deprecated';
+import { Brand, Masthead, MastheadBrand, MastheadMain } from '@patternfly/react-core';
 import { AboutButton } from './AboutButton';
 import { FeedbackButton } from './FeedbackButton';
 
 export const Header: React.FC = () => (
-  <PageHeader
-    logo={
+  <Masthead style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <MastheadBrand>
       <Brand
         src="/logo.svg"
         alt="OpenShift Container Platform Assisted Installer"
@@ -14,13 +13,10 @@ export const Header: React.FC = () => (
       >
         <source src="/logo.svg" />
       </Brand>
-    }
-    logoProps={{ href: '/' }}
-    headerTools={
-      <PageHeaderTools>
-        <FeedbackButton />
-        <AboutButton />
-      </PageHeaderTools>
-    }
-  />
+    </MastheadBrand>
+    <MastheadMain>
+      <FeedbackButton />
+      <AboutButton />
+    </MastheadMain>
+  </Masthead>
 );
