@@ -42,16 +42,24 @@ const DiskEncryptionControlGroup = ({
   const {
     enableDiskEncryptionOnMasters,
     enableDiskEncryptionOnWorkers,
+    enableDiskEncryptionOnArbiters,
     diskEncryptionMode,
     diskEncryptionTangServers,
   } = values;
   const fieldId = 'diskEncryption';
 
-  const hasEnabledDiskEncryption = enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers;
+  const hasEnabledDiskEncryption =
+    enableDiskEncryptionOnMasters ||
+    enableDiskEncryptionOnWorkers ||
+    enableDiskEncryptionOnArbiters;
   const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
 
   React.useEffect(() => {
-    if (!enableDiskEncryptionOnWorkers && !enableDiskEncryptionOnMasters) {
+    if (
+      !enableDiskEncryptionOnWorkers &&
+      !enableDiskEncryptionOnMasters &&
+      !enableDiskEncryptionOnArbiters
+    ) {
       if (diskEncryptionMode !== 'tpmv2') {
         setFieldValue('diskEncryptionMode', 'tpmv2');
       }
@@ -67,6 +75,7 @@ const DiskEncryptionControlGroup = ({
     diskEncryptionTangServers,
     setFieldTouched,
     setFieldValue,
+    enableDiskEncryptionOnArbiters,
   ]);
 
   React.useEffect(() => {
@@ -102,8 +111,20 @@ const DiskEncryptionControlGroup = ({
             />
           </StackItem>
         </RenderIf>
+        <StackItem>
+          <SwitchField
+            tooltipProps={tooltipProps}
+            name="enableDiskEncryptionOnArbiters"
+            label={t('ai:Arbiter')}
+            isDisabled={isDisabled}
+          />
+        </StackItem>
         <RenderIf
-          condition={enableDiskEncryptionOnMasters || (enableDiskEncryptionOnWorkers && !isSNO)}
+          condition={
+            enableDiskEncryptionOnMasters ||
+            (enableDiskEncryptionOnWorkers && !isSNO) ||
+            enableDiskEncryptionOnArbiters
+          }
         >
           <StackItem>
             <DiskEncryptionMode

@@ -33,6 +33,11 @@ export const hostRoles = (t: TFunction): HostRole[] => [
       'ai:Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
     ),
   },
+  {
+    value: 'arbiter',
+    label: t('ai:Arbiter', { count: 1 }),
+    description: t(''),
+  },
 ];
 
 export const clusterStatusLabels = (t: TFunction): { [key in Cluster['status']]: string } => ({
