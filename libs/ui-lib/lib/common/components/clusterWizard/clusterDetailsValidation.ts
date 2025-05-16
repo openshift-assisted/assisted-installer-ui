@@ -83,6 +83,9 @@ export const getClusterDetailsInitialValues = ({
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
     controlPlaneCount: cluster?.controlPlaneCount || 3,
+    enableDiskEncryptionOnArbiters: ['all', 'arbiters'].includes(
+      cluster?.diskEncryption?.enableOn ?? 'none',
+    ),
   };
 };
 

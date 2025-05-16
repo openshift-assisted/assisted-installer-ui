@@ -8,6 +8,7 @@ export type TangServer = {
 export interface DiskEncryptionValues {
   enableDiskEncryptionOnMasters?: boolean;
   enableDiskEncryptionOnWorkers: boolean;
+  enableDiskEncryptionOnArbiters: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
   diskEncryptionTangServers: TangServer[];
 }

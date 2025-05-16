@@ -27,6 +27,7 @@ export type ClusterDetailsValues = {
   useRedHatDnsService: boolean;
   enableDiskEncryptionOnMasters: boolean;
   enableDiskEncryptionOnWorkers: boolean;
+  enableDiskEncryptionOnArbiters: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
   diskEncryptionTangServers: TangServer[];
   diskEncryption: DiskEncryption;

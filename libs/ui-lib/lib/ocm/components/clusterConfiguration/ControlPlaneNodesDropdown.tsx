@@ -80,6 +80,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
 
   const options: ControlPlaneNodesOption[] = [
     { value: 1, label: '1 (Single Node OpenShift)' },
+    { value: 2, label: '2 (Two-Nodes Arbiter)' },
     { value: 3, label: '3 (highly available cluster)' },
     { value: 4, label: '4 (highly available cluster+)' },
     { value: 5, label: '5 (highly available cluster++)' },

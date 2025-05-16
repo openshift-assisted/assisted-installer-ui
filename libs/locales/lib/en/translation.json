@@ -102,6 +102,8 @@
   "ai:Approve host to join infrastructure environment": "Approve host to join infrastructure environment",
   "ai:Approve hosts dialog": "Approve hosts dialog",
   "ai:Approve hosts to join infrastructure environment": "Approve hosts to join infrastructure environment",
+  "ai:Arbiter": "Arbiter",
+  "ai:Arbiter_plural": "Arbiter",
   "ai:Are you sure you want to reset the cluster?": "Are you sure you want to reset the cluster?",
   "ai:arm64": "arm64",
   "ai:arm64 is not supported in this OpenShift version": "arm64 is not supported in this OpenShift version",
