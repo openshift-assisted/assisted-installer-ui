@@ -37,7 +37,11 @@ const makeState = (
 };
 
 export const getAddHostsTabState = (cluster: OcmClusterType): AddHostsTabState => {
-  const isClusterStateReady = /ready|installed/.test(cluster.state);
+  // Prioritize aiCluster.status over cluster.state to prevent inconsistencies
+  // where metrics might show the cluster as ready while installation is still in progress
+  const isClusterStateReady = cluster.aiCluster?.status
+    ? /ready|installed/.test(cluster.aiCluster.status)
+    : /ready|installed/.test(cluster.state);
   const wasInstalledUsingAssistedInstaller = cluster.product?.id === 'OCP-AssistedInstall';
   // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
   const day1ClusterHostCount = cluster.metrics?.nodes?.total || 0;
