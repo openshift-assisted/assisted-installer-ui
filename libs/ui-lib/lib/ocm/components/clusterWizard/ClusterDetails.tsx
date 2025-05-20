@@ -75,12 +75,16 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       try {
         const searchParams = new URLSearchParams(location.search);
         const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
+        //For Assisted Migration we need to LVMs operator
+        if (isAssistedMigration) {
+          params.olmOperators = [{ name: 'lvm' }];
+        }
         const cluster = await ClustersService.create(params, isAssistedMigration);
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
         await UISettingService.update(cluster.id, { addCustomManifests });
-        //TO-DO: Assisted-Migration. Provisional code. Needs to be removed when MTV integration be finished
+        //For Assisted Migration we need to enable virtualization bundle
         if (isAssistedMigration) {
-          await ClustersService.createClusterManifestsForAssistedMigration(cluster.id);
+          await UISettingService.update(cluster.id, { bundlesSelected: ['virtualization'] });
         }
       } catch (e) {
         handleApiError(e, () =>
