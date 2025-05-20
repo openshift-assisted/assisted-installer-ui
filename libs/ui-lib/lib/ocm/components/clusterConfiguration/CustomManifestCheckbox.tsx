@@ -13,7 +13,6 @@ import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import DeleteCustomManifestModal from './manifestsConfiguration/DeleteCustomManifestModal';
 import { ClustersService } from '../../services';
 import { ClustersAPI } from '../../services/apis';
-import { useLocation } from 'react-router-dom-v5-compat';
 
 const Label = () => {
   return (
@@ -38,18 +37,6 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
   const fieldId = getFieldId(name, 'input');
   const clusterWizardContext = useClusterWizardContext();
   const [isDeleteCustomManifestsOpen, setDeleteCustomManifestsOpen] = React.useState(false);
-  const location = useLocation();
-
-  React.useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
-
-    if (isAssistedMigration) {
-      setValue(true);
-      clusterWizardContext.setCustomManifestsStep(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
 
   const cleanCustomManifests = React.useCallback(async () => {
     const { data: manifests } = await ClustersAPI.getManifests(clusterId);
