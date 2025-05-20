@@ -9,11 +9,26 @@ export type RoleCellProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (role: HostUpdateParams['hostRole']) => Promise<any>;
   displayTooltip?: boolean;
+  isInOcm?: boolean;
+  isSNO?: boolean;
 };
 
-const RoleCell: React.FC<RoleCellProps> = ({ host, role, readonly = false, onEditRole }) =>
+const RoleCell: React.FC<RoleCellProps> = ({
+  host,
+  role,
+  readonly = false,
+  onEditRole,
+  isInOcm,
+  isSNO,
+}) =>
   !readonly && onEditRole ? (
-    <RoleDropdown host={host} onEditRole={onEditRole} current={role} />
+    <RoleDropdown
+      host={host}
+      onEditRole={onEditRole}
+      current={role}
+      isInOcm={isInOcm}
+      isSNO={isSNO}
+    />
   ) : (
     <span>{role}</span>
   );

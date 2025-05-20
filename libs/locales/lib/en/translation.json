@@ -103,7 +103,6 @@
   "ai:Approve hosts dialog": "Approve hosts dialog",
   "ai:Approve hosts to join infrastructure environment": "Approve hosts to join infrastructure environment",
   "ai:Arbiter": "Arbiter",
-  "ai:Arbiter_plural": "Arbiter",
   "ai:Are you sure you want to reset the cluster?": "Are you sure you want to reset the cluster?",
   "ai:arm64": "arm64",
   "ai:arm64 is not supported in this OpenShift version": "arm64 is not supported in this OpenShift version",
@@ -667,6 +666,7 @@
   "ai:Preparing for installation": "Preparing for installation",
   "ai:Preparing step failed": "Preparing step failed",
   "ai:Preparing step successful": "Preparing step successful",
+  "ai:Prevents split-brain scenarios and maintains quorum.": "Prevents split-brain scenarios and maintains quorum.",
   "ai:Preview": "Preview",
   "ai:Product": "Product",
   "ai:Progress": "Progress",
@@ -937,5 +937,6 @@
   "ai:You should use your cluster's Kubeconfig file to gain access to the cluster.": "You should use your cluster's Kubeconfig file to gain access to the cluster.",
   "ai:You'll first need to have a storage operator in order to create the storage class. If you don't have one installed, we recommend OpenShift Data Foundation operator, but you may use any.": "You need a storage operator installed, such as OpenShift Data Foundation, to create the storage class.",
   "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
-  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources"
+  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources",
+  "ai:Arbiter_plural": "Arbiter"
 }

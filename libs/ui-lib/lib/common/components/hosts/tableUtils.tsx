@@ -96,6 +96,8 @@ export const roleColumn = (
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
   clusterKind?: Cluster['kind'],
+  isInOcm?: boolean,
+  isSNOCluster?: boolean,
 ): TableRow<Host> => {
   return {
     header: {
@@ -113,7 +115,14 @@ export const roleColumn = (
       const hostRole = getHostRole(host, t, schedulableMasters, clusterKind);
       return {
         title: (
-          <RoleCell host={host} readonly={!isRoleEditable} role={hostRole} onEditRole={editRole} />
+          <RoleCell
+            host={host}
+            readonly={!isRoleEditable}
+            role={hostRole}
+            onEditRole={editRole}
+            isInOcm={isInOcm}
+            isSNO={isSNOCluster}
+          />
         ),
         props: { 'data-testid': 'host-role' },
         sortableValue: hostRole,

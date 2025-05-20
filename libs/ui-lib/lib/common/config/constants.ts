@@ -5,6 +5,7 @@ import {
   ClusterValidationId,
   DiskRole,
   Event,
+  HostRoleUpdateParams,
   HostValidationId,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
@@ -13,7 +14,7 @@ import buildManifest from '@openshift-assisted/ui-lib/package.json';
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
 
-export const hostRoles = (t: TFunction): HostRole[] => [
+export const hostRoles = (t: TFunction, isInOcm?: boolean, isSNO?: boolean): HostRole[] => [
   {
     value: 'auto-assign',
     label: t('ai:Auto-assign'),
@@ -33,11 +34,15 @@ export const hostRoles = (t: TFunction): HostRole[] => [
       'ai:Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
     ),
   },
-  {
-    value: 'arbiter',
-    label: t('ai:Arbiter', { count: 1 }),
-    description: t(''),
-  },
+  ...(isInOcm && !isSNO
+    ? [
+        {
+          value: 'arbiter' as HostRoleUpdateParams,
+          label: t('ai:Arbiter'),
+          description: t('ai:Prevents split-brain scenarios and maintains quorum.'),
+        },
+      ]
+    : []),
 ];
 
 export const clusterStatusLabels = (t: TFunction): { [key in Cluster['status']]: string } => ({
