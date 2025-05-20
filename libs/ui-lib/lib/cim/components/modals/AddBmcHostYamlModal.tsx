@@ -9,7 +9,6 @@ import ProvisioningConfigErrorAlert from './ProvisioningConfigErrorAlert';
 const AddBmcHostYamlModal: React.FC<UploadActionModalProps> = ({
   isOpen,
   onClose,
-  onCreateBmcByYaml,
   infraEnv,
   docVersion,
   provisioningConfigError,
@@ -26,7 +25,7 @@ const AddBmcHostYamlModal: React.FC<UploadActionModalProps> = ({
     >
       <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
         <ProvisioningConfigErrorAlert error={provisioningConfigError} />
-        <AddBmcHostYamlForm onClose={onClose} onCreateBmcByYaml={onCreateBmcByYaml} />
+        <AddBmcHostYamlForm onClose={onClose} />
       </EnvironmentErrors>
     </Modal>
   );

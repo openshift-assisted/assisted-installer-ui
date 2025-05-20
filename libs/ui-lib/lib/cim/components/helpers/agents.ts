@@ -2,6 +2,7 @@ import { AgentStatus, getAgentStatusKey } from './status';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';
+import { onChangeBMHHostname, onChangeHostname } from '../../utils';
 
 const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
   'known',
@@ -37,14 +38,12 @@ export const getClusterNameOfAgent = (agent?: AgentK8sResource) =>
 type OnAgentChangeHostname<A = AgentK8sResource, B = BareMetalHostK8sResource> = (
   agents: A[],
   bmhs: B[],
-  onChangeHostname: (agent: A, hostname: string) => Promise<unknown>,
-  onChangeBMHHostname: (bmh: B, hostname: string) => Promise<unknown>,
 ) => (host: Host, hostname: string) => Promise<unknown>;
 
 export const onAgentChangeHostname: OnAgentChangeHostname<
   AgentK8sResource,
   BareMetalHostK8sResource
-> = (agents, bmhs, onChangeHostname, onChangeBMHHostname) => (host, hostname) => {
+> = (agents, bmhs) => (host, hostname) => {
   const agent = agents.find((a) => a.metadata?.uid === host.id);
   let bmh: BareMetalHostK8sResource | undefined;
   if (agent) {
