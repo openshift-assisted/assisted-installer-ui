@@ -28,7 +28,9 @@ const NoAgentsAlert = ({ cpuArchitecture }: { cpuArchitecture: CpuArchitecture }
               cpuArchitecture: architectureData[cpuArchitecture as SupportedCpuArchitecture].label,
             }}{' '}
             architecture to an{' '}
-            <Link to="/multicloud/infrastructure/environments">infrastructure environment</Link>
+            <Link to={`/k8s/all-namespaces/agent-install.openshift.io~v1beta1~InfraEnv`}>
+              infrastructure environment
+            </Link>
           </Trans>
         </ListItem>
         <ListItem>

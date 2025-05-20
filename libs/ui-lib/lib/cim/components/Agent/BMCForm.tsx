@@ -53,9 +53,13 @@ import {
   AGENT_BMH_NAME_LABEL_KEY,
   BMH_HOSTNAME_ANNOTATION,
   INFRAENV_AGENTINSTALL_LABEL_KEY,
-} from '../common';
+} from '../common/constants';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getBareMetalHost, getBareMetalHostCredentialsSecret } from '../modals/utils';
+import { k8sCreate, k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
+import { appendPatch } from '../../utils';
+import { BMHModel, NMStateModel, SecretModel } from '../../types/models';
 
 type MacMappingFieldProps = { macAddress: string; name: string }[];
 
@@ -136,7 +140,6 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
       },
     },
     spec: {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       config,
       interfaces: values.macMapping.filter((m) => m.macAddress.length && m.name.length),
     },
@@ -232,8 +235,106 @@ const getInitValues = (
   return values;
 };
 
+const onCreateBMH = async ({
+  values,
+  infraEnv,
+  nmState,
+  secret,
+  bmh,
+}: {
+  values: AddBmcValues;
+  infraEnv: InfraEnvK8sResource;
+  nmState?: NMStateK8sResource;
+  secret?: SecretK8sResource;
+  bmh?: BareMetalHostK8sResource;
+}) => {
+  let newSecret: SecretK8sResource | undefined = undefined;
+  if (secret) {
+    const patches: Patch[] = [];
+    appendPatch(patches, '/data/username', btoa(values.username), secret.data?.username);
+    appendPatch(patches, '/data/password', btoa(values.password), secret.data?.password);
+    if (patches.length) {
+      await k8sPatch({
+        model: SecretModel,
+        resource: secret,
+        data: patches,
+      });
+    }
+  } else {
+    const secret = getBareMetalHostCredentialsSecret(values, infraEnv?.metadata?.namespace || '');
+    newSecret = await k8sCreate<SecretK8sResource>({
+      model: SecretModel,
+      data: secret,
+    });
+  }
+
+  const formNMState = values.nmState ? getNMState(values, infraEnv) : undefined;
+  if (nmState) {
+    const patches: Patch[] = [];
+    appendPatch(patches, '/spec/config', formNMState?.spec?.config, nmState.spec?.config);
+    appendPatch(
+      patches,
+      '/spec/interfaces',
+      formNMState?.spec?.interfaces || [],
+      nmState.spec?.interfaces,
+    );
+    if (patches.length) {
+      await k8sPatch({
+        model: NMStateModel,
+        resource: nmState,
+        data: patches,
+      });
+    }
+  } else if (formNMState) {
+    await k8sCreate({
+      model: NMStateModel,
+      data: formNMState,
+    });
+  }
+
+  if (bmh) {
+    const patches: Patch[] = [];
+    appendPatch(
+      patches,
+      `/metadata/annotations/${BMH_HOSTNAME_ANNOTATION.replace('/', '~1')}`,
+      values.hostname,
+      bmh.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION],
+    );
+    appendPatch(patches, '/spec/bmc/address', values.bmcAddress, bmh.spec?.bmc?.address);
+    appendPatch(
+      patches,
+      '/spec/bmc/disableCertificateVerification',
+      values.disableCertificateVerification,
+      bmh.spec?.bmc?.disableCertificateVerification,
+    );
+    appendPatch(patches, '/spec/bootMACAddress', values.bootMACAddress, bmh.spec?.bootMACAddress);
+    appendPatch(patches, '/spec/online', values.online, bmh.spec?.online);
+
+    if (newSecret) {
+      appendPatch(
+        patches,
+        '/spec/bmc/credentialsName',
+        newSecret.metadata?.name,
+        bmh.spec?.bmc?.credentialsName,
+      );
+    }
+    if (patches.length) {
+      await k8sPatch({
+        model: BMHModel,
+        resource: bmh,
+        data: patches,
+      });
+    }
+  } else if (newSecret) {
+    const bmh = getBareMetalHost(values, infraEnv, newSecret);
+    await k8sCreate({
+      model: BMHModel,
+      data: bmh,
+    });
+  }
+};
+
 const BMCForm: React.FC<BMCFormProps> = ({
-  onCreateBMH,
   onClose,
   hasDHCP,
   infraEnv,
@@ -249,7 +350,13 @@ const BMCForm: React.FC<BMCFormProps> = ({
     try {
       setError(undefined);
       const nmState = values.nmState ? getNMState(values, infraEnv) : undefined;
-      await onCreateBMH(values, nmState);
+      await onCreateBMH({
+        values,
+        infraEnv,
+        nmState,
+        secret,
+        bmh,
+      });
       onClose();
     } catch (e) {
       setError(getErrorMessage(e));
@@ -345,8 +452,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
             )}
           </ModalBoxBody>
           <ModalBoxFooter>
-            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-            <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
+            <Button onClick={() => void submitForm()} isDisabled={isSubmitting || !isValid}>
               {isEdit ? t('ai:Submit') : t('ai:Create')}
             </Button>
             <Button onClick={onClose} variant={ButtonVariant.secondary}>

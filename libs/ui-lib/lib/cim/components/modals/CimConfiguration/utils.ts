@@ -1,10 +1,20 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
-import { AgentServiceConfigConditionType, AgentServiceConfigK8sResource } from '../../../types';
-import { getConditionByType } from '../../../utils';
+import {
+  AgentServiceConfigConditionType,
+  AgentServiceConfigK8sResource,
+  StatusCondition,
+} from '../../../types';
 import { CIM_CONFIG_TIMEOUT } from './constants';
 
 export const LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP = 'cim-config-configuring-started-at';
+
+export const getConditionByType = <ConditionType>(
+  conditions: StatusCondition<ConditionType>[],
+  type: ConditionType,
+): StatusCondition<ConditionType> | undefined => {
+  return conditions.find((c) => c.type === type);
+};
 
 export const isCIMEnabled = ({
   agentServiceConfig,

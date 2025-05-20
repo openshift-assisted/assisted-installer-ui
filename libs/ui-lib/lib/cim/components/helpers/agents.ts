@@ -1,7 +1,14 @@
 import { AgentStatus, getAgentStatusKey } from './status';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
-import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';
+import {
+  AGENT_BMH_NAME_LABEL_KEY,
+  BMH_HOSTNAME_ANNOTATION,
+  INFRAENV_AGENTINSTALL_LABEL_KEY,
+} from '../common/constants';
+import { appendPatch } from '../../utils';
+import { k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
+import { AgentModel, BMHModel } from '../../types/models';
 
 const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
   'known',
@@ -37,20 +44,20 @@ export const getClusterNameOfAgent = (agent?: AgentK8sResource) =>
 type OnAgentChangeHostname<A = AgentK8sResource, B = BareMetalHostK8sResource> = (
   agents: A[],
   bmhs: B[],
-  onChangeHostname: (agent: A, hostname: string) => Promise<unknown>,
-  onChangeBMHHostname: (bmh: B, hostname: string) => Promise<unknown>,
 ) => (host: Host, hostname: string) => Promise<unknown>;
 
 export const onAgentChangeHostname: OnAgentChangeHostname<
   AgentK8sResource,
   BareMetalHostK8sResource
-> = (agents, bmhs, onChangeHostname, onChangeBMHHostname) => (host, hostname) => {
+> = (agents, bmhs) => (host, hostname) => {
   const agent = agents.find((a) => a.metadata?.uid === host.id);
   let bmh: BareMetalHostK8sResource | undefined;
   if (agent) {
     const bmhName = agent.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY];
     if (!bmhName) {
-      return onChangeHostname(agent, hostname);
+      const patches: Patch[] = [];
+      appendPatch(patches, '/spec/hostname', hostname, agent.spec?.hostname);
+      return k8sPatch({ model: AgentModel, resource: agent, data: patches });
     }
     // If Agent is backed by BMH, we need to update hostname on BMH
     bmh = bmhs.find(
@@ -60,5 +67,18 @@ export const onAgentChangeHostname: OnAgentChangeHostname<
   } else {
     bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);
   }
-  return bmh ? onChangeBMHHostname(bmh, hostname) : Promise.resolve(undefined);
+
+  if (!bmh) {
+    return Promise.resolve(undefined);
+  }
+
+  const patches: Patch[] = [];
+  const prevHostname = bmh.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION] || '';
+  appendPatch(
+    patches,
+    `/metadata/annotations/${BMH_HOSTNAME_ANNOTATION.replace('/', '~1')}`,
+    hostname,
+    prevHostname,
+  );
+  return k8sPatch({ model: BMHModel, resource: bmh, data: patches });
 };

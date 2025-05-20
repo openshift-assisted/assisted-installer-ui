@@ -17,30 +17,23 @@ import { RadioField, AdditionalNTPSourcesField } from '../../../common';
 import { EditNtpSourcesFormikValues } from './types';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
+import { appendPatch } from '../../utils';
+import { InfraEnvModel } from '../../types/models';
 
 export type EditNtpSourcesModalProps = {
-  onSubmit: (
-    values: EditNtpSourcesFormikValues,
-    infraEnv: InfraEnvK8sResource,
-  ) => Promise<InfraEnvK8sResource>;
-  isOpen: boolean;
   infraEnv: InfraEnvK8sResource;
   onClose: VoidFunction;
 };
 
-const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  infraEnv,
-}) => {
+const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({ onClose, infraEnv }) => {
   const [error, setError] = React.useState<string>();
   const { t } = useTranslation();
   return (
     <Modal
       aria-label={t('ai:Edit Ntp sources dialog')}
       title={t('ai:Edit NTP sources')}
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       variant={ModalVariant.small}
       hasNoBodyWrapper
@@ -52,8 +45,34 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
           additionalNtpSources: infraEnv.spec?.additionalNTPSources?.join(',') || '',
         }}
         onSubmit={async (values) => {
+          const patches: Patch[] = [];
+          if (values.enableNtpSources === 'auto') {
+            if (infraEnv.spec?.additionalNTPSources) {
+              patches.push({
+                op: 'remove',
+                path: '/spec/additionalNTPSources',
+              });
+            }
+          } else {
+            appendPatch(
+              patches,
+              '/spec/additionalNTPSources',
+              values.additionalNtpSources
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean),
+              infraEnv.spec?.additionalNTPSources,
+            );
+          }
+
           try {
-            await onSubmit(values, infraEnv);
+            if (patches.length) {
+              await k8sPatch({
+                model: InfraEnvModel,
+                resource: infraEnv,
+                data: patches,
+              });
+            }
             onClose();
           } catch (err) {
             setError(getErrorMessage(err));

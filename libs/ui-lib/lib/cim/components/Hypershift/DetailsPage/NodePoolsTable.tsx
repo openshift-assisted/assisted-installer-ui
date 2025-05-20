@@ -25,6 +25,7 @@ import { getNodepoolAgents } from '../utils';
 
 import './NodePoolsTable.css';
 import { fileSize } from '../../../../common/utils';
+import { getInfraEnvNameOfAgent } from '../../helpers';
 
 type NodePoolsTableProps = {
   nodePools: NodePoolK8sResource[];
@@ -202,9 +203,11 @@ const NodePoolsTable = ({
                         </Td>
                         <Td>
                           <Link
-                            to={`/multicloud/infrastructure/environments/details/${
+                            to={`/k8s/ns/${
                               agent.metadata?.namespace || ''
-                            }/${agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] || ''}`}
+                            }/agent-install.openshift.io~v1beta1~InfraEnv/${
+                              getInfraEnvNameOfAgent(agent) || ''
+                            }`}
                           >
                             {agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY]}
                           </Link>

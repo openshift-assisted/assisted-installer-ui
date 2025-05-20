@@ -17,7 +17,7 @@ const FormatDiskWarning = ({ someDisksAreSkipFormatting }: FormatDiskWarningProp
         someDisksAreSkipFormatting
           ? t('ai:There may be issues with the boot order')
           : t(
-              'ai:All bootable disks, except for read-only disks, will be formatted during installation. Make sure to back up any sensitive data before proceeding.',
+              'ai:All bootable disks, except for read-only disks, will be formatted during installation. Make sure to back up any critical data before proceeding.',
             )
       }
     >

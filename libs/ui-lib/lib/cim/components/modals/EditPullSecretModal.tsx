@@ -19,6 +19,8 @@ import { EditPullSecretFormikValues } from './types';
 import { getWarningMessage } from './utils';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { k8sCreate, k8sPatch } from '@openshift-console/dynamic-plugin-sdk';
+import { SecretModel } from '../../types/models';
 
 const validationSchema = (t: TFunction) =>
   Yup.object({
@@ -28,7 +30,7 @@ const validationSchema = (t: TFunction) =>
 type EditPullSecretFormProps = {
   onClose: VoidFunction;
   pullSecret: SecretK8sResource | undefined;
-  pullSecretError: string | undefined;
+  pullSecretError: unknown | undefined;
   pullSecretLoading: boolean;
   hasAgents: boolean;
   hasBMHs: boolean;
@@ -72,7 +74,7 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
   if (pullSecretLoading) {
     body = <LoadingState />;
   } else if (pullSecretError) {
-    body = <Alert title={pullSecretError} variant="danger" isInline />;
+    body = <Alert title={getErrorMessage(pullSecretError)} variant="danger" isInline />;
   }
   return (
     <>
@@ -103,18 +105,11 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
 };
 
 export type EditPullSecretModalProps = EditPullSecretFormProps & {
-  onSubmit: (
-    values: EditPullSecretFormikValues,
-    infraEnv: InfraEnvK8sResource,
-  ) => Promise<InfraEnvK8sResource>;
-  isOpen: boolean;
   infraEnv: InfraEnvK8sResource;
 };
 
 const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
-  isOpen,
   onClose,
-  onSubmit,
   infraEnv,
   ...rest
 }) => {
@@ -124,7 +119,7 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
     <Modal
       aria-label={t('ai:Edit pull secret dialog')}
       title={t('ai:Edit pull secret')}
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       variant={ModalVariant.small}
       hasNoBodyWrapper
@@ -132,13 +127,46 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
     >
       <Formik<EditPullSecretFormikValues>
         initialValues={{
-          pullSecret: undefined,
+          pullSecret: '',
           createSecret: false,
         }}
         validationSchema={validationSchema(t)}
         onSubmit={async (values) => {
+          const secret = {
+            apiVersion: 'v1',
+            kind: 'Secret',
+            metadata: {
+              namespace: infraEnv.metadata?.namespace,
+              name: infraEnv.spec?.pullSecretRef?.name,
+            },
+          };
+
           try {
-            await onSubmit(values, infraEnv);
+            if (values.createSecret) {
+              await k8sCreate<SecretK8sResource>({
+                model: SecretModel,
+                data: {
+                  ...secret,
+                  data: {
+                    '.dockerconfigjson': btoa(values.pullSecret),
+                  },
+                  type: 'kubernetes.io/dockerconfigjson',
+                },
+              });
+            } else {
+              await k8sPatch({
+                model: SecretModel,
+                resource: secret,
+                data: [
+                  {
+                    op: 'replace',
+                    path: '/data/.dockerconfigjson',
+                    value: btoa(values.pullSecret),
+                  },
+                ],
+              });
+            }
+
             onClose();
           } catch (err) {
             setError(getErrorMessage(err));
