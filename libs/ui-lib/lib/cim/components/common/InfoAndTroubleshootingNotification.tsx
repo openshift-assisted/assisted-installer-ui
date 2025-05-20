@@ -4,20 +4,68 @@ import { MinimalHWRequirementsModal } from '../Agent/MinimalHWRequirements';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { DiscoveryTroubleshootingModal } from '../../../common/components/clusterConfiguration/DiscoveryTroubleshootingModal';
 import { ConfigMapK8sResource } from '../../types/fromOCP/k8sTypes';
+import { useK8sWatchResource } from '../../hooks/useK8sWatchResource';
+import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
+import { MCEK8sResource } from '../../types/k8s/multi-cluster-engine';
+import { MCEModel } from '../../types/models';
+import { useStateSafely } from '../../../common';
+
+export const useAssistedServiceNamespace = () => {
+  const [namespace, setNamespace] = useStateSafely<string | undefined>(undefined);
+
+  React.useEffect(() => {
+    const doItAsync = async () => {
+      try {
+        const multiClusterEngine = await k8sGet<MCEK8sResource>({
+          model: MCEModel,
+          name: 'multiclusterengine',
+        });
+        setNamespace(multiClusterEngine?.spec?.targetNamespace ?? 'multicluster-engine');
+      } catch {
+        setNamespace('multicluster-engine');
+      }
+    };
+    void doItAsync();
+  }, [setNamespace]);
+
+  return namespace;
+};
+
+export const useAssistedServiceConfigMap = () => {
+  const namespace = useAssistedServiceNamespace();
+
+  return useK8sWatchResource<ConfigMapK8sResource>(
+    namespace
+      ? {
+          groupVersionKind: {
+            kind: 'ConfigMap',
+            version: 'v1',
+          },
+          name: 'assisted-service',
+          namespace: namespace,
+        }
+      : null,
+  );
+};
 
 type InfoAndTroubleshootingNotificationProps = {
   isSNO?: boolean;
-  assistedServiceConfigMap: ConfigMapK8sResource;
 };
 
 const InfoAndTroubleshootingNotification = ({
   isSNO = false,
-  assistedServiceConfigMap,
 }: InfoAndTroubleshootingNotificationProps) => {
   const { t } = useTranslation();
   const [isDiscoveryHintModalOpen, setIsDiscoveryHintModalOpen] = React.useState(false);
   const [isMinimalHWRequirementsModalOpen, setIsMinimalHWRequirementsModalOpen] =
     React.useState(false);
+
+  const [assistedServiceConfigMap] = useAssistedServiceConfigMap();
+
+  if (!assistedServiceConfigMap) {
+    return null;
+  }
+
   return (
     <>
       <Alert

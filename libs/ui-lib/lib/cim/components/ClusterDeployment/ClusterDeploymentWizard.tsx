@@ -23,7 +23,6 @@ export const ClusterDeploymentWizard = ({
   onFinish,
   hostActions,
   usedClusterNames,
-  fetchSecret,
   clusterDeployment,
   agentClusterInstall,
   agents,
@@ -35,12 +34,7 @@ export const ClusterDeploymentWizard = ({
   initialStep,
   isPreviewOpen,
   setPreviewOpen,
-  fetchManagedClusters,
-  fetchKlusterletAddonConfig,
-  onSaveISOParams,
-  onCreateBMH,
   isNutanix,
-  onChangeBMHHostname,
   ...rest
 }: ClusterDeploymentWizardProps) => {
   const { t } = useTranslation();
@@ -48,9 +42,6 @@ export const ClusterDeploymentWizard = ({
   const { code, loadingResources } = useYamlPreview({
     agentClusterInstall,
     clusterDeployment,
-    fetchSecret,
-    fetchManagedClusters,
-    fetchKlusterletAddonConfig,
   });
 
   // if initialStep is set, it is either 'host-selection' or 'host-discovery', both at index 4
@@ -109,7 +100,7 @@ export const ClusterDeploymentWizard = ({
                   </WizardStep>
                 ) : (
                   <WizardStep name={stepNames['hosts-discovery']} id={'host-discovery'}>
-                    {isAIFlow && onSaveISOParams && onCreateBMH ? (
+                    {isAIFlow ? (
                       <ClusterDeploymentHostsDiscoveryStep
                         clusterDeployment={clusterDeployment}
                         agentClusterInstall={agentClusterInstall}
@@ -117,13 +108,8 @@ export const ClusterDeploymentWizard = ({
                         bareMetalHosts={bareMetalHosts}
                         aiConfigMap={aiConfigMap}
                         infraEnv={infraEnv}
-                        fetchSecret={fetchSecret}
-                        onChangeBMHHostname={onChangeBMHHostname}
                         onEditRole={hostActions.onEditRole}
                         onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
-                        onDeleteHost={hostActions.onDeleteHost}
-                        onSaveISOParams={onSaveISOParams}
-                        onCreateBMH={onCreateBMH}
                         {...rest}
                       />
                     ) : (
