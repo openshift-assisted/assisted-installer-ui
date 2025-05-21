@@ -1,7 +1,12 @@
 import React from 'react';
-import { HelperText, FormGroup } from '@patternfly/react-core';
-import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+import {
+  HelperText,
+  FormGroup,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 import { getFieldId } from '../../../../../common/components/ui/formik';
 import { PopoverIcon } from '../../../../../common';
@@ -40,40 +45,34 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
   const [isOpen, setOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      setValue(event?.currentTarget.id as string);
-      setOpen(false);
-    },
-    [setOpen, setValue],
-  );
+  const onSelect = (event?: React.MouseEvent<Element, MouseEvent>): void => {
+    setValue(event?.currentTarget.id as string);
+    setOpen(false);
+  };
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-      >
-        {value || 'manifests'}
-      </DropdownToggle>
-    ),
-    [setOpen, value],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={() => setOpen(!isOpen)}
+      isExpanded={isOpen}
+      className="pf-v5-u-w-100"
+    >
+      {value || 'manifests'}
+    </MenuToggle>
   );
 
   return (
     <FormGroup fieldId={fieldId} label={<FolderLabel />} isRequired>
       <Dropdown
         {...field}
-        name={name}
         id={fieldId}
+        onOpenChange={() => setOpen(!isOpen)}
         onSelect={onSelect}
-        dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-v5-u-w-100"
-      />
+      >
+        {dropdownItems}
+      </Dropdown>
       <HelperText style={{ display: 'inherit' }}>
         {'Manifests can be placed in "manifests" or "openshift" directories.'}
       </HelperText>

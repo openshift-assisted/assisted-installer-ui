@@ -6,4 +6,5 @@ export * from './features';
 export * from './reducers';
 export * from './selectors';
 export * from './hooks';
+export * from './utils';
 export { ResourceUIState } from './types/resource-ui-state';

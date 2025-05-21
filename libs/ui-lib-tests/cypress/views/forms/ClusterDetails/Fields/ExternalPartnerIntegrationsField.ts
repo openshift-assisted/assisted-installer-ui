@@ -15,34 +15,30 @@ export class ExternalPartnerIntegrationsField {
       .findByText(/integrate with external partner platforms/i);
   }
 
-  static findDropdown() {
-    return cy.get(ExternalPartnerIntegrationsField.alias).find('#form-input-platform-field');
+  static findExternalPartnerIntegrationsField() {
+    return cy.get('#form-input-platform-field');
   }
 
-  static findDropdownToggle() {
-    return ExternalPartnerIntegrationsField.findDropdown().find(
-      '[data-ouia-component-type="PF5/DropdownToggle"]',
-    );
+  static findDropdown() {
+    return cy.get('#form-input-platform-field-dropdown');
   }
 
   static findDropdownItemSelected(item: string) {
-    return ExternalPartnerIntegrationsField.findDropdown().findByText(item);
+    return ExternalPartnerIntegrationsField.findExternalPartnerIntegrationsField().findByText(item);
   }
 
   static findDropdownItems() {
-    ExternalPartnerIntegrationsField.findDropdown().click();
-    return ExternalPartnerIntegrationsField.findDropdown().find(
-      '.pf-v5-c-dropdown__menu [role="menuitem"]',
-    );
+    ExternalPartnerIntegrationsField.findExternalPartnerIntegrationsField().click();
+    return ExternalPartnerIntegrationsField.findDropdown().find('.pf-v5-c-menu__item');
   }
 
   static findDropdownItem(platform: string) {
-    ExternalPartnerIntegrationsField.findDropdown().click();
-    return cy.findByRole('menuitem', { name: new RegExp(`${platform}`, 'i') });
+    ExternalPartnerIntegrationsField.findExternalPartnerIntegrationsField().click();
+    return ExternalPartnerIntegrationsField.findDropdown().find(`#${platform.toLowerCase()}`);
   }
 
   static selectPlatform(platform: string) {
-    ExternalPartnerIntegrationsField.findDropdown().click();
+    ExternalPartnerIntegrationsField.findExternalPartnerIntegrationsField().click();
     ExternalPartnerIntegrationsField.findDropdown().within(() => {
       cy.findByRole('menuitem', { name: new RegExp(`${platform}`, 'i') }).click();
     });
