@@ -8,9 +8,14 @@ const DiskEncryptionService = {
   diskEncryptionEnableOn(
     isEnableOnMasters: boolean,
     isEnableOnWorkers: boolean,
+    isEnableOnArbiters: boolean,
   ): DiskEncryption['enableOn'] {
     let enableOnParam: DiskEncryption['enableOn'];
-    if (isEnableOnMasters && isEnableOnWorkers) enableOnParam = 'all';
+    if (isEnableOnMasters && isEnableOnWorkers && isEnableOnArbiters) enableOnParam = 'all';
+    else if (isEnableOnMasters && isEnableOnWorkers) enableOnParam = 'masters,workers';
+    else if (isEnableOnMasters && isEnableOnArbiters) enableOnParam = 'masters,arbiters';
+    else if (isEnableOnWorkers && isEnableOnArbiters) enableOnParam = 'arbiters,workers';
+    else if (isEnableOnArbiters) enableOnParam = 'arbiters';
     else if (isEnableOnWorkers) enableOnParam = 'workers';
     else if (isEnableOnMasters) enableOnParam = 'masters';
     else enableOnParam = 'none';
@@ -28,6 +33,7 @@ const DiskEncryptionService = {
           : DiskEncryptionService.diskEncryptionEnableOn(
               values.enableDiskEncryptionOnMasters,
               values.enableDiskEncryptionOnWorkers,
+              values.enableDiskEncryptionOnArbiters,
             ),
       tangServers:
         values.diskEncryptionMode === 'tang'

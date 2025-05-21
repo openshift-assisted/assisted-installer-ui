@@ -125,7 +125,7 @@ export const clusterDetailsPage = {
     return cy.get('#form-static-platform-field');
   },
   clickClusterDetailsBody: () => {
-    cy.get('.pf-v5-l-grid').click();
+    cy.get('#wizard-cluster-details__form').click();
   },
   validateInputDnsDomainFieldHelper: (msg) => {
     cy.get(Cypress.env('baseDnsDomainFieldHelperErrorId')).should('contain', msg);
