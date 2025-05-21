@@ -20,8 +20,6 @@ import {
   AI_UI_TAG,
 } from '../../common/config/constants';
 import { isInOcm } from '../../common/api/axiosClient';
-import { yamlContentAssistedMigration1, yamlContentAssistedMigration2 } from '../config';
-import jsYaml from 'js-yaml';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
@@ -167,32 +165,5 @@ const ClustersService = {
       this.getUpdateManifestParams(existingManifest, updatedManifest),
     );
   },
-
-  //TO-DO: Assisted-Migration. Provisional code. Needs to be removed when MTV integration be finished
-  async createClusterManifestsForAssistedMigration(clusterId: Cluster['id']) {
-    const manifests: CustomManifestValues[] = [];
-
-    const parsedYaml1 = jsYaml.dump(yamlContentAssistedMigration1);
-    manifests.push({
-      folder: 'openshift',
-      filename: '0gitops.yaml',
-      manifestYaml: parsedYaml1,
-      created: true,
-    });
-
-    const parsedYaml2 = jsYaml.dump(yamlContentAssistedMigration2);
-    manifests.push({
-      folder: 'openshift',
-      filename: '1rolebindings.yaml',
-      manifestYaml: parsedYaml2,
-      created: true,
-    });
-
-    const promises = manifests.map((manifest) => {
-      return ClustersAPI.createCustomManifest(clusterId, this.transformFormViewManifest(manifest));
-    });
-    return Promise.all(promises);
-  },
 };
-
 export default ClustersService;
