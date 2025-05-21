@@ -9,3 +9,4 @@ export * from './hosts';
 export * from './fetching';
 export * from './AddHosts';
 export * from './featureSupportLevels';
+export * from './CustomManifests';

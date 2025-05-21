@@ -143,6 +143,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           isNutanix={isNutanix}
           cpuArchitectures={cpuArchitectures}
           allowHighlyAvailable={allowHighlyAvailable}
+          agentClusterInstall={agentClusterInstall}
         />
       </StackItem>
     </>

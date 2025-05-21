@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   Alert,
   AlertVariant,
@@ -7,7 +8,7 @@ import {
   useWizardFooter,
   WizardFooter,
 } from '@patternfly/react-core';
-import * as React from 'react';
+import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { canNextFromReviewStep } from './wizardTransition';
 import {
   AgentClusterInstallK8sResource,
@@ -62,6 +63,8 @@ const ClusterDeploymentReviewStep = ({
   const cdName = clusterDeployment.metadata?.name;
   const cdNamespace = clusterDeployment.metadata?.namespace;
   const cpuArchitecture = getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv);
+  const customManifestNames =
+    agentClusterInstall.spec?.manifestsConfigMapRefs?.map((manifest) => manifest.name) || [];
 
   const clusterAgents = React.useMemo(
     () => agents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
@@ -142,6 +145,26 @@ const ClusterDeploymentReviewStep = ({
             testId="cluster-summary"
             value={<ReviewHostsInventory hosts={cluster.hosts} />}
           />
+
+          {!!customManifestNames.length ? (
+            <DetailItem
+              title={t('ai:Custom manifests')}
+              testId="custom-manifests"
+              value={
+                <Table variant={TableVariant.compact} borders={false}>
+                  <Tbody>
+                    {customManifestNames.map((name, id) => (
+                      <Tr key={`custom-manifest-${id}`}>
+                        <Td>{name}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              }
+            />
+          ) : (
+            <></>
+          )}
 
           <DetailItem
             title={t('ai:Cluster validations')}

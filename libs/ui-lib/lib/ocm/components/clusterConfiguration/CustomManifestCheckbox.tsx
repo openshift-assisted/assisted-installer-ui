@@ -10,7 +10,7 @@ import { useField } from 'formik';
 import { getFieldId, PopoverIcon } from '../../../common';
 import { OcmCheckbox } from '../ui/OcmFormFields';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import DeleteCustomManifestModal from './manifestsConfiguration/DeleteCustomManifestModal';
+import { DeleteCustomManifestModal } from '../../../common/components/CustomManifests/DeleteCustomManifestModal';
 import { ClustersService } from '../../services';
 import { ClustersAPI } from '../../services/apis';
 

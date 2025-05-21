@@ -1,13 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { CustomManifestsPage } from '../clusterConfiguration/manifestsConfiguration/CustomManifestsPage';
-import { CustomManifestFormState } from '../clusterConfiguration/manifestsConfiguration/components/propTypes';
-import { useSelector } from 'react-redux';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { CustomManifestFormState } from '../../../common/components/CustomManifests/propTypes';
 import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 
 const getInitialFormStateProps = () => {

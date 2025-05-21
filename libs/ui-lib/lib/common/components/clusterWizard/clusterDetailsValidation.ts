@@ -46,12 +46,14 @@ export const getClusterDetailsInitialValues = ({
   managedDomains,
   ocpVersions,
   baseDomain,
+  addCustomManifests,
 }: {
   cluster?: Cluster;
   pullSecret?: string;
   managedDomains: ManagedDomain[];
   ocpVersions: OpenshiftVersionOptionType[];
   baseDomain?: string;
+  addCustomManifests?: boolean;
 }): ClusterDetailsValues => {
   const {
     name = '',
@@ -83,6 +85,7 @@ export const getClusterDetailsInitialValues = ({
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
     controlPlaneCount: cluster?.controlPlaneCount || 3,
+    addCustomManifests: !!addCustomManifests,
   };
 };
 
