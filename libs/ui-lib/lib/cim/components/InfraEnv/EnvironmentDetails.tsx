@@ -20,12 +20,7 @@ import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
-import {
-  architectureData,
-  CpuArchitecture,
-  LabelValue,
-  SupportedCpuArchitecture,
-} from '../../../common';
+import { architectureData, LabelValue } from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
@@ -134,6 +129,11 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
     infraEnv.spec?.proxy?.httpProxy ||
     infraEnv.spec?.proxy?.httpsProxy ||
     infraEnv.spec?.proxy?.noProxy;
+
+  const arch = infraEnv.spec?.cpuArchitecture
+    ? architectureData[infraEnv.spec?.cpuArchitecture]?.label
+    : infraEnv.spec?.cpuArchitecture;
+
   return (
     <>
       <Grid hasGutter>
@@ -164,10 +164,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
             </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>{t('ai:CPU architecture')}</DescriptionListTerm>
-              <DescriptionListDescription>
-                {architectureData[infraEnv.spec?.cpuArchitecture as SupportedCpuArchitecture]
-                  .label ?? CpuArchitecture.x86}
-              </DescriptionListDescription>
+              <DescriptionListDescription>{arch ?? '--'}</DescriptionListDescription>
             </DescriptionListGroup>
 
             {infraEnv.spec?.osImageVersion && (
