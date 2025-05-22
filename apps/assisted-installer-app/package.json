@@ -1,0 +1,62 @@
+{
+  "name": "@openshift-assisted/assisted-installer-app",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "scripts": {
+    "build": "fec build",
+    "clean": "rimraf node_modules dist .cache",
+    "deploy": "npm-run-all build lint test",
+    "lint": "npm-run-all lint:*",
+    "lint:js": "eslint src",
+    "lint:js:fix": "eslint src --fix",
+    "patch:hosts": "fec patch-etc-hosts",
+    "start": "HOT=true fec dev --clouddotEnv=stage --uiEnv=stable --config ../../node_modules/@redhat-cloud-services/frontend-components-config/bin/prod.webpack.config.js",
+    "start:federated": "fec static  --config ../../node_modules/@redhat-cloud-services/frontend-components-config/bin/prod.webpack.config.js",
+    "test": "TZ=UTC jest --verbose --no-cache --passWithNoTests",
+    "postinstall": "ts-patch install && rimraf .cache",
+    "verify": "npm-run-all build lint test",
+    "prettier": "prettier --write src"
+  },
+  "dependencies": {
+    "@redhat-cloud-services/frontend-components": "^4.1.0",
+    "axios": ">=0.22.0 <1.0.0",
+    "i18next": "^20.4.0",
+    "parse-url": "^9.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^11.11.4",
+    "react-router-dom": "^5.3.3"
+  },
+  "devDependencies": {
+    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.3",
+    "@redhat-cloud-services/frontend-components-config": "^6.6.0",
+    "@redhat-cloud-services/tsc-transform-imports": "^1.0.4",
+    "@swc/core": "^1.3.96",
+    "@swc/jest": "^0.2.29",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/redux-logger": "^3.0.12",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.53.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest_workaround": "^0.79.19",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.1",
+    "ts-patch": "^3.0.2",
+    "typescript": "^5.2.2",
+    "webpack-bundle-analyzer": "4.10.0"
+  },
+  "insights": {
+    "appname": "assisted-installer-app"
+  }
+}

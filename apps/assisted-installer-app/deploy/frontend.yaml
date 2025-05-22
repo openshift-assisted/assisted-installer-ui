@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: Template
+metadata:
+  name: assisted-installer-app
+objects:
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: Frontend
+    metadata:
+      name: assisted-installer-app
+    spec:
+      envName: ${ENV_NAME}
+      title: Assisted Installer
+      deploymentRepo: https://github.com/openshift-assisted/assisted-installer-app
+      frontend:
+        paths:
+          - /apps/assisted-installer-app
+      API:
+        versions:
+          - v1
+      image: ${IMAGE}:${IMAGE_TAG}
+      module:
+        manifestLocation: '/apps/assisted-installer-app/fed-mods.json'
+        modules:
+          - id: 'assisted-installer-app'
+            module: './RootApp'
+            routes:
+              - pathname: /openshift/assisted-installer-app
+
+parameters:
+  - name: ENV_NAME
+    required: true
+  - name: IMAGE_TAG
+    required: true
+  - name: IMAGE
+    value: quay.io/app-sre/assisted-installer-app
