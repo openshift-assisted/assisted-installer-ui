@@ -1,0 +1,9 @@
+{
+  "extends": "@tsconfig/vite-react/tsconfig.json",
+  "include": ["src", "vite.config.ts"],
+  "references": [
+    {
+      "path": "../../libs/ui-lib"
+    }
+  ]
+}
