@@ -6,15 +6,14 @@ import { LoadingState } from '../../../common';
 import { EditBMHModalProps } from './types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
+import { SecretModel } from '../../types/models';
 
 const EditBMHModal: React.FC<EditBMHModalProps> = ({
-  isOpen,
   onClose,
-  onEdit,
   infraEnv,
   bmh,
   nmStates,
-  fetchSecret,
   usedHostnames,
 }) => {
   const [secret, setSecret] = React.useState<SecretK8sResource>();
@@ -34,7 +33,11 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
     const getResources = async () => {
       if (bmhSecret && bmhNamespace) {
         try {
-          const secretResult = await fetchSecret(bmhNamespace, bmhSecret);
+          const secretResult = await k8sGet({
+            model: SecretModel,
+            name: bmhSecret,
+            ns: bmhNamespace,
+          });
           setSecret(secretResult);
         } catch (err) {
           // console.error(t('ai:Could not get secret'), err);
@@ -48,12 +51,12 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       setLoading(true);
       void getResources();
     }
-  }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP, t]);
+  }, [bmhName, bmhNamespace, bmhSecret, hasDHCP, t]);
   return (
     <Modal
       aria-label={t('ai:Edit BMH dialog')}
       title={t('ai:Edit BMH')}
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       variant={ModalVariant.small}
       hasNoBodyWrapper
@@ -64,7 +67,6 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       ) : (
         <BMCForm
           isEdit
-          onCreateBMH={onEdit({ bmh, secret, nmState })}
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}

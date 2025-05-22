@@ -57,14 +57,8 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   infraEnv,
   infraNMStates,
   usedHostnames,
-  onChangeHostname,
   onEditRole,
   onSetInstallationDiskId,
-  onSaveBMH,
-  fetchSecret,
-  onChangeBMHHostname,
-  onApproveAgent,
-  onDeleteHost,
   ...rest
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
@@ -119,36 +113,26 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
                 onEditRole={onEditRole}
                 onSetInstallationDiskId={onSetInstallationDiskId}
                 onEditBMH={setEditBMH}
-                onChangeHostname={onChangeHostname}
-                onChangeBMHHostname={onChangeBMHHostname}
-                onApprove={onApproveAgent}
                 width={contentRect.bounds?.width}
-                onDeleteHost={onDeleteHost}
               />
             </div>
           )}
         </Measure>
-        <EditBMHModal
-          infraEnv={infraEnv}
-          bmh={editBMH}
-          nmStates={infraNMStates}
-          isOpen={!!editBMH}
-          onClose={() => setEditBMH(undefined)}
-          onEdit={onSaveBMH}
-          fetchSecret={fetchSecret}
-          usedHostnames={usedHostnames || []}
-        />
+        {editBMH && (
+          <EditBMHModal
+            infraEnv={infraEnv}
+            bmh={editBMH}
+            nmStates={infraNMStates}
+            onClose={() => setEditBMH(undefined)}
+            usedHostnames={usedHostnames || []}
+          />
+        )}
         {editAgent && (
           <EditAgentModal
             onClose={() => setEditAgent(undefined)}
             usedHostnames={usedHostnames}
             agent={editAgent}
-            onSave={onAgentChangeHostname(
-              agents,
-              bareMetalHosts,
-              onChangeHostname,
-              onChangeBMHHostname,
-            )}
+            onSave={onAgentChangeHostname(agents, bareMetalHosts)}
           />
         )}
       </GridItem>

@@ -31,13 +31,23 @@ import {
   EmptyState,
 } from '../../../common';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
-import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
+import {
+  EditAgentModal,
+  EditBMHModal,
+  MassApproveAgentModal,
+  MassDeleteAgentModal,
+} from '../modals';
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import InfraTableToolbar from './InfraTableToolbar';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 import { onAgentChangeHostname } from '../helpers';
+import { onApproveAgent } from '../../utils';
+import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
+import { getAgentsHostsNames } from '../ClusterDeployment';
+import DeleteHostModal from '../modals/DeleteHostModal';
+import UnbindHostModal from '../modals/UnbindHostModal';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;
@@ -61,25 +71,25 @@ const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
   agentMachines,
-  getClusterDeploymentLink,
   bareMetalHosts,
   infraEnv,
   nmStates,
-  onChangeHostname,
-  onChangeBMHHostname,
-  onMassDeleteHost,
   agentClusterInstalls,
-  onApprove,
-  onDeleteHost,
-  onEditBMH,
-  onEditHost,
-  onUnbindHost,
 }) => {
+  const [editBMH, setEditBMH] = React.useState<BareMetalHostK8sResource>();
+  const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
+
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
   const [isMassDeleteOpen, setMassDeleteOpen] = React.useState(false);
   const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
+
+  const [deleteHost, setDeleteHost] = React.useState<{
+    agent?: AgentK8sResource;
+    bmh?: BareMetalHostK8sResource;
+  }>();
+  const [unbindHost, setUnbindHost] = React.useState<AgentK8sResource>();
 
   const selectedIDsRef = React.useRef(selectedHostIDs);
   selectedIDsRef.current = selectedHostIDs;
@@ -100,11 +110,11 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
       agentClusterInstalls,
     },
     {
-      onApprove,
-      onDeleteHost,
-      onEditBMH,
-      onEditHost,
-      onUnbindHost,
+      onApprove: onApproveAgent,
+      onDeleteHost: setDeleteHost,
+      onEditBMH: setEditBMH,
+      onEditHost: setEditAgent,
+      onUnbindHost: setUnbindHost,
     },
   );
   const { t } = useTranslation();
@@ -149,11 +159,11 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           agentStatuses,
           bareMetalHosts,
           bmhStatuses,
-          onEditHostname: onEditHost,
-          onApprove: onApprove,
+          onEditHostname: setEditAgent,
+          onApprove: onApproveAgent,
           t,
         }),
-        clusterColumn(agents, agentMachines, getClusterDeploymentLink, t),
+        clusterColumn(agents, agentMachines, t),
         discoveredAtColumn(t),
         cpuCoresColumn(t),
         memoryColumn(t),
@@ -169,10 +179,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
       hostActions.canEditBMH,
       agentStatuses,
       bmhStatuses,
-      onEditHost,
-      onApprove,
       agentMachines,
-      getClusterDeploymentLink,
     ],
   );
 
@@ -205,6 +212,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   ];
 
   const paginationProps = usePagination(hosts.length);
+  const usedHostnames = React.useMemo(() => getAgentsHostsNames(agents), [agents]);
 
   return (
     <>
@@ -247,6 +255,37 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           </HostsTable>
         </StackItem>
       </Stack>
+      {editBMH && (
+        <EditBMHModal
+          infraEnv={infraEnv}
+          bmh={editBMH}
+          nmStates={nmStates}
+          onClose={() => setEditBMH(undefined)}
+          usedHostnames={usedHostnames}
+        />
+      )}
+      {editAgent && (
+        <EditAgentModal
+          agent={editAgent}
+          usedHostnames={usedHostnames}
+          onClose={() => setEditAgent(undefined)}
+          onSave={onAgentChangeHostname([editAgent], bareMetalHosts)}
+        />
+      )}
+      {deleteHost && (
+        <DeleteHostModal
+          {...deleteHost}
+          onClose={() => setDeleteHost(undefined)}
+          nmStates={nmStates}
+        />
+      )}
+      {unbindHost && (
+        <UnbindHostModal
+          agent={unbindHost}
+          onClose={() => setUnbindHost(undefined)}
+          agentClusterInstalls={agentClusterInstalls}
+        />
+      )}
       {isDiscoveryHintModalOpen && (
         <DiscoveryTroubleshootingModal
           isOpen={isDiscoveryHintModalOpen}
@@ -258,12 +297,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           isOpen={isMassChangeHostOpen}
           hosts={hosts}
           selectedHostIDs={selectedHostIDs}
-          onChangeHostname={onAgentChangeHostname(
-            agents,
-            bareMetalHosts,
-            onChangeHostname,
-            onChangeBMHHostname,
-          )}
+          onChangeHostname={onAgentChangeHostname(agents, bareMetalHosts)}
           onClose={() => setMassChangeHostOpen(false)}
           canChangeHostname={canChangeHostname(agents, agentStatuses, bareMetalHosts, t)}
         />
@@ -275,7 +309,6 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           bmhs={selectedBMHs}
           infraEnv={infraEnv}
           nmStates={nmStates}
-          onDelete={onMassDeleteHost}
           onClose={() => setMassDeleteOpen(false)}
         />
       )}
@@ -283,7 +316,6 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}
-          onApprove={onApprove}
           onClose={() => setMassApproveOpen(false)}
         />
       )}
