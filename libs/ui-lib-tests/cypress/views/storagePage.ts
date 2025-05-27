@@ -48,9 +48,9 @@ export const storagePage = {
       'You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention might be required during OpenShift installation.',
     );
   },
-  validateSkipFormattingIcon: (diskId: string, diskRow: string) => {
+  validateSkipFormattingIcon: (diskId: string, diskHost: string) => {
     //If a disk is skip formatting validate that warning icon is shown
-    cy.get(`[data-testid="disk-row-${diskId}-row${diskRow}"] [data-testid="disk-name"]`).within(
+    cy.get(`[data-testid="disk-row-${diskId}-host-${diskHost}"] [data-testid="disk-name"]`).within(
       (/* $diskRow */) => {
         cy.get('[role="img"]')
           .parent()
