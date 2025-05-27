@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
+import { Alert, AlertVariant, FlexItem, Form, Spinner } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../common/components/clusters';
@@ -63,24 +62,29 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   agentClusterInstall,
 }) => {
   const { t } = useTranslation();
-  const { values } = useFormikContext<ClusterDetailsValues>();
+  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
-  const { customManifests, isLoading } =
+  const { customManifests, isLoading, isError } =
     CustomManifestService.useCustomManifests(agentClusterInstall);
 
   const [showModal, setShowModal] = React.useState(false);
 
-  const onDeleteManifests = React.useCallback(() => {
+  const onDeleteManifests = React.useCallback(async () => {
     if (agentClusterInstall && !isLoading) {
-      void CustomManifestService.onSyncCustomManifests(
+      await CustomManifestService.onSyncCustomManifests(
         agentClusterInstall,
         { manifests: [] },
-        customManifests as K8sResourceCommon[],
+        customManifests,
       );
       setShowModal(false);
     }
   }, [agentClusterInstall, customManifests, isLoading]);
+
+  const onCloseManifestsModal = () => {
+    setShowModal(false);
+    setFieldValue('addCustomManifests', true);
+  };
 
   const selectOptions = React.useMemo(
     () =>
@@ -178,24 +182,35 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
 
-      <CheckboxField
-        name={'addCustomManifests'}
-        label={'Include custom manifests'}
-        helperText={
-          'Additional manifests will be applied at the install time for advanced configuration of the cluster.'
-        }
-        onChange={(val) => {
-          if (!val && customManifests) {
-            setShowModal(true);
-          }
-        }}
-      />
+      {isLoading || isError ? (
+        <StaticTextField name={'addCustomManifests'} label={t('ai:Include custom manifests')}>
+          <Spinner size={'md'} isInline />{' '}
+          {t(
+            'ai:Additional manifests will be applied at the install time for advanced configuration of the cluster.',
+          )}
+        </StaticTextField>
+      ) : (
+        <CheckboxField
+          name={'addCustomManifests'}
+          label={t('ai:Include custom manifests')}
+          helperText={t(
+            'ai:Additional manifests will be applied at the install time for advanced configuration of the cluster.',
+          )}
+          onChange={(val) => {
+            if (!val) {
+              setShowModal(true);
+            }
+          }}
+        />
+      )}
 
-      <DeleteCustomManifestModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onDelete={onDeleteManifests}
-      />
+      {showModal && (
+        <DeleteCustomManifestModal
+          isOpen={showModal}
+          onClose={onCloseManifestsModal}
+          onDelete={onDeleteManifests}
+        />
+      )}
 
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}

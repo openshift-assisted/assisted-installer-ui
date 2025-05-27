@@ -18,6 +18,8 @@ import { FieldArray, Form, Formik, FormikHelpers, useFormikContext } from 'formi
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import {
   ClusterWizardStepHeader,
+  ErrorState,
+  LoadingState,
   ManifestFormData,
   useAlerts,
   useTranslation,
@@ -30,15 +32,13 @@ import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext
 
 const CustomManifestsForm = ({
   agentClusterInstall,
-  isLoading,
 }: {
   agentClusterInstall: AgentClusterInstallK8sResource;
-  isLoading?: boolean;
 }) => {
   const { t } = useTranslation();
   const { activeStep, goToPrevStep, close } = useWizardContext();
   const { clearAlerts } = useAlerts();
-  const { values, isValid, isSubmitting, submitForm } = useFormikContext<ManifestFormData>();
+  const { isValid, isSubmitting, submitForm } = useFormikContext<ManifestFormData>();
 
   const handleSubmit = React.useCallback(async () => {
     await submitForm();
@@ -87,13 +87,8 @@ const CustomManifestsForm = ({
         {(arrayProps) => (
           <CustomManifestsArray
             {...arrayProps}
-            isLoading={isLoading}
             yamlOnly
             agentClusterInstall={agentClusterInstall}
-            onRemoveManifest={async (manifestId: number) => {
-              values.manifests.splice(manifestId, 1);
-              return Promise.resolve();
-            }}
           />
         )}
       </FieldArray>
@@ -110,49 +105,98 @@ export const ClusterDeploymentManifestsStep = ({
 
   const { t } = useTranslation();
   const { goToNextStep } = useWizardContext();
-  const { alerts, addAlert, clearAlerts } = useAlerts();
+  const { alerts, clearAlerts, addAlert } = useAlerts();
 
-  const { customManifests, isLoading } =
+  const { customManifests, isLoading, isError } =
     CustomManifestService.useCustomManifests(agentClusterInstall);
 
   const initialValues = React.useMemo(
     () =>
       ({
-        manifests:
-          customManifests.length && !isLoading
-            ? customManifests.map((manifest) => ({
-                manifestYaml: !!manifest ? dump(manifest) : '',
-                filename: (manifest as K8sResourceCommon)?.metadata?.name || '',
-                created: true,
-                folder: 'manifests',
-              }))
-            : [{ manifestYaml: '', filename: '', created: false, folder: 'manifests' }],
+        manifests: customManifests.length
+          ? customManifests.map((manifest) => ({
+              manifestYaml: !!manifest ? dump(manifest) : '',
+              filename: manifest?.metadata?.name || '',
+              created: true,
+              folder: 'manifests',
+            }))
+          : [{ manifestYaml: '', filename: '', created: false, folder: 'manifests' }],
       } as ManifestFormData),
-    [customManifests, isLoading],
+    [customManifests],
   );
 
-  const handleSubmit = async (
-    values: ManifestFormData,
-    _formikHelpers: FormikHelpers<ManifestFormData>,
-  ) => {
-    clearAlerts();
-    await CustomManifestService.onSyncCustomManifests(
-      agentClusterInstall,
-      values,
-      customManifests as K8sResourceCommon[],
-      () => {
+  const handleSubmit = React.useCallback(
+    async (values: ManifestFormData, _formikHelpers: FormikHelpers<ManifestFormData>) => {
+      try {
         clearAlerts();
+        await CustomManifestService.onSyncCustomManifests(
+          agentClusterInstall,
+          values,
+          customManifests,
+        );
         void goToNextStep();
-      },
-      (e: { message?: string }) => {
-        addAlert({
-          title: t('ai:Failed to save custom manifests'),
-          message: e.message || '',
-          variant: AlertVariant.danger,
-        });
-      },
+      } catch (e) {
+        if (Array.isArray(e)) {
+          (e as PromiseSettledResult<K8sResourceCommon>[]).forEach((res) => {
+            if (res.status === 'rejected') {
+              addAlert({
+                title: t('ai:Failed to save custom manifests'),
+                message: (res.reason as { message: string }).message,
+                variant: AlertVariant.danger,
+              });
+            }
+          });
+        } else {
+          addAlert({
+            title: t('ai:Failed to save custom manifests'),
+            variant: AlertVariant.danger,
+          });
+        }
+      }
+    },
+    [addAlert, agentClusterInstall, clearAlerts, customManifests, goToNextStep, t],
+  );
+
+  let content: React.ReactNode;
+  if (isLoading) {
+    content = <LoadingState />;
+  } else if (isError) {
+    content = <ErrorState />;
+  } else {
+    content = (
+      <Formik
+        initialValues={initialValues}
+        validateOnMount
+        validationSchema={Yup.object({
+          manifests: Yup.array().of(
+            Yup.object({
+              manifestYaml: Yup.string()
+                .required()
+                .test('metadata-name', t('ai:metadata.name is required.'), (val) => {
+                  try {
+                    const manifest = load(val) as K8sResourceCommon;
+                    return !!manifest.metadata?.name;
+                  } catch (error) {
+                    return false;
+                  }
+                })
+                .test('kind', t('ai:Custom manifest must be of MachineConfig kind.'), (val) => {
+                  try {
+                    const manifest = load(val) as K8sResourceCommon;
+                    return manifest.kind === 'MachineConfig';
+                  } catch (error) {
+                    return false;
+                  }
+                }),
+            }),
+          ),
+        })}
+        onSubmit={handleSubmit}
+      >
+        <CustomManifestsForm agentClusterInstall={agentClusterInstall} />
+      </Formik>
     );
-  };
+  }
 
   return (
     <Grid hasGutter>
@@ -177,40 +221,9 @@ export const ClusterDeploymentManifestsStep = ({
           )}
         />
       </GridItem>
-      <GridItem>
-        <Formik
-          initialValues={initialValues}
-          enableReinitialize
-          validateOnMount
-          validationSchema={Yup.object({
-            manifests: Yup.array().of(
-              Yup.object({
-                manifestYaml: Yup.string()
-                  .required()
-                  .test('metadata-name', t('ai:metadata.name is required.'), (val) => {
-                    try {
-                      const manifest = load(val) as K8sResourceCommon;
-                      return !!manifest.metadata?.name;
-                    } catch (error) {
-                      return false;
-                    }
-                  })
-                  .test('kind', t('ai:Custom manifest must be of MachineConfig kind.'), (val) => {
-                    try {
-                      const manifest = load(val) as K8sResourceCommon;
-                      return manifest.kind === 'MachineConfig';
-                    } catch (error) {
-                      return false;
-                    }
-                  }),
-              }),
-            ),
-          })}
-          onSubmit={handleSubmit}
-        >
-          <CustomManifestsForm isLoading={isLoading} agentClusterInstall={agentClusterInstall} />
-        </Formik>
-      </GridItem>
+
+      <GridItem>{content}</GridItem>
+
       {!!alerts.length && (
         <GridItem>
           <AlertGroup>

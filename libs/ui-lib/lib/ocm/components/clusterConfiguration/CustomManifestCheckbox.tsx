@@ -97,7 +97,7 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
         <DeleteCustomManifestModal
           isOpen={isDeleteCustomManifestsOpen}
           onClose={onClose}
-          onDelete={() => void cleanCustomManifests()}
+          onDelete={cleanCustomManifests}
         />
       </FormGroup>
       {value && (

@@ -15,8 +15,7 @@ const fieldName = 'manifests';
 type CustomManifestsArrayProps = {
   yamlOnly?: boolean;
   agentClusterInstall?: AgentClusterInstallK8sResource;
-  onRemoveManifest: (manifestId: number) => Promise<void>;
-  removeManifest?: boolean;
+  onRemoveManifest?: (manifestId: number) => Promise<void>;
   isViewerMode?: boolean;
   isLoading?: boolean;
 } & FieldArrayRenderProps;
@@ -42,7 +41,6 @@ export const CustomManifestsArray = ({
   push,
   remove,
   onRemoveManifest,
-  removeManifest,
   isViewerMode,
   isLoading,
   ...props
@@ -66,11 +64,11 @@ export const CustomManifestsArray = ({
 
   const onConfirm = React.useCallback(async (): Promise<void> => {
     if (manifestIdxToRemove !== null) {
-      await onRemoveManifest(manifestIdxToRemove);
-      removeManifest && remove(manifestIdxToRemove);
+      onRemoveManifest && (await onRemoveManifest(manifestIdxToRemove));
+      remove(manifestIdxToRemove);
       setManifestIdxToRemove(null);
     }
-  }, [manifestIdxToRemove, onRemoveManifest, remove, removeManifest]);
+  }, [manifestIdxToRemove, onRemoveManifest, remove]);
 
   if (isLoading) {
     return <LoadingState />;

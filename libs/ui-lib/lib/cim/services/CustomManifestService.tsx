@@ -1,12 +1,13 @@
 import React from 'react';
 import {
+  k8sPatch,
   K8sResourceCommon,
   Patch,
   useK8sWatchResources,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { AgentClusterInstallK8sResource } from '../types';
 import { load } from 'js-yaml';
-import { patchResource, reconcileResources } from './apis/utils';
+import { reconcileResources } from './apis/utils';
 import { AgentClusterInstallModel, MachineConfigModel } from './apis/models';
 
 export const CustomManifestService = {
@@ -27,13 +28,16 @@ export const CustomManifestService = {
 
     const manifestsData = useK8sWatchResources(params);
     const customManifests = React.useMemo(
-      () => Object.values(manifestsData).map((manifest) => manifest.data),
+      () => Object.values(manifestsData).map((manifest) => manifest.data) as K8sResourceCommon[],
       [manifestsData],
     );
-    const isLoading = Object.values(manifestsData).some((manifest) => manifest.loaded === false);
 
-    return { customManifests, isLoading };
+    const isLoading = Object.values(manifestsData).some((manifest) => manifest.loaded === false);
+    const isError = Object.values(manifestsData).some((manifest) => !!manifest.loadError);
+
+    return { customManifests, isLoading, isError };
   },
+
   onSyncCustomManifests: async (
     agentClusterInstall?: AgentClusterInstallK8sResource,
     values?: {
@@ -44,9 +48,6 @@ export const CustomManifestService = {
       }[];
     },
     existingManifests?: K8sResourceCommon[],
-    onFulfill?: () => void | Promise<void>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onReject?: (e: any) => void,
   ) => {
     if (agentClusterInstall) {
       const manifestNames = values?.manifests?.map((manifest) => ({
@@ -65,14 +66,13 @@ export const CustomManifestService = {
         },
       ];
 
-      await reconcileResources(
-        manifests || [],
-        existingManifests || [],
-        MachineConfigModel,
-        onFulfill,
-        onReject,
-      );
-      await patchResource(agentClusterInstall, customManifestPatches, AgentClusterInstallModel);
+      await reconcileResources(manifests || [], existingManifests || [], MachineConfigModel, true);
+      await reconcileResources(manifests || [], existingManifests || [], MachineConfigModel);
+      await k8sPatch({
+        resource: agentClusterInstall,
+        data: customManifestPatches,
+        model: AgentClusterInstallModel,
+      });
     }
   },
 };

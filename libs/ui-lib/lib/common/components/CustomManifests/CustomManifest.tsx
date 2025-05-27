@@ -96,7 +96,11 @@ export const CustomManifest = ({
           yamlOnly={yamlOnly}
         />
       ) : (
-        <CollapsedManifest manifestIdx={manifestIdx} fieldName={manifestFieldName} />
+        <CollapsedManifest
+          manifestIdx={manifestIdx}
+          fieldName={manifestFieldName}
+          yamlOnly={yamlOnly}
+        />
       )}
     </Grid>
   );

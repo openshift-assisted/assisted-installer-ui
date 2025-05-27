@@ -153,8 +153,8 @@ const ClusterDeploymentReviewStep = ({
               value={
                 <Table variant={TableVariant.compact} borders={false}>
                   <Tbody>
-                    {customManifestNames.map((name, id) => (
-                      <Tr key={`custom-manifest-${id}`}>
+                    {customManifestNames.map((name) => (
+                      <Tr key={name}>
                         <Td>{name}</Td>
                       </Tr>
                     ))}

@@ -4,7 +4,6 @@ import {
   k8sDelete,
   k8sPatch,
   K8sResourceCommon,
-  Patch,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { K8sModel } from '@openshift-console/dynamic-plugin-sdk/lib/api/common-types';
 
@@ -12,9 +11,7 @@ export const reconcileResources = async (
   desiredResources: K8sResourceCommon[],
   existingResources: K8sResourceCommon[],
   model: K8sModel,
-  onFulfill?: () => void | Promise<void>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onReject?: (e: any) => void,
+  dryRun?: boolean,
 ) => {
   const toDelete = existingResources.filter(
     (existing) =>
@@ -30,9 +27,10 @@ export const reconcileResources = async (
   );
 
   const promises = [] as Promise<K8sResourceCommon>[];
+  const queryParams = dryRun ? { dryRun: 'All' } : undefined;
 
-  toDelete.forEach((resource) => promises.push(k8sDelete({ model, resource })));
-  toCreate.forEach((resource) => promises.push(k8sCreate({ model, data: resource })));
+  toDelete.forEach((resource) => promises.push(k8sDelete({ model, resource, queryParams })));
+  toCreate.forEach((resource) => promises.push(k8sCreate({ model, data: resource, queryParams })));
   toPatch.forEach((resource) => {
     const existing = existingResources.find(
       (existing) => existing.metadata?.uid === resource.metadata?.uid,
@@ -40,24 +38,13 @@ export const reconcileResources = async (
     const patch = jsonpatch.compare(existing, resource);
 
     if (!!patch.length) {
-      promises.push(k8sPatch({ model, resource: existing, data: patch }));
+      promises.push(k8sPatch({ model, resource: existing, data: patch, queryParams }));
     }
   });
 
-  await Promise.all(promises).then(
-    (_) => {
-      void onFulfill?.();
-    },
-    (err) => {
-      onReject?.(err);
-    },
-  );
-};
-
-export const patchResource = async (
-  resource: K8sResourceCommon,
-  data: Patch[],
-  model: K8sModel,
-) => {
-  return k8sPatch({ model, resource, data });
+  await Promise.allSettled(promises).then((result) => {
+    if (result.some((res) => res.status === 'rejected')) {
+      throw result;
+    }
+  });
 };

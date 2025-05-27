@@ -103,10 +103,7 @@ const CustomManifestsForm = ({
   const renderManifests = React.useCallback(
     (arrayRenderProps: FieldArrayRenderProps) => (
       <CustomManifestsArray
-        {...Object.assign(
-          { onRemoveManifest, removeManifest: true, isViewerMode },
-          arrayRenderProps,
-        )}
+        {...Object.assign({ onRemoveManifest, isViewerMode }, arrayRenderProps)}
       />
     ),
     [isViewerMode, onRemoveManifest],
