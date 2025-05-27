@@ -1,4 +1,5 @@
 import React from 'react';
+import { Stack, StackItem } from '@patternfly/react-core';
 import {
   ClusterCpuArchitecture,
   getOpenshiftVersionText,
@@ -7,9 +8,9 @@ import {
 } from '../../../common';
 
 type OcmOpenShiftVersionProps = {
-  versions: OpenshiftVersionOptionType[];
+  versions?: OpenshiftVersionOptionType[];
   openshiftVersion: string;
-  clusterCpuArchitecture: string | undefined;
+  clusterCpuArchitecture?: string;
   withPreviewText?: boolean;
   withMultiText?: boolean;
 };
@@ -20,17 +21,23 @@ const OcmOpenShiftVersion = ({
   versions,
   withPreviewText,
   withMultiText,
-}: OcmOpenShiftVersionProps) => {
+  children,
+}: React.PropsWithChildren<OcmOpenShiftVersionProps>) => {
   return (
     <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-      OpenShift{' '}
-      {getOpenshiftVersionText({
-        openshiftVersion,
-        cpuArchitecture: clusterCpuArchitecture as ClusterCpuArchitecture,
-        versions,
-        withPreviewText,
-        withMultiText,
-      })}
+      <Stack>
+        <StackItem>
+          OpenShift{' '}
+          {getOpenshiftVersionText({
+            openshiftVersion,
+            cpuArchitecture: clusterCpuArchitecture as ClusterCpuArchitecture,
+            versions,
+            withPreviewText,
+            withMultiText,
+          })}
+        </StackItem>
+        {children && <StackItem>{children}</StackItem>}
+      </Stack>
     </StaticTextField>
   );
 };
