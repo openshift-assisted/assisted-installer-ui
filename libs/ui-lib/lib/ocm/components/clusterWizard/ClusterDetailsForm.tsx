@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Grid, GridItem, Switch } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -41,7 +41,6 @@ type ClusterDetailsFormProps = {
   ocpVersions: OpenshiftVersionOptionType[];
   usedClusterNames: string[];
   navigation: React.ReactNode;
-  moveNext: () => void;
   handleClusterCreate: (params: ClusterCreateParams, addCustomManifests: boolean) => Promise<void>;
   handleClusterUpdate: (
     clusterId: Cluster['id'],
@@ -58,13 +57,13 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     managedDomains,
     ocpVersions,
     usedClusterNames = [],
-    moveNext,
     handleClusterUpdate,
     handleClusterCreate,
     navigation,
   } = props;
 
-  const clusterWizardContext = useClusterWizardContext();
+  const { installDisconnected, setInstallDisconnected, customManifestsStep, moveNext } =
+    useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
@@ -119,17 +118,9 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         managedDomains,
         ocpVersions,
         urlSearchParams: search,
-        addCustomManifests: clusterWizardContext.customManifestsStep,
+        addCustomManifests: customManifestsStep,
       }),
-    [
-      infraEnv,
-      cluster,
-      pullSecret,
-      managedDomains,
-      ocpVersions,
-      search,
-      clusterWizardContext.customManifestsStep,
-    ],
+    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search, customManifestsStep],
   );
 
   const { t } = useTranslation();
@@ -174,6 +165,17 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               <GridItem>
                 <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
               </GridItem>
+              {!isSingleClusterFeatureEnabled && (
+                <GridItem>
+                  <Switch
+                    id="disconnected-install-switch"
+                    label="I'm installing on a disconnected/air-gapped/secured environment"
+                    isChecked={installDisconnected}
+                    onChange={(_, checked) => setInstallDisconnected(checked)}
+                    ouiaId="DisconnectedInstall"
+                  />
+                </GridItem>
+              )}
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields
                   versions={ocpVersions}
