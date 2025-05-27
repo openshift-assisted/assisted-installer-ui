@@ -7,13 +7,13 @@ const masterDisks = [
     id: '/dev/sda-10',
     size: '17.80 GB',
     type: 'HDD',
-    row: '0',
+    hostId: 'bb566d48-9b73-4047-9d4c-ae08618a5ed1',
   },
   {
     id: '/dev/sr-11',
     size: '1.05 GB',
     type: 'ODD',
-    row: '2',
+    hostId: 'bb566d48-9b73-4047-9d4c-ae08618a5ed1',
   },
 ];
 
@@ -22,13 +22,13 @@ const workerDisks = [
     id: '/dev/sda-40',
     size: '10.48 GB',
     type: 'HDD',
-    row: '0',
+    hostId: 'cf2f3477-896f-40be-876a-b2ac3f2a838c',
   },
   {
     id: '/dev/sr-41',
     size: '1.05 GB',
     type: 'ODD',
-    row: '2',
+    hostId: 'cf2f3477-896f-40be-876a-b2ac3f2a838c',
   },
 ];
 
@@ -93,7 +93,7 @@ describe(`Assisted Installer Storage Step`, () => {
         hostsTableSection.getHostDisksExpander(host.hostId).click();
         storagePage.validateSkipFormattingDisks(host.realHostId, 3);
         storagePage.validateSkipFormattingWarning();
-        storagePage.validateSkipFormattingIcon(workerDisks[0].id, workerDisks[0].row);
+        storagePage.validateSkipFormattingIcon(workerDisks[0].id, workerDisks[0].hostId);
         hostsTableSection.getHostDisksExpander(host.hostId).click();
       });
     });
