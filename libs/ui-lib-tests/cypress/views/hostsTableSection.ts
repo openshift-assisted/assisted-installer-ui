@@ -77,11 +77,10 @@ export const hostsTableSection = {
   },
   validateHostDisksDetails: (disks) => {
     disks.forEach((disk) => {
-      cy.get(`[data-testid="disk-row-${disk.id}"] [data-testid="drive-type"]`).should(
-        'contain',
-        disk.type,
-      );
-      cy.get(`[data-testid="disk-row-${disk.id}"] [data-testid="disk-size"]`).should(
+      cy.get(
+        `[data-testid="disk-row-${disk.id}-row${disk.row}"] [data-testid="drive-type"]`,
+      ).should('contain', disk.type);
+      cy.get(`[data-testid="disk-row-${disk.id}-row${disk.row}"] [data-testid="disk-size"]`).should(
         'contain',
         disk.size,
       );
