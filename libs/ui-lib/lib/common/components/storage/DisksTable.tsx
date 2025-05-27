@@ -217,7 +217,7 @@ const DisksTable = ({
       <Tbody>
         {rows.map((row, i) => (
           // eslint-disable-next-line no-console
-          <Tr key={`disk-row-${row.key}`} data-testid={`disk-row-${row.key}`}>
+          <Tr key={`disk-row-${row.key}`} data-testid={`disk-row-${row.key}-row${i}`}>
             {row.cells.map((cell, j) => (
               <Td key={`cell-${i}-${j}`} {...cell.props}>
                 {cell.title}
