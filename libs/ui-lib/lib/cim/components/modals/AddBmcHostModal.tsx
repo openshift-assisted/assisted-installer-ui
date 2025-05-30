@@ -10,7 +10,6 @@ const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
   isOpen,
   onClose,
   infraEnv,
-  onCreateBMH,
   usedHostnames,
   docVersion,
   provisioningConfigError,
@@ -30,7 +29,6 @@ const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
       <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
         <ProvisioningConfigErrorAlert error={provisioningConfigError} />
         <BMCForm
-          onCreateBMH={onCreateBMH}
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}

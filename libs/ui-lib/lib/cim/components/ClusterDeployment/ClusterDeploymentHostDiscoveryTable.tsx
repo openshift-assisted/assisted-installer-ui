@@ -24,6 +24,7 @@ import {
   ChangeHostnameAction,
   MassChangeHostnameModal,
   TableToolbar,
+  LoadingState,
 } from '../../../common';
 import { ClusterDeploymentHostDiscoveryTableProps } from '../ClusterDeployment/types';
 import MassApproveAgentModal from '../modals/MassApproveAgentModal';
@@ -34,25 +35,47 @@ import { ExpandComponent } from '../Agent/AgentsSelectionTable';
 import { HostsTableDetailContextProvider } from '../../../common/components/hosts/HostsTableDetailContext';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 import { onAgentChangeHostname } from '../helpers';
+import {
+  AgentClusterInstallK8sResource,
+  AgentK8sResource,
+  BareMetalHostK8sResource,
+} from '../../types';
+import DeleteHostModal from '../modals/DeleteHostModal';
+import { useInfraEnvNMStates } from '../../hooks/useInfraEnvNMStates';
+import { AgentClusterInstallModel } from '../../types/models';
+import { useParams } from 'react-router-dom-v5-compat';
+import { useK8sWatchResource } from '../../hooks/useK8sWatchResource';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
   bareMetalHosts,
   infraEnv,
-  onApprove,
-  onChangeHostname,
-  onChangeBMHHostname,
   onEditRole,
   onSetInstallationDiskId,
   onEditHost,
   onEditBMH,
-  onDeleteHost,
   width,
 }) => {
+  const { name = '', namespace = '' } = useParams<{ name: string; namespace: string }>();
+  const [deleteHost, setDeleteHost] = React.useState<{
+    agent?: AgentK8sResource;
+    bmh?: BareMetalHostK8sResource;
+  }>();
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
   const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
+  const [nmStates, nmLoaded] = useInfraEnvNMStates(infraEnv);
+  const [agentClusterInstall, aciLoaded] = useK8sWatchResource<AgentClusterInstallK8sResource>({
+    groupVersionKind: {
+      kind: AgentClusterInstallModel.kind,
+      version: AgentClusterInstallModel.apiVersion,
+      group: AgentClusterInstallModel.apiGroup,
+    },
+    name: name,
+    namespace: namespace,
+    isList: false,
+  });
 
   const { t } = useTranslation();
   const agentStatuses = agentStatus(t);
@@ -72,7 +95,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       bmhs: bareMetalHosts,
       infraEnv,
     },
-    { onEditHost, onEditRole, onEditBMH, onDeleteHost, onSetInstallationDiskId },
+    { onEditHost, onEditRole, onEditBMH, onDeleteHost: setDeleteHost, onSetInstallationDiskId },
   );
 
   const addAll = width && width > 700;
@@ -87,7 +110,6 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         bareMetalHosts,
         bmhStatuses,
         onEditHostname: onEditHost,
-        onApprove,
         wizardStepId: 'hosts-discovery',
         t,
       }),
@@ -107,7 +129,6 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       agentStatuses,
       bmhStatuses,
       onEditHost,
-      onApprove,
     ],
   );
 
@@ -127,6 +148,10 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
 
   const paginationProps = usePagination(hosts.length);
   const itemIDs = hosts.map((h) => h.id);
+
+  if (!nmLoaded || !aciLoaded) {
+    return <LoadingState />;
+  }
 
   return (
     <>
@@ -171,12 +196,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
           isOpen={isMassChangeHostOpen}
           hosts={hosts}
           selectedHostIDs={selectedHostIDs}
-          onChangeHostname={onAgentChangeHostname(
-            agents,
-            bareMetalHosts,
-            onChangeHostname,
-            onChangeBMHHostname,
-          )}
+          onChangeHostname={onAgentChangeHostname(agents, bareMetalHosts)}
           onClose={() => setMassChangeHostOpen(false)}
           canChangeHostname={canChangeHostname(agents, agentStatuses, bareMetalHosts, t)}
         />
@@ -185,8 +205,15 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}
-          onApprove={onApprove}
           onClose={() => setMassApproveOpen(false)}
+        />
+      )}
+      {deleteHost && (
+        <DeleteHostModal
+          {...deleteHost}
+          onClose={() => setDeleteHost(undefined)}
+          nmStates={nmStates}
+          agentClusterInstall={agentClusterInstall}
         />
       )}
     </>

@@ -59,8 +59,6 @@ type ScaleUpModalProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
-  onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
-  onChangeBMHHostname: (bmh: BareMetalHostK8sResource, hostname: string) => Promise<unknown>;
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   isNutanix: boolean;
   onEditHostRole: (agent: AgentK8sResource, role: string | undefined) => Promise<AgentK8sResource>;
@@ -73,8 +71,6 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   clusterDeployment,
   agents,
   bareMetalHosts,
-  onChangeHostname,
-  onChangeBMHHostname,
   onSetInstallationDiskId,
   isNutanix,
   onEditHostRole,
@@ -186,12 +182,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
         <EditAgentModal
           agent={editAgent}
           onClose={() => setEditAgent(undefined)}
-          onSave={onAgentChangeHostname(
-            agents,
-            bareMetalHosts,
-            onChangeHostname,
-            onChangeBMHHostname,
-          )}
+          onSave={onAgentChangeHostname(agents, bareMetalHosts)}
           usedHostnames={getAgentsHostsNames(clusterAgents)}
         />
       )}
