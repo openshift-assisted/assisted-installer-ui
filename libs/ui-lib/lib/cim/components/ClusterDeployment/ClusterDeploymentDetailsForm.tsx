@@ -112,7 +112,9 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
 
   const [cpuArchitectures, allowHighlyAvailable] = React.useMemo(() => {
     const cpuArchitectures = [CpuArchitecture.x86, CpuArchitecture.ARM, CpuArchitecture.s390x];
-    const version = allVersions.find((ver) => ver.value === values.openshiftVersion);
+    const version = allVersions.find(
+      (ver) => ver.value === values.openshiftVersion || ver.version === forceOpenshiftVersion,
+    );
     const isMulti = version?.cpuArchitectures?.[0] === CpuArchitecture.MULTI;
 
     const highlyAvailableSupported = toNumber(version?.version?.split('.')?.[1]) >= 18;
@@ -120,7 +122,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
       (isMulti ? cpuArchitectures : version?.cpuArchitectures) as SupportedCpuArchitecture[],
       highlyAvailableSupported && !isMulti,
     ];
-  }, [allVersions, values.openshiftVersion]);
+  }, [allVersions, forceOpenshiftVersion, values.openshiftVersion]);
 
   return (
     <>
