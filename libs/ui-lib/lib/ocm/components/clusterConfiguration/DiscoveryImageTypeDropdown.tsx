@@ -1,12 +1,13 @@
 import React from 'react';
-import { FormGroup } from '@patternfly/react-core';
+import { FormGroup, Tooltip } from '@patternfly/react-core';
 import {
   DropdownItem,
-  DropdownToggle,
+  Divider,
   Dropdown,
-  DropdownSeparator,
-} from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 import {
   CpuArchitecture,
@@ -47,74 +48,74 @@ export const DiscoveryImageTypeDropdown = ({
       key="full-iso"
       id="full-iso"
       description={'Use when configuring custom networking for easier debugging'}
+      value={discoveryImageTypes['full-iso']}
     >
       {discoveryImageTypes['full-iso']}
     </DropdownItem>,
-    <DropdownSeparator key="separator1" />,
-    <DropdownItem
-      key="minimal-iso"
-      id="minimal-iso"
-      description={'Use when provisioning with default networking options'}
-      tooltip={
+    <Divider component="li" key="separator1" />,
+    <Tooltip
+      key="minimal-iso-tooltip"
+      content={
         isMinimalISODisabled ? (
           <p>{'This provisioning type is not supported when using s390x architecture'}</p>
         ) : undefined
       }
-      isAriaDisabled={!!isMinimalISODisabled}
     >
-      {discoveryImageTypes['minimal-iso']}
-    </DropdownItem>,
-    <DropdownSeparator key="separator2" />,
+      <DropdownItem
+        key="minimal-iso"
+        id="minimal-iso"
+        description={'Use when provisioning with default networking options'}
+        isAriaDisabled={!!isMinimalISODisabled}
+        value={discoveryImageTypes['minimal-iso']}
+      >
+        {discoveryImageTypes['minimal-iso']}
+      </DropdownItem>
+    </Tooltip>,
+    <Divider component="li" key="separator2" />,
     <DropdownItem
       key="discovery-image-ipxe"
       id="discovery-image-ipxe"
       description={'Use when your platform does not support booting from ISO'}
+      value={discoveryImageTypes['discovery-image-ipxe']}
     >
       {discoveryImageTypes['discovery-image-ipxe']}
     </DropdownItem>,
   ];
 
-  const onSelect = React.useCallback(
-    (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const imageTypeSelection = event?.currentTarget.id as DiscoveryImageType;
-      const currentValue = imageTypeSelection
-        ? discoveryImageTypes[imageTypeSelection]
-        : defaultValue;
-      setCurrent(currentValue ? currentValue : '');
-      setValue(imageTypeSelection);
-      setOpen(false);
-      onChange(imageTypeSelection === 'discovery-image-ipxe');
-    },
-    [setCurrent, setOpen, defaultValue, setValue, onChange],
-  );
+  const onSelect = (event?: React.MouseEvent<Element, MouseEvent>, value?: string | number) => {
+    const imageTypeSelection = value as string;
+    setCurrent(imageTypeSelection ? imageTypeSelection : '');
+    setValue(event?.currentTarget.id as DiscoveryImageType);
+    setOpen(false);
+    onChange(imageTypeSelection === 'discovery-image-ipxe');
+  };
 
-  const toggle = React.useMemo(
-    () => (
-      <DropdownToggle
-        onToggle={(_event, val) => setOpen(val)}
-        toggleIndicator={CaretDownIcon}
-        isText
-        className="pf-v5-u-w-100"
-        isDisabled={isDisabled}
-      >
-        {current || value}
-      </DropdownToggle>
-    ),
-    [setOpen, current, value, isDisabled],
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      id={fieldId}
+      className="pf-v5-u-w-100"
+      ref={toggleRef}
+      isFullWidth
+      onClick={() => setOpen(!isOpen)}
+      isExpanded={isOpen}
+      isDisabled={isDisabled}
+    >
+      {current || value}
+    </MenuToggle>
   );
 
   return (
     <FormGroup fieldId={fieldId} label={'Provisioning type'}>
       <Dropdown
         {...field}
-        name={name}
-        id={fieldId}
-        dropdownItems={dropdownItems}
+        id={`${fieldId}-dropdown`}
         toggle={toggle}
         isOpen={isOpen}
-        className="pf-v5-u-w-100"
         onSelect={onSelect}
-      />
+        onOpenChange={() => setOpen(!isOpen)}
+      >
+        <DropdownList>{dropdownItems}</DropdownList>
+      </Dropdown>
     </FormGroup>
   );
 };

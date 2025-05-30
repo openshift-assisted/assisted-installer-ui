@@ -1,20 +1,25 @@
-import { Split, SplitItem, Spinner } from '@patternfly/react-core';
 import {
+  Split,
+  SplitItem,
+  Spinner,
   Dropdown,
-  DropdownGroup,
   DropdownItem,
   DropdownItemProps,
-  DropdownSeparator,
-  DropdownToggle,
-} from '@patternfly/react-core/deprecated';
+  MenuToggle,
+  MenuToggleElement,
+  Divider,
+  DropdownList,
+  Popover,
+  Flex,
+} from '@patternfly/react-core';
 import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';
 import { AddHostDropdownProps } from './types';
 import './AddHostDropdown.css';
-import { PopoverIcon } from '../../../common';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom-v5-compat';
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
 
@@ -50,21 +55,28 @@ const AddHostDropdown = ({
   const [provisioningConfig, provisioningConfigLoaded, provisioningConfigError] =
     provisioningConfigResult;
   const { t } = useTranslation();
+
   return (
     <>
       <Dropdown
         id="infraenv-actions"
-        toggle={
-          <DropdownToggle
+        isOpen={isKebabOpen}
+        onSelect={() => setIsKebabOpen(false)}
+        onOpenChange={() => setIsKebabOpen(!isKebabOpen)}
+        toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+          <MenuToggle
             id="dropdown-basic"
-            onToggle={(_event, value) => setIsKebabOpen(value)}
-            toggleVariant="primary"
+            variant="primary"
+            ref={toggleRef}
+            onClick={() => setIsKebabOpen(!isKebabOpen)}
+            isExpanded={isKebabOpen}
           >
             {t('ai:Add hosts')}
-          </DropdownToggle>
-        }
-        isOpen={isKebabOpen}
-        dropdownItems={[
+          </MenuToggle>
+        )}
+        shouldFocusToggleOnSelect
+      >
+        {[
           <DropdownItem
             key="discovery-iso"
             onClick={() => {
@@ -85,36 +97,37 @@ const AddHostDropdown = ({
           >
             {t('ai:With iPXE')}
           </DropdownItem>,
-          <DropdownSeparator key="separator" />,
-          <DropdownGroup
-            id="discovery-bmc"
-            key="discovery-bmc"
-            className="ai-discovery-bmc__group"
-            label={
-              <Split hasGutter>
-                <SplitItem>{t('ai:Baseboard Management Controller (BMC)')}</SplitItem>
-                <SplitItem>
-                  {!provisioningConfig && (
-                    <>
-                      {' '}
-                      <PopoverIcon
-                        noVerticalAlign
-                        bodyContent={
-                          <Trans t={t}>
-                            ai:To enable the host's baseboard management controller (BMC) on the hub
-                            cluster, you must first{' '}
-                            <Link to="/k8s/cluster/metal3.io~v1alpha1~Provisioning/~new">
-                              create a provisioning configuration.
-                            </Link>
-                          </Trans>
-                        }
-                      />
-                    </>
-                  )}
-                </SplitItem>
-              </Split>
-            }
-          >
+          <Divider component="li" key="separator" />,
+          <DropdownList id="discovery-bmc" key="discovery-bmc" className="ai-discovery-bmc__group">
+            {!provisioningConfig && (
+              <DropdownItem
+                isAriaDisabled
+                className="pf-v5-u-color-200" // visually muted
+                component="div"
+              >
+                <Flex
+                  alignItems={{ default: 'alignItemsCenter' }}
+                  spaceItems={{ default: 'spaceItemsMd' }} // Changed to 'spaceItemsMd' for larger spacing
+                >
+                  <span>{t('ai:Baseboard Management Controller (BMC)')}</span>
+                  <Popover
+                    triggerAction="hover"
+                    position="top"
+                    bodyContent={
+                      <Trans t={t}>
+                        ai:To enable the host's baseboard management controller (BMC) on the hub
+                        cluster, you must first{' '}
+                        <Link to="/k8s/cluster/metal3.io~v1alpha1~Provisioning/~new">
+                          create a provisioning configuration.
+                        </Link>
+                      </Trans>
+                    }
+                  >
+                    <OutlinedQuestionCircleIcon />
+                  </Popover>
+                </Flex>
+              </DropdownItem>
+            )}
             <DropdownItemWithLoading
               key="with-credentials"
               onClick={() => {
@@ -139,10 +152,9 @@ const AddHostDropdown = ({
               isLoading={!provisioningConfigLoaded}
               isDisabled={!provisioningConfig && !provisioningConfigError}
             />
-          </DropdownGroup>,
+          </DropdownList>,
         ]}
-        position={'right'}
-      />
+      </Dropdown>
       {addModalType === 'iso' && (
         <AddHostModal
           infraEnv={infraEnv}

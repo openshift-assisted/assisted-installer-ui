@@ -11,13 +11,13 @@ export const clusterDetailsPage = {
     return cy.get(Cypress.env('openshiftVersionFieldId'));
   },
   openOpenshiftVersionDropdown: () => {
-    clusterDetailsPage.getOpenshiftVersionField().find('button.pf-v5-c-dropdown__toggle').click();
+    clusterDetailsPage.getOpenshiftVersionField().click();
   },
   getOpenshiftVersionDropdown: () => {
-    return clusterDetailsPage.getOpenshiftVersionField().find('.pf-v5-c-dropdown__menu');
+    return cy.get(`${Cypress.env('openshiftVersionFieldId')}-dropdown`);
   },
   getSelectedOpenShiftVersion: () => {
-    return clusterDetailsPage.getOpenshiftVersionField().find('.pf-v5-c-dropdown__toggle-text');
+    return clusterDetailsPage.getOpenshiftVersionField().find('.pf-v5-c-menu-toggle__text');
   },
   inputOpenshiftVersion: (version = Cypress.env('OPENSHIFT_VERSION')) => {
     clusterDetailsPage.openOpenshiftVersionDropdown();
@@ -61,20 +61,37 @@ export const clusterDetailsPage = {
   getStaticIpNetworkConfig: () => {
     return cy.get(Cypress.env('staticIpNetworkConfigFieldId'));
   },
+  getCpuArchitectureField: () => {
+    return cy.get(Cypress.env('cpuArchitectureFieldId'));
+  },
   openCpuArchitectureDropdown: () => {
-    cy.get(`${Cypress.env('cpuArchitectureFieldId')} > button.pf-v5-c-dropdown__toggle`).click();
+    clusterDetailsPage.getCpuArchitectureField().click();
+  },
+  getCpuArchitectureDropdown: () => {
+    return cy.get(`${Cypress.env('cpuArchitectureFieldId')}-dropdown`);
+  },
+  getSelectedCpuArchitecture: () => {
+    return clusterDetailsPage.getCpuArchitectureField().find('.pf-v5-c-menu-toggle__text');
   },
   selectCpuArchitecture: (cpuArchitecture) => {
-    cy.get(`ul.pf-v5-c-dropdown__menu li[id=${cpuArchitecture}] a`).click();
-    cy.get(`${Cypress.env('cpuArchitectureFieldId')} .pf-v5-c-dropdown__toggle-text`)
+    clusterDetailsPage.openCpuArchitectureDropdown();
+    clusterDetailsPage.getCpuArchitectureDropdown().within(() => {
+      cy.get('li').contains(cpuArchitecture).click();
+    });
+    clusterDetailsPage
+      .getSelectedCpuArchitecture()
       .invoke('text')
       .should('match', new RegExp(cpuArchitecture, 'i'));
   },
   CpuArchitectureExists: (cpuArchitecture) => {
-    cy.get(`ul.pf-v5-c-dropdown__menu li[id=${cpuArchitecture}] a`).should('exist');
+    clusterDetailsPage.getCpuArchitectureDropdown().within(() => {
+      cy.get('li').contains(cpuArchitecture).should('exist');
+    });
   },
   CpuArchitectureNotExists: (cpuArchitecture) => {
-    cy.get(`ul.pf-v5-c-dropdown__menu li[id=${cpuArchitecture}] a`).should('not.exist');
+    clusterDetailsPage.getCpuArchitectureDropdown().within(() => {
+      cy.get('li').contains(cpuArchitecture).should('not.exist');
+    });
   },
   getSnoDisclaimer: () => {
     return cy.get(Cypress.env('checkboxSNODisclaimerFieldId'));
@@ -136,12 +153,25 @@ export const clusterDetailsPage = {
   validateInputPullSecretFieldHelper: (msg) => {
     cy.get(Cypress.env('pullSecretFieldHelperErrorId')).should('contain', msg);
   },
+  getControlPlaneNodesField: () => {
+    return cy.get(Cypress.env('controlPlaneNodesFieldId'));
+  },
   openControlPlaneNodesDropdown: () => {
-    cy.get(`${Cypress.env('controlPlaneNodesFieldId')} > button.pf-v5-c-dropdown__toggle`).click();
+    clusterDetailsPage.getControlPlaneNodesField().click();
+  },
+  getControlPlaneNodeDropdown: () => {
+    return cy.get(`${Cypress.env('controlPlaneNodesFieldId')}-dropdown`);
+  },
+  getSelectedControlPlaneNode: () => {
+    return clusterDetailsPage.getControlPlaneNodesField().find('.pf-v5-c-menu-toggle__text');
   },
   selectControlPlaneNodeOption: (controlPlaneCount) => {
-    cy.get(`ul.pf-v5-c-dropdown__menu li[id=${controlPlaneCount}] a`).click();
-    cy.get(`${Cypress.env('controlPlaneNodesFieldId')} .pf-v5-c-dropdown__toggle-text`)
+    clusterDetailsPage.openControlPlaneNodesDropdown();
+    clusterDetailsPage.getControlPlaneNodeDropdown().within(() => {
+      cy.get('li').contains(controlPlaneCount).click();
+    });
+    clusterDetailsPage
+      .getSelectedControlPlaneNode()
       .invoke('text')
       .should('match', new RegExp(controlPlaneCount, 'i'));
   },
