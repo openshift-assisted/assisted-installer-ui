@@ -11,14 +11,13 @@ import {
   ToolbarItem,
   ToolbarProps,
   Tooltip,
-} from '@patternfly/react-core';
-import {
   Dropdown,
   DropdownItem,
-  DropdownToggle,
-  DropdownToggleCheckbox,
-} from '@patternfly/react-core/deprecated';
-import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+  MenuToggleCheckbox,
+} from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './TableToolbar.css';
@@ -52,6 +51,8 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   const [selectOpen, setSelectOpen] = React.useState(false);
   const onSelectToggle = React.useCallback(() => setSelectOpen(!selectOpen), [selectOpen]);
   const onActionsToggle = React.useCallback(() => setActionsOpen(!actionsOpen), [actionsOpen]);
+  const onSelectAll = () => setSelectedIDs(itemIDs);
+  const onSelectNone = () => setSelectedIDs([]);
 
   React.useEffect(() => {
     if (!selectedIDs.every((id) => itemIDs.includes(id))) {
@@ -72,57 +73,62 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   const actionsDropdown = (
     <Dropdown
       onSelect={onActionsToggle}
-      toggle={
-        <DropdownToggle
-          onToggle={onActionsToggle}
-          toggleIndicator={CaretDownIcon}
-          isDisabled={isDisabled}
-        >
+      onOpenChange={onActionsToggle}
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle ref={toggleRef} isFullWidth onClick={onActionsToggle} isExpanded={actionsOpen}>
           {t('ai:Actions')}
-        </DropdownToggle>
-      }
+        </MenuToggle>
+      )}
       isOpen={actionsOpen}
-      dropdownItems={actions}
-    />
+    >
+      {actions}
+    </Dropdown>
   );
 
-  const onSelectAll = () => setSelectedIDs(itemIDs);
-  const onSelectNone = () => setSelectedIDs([]);
+  const SelectDropdown = (
+    <Dropdown
+      onSelect={onSelectToggle}
+      onOpenChange={onSelectToggle}
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle
+          ref={toggleRef}
+          isFullWidth
+          onClick={onSelectToggle}
+          isExpanded={selectOpen}
+          splitButtonOptions={{
+            items: [
+              <MenuToggleCheckbox
+                id="select-checkbox"
+                key="select-checkbox"
+                aria-label="Select all"
+                onChange={(checked, _event) => (checked ? onSelectAll() : onSelectNone())}
+                isChecked={isChecked}
+              >
+                {selectedIDs.length} {t('ai:selected')}
+              </MenuToggleCheckbox>,
+            ],
+          }}
+        />
+      )}
+      isOpen={selectOpen}
+    >
+      <DropdownList>
+        <DropdownItem id={'select-all'} key="select-all" onClick={onSelectAll}>
+          {t('ai:Select all')}
+        </DropdownItem>
+        <DropdownItem id={'select-none'} key="select-none" onClick={onSelectNone}>
+          {t('ai:Select none')}
+        </DropdownItem>
+      </DropdownList>
+    </Dropdown>
+  );
+
   return (
     <Split hasGutter>
       <SplitItem isFilled>
         <Toolbar className="table-toolbar" clearAllFilters={clearAllFilters}>
           <ToolbarContent className="table-toolbar__content">
-            <ToolbarItem>
-              <Dropdown
-                onSelect={onSelectToggle}
-                toggle={
-                  <DropdownToggle
-                    splitButtonItems={[
-                      <DropdownToggleCheckbox
-                        id="select-checkbox"
-                        key="select-checkbox"
-                        aria-label={t('ai:Select all')}
-                        onChange={(_event, checked) => (checked ? onSelectAll() : onSelectNone())}
-                        isChecked={isChecked}
-                      >
-                        {selectedIDs.length} {t('ai:selected')}
-                      </DropdownToggleCheckbox>,
-                    ]}
-                    onToggle={onSelectToggle}
-                  />
-                }
-                isOpen={selectOpen}
-                dropdownItems={[
-                  <DropdownItem key="select-all" onClick={onSelectAll}>
-                    {t('ai:Select all')}
-                  </DropdownItem>,
-                  <DropdownItem key="select-none" onClick={onSelectNone}>
-                    {t('ai:Select none')}
-                  </DropdownItem>,
-                ]}
-              />
-            </ToolbarItem>
+            <ToolbarItem>{SelectDropdown}</ToolbarItem>
             {children}
             <ToolbarItem>
               {isDisabled ? (

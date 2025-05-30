@@ -1,6 +1,13 @@
 import * as React from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core/deprecated';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
+import {
+  FormGroup,
+  Tooltip,
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+  DropdownList,
+} from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { getFieldId, StaticField } from '../..';
 import { useField } from 'formik';
@@ -55,29 +62,35 @@ const ControlPlaneNodesDropdown = ({
     );
   });
 
-  const onControlPlaneSelect = (e?: React.SyntheticEvent<HTMLDivElement>) => {
-    const val = e?.currentTarget.id as string;
-    setValue(toNumber(val));
+  const onControlPlaneSelect = (
+    e?: React.MouseEvent<Element, MouseEvent>,
+    value?: string | number,
+  ) => {
+    setValue(toNumber(value));
     setControlPlanelOpen(false);
   };
 
   return !isDisabled ? (
     <FormGroup isInline fieldId={fieldId} label={t('ai:Number of control plane nodes')} isRequired>
       <Dropdown
-        toggle={
-          <DropdownToggle
-            onToggle={() => setControlPlanelOpen(!controlPlanelOpen)}
-            className="pf-u-w-100"
-          >
-            {selectedValue ? selectedValue : '3'}
-          </DropdownToggle>
-        }
-        name="controlPlaneCount"
         isOpen={controlPlanelOpen}
         onSelect={onControlPlaneSelect}
-        dropdownItems={dropdownItems}
-        className="pf-u-w-100"
-      />
+        onOpenChange={() => setControlPlanelOpen(!controlPlanelOpen)}
+        toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+          <MenuToggle
+            className="pf-v5-u-w-100"
+            ref={toggleRef}
+            isFullWidth
+            onClick={() => setControlPlanelOpen(!controlPlanelOpen)}
+            isExpanded={controlPlanelOpen}
+          >
+            {selectedValue ? selectedValue : '3'}
+          </MenuToggle>
+        )}
+        shouldFocusToggleOnSelect
+      >
+        <DropdownList>{dropdownItems}</DropdownList>
+      </Dropdown>
     </FormGroup>
   ) : (
     <StaticField

@@ -70,10 +70,11 @@ export const bareMetalDiscoveryPage = {
     cy.get('li[role][id^=button-delete-host]').should('not.exist');
   },
   massRenameHosts: (prefix) => {
-    cy.get('.table-toolbar .pf-v5-c-toolbar__item:first').click();
-    cy.get('.table-toolbar .pf-v5-c-toolbar__item:last').click();
-    cy.get('ul[role="menu"]').within(() => {
-      cy.get('[role="menuitem"]')
+    cy.get('.table-toolbar .pf-v5-c-menu-toggle__controls:first').click();
+    cy.get('#select-all').click();
+    cy.get('.table-toolbar .pf-v5-c-menu-toggle__controls:last').click();
+    cy.get('.pf-v5-c-menu__content:last').within(() => {
+      cy.get('.pf-v5-c-menu__item-text')
         .contains(Cypress.env('hostRowKebabMenuChangeHostnameText'))
         .click();
     });
