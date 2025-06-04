@@ -8,7 +8,7 @@ import {
   NewClusterWizard,
   ModalDialogsContextProvider,
 } from '@openshift-assisted/ui-lib/ocm';
-import { Alert, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { Alert, PageSection,  } from '@patternfly/react-core';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import ResetSingleClusterModal from './ResetSingleClusterModal';
 
@@ -21,7 +21,7 @@ const CreateClusterWizard = () => {
 
   if (error) {
     return (
-      <PageSection variant={PageSectionVariants.light} isFilled>
+      <PageSection hasBodyWrapper={false}  isFilled>
         <Alert isInline variant="danger" title="Failed to fetch clusters" />
       </PageSection>
     );

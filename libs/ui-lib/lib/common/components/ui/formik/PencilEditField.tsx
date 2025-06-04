@@ -57,7 +57,7 @@ const PencilEditField = ({ name, isRequired, showErrorMessage }: PencilEditField
           </Split>
         </>
       )}
-      <div className="pf-v5-c-form__helper-text pf-m-error">{errrMsg}</div>
+      <div className="pf-v6-c-form__helper-text pf-m-error">{errrMsg}</div>
     </>
   );
 };

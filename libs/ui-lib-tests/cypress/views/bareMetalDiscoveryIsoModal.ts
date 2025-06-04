@@ -8,11 +8,11 @@ export const bareMetalDiscoveryIsoModal = {
     const modal = bareMetalDiscoveryIsoModal.getGenerateDiscoveryIsoModalId();
     modal.should('be.visible');
     modal.within(() => {
-      cy.get('.pf-v5-c-modal-box__title-text').should(
+      cy.get('.pf-v6-c-modal-box__title-text').should(
         'contain',
         'Add host', // TODO variation for SNO
       );
-      cy.get('.pf-v5-c-form__label-text').should('contain.text', 'SSH public key');
+      cy.get('.pf-v6-c-form__label-text').should('contain.text', 'SSH public key');
       cy.get('#sshPublicKey-filename')
         .invoke('attr', 'placeholder')
         .should('contain.text', 'Drag a file here or browse to upload');
@@ -68,7 +68,7 @@ export const bareMetalDiscoveryIsoModal = {
     cy.get('.pf-m-error').should('contain.text', msg);
   },
   validateNeverShareWarning: () => {
-    cy.get('.pf-v5-c-modal-box__body > .pf-v5-c-alert').should(
+    cy.get('.pf-v6-c-modal-box__body > .pf-v6-c-alert').should(
       'contain',
       Cypress.env('neverShareWarningText'),
     );
@@ -98,7 +98,7 @@ export const bareMetalDiscoveryIsoModal = {
     return cy.get(`${Cypress.env('imageTypeFieldId')}-dropdown`);
   },
   getSelectedImageType: () => {
-    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-v5-c-menu-toggle__text');
+    return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-v6-c-menu-toggle__text');
   },
   selectImageType: (typeLabel: string) => {
     bareMetalDiscoveryIsoModal.openImageTypeDropdown();
@@ -108,7 +108,7 @@ export const bareMetalDiscoveryIsoModal = {
     bareMetalDiscoveryIsoModal.getSelectedImageType().should('contain.text', typeLabel);
   },
   getCancelGenerateDiscoveryIsoButton: () => {
-    return cy.get('.pf-v5-c-modal-box__footer > .pf-m-link');
+    return cy.get('.pf-v6-c-modal-box__footer > .pf-m-link');
   },
   browseAndUploadSshKey: (fileName) => {
     cy.get('input[type="file"]').attachFile(fileName);

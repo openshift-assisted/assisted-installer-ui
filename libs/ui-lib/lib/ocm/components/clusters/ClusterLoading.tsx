@@ -1,9 +1,9 @@
-import { PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { PageSection,  } from '@patternfly/react-core';
 import { LoadingState } from '../../../common';
 import React from 'react';
 
 const ClusterLoading = () => (
-  <PageSection variant={PageSectionVariants.light} isFilled>
+  <PageSection hasBodyWrapper={false}  isFilled>
     <LoadingState />
   </PageSection>
 );

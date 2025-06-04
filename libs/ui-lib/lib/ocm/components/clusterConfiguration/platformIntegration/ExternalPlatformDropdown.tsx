@@ -245,7 +245,7 @@ export const ExternalPlatformDropdown = ({
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       id={fieldId}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
       ref={toggleRef}
       onClick={() => setOpen(!isOpen)}
       isDisabled={dropdownIsDisabled}

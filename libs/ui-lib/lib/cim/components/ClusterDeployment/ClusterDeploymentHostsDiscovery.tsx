@@ -2,12 +2,9 @@ import React from 'react';
 import {
   Grid,
   GridItem,
-  TextContent,
-  Text,
-  TextListItem,
+  Content,
   OrderType,
-  TextList,
-} from '@patternfly/react-core';
+  } from '@patternfly/react-core';
 import Measure from 'react-measure';
 import {
   DiscoveryTroubleshootingModal,
@@ -27,25 +24,25 @@ import AddHostDropdown from '../InfraEnv/AddHostDropdown';
 const DiscoveryInstructions = () => {
   const { t } = useTranslation();
   return (
-    <TextContent>
-      <Text component="h3">{t('ai:Adding hosts instructions')}</Text>
-      <TextList component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
-        <TextListItem>{t('ai:Click the Add hosts button.')}</TextListItem>
-        <TextListItem>
+    <Content>
+      <Content component="h3">{t('ai:Adding hosts instructions')}</Content>
+      <Content component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
+        <Content component="li">{t('ai:Click the Add hosts button.')}</Content>
+        <Content component="li">
           {t('ai:Configure the SSH key and proxy settings after the modal appears (optional).')}
-        </TextListItem>
-        <TextListItem>
+        </Content>
+        <Content component="li">
           {t(
             "ai:Select how you'd like to add hosts (Discovery ISO, iPXE, or BMC form) and follow the instructions that appear.",
           )}
-        </TextListItem>
-        <TextListItem>
+        </Content>
+        <Content component="li">
           {t(
             'ai:Booted hosts should appear in the host inventory table. This may take a few minutes.',
           )}
-        </TextListItem>
-      </TextList>
-    </TextContent>
+        </Content>
+      </Content>
+    </Content>
   );
 };
 
@@ -78,9 +75,9 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   return (
     <Grid hasGutter>
       <GridItem>
-        <TextContent>
+        <Content>
           <DiscoveryInstructions />
-        </TextContent>
+        </Content>
       </GridItem>
       <GridItem span={5}>
         <AddHostDropdown
@@ -91,18 +88,18 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
         />
       </GridItem>
       <GridItem>
-        <TextContent>
-          <Text component="h3">{t('ai:Information and warnings')}</Text>
+        <Content>
+          <Content component="h3">{t('ai:Information and warnings')}</Content>
           {aiConfigMap && (
-            <Text component="p">
+            <Content component="p">
               <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
-            </Text>
+            </Content>
           )}
-          <Text component="p">
+          <Content component="p">
             <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-          </Text>
+          </Content>
           {isVM && <VMRebootConfigurationInfo />}
-        </TextContent>
+        </Content>
       </GridItem>
       <GridItem>
         {/* <OCSDisksManualFormattingHint /> Recently not used in the ACM flow */}

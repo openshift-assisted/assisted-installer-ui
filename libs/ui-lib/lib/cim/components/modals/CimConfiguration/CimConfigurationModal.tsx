@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {
-  Alert,
-  AlertVariant,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
+	Alert,
+	AlertVariant,
+	Button,
+	ButtonVariant
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getStorageSizeGiB } from '../../helpers';

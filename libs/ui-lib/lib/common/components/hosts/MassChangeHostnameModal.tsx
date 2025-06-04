@@ -6,18 +6,16 @@ import {
   Form,
   HelperText,
   HelperTextItem,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
   Popover,
   Split,
   SplitItem,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
+import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
+import { t_global_icon_color_status_info_default as blueInfoColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_info_default';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TFunction } from 'i18next';
 

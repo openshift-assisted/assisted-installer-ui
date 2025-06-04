@@ -1,14 +1,14 @@
 import React from 'react';
 import Highlight, { defaultProps, Language, PrismTheme } from 'prism-react-renderer';
-import { Text, TextVariants, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
-import { global_Color_100 } from '@patternfly/react-tokens/dist/js/global_Color_100';
-import { global_palette_purple_400 } from '@patternfly/react-tokens/dist/js/global_palette_purple_400';
-import { global_palette_blue_300 } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
+import { Content, ContentVariants, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
+import { t_global_color_nonstatus_gray_default as globalGray } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_gray_default';
+import { t_global_color_nonstatus_purple_default as globalPurple } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_purple_default';
+import { t_global_color_nonstatus_blue_default as globalBlue } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_blue_default';
 import defaultTheme from 'prism-react-renderer/themes/github';
 import './PrismCode.css';
 export const SimpleAIPrismTheme = {
   plain: {
-    color: global_Color_100.value,
+    color: globalGray.value,
     backgroundColor: defaultTheme.plain.backgroundColor,
     fontSize: '.93em',
   },
@@ -16,13 +16,13 @@ export const SimpleAIPrismTheme = {
     {
       types: ['variable'],
       style: {
-        color: global_palette_blue_300.value,
+        color: globalBlue.value,
       },
     },
     {
       types: ['class-name', 'function', 'tag', 'attr-name'],
       style: {
-        color: global_palette_purple_400.value,
+        color: globalPurple.value,
       },
     },
   ],
@@ -41,7 +41,7 @@ const PrismCode: React.FC<PrismCodeProps> = ({
 }) => (
   <Highlight {...defaultProps} code={code} language={language} theme={theme}>
     {({ className, style, tokens, getLineProps, getTokenProps }) => (
-      <Text component={TextVariants.pre} className={className} style={style}>
+      <Content component={ContentVariants.pre} className={className} style={style}>
         {copiable && (
           <ClipboardCopy
             isReadOnly
@@ -59,7 +59,7 @@ const PrismCode: React.FC<PrismCodeProps> = ({
             ))}
           </div>
         ))}
-      </Text>
+      </Content>
     )}
   </Highlight>
 );

@@ -1,11 +1,11 @@
 import type React from 'react';
-import { Brand, Masthead, MastheadBrand, MastheadMain } from '@patternfly/react-core';
+import { Brand, Masthead, MastheadLogo, MastheadMain, MastheadBrand } from '@patternfly/react-core';
 import { AboutButton } from './AboutButton';
 import { FeedbackButton } from './FeedbackButton';
 
 export const Header: React.FC = () => (
   <Masthead style={{ display: 'flex', justifyContent: 'space-between' }}>
-    <MastheadBrand>
+    <MastheadBrand ><MastheadLogo >
       <Brand
         src="/logo.svg"
         alt="OpenShift Container Platform Assisted Installer"
@@ -13,7 +13,7 @@ export const Header: React.FC = () => (
       >
         <source src="/logo.svg" />
       </Brand>
-    </MastheadBrand>
+    </MastheadLogo></MastheadBrand>
     <MastheadMain>
       <FeedbackButton />
       <AboutButton />

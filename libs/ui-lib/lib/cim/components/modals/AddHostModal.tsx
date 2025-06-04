@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
 import {
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
-  Modal,
-  ModalVariant,
-  Spinner,
+	EmptyState,
+	EmptyStateBody,
+	Spinner
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import { AddHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -124,8 +124,7 @@ const GeneratingIsoDownload = ({
       docVersion={docVersion}
     />
   ) : (
-    <EmptyState>
-      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
+    <EmptyState   icon={Spinner}  >
       <EmptyStateBody>{t('ai:Generating discovery ISO')}</EmptyStateBody>
     </EmptyState>
   );
@@ -148,8 +147,7 @@ const GeneratingIPXEDownload = ({
       onReset={onReset}
     />
   ) : (
-    <EmptyState>
-      <EmptyStateHeader icon={<EmptyStateIcon icon={Spinner} />} />
+    <EmptyState   icon={Spinner}  >
       <EmptyStateBody>{t('ai:Generating iPXE script')}</EmptyStateBody>
     </EmptyState>
   );

@@ -1,7 +1,7 @@
 .infra-env__form {
-  padding-right: var(--pf-v5-c-wizard__main-body--PaddingRight);
+  padding-right: var(--pf-v6-c-wizard__main-body--PaddingRight);
 }
 
 .infra-env-hosts-tab-title__icon {
-  margin-left: var(--pf-v5-global--spacer--xs);
+  margin-left: var(--pf-v6-global--spacer--xs);
 }

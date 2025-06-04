@@ -1,6 +1,6 @@
 export default class OperatorsForm {
   static get body() {
-    return cy.get('.pf-v5-c-wizard__main-body');
+    return cy.get('.pf-v6-c-wizard__main-body');
   }
 
   static get mceOperatorControl() {
@@ -19,7 +19,7 @@ class MceOperatorControl {
   }
 
   static findPopoverButton() {
-    return MceOperatorControl.body.find('.pf-v5-c-button').findByRole('img', {
+    return MceOperatorControl.body.find('.pf-v6-c-button').findByRole('img', {
       hidden: true,
     });
   }
@@ -42,21 +42,17 @@ class MceOperatorControl {
 /** @private */
 class MtvOperatorControl {
   static get body() {
-    return OperatorsForm.body.find(
-      '#form-control__form-input-mtv-field',
-    );
+    return OperatorsForm.body.find('#form-control__form-input-mtv-field');
   }
 
   static findPopoverButton() {
-    return MtvOperatorControl.body.find('.pf-v5-c-button').findByRole('img', {
+    return MtvOperatorControl.body.find('.pf-v6-c-button').findByRole('img', {
       hidden: true,
     });
   }
 
   static findPopoverContent() {
-    return MtvOperatorControl.body
-      .scrollIntoView()
-      .get('#popover-mtv-body');
+    return MtvOperatorControl.body.scrollIntoView().get('#popover-mtv-body');
   }
 
   static findLabel() {

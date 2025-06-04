@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   Grid,
-  TextContent,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   PageSection,
-  PageSectionVariants,
   Button,
   ButtonVariant,
 } from '@patternfly/react-core';
@@ -93,7 +91,7 @@ const Day2StaticIP = () => {
 
   if (hasLoadError) {
     return (
-      <PageSection variant={PageSectionVariants.light} isFilled>
+      <PageSection hasBodyWrapper={false}  isFilled>
         <ErrorState
           title="Cannot load the Static IP configuration for this cluster"
           content="For non-multi-architecture clusters, make sure you select the Day1 cpu architecture"
@@ -165,13 +163,13 @@ const Day2StaticIP = () => {
       }
     >
       <Grid hasGutter>
-        <TextContent>
-          <Text component={TextVariants.h2}>Static network configurations</Text>
-          <Text component={TextVariants.small}>
+        <Content>
+          <Content component={ContentVariants.h2}>Static network configurations</Content>
+          <Content component={ContentVariants.small}>
             Network configuration can be done using either the form view or YAML view.
             Configurations done in this step are for discovering hosts.
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
 
         <StaticIpViewRadioGroup
           initialView={initialStaticIpInfo.view}

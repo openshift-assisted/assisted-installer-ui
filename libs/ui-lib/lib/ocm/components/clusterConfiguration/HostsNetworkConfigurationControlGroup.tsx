@@ -51,7 +51,7 @@ export const HostsNetworkConfigurationControlGroup = ({
         value={HostsNetworkConfigurationType.DHCP}
         label="DHCP only"
         tooltipProps={tooltipProps}
-        className="pf-v5-u-mr-md"
+        className="pf-v6-u-mr-md"
       />
       <RadioFieldWithTooltip
         name={GROUP_NAME}

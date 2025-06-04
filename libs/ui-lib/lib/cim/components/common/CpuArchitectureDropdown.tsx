@@ -86,7 +86,7 @@ const CpuArchitectureDropdown = ({
             id={fieldId}
             ref={toggleRef}
             onClick={() => setCpuArchOpen(!cpuArchOpen)}
-            className="pf-v5-u-w-100"
+            className="pf-v6-u-w-100"
           >
             {value ? architectureData[value].label : t('ai:CPU architecture')}
           </MenuToggle>

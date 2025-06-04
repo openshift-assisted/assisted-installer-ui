@@ -1,5 +1,13 @@
 import * as React from 'react';
-import { Modal, Button, ModalVariant, ButtonProps, ModalProps } from '@patternfly/react-core';
+import {
+	Button,
+	ButtonProps
+} from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant,
+	ModalProps
+} from '@patternfly/react-core/deprecated';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ConfirmationModalProps = {

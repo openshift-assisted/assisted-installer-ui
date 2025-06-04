@@ -166,7 +166,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
           <FormGroup
             fieldId="network-type"
             label={t('ai:Network type')}
-            labelIcon={
+            labelHelp={
               <PopoverIcon
                 noVerticalAlign
                 bodyContent={

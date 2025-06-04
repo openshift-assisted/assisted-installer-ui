@@ -2,7 +2,13 @@ import * as React from 'react';
 import { getFailingResourceConditions } from '../helpers';
 import { InfraEnvK8sResource } from '../../types';
 import { SingleResourceAlerts } from '../common/ResourceAlerts';
-import { Alert, AlertVariant, ModalBoxBody } from '@patternfly/react-core';
+import {
+	Alert,
+	AlertVariant
+} from '@patternfly/react-core';
+import {
+	ModalBoxBody
+} from '@patternfly/react-core/deprecated';
 import { getInfraEnvDocs } from '../common/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 

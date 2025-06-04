@@ -41,7 +41,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       fieldId={fieldId}
       label={label}
       isRequired={isRequired}
-      labelIcon={labelIcon}
+      labelHelp={labelIcon}
       className={groupClassName}
       id={`form-control__${fieldId}`}
     >

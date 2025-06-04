@@ -1,12 +1,8 @@
 import React, { ReactChild, ReactNode } from 'react';
 import {
-  TextContent,
-  TextList,
-  TextListVariants,
-  TextListItem,
-  TextListItemVariants,
-  Text,
-  TextProps,
+  Content,
+  ContentVariants,
+  ContentProps,
 } from '@patternfly/react-core';
 import { WithTestID } from '../../types';
 
@@ -16,7 +12,7 @@ import { RenderIf } from './RenderIf';
 export type DetailListProps = {
   children: ReactChild | (ReactChild | undefined)[];
   title?: string;
-  titleComponent?: TextProps['component'];
+  titleComponent?: ContentProps['component'];
 };
 
 export type DetailItemList = {
@@ -37,12 +33,12 @@ export const DetailList: React.FC<DetailListProps> = ({
   title,
   titleComponent = 'h2',
 }) => (
-  <TextContent>
-    {title && <Text component={titleComponent}>{title}</Text>}
-    <TextList component={TextListVariants.dl} className="detail-list">
+  <Content>
+    {title && <Content component={titleComponent}>{title}</Content>}
+    <Content component={ContentVariants.dl} className="detail-list">
       {children}
-    </TextList>
-  </TextContent>
+    </Content>
+  </Content>
 );
 
 const hasDetailItemList = (data: DetailItemProps['value']): data is DetailItemList => {
@@ -60,42 +56,42 @@ export const DetailItem: React.FC<DetailItemProps & WithTestID> = ({
   isHidden ? null : (
     <>
       <RenderIf condition={title !== undefined}>
-        <TextListItem
-          component={TextListItemVariants.dt}
+        <Content
+          component={ContentVariants.dt}
           id={idPrefix ? `${idPrefix}-title` : undefined}
           data-testid={testId ? `${testId}-title` : undefined}
         >
           {title}
-        </TextListItem>
+        </Content>
       </RenderIf>
-      <TextListItem
-        component={TextListItemVariants.dd}
+      <Content
+        component={ContentVariants.dd}
         id={idPrefix ? `${idPrefix}-value` : undefined}
         data-testid={testId ? `${testId}-value` : undefined}
         className={classNameValue}
       >
         {hasDetailItemList(value) ? (
-          <TextList component={TextListVariants.dl}>
+          <Content component={ContentVariants.dl}>
             {value.map((item, idx) => [
-              <TextListItem
+              <Content
                 data-testid={testId ? `${testId}-title-${idx}` : undefined}
                 key={item.title}
-                component={TextListItemVariants.dt}
+                component={ContentVariants.dt}
               >
                 {item.title}
-              </TextListItem>,
-              <TextListItem
+              </Content>,
+              <Content
                 data-testid={testId ? `${testId}-value-${idx}` : undefined}
                 key={`dd-${item.title}`}
-                component={TextListItemVariants.dd}
+                component={ContentVariants.dd}
               >
                 {item.value}
-              </TextListItem>,
+              </Content>,
             ])}
-          </TextList>
+          </Content>
         ) : (
           value
         )}
-      </TextListItem>
+      </Content>
     </>
   );

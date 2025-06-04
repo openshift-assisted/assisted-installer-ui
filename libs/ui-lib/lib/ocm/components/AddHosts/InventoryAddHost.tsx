@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextContent, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
+import { Content, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
 import { CpuArchitecture } from '../../../common';
@@ -17,14 +17,14 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        <TextContent>
-          <Text component="p">
+        <Content>
+          <Content component="p">
             <Day2WizardContextProvider>
               <Day2DiscoveryImageModalButton cluster={cluster} />
               <Day2Wizard />
             </Day2WizardContextProvider>
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       </StackItem>
       <StackItem>
         <InformationAndAlerts cluster={cluster} />

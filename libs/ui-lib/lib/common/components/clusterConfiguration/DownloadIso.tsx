@@ -1,16 +1,18 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
 import {
-  Alert,
-  Button,
-  ButtonVariant,
-  ClipboardCopy,
-  clipboardCopyFunc,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Stack,
-  StackItem,
+	Alert,
+	Button,
+	ButtonVariant,
+	ClipboardCopy,
+	clipboardCopyFunc,
+	Stack,
+	StackItem
 } from '@patternfly/react-core';
+import {
+	ModalBoxBody,
+	ModalBoxFooter
+} from '@patternfly/react-core/deprecated';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
 import { StaticIPInfo } from './DiscoveryImageConfigForm';

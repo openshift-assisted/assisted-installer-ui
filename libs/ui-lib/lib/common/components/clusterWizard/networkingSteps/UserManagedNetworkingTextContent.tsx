@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, Text, TextContent } from '@patternfly/react-core';
+import { List, ListItem, Content,  } from '@patternfly/react-core';
 import { RenderIf, ExternalLink } from '../../ui';
 import { getOpenShiftNetworkingDocsLink } from '../../../config';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
@@ -16,8 +16,8 @@ export const UserManagedNetworkingTextContent = ({
 }: UserManagedNetworkingTextContentProps) => {
   const { t } = useTranslation();
   return (
-    <TextContent>
-      <Text component={'p'}>
+    <Content>
+      <Content component={'p'}>
         <Trans t={t}>
           ai:Please refer to the{' '}
           <ExternalLink href={getOpenShiftNetworkingDocsLink(docVersion)}>
@@ -25,7 +25,7 @@ export const UserManagedNetworkingTextContent = ({
           </ExternalLink>{' '}
           to configure your cluster's networking, including:
         </Trans>
-      </Text>
+      </Content>
       <List>
         <ListItem>{t('ai:DHCP or static IP Addresses')}</ListItem>
         <RenderIf condition={shouldDisplayLoadBalancersBullet}>
@@ -34,6 +34,6 @@ export const UserManagedNetworkingTextContent = ({
         <ListItem>{t('ai:Network ports')}</ListItem>
         <ListItem>{t('ai:DNS')}</ListItem>
       </List>
-    </TextContent>
+    </Content>
   );
 };

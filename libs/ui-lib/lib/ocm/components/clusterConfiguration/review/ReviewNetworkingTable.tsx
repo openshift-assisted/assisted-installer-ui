@@ -176,7 +176,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       </Table>
 
       <br />
-      <Title className="pf-v5-u-color-400" headingLevel="h4">
+      <Title className="pf-v6-u-color-400" headingLevel="h4">
         Advanced networking settings
       </Title>
 

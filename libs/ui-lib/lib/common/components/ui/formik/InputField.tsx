@@ -51,7 +51,7 @@ const InputField: React.FC<
         fieldId={fieldId}
         label={label}
         isRequired={isRequired}
-        labelIcon={labelIcon}
+        labelHelp={labelIcon}
         labelInfo={labelInfo}
       >
         {description && (

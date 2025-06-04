@@ -4,9 +4,8 @@ import {
   Alert,
   AlertVariant,
   AlertActionLink,
-  TextContent,
-  Text,
-} from '@patternfly/react-core';
+  Content,
+  } from '@patternfly/react-core';
 import { getReportIssueLink, canDownloadClusterLogs, useAlerts, toSentence } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -58,14 +57,14 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
         }
         isInline
       >
-        <TextContent>
-          <Text component="p">
+        <Content>
+          <Content component="p">
             {toSentence(cluster.statusInfo)}
             <br />
             Reset the installation process to return to the configuration and try again. Some hosts
             may need to be re-registered by rebooting into the Discovery ISO.
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       </Alert>
     </GridItem>
   );

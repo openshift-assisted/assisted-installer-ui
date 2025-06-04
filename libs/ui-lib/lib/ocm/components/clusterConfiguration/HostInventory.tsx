@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Text,
-  TextContent,
+  Content,
   Button,
   Stack,
   StackItem,
@@ -45,15 +44,15 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
       </StackItem>
       <StackItem>
         {!isViewerMode && !isSingleClusterFeatureEnabled && (
-          <TextContent>
-            <Text component="p">
+          <Content>
+            <Content component="p">
               <DiscoveryImageModalButton
                 ButtonComponent={Button}
                 cluster={cluster}
                 idPrefix="host-inventory"
               />
-            </Text>
-          </TextContent>
+            </Content>
+          </Content>
         )}
       </StackItem>
       <StackItem>
@@ -83,9 +82,9 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <InformationAndAlerts cluster={cluster} />
       </StackItem>
       <StackItem>
-        <TextContent>
-          <Text component="h3">Host Inventory</Text>
-        </TextContent>
+        <Content>
+          <Content component="h3">Host Inventory</Content>
+        </Content>
       </StackItem>
       <StackItem>
         <HostsDiscoveryTable cluster={cluster} />

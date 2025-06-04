@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Stack,
   StackItem,
-  TextContent,
-  Text,
+  Content,
   ButtonVariant,
   GridItem,
   Grid,
@@ -62,9 +61,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       <StackItem>
         <Grid hasGutter>
           <GridItem>
-            <TextContent>
-              <Text component="h2">Installation progress</Text>
-            </TextContent>
+            <Content>
+              <Content component="h2">Installation progress</Content>
+            </Content>
           </GridItem>
           <GridItem span={6}>
             <ClusterProgress

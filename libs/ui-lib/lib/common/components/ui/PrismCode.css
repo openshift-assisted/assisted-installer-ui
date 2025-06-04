@@ -1,4 +1,4 @@
 pre.prism-code {
-  padding: var(--pf-v5-global--spacer--sm) var(--pf-v5-global--spacer--md);
+  padding: var(--pf-v6-global--spacer--sm) var(--pf-v6-global--spacer--md);
   overflow-x: auto;
 }
