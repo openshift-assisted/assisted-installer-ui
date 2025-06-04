@@ -1,13 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  Button,
-  Modal,
-  ModalVariant,
-  ButtonVariant,
-  Text,
-  TextContent,
+	Button,
+	ButtonVariant,
+	Content,
+	
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -49,11 +51,11 @@ const CancelInstallationModal: React.FC = () => {
       return <ErrorState title={error.title} content={error.message} />;
     }
     return (
-      <TextContent>
-        <Text component="p">
+      <Content>
+        <Content component="p">
           This will abort cluster installation. Are you sure you want to proceed?
-        </Text>
-      </TextContent>
+        </Content>
+      </Content>
     );
   };
 

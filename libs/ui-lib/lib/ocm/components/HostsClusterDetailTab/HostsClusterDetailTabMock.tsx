@@ -5,9 +5,7 @@ import {
   EmptyStateBody,
   Grid,
   PageSection,
-  PageSectionVariants,
-  EmptyStateHeader,
-} from '@patternfly/react-core';
+  } from '@patternfly/react-core';
 import {
   OcmCpuArchitecture,
   STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
@@ -66,9 +64,8 @@ export const HostsClusterDetailTabMock = () => {
 
   if (!isMocked) {
     return (
-      <PageSection variant={PageSectionVariants.light} isFilled>
-        <EmptyState>
-          <EmptyStateHeader titleText="Mocked environment not detected" headingLevel="h4" />
+      <PageSection hasBodyWrapper={false}  isFilled>
+        <EmptyState  headingLevel="h4"   titleText="Mocked environment not detected">
           <EmptyStateBody>You can only use this page on a mocked environment</EmptyStateBody>
         </EmptyState>
       </PageSection>
@@ -76,7 +73,7 @@ export const HostsClusterDetailTabMock = () => {
   }
 
   return (
-    <PageSection variant={PageSectionVariants.light} isFilled>
+    <PageSection hasBodyWrapper={false}  isFilled>
       {tabShown ? (
         <OpenShiftVersionsContextProvider>
           <HostsClusterDetailTab

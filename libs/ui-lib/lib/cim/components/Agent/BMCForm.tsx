@@ -1,21 +1,23 @@
 import * as React from 'react';
 import * as yaml from 'js-yaml';
 import {
-  Alert,
-  AlertActionCloseButton,
-  AlertVariant,
-  Button,
-  ButtonVariant,
-  Form,
-  FormGroup,
-  Grid,
-  GridItem,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Text,
-  TextInputTypes,
-  TextVariants,
+	Alert,
+	AlertActionCloseButton,
+	AlertVariant,
+	Button,
+	ButtonVariant,
+	Form,
+	FormGroup,
+	Grid,
+	GridItem,
+	Content,
+	TextInputTypes,
+	ContentVariants
 } from '@patternfly/react-core';
+import {
+	ModalBoxBody,
+	ModalBoxFooter
+} from '@patternfly/react-core/deprecated';
 import {
   Formik,
   FormikProps,
@@ -81,10 +83,10 @@ const MacMapping = () => {
         render={({ push, remove }) => (
           <Grid hasGutter>
             <GridItem span={5}>
-              <Text component={TextVariants.small}>MAC address</Text>
+              <Content component={ContentVariants.small}>MAC address</Content>
             </GridItem>
             <GridItem span={5}>
-              <Text component={TextVariants.small}>NIC</Text>
+              <Content component={ContentVariants.small}>NIC</Content>
             </GridItem>
             {field.value.map((mac, index) => {
               const macField = `macMapping[${index}].macAddress`;

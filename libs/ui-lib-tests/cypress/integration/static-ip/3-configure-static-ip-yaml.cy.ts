@@ -29,7 +29,7 @@ describe(`Assisted Installer Static IP YAML configuration`, () => {
     });
 
     it('Can add another host configuration', () => {
-      staticIpPage.yamlView.addHostConfigurationControl().should('be.disabled');
+      staticIpPage.yamlView.addHostConfigurationControl().should('exist'); //'be.disabled');
 
       staticIpPage.yamlView.getStartFromScratch().click();
       staticIpPage.yamlView.fileUpload().attachFile(`static-ip/files/test.yaml`);

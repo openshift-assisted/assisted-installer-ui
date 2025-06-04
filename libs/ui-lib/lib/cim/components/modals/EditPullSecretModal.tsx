@@ -2,16 +2,18 @@ import * as React from 'react';
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
 import {
-  Alert,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  ModalVariant,
-  Stack,
-  StackItem,
+	Alert,
+	Button,
+	ButtonVariant,
+	Stack,
+	StackItem
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalBoxBody,
+	ModalBoxFooter,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { Formik, useFormikContext } from 'formik';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { LoadingState, PullSecretField, pullSecretValidationSchema } from '../../../common';

@@ -17,7 +17,7 @@ export const clusterDetailsPage = {
     return cy.get(`${Cypress.env('openshiftVersionFieldId')}-dropdown`);
   },
   getSelectedOpenShiftVersion: () => {
-    return clusterDetailsPage.getOpenshiftVersionField().find('.pf-v5-c-menu-toggle__text');
+    return clusterDetailsPage.getOpenshiftVersionField().find('.pf-v6-c-menu-toggle__text');
   },
   inputOpenshiftVersion: (version = Cypress.env('OPENSHIFT_VERSION')) => {
     clusterDetailsPage.openOpenshiftVersionDropdown();
@@ -71,7 +71,7 @@ export const clusterDetailsPage = {
     return cy.get(`${Cypress.env('cpuArchitectureFieldId')}-dropdown`);
   },
   getSelectedCpuArchitecture: () => {
-    return clusterDetailsPage.getCpuArchitectureField().find('.pf-v5-c-menu-toggle__text');
+    return clusterDetailsPage.getCpuArchitectureField().find('.pf-v6-c-menu-toggle__text');
   },
   selectCpuArchitecture: (cpuArchitecture) => {
     clusterDetailsPage.openCpuArchitectureDropdown();
@@ -108,7 +108,7 @@ export const clusterDetailsPage = {
       });
   },
   enableStaticNetworking: () => {
-    cy.get(`.pf-v5-c-radio__label:contains(${Cypress.env('enableStaticIpRadioButtonText')})`)
+    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.env('enableStaticIpRadioButtonText')})`)
       .scrollIntoView()
       .click({ force: true });
   },
@@ -125,7 +125,7 @@ export const clusterDetailsPage = {
     for (let i = 0; i < childNums.length; i++) {
       cy.get(`[id^=popover-pf-] > ul > :nth-child(${childNums[i]})`).should(
         'have.class',
-        'pf-v5-c-helper-text__item pf-m-error pf-m-dynamic',
+        'pf-v6-c-helper-text__item pf-m-error pf-m-dynamic',
       );
     }
   },
@@ -142,7 +142,11 @@ export const clusterDetailsPage = {
     return cy.get('#form-static-platform-field');
   },
   clickClusterDetailsBody: () => {
+    // <<<<<<< HEAD DJN TODO:
     cy.get('#wizard-cluster-details__form').click();
+    // =======
+    //     cy.get('.pf-v6-l-grid').click();
+    // >>>>>>> 82e76326 (pf6 deps and codemods updates)
   },
   validateInputDnsDomainFieldHelper: (msg) => {
     cy.get(Cypress.env('baseDnsDomainFieldHelperErrorId')).should('contain', msg);
@@ -163,7 +167,7 @@ export const clusterDetailsPage = {
     return cy.get(`${Cypress.env('controlPlaneNodesFieldId')}-dropdown`);
   },
   getSelectedControlPlaneNode: () => {
-    return clusterDetailsPage.getControlPlaneNodesField().find('.pf-v5-c-menu-toggle__text');
+    return clusterDetailsPage.getControlPlaneNodesField().find('.pf-v6-c-menu-toggle__text');
   },
   selectControlPlaneNodeOption: (controlPlaneCount) => {
     clusterDetailsPage.openControlPlaneNodesDropdown();

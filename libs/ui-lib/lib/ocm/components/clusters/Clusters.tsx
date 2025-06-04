@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Button,
   ButtonVariant,
-  PageSectionVariants,
-  TextContent,
-  Text,
+  Content,
   PageSection,
 } from '@patternfly/react-core';
 import { AddCircleOIcon } from '@patternfly/react-icons/dist/js/icons/add-circle-o-icon';
@@ -69,13 +67,13 @@ const Clusters = () => {
   switch (uiState.current) {
     case LOADING:
       return (
-        <PageSection variant={PageSectionVariants.light} isFilled>
+        <PageSection hasBodyWrapper={false}  isFilled>
           <LoadingState />
         </PageSection>
       );
     case EMPTY:
       return (
-        <PageSection variant={PageSectionVariants.light} isFilled>
+        <PageSection hasBodyWrapper={false}  isFilled>
           <EmptyState
             icon={AddCircleOIcon}
             title="Create new assisted cluster"
@@ -96,7 +94,7 @@ const Clusters = () => {
     default:
       if (clusterRows.length === 0 && uiState.current === POLLING_ERROR) {
         return (
-          <PageSection variant={PageSectionVariants.light} isFilled>
+          <PageSection hasBodyWrapper={false}  isFilled>
             <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
           </PageSection>
         );
@@ -104,12 +102,12 @@ const Clusters = () => {
         return (
           <>
             <ClusterBreadcrumbs />
-            <PageSection variant={PageSectionVariants.light}>
-              <TextContent>
-                <Text component="h1">Assisted Clusters</Text>
-              </TextContent>
+            <PageSection hasBodyWrapper={false} >
+              <Content>
+                <Content component="h1">Assisted Clusters</Content>
+              </Content>
             </PageSection>
-            <PageSection variant={PageSectionVariants.light} isFilled>
+            <PageSection hasBodyWrapper={false}  isFilled>
               <Alerts />
               <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
             </PageSection>

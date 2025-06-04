@@ -1,6 +1,6 @@
 .ai-bundle-card {
-  --pf-v5-c-card--m-selectable--m-selected--BackgroundColor: var(
-    --pf-v5-global--BackgroundColor--100
+  --pf-v6-c-card--m-selectable--m-selected--BackgroundColor: var(
+    --pf-v6-global--BackgroundColor--100
   );
-  --pf-v5-c-card--m-selectable--hover--BackgroundColor: var(--pf-v5-global--BackgroundColor--100);
+  --pf-v6-c-card--m-selectable--hover--BackgroundColor: var(--pf-v6-global--BackgroundColor--100);
 }

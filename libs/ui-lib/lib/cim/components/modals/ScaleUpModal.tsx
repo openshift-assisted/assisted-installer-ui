@@ -1,17 +1,19 @@
 import React from 'react';
 import * as Yup from 'yup';
 import {
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Button,
-  ButtonVariant,
-  Alert,
-  AlertVariant,
-  AlertActionCloseButton,
-  Stack,
-  StackItem,
+	Button,
+	ButtonVariant,
+	Alert,
+	AlertVariant,
+	AlertActionCloseButton,
+	Stack,
+	StackItem
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalBoxBody,
+	ModalBoxFooter
+} from '@patternfly/react-core/deprecated';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';

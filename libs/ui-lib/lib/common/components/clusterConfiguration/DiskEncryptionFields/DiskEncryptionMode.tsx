@@ -5,9 +5,8 @@ import {
   FlexItem,
   Stack,
   StackItem,
-  Text,
-  TextVariants,
-  TextContent,
+  Content,
+  ContentVariants,
   TooltipProps,
   Tooltip,
 } from '@patternfly/react-core';
@@ -117,9 +116,9 @@ export const DiskEncryptionMode = ({
         <Stack>
           &nbsp;
           <StackItem>
-            <TextContent>
-              <Text component={TextVariants.h6}>{t('ai:Tang servers')}</Text>
-            </TextContent>
+            <Content>
+              <Content component={ContentVariants.h6}>{t('ai:Tang servers')}</Content>
+            </Content>
           </StackItem>
           &nbsp;
           <TangServers isDisabled={isDisabled} tooltipProps={tooltipProps} />

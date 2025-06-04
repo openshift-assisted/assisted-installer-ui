@@ -1,14 +1,16 @@
 import {
-  Alert,
-  Button,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  ModalVariant,
-  Spinner,
-  Stack,
-  StackItem,
+	Alert,
+	Button,
+	Spinner,
+	Stack,
+	StackItem
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalBoxBody,
+	ModalBoxFooter,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { Formik, FormikConfig } from 'formik';
 import * as React from 'react';
 import { AgentK8sResource } from '../../../types';

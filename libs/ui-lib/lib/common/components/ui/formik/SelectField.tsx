@@ -38,7 +38,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       fieldId={fieldId}
       label={label}
       isRequired={isRequired}
-      labelIcon={labelIcon}
+      labelHelp={labelIcon}
       id={`form-control__${fieldId}`}
     >
       <FormSelect

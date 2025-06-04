@@ -30,7 +30,7 @@ export class EventsModal {
   }
 
   get contents() {
-    return this.body.find('.pf-v5-c-table__tbody tr');
+    return this.body.find('.pf-v6-c-table__tbody tr');
   }
 
   get hostFilter() {
@@ -52,7 +52,7 @@ export class EventsModal {
 
 class PaginationControl {
   constructor(parentAlias: string) {
-    cy.get(parentAlias).find('.pf-v5-c-pagination').as(PaginationControl.name);
+    cy.get(parentAlias).find('.pf-v6-c-pagination').as(PaginationControl.name);
   }
 
   static get alias() {
@@ -80,7 +80,7 @@ class PaginationControl {
   }
 
   get menuText() {
-    return this.body.find('.pf-v5-c-menu-toggle__text');
+    return this.body.find('.pf-v6-c-menu-toggle__text');
   }
 
   get menu() {
@@ -88,13 +88,14 @@ class PaginationControl {
   }
 
   perPageOption(num: number) {
-    return this.body.find(`[data-action=per-page-${num}]`);
+    // PF6 renders dropdown menus at the body
+    return cy.get('body').find(`[data-action=per-page-${num}]`);
   }
 }
 
 class HostFilterDropdown {
   constructor(parentAlias: string) {
-    cy.get(parentAlias)
+    cy.get('body')
       .find('#cluster-events-hosts-dropdown-button')
       .parent()
       .as(HostFilterDropdown.name);
@@ -113,7 +114,8 @@ class HostFilterDropdown {
   }
 
   option(id: string) {
-    return this.body.find(`#checkbox-${id}`);
+    // PF6 renders dropdown menus at the body
+    return cy.get('body').find(`#checkbox-${id}`);
   }
 }
 
@@ -138,6 +140,7 @@ class SeverityFilterDropdown {
   }
 
   option(severity: string) {
-    return this.body.find(`[data-testid=${severity}-filter-option]`);
+    // PF6 renders dropdown menus at the body
+    return cy.get('body').find(`[data-testid=${severity}-filter-option]`);
   }
 }

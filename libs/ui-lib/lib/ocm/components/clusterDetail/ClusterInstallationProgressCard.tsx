@@ -36,7 +36,7 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
           Installation progress
         </Title>
         {!isCardExpanded && (
-          <div className="pf-v5-u-ml-md">
+          <div className="pf-v6-u-ml-md">
             <ClusterStatusIcon status={cluster.status} />
           </div>
         )}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Content,  } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -148,9 +148,9 @@ const NetworkConfigurationForm: React.FC<{
             </Grid>
           </GridItem>
           <GridItem>
-            <TextContent>
-              <Text component="h2">Host inventory</Text>
-            </TextContent>
+            <Content>
+              <Content component="h2">Host inventory</Content>
+            </Content>
             <NetworkConfigurationTable cluster={cluster} />
           </GridItem>
         </Grid>

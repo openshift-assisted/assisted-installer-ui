@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridItem, Text, TextContent } from '@patternfly/react-core';
+import { GridItem, Content,  } from '@patternfly/react-core';
 import {
   DetailItem,
   DetailList,
@@ -78,9 +78,9 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
     <>
       {!externalMode && (
         <GridItem>
-          <TextContent>
-            <Text component="h2">{t('ai:Cluster Details')}</Text>
-          </TextContent>
+          <Content>
+            <Content component="h2">{t('ai:Cluster Details')}</Content>
+          </Content>
         </GridItem>
       )}
       <GridItem md={6} data-testid="cluster-details">

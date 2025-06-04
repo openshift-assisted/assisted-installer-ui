@@ -1,5 +1,12 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import {
+	Button,
+	ButtonVariant
+} from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { pluralize } from 'humanize-plus';
 import {
   AI_CISCO_INTERSIGHT_TAG,

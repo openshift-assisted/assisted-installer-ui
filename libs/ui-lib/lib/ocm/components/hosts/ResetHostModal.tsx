@@ -1,5 +1,12 @@
 import React from 'react';
-import { Modal, ModalVariant, Button, ButtonVariant } from '@patternfly/react-core';
+import {
+	Button,
+	ButtonVariant
+} from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 
 type ResetHostModalProps = {
   hostname?: string;

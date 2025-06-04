@@ -15,14 +15,14 @@ export const ClusterWizardStep = ({
   children,
 }: React.PropsWithChildren<ClusterWizardStepProps>) => {
   return (
-    <div className={css('pf-v5-c-wizard__outer-wrap', 'cluster-wizard-step')}>
-      <div className={css('pf-v5-c-wizard__inner-wrap')}>
+    <div className={css('pf-v6-c-wizard__outer-wrap', 'cluster-wizard-step')}>
+      <div className={css('pf-v6-c-wizard__inner-wrap')}>
         {navigation}
         <WizardBody aria-labelledby="step-id" hasNoPadding={false}>
           {children}
         </WizardBody>
       </div>
-      {footer && <div className="pf-v5-c-wizard__footer cluster-wizard-step__footer">{footer}</div>}
+      {footer && <div className="pf-v6-c-wizard__footer cluster-wizard-step__footer">{footer}</div>}
     </div>
   );
 };

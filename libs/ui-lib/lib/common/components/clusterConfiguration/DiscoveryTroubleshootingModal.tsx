@@ -1,18 +1,20 @@
 import React from 'react';
 import {
-  Button,
-  Modal,
-  ButtonVariant,
-  ModalVariant,
-  Text,
-  TextVariants,
-  List,
-  ListComponent,
-  ListItem,
-  OrderType,
-  HelperText,
-  HelperTextItem,
+	Button,
+	ButtonVariant,
+	Content,
+	ContentVariants,
+	List,
+	ListComponent,
+	ListItem,
+	OrderType,
+	HelperText,
+	HelperTextItem
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -38,7 +40,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
   return (
     <List component={ListComponent.ol} type={OrderType.number}>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:The host machine is powered on')}</Text>
+        <Content component={ContentVariants.p}>{t('ai:The host machine is powered on')}</Content>
         <HelperText>
           <HelperTextItem variant="indeterminate">
             {t(
@@ -48,19 +50,19 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </HelperText>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component={ContentVariants.p}>
           {t('ai:If you used DHCP networking, verify that your DHCP server is enabled')}
-        </Text>
+        </Content>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component={ContentVariants.p}>
           {t(
             'ai:If you used static IP, bridges, and bonds networking, verify that your configurations are correct',
           )}
-        </Text>
+        </Content>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:SSH into your machine')}</Text>
+        <Content component={ContentVariants.p}>{t('ai:SSH into your machine')}</Content>
         <HelperText>
           <HelperTextItem variant="indeterminate">
             {t(
@@ -78,9 +80,9 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </HelperText>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component={ContentVariants.p}>
           {t('ai:Unable to SSH into your hosts through the network?')}
-        </Text>
+        </Content>
         <HelperText>
           <HelperTextItem variant="indeterminate">
             {t(
@@ -110,9 +112,9 @@ export const DiscoveryTroubleshootingModalContent = () => {
         />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component={ContentVariants.p}>
           {t('ai:The discovery agent is running with the correct parameters')}
-        </Text>
+        </Content>
         <PrismCode theme={SimpleAIPrismTheme} code={`ps -ef | grep agent`} />
         <HelperText>
           <HelperTextItem variant="indeterminate">
@@ -126,7 +128,7 @@ core        2362    2311  0 08:04 pts/0    00:00:00 grep --color=auto agent`}
         />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:The agent ran successfully')}</Text>
+        <Content component={ContentVariants.p}>{t('ai:The agent ran successfully')}</Content>
         <HelperText>
           <HelperTextItem variant="indeterminate">
             {t('ai:To verify that the agent ran successfully, check the logs:')}
@@ -162,7 +164,7 @@ Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         </HelperText>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:Check agent logs')}</Text>
+        <Content component={ContentVariants.p}>{t('ai:Check agent logs')}</Content>
         <HelperText>
           <HelperTextItem variant="indeterminate">
             {t('ai:To view detailed agent logs and communication use following command:')}
@@ -171,7 +173,7 @@ Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         <PrismCode theme={SimpleAIPrismTheme} code="sudo journalctl TAG=agent | less" />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:Check assisted-installer logs')}</Text>
+        <Content component={ContentVariants.p}>{t('ai:Check assisted-installer logs')}</Content>
         <PrismCode
           theme={SimpleAIPrismTheme}
           code={`sudo su
@@ -180,7 +182,7 @@ podman logs <container id>`}
         />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:Check bootkube logs')}</Text>
+        <Content component={ContentVariants.p}>{t('ai:Check bootkube logs')}</Content>
         <PrismCode theme={SimpleAIPrismTheme} code={`sudo journalctl -u bootkube`} />
       </ListItem>
     </List>

@@ -17,7 +17,8 @@ export class CpuArchitectureField {
   }
 
   static findDropdown() {
-    return cy.get(CpuArchitectureField.alias).find('#form-input-cpuArchitecture-field-dropdown');
+    // PF6 renders dropdown menus at the body
+    return cy.get('body').find('#form-input-cpuArchitecture-field-dropdown');
   }
 
   static selectCpuArchitecture(cpuArch: string) {

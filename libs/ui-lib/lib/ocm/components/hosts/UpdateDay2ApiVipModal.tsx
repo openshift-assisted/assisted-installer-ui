@@ -1,5 +1,8 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import UpdateDay2ApiVipForm, { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 
 type UpdateDay2ApiVipModalProps = {

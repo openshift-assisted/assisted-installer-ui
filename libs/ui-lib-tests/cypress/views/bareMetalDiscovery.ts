@@ -46,21 +46,21 @@ export const bareMetalDiscoveryPage = {
   },
   selectHostRowKebabAction: (rowIndex, actionItem) => {
     cy.get(
-      `[data-testid=host-row-${rowIndex}] > td.pf-v5-c-table__action > button[aria-label="Kebab toggle"]`,
+      `[data-testid=host-row-${rowIndex}] > td.pf-v6-c-table__action > button[aria-label="Kebab toggle"]`,
     )
       .scrollIntoView()
       .click({ force: true });
     cy.get('li').contains(actionItem).click({ force: true });
   },
   getHostTableMassActions: () => {
-    return cy.get('.pf-v5-c-toolbar.table-toolbar');
+    return cy.get('.pf-v6-c-toolbar.table-toolbar');
   },
   getHostRowSelectCheckbox: (hostIndex = 0) => {
-    return cy.get(`[data-testid=host-row-${hostIndex}]`).find('.pf-v5-c-check__input');
+    return cy.get(`[data-testid=host-row-${hostIndex}]`).find('.pf-v6-c-check__input');
   },
   validateIsReadOnlyHostMenu: () => {
     cy.get(
-      `[data-testid=host-row-0] > td.pf-v5-c-table__action > button[aria-label="Kebab toggle"]`,
+      `[data-testid=host-row-0] > td.pf-v6-c-table__action > button[aria-label="Kebab toggle"]`,
     )
       .scrollIntoView()
       .click({
@@ -70,11 +70,11 @@ export const bareMetalDiscoveryPage = {
     cy.get('li[role][id^=button-delete-host]').should('not.exist');
   },
   massRenameHosts: (prefix) => {
-    cy.get('.table-toolbar .pf-v5-c-menu-toggle__controls:first').click();
+    cy.get('.table-toolbar .pf-v6-c-menu-toggle__controls:first').click();
     cy.get('#select-all').click();
-    cy.get('.table-toolbar .pf-v5-c-menu-toggle__controls:last').click();
-    cy.get('.pf-v5-c-menu__content:last').within(() => {
-      cy.get('.pf-v5-c-menu__item-text')
+    cy.get('.table-toolbar .pf-v6-c-menu-toggle__controls:last').click();
+    cy.get('.pf-v6-c-menu__content:last').within(() => {
+      cy.get('.pf-v6-c-menu__item-text')
         .contains(Cypress.env('hostRowKebabMenuChangeHostnameText'))
         .click();
     });
@@ -92,47 +92,47 @@ export const bareMetalDiscoveryPage = {
     bareMetalDiscoveryPage.getHostNameInput().should('have.value', newHostName);
   },
   deleteHost: () => {
-    cy.get('.pf-v5-c-modal-box__footer').should('be.visible');
-    cy.get('.pf-v5-c-modal-box__footer').within(() => {
+    cy.get('.pf-v6-c-modal-box__footer').should('be.visible');
+    cy.get('.pf-v6-c-modal-box__footer').within(() => {
       cy.get(Cypress.env('deleteHostSubmit')).click();
     });
   },
   validateHostRowColumnValue: (hostRowIndex, columnDataTestId, value) => {
     cy.get(
-      `[data-testid=host-row-${hostRowIndex}] > [data-testid=${columnDataTestId}] > .pf-m-align-items-center > .pf-l-flex > .pf-v5-c-button`,
+      `[data-testid=host-row-${hostRowIndex}] > [data-testid=${columnDataTestId}] > .pf-m-align-items-center > .pf-l-flex > .pf-v6-c-button`,
     ).should('contain.text', value);
   },
   sortCpuAscending: () => {
     // first click will sort in Ascending order (lowest to highest)
-    cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-v5-c-table__button`).click();
+    cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button`).click();
     cy.get(
-      `${Cypress.env('colHeaderCpuCoresId')} > .pf-v5-c-table__button > div > span > svg > path`,
+      `${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button > div > span > svg > path`,
     )
       .invoke('attr', 'd')
       .should('contain.text', 'M88');
   },
   sortCpuDescending: () => {
     // second click will sort in Descending order (highest to lowest)
-    cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-v5-c-table__button`).click();
+    cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button`).click();
     cy.get(
-      `${Cypress.env('colHeaderCpuCoresId')} > .pf-v5-c-table__button > div > span > svg > path`,
+      `${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button > div > span > svg > path`,
     )
       .invoke('attr', 'd')
       .should('contain.text', 'M168');
   },
   clickSaveEditHostsForm: () => {
     cy.get('button[type=submit]').click();
-    cy.get('.pf-v5-c-popover__content').should('not.exist');
+    cy.get('.pf-v6-c-popover__content').should('not.exist');
   },
   clickCancelInFormFooter: () => {
-    cy.get('.pf-v5-c-modal-box__footer').within(() => {
+    cy.get('.pf-v6-c-modal-box__footer').within(() => {
       cy.get(`button:contains('Cancel')`).click();
     });
   },
   clickChangeHostnameErrorIcon: () => {
-    cy.get('.pf-v5-c-input-group > .pf-v5-c-button > svg > path').click();
+    cy.get('.pf-v6-c-input-group > .pf-v6-c-button > svg > path').click();
   },
   clickMainBody: () => {
-    cy.get('.pf-v5-c-wizard__main-body').click();
+    cy.get('.pf-v6-c-wizard__main-body').click();
   },
 };

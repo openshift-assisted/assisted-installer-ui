@@ -50,7 +50,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   };
 
   return (
-    <FormGroup fieldId={fieldId} isRequired={isRequired} labelIcon={labelIcon}>
+    <FormGroup fieldId={fieldId} isRequired={isRequired} labelHelp={labelIcon}>
       {tooltipProps ? (
         <Tooltip {...tooltipProps}>
           <Switch {...switchFields} />

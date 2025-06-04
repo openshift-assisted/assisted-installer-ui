@@ -1,15 +1,17 @@
 import React from 'react';
 import * as Yup from 'yup';
 import {
-  Button,
-  ButtonVariant,
-  ButtonType,
-  Form,
-  ModalBoxBody,
-  ModalBoxFooter,
-  AlertVariant,
-  Alert,
+	Button,
+	ButtonVariant,
+	ButtonType,
+	Form,
+	AlertVariant,
+	Alert
 } from '@patternfly/react-core';
+import {
+	ModalBoxBody,
+	ModalBoxFooter
+} from '@patternfly/react-core/deprecated';
 
 import { Formik } from 'formik';
 import { TFunction } from 'i18next';

@@ -214,7 +214,7 @@ export const OpenShiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
 
         <TextInputGroupUtilities>
           {!!inputValue && (
-            <Button
+            <Button icon={<TimesIcon aria-hidden />}
               variant="plain"
               onClick={() => {
                 setSelected('');
@@ -223,9 +223,7 @@ export const OpenShiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
                 textInputRef?.current?.focus();
               }}
               aria-label="Clear input value"
-            >
-              <TimesIcon aria-hidden />
-            </Button>
+             />
           )}
         </TextInputGroupUtilities>
       </TextInputGroup>

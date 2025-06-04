@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Button, ButtonVariant, FormGroup, Modal, ModalVariant } from '@patternfly/react-core';
+import {
+	Button,
+	ButtonVariant,
+	FormGroup
+} from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { OpenShiftSelectWithSearch } from './OpenShiftSelectWithSearch';
 import { HelperTextType } from './OpenShiftVersionDropdown';
 import { useFormikContext } from 'formik';

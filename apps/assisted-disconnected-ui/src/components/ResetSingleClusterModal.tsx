@@ -1,15 +1,16 @@
 import React from 'react';
 import {
-  Button,
-  Modal,
-  ModalVariant,
-  ButtonVariant,
-  Text,
-  TextContent,
-  Stack,
-  StackItem,
-  Alert,
+	Button,
+	ButtonVariant,
+	Content,
+	Stack,
+	StackItem,
+	Alert
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { useModalDialogsContext, ClustersService } from '@openshift-assisted/ui-lib/ocm';
 import {
   getApiErrorMessage,
@@ -80,13 +81,13 @@ const ResetSingleClusterModal: React.FC = () => {
     >
       <Stack hasGutter>
         <StackItem>
-          <TextContent>
-            <Text component="p">
+          <Content>
+            <Content component="p">
               {t('ai:This will remove all current configurations and will revert to the defaults.')}
-            </Text>
+            </Content>
 
-            <Text component="p">{t('ai:Are you sure you want to reset the cluster?')}</Text>
-          </TextContent>
+            <Content component="p">{t('ai:Are you sure you want to reset the cluster?')}</Content>
+          </Content>
         </StackItem>
         {error && (
           <StackItem>

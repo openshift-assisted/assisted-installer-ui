@@ -72,7 +72,7 @@ const CodeField = ({
       fieldId={fieldId}
       label={label}
       isRequired={isRequired}
-      labelIcon={labelIcon}
+      labelHelp={labelIcon}
       data-testid={dataTestid ? dataTestid : `${fieldId}-testid`}
     >
       {description && (

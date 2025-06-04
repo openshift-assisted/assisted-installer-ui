@@ -2,15 +2,16 @@
 // Once this issues is addressed in PatternFly, this component should be removed.
 
 import {
-  Chip,
-  ChipGroup,
+  Label,
+  LabelGroup,
   PickOptional,
-  ToolbarChip,
+  ToolbarLabel,
   ToolbarContentContext,
   ToolbarContext,
   ToolbarFilterProps,
   ToolbarItem,
 } from '@patternfly/react-core';
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -23,7 +24,7 @@ class CustomToolbarFilter extends React.Component<ToolbarFilterProps, ToolbarFil
   static contextType = ToolbarContext;
   context!: React.ContextType<typeof ToolbarContext>;
   static defaultProps: PickOptional<ToolbarFilterProps> = {
-    chips: [] as (string | ToolbarChip)[],
+    labels: [] as (string | ToolbarLabel)[],
     showToolbarItem: true,
   };
 
@@ -35,70 +36,78 @@ class CustomToolbarFilter extends React.Component<ToolbarFilterProps, ToolbarFil
   }
 
   componentDidMount() {
-    const { categoryName, chips } = this.props;
+    const { categoryName, labels } = this.props;
     this.context.updateNumberFilters(
       typeof categoryName !== 'string' && categoryName.hasOwnProperty('key')
         ? categoryName.key
         : categoryName.toString(),
-      chips ? chips.length : 0,
+      labels ? labels.length : 0,
     );
     this.setState({ isMounted: true });
   }
 
   componentDidUpdate() {
-    const { categoryName, chips } = this.props;
+    const { categoryName, labels } = this.props;
     this.context.updateNumberFilters(
       typeof categoryName !== 'string' && categoryName.hasOwnProperty('key')
         ? categoryName.key
         : categoryName.toString(),
-      chips ? chips.length : 0,
+      labels ? labels.length : 0,
     );
   }
 
   render() {
     const {
       children,
-      chips,
-      deleteChipGroup,
-      deleteChip,
-      chipGroupExpandedText,
-      chipGroupCollapsedText,
+      labels,
+      deleteLabelGroup,
+      deleteLabel,
+      labelGroupExpandedText,
+      labelGroupCollapsedText,
       categoryName,
       showToolbarItem,
       isExpanded,
-      expandableChipContainerRef,
+      expandableLabelContainerRef,
       ...props
     } = this.props;
-    const { isExpanded: managedIsExpanded, chipGroupContentRef } = this.context;
+    const { isExpanded: managedIsExpanded, labelGroupContentRef } = this.context;
     const _isExpanded = isExpanded !== undefined ? isExpanded : managedIsExpanded;
     const categoryKey =
       typeof categoryName !== 'string' && categoryName.hasOwnProperty('key')
         ? categoryName.key
         : categoryName.toString();
 
-    const chipGroup =
-      chips !== undefined && chips.length ? (
-        <ToolbarItem variant="chip-group">
-          <ChipGroup
+    const labelGroup =
+      labels !== undefined && labels.length ? (
+        <ToolbarItem variant="label-group">
+          <LabelGroup
             key={categoryKey}
             categoryName={typeof categoryName === 'string' ? categoryName : categoryName.name}
-            isClosable={deleteChipGroup !== undefined}
-            onClick={() => deleteChipGroup && deleteChipGroup(categoryName)}
-            collapsedText={chipGroupCollapsedText}
-            expandedText={chipGroupExpandedText}
+            isClosable={deleteLabelGroup !== undefined}
+            onClick={() => deleteLabelGroup && deleteLabelGroup(categoryName)}
+            collapsedText={labelGroupCollapsedText}
+            expandedText={labelGroupExpandedText}
           >
-            {chips.map((chip) =>
-              typeof chip === 'string' ? (
-                <Chip key={chip} onClick={() => deleteChip && deleteChip(categoryKey, chip)}>
-                  {chip}
-                </Chip>
+            {labels.map((label) =>
+              typeof label === 'string' ? (
+                <Label
+                  variant="outline"
+                  key={label}
+                  onClose={() => deleteLabel && deleteLabel(categoryKey, label)}
+                >
+                  {label}
+                </Label>
               ) : (
-                <Chip key={chip.key} onClick={() => deleteChip && deleteChip(categoryKey, chip)}>
-                  {chip.node}
-                </Chip>
+                <Label
+                  variant="outline"
+                  key={label.key}
+                  onClose={() => deleteLabel && deleteLabel(categoryKey, label)}
+                >
+                  {label.node}
+                </Label>
               ),
             )}
-          </ChipGroup>
+          </LabelGroup>
         </ToolbarItem>
       ) : null;
 
@@ -106,24 +115,24 @@ class CustomToolbarFilter extends React.Component<ToolbarFilterProps, ToolbarFil
       return (
         <React.Fragment>
           {showToolbarItem && <ToolbarItem {...props}>{children}</ToolbarItem>}
-          {chipGroupContentRef &&
-            chipGroupContentRef.current !== null &&
-            chipGroupContentRef.current.firstElementChild !== null &&
-            ReactDOM.createPortal(chipGroup, chipGroupContentRef.current.firstElementChild)}
+          {labelGroupContentRef &&
+            labelGroupContentRef.current !== null &&
+            labelGroupContentRef.current.firstElementChild !== null &&
+            ReactDOM.createPortal(labelGroup, labelGroupContentRef.current.firstElementChild)}
         </React.Fragment>
       );
     }
 
     return (
       <ToolbarContentContext.Consumer>
-        {({ chipContainerRef }) => (
+        {({ labelContainerRef }) => (
           <React.Fragment>
             {showToolbarItem && <ToolbarItem {...props}>{children}</ToolbarItem>}
-            {chipContainerRef.current &&
-              ReactDOM.createPortal(chipGroup, chipContainerRef.current as Element)}
-            {expandableChipContainerRef &&
-              expandableChipContainerRef.current &&
-              ReactDOM.createPortal(chipGroup, expandableChipContainerRef.current)}
+            {labelContainerRef.current &&
+              ReactDOM.createPortal(labelGroup, labelContainerRef.current as Element)}
+            {expandableLabelContainerRef &&
+              expandableLabelContainerRef.current &&
+              ReactDOM.createPortal(labelGroup, expandableLabelContainerRef.current)}
           </React.Fragment>
         )}
       </ToolbarContentContext.Consumer>

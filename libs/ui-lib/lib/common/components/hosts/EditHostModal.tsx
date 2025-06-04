@@ -1,5 +1,8 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import EditHostForm, { EditHostFormProps } from './EditHostForm';

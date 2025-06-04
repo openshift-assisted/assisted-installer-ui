@@ -44,7 +44,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
   const acceptedFiles = { 'application/x-ssh-key': ['.pub'] };
   const maxFileSize = 2048;
   return (
-    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelHelp={labelIcon}>
       {children}
       <FileUpload
         filenamePlaceholder={t('ai:Drag a file here or browse to upload')}

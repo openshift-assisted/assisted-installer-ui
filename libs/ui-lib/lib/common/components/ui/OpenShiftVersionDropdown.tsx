@@ -140,7 +140,7 @@ export const OpenShiftVersionDropdown = ({
   const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       id={fieldId}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
       ref={toggleRef}
       isFullWidth
       onClick={() => setOpen(!isOpen)}

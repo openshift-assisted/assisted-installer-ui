@@ -1,8 +1,7 @@
 import React from 'react';
 import {
-  TextContent,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   Popover,
   Alert,
   AlertVariant,
@@ -53,9 +52,9 @@ const diskColumns = (t: TFunction, showFormat: boolean) =>
   ].filter(Boolean) as { title: string | React.ReactNode }[];
 
 const SkipFormattingDisk = () => (
-  <TextContent>
-    <Text component={TextVariants.p}>This bootable disk will skip formatting</Text>
-  </TextContent>
+  <Content>
+    <Content component={ContentVariants.p}>This bootable disk will skip formatting</Content>
+  </Content>
 );
 
 const getDiskLimitation = (

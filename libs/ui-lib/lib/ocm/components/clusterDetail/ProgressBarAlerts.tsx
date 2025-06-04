@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertActionLink, Text, TextContent } from '@patternfly/react-core';
+import { Alert, AlertActionLink, Content,  } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
 import {
   RenderIf,
@@ -124,14 +124,14 @@ export const HostsInstallationFailed = ({
   } else {
     title = 'Initialization failed';
     message = (
-      <TextContent>
-        <Text component="p">
+      <Content>
+        <Content component="p">
           {toSentence(cluster.statusInfo)}
           <br />
           Reset the installation process to return to the configuration and try again. Some hosts
           may need to be re-registered by rebooting into the Discovery ISO.
-        </Text>
-      </TextContent>
+        </Content>
+      </Content>
     );
   }
 

@@ -1,13 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  Button,
-  Modal,
-  ModalVariant,
-  ButtonVariant,
-  Text,
-  TextContent,
+	Button,
+	ButtonVariant,
+	Content,
+	
 } from '@patternfly/react-core';
+import {
+	Modal,
+	ModalVariant
+} from '@patternfly/react-core/deprecated';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 import { getApiErrorMessage, handleApiError } from '../../../common/api';
@@ -70,26 +72,26 @@ const ResetClusterModal: React.FC = () => {
     }
 
     return (
-      <TextContent>
-        <Text component="p">
+      <Content>
+        <Content component="p">
           This will reset the installation and return to the cluster configuration. Some hosts may
           need to be re-registered by rebooting into the Discovery ISO.
-        </Text>
+        </Content>
 
-        <Text component="p">
+        <Content component="p">
           <strong>Download the installation logs</strong> to troubleshoot or report a bug.
           <br />
           Currently, {collectedLogsPercentage}% of the installation logs were collected and are
           ready for download.
-        </Text>
+        </Content>
 
-        <Text component="p">
+        <Content component="p">
           <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} /> Logs won't be
           available after the installation is reset.
-        </Text>
+        </Content>
 
-        <Text component="p">Are you sure you want to reset the cluster?</Text>
-      </TextContent>
+        <Content component="p">Are you sure you want to reset the cluster?</Content>
+      </Content>
     );
   };
 
