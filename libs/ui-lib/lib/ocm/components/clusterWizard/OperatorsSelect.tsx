@@ -24,10 +24,12 @@ const OperatorsSelect = ({
   cluster,
   bundles,
   preflightRequirements,
+  searchTerm = '',
 }: {
   cluster: Cluster;
   bundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 }) => {
   const [isLoading, setIsLoading] = useStateSafely(true);
   const { addAlert } = useAlerts();
@@ -70,23 +72,51 @@ const OperatorsSelect = ({
       });
   }, [isSingleClusterFeatureEnabled, supportedOperators, opSpecs]);
 
+  const bundledOperatorIds = React.useMemo(() => {
+    return bundles.flatMap((bundle) => bundle.operators || []);
+  }, [bundles]);
+
+  const filteredOperators = React.useMemo(() => {
+    const inBundles = new Set(bundledOperatorIds);
+
+    return operators.filter((op) => {
+      const spec = opSpecs[op];
+      if (!spec) return false;
+
+      const title = spec.title?.toLowerCase() || '';
+      const description = spec.descriptionText?.toLowerCase() || '';
+      const matchesSearch =
+        searchTerm.trim() === '' ||
+        op.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        title.includes(searchTerm.toLowerCase()) ||
+        description.includes(searchTerm.toLowerCase());
+
+      const isInBundle = inBundles.has(op);
+
+      return (
+        (isInBundle || matchesSearch) &&
+        (!isSingleClusterFeatureEnabled || singleClusterOperators.includes(op))
+      );
+    });
+  }, [bundledOperatorIds, operators, opSpecs, searchTerm, isSingleClusterFeatureEnabled]);
+
   if (isLoading) {
     return <LoadingState />;
   }
 
   const selectedOperators = values.selectedOperators.filter(
-    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+    (opKey) => filteredOperators.includes(opKey) && !!opSpecs[opKey],
   );
 
   return (
     <ExpandableSection
-      toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+      toggleText={`Single Operators (${filteredOperators.length} | ${selectedOperators.length} selected)`}
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       data-testid="single-operators-section"
     >
       <Stack hasGutter data-testid={'operators-form'}>
-        {operators.map((operatorKey) => {
+        {filteredOperators.map((operatorKey) => {
           if (!opSpecs[operatorKey]) {
             return null;
           }
