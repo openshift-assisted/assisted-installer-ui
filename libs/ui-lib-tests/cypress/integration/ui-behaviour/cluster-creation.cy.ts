@@ -31,7 +31,7 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
         .each((versionItem, index) => {
           //TODO: test adaptations for new feature about custom OCP releases
           if (index < 7) {
-            expect(versionItem.parent()).to.have.id(expectedVersionIds[index]);
+            expect(versionItem).to.have.id(expectedVersionIds[index]);
           }
         });
     });
@@ -52,13 +52,15 @@ describe('Assisted Installer UI behaviour - cluster creation', () => {
       clusterDetailsPage.openCpuArchitectureDropdown();
       clusterDetailsPage.CpuArchitectureNotExists(versionsFixtures.arm64);
       clusterDetailsPage.CpuArchitectureExists(versionsFixtures.x86);
+      clusterDetailsPage.openCpuArchitectureDropdown();
       clusterDetailsPage.selectCpuArchitecture(versionsFixtures.x86);
 
       clusterDetailsPage.inputOpenshiftVersion(versionsFixtures.getVersionWithArmSupport());
       clusterDetailsPage.openCpuArchitectureDropdown();
-      clusterDetailsPage.CpuArchitectureExists(versionsFixtures.arm64);
+      clusterDetailsPage.CpuArchitectureExists(versionsFixtures.arm64Text);
       clusterDetailsPage.CpuArchitectureExists(versionsFixtures.x86);
-      clusterDetailsPage.selectCpuArchitecture(versionsFixtures.arm64);
+      clusterDetailsPage.openCpuArchitectureDropdown();
+      clusterDetailsPage.selectCpuArchitecture(versionsFixtures.arm64Text);
     });
   });
 });

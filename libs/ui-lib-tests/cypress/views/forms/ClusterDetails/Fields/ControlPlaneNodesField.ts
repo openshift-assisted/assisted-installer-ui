@@ -14,12 +14,16 @@ export class ControlPlaneNodesField {
     return cy.get(ControlPlaneNodesField.alias).findByText(/number of control plane nodes/i);
   }
 
+  static findControlPlaneNodeField() {
+    return cy.get('#form-input-controlPlaneCount-field');
+  }
+
   static findDropdown() {
-    return cy.get(ControlPlaneNodesField.alias).find('#form-input-controlPlaneCount-field');
+    return cy.get('#form-input-controlPlaneCount-field-dropdown');
   }
 
   static selectControlPlaneNode(controlPlaneCount: number) {
-    ControlPlaneNodesField.findDropdown().click();
+    ControlPlaneNodesField.findControlPlaneNodeField().click();
     ControlPlaneNodesField.findDropdown().within(() => {
       cy.findByRole('menuitem', { name: new RegExp(`${controlPlaneCount}`, 'i') }).click();
     });

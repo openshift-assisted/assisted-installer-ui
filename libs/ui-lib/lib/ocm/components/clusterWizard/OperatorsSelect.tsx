@@ -74,9 +74,13 @@ const OperatorsSelect = ({
     return <LoadingState />;
   }
 
+  const selectedOperators = values.selectedOperators.filter(
+    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+  );
+
   return (
     <ExpandableSection
-      toggleText={`Single Operators (${operators.length} | ${values.selectedOperators.length} selected)`}
+      toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       data-testid="single-operators-section"
