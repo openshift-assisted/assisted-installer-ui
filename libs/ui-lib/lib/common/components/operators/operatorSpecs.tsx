@@ -73,6 +73,7 @@ export type OperatorSpec = {
   Description?: React.ComponentType<{ openshiftVersion?: string }>;
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
+  category?: string;
 };
 
 export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSpec } => {
@@ -89,6 +90,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Virtualization',
     },
     [OPERATOR_NAME_AMD_GPU]: {
       title: 'AMD GPU',
@@ -101,6 +103,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           Automate the management of AMD software components needed to provision and monitor GPUs.
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_LSO]: {
       title: 'Local Storage Operator',
@@ -113,6 +116,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Storage',
     },
     [OPERATOR_NAME_AUTHORINO]: {
       title: 'Authorino',
@@ -126,6 +130,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_CNV]: {
       title: 'OpenShift Virtualization',
@@ -140,6 +145,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Virtualization',
     },
     [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: {
       title: 'Fence Agents Remediation',
@@ -152,6 +158,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_KMM]: {
       title: 'Kernel Module Management',
@@ -162,6 +169,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           Management of kernel modules. <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_KUBE_DESCHEDULER]: {
       title: 'Kube Descheduler',
@@ -174,6 +182,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_MCE]: {
       title: 'Multicluster engine',
@@ -185,6 +194,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_NMSTATE]: {
       title: 'NMState',
@@ -197,6 +207,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Network',
     },
     [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: {
       title: 'Node Feature Discovery',
@@ -211,6 +222,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           </ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_NODE_HEALTHCHECK]: {
       title: 'Node Healthcheck',
@@ -223,6 +235,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_NODE_MAINTENANCE]: {
       title: 'Node Maintenance',
@@ -235,6 +248,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_NVIDIA_GPU]: {
       title: 'NVIDIA GPU',
@@ -247,6 +261,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           GPUs. <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_ODF]: {
       title: 'OpenShift Data Foundation',
@@ -263,6 +278,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Storage',
     },
     [OPERATOR_NAME_OPENSHIFT_AI]: {
       title: 'OpenShift AI',
@@ -277,6 +293,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_OSC]: {
       title: 'OpenShift sandboxed containers',
@@ -295,6 +312,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_PIPELINES]: {
       title: 'Pipelines',
@@ -307,6 +325,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_SELF_NODE_REMEDIATION]: {
       title: 'Self Node Remediation',
@@ -319,6 +338,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_SERVERLESS]: {
       title: 'Serverless',
@@ -332,6 +352,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_SERVICEMESH]: {
       title: 'Service Mesh',
@@ -344,6 +365,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Network',
     },
     [OPERATOR_NAME_LVM]: {
       title: useLVMS ? 'Logical Volume Manager Storage' : 'Logical Volume Manager',
@@ -361,6 +383,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
             Storage virtualization that offers a more flexible approach for disk space management.
           </>
         ),
+      category: 'Storage',
     },
   };
 };

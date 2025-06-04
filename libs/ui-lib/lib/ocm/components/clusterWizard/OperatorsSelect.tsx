@@ -100,13 +100,30 @@ const OperatorsSelect = ({
     });
   }, [bundledOperatorIds, operators, opSpecs, searchTerm, isSingleClusterFeatureEnabled]);
 
-  if (isLoading) {
-    return <LoadingState />;
-  }
-
   const selectedOperators = values.selectedOperators.filter(
     (opKey) => filteredOperators.includes(opKey) && !!opSpecs[opKey],
   );
+
+  const groupedOperators = React.useMemo(() => {
+    const groups: Record<string, string[]> = {};
+
+    for (const op of filteredOperators) {
+      const spec = opSpecs[op];
+      if (!spec) continue;
+
+      const category = spec.category || 'Other';
+      if (!groups[category]) {
+        groups[category] = [];
+      }
+      groups[category].push(op);
+    }
+
+    return groups;
+  }, [filteredOperators, opSpecs]);
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
 
   return (
     <ExpandableSection
@@ -116,24 +133,28 @@ const OperatorsSelect = ({
       data-testid="single-operators-section"
     >
       <Stack hasGutter data-testid={'operators-form'}>
-        {filteredOperators.map((operatorKey) => {
-          if (!opSpecs[operatorKey]) {
-            return null;
-          }
-
-          return (
-            <StackItem key={operatorKey}>
-              <OperatorCheckbox
-                bundles={bundles}
-                operatorId={operatorKey}
-                cluster={cluster}
-                openshiftVersion={cluster.openshiftVersion}
-                preflightRequirements={preflightRequirements}
-                {...opSpecs[operatorKey]}
-              />
+        {Object.entries(groupedOperators).map(([category, ops]) => (
+          <React.Fragment key={category}>
+            <StackItem>
+              <strong>{category}</strong>
             </StackItem>
-          );
-        })}
+            {ops.map((operatorKey) => {
+              const spec = opSpecs[operatorKey];
+              return (
+                <StackItem key={operatorKey}>
+                  <OperatorCheckbox
+                    bundles={bundles}
+                    operatorId={operatorKey}
+                    cluster={cluster}
+                    openshiftVersion={cluster.openshiftVersion}
+                    preflightRequirements={preflightRequirements}
+                    {...spec}
+                  />
+                </StackItem>
+              );
+            })}
+          </React.Fragment>
+        ))}
       </Stack>
     </ExpandableSection>
   );
