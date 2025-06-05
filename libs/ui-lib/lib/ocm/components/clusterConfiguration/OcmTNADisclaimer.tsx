@@ -1,16 +1,9 @@
 import React from 'react';
-import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
+import { Alert, AlertVariant, List, ListItem } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const OcmTNADisclaimer = () => {
   const { t } = useTranslation();
-  const generalSNOFacts = (
-    <>
-      <ListItem>
-        {t('ai:Two nodes control plane OpenShift must include an additional arbiter node.')}
-      </ListItem>
-    </>
-  );
 
   return (
     <Alert
@@ -18,11 +11,11 @@ const OcmTNADisclaimer = () => {
       title={t('ai:Requirements for Two Node control plane OpenShift')}
       isInline
     >
-      <Stack hasGutter>
-        <StackItem>
-          <List>{generalSNOFacts}</List>
-        </StackItem>
-      </Stack>
+      <List>
+        <ListItem>
+          {t('ai:Two nodes control plane OpenShift must include an additional arbiter node.')}
+        </ListItem>
+      </List>
     </Alert>
   );
 };
