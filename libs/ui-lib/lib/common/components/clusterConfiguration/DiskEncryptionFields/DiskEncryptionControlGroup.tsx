@@ -55,11 +55,7 @@ const DiskEncryptionControlGroup = ({
   const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
 
   React.useEffect(() => {
-    if (
-      !enableDiskEncryptionOnWorkers &&
-      !enableDiskEncryptionOnMasters &&
-      !enableDiskEncryptionOnArbiters
-    ) {
+    if (!hasEnabledDiskEncryption) {
       if (diskEncryptionMode !== 'tpmv2') {
         setFieldValue('diskEncryptionMode', 'tpmv2');
       }
@@ -76,6 +72,7 @@ const DiskEncryptionControlGroup = ({
     setFieldTouched,
     setFieldValue,
     enableDiskEncryptionOnArbiters,
+    hasEnabledDiskEncryption,
   ]);
 
   React.useEffect(() => {
