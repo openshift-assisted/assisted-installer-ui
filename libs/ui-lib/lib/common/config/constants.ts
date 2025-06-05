@@ -5,10 +5,12 @@ import {
   ClusterValidationId,
   DiskRole,
   Event,
+  HostRoleUpdateParams,
   HostValidationId,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import buildManifest from '@openshift-assisted/ui-lib/package.json';
+import { isInOcm } from '../api/axiosClient';
 
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
@@ -33,6 +35,15 @@ export const hostRoles = (t: TFunction): HostRole[] => [
       'ai:Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
     ),
   },
+  ...(isInOcm
+    ? [
+        {
+          value: 'arbiter' as HostRoleUpdateParams,
+          label: t('ai:Arbiter'),
+          description: t('ai:Prevents split-brain scenarios and maintains quorum.'),
+        },
+      ]
+    : []),
 ];
 
 export const clusterStatusLabels = (t: TFunction): { [key in Cluster['status']]: string } => ({
