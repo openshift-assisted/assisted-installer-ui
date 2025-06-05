@@ -65,13 +65,10 @@ const DiskEncryptionControlGroup = ({
       }
     }
   }, [
-    enableDiskEncryptionOnMasters,
-    enableDiskEncryptionOnWorkers,
     diskEncryptionMode,
     diskEncryptionTangServers,
     setFieldTouched,
     setFieldValue,
-    enableDiskEncryptionOnArbiters,
     hasEnabledDiskEncryption,
   ]);
 
