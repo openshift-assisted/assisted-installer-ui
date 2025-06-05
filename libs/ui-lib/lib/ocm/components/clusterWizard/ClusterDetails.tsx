@@ -122,7 +122,6 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       managedDomains={managedDomains}
       ocpVersions={versions}
       usedClusterNames={usedClusterNames}
-      moveNext={() => clusterWizardContext.moveNext()}
       handleClusterUpdate={handleClusterUpdate}
       handleClusterCreate={handleClusterCreate}
       navigation={navigation}
