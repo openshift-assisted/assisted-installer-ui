@@ -9,7 +9,7 @@ import { OpenshiftVersionOptionType } from '../../../common';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
-  const match = /.+:(.*)-/gm.exec(releaseImage);
+  const match = /.+:(\d+\.\d+(?:\.\d+)?(?:-\w+)?)/gm.exec(releaseImage);
   if (match && match.length > 1 && match[1]) {
     return match[1];
   }
