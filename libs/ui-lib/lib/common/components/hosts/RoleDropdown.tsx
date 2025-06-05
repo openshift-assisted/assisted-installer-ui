@@ -10,17 +10,9 @@ type RoleDropdownProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole: (role: HostUpdateParams['hostRole']) => Promise<any>;
   current: string;
-  isInOcm?: boolean;
-  isSNO?: boolean;
 };
 
-const RoleDropdown: React.FC<RoleDropdownProps> = ({
-  host,
-  onEditRole,
-  current,
-  isInOcm,
-  isSNO,
-}) => {
+const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current }) => {
   const [isDisabled, setDisabled] = useStateSafely(false);
   const setRole = async (role?: string) => {
     setDisabled(true);
@@ -35,7 +27,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({
     <SimpleDropdown
       defaultValue={hostRoles(t)[0].value}
       current={current}
-      items={hostRoles(t, isInOcm, isSNO)}
+      items={hostRoles(t)}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setValue={setRole}
       isDisabled={isDisabled}

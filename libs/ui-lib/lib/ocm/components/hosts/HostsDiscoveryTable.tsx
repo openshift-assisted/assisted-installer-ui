@@ -6,7 +6,6 @@ import {
   isSNO,
   DeleteHostAction,
   TableToolbar,
-  isInOcm,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -70,8 +69,6 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
         onEditRole,
         selectSchedulableMasters(cluster),
         cluster.kind,
-        isInOcm,
-        isSNOCluster,
       ),
       hardwareStatusColumn({
         onEditHostname: onEditHost,
@@ -83,15 +80,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
       disksColumn(t),
       countColumn(cluster),
     ],
-    [
-      t,
-      onEditHost,
-      actionChecks.canEditHostname,
-      actionChecks.canEditRole,
-      onEditRole,
-      cluster,
-      isSNOCluster,
-    ],
+    [t, onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
 
   const hosts = cluster.hosts || [];
