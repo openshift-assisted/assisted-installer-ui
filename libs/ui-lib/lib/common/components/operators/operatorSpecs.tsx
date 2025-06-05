@@ -69,9 +69,11 @@ export const isOCPVersionEqualsOrMore = (
 export type OperatorSpec = {
   title: string;
   featureId: FeatureId;
+  descriptionText?: string;
   Description?: React.ComponentType<{ openshiftVersion?: string }>;
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
+  category?: string;
 };
 
 export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSpec } => {
@@ -79,6 +81,8 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
     [OPERATOR_NAME_MTV]: {
       title: 'Migration Toolkit for Virtualization',
       featureId: 'MTV',
+      descriptionText:
+        'This Toolkit (MTV) enables you to migrate virtual machines from VMware vSphere, Red Hat Virtualization, or OpenStack to OpenShift Virtualization running on Red Hat OpenShift.',
       Description: () => (
         <>
           This Toolkit (MTV) enables you to migrate virtual machines from VMware vSphere, Red Hat
@@ -86,20 +90,25 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Virtualization',
     },
     [OPERATOR_NAME_AMD_GPU]: {
       title: 'AMD GPU',
       featureId: 'AMD_GPU',
+      descriptionText:
+        'Automate the management of AMD software components needed to provision and monitor GPUs.',
       Requirements: () => <>Requires at least one supported AMD GPU</>,
       Description: () => (
         <>
           Automate the management of AMD software components needed to provision and monitor GPUs.
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_LSO]: {
       title: 'Local Storage Operator',
       featureId: 'LSO',
+      descriptionText: 'Allows provisioning of persistent storage by using local volumes.',
       Description: ({ openshiftVersion }) => (
         <>
           Allows provisioning of persistent storage by using local volumes.{' '}
@@ -107,10 +116,13 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Storage',
     },
     [OPERATOR_NAME_AUTHORINO]: {
       title: 'Authorino',
       featureId: 'AUTHORINO',
+      descriptionText:
+        'Lightweight external authorization service for tailor-made Zero Trust API security.',
       Description: () => (
         <>
           Lightweight external authorization service for tailor-made Zero Trust API security.{' '}
@@ -118,10 +130,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_CNV]: {
       title: 'OpenShift Virtualization',
       featureId: 'CNV',
+      descriptionText: 'Run virtual machines alongside containers on one platform.',
       Requirements: () => (
         <>Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes</>
       ),
@@ -131,10 +145,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Virtualization',
     },
     [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: {
       title: 'Fence Agents Remediation',
       featureId: 'FENCE_AGENTS_REMEDIATION',
+      descriptionText: 'Externally fences failed nodes using power controllers.',
       Description: () => (
         <>
           Externally fences failed nodes using power controllers.{' '}
@@ -142,19 +158,23 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_KMM]: {
       title: 'Kernel Module Management',
       featureId: 'KMM',
+      descriptionText: 'Management of kernel modules.',
       Description: () => (
         <>
           Management of kernel modules. <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_KUBE_DESCHEDULER]: {
       title: 'Kube Descheduler',
       featureId: 'KUBE_DESCHEDULER',
+      descriptionText: 'Evicts pods to reschedule them onto more suitable nodes.',
       Description: ({ openshiftVersion }) => (
         <>
           Evicts pods to reschedule them onto more suitable nodes.{' '}
@@ -162,20 +182,24 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_MCE]: {
       title: 'Multicluster engine',
       featureId: 'MCE',
+      descriptionText: 'Create, import, and manage multiple clusters from this cluster.',
       Description: ({ openshiftVersion }) => (
         <>
           Create, import, and manage multiple clusters from this cluster.{' '}
           <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_NMSTATE]: {
       title: 'NMState',
       featureId: 'NMSTATE',
+      descriptionText: 'Configure network interfaces, DNS, and routing on cluster nodes.',
       Description: ({ openshiftVersion }) => (
         <>
           Provides users with functionality to configure various network interface types, DNS, and
@@ -183,10 +207,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Network',
     },
     [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: {
       title: 'Node Feature Discovery',
       featureId: 'NODE_FEATURE_DISCOVERY',
+      descriptionText: 'Detects and labels nodes with hardware-specific features.',
       Description: ({ openshiftVersion }) => (
         <>
           Manage the detection of hardware features and configuration by labeling nodes with
@@ -196,10 +222,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           </ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_NODE_HEALTHCHECK]: {
       title: 'Node Healthcheck',
       featureId: 'NODE_HEALTHCHECK',
+      descriptionText: 'Identify unhealthy nodes.',
       Description: () => (
         <>
           Identify Unhealthy Nodes.{' '}
@@ -207,10 +235,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_NODE_MAINTENANCE]: {
       title: 'Node Maintenance',
       featureId: 'NODE_MAINTENANCE',
+      descriptionText: 'Place nodes in maintenance mode.',
       Description: () => (
         <>
           Place nodes in maintenance mode.{' '}
@@ -218,10 +248,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_NVIDIA_GPU]: {
       title: 'NVIDIA GPU',
       featureId: 'NVIDIA_GPU',
+      descriptionText: 'Manage NVIDIA GPU provisioning and monitoring.',
       Requirements: () => <>Requires at least one supported NVIDIA GPU</>,
       Description: ({ openshiftVersion }) => (
         <>
@@ -229,10 +261,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           GPUs. <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_ODF]: {
       title: 'OpenShift Data Foundation',
       featureId: 'ODF',
+      descriptionText: 'Persistent software-defined storage for hybrid applications.',
       Requirements: () => (
         <ExternalLink href={ODF_REQUIREMENTS_LINK}>
           Learn more about the requirements for OpenShift Data Foundation
@@ -244,10 +278,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Storage',
     },
     [OPERATOR_NAME_OPENSHIFT_AI]: {
       title: 'OpenShift AI',
       featureId: 'OPENSHIFT_AI',
+      descriptionText: 'Train, serve, monitor and manage AI/ML models and applications.',
       Requirements: () => (
         <ExternalLink href={OPENSHIFT_AI_REQUIREMENTS_LINK}>Learn more</ExternalLink>
       ),
@@ -257,10 +293,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_OSC]: {
       title: 'OpenShift sandboxed containers',
       featureId: 'OSC',
+      descriptionText: 'Run pods in lightweight VMs using Kata Containers for enhanced isolation.',
       Requirements: () => (
         <ExternalLink href={OSC_REQUIREMENTS_LINK}>
           Learn more about the requirements for OpenShift sandboxed containers
@@ -274,10 +312,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
           <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_PIPELINES]: {
       title: 'Pipelines',
       featureId: 'PIPELINES',
+      descriptionText: 'Cloud-native CI/CD solution for building pipelines using Tekton.',
       Description: () => (
         <>
           Cloud-native continuous integration and delivery (CI/CD) solution for building pipelines
@@ -285,10 +325,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_SELF_NODE_REMEDIATION]: {
       title: 'Self Node Remediation',
       featureId: 'SELF_NODE_REMEDIATION',
+      descriptionText: 'Allows nodes to reboot themselves when they become unhealthy.',
       Description: () => (
         <>
           Allows nodes to reboot themselves when they become unhealthy.{' '}
@@ -296,10 +338,13 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_SERVERLESS]: {
       title: 'Serverless',
       featureId: 'SERVERLESS',
+      descriptionText:
+        'Deploy workflow applications based on the CNCF Serverless Workflow specification.',
       Description: () => (
         <>
           Deploy workflow applications based on the CNCF Serverless Workflow specification.{' '}
@@ -307,10 +352,12 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_SERVICEMESH]: {
       title: 'Service Mesh',
       featureId: 'SERVICEMESH',
+      descriptionText: 'Provides behavioral insight and operational control over a service mesh.',
       Description: ({ openshiftVersion }) => (
         <>
           Platform that provides behavioral insight and operational control over a service mesh.{' '}
@@ -318,10 +365,13 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
         </>
       ),
       notStandalone: true,
+      category: 'Network',
     },
     [OPERATOR_NAME_LVM]: {
       title: useLVMS ? 'Logical Volume Manager Storage' : 'Logical Volume Manager',
       featureId: 'LVM',
+      descriptionText:
+        'Storage virtualization that offers a more flexible approach for disk space management.',
       Description: ({ openshiftVersion }) =>
         useLVMS ? (
           <>
@@ -333,6 +383,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
             Storage virtualization that offers a more flexible approach for disk space management.
           </>
         ),
+      category: 'Storage',
     },
   };
 };
