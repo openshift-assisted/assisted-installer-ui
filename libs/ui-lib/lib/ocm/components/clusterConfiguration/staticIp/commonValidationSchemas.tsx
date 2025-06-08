@@ -232,6 +232,10 @@ export const getIpIsNotNetworkOrBroadcastAddressSchema = (
     'is-not-network-or-broadcast',
     `The IP address must not match the network or broadcast address`,
     (value) => {
+      // Allow both addresses for IPv4 /31 subnets (RFC 3021)
+      if (protocolVersion === ProtocolVersion.ipv4 && subnet.endsWith('/31')) {
+        return true;
+      }
       const subnetAddr = getAddressObject(subnet, protocolVersion);
       if (!subnetAddr) {
         return true;
