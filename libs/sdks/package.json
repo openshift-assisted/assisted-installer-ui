@@ -1,6 +1,6 @@
 {
   "name": "@openshift-assisted/sdks",
-  "version": "2.11.5-cim",
+  "version": "2.11.6-cim",
   "exports": {
     "./package.json": "./package.json",
     "./assisted-installer-service": {
