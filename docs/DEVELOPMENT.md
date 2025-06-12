@@ -54,8 +54,8 @@ between applications and libraries.
 ## Integrating with OCM (uhc-portal)
 
 The Assisted Installer UI is consumed as a library at build-time by other applications.  
-The [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) is one of them and is the
-application you see at https://console.redhat.com/openshift.
+The [uhc-portal](https://github.com/RedHatInsights/uhc-portal) is one of them and is the application
+you see at https://console.redhat.com/openshift.
 
 Use this setup if you want to test the `libs/ui-lib` integration with the uhc-portal. These steps
 apply for `libs/locales` as well.
@@ -66,7 +66,8 @@ apply for `libs/locales` as well.
    ```bash
    yarn start:watch_mode
    ```
-2. Fork and clone the assisted-installer-app project
+2. Fork and clone the
+   [assisted-installer-app](https://github.com/openshift-assisted/assisted-installer-app) project
    ```bash
    git clone git@github.com:openshift-assisted/assisted-installer-app.git
    ```
