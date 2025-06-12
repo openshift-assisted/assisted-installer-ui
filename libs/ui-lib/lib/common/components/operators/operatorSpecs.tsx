@@ -108,7 +108,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_MTV,
       Description: () => (
         <>
-          ${DESCRIPTION_MTV} <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_MTV} <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
         </>
       ),
       category: 'Virtualization',
@@ -118,7 +118,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       featureId: 'AMD_GPU',
       descriptionText: DESCRIPTION_AMD_GPU,
       Requirements: () => <>Requires at least one supported AMD GPU</>,
-      Description: () => <>${DESCRIPTION_AMD_GPU}</>,
+      Description: () => <>{DESCRIPTION_AMD_GPU}</>,
       category: 'AI',
     },
     [OPERATOR_NAME_LSO]: {
@@ -127,7 +127,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_LSO,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_LSO}{' '}
+          {DESCRIPTION_LSO}{' '}
           <ExternalLink href={getLsoLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
@@ -140,7 +140,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_AUTHORINO,
       Description: () => (
         <>
-          ${DESCRIPTION_AUTHORINO}{' '}
+          {DESCRIPTION_AUTHORINO}{' '}
           <ExternalLink href={AUTHORINO_OPERATOR_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -156,7 +156,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       ),
       Description: () => (
         <>
-          ${DESCRIPTION_CNV} <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_CNV} <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
         </>
       ),
       category: 'Virtualization',
@@ -167,7 +167,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_FENCE_AGENTS_REMEDIATION,
       Description: () => (
         <>
-          ${DESCRIPTION_FENCE_AGENTS_REMEDIATION}{' '}
+          {DESCRIPTION_FENCE_AGENTS_REMEDIATION}{' '}
           <ExternalLink href={FENCE_AGENTS_REMEDIATION_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -180,7 +180,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_KMM,
       Description: () => (
         <>
-          ${DESCRIPTION_KMM} <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_KMM} <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
         </>
       ),
       category: 'Other',
@@ -191,7 +191,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_KUBE_DESCHEDULER,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_KUBE_DESCHEDULER}{' '}
+          {DESCRIPTION_KUBE_DESCHEDULER}{' '}
           <ExternalLink href={getKubeDeschedulerLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
@@ -204,7 +204,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_MCE,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_MCE}{' '}
+          {DESCRIPTION_MCE}{' '}
           <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
@@ -216,7 +216,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_NMSTATE,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_NMSTATE}{' '}
+          {DESCRIPTION_NMSTATE}{' '}
           <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
@@ -228,7 +228,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_NODE_FEATURE_DISCOVERY,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_NODE_FEATURE_DISCOVERY}{' '}
+          {DESCRIPTION_NODE_FEATURE_DISCOVERY}{' '}
           <ExternalLink href={getNodeFeatureDiscoveryLink(openshiftVersion)}>
             Learn more
           </ExternalLink>
@@ -242,7 +242,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_NODE_HEALTHCHECK,
       Description: () => (
         <>
-          ${DESCRIPTION_NODE_HEALTHCHECK}{' '}
+          {DESCRIPTION_NODE_HEALTHCHECK}{' '}
           <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -255,7 +255,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_NODE_MAINTENANCE,
       Description: () => (
         <>
-          ${DESCRIPTION_NODE_MAINTENANCE}{' '}
+          {DESCRIPTION_NODE_MAINTENANCE}{' '}
           <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -269,7 +269,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       Requirements: () => <>Requires at least one supported NVIDIA GPU</>,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_NVIDIA_GPU}
+          {DESCRIPTION_NVIDIA_GPU}
           <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
@@ -286,7 +286,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       ),
       Description: () => (
         <>
-          ${DESCRIPTION_ODF} <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_ODF} <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
         </>
       ),
       category: 'Storage',
@@ -300,7 +300,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       ),
       Description: () => (
         <>
-          ${DESCRIPTION_OPENSHIFT_AI}{' '}
+          {DESCRIPTION_OPENSHIFT_AI}{' '}
           <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -317,7 +317,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       ),
       Description: () => (
         <>
-          ${DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
         </>
       ),
       category: 'Other',
@@ -328,7 +328,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_PIPELINES,
       Description: () => (
         <>
-          ${DESCRIPTION_PIPELINES}{' '}
+          {DESCRIPTION_PIPELINES}{' '}
           <ExternalLink href={PIPELINES_OPERATOR_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -341,7 +341,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_SELF_NODE_REMEDIATION,
       Description: () => (
         <>
-          ${DESCRIPTION_SELF_NODE_REMEDIATION}{' '}
+          {DESCRIPTION_SELF_NODE_REMEDIATION}{' '}
           <ExternalLink href={SELF_NODE_REMEDIATION_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -354,7 +354,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_SERVERLESS,
       Description: () => (
         <>
-          ${DESCRIPTION_SERVERLESS}{' '}
+          {DESCRIPTION_SERVERLESS}{' '}
           <ExternalLink href={SERVERLESS_OPERATOR_LINK}>Learn more</ExternalLink>
         </>
       ),
@@ -367,7 +367,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       descriptionText: DESCRIPTION_SERVICEMESH,
       Description: ({ openshiftVersion }) => (
         <>
-          ${DESCRIPTION_SERVICEMESH}{' '}
+          {DESCRIPTION_SERVICEMESH}{' '}
           <ExternalLink href={getServiceMeshLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
@@ -381,11 +381,11 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       Description: ({ openshiftVersion }) =>
         useLVMS ? (
           <>
-            ${DESCRIPTION_LVM}{' '}
+            {DESCRIPTION_LVM}{' '}
             <ExternalLink href={getLvmsDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ) : (
-          <>${DESCRIPTION_LVM}</>
+          <>{DESCRIPTION_LVM}</>
         ),
       category: 'Storage',
     },

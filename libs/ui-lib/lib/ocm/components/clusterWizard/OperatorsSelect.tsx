@@ -19,6 +19,7 @@ import { OperatorsService } from '../../services';
 import { useFeature } from '../../hooks/use-feature';
 import OperatorCheckbox from '../clusterConfiguration/operators/OperatorCheckbox';
 import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import fuzzysearch from 'fuzzysearch';
 
 const OperatorsSelect = ({
   cluster,
@@ -72,9 +73,7 @@ const OperatorsSelect = ({
       });
   }, [isSingleClusterFeatureEnabled, supportedOperators, opSpecs]);
 
-  const bundledOperatorIds = React.useMemo(() => {
-    return bundles.flatMap((bundle) => bundle.operators || []);
-  }, [bundles]);
+  const bundledOperatorIds = bundles.flatMap((bundle) => bundle.operators || []);
 
   const filteredOperators = React.useMemo(() => {
     const inBundles = new Set(bundledOperatorIds);
@@ -86,10 +85,10 @@ const OperatorsSelect = ({
       const title = spec.title?.toLowerCase() || '';
       const description = spec.descriptionText?.toLowerCase() || '';
       const matchesSearch =
-        searchTerm.trim() === '' ||
-        op.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        title.includes(searchTerm.toLowerCase()) ||
-        description.includes(searchTerm.toLowerCase());
+        searchTerm === '' ||
+        fuzzysearch(searchTerm.toLowerCase(), op.toLowerCase()) ||
+        fuzzysearch(searchTerm.toLowerCase(), title) ||
+        fuzzysearch(searchTerm.toLowerCase(), description);
 
       const isInBundle = inBundles.has(op);
 
