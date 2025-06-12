@@ -41,6 +41,7 @@ import {
   KMM_LINK,
   MTV_LINK,
   NODE_HEALTHCHECK_LINK,
+  NODE_MAINTENANCE_LINK,
   ODF_LINK,
   ODF_REQUIREMENTS_LINK,
   OPENSHIFT_AI_LINK,
@@ -214,7 +215,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       Description: () => (
         <>
           Place nodes in maintenance mode.{' '}
-          <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
+          <ExternalLink href={NODE_MAINTENANCE_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
