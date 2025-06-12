@@ -53,50 +53,26 @@ between applications and libraries.
 
 ## Integrating with OCM (uhc-portal)
 
-The Assisted Installer UI is consumed as a library at build-time by other applications.  
-The [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) is one of them and is the
-application you see at https://console.redhat.com/openshift.
-
-Use this setup if you want to test the `libs/ui-lib` integration with the uhc-portal. These steps
-apply for `libs/locales` as well.
-
-1. In one terminal run the project in [watch mode](#watch-mode).  
-   The script builds and publishes the `@openshift-assisted/ui-lib` and its workspace dependencies
-   to the local registry everytime you'll make a change.
-   ```bash
-   yarn start:watch_mode
-   ```
-2. Fork and clone the assisted-installer-app project
-   ```bash
-   git clone git@github.com:openshift-assisted/assisted-installer-app.git
-   ```
-3. Inside the assisted-installer-app run the following commands
+1. Set up the package managers shims and install the project dependencies:
 
    ```bash
-   npm ci
-   yalc link @openshift-assisted/ui-lib
-   yalc link @openshift-assisted/locales
-   yalc link @openshift-assisted/types
+   yarn install
    ```
 
-   **Note**: `yalc link` needs to be executed following the `npm install` command.  
-   **Be aware that this command updates the project's `package.json` and `yarn.lock` files**.  
-   **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
-
-4. Start the assisted-installer-app project:
+2. Start the assisted-installer-app project:
 
    ```bash
-   npm run start:federated
+   yarn start:assisted_installer_app
 
    ```
 
-5. Fork and clone the uhc-portal project
+3. Fork and clone the uhc-portal project
 
    ```bash
    git clone git@github.com:RedHatInsights/uhc-portal.git
    ```
 
-6. Now you can follow the uhc-portal's
+4. Now you can follow the uhc-portal's
    [README file](https://github.com/RedHatInsights/uhc-portal/blob/master/README.md#running-locally)
    in order to set up their dev-environment.
    ```bash
