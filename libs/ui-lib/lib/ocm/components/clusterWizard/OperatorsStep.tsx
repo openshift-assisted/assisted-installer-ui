@@ -67,7 +67,7 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
               type="text"
               onChange={(_event, value) => setSearchTerm(value)}
               placeholder="Search"
-              style={{ width: '400px' }}
+              style={{ minWidth: '200px', maxWidth: '400px', width: '100%' }}
             />
           </FlexItem>
         </Flex>
