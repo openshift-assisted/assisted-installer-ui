@@ -1,7 +1,13 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
-import { useAlerts, LoadingState, ClusterWizardStep, ErrorState } from '../../../common';
+import {
+  useAlerts,
+  LoadingState,
+  ClusterWizardStep,
+  ErrorState,
+  UISettingsValues,
+} from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
@@ -81,11 +87,15 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
         const cluster = await ClustersService.create(params, isAssistedMigration);
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
-        await UISettingService.update(cluster.id, { addCustomManifests });
-        //For Assisted Migration we need to enable virtualization bundle
+
+        const uiPatch: UISettingsValues = { addCustomManifests };
         if (isAssistedMigration) {
-          await UISettingService.update(cluster.id, { bundlesSelected: ['virtualization'] });
+          //For Assisted Migration we need to enable virtualization bundle
+          uiPatch.bundlesSelected = ['virtualization'];
+          uiPatch.isAssistedMigration = true;
         }
+        await UISettingService.update(cluster.id, uiPatch);
+        await clusterWizardContext.updateUISettings(uiPatch); // keeps local state current
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
@@ -95,7 +105,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, location.search, navigate, addAlert, dispatch],
+    [clearAlerts, location.search, navigate, clusterWizardContext, addAlert, dispatch],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
