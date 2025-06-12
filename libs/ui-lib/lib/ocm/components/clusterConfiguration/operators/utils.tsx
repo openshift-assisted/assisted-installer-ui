@@ -35,7 +35,8 @@ export const getNewOperators = (
   const dependencies = getOperatorDependencies(operatorId, preflightRequirements);
 
   if (add) {
-    return [...new Set([...currentOperators, ...dependencies, operatorId])];
+    const uniqueOps = new Set([...currentOperators, ...dependencies, operatorId]);
+    return Array.from(uniqueOps);
   }
 
   const newOperators = currentOperators.filter((op) => op !== operatorId);
