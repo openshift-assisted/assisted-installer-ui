@@ -55,6 +55,7 @@ import {
 import { getMajorMinorVersion } from '../../utils';
 import { useNewFeatureSupportLevel } from '../newFeatureSupportLevels';
 
+// TODO check if it's unused and it can be deleted in favor of "isMajorMinorVersionEqualOrGreater"
 export const isOCPVersionEqualsOrMore = (
   openshiftVersion: string,
   ocpVersionToCompare: string,

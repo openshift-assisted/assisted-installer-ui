@@ -111,3 +111,33 @@ export const getMajorMinorVersion = (version = '') => {
   const match = /[0-9].[0-9][0-9]?/g.exec(version);
   return match?.[0] || '';
 };
+
+// Converts an Openshift version to a comparable integer
+const getComparableVersionInt = (version: string): number => {
+  const majorMinorParts = version.split('.').slice(0, 2).map(Number);
+  if (majorMinorParts.length < 2 || majorMinorParts.some(isNaN)) {
+    // If the version doesn't have the required format, returning 0 makes it be considered
+    // older than any other version
+    return 0;
+  }
+
+  const major = majorMinorParts[0];
+  const minor = majorMinorParts[1];
+
+  // Assumes minor versions will not go past 999
+  return major * 1000 + minor;
+};
+
+/**
+ * Handles version comparison for major and minor parts only.
+ *
+ * @param checkVersion the version we want to know about
+ * @param toVersion the version we want to test against
+ * @returns true if "checkVersion" is equal or greater than "toVersion" (major and minor only)
+ */
+export const isMajorMinorVersionEqualOrGreater = (checkVersion = '', toVersion: string) => {
+  const checkVersionNum = getComparableVersionInt(checkVersion);
+  const toVersionNum = getComparableVersionInt(toVersion);
+
+  return checkVersionNum >= toVersionNum;
+};
