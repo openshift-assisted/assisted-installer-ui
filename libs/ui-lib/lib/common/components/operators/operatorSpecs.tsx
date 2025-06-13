@@ -257,7 +257,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       Description: () => (
         <>
           {DESCRIPTION_NODE_MAINTENANCE}{' '}
-          <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
+          <ExternalLink href={NODE_MAINTENANCE_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
