@@ -188,7 +188,6 @@ export const agentStatusColumn = ({
 export const clusterColumn = (
   agents: AgentK8sResource[],
   agentMachines: AgentMachineK8sResource[],
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
   t: TFunction,
 ): TableRow<Host> => {
   return {
@@ -215,10 +214,10 @@ export const clusterColumn = (
           if (nodePool) {
             const hcNamespace = nodePool.split('/')[0];
             const hcName = agent.spec.clusterDeploymentName.name;
-            cdLink = getClusterDeploymentLink({ name: hcName, namespace: hcNamespace });
+            cdLink = `/multicloud/infrastructure/clusters/details/${hcNamespace}/${hcName}`;
           }
         } else {
-          cdLink = getClusterDeploymentLink(agent.spec.clusterDeploymentName);
+          cdLink = `/multicloud/infrastructure/clusters/details/${agent.spec.clusterDeploymentName.namespace}/${agent.spec.clusterDeploymentName.name}`;
         }
       }
       return {
@@ -244,9 +243,9 @@ export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableR
       const infraEnvName = getInfraEnvNameOfAgent(agent);
       const title = infraEnvName ? (
         <Link
-          to={`/multicloud/infrastructure/environments/details/${
+          to={`/k8s/ns/${
             agent.metadata?.namespace || ''
-          }/${infraEnvName}/overview`}
+          }/agent-install.openshift.io~v1beta1~InfraEnv/${infraEnvName || ''}`}
         >
           {infraEnvName}
         </Link>
@@ -429,7 +428,7 @@ export const useAgentsTable = (
           ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
               const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
-              return onDeleteHost(agent, bmh);
+              return onDeleteHost({ agent, bmh });
             }
           : undefined,
         canDelete: (host: Host) => {
