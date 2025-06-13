@@ -179,10 +179,12 @@ export const getNodeFeatureDiscoveryLink = (ocpVersion?: string) =>
     ocpVersion,
   )}/hardware_enablement/psap-node-feature-discovery-operator.html`;
 
-export const getNvidiaGpuLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
-    ocpVersion,
-  )}/virt/virtual_machines/advanced_vm_management/virt-configuring-virtual-gpus.html`;
+export const getNvidiaGpuLink = (ocpVersion?: string) => {
+  const version = getDocsOpenshiftVersion(ocpVersion);
+  return isMajorMinorVersionEqualOrGreater(ocpVersion, '4.18')
+    ? `https://docs.redhat.com/en/documentation/openshift_container_platform/${version}/html/virtualization/managing-vms#virt-configuring-virtual-gpus`
+    : `https://docs.openshift.com/container-platform/${version}/virt/virtual_machines/advanced_vm_management/virt-configuring-virtual-gpus.html`;
+};
 
 export const PIPELINES_OPERATOR_LINK =
   'https://docs.openshift.com/pipelines/1.17/install_config/installing-pipelines.html';
