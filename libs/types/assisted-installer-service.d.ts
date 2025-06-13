@@ -115,7 +115,7 @@ export interface Cluster {
    */
   kind: 'Cluster' | 'AddHostsCluster';
   /**
-   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * (DEPRECATED) Please use 'controlPlaneCount' instead. Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
    *
    */
@@ -339,9 +339,18 @@ export interface Cluster {
    */
   amsSubscriptionId?: string; // uuid
   /**
-   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes
+   * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
-  hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
+  hyperthreading?:
+    | 'none'
+    | 'masters'
+    | 'arbiters'
+    | 'workers'
+    | 'masters,arbiters'
+    | 'masters,workers'
+    | 'arbiters,workers'
+    | 'masters,arbiters,workers'
+    | 'all';
   /**
    * JSON-formatted string containing the usage information by feature name
    */
@@ -482,9 +491,18 @@ export interface ClusterCreateParams {
    */
   olmOperators?: OperatorCreateParams[];
   /**
-   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
+   * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
-  hyperthreading?: 'masters' | 'workers' | 'none' | 'all';
+  hyperthreading?:
+    | 'none'
+    | 'masters'
+    | 'arbiters'
+    | 'workers'
+    | 'masters,arbiters'
+    | 'masters,workers'
+    | 'arbiters,workers'
+    | 'masters,arbiters,workers'
+    | 'all';
   /**
    * The desired network type used.
    */
@@ -852,9 +870,18 @@ export interface DiskConfigParams {
 }
 export interface DiskEncryption {
   /**
-   * Enable/disable disk encryption on master nodes, worker nodes, or all nodes.
+   * Enable/disable disk encryption on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
-  enableOn?: 'none' | 'all' | 'masters' | 'workers';
+  enableOn?:
+    | 'none'
+    | 'masters'
+    | 'arbiters'
+    | 'workers'
+    | 'masters,arbiters'
+    | 'masters,workers'
+    | 'arbiters,workers'
+    | 'masters,arbiters,workers'
+    | 'all';
   /**
    * The disk encryption mode to use.
    */
@@ -1021,6 +1048,7 @@ export interface Event {
 export type EventList = Event[];
 export type FeatureSupportLevelId =
   | 'SNO'
+  | 'TNA'
   | 'VIP_AUTO_ALLOC'
   | 'CUSTOM_MANIFEST'
   | 'SINGLE_NODE_EXPANSION'
@@ -1497,8 +1525,8 @@ export interface HostRegistrationResponse {
     retrySeconds?: number;
   };
 }
-export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
-export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
+export type HostRole = 'auto-assign' | 'master' | 'arbiter' | 'worker' | 'bootstrap';
+export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'arbiter' | 'worker';
 export type HostStage =
   | 'Starting installation'
   | 'Waiting for control plane'
@@ -1543,7 +1571,7 @@ export interface HostTypeHardwareRequirementsWrapper {
   master?: HostTypeHardwareRequirements;
 }
 export interface HostUpdateParams {
-  hostRole?: 'auto-assign' | 'master' | 'worker';
+  hostRole?: 'auto-assign' | 'master' | 'arbiter' | 'worker';
   hostName?: string;
   disksSelectedConfig?: DiskConfigParams[];
   /**
@@ -1916,12 +1944,6 @@ export interface InstallCmdRequest {
    */
   installerImage: string; // ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$
   /**
-   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
-   * over multiple master nodes whereas 'None' installs a full cluster over one node.
-   *
-   */
-  highAvailabilityMode?: 'Full' | 'None';
-  /**
    * Specifies the required number of control plane nodes that should be part of the cluster.
    */
   controlPlaneCount?: number;
@@ -2225,6 +2247,10 @@ export interface MonitoredOperator {
    * List of identifier of the bundles associated with the operator. Can be empty.
    */
   bundles?: string[];
+  /**
+   * Whether the operator can't be installed without being required by another operator.
+   */
+  dependencyOnly?: boolean;
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
 export interface MtuReport {
@@ -2789,9 +2815,18 @@ export interface V2ClusterUpdateParams {
    */
   olmOperators?: OperatorCreateParams[];
   /**
-   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
+   * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
-  hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
+  hyperthreading?:
+    | 'none'
+    | 'masters'
+    | 'arbiters'
+    | 'workers'
+    | 'masters,arbiters'
+    | 'masters,workers'
+    | 'arbiters,workers'
+    | 'masters,arbiters,workers'
+    | 'all';
   /**
    * The desired network type used.
    */

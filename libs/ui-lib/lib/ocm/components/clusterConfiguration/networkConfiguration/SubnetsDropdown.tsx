@@ -84,6 +84,7 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
       isExpanded={isOpen}
       isDisabled={isDisabled}
       className="pf-v5-u-w-100"
+      id={fieldId}
     >
       {currentDisplayValue}
     </MenuToggle>
@@ -92,7 +93,7 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
   return (
     <Dropdown
       {...field}
-      id={fieldId}
+      id={`${fieldId}-dropdown`}
       onOpenChange={() => setOpen(!isOpen)}
       onSelect={onSelect}
       toggle={toggle}

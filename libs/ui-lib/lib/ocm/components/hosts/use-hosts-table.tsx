@@ -60,8 +60,10 @@ import {
   selectCurrentClusterPermissionsState,
   selectCurrentClusterState,
 } from '../../store/slices/current-cluster/selectors';
+import { useFeature } from '../../hooks/use-feature';
 
 export const useHostsTable = (cluster: Cluster) => {
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { addAlert } = useAlerts();
   const {
     eventsDialog,
@@ -248,8 +250,12 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const actionChecks = React.useMemo(
     () => ({
-      canEditRole: (host: Host) =>
-        !isViewerMode && canEditRoleUtil(cluster.status, host.status, isSNO(cluster)),
+      canEditRole: (host: Host) => {
+        if (isSingleClusterFeatureEnabled && host.bootstrap) {
+          return false;
+        }
+        return !isViewerMode && canEditRoleUtil(cluster.status, host.status, isSNO(cluster));
+      },
       canInstallHost: (host: Host) => !isViewerMode && canInstallHostUtil(cluster, host.status),
       canEditDisks: (host: Host) => !isViewerMode && canEditDisksUtil(cluster.status, host.status),
       canEnable: (host: Host) => !isViewerMode && canEnableUtil(cluster.status, host.status),
@@ -259,7 +265,7 @@ export const useHostsTable = (cluster: Cluster) => {
       canReset: (host: Host) => !isViewerMode && canResetUtil(cluster.status, host.status),
       canEditHostname: () => !isViewerMode && canEditHostnameUtil(cluster.status),
     }),
-    [cluster, isViewerMode],
+    [cluster, isViewerMode, isSingleClusterFeatureEnabled],
   );
 
   const onReset = React.useCallback(() => {

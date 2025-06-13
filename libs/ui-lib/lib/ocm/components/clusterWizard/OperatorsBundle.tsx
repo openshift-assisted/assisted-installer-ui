@@ -36,6 +36,7 @@ import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
 import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
 
 import './OperatorsBundle.css';
+import { useClusterWizardContext } from './ClusterWizardContext';
 
 const BundleLabel = ({ bundle }: { bundle: Bundle }) => {
   const opSpecs = useOperatorSpecs();
@@ -114,6 +115,7 @@ const BundleCard = ({
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const { isFeatureSupported, getFeatureSupportLevel } = useNewFeatureSupportLevel();
   const opSpecs = useOperatorSpecs();
+  const { uiSettings } = useClusterWizardContext();
 
   const supportLevel = getBundleSupportLevel(bundle, opSpecs, getFeatureSupportLevel);
 
@@ -130,7 +132,7 @@ const BundleCard = ({
   const incompatibleBundle = bundleSpec?.incompatibleBundles?.find((b) =>
     values.selectedBundles.includes(b),
   );
-
+  const isAssistedMigration = uiSettings?.isAssistedMigration;
   const disabledReason = hasUnsupportedOperators
     ? 'Some operators in this bundle are not supported with the current configuration.'
     : isSNO && bundleSpec?.noSNO
@@ -139,6 +141,8 @@ const BundleCard = ({
     ? `Bundle cannot be installed together with ${
         bundles.find(({ id }) => id === incompatibleBundle)?.title || incompatibleBundle
       }`
+    : isAssistedMigration
+    ? 'This bundle needs to be selected for clusters created from Migration Assessment'
     : undefined;
 
   const onSelect = (checked: boolean) => {

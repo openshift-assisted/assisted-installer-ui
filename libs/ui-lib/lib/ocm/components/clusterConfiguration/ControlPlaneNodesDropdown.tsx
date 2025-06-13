@@ -14,8 +14,9 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
-import OcmSNODisclaimer from './OcmSNODisclaimer';
+import OcmTNADisclaimer from './OcmTNADisclaimer';
 import toNumber from 'lodash-es/toNumber';
+import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
 const fieldId = getFieldId(INPUT_NAME, 'input');
@@ -50,9 +51,13 @@ interface ControlPlaneNodesDropdownProps {
 const isDropdownItemEnabled = (
   controlPlaneNodeCount: number,
   isNonStandardControlPlaneEnabled: boolean,
+  isTnaEnabled: boolean,
 ): boolean => {
   if (controlPlaneNodeCount === 4 || controlPlaneNodeCount === 5) {
     return isNonStandardControlPlaneEnabled;
+  }
+  if (controlPlaneNodeCount === 2) {
+    return isTnaEnabled;
   }
   return true;
 };
@@ -87,10 +92,16 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
 
   const options: ControlPlaneNodesOption[] = [
     { value: 1, label: '1 (Single Node OpenShift)' },
+    { value: 2, label: '2 (Two-Nodes Arbiter)' },
     { value: 3, label: '3 (highly available cluster)' },
     { value: 4, label: '4 (highly available cluster+)' },
     { value: 5, label: '5 (highly available cluster++)' },
   ];
+
+  const isTnaEnabled = newFeatureSupportLevelContext.isFeatureSupported(
+    'TNA',
+    featureSupportLevelData ?? undefined,
+  );
 
   React.useEffect(() => {
     if (!field.value) {
@@ -105,7 +116,11 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   };
 
   const dropdownItems = options.map(({ value, label }) => {
-    const isItemEnabled = isDropdownItemEnabled(value, isNonStandardControlPlaneEnabled);
+    const isItemEnabled = isDropdownItemEnabled(
+      value,
+      isNonStandardControlPlaneEnabled,
+      isTnaEnabled,
+    );
     return (
       <DropdownItem key={value} id={value.toString()} isAriaDisabled={!isItemEnabled}>
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
@@ -151,6 +166,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
           snoExpansionSupported={snoExpansion}
         />
       )}
+      {field.value === 2 && <OcmTNADisclaimer />}
     </>
   );
 };
