@@ -75,6 +75,7 @@ const AddHostDropdown = ({
           </MenuToggle>
         )}
         shouldFocusToggleOnSelect
+        popperProps={{ preventOverflow: true }}
       >
         {[
           <DropdownItem
