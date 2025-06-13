@@ -30,6 +30,7 @@ import {
   AUTHORINO_OPERATOR_LINK,
   CNV_LINK,
   FENCE_AGENTS_REMEDIATION_LINK,
+  getKmmDocsLink,
   getKubeDeschedulerLink,
   getLsoLink,
   getLvmsDocsLink,
@@ -38,7 +39,6 @@ import {
   getNodeFeatureDiscoveryLink,
   getNvidiaGpuLink,
   getServiceMeshLink,
-  KMM_LINK,
   MTV_LINK,
   NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
@@ -147,9 +147,10 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
     [OPERATOR_NAME_KMM]: {
       title: 'Kernel Module Management',
       featureId: 'KMM',
-      Description: () => (
+      Description: ({ openshiftVersion }) => (
         <>
-          Management of kernel modules. <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
+          Management of kernel modules.{' '}
+          <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
     },
