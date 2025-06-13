@@ -54,6 +54,30 @@ import {
 } from '../../config';
 import { getMajorMinorVersion } from '../../utils';
 import { useNewFeatureSupportLevel } from '../newFeatureSupportLevels';
+import {
+  DESCRIPTION_AMD_GPU,
+  DESCRIPTION_AUTHORINO,
+  DESCRIPTION_LSO,
+  DESCRIPTION_MTV,
+  DESCRIPTION_CNV,
+  DESCRIPTION_FENCE_AGENTS_REMEDIATION,
+  DESCRIPTION_KMM,
+  DESCRIPTION_KUBE_DESCHEDULER,
+  DESCRIPTION_MCE,
+  DESCRIPTION_NMSTATE,
+  DESCRIPTION_NODE_FEATURE_DISCOVERY,
+  DESCRIPTION_NODE_HEALTHCHECK,
+  DESCRIPTION_NODE_MAINTENANCE,
+  DESCRIPTION_NVIDIA_GPU,
+  DESCRIPTION_ODF,
+  DESCRIPTION_OPENSHIFT_AI,
+  DESCRIPTION_OSC,
+  DESCRIPTION_PIPELINES,
+  DESCRIPTION_SELF_NODE_REMEDIATION,
+  DESCRIPTION_SERVERLESS,
+  DESCRIPTION_SERVICEMESH,
+  DESCRIPTION_LVM,
+} from './operatorDescriptions';
 
 export const isOCPVersionEqualsOrMore = (
   openshiftVersion: string,
@@ -70,9 +94,11 @@ export const isOCPVersionEqualsOrMore = (
 export type OperatorSpec = {
   title: string;
   featureId: FeatureId;
+  descriptionText?: string;
   Description?: React.ComponentType<{ openshiftVersion?: string }>;
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
+  category: string;
 };
 
 export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSpec } => {
@@ -80,160 +106,180 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
     [OPERATOR_NAME_MTV]: {
       title: 'Migration Toolkit for Virtualization',
       featureId: 'MTV',
+      descriptionText: DESCRIPTION_MTV,
       Description: () => (
         <>
-          This Toolkit (MTV) enables you to migrate virtual machines from VMware vSphere, Red Hat
-          Virtualization, or OpenStack to OpenShift Virtualization running on Red Hat OpenShift.{' '}
-          <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_MTV} <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Virtualization',
     },
     [OPERATOR_NAME_AMD_GPU]: {
       title: 'AMD GPU',
       featureId: 'AMD_GPU',
+      descriptionText: DESCRIPTION_AMD_GPU,
       Requirements: () => <>Requires at least one supported AMD GPU</>,
-      Description: () => (
-        <>
-          Automate the management of AMD software components needed to provision and monitor GPUs.
-        </>
-      ),
+      Description: () => <>{DESCRIPTION_AMD_GPU}</>,
+      category: 'AI',
     },
     [OPERATOR_NAME_LSO]: {
       title: 'Local Storage Operator',
       featureId: 'LSO',
+      descriptionText: DESCRIPTION_LSO,
       Description: ({ openshiftVersion }) => (
         <>
-          Allows provisioning of persistent storage by using local volumes.{' '}
+          {DESCRIPTION_LSO}{' '}
           <ExternalLink href={getLsoLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Storage',
     },
     [OPERATOR_NAME_AUTHORINO]: {
       title: 'Authorino',
       featureId: 'AUTHORINO',
+      descriptionText: DESCRIPTION_AUTHORINO,
       Description: () => (
         <>
-          Lightweight external authorization service for tailor-made Zero Trust API security.{' '}
+          {DESCRIPTION_AUTHORINO}{' '}
           <ExternalLink href={AUTHORINO_OPERATOR_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_CNV]: {
       title: 'OpenShift Virtualization',
       featureId: 'CNV',
+      descriptionText: DESCRIPTION_CNV,
       Requirements: () => (
         <>Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes</>
       ),
       Description: () => (
         <>
-          Run virtual machines alongside containers on one platform.{' '}
-          <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_CNV} <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Virtualization',
     },
     [OPERATOR_NAME_FENCE_AGENTS_REMEDIATION]: {
       title: 'Fence Agents Remediation',
       featureId: 'FENCE_AGENTS_REMEDIATION',
+      descriptionText: DESCRIPTION_FENCE_AGENTS_REMEDIATION,
       Description: () => (
         <>
-          Externally fences failed nodes using power controllers.{' '}
+          {DESCRIPTION_FENCE_AGENTS_REMEDIATION}{' '}
           <ExternalLink href={FENCE_AGENTS_REMEDIATION_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_KMM]: {
       title: 'Kernel Module Management',
       featureId: 'KMM',
+      descriptionText: DESCRIPTION_KMM,
       Description: () => (
         <>
-          Management of kernel modules. <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_KMM} <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_KUBE_DESCHEDULER]: {
       title: 'Kube Descheduler',
       featureId: 'KUBE_DESCHEDULER',
+      descriptionText: DESCRIPTION_KUBE_DESCHEDULER,
       Description: ({ openshiftVersion }) => (
         <>
-          Evicts pods to reschedule them onto more suitable nodes.{' '}
+          {DESCRIPTION_KUBE_DESCHEDULER}{' '}
           <ExternalLink href={getKubeDeschedulerLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_MCE]: {
       title: 'Multicluster engine',
       featureId: 'MCE',
+      descriptionText: DESCRIPTION_MCE,
       Description: ({ openshiftVersion }) => (
         <>
-          Create, import, and manage multiple clusters from this cluster.{' '}
+          {DESCRIPTION_MCE}{' '}
           <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_NMSTATE]: {
       title: 'NMState',
       featureId: 'NMSTATE',
+      descriptionText: DESCRIPTION_NMSTATE,
       Description: ({ openshiftVersion }) => (
         <>
-          Provides users with functionality to configure various network interface types, DNS, and
-          routing on cluster nodes.{' '}
+          {DESCRIPTION_NMSTATE}{' '}
           <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Network',
     },
     [OPERATOR_NAME_NODE_FEATURE_DISCOVERY]: {
       title: 'Node Feature Discovery',
       featureId: 'NODE_FEATURE_DISCOVERY',
+      descriptionText: DESCRIPTION_NODE_FEATURE_DISCOVERY,
       Description: ({ openshiftVersion }) => (
         <>
-          Manage the detection of hardware features and configuration by labeling nodes with
-          hardware-specific information.{' '}
+          {DESCRIPTION_NODE_FEATURE_DISCOVERY}{' '}
           <ExternalLink href={getNodeFeatureDiscoveryLink(openshiftVersion)}>
             Learn more
           </ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_NODE_HEALTHCHECK]: {
       title: 'Node Healthcheck',
       featureId: 'NODE_HEALTHCHECK',
+      descriptionText: DESCRIPTION_NODE_HEALTHCHECK,
       Description: () => (
         <>
-          Identify Unhealthy Nodes.{' '}
+          {DESCRIPTION_NODE_HEALTHCHECK}{' '}
           <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_NODE_MAINTENANCE]: {
       title: 'Node Maintenance',
       featureId: 'NODE_MAINTENANCE',
+      descriptionText: DESCRIPTION_NODE_MAINTENANCE,
       Description: () => (
         <>
-          Place nodes in maintenance mode.{' '}
+          {DESCRIPTION_NODE_MAINTENANCE}{' '}
           <ExternalLink href={NODE_MAINTENANCE_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_NVIDIA_GPU]: {
       title: 'NVIDIA GPU',
       featureId: 'NVIDIA_GPU',
+      descriptionText: DESCRIPTION_NVIDIA_GPU,
       Requirements: () => <>Requires at least one supported NVIDIA GPU</>,
       Description: ({ openshiftVersion }) => (
         <>
-          Automate the management of NVIDIA software components needed to provision and monitor
-          GPUs. <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
+          {DESCRIPTION_NVIDIA_GPU}
+          <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_ODF]: {
       title: 'OpenShift Data Foundation',
       featureId: 'ODF',
+      descriptionText: DESCRIPTION_ODF,
       Requirements: () => (
         <ExternalLink href={ODF_REQUIREMENTS_LINK}>
           Learn more about the requirements for OpenShift Data Foundation
@@ -241,27 +287,30 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       ),
       Description: () => (
         <>
-          Persistent software-defined storage for hybrid applications.{' '}
-          <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_ODF} <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Storage',
     },
     [OPERATOR_NAME_OPENSHIFT_AI]: {
       title: 'OpenShift AI',
       featureId: 'OPENSHIFT_AI',
+      descriptionText: DESCRIPTION_OPENSHIFT_AI,
       Requirements: () => (
         <ExternalLink href={OPENSHIFT_AI_REQUIREMENTS_LINK}>Learn more</ExternalLink>
       ),
       Description: () => (
         <>
-          Train, serve, monitor and manage AI/ML models and applications.{' '}
+          {DESCRIPTION_OPENSHIFT_AI}{' '}
           <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'AI',
     },
     [OPERATOR_NAME_OSC]: {
       title: 'OpenShift sandboxed containers',
       featureId: 'OSC',
+      descriptionText: DESCRIPTION_OSC,
       Requirements: () => (
         <ExternalLink href={OSC_REQUIREMENTS_LINK}>
           Learn more about the requirements for OpenShift sandboxed containers
@@ -269,71 +318,77 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
       ),
       Description: () => (
         <>
-          OpenShift sandboxed containers support for OpenShift Container Platform provides users
-          with built-in support for running Kata Containers as an additional optional runtime. It
-          provides an additional virtualization machine(VM) isolation layer for pods.{' '}
-          <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
         </>
       ),
+      category: 'Other',
     },
     [OPERATOR_NAME_PIPELINES]: {
       title: 'Pipelines',
       featureId: 'PIPELINES',
+      descriptionText: DESCRIPTION_PIPELINES,
       Description: () => (
         <>
-          Cloud-native continuous integration and delivery (CI/CD) solution for building pipelines
-          using Tekton. <ExternalLink href={PIPELINES_OPERATOR_LINK}>Learn more</ExternalLink>
+          {DESCRIPTION_PIPELINES}{' '}
+          <ExternalLink href={PIPELINES_OPERATOR_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_SELF_NODE_REMEDIATION]: {
       title: 'Self Node Remediation',
       featureId: 'SELF_NODE_REMEDIATION',
+      descriptionText: DESCRIPTION_SELF_NODE_REMEDIATION,
       Description: () => (
         <>
-          Allows nodes to reboot themselves when they become unhealthy.{' '}
+          {DESCRIPTION_SELF_NODE_REMEDIATION}{' '}
           <ExternalLink href={SELF_NODE_REMEDIATION_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Remediation',
     },
     [OPERATOR_NAME_SERVERLESS]: {
       title: 'Serverless',
       featureId: 'SERVERLESS',
+      descriptionText: DESCRIPTION_SERVERLESS,
       Description: () => (
         <>
-          Deploy workflow applications based on the CNCF Serverless Workflow specification.{' '}
+          {DESCRIPTION_SERVERLESS}{' '}
           <ExternalLink href={SERVERLESS_OPERATOR_LINK}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Other',
     },
     [OPERATOR_NAME_SERVICEMESH]: {
       title: 'Service Mesh',
       featureId: 'SERVICEMESH',
+      descriptionText: DESCRIPTION_SERVICEMESH,
       Description: ({ openshiftVersion }) => (
         <>
-          Platform that provides behavioral insight and operational control over a service mesh.{' '}
+          {DESCRIPTION_SERVICEMESH}{' '}
           <ExternalLink href={getServiceMeshLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
       notStandalone: true,
+      category: 'Network',
     },
     [OPERATOR_NAME_LVM]: {
       title: useLVMS ? 'Logical Volume Manager Storage' : 'Logical Volume Manager',
       featureId: 'LVM',
+      descriptionText: DESCRIPTION_LVM,
       Description: ({ openshiftVersion }) =>
         useLVMS ? (
           <>
-            Storage virtualization that offers a more flexible approach for disk space management.{' '}
+            {DESCRIPTION_LVM}{' '}
             <ExternalLink href={getLvmsDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ) : (
-          <>
-            Storage virtualization that offers a more flexible approach for disk space management.
-          </>
+          <>{DESCRIPTION_LVM}</>
         ),
+      category: 'Storage',
     },
   };
 };

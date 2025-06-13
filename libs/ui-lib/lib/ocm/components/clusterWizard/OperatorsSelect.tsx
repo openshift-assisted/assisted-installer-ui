@@ -19,15 +19,18 @@ import { OperatorsService } from '../../services';
 import { useFeature } from '../../hooks/use-feature';
 import OperatorCheckbox from '../clusterConfiguration/operators/OperatorCheckbox';
 import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import fuzzysearch from 'fuzzysearch';
 
 const OperatorsSelect = ({
   cluster,
   bundles,
   preflightRequirements,
+  searchTerm = '',
 }: {
   cluster: Cluster;
   bundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 }) => {
   const [isLoading, setIsLoading] = useStateSafely(true);
   const { addAlert } = useAlerts();
@@ -70,40 +73,87 @@ const OperatorsSelect = ({
       });
   }, [isSingleClusterFeatureEnabled, supportedOperators, opSpecs]);
 
+  const bundledOperatorIds = bundles.flatMap((bundle) => bundle.operators || []);
+
+  const filteredOperators = React.useMemo(() => {
+    const inBundles = new Set(bundledOperatorIds);
+
+    return operators.filter((op) => {
+      const spec = opSpecs[op];
+      if (!spec) return false;
+
+      const title = spec.title?.toLowerCase() || '';
+      const description = spec.descriptionText?.toLowerCase() || '';
+      const matchesSearch =
+        searchTerm === '' ||
+        fuzzysearch(searchTerm.toLowerCase(), op.toLowerCase()) ||
+        fuzzysearch(searchTerm.toLowerCase(), title) ||
+        fuzzysearch(searchTerm.toLowerCase(), description);
+
+      const isInBundle = inBundles.has(op);
+
+      return (
+        (isInBundle || matchesSearch) &&
+        (!isSingleClusterFeatureEnabled || singleClusterOperators.includes(op))
+      );
+    });
+  }, [bundledOperatorIds, operators, opSpecs, searchTerm, isSingleClusterFeatureEnabled]);
+
+  const selectedOperators = values.selectedOperators.filter(
+    (opKey) => filteredOperators.includes(opKey) && !!opSpecs[opKey],
+  );
+
+  const groupedOperators = React.useMemo(() => {
+    const groups: Record<string, string[]> = {};
+
+    for (const op of filteredOperators) {
+      const spec = opSpecs[op];
+      if (!spec) continue;
+
+      const category = spec.category || 'Other';
+      if (!groups[category]) {
+        groups[category] = [];
+      }
+      groups[category].push(op);
+    }
+
+    return groups;
+  }, [filteredOperators, opSpecs]);
+
   if (isLoading) {
     return <LoadingState />;
   }
 
-  const selectedOperators = values.selectedOperators.filter(
-    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
-  );
-
   return (
     <ExpandableSection
-      toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+      toggleText={`Single Operators (${filteredOperators.length} | ${selectedOperators.length} selected)`}
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       data-testid="single-operators-section"
     >
       <Stack hasGutter data-testid={'operators-form'}>
-        {operators.map((operatorKey) => {
-          if (!opSpecs[operatorKey]) {
-            return null;
-          }
-
-          return (
-            <StackItem key={operatorKey}>
-              <OperatorCheckbox
-                bundles={bundles}
-                operatorId={operatorKey}
-                cluster={cluster}
-                openshiftVersion={cluster.openshiftVersion}
-                preflightRequirements={preflightRequirements}
-                {...opSpecs[operatorKey]}
-              />
+        {Object.entries(groupedOperators).map(([category, ops]) => (
+          <React.Fragment key={category}>
+            <StackItem>
+              <strong>{category}</strong>
             </StackItem>
-          );
-        })}
+            {ops.map((operatorKey) => {
+              const spec = opSpecs[operatorKey];
+              return (
+                <StackItem key={operatorKey}>
+                  <OperatorCheckbox
+                    bundles={bundles}
+                    operatorId={operatorKey}
+                    cluster={cluster}
+                    openshiftVersion={cluster.openshiftVersion}
+                    preflightRequirements={preflightRequirements}
+                    {...spec}
+                  />
+                </StackItem>
+              );
+            })}
+          </React.Fragment>
+        ))}
       </Stack>
     </ExpandableSection>
   );
