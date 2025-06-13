@@ -1,7 +1,15 @@
-const DEFAULT_OPENSHIFT_DOCS_VERSION = '4.15';
+const DEFAULT_OPENSHIFT_DOCS_VERSION = 4.15;
 
-export const getShortOpenshiftVersion = (ocpVersion?: string) =>
-  ocpVersion ? ocpVersion.split('.').slice(0, 2).join('.') : DEFAULT_OPENSHIFT_DOCS_VERSION;
+export const getShortOpenshiftVersion = (ocpVersion?: string) => {
+  if (!ocpVersion) {
+    return DEFAULT_OPENSHIFT_DOCS_VERSION;
+  }
+  const versionXY = Number(ocpVersion.split('.').slice(0, 2).join('.'));
+  if (!Number.isFinite(versionXY)) {
+    return DEFAULT_OPENSHIFT_DOCS_VERSION;
+  }
+  return versionXY < 4.14 ? 4.14 : versionXY;
+};
 
 export const getYearForAssistedInstallerDocumentationLink = () => {
   return new Date().getFullYear();
@@ -28,7 +36,11 @@ export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string)
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
     ocpVersion,
-  )}/html/installing_on_bare_metal/installing-bare-metal#installation-network-user-infra_installing-bare-metal`;
+  )}/html/installing_on_bare_metal/${
+    getShortOpenshiftVersion(ocpVersion) > 4.17
+      ? 'user-provisioned-infrastructure'
+      : 'installing-bare-metal'
+  }#installation-network-user-infra_installing-bare-metal`;
 
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
