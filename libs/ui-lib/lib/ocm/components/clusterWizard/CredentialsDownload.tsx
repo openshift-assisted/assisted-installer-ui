@@ -22,7 +22,7 @@ const CredentialsDownload: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const [isChecked, setIsChecked] = React.useState<boolean>(false);
   const [isDownloading, setIsDownloading] = React.useState(false);
-  const { addAlert } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   const { t } = useTranslation();
 
   const downloadSingleFile = async (fileName: string) => {
@@ -42,6 +42,7 @@ const CredentialsDownload: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   };
 
   const handleDownloadClick = async () => {
+    clearAlerts();
     setIsDownloading(true);
 
     const configSuccess = await downloadSingleFile('kubeconfig');
