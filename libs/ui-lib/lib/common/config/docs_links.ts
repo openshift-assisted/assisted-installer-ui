@@ -1,14 +1,24 @@
-const DEFAULT_OPENSHIFT_DOCS_VERSION = 4.15;
+import { isMajorMinorVersionEqualOrGreater } from '../utils';
 
-export const getShortOpenshiftVersion = (ocpVersion?: string) => {
+const LATEST_OPENSHIFT_DOCS_VERSION = '4.18';
+const MIN_OPENSHIFT_DOCS_VERSION = '4.14';
+
+const getDocsOpenshiftVersion = (ocpVersion?: string): string => {
   if (!ocpVersion) {
-    return DEFAULT_OPENSHIFT_DOCS_VERSION;
+    return LATEST_OPENSHIFT_DOCS_VERSION;
   }
-  const versionXY = Number(ocpVersion.split('.').slice(0, 2).join('.'));
-  if (!Number.isFinite(versionXY)) {
-    return DEFAULT_OPENSHIFT_DOCS_VERSION;
+  if (isMajorMinorVersionEqualOrGreater(MIN_OPENSHIFT_DOCS_VERSION, ocpVersion)) {
+    return MIN_OPENSHIFT_DOCS_VERSION;
   }
-  return versionXY < 4.14 ? 4.14 : versionXY;
+  if (isMajorMinorVersionEqualOrGreater(ocpVersion, LATEST_OPENSHIFT_DOCS_VERSION)) {
+    return LATEST_OPENSHIFT_DOCS_VERSION;
+  }
+
+  const versionParts = ocpVersion.split('.').slice(0, 2).map(Number);
+  if (versionParts.length < 2) {
+    return LATEST_OPENSHIFT_DOCS_VERSION;
+  }
+  return `${versionParts[0]}.${versionParts[1]}`;
 };
 
 export const getYearForAssistedInstallerDocumentationLink = () => {
@@ -31,19 +41,19 @@ export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/i
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
 export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/installation_configuration/installing-customizing#installation-special-config-encrypt-disk_installing-customizing`;
 
 //Networking page
-export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) => {
+  const variant = isMajorMinorVersionEqualOrGreater(ocpVersion, '4.18')
+    ? 'user-provisioned-infrastructure'
+    : 'installing-bare-metal';
+  return `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/html/installing_on_bare_metal/${
-    getShortOpenshiftVersion(ocpVersion) > 4.17
-      ? 'user-provisioned-infrastructure'
-      : 'installing-bare-metal'
-  }#installation-network-user-infra_installing-bare-metal`;
+  )}/html/installing_on_bare_metal/${variant}#installation-network-user-infra_installing-bare-metal`;
+};
 
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
@@ -52,7 +62,7 @@ export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
 export const getApproveNodesInClLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/installing_on_any_platform/installing-platform-agnostic#installation-approve-csrs_installing-platform-agnostic`;
 
@@ -91,19 +101,19 @@ export const OSC_REQUIREMENTS_LINK =
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const getKmmDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/specialized_hardware_and_driver_enablement/kernel-module-management-operator`;
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
 export const getMceDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/architecture/about-the-multicluster-engine-for-kubernetes-operator`;
 
 export const getLvmsDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/storage/configuring-persistent-storage#overview-of-lvm-storage-functionality_ways-to-provision-local-storage`;
 
@@ -120,7 +130,7 @@ export const NODE_MAINTENANCE_LINK =
   'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/node-maintenance-operator';
 
 export const getKubeDeschedulerLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/nodes/controlling-pod-placement-onto-nodes-scheduling#descheduler`;
 
@@ -148,37 +158,39 @@ export const OPENSHIFT_AI_LINK =
 export const OSC_LINK = 'https://docs.redhat.com/en/documentation/openshift_sandboxed_containers';
 
 export const getMtuLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/networking/changing-cluster-network-mtu#nw-cluster-mtu-change-about_changing-cluster-network-mtu`;
 
 export const AUTHORINO_OPERATOR_LINK = 'https://github.com/Kuadrant/authorino-operator';
 
 export const getLsoLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getShortOpenshiftVersion(
+  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/storage/persistent_storage/persistent_storage_local/ways-to-provision-local-storage.html`;
 
 export const getNmstateLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getShortOpenshiftVersion(
+  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/networking/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator.html`;
 
 export const getNodeFeatureDiscoveryLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getShortOpenshiftVersion(
+  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/hardware_enablement/psap-node-feature-discovery-operator.html`;
 
-export const getNvidiaGpuLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getShortOpenshiftVersion(
-    ocpVersion,
-  )}/virt/virtual_machines/advanced_vm_management/virt-configuring-virtual-gpus.html`;
+export const getNvidiaGpuLink = (ocpVersion?: string) => {
+  const version = getDocsOpenshiftVersion(ocpVersion);
+  return isMajorMinorVersionEqualOrGreater(ocpVersion, '4.18')
+    ? `https://docs.redhat.com/en/documentation/openshift_container_platform/${version}/html/virtualization/managing-vms#virt-configuring-virtual-gpus`
+    : `https://docs.openshift.com/container-platform/${version}/virt/virtual_machines/advanced_vm_management/virt-configuring-virtual-gpus.html`;
+};
 
 export const PIPELINES_OPERATOR_LINK =
   'https://docs.openshift.com/pipelines/1.17/install_config/installing-pipelines.html';
 
 export const getServiceMeshLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getShortOpenshiftVersion(
+  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/service_mesh/v1x/preparing-ossm-installation.html`;
 
