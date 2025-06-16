@@ -398,3 +398,5 @@ export const useOperatorSpecs = () => {
   const useLVMS = getFeatureSupportLevel('LVM') === 'supported';
   return React.useMemo(() => getOperatorSpecs(useLVMS), [useLVMS]);
 };
+
+export const categoryOrder = ['Storage', 'Virtualization', 'AI', 'Network', 'Remediation', 'Other'];

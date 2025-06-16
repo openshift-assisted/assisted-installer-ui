@@ -18,7 +18,10 @@ import {
 import { OperatorsService } from '../../services';
 import { useFeature } from '../../hooks/use-feature';
 import OperatorCheckbox from '../clusterConfiguration/operators/OperatorCheckbox';
-import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import {
+  categoryOrder,
+  useOperatorSpecs,
+} from '../../../common/components/operators/operatorSpecs';
 import fuzzysearch from 'fuzzysearch';
 
 const OperatorsSelect = ({
@@ -132,28 +135,34 @@ const OperatorsSelect = ({
       data-testid="single-operators-section"
     >
       <Stack hasGutter data-testid={'operators-form'}>
-        {Object.entries(groupedOperators).map(([category, ops]) => (
-          <React.Fragment key={category}>
-            <StackItem>
-              <strong>{category}</strong>
-            </StackItem>
-            {ops.map((operatorKey) => {
-              const spec = opSpecs[operatorKey];
-              return (
-                <StackItem key={operatorKey}>
-                  <OperatorCheckbox
-                    bundles={bundles}
-                    operatorId={operatorKey}
-                    cluster={cluster}
-                    openshiftVersion={cluster.openshiftVersion}
-                    preflightRequirements={preflightRequirements}
-                    {...spec}
-                  />
-                </StackItem>
-              );
-            })}
-          </React.Fragment>
-        ))}
+        {Object.entries(groupedOperators)
+          .sort(([a], [b]) => {
+            const indexA = categoryOrder.indexOf(a);
+            const indexB = categoryOrder.indexOf(b);
+            return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+          })
+          .map(([category, ops]) => (
+            <React.Fragment key={category}>
+              <StackItem>
+                <strong>{category}</strong>
+              </StackItem>
+              {ops.map((operatorKey) => {
+                const spec = opSpecs[operatorKey];
+                return (
+                  <StackItem key={operatorKey}>
+                    <OperatorCheckbox
+                      bundles={bundles}
+                      operatorId={operatorKey}
+                      cluster={cluster}
+                      openshiftVersion={cluster.openshiftVersion}
+                      preflightRequirements={preflightRequirements}
+                      {...spec}
+                    />
+                  </StackItem>
+                );
+              })}
+            </React.Fragment>
+          ))}
       </Stack>
     </ExpandableSection>
   );
