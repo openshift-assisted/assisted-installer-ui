@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Flex,
-  FlexItem,
-  InputGroup,
-  Stack,
-  StackItem,
-  TextInput,
-} from '@patternfly/react-core';
+import { Flex, FlexItem, Stack, StackItem } from '@patternfly/react-core';
 import { Bundle } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterOperatorProps,

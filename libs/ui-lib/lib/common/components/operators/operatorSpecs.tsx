@@ -179,10 +179,11 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
     [OPERATOR_NAME_KMM]: {
       title: 'Kernel Module Management',
       featureId: 'KMM',
-      descriptionText: DESCRIPTION_KMM,  
+      descriptionText: DESCRIPTION_KMM,
       Description: ({ openshiftVersion }) => (
         <>
-           {DESCRIPTION_KMM} <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
+          {DESCRIPTION_KMM}{' '}
+          <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
       category: 'Other',
