@@ -22,7 +22,6 @@ import {
   categoryOrder,
   useOperatorSpecs,
 } from '../../../common/components/operators/operatorSpecs';
-import fuzzysearch from 'fuzzysearch';
 
 const OperatorsSelect = ({
   cluster,
@@ -88,10 +87,10 @@ const OperatorsSelect = ({
       const title = spec.title?.toLowerCase() || '';
       const description = spec.descriptionText?.toLowerCase() || '';
       const matchesSearch =
-        searchTerm === '' ||
-        fuzzysearch(searchTerm.toLowerCase(), op.toLowerCase()) ||
-        fuzzysearch(searchTerm.toLowerCase(), title) ||
-        fuzzysearch(searchTerm.toLowerCase(), description);
+        searchTerm.trim() === '' ||
+        op.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        title.includes(searchTerm.toLowerCase()) ||
+        description.includes(searchTerm.toLowerCase());
 
       const isInBundle = inBundles.has(op);
 

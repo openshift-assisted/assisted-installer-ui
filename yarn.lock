@@ -904,7 +904,6 @@ __metadata:
     "@redhat-cloud-services/types": ^1.0.1
     "@tsconfig/recommended": ^1.0.2
     "@types/file-saver": ^2.0.1
-    "@types/fuzzysearch": ^1
     "@types/human-date": ^1.4.0
     "@types/humanize-plus": ^1.8.0
     "@types/js-yaml": ^4.0.1
@@ -925,7 +924,6 @@ __metadata:
     filesize.js: ^2.0.0
     formik: 2.2.6
     fuse.js: ^6.4.6
-    fuzzysearch: ^1.0.3
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
     ip-address: ^7.1.0
@@ -1708,13 +1706,6 @@ __metadata:
     "@types/jsonfile": "*"
     "@types/node": "*"
   checksum: 242cb84157631f057f76495c8220707541882c00a00195b603d937fb55e471afecebcb089bab50233ed3a59c69fd68bf65c1f69dd7fafe2347e139cc15b9b0e5
-  languageName: node
-  linkType: hard
-
-"@types/fuzzysearch@npm:^1":
-  version: 1.0.2
-  resolution: "@types/fuzzysearch@npm:1.0.2"
-  checksum: 2080728cce05378acedde0934f08b34dfdb8586d52721c8b57cd163456933e5232757dfaea05bcb59859d42d62f8573c3979009ea30d6c8a66009bb5f0e6ba79
   languageName: node
   linkType: hard
 
@@ -5114,13 +5105,6 @@ __metadata:
   version: 6.6.2
   resolution: "fuse.js@npm:6.6.2"
   checksum: 17ae758ce205276ebd88bd9c9f088a100be0b4896abac9f6b09847151269d1690f41d7f98ff5813d4a58973162dbd99d0072ce807020fee6f9de60170f6b08eb
-  languageName: node
-  linkType: hard
-
-"fuzzysearch@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "fuzzysearch@npm:1.0.3"
-  checksum: 6a6c04ec2e87ab77e9b5a310d979bd3555f836ef17d9a231d01292c9447af81dcfb3241f0e315efd750535b12c937691754e9a4fb08a8c45979f7f0007e3742d
   languageName: node
   linkType: hard
 
