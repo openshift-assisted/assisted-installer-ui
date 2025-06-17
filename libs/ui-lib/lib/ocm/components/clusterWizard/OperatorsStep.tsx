@@ -1,5 +1,13 @@
 import React from 'react';
-import { Flex, FlexItem, Stack, StackItem, TextInput } from '@patternfly/react-core';
+import {
+  Button,
+  Flex,
+  FlexItem,
+  InputGroup,
+  Stack,
+  StackItem,
+  TextInput,
+} from '@patternfly/react-core';
 import { Bundle } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterOperatorProps,
@@ -13,6 +21,7 @@ import OperatorsBundle from './OperatorsBundle';
 import OperatorsSelect from './OperatorsSelect';
 import BundleService from '../../services/BundleService';
 import { useClusterPreflightRequirements } from '../../hooks';
+import SearchInputWithClear from '../../../common/components/operators/SearchInputWithClear';
 
 export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
   const { addAlert } = useAlerts();
@@ -62,13 +71,7 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
             <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
           </FlexItem>
           <FlexItem>
-            <TextInput
-              value={searchTerm}
-              type="text"
-              onChange={(_event, value) => setSearchTerm(value)}
-              placeholder="Search"
-              style={{ minWidth: '200px', maxWidth: '400px', width: '100%' }}
-            />
+            <SearchInputWithClear searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </FlexItem>
         </Flex>
       </StackItem>
