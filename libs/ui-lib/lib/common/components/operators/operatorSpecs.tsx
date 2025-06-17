@@ -30,6 +30,7 @@ import {
   AUTHORINO_OPERATOR_LINK,
   CNV_LINK,
   FENCE_AGENTS_REMEDIATION_LINK,
+  getKmmDocsLink,
   getKubeDeschedulerLink,
   getLsoLink,
   getLvmsDocsLink,
@@ -38,7 +39,6 @@ import {
   getNodeFeatureDiscoveryLink,
   getNvidiaGpuLink,
   getServiceMeshLink,
-  KMM_LINK,
   MTV_LINK,
   NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
@@ -79,6 +79,7 @@ import {
   DESCRIPTION_LVM,
 } from './operatorDescriptions';
 
+// TODO check if it's unused and it can be deleted in favor of "isMajorMinorVersionEqualOrGreater"
 export const isOCPVersionEqualsOrMore = (
   openshiftVersion: string,
   ocpVersionToCompare: string,
@@ -178,10 +179,10 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [key: string]: OperatorSp
     [OPERATOR_NAME_KMM]: {
       title: 'Kernel Module Management',
       featureId: 'KMM',
-      descriptionText: DESCRIPTION_KMM,
-      Description: () => (
+      descriptionText: DESCRIPTION_KMM,  
+      Description: ({ openshiftVersion }) => (
         <>
-          {DESCRIPTION_KMM} <ExternalLink href={KMM_LINK}>Learn more</ExternalLink>
+           {DESCRIPTION_KMM} <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
         </>
       ),
       category: 'Other',

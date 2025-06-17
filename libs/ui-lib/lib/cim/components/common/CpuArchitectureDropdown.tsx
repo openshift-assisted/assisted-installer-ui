@@ -54,7 +54,7 @@ const CpuArchitectureDropdown = ({
             isAriaDisabled={!isItemEnabled}
             selected={arch === value}
             description={architectureData[arch].description}
-            tooltipProps={{ content: disabledReason, position: 'top' }}
+            tooltipProps={{ content: disabledReason, position: 'top', hidden: isItemEnabled }}
             onClick={(e: React.MouseEvent) => e.preventDefault()}
           >
             {architectureData[arch].label}

@@ -235,6 +235,7 @@ const ClusterEventsToolbar = ({
               isOpen={isHostExpanded}
               onSelect={(e, value) => onHostSelect(value as string, isSelectEventChecked(e))}
               onOpenChange={onHostToggle}
+              isScrollable
               toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                 <MenuToggle
                   id="cluster-events-hosts-dropdown-button"
