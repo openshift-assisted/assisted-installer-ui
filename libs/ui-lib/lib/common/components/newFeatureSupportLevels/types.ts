@@ -14,17 +14,19 @@ export type ActiveFeatureConfiguration = {
   hasStaticIpNetworking: boolean;
 };
 
+export type GetFeatureSupportLevel = (
+  featureId: FeatureId,
+  supportLevelData?: NewFeatureSupportLevelMap,
+) => SupportLevel | undefined;
+
 export type GetFeatureDisabledReason = (
   featureId: FeatureId,
   supportLevelData?: NewFeatureSupportLevelMap,
   cpuArchitecture?: SupportedCpuArchitecture,
   platformType?: PlatformType,
+  getFeatureSupportLevel?: GetFeatureSupportLevel,
+  useLVMS?: boolean,
 ) => string | undefined;
-
-export type GetFeatureSupportLevel = (
-  featureId: FeatureId,
-  supportLevelData?: NewFeatureSupportLevelMap,
-) => SupportLevel | undefined;
 
 export type NewFeatureSupportLevelData = {
   getFeatureSupportLevels(): NewFeatureSupportLevelMap;

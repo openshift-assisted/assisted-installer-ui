@@ -11,7 +11,6 @@ import {
   handleApiError,
   LoadingState,
   OperatorsValues,
-  singleClusterOperators,
   useAlerts,
   useStateSafely,
 } from '../../../common';
@@ -53,28 +52,23 @@ const OperatorsSelect = ({
     void fetchSupportedOperators();
   }, [addAlert, setSupportedOperators, setIsLoading]);
 
-  const { byCategory, byKey: opSpecs } = useOperatorSpecs();
-
-  const operators = React.useMemo(() => {
-    return supportedOperators.filter((op) => {
-      if (!isSingleClusterFeatureEnabled) {
-        return true;
-      }
-      return singleClusterOperators.includes(op);
-    });
-  }, [isSingleClusterFeatureEnabled, supportedOperators]);
+  const {
+    byCategory,
+    byKey: opSpecs,
+    bySingleFeatureEnabled: operators,
+  } = useOperatorSpecs(supportedOperators, isSingleClusterFeatureEnabled);
 
   if (isLoading) {
     return <LoadingState />;
   }
 
   const selectedOperators = values.selectedOperators.filter(
-    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+    (opKey) => operators?.includes(opKey) && !!opSpecs[opKey],
   );
 
   return (
     <ExpandableSection
-      toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+      toggleText={`Single Operators ${operators.length} | ${selectedOperators.length} selected)`}
       onToggle={() => setIsExpanded(!isExpanded)}
       isExpanded={isExpanded}
       data-testid="single-operators-section"
