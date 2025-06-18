@@ -33,13 +33,13 @@ import { useSelector } from 'react-redux';
 import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
 import { getNewBundleOperators } from '../clusterConfiguration/operators/utils';
 import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
-import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import { OperatorSpec, useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
 
 import './OperatorsBundle.css';
 import { useClusterWizardContext } from './ClusterWizardContext';
 
 const BundleLabel = ({ bundle }: { bundle: Bundle }) => {
-  const opSpecs = useOperatorSpecs();
+  const { byKey: opSpecs } = useOperatorSpecs();
   const bundleSpec = bundleSpecs[bundle.id || ''];
 
   return (
@@ -81,13 +81,13 @@ const BundleLabel = ({ bundle }: { bundle: Bundle }) => {
 
 const getBundleSupportLevel = (
   bundle: Bundle,
-  opSpecs: ReturnType<typeof useOperatorSpecs>,
+  opSpecsByKey: Record<string, OperatorSpec>,
   getFeatureSupportLevel: GetFeatureSupportLevel,
 ): NewSupportLevelBadgeProps['supportLevel'] => {
   let supportLevel: NewSupportLevelBadgeProps['supportLevel'] = undefined;
   if (bundle.operators) {
     for (const op of bundle.operators) {
-      const operatorSpec = opSpecs[op];
+      const operatorSpec = opSpecsByKey[op];
       if (operatorSpec) {
         const opSupportLevel = getFeatureSupportLevel(operatorSpec.featureId);
         if (opSupportLevel === 'dev-preview') {
@@ -114,7 +114,7 @@ const BundleCard = ({
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const { isFeatureSupported, getFeatureSupportLevel } = useNewFeatureSupportLevel();
-  const opSpecs = useOperatorSpecs();
+  const { byKey: opSpecs } = useOperatorSpecs();
   const { uiSettings } = useClusterWizardContext();
 
   const supportLevel = getBundleSupportLevel(bundle, opSpecs, getFeatureSupportLevel);

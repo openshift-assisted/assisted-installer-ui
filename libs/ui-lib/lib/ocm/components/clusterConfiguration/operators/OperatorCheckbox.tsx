@@ -126,7 +126,7 @@ const OperatorCheckbox = ({
   preflightRequirements: PreflightHardwareRequirements | undefined;
 } & OperatorSpec) => {
   const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();
-  const opSpecs = useOperatorSpecs();
+  const { byKey: opSpecs } = useOperatorSpecs();
 
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();

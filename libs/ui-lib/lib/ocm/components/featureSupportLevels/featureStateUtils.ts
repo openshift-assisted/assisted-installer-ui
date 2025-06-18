@@ -17,7 +17,7 @@ import {
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
-import { getOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import { getOperatorSpecsByKey } from '../../../common/components/operators/operatorSpecs';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -46,7 +46,7 @@ const getOdfDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecs();
+  const opSpecs = getOperatorSpecsByKey();
 
   const operatorTitle = opSpecs[OPERATOR_NAME_ODF]?.title || '';
 
@@ -75,7 +75,7 @@ const getCnvDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecs();
+  const opSpecs = getOperatorSpecsByKey();
   const operatorTitle = opSpecs[OPERATOR_NAME_CNV]?.title || '';
   if (platformType === 'nutanix') {
     return `${operatorTitle} is not available when Nutanix platform type is selected.`;
@@ -105,7 +105,7 @@ const getLvmDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecs();
+  const opSpecs = getOperatorSpecsByKey();
   const operatorTitle = opSpecs[OPERATOR_NAME_LVM]?.title;
   if (platformType === 'nutanix') {
     return `${operatorTitle} is not supported when Nutanix platform type is selected.`;
@@ -125,7 +125,7 @@ const getOscDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecs();
+  const opSpecs = getOperatorSpecsByKey();
   const operatorTitle = opSpecs[OPERATOR_NAME_OSC]?.title || '';
   if (!isSupported) {
     return `${operatorTitle} is not supported in this OpenShift version.`;
@@ -299,7 +299,7 @@ const getOpenShiftAIDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecs();
+  const opSpecs = getOperatorSpecsByKey();
   const operatorTitle = opSpecs[OPERATOR_NAME_OPENSHIFT_AI]?.title || '';
   const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm) {

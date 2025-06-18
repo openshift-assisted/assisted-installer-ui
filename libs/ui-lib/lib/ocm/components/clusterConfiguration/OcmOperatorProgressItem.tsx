@@ -80,7 +80,7 @@ type OperatorsPopoverProps = OperatorListProps & {
 
 const OperatorsPopover = ({ operators, children }: OperatorsPopoverProps) => {
   const { t } = useTranslation();
-  const opSpecs = useOperatorSpecs();
+  const { byKey: opSpecs } = useOperatorSpecs();
 
   return (
     <Popover
