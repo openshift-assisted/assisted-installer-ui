@@ -53,22 +53,16 @@ const OperatorsSelect = ({
     void fetchSupportedOperators();
   }, [addAlert, setSupportedOperators, setIsLoading]);
 
-  const opSpecs = useOperatorSpecs();
+  const { byCategory, byKey: opSpecs } = useOperatorSpecs();
 
   const operators = React.useMemo(() => {
-    return supportedOperators
-      .sort((a, b) => {
-        const aTitle = opSpecs[a]?.title || a;
-        const bTitle = opSpecs[b]?.title || b;
-        return aTitle.localeCompare(bTitle);
-      })
-      .filter((op) => {
-        if (!isSingleClusterFeatureEnabled) {
-          return true;
-        }
-        return singleClusterOperators.includes(op);
-      });
-  }, [isSingleClusterFeatureEnabled, supportedOperators, opSpecs]);
+    return supportedOperators.filter((op) => {
+      if (!isSingleClusterFeatureEnabled) {
+        return true;
+      }
+      return singleClusterOperators.includes(op);
+    });
+  }, [isSingleClusterFeatureEnabled, supportedOperators]);
 
   if (isLoading) {
     return <LoadingState />;
@@ -86,22 +80,30 @@ const OperatorsSelect = ({
       data-testid="single-operators-section"
     >
       <Stack hasGutter data-testid={'operators-form'}>
-        {operators.map((operatorKey) => {
-          if (!opSpecs[operatorKey]) {
+        {Object.entries(byCategory).map(([categoryName, specs]) => {
+          const categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
+          if (categoryOperators.length === 0) {
             return null;
           }
 
           return (
-            <StackItem key={operatorKey}>
-              <OperatorCheckbox
-                bundles={bundles}
-                operatorId={operatorKey}
-                cluster={cluster}
-                openshiftVersion={cluster.openshiftVersion}
-                preflightRequirements={preflightRequirements}
-                {...opSpecs[operatorKey]}
-              />
-            </StackItem>
+            <React.Fragment key={categoryName}>
+              <StackItem>
+                <strong>{categoryName}</strong>
+              </StackItem>
+              {categoryOperators.map((spec) => (
+                <StackItem key={spec.operatorKey}>
+                  <OperatorCheckbox
+                    bundles={bundles}
+                    operatorId={spec.operatorKey}
+                    cluster={cluster}
+                    openshiftVersion={cluster.openshiftVersion}
+                    preflightRequirements={preflightRequirements}
+                    {...spec}
+                  />
+                </StackItem>
+              ))}
+            </React.Fragment>
           );
         })}
       </Stack>
