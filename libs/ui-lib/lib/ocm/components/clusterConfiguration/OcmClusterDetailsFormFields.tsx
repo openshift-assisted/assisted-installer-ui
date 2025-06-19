@@ -32,7 +32,10 @@ import { ExternalPlatformLabels } from './platformIntegration/constants';
 import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { useFeature } from '../../hooks/use-feature';
-import ControlPlaneNodesDropdown, { ControlPlaneNodesLabel } from './ControlPlaneNodesDropdown';
+import ControlPlaneNodesDropdown, {
+  ControlPlaneNodesLabel,
+  DEFAULT_VALUE_CPN,
+} from './ControlPlaneNodesDropdown';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -115,6 +118,10 @@ export const OcmClusterDetailsFormFields = ({
     );
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
+  const handleOpenshiftVersionChange = React.useCallback(() => {
+    setFieldValue('controlPlaneCount', DEFAULT_VALUE_CPN, false);
+  }, [setFieldValue]);
+
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -142,7 +149,7 @@ export const OcmClusterDetailsFormFields = ({
           withMultiText
         />
       ) : (
-        <OcmOpenShiftVersionSelect versions={versions} />
+        <OcmOpenShiftVersionSelect versions={versions} onChange={handleOpenshiftVersionChange} />
       )}
       {clusterExists || isSingleClusterFeatureEnabled ? (
         <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
