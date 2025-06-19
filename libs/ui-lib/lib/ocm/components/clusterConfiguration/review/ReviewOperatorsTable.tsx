@@ -6,7 +6,8 @@ import { TableSummaryExpandable } from './TableSummaryExpandable';
 import { useOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
-  const opSpecs = useOperatorSpecs();
+  const { byKey: opSpecs } = useOperatorSpecs();
+
   const rows = React.useMemo(
     () =>
       cluster.monitoredOperators

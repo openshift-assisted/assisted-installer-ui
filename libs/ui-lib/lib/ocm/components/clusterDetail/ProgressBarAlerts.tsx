@@ -66,7 +66,7 @@ export const HostInstallationWarning = ({
   message,
 }: InstallationProgressWarningProps) => {
   const { addAlert, clearAlerts } = useAlerts();
-  const opSpecs = useOperatorSpecs();
+  const { byKey: opSpecs } = useOperatorSpecs();
 
   return (
     <>
