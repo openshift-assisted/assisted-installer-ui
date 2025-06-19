@@ -26,6 +26,7 @@ export type BMCFormProps = {
   nmState?: NMStateK8sResource;
   secret?: SecretK8sResource;
   isEdit?: boolean;
+  provisioningConfigError?: unknown;
 };
 
 export type AddYamlValues = {
