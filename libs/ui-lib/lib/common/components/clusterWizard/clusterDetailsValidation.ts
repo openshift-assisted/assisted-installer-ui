@@ -55,18 +55,17 @@ export const getClusterDetailsInitialValues = ({
 }): ClusterDetailsValues => {
   const {
     name = '',
-    highAvailabilityMode = 'Full',
     baseDnsDomain = baseDomain || '',
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
+    controlPlaneCount = 3,
   } = cluster || {};
-
   return {
     name,
-    highAvailabilityMode,
     openshiftVersion,
     pullSecret: pullSecret || '',
     baseDnsDomain,
-    SNODisclaimer: highAvailabilityMode === 'None',
+    controlPlaneCount,
+    SNODisclaimer: controlPlaneCount === 1,
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
     enableDiskEncryptionOnMasters: ['all', 'masters'].includes(
@@ -82,7 +81,6 @@ export const getClusterDetailsInitialValues = ({
     platform: cluster?.platform?.type || 'none',
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
-    controlPlaneCount: cluster?.controlPlaneCount || 3,
     enableDiskEncryptionOnArbiters: ['all', 'arbiters'].includes(
       cluster?.diskEncryption?.enableOn ?? 'none',
     ),
