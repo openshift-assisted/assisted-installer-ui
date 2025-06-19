@@ -20,7 +20,7 @@ import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
 const fieldId = getFieldId(INPUT_NAME, 'input');
-const DEFAULT_VALUE = 3;
+export const DEFAULT_VALUE_CPN = 3;
 
 export const ControlPlaneNodesLabel = () => {
   return (
@@ -105,7 +105,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
 
   React.useEffect(() => {
     if (!field.value) {
-      setValue(DEFAULT_VALUE);
+      setValue(DEFAULT_VALUE_CPN);
     }
   }, [field.value, setValue]);
 
