@@ -10,7 +10,6 @@ import { usePullSecret } from '../../hooks';
 import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import {
-  GetFeatureSupportLevel,
   NewFeatureSupportLevelContextProvider,
   NewFeatureSupportLevelData,
   NewFeatureSupportLevelMap,
@@ -120,8 +119,6 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
       supportLevelDataNew?: NewFeatureSupportLevelMap,
       cpuArchitecture?: SupportedCpuArchitecture,
       platformType?: PlatformType,
-      getFeatureSupportLevel?: GetFeatureSupportLevel,
-      useLVMS?: boolean,
     ) => {
       const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
@@ -131,8 +128,6 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
         isSupported,
         cpuArchitecture,
         platformType,
-        getFeatureSupportLevel,
-        useLVMS,
       );
     },
     [isFeatureSupportedCallback, cluster, activeFeatureConfiguration],

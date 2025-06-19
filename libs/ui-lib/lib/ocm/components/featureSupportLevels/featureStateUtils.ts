@@ -17,8 +17,7 @@ import {
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
-import { getOperatorSpecByKey } from '../../../common/components/operators/operatorSpecs';
-import { GetFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import { getOperatorSpecsByKey } from '../../../common/components/operators/operatorSpecs';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -42,16 +41,14 @@ const getOdfDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
   isSupported: boolean,
-  getFeatureSupportLevel: GetFeatureSupportLevel,
-  useLVMS?: boolean,
 ) => {
   if (!cluster) {
     return undefined;
   }
 
-  const opSpec = getOperatorSpecByKey(OPERATOR_NAME_ODF, getFeatureSupportLevel, useLVMS);
+  const opSpecs = getOperatorSpecsByKey();
 
-  const operatorTitle = opSpec?.title || '';
+  const operatorTitle = opSpecs[OPERATOR_NAME_ODF]?.title || '';
 
   const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm && isSNO(cluster)) {
@@ -72,16 +69,14 @@ const getOdfDisabledReason = (
 const getCnvDisabledReason = (
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
-  getFeatureSupportLevel: GetFeatureSupportLevel,
   platformType?: PlatformType,
-  useLVMS?: boolean,
 ) => {
   if (!activeFeatureConfiguration) {
     return undefined;
   }
 
-  const opSpec = getOperatorSpecByKey(OPERATOR_NAME_CNV, getFeatureSupportLevel, useLVMS);
-  const operatorTitle = opSpec?.title || '';
+  const opSpecs = getOperatorSpecsByKey();
+  const operatorTitle = opSpecs[OPERATOR_NAME_CNV]?.title || '';
   if (platformType === 'nutanix') {
     return `${operatorTitle} is not available when Nutanix platform type is selected.`;
   }
@@ -104,16 +99,14 @@ const getCnvDisabledReason = (
 const getLvmDisabledReason = (
   activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
-  getFeatureSupportLevel: GetFeatureSupportLevel,
   platformType?: PlatformType,
-  useLVMS?: boolean,
 ) => {
   if (!activeFeatureConfiguration) {
     return undefined;
   }
 
-  const opSpec = getOperatorSpecByKey(OPERATOR_NAME_LVM, getFeatureSupportLevel, useLVMS);
-  const operatorTitle = opSpec?.title || '';
+  const opSpecs = getOperatorSpecsByKey();
+  const operatorTitle = opSpecs[OPERATOR_NAME_LVM]?.title;
   if (platformType === 'nutanix') {
     return `${operatorTitle} is not supported when Nutanix platform type is selected.`;
   }
@@ -125,16 +118,15 @@ const getLvmDisabledReason = (
 
 const getOscDisabledReason = (
   cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
   isSupported: boolean,
-  getFeatureSupportLevel: GetFeatureSupportLevel,
-  useLVMS?: boolean,
 ) => {
   if (!cluster) {
     return undefined;
   }
 
-  const opSpec = getOperatorSpecByKey(OPERATOR_NAME_OSC, getFeatureSupportLevel, useLVMS);
-  const operatorTitle = opSpec?.title || '';
+  const opSpecs = getOperatorSpecsByKey();
+  const operatorTitle = opSpecs[OPERATOR_NAME_OSC]?.title || '';
   if (!isSupported) {
     return `${operatorTitle} is not supported in this OpenShift version.`;
   }
@@ -168,8 +160,6 @@ export const getNewFeatureDisabledReason = (
   isSupported: boolean,
   cpuArchitecture?: SupportedCpuArchitecture,
   platformType?: PlatformType,
-  getFeatureSupportLevel?: GetFeatureSupportLevel,
-  useLVMS?: boolean,
 ): string | undefined => {
   switch (featureId) {
     case 'SNO': {
@@ -179,58 +169,27 @@ export const getNewFeatureDisabledReason = (
       return getArmDisabledReason(cluster);
     }
     case 'CNV': {
-      if (!getFeatureSupportLevel) {
-        throw new Error('getFeatureSupportLevel is required for getCnvDisabledReason');
-      }
       return getCnvDisabledReason(
         activeFeatureConfiguration,
         isSupported,
-        getFeatureSupportLevel,
         platformType ?? cluster?.platform?.type,
-        useLVMS,
       );
     }
     case 'LVM': {
-      if (!getFeatureSupportLevel) {
-        throw new Error('getFeatureSupportLevel is required for getLvmDisabledReason');
-      }
       return getLvmDisabledReason(
         activeFeatureConfiguration,
         isSupported,
-        getFeatureSupportLevel,
         platformType ?? cluster?.platform?.type,
-        useLVMS,
       );
     }
     case 'ODF': {
-      if (!getFeatureSupportLevel) {
-        throw new Error('getFeatureSupportLevel is required for getOdfDisabledReason');
-      }
-      return getOdfDisabledReason(
-        cluster,
-        activeFeatureConfiguration,
-        isSupported,
-        getFeatureSupportLevel,
-        useLVMS,
-      );
+      return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'OPENSHIFT_AI': {
-      if (!getFeatureSupportLevel) {
-        throw new Error('getFeatureSupportLevel is required for getOpenShiftAIDisabledReason');
-      }
-      return getOpenShiftAIDisabledReason(
-        cluster,
-        activeFeatureConfiguration,
-        isSupported,
-        getFeatureSupportLevel,
-        useLVMS,
-      );
+      return getOpenShiftAIDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'OSC': {
-      if (!getFeatureSupportLevel) {
-        throw new Error('getFeatureSupportLevel is required for getOscDisabledReason');
-      }
-      return getOscDisabledReason(cluster, isSupported, getFeatureSupportLevel, useLVMS);
+      return getOscDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
@@ -335,15 +294,13 @@ const getOpenShiftAIDisabledReason = (
   cluster: Cluster | undefined,
   activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
   isSupported: boolean,
-  getFeatureSupportLevel: GetFeatureSupportLevel,
-  useLVMS?: boolean,
 ) => {
   if (!cluster) {
     return undefined;
   }
 
-  const opSpec = getOperatorSpecByKey(OPERATOR_NAME_OPENSHIFT_AI, getFeatureSupportLevel, useLVMS);
-  const operatorTitle = opSpec?.title || '';
+  const opSpecs = getOperatorSpecsByKey();
+  const operatorTitle = opSpecs[OPERATOR_NAME_OPENSHIFT_AI]?.title || '';
   const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm) {
     return `${operatorTitle} is not available when ARM CPU architecture is selected.`;

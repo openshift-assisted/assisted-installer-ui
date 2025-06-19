@@ -24,7 +24,10 @@ import NewFeatureSupportLevelBadge, {
 } from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { ExternalLink, OperatorsValues, PopoverIcon, singleClusterBundles } from '../../../common';
 import { useFormikContext } from 'formik';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import {
+  GetFeatureSupportLevel,
+  useNewFeatureSupportLevel,
+} from '../../../common/components/newFeatureSupportLevels';
 import { useFeature } from '../../hooks/use-feature';
 import { useSelector } from 'react-redux';
 import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
@@ -79,16 +82,18 @@ const BundleLabel = ({ bundle }: { bundle: Bundle }) => {
 const getBundleSupportLevel = (
   bundle: Bundle,
   opSpecsByKey: Record<string, OperatorSpec>,
+  getFeatureSupportLevel: GetFeatureSupportLevel,
 ): NewSupportLevelBadgeProps['supportLevel'] => {
   let supportLevel: NewSupportLevelBadgeProps['supportLevel'] = undefined;
   if (bundle.operators) {
     for (const op of bundle.operators) {
       const operatorSpec = opSpecsByKey[op];
       if (operatorSpec) {
-        if (operatorSpec.supportLevel === 'dev-preview') {
+        const opSupportLevel = getFeatureSupportLevel(operatorSpec.featureId);
+        if (opSupportLevel === 'dev-preview') {
           supportLevel = 'dev-preview';
           break;
-        } else if (operatorSpec.supportLevel === 'tech-preview') {
+        } else if (opSupportLevel === 'tech-preview') {
           supportLevel = 'tech-preview';
         }
       }
@@ -108,11 +113,11 @@ const BundleCard = ({
 }) => {
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const isSNO = useSelector(selectIsCurrentClusterSNO);
-  const { isFeatureSupported } = useNewFeatureSupportLevel();
+  const { isFeatureSupported, getFeatureSupportLevel } = useNewFeatureSupportLevel();
   const { byKey: opSpecs } = useOperatorSpecs();
   const { uiSettings } = useClusterWizardContext();
 
-  const supportLevel = getBundleSupportLevel(bundle, opSpecs);
+  const supportLevel = getBundleSupportLevel(bundle, opSpecs, getFeatureSupportLevel);
 
   const hasUnsupportedOperators = !!bundle.operators?.some((op) => {
     const operatorSpec = opSpecs[op];
