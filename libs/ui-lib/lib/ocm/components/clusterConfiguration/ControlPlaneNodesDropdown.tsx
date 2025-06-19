@@ -83,7 +83,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   );
 
   const disabledReason =
-    'This option is not available with the current configurations. Make sure that OpenShift version is 4.18 or newer, CPU architecture is x86_64 and no external platform integration is selected.';
+    'This option is not available with the current configurations. Make sure that OpenShift version is 4.19 or newer, CPU architecture is x86_64 and no external platform integration is selected.';
 
   const isNonStandardControlPlaneEnabled = newFeatureSupportLevelContext.isFeatureSupported(
     'NON_STANDARD_HA_CONTROL_PLANE',
