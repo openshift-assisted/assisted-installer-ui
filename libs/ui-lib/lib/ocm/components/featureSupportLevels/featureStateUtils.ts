@@ -4,11 +4,6 @@ import {
   CpuArchitecture,
   FeatureId,
   isSNO,
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LVM,
-  OPERATOR_NAME_ODF,
-  OPERATOR_NAME_OPENSHIFT_AI,
-  OPERATOR_NAME_OSC,
   SupportedCpuArchitecture,
 } from '../../../common';
 import {
@@ -17,7 +12,7 @@ import {
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
-import { getOperatorSpecsByKey } from '../../../common/components/operators/operatorSpecs';
+import { getOperatorTitleByFeatureId } from '../../../common/components/operators/operatorSpecs';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -46,10 +41,7 @@ const getOdfDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecsByKey();
-
-  const operatorTitle = opSpecs[OPERATOR_NAME_ODF]?.title || '';
-
+  const operatorTitle = getOperatorTitleByFeatureId('ODF') || '';
   const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm && isSNO(cluster)) {
     return `${operatorTitle} is not available when using Single Node OpenShift or ARM CPU architecture.`;
@@ -75,8 +67,8 @@ const getCnvDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecsByKey();
-  const operatorTitle = opSpecs[OPERATOR_NAME_CNV]?.title || '';
+  const operatorTitle = getOperatorTitleByFeatureId('CNV') || '';
+
   if (platformType === 'nutanix') {
     return `${operatorTitle} is not available when Nutanix platform type is selected.`;
   }
@@ -105,8 +97,7 @@ const getLvmDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecsByKey();
-  const operatorTitle = opSpecs[OPERATOR_NAME_LVM]?.title;
+  const operatorTitle = getOperatorTitleByFeatureId('LVM') || '';
   if (platformType === 'nutanix') {
     return `${operatorTitle} is not supported when Nutanix platform type is selected.`;
   }
@@ -125,8 +116,7 @@ const getOscDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecsByKey();
-  const operatorTitle = opSpecs[OPERATOR_NAME_OSC]?.title || '';
+  const operatorTitle = getOperatorTitleByFeatureId('OSC') || '';
   if (!isSupported) {
     return `${operatorTitle} is not supported in this OpenShift version.`;
   }
@@ -299,8 +289,7 @@ const getOpenShiftAIDisabledReason = (
     return undefined;
   }
 
-  const opSpecs = getOperatorSpecsByKey();
-  const operatorTitle = opSpecs[OPERATOR_NAME_OPENSHIFT_AI]?.title || '';
+  const operatorTitle = getOperatorTitleByFeatureId('OPENSHIFT_AI') || '';
   const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm) {
     return `${operatorTitle} is not available when ARM CPU architecture is selected.`;

@@ -19,6 +19,7 @@ export type GetFeatureDisabledReason = (
   supportLevelData?: NewFeatureSupportLevelMap,
   cpuArchitecture?: SupportedCpuArchitecture,
   platformType?: PlatformType,
+  title?: string,
 ) => string | undefined;
 
 export type GetFeatureSupportLevel = (
