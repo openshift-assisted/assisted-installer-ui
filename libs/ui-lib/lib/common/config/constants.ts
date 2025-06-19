@@ -70,7 +70,6 @@ export const clusterFieldLabels = (t: TFunction): { [key in string]: string } =>
   ingressVips: t('ai:Ingress IP'),
   pullSecret: t('ai:Pull secret'),
   sshPublicKey: t('ai:SSH public key'),
-  SNODisclaimer: t('ai:Single Node OpenShift disclaimer'),
   diskEncryptionTangServers: t("ai:Tang servers' URLs or thumbprints"),
   selectedHostIds: t('ai:Hosts selection'),
   httpProxy: t('ai:HTTP proxy'),

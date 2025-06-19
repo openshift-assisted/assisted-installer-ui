@@ -22,7 +22,6 @@ export type ClusterDetailsValues = {
   openshiftVersion: string;
   pullSecret: string;
   baseDnsDomain: string;
-  SNODisclaimer: boolean;
   useRedHatDnsService: boolean;
   enableDiskEncryptionOnMasters: boolean;
   enableDiskEncryptionOnWorkers: boolean;
