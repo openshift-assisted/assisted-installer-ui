@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { FeatureId } from '../../types';
 import {
   OPERATOR_NAME_AMD_GPU,
@@ -53,7 +53,7 @@ import {
   SERVERLESS_OPERATOR_LINK,
 } from '../../config';
 import { getMajorMinorVersion } from '../../utils';
-import { useNewFeatureSupportLevel } from '../newFeatureSupportLevels';
+import { GetFeatureSupportLevel, useNewFeatureSupportLevel } from '../newFeatureSupportLevels';
 import {
   DESCRIPTION_AMD_GPU,
   DESCRIPTION_AUTHORINO,
@@ -101,9 +101,13 @@ export type OperatorSpec = {
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
   category: string;
+  supportLevel?: SupportLevel | undefined;
 };
 
-export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: OperatorSpec[] } => {
+export const getOperatorSpecs = (
+  getFeatureSupportLevel: GetFeatureSupportLevel,
+  useLVMS?: boolean,
+): { [category: string]: OperatorSpec[] } => {
   return {
     [categories[Category.STORAGE]]: [
       {
@@ -119,6 +123,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.STORAGE],
+        supportLevel: getFeatureSupportLevel('LSO'),
       },
       {
         operatorKey: OPERATOR_NAME_LVM,
@@ -135,6 +140,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
             <>{DESCRIPTION_LVM}</>
           ),
         category: categories[Category.STORAGE],
+        supportLevel: getFeatureSupportLevel('LVM'),
       },
       {
         operatorKey: OPERATOR_NAME_ODF,
@@ -152,6 +158,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.STORAGE],
+        supportLevel: getFeatureSupportLevel('ODF'),
       },
     ],
     [categories[Category.VIRT]]: [
@@ -169,6 +176,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.VIRT],
+        supportLevel: getFeatureSupportLevel('CNV'),
       },
       {
         operatorKey: OPERATOR_NAME_MTV,
@@ -181,6 +189,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.VIRT],
+        supportLevel: getFeatureSupportLevel('MTV'),
       },
     ],
     [categories[Category.AI]]: [
@@ -199,6 +208,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.AI],
+        supportLevel: getFeatureSupportLevel('OPENSHIFT_AI'),
       },
       {
         operatorKey: OPERATOR_NAME_AMD_GPU,
@@ -208,6 +218,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         Requirements: () => <>Requires at least one supported AMD GPU</>,
         Description: () => <>{DESCRIPTION_AMD_GPU}</>,
         category: categories[Category.AI],
+        supportLevel: getFeatureSupportLevel('AMD_GPU'),
       },
       {
         operatorKey: OPERATOR_NAME_NVIDIA_GPU,
@@ -222,6 +233,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.AI],
+        supportLevel: getFeatureSupportLevel('NVIDIA_GPU'),
       },
     ],
     [categories[Category.NETWORK]]: [
@@ -237,6 +249,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.NETWORK],
+        supportLevel: getFeatureSupportLevel('NMSTATE'),
       },
       {
         operatorKey: OPERATOR_NAME_SERVICEMESH,
@@ -251,6 +264,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.NETWORK],
+        supportLevel: getFeatureSupportLevel('SERVICEMESH'),
       },
     ],
     [categories[Category.REMEDIATION]]: [
@@ -267,6 +281,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.REMEDIATION],
+        supportLevel: getFeatureSupportLevel('FENCE_AGENTS_REMEDIATION'),
       },
       {
         operatorKey: OPERATOR_NAME_NODE_HEALTHCHECK,
@@ -281,6 +296,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.REMEDIATION],
+        supportLevel: getFeatureSupportLevel('NODE_HEALTHCHECK'),
       },
       {
         operatorKey: OPERATOR_NAME_SELF_NODE_REMEDIATION,
@@ -295,6 +311,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.REMEDIATION],
+        supportLevel: getFeatureSupportLevel('SELF_NODE_REMEDIATION'),
       },
     ],
     [categories[Category.OTHER]]: [
@@ -311,6 +328,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('AUTHORINO'),
       },
       {
         operatorKey: OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
@@ -326,6 +344,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('NODE_FEATURE_DISCOVERY'),
       },
       {
         operatorKey: OPERATOR_NAME_PIPELINES,
@@ -340,6 +359,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('PIPELINES'),
       },
       {
         operatorKey: OPERATOR_NAME_SERVERLESS,
@@ -354,6 +374,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('SERVERLESS'),
       },
       {
         operatorKey: OPERATOR_NAME_KMM,
@@ -367,6 +388,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('KMM'),
       },
       {
         operatorKey: OPERATOR_NAME_MCE,
@@ -380,6 +402,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('MCE'),
       },
       {
         operatorKey: OPERATOR_NAME_OSC,
@@ -397,6 +420,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
           </>
         ),
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('OSC'),
       },
       {
         operatorKey: OPERATOR_NAME_KUBE_DESCHEDULER,
@@ -411,6 +435,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('KUBE_DESCHEDULER'),
       },
 
       {
@@ -426,6 +451,7 @@ export const getOperatorSpecs = (useLVMS?: boolean): { [category: string]: Opera
         ),
         notStandalone: true,
         category: categories[Category.OTHER],
+        supportLevel: getFeatureSupportLevel('NODE_MAINTENANCE'),
       },
     ],
   };
@@ -436,7 +462,10 @@ export const useOperatorSpecs = () => {
   const useLVMS = getFeatureSupportLevel('LVM') === 'supported';
 
   // Grouped by category
-  const byCategory = React.useMemo(() => getOperatorSpecs(useLVMS), [useLVMS]);
+  const byCategory = React.useMemo(
+    () => getOperatorSpecs(getFeatureSupportLevel, useLVMS),
+    [getFeatureSupportLevel, useLVMS],
+  );
 
   // Flat map operatorKey -> spec
   const byKey: Record<string, OperatorSpec> = React.useMemo(() => {
@@ -451,14 +480,18 @@ export const useOperatorSpecs = () => {
   return { byCategory, byKey };
 };
 
-// Utility to get flat map outside the hook
-export const getOperatorSpecsByKey = (useLVMS?: boolean): Record<string, OperatorSpec> =>
-  Object.values(getOperatorSpecs(useLVMS)).reduce((acc, specs) => {
-    specs.forEach((spec) => {
-      acc[spec.operatorKey] = spec;
-    });
-    return acc;
-  }, {} as Record<string, OperatorSpec>);
+export const getOperatorTitleByFeatureId = (featureId: FeatureId): string | undefined => {
+  const allSpecs = getOperatorSpecs(() => undefined);
+
+  for (const categorySpecs of Object.values(allSpecs)) {
+    const spec = categorySpecs.find((s) => s.featureId === featureId);
+    if (spec) {
+      return spec.title;
+    }
+  }
+
+  return undefined;
+};
 
 enum Category {
   STORAGE,
