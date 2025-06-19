@@ -9,7 +9,6 @@ import {
   getClusterDetailsValidationSchema,
   ClusterWizardStepHeader,
   ClusterDetailsValues,
-  useFeatureSupportLevel,
   getRichTextValidation,
   OpenshiftVersionOptionType,
 } from '../../../common';
@@ -49,7 +48,6 @@ export const useDetailsFormik = ({
   Lazy<{ baseDnsDomain: string }>,
 ] => {
   const { t } = useTranslation();
-  const featureSupportLevels = useFeatureSupportLevel();
   const isEdit = !!clusterDeployment || !!agentClusterInstall;
 
   const cluster = React.useMemo(
@@ -88,13 +86,11 @@ export const useDetailsFormik = ({
     () =>
       getClusterDetailsValidationSchema({
         usedClusterNames,
-        featureSupportLevels,
         pullSecretSet: isEdit,
-        ocpVersions,
         validateUniqueName: true,
         t,
       }),
-    [usedClusterNames, ocpVersions, featureSupportLevels, isEdit, t],
+    [usedClusterNames, isEdit, t],
   );
 
   return [initialValues, validationSchema];
