@@ -9,7 +9,6 @@ export { default as SwitchField } from './SwitchField';
 export { default as FormikAutoSave, useFormikAutoSave } from './FormikAutoSave';
 export { default as PullSecretField } from './PullSecretField';
 export { default as RadioField } from './RadioField';
-export { default as SingleNodeCheckbox } from './SingleNodeCheckbox';
 export { default as NumberInputField } from './NumberInputField';
 export { default as CodeField } from './CodeField';
 export { default as RichInputField } from './RichInputField';

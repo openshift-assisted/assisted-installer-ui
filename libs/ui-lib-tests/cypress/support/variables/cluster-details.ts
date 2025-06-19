@@ -11,7 +11,6 @@ Cypress.env('snoSupportLevel', `[data-testid=SNO-support-level]`);
 Cypress.env('baseDnsDomainFieldId', '#form-input-baseDnsDomain-field');
 Cypress.env('highAvailabilityModeFieldId', '#form-input-highAvailabilityMode-field');
 Cypress.env('cpuArchitectureFieldId', '#form-input-cpuArchitecture-field');
-Cypress.env('checkboxSNODisclaimerFieldId', '#form-checkbox-SNODisclaimer-field');
 Cypress.env('useRedHatDnsServiceFieldId', '#form-checkbox-useRedHatDnsService-field');
 Cypress.env('enableStaticIpRadioButtonText', 'Static network configuration');
 Cypress.env('cpuArchitectureFieldHelperId', '#form-input-cpuArchitecture-field-helper');

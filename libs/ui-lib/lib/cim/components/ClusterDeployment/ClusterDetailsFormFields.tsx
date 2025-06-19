@@ -161,7 +161,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {/* <DiskEncryptionControlGroup
         values={values}
         isDisabled={isPullSecretSet}
-        isSNO={isSNO({ highAvailabilityMode })}
+        isSNO={isSNO({ controlPlaneCount })}
       /> */}
       {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tpmv2' && (
         <Alert
