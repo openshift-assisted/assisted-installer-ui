@@ -33,7 +33,7 @@ const multinodeCluster = {
   e2e_mock_source: '1-base-cluster',
   feature_usage: JSON.stringify(featureUsage),
   validations_info: JSON.stringify(initialClusterValidations.clusterValidationsInfo),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   user_managed_networking: false,
 };
 

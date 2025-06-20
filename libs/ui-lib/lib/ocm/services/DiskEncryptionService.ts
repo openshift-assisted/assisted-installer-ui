@@ -26,7 +26,7 @@ const DiskEncryptionService = {
     return {
       mode: values.diskEncryptionMode,
       enableOn:
-        values.highAvailabilityMode === 'None'
+        values.controlPlaneCount === 1
           ? values.enableDiskEncryptionOnMasters
             ? 'all'
             : 'none'

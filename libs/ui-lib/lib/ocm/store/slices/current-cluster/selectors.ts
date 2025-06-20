@@ -5,7 +5,7 @@ export const selectCurrentClusterState = (state: RootStateDay1) => state.current
 export const selectCurrentCluster = (state: RootStateDay1) => state.currentCluster.data;
 export const selectCurrentClusterUIState = (state: RootStateDay1) => state.currentCluster.uiState;
 export const selectIsCurrentClusterSNO = (state: RootStateDay1) =>
-  state.currentCluster.data?.highAvailabilityMode === 'None';
+  state.currentCluster.data?.controlPlaneCount === 1;
 export const selectCurrentClusterPermissionsState = (
   state: RootStateDay1,
 ): AssistedInstallerPermissionTypesListType => {

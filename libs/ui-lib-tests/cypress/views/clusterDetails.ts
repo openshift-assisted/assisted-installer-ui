@@ -93,9 +93,6 @@ export const clusterDetailsPage = {
       cy.get('li').contains(cpuArchitecture).should('not.exist');
     });
   },
-  getSnoDisclaimer: () => {
-    return cy.get(Cypress.env('checkboxSNODisclaimerFieldId'));
-  },
   getRedHatDnsServiceCheck: () => {
     return cy.get(Cypress.env('useRedHatDnsServiceFieldId'));
   },

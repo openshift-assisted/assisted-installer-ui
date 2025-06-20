@@ -34,7 +34,7 @@ const aiCluster = {
   enabled_host_count: 3,
   feature_usage:
     '{"Additional NTP Source":{"data":{"source_count":1},"id":"ADDITIONAL_NTP_SOURCE","name":"Additional NTP Source"},"Hyperthreading":{"data":{"hyperthreading_enabled":"all"},"id":"HYPERTHREADING","name":"Hyperthreading"},"OVN network type":{"id":"OVN_NETWORK_TYPE","name":"OVN network type"},"Requested hostname":{"data":{"host_count":1},"id":"REQUESTED_HOSTNAME","name":"Requested hostname"}}',
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   host_networks: [
     {
       cidr: '192.168.127.0/24',

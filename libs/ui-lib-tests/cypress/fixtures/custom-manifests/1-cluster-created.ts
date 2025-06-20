@@ -37,7 +37,7 @@ const customManifestsCluster = {
   ],
   // We're adding this field to easily debug which mock is returning the response
   feature_usage: JSON.stringify(featureUsage),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   network_type: 'OpenShiftSDN',
   user_managed_networking: false,
   vip_dhcp_allocation: true,
