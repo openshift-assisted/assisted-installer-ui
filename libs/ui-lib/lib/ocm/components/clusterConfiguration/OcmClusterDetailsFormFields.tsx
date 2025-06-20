@@ -72,15 +72,11 @@ export const OcmClusterDetailsFormFields = ({
   const { getCpuArchitectures } = useOpenShiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
-  // eslint-disable-next-line no-console
-  console.log(values);
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
     values.cpuArchitecture as SupportedCpuArchitecture,
   );
-  // eslint-disable-next-line no-console
-  console.log(featureSupportLevelData);
   const cpuArchitectures = React.useMemo(
     () => getSupportedCpuArchitectures(cpuArchitecturesByVersionImage),
     [cpuArchitecturesByVersionImage],
