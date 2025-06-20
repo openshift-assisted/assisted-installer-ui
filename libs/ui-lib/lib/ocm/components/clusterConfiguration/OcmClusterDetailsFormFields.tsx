@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from 'react';
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
@@ -32,7 +33,11 @@ import { ExternalPlatformLabels } from './platformIntegration/constants';
 import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { useFeature } from '../../hooks/use-feature';
-import ControlPlaneNodesDropdown, { ControlPlaneNodesLabel } from './ControlPlaneNodesDropdown';
+import ControlPlaneNodesDropdown, {
+  ControlPlaneNodesLabel,
+  DEFAULT_VALUE_CPN,
+  isCPNDropdownItemEnabled,
+} from './ControlPlaneNodesDropdown';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -115,6 +120,33 @@ export const OcmClusterDetailsFormFields = ({
     );
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
+  React.useEffect(() => {
+    const currentCount = values.controlPlaneCount;
+    const isNonStandardControlPlaneEnabled = featureSupportLevelContext.isFeatureSupported(
+      'NON_STANDARD_HA_CONTROL_PLANE',
+      featureSupportLevelData ?? undefined,
+    );
+    const isTnaEnabled = featureSupportLevelContext.isFeatureSupported(
+      'TNA',
+      featureSupportLevelData ?? undefined,
+    );
+
+    const isItemEnabled = isCPNDropdownItemEnabled(
+      currentCount,
+      isNonStandardControlPlaneEnabled,
+      isTnaEnabled,
+    );
+
+    if (!isItemEnabled) {
+      setFieldValue('controlPlaneCount', DEFAULT_VALUE_CPN, false);
+    }
+  }, [
+    values.openshiftVersion,
+    featureSupportLevelData,
+    featureSupportLevelContext,
+    values.controlPlaneCount,
+    setFieldValue,
+  ]);
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
