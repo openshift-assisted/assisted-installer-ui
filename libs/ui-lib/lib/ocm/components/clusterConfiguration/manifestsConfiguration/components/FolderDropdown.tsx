@@ -56,6 +56,7 @@ export const FolderDropdown = ({ name }: FolderDropdownProps) => {
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
       className="pf-v5-u-w-100"
+      id={fieldId}
     >
       {value || 'manifests'}
     </MenuToggle>
