@@ -119,8 +119,33 @@ export const OcmClusterDetailsFormFields = ({
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
   const handleOpenshiftVersionChange = React.useCallback(() => {
-    setFieldValue('controlPlaneCount', DEFAULT_VALUE_CPN, false);
-  }, [setFieldValue]);
+    const currentCount = values.controlPlaneCount;
+    const isNonStandardControlPlaneEnabled = featureSupportLevelContext.isFeatureSupported(
+      'NON_STANDARD_HA_CONTROL_PLANE',
+      featureSupportLevelData ?? undefined,
+    );
+    const isTnaEnabled = featureSupportLevelContext.isFeatureSupported(
+      'TNA',
+      featureSupportLevelData ?? undefined,
+    );
+
+    const allowedCounts = [1, 3]; // Default always allowed
+    if (isTnaEnabled) {
+      allowedCounts.push(2);
+    }
+    if (isNonStandardControlPlaneEnabled) {
+      allowedCounts.push(4, 5);
+    }
+
+    if (!allowedCounts.includes(currentCount)) {
+      setFieldValue('controlPlaneCount', DEFAULT_VALUE_CPN, false);
+    }
+  }, [
+    setFieldValue,
+    values.controlPlaneCount,
+    featureSupportLevelContext,
+    featureSupportLevelData,
+  ]);
 
   return (
     <Form id="wizard-cluster-details__form">
