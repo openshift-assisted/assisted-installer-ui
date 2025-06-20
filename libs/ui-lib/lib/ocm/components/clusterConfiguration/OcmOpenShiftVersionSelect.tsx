@@ -13,9 +13,8 @@ import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsC
 
 type OcmOpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];
-  onChange: () => void;
 };
-const OcmOpenShiftVersionSelect = ({ versions, onChange }: OcmOpenShiftVersionSelectProps) => {
+const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps) => {
   const { t } = useTranslation();
   const {
     values: { customOpenshiftSelect },
@@ -70,7 +69,6 @@ const OcmOpenShiftVersionSelect = ({ versions, onChange }: OcmOpenShiftVersionSe
         showReleasesLink={isInOcm}
         showOpenshiftVersionModal={showOpenshiftVersionModal}
         customItems={updatedSelectOptions}
-        onChange={onChange}
       />
       {isOpenshiftVersionModalOpen && (
         <OpenShiftVersionModal

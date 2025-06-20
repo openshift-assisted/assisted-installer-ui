@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from 'react';
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
@@ -35,6 +36,7 @@ import { useFeature } from '../../hooks/use-feature';
 import ControlPlaneNodesDropdown, {
   ControlPlaneNodesLabel,
   DEFAULT_VALUE_CPN,
+  isCPNDropdownItemEnabled,
 } from './ControlPlaneNodesDropdown';
 
 export type OcmClusterDetailsFormFieldsProps = {
@@ -70,11 +72,15 @@ export const OcmClusterDetailsFormFields = ({
   const { getCpuArchitectures } = useOpenShiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
   const clusterWizardContext = useClusterWizardContext();
+  // eslint-disable-next-line no-console
+  console.log(values);
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
     values.cpuArchitecture as SupportedCpuArchitecture,
   );
+  // eslint-disable-next-line no-console
+  console.log(featureSupportLevelData);
   const cpuArchitectures = React.useMemo(
     () => getSupportedCpuArchitectures(cpuArchitecturesByVersionImage),
     [cpuArchitecturesByVersionImage],
@@ -118,7 +124,7 @@ export const OcmClusterDetailsFormFields = ({
     );
   }, [setFieldValue, featureSupportLevelContext, featureSupportLevelData]);
 
-  const handleOpenshiftVersionChange = React.useCallback(() => {
+  React.useEffect(() => {
     const currentCount = values.controlPlaneCount;
     const isNonStandardControlPlaneEnabled = featureSupportLevelContext.isFeatureSupported(
       'NON_STANDARD_HA_CONTROL_PLANE',
@@ -129,24 +135,22 @@ export const OcmClusterDetailsFormFields = ({
       featureSupportLevelData ?? undefined,
     );
 
-    const allowedCounts = [1, 3]; // Default always allowed
-    if (isTnaEnabled) {
-      allowedCounts.push(2);
-    }
-    if (isNonStandardControlPlaneEnabled) {
-      allowedCounts.push(4, 5);
-    }
+    const isItemEnabled = isCPNDropdownItemEnabled(
+      currentCount,
+      isNonStandardControlPlaneEnabled,
+      isTnaEnabled,
+    );
 
-    if (!allowedCounts.includes(currentCount)) {
+    if (!isItemEnabled) {
       setFieldValue('controlPlaneCount', DEFAULT_VALUE_CPN, false);
     }
   }, [
-    setFieldValue,
-    values.controlPlaneCount,
-    featureSupportLevelContext,
+    values.openshiftVersion,
     featureSupportLevelData,
+    featureSupportLevelContext,
+    values.controlPlaneCount,
+    setFieldValue,
   ]);
-
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -174,7 +178,7 @@ export const OcmClusterDetailsFormFields = ({
           withMultiText
         />
       ) : (
-        <OcmOpenShiftVersionSelect versions={versions} onChange={handleOpenshiftVersionChange} />
+        <OcmOpenShiftVersionSelect versions={versions} />
       )}
       {clusterExists || isSingleClusterFeatureEnabled ? (
         <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>

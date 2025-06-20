@@ -48,7 +48,7 @@ interface ControlPlaneNodesDropdownProps {
   featureSupportLevelData?: NewFeatureSupportLevelMap | null;
 }
 
-const isDropdownItemEnabled = (
+export const isCPNDropdownItemEnabled = (
   controlPlaneNodeCount: number,
   isNonStandardControlPlaneEnabled: boolean,
   isTnaEnabled: boolean,
@@ -116,7 +116,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   };
 
   const dropdownItems = options.map(({ value, label }) => {
-    const isItemEnabled = isDropdownItemEnabled(
+    const isItemEnabled = isCPNDropdownItemEnabled(
       value,
       isNonStandardControlPlaneEnabled,
       isTnaEnabled,
