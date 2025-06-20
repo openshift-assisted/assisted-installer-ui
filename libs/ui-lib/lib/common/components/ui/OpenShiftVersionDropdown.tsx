@@ -31,7 +31,6 @@ type OpenShiftVersionDropdownProps = {
   showReleasesLink: boolean;
   showOpenshiftVersionModal: () => void;
   customItems: ItemDropdown;
-  onChange?: () => void;
 };
 
 const getParsedVersions = (items: ItemDropdown) => {
@@ -51,7 +50,6 @@ export const OpenShiftVersionDropdown = ({
   showReleasesLink,
   showOpenshiftVersionModal,
   customItems,
-  onChange,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -134,10 +132,9 @@ export const OpenShiftVersionDropdown = ({
         setCurrent(newLabel);
         setValue(newValue);
         setOpen(false);
-        onChange && onChange();
       }
     },
-    [onChange, setValue],
+    [setValue],
   );
 
   const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
