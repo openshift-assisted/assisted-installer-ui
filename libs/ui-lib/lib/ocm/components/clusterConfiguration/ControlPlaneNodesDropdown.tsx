@@ -9,11 +9,12 @@ import {
   DropdownList,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
-import { getFieldId, PopoverIcon } from '../../../common';
+import { getFieldId, PopoverIcon, PreviewBadgePosition, TechnologyPreview } from '../../../common';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
+import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
 import OcmTNADisclaimer from './OcmTNADisclaimer';
 import toNumber from 'lodash-es/toNumber';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
@@ -42,6 +43,7 @@ export const ControlPlaneNodesLabel = () => {
 interface ControlPlaneNodesOption {
   value: number;
   label: string;
+  badge?: React.ReactNode;
 }
 
 interface ControlPlaneNodesDropdownProps {
@@ -90,18 +92,26 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     featureSupportLevelData ?? undefined,
   );
 
+  const tnaSupport = newFeatureSupportLevelContext.getFeatureSupportLevel(
+    'TNA',
+    featureSupportLevelData ?? undefined,
+  );
+  const isTnaEnabled = isFeatureSupportedAndAvailable(tnaSupport || 'unsupported');
+
   const options: ControlPlaneNodesOption[] = [
     { value: 1, label: '1 (Single Node OpenShift)' },
-    { value: 2, label: '2 (Two-Nodes Arbiter)' },
+    {
+      value: 2,
+      label: '2 (Two-Nodes Arbiter)',
+      badge:
+        tnaSupport === 'tech-preview' ? (
+          <TechnologyPreview position={PreviewBadgePosition.default} />
+        ) : undefined,
+    },
     { value: 3, label: '3 (highly available cluster)' },
     { value: 4, label: '4 (highly available cluster+)' },
     { value: 5, label: '5 (highly available cluster++)' },
   ];
-
-  const isTnaEnabled = newFeatureSupportLevelContext.isFeatureSupported(
-    'TNA',
-    featureSupportLevelData ?? undefined,
-  );
 
   React.useEffect(() => {
     if (!field.value) {
@@ -115,7 +125,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     setOpen(false);
   };
 
-  const dropdownItems = options.map(({ value, label }) => {
+  const dropdownItems = options.map(({ value, label, badge }) => {
     const isItemEnabled = isCPNDropdownItemEnabled(
       value,
       isNonStandardControlPlaneEnabled,
@@ -124,7 +134,9 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     return (
       <DropdownItem key={value} id={value.toString()} isAriaDisabled={!isItemEnabled}>
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
-          <div>{label}</div>
+          <div>
+            {label} {badge}
+          </div>
         </Tooltip>
       </DropdownItem>
     );
