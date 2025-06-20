@@ -80,7 +80,7 @@ const dualstackClusterBase = {
   // We're adding this field to easily debug which mock is returning the response
   e2e_mock_source: '1-dualstack-base',
   feature_usage: JSON.stringify(featureUsage),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   network_type: 'OpenShiftSDN',
   user_managed_networking: false,
   vip_dhcp_allocation: false,
@@ -114,7 +114,7 @@ const withDualStackNetworks = (singleStackCluster) => ({
   e2e_mock_source: '1-dualstack-dualstack',
   feature_usage: JSON.stringify(featureUsageDualstack),
   validations_info: JSON.stringify(hostDiscoveryValidations.clusterValidationsInfo),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   network_type: 'OVNKubernetes',
   user_managed_networking: false,
   vip_dhcp_allocation: false,
