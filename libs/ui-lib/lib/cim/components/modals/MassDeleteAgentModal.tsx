@@ -26,6 +26,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
+import { deleteHost } from './utils';
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
@@ -136,19 +137,12 @@ type MassDeleteAgentModalProps = {
   agents: AgentK8sResource[];
   bmhs: BareMetalHostK8sResource[];
   nmStates: NMStateK8sResource[];
-  // eslint-disable-next-line
-  onDelete: (
-    agent?: AgentK8sResource,
-    bmh?: BareMetalHostK8sResource,
-    nmStates?: NMStateK8sResource[],
-  ) => Promise<unknown>;
   infraEnv: InfraEnvK8sResource;
 };
 
 const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
   isOpen,
   onClose,
-  onDelete,
   agents,
   bmhs,
   infraEnv,
@@ -168,7 +162,7 @@ const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
       );
     }
     if (!agent?.spec?.clusterDeploymentName?.name) {
-      return onDelete(agent, bmh, nmStates);
+      return deleteHost(agent, bmh, undefined, nmStates);
     }
   };
   const { t } = useTranslation();

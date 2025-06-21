@@ -21,14 +21,14 @@ import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/di
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 import { architectureData, LabelValue } from '../../../common';
-import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
+import { InfraEnvK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
-import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
-import EditSSHKeyModal, { EditSSHKeyModalProps } from '../modals/EditSSHKeyModal';
-import EditNtpSourcesModal, { EditNtpSourcesModalProps } from '../modals/EditNtpSourcesModal';
+import EditPullSecretModal from '../modals/EditPullSecretModal';
+import EditSSHKeyModal from '../modals/EditSSHKeyModal';
+import EditNtpSourcesModal from '../modals/EditNtpSourcesModal';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { EditProxyModalProps } from '../modals/types';
 import { EditProxyModal } from '../modals';
+import { useSecret } from '../../hooks/useSecret';
 
 type EditItemProps = {
   title: string;
@@ -75,55 +75,29 @@ const NotConfigured = () => {
 
 type EnvironmentDetailsProps = {
   infraEnv: InfraEnvK8sResource;
-  fetchSecret: (namespace: string, name: string) => Promise<SecretK8sResource>;
-  onEditPullSecret: EditPullSecretModalProps['onSubmit'];
-  onEditSSHKey: EditSSHKeyModalProps['onSubmit'];
-  onEditNtpSources: EditNtpSourcesModalProps['onSubmit'];
-  onEditProxy: EditProxyModalProps['onSubmit'];
   hasAgents: boolean;
   hasBMHs: boolean;
 };
 
 const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
   infraEnv,
-  fetchSecret,
-  onEditPullSecret,
-  onEditSSHKey,
-  onEditNtpSources,
   hasAgents,
   hasBMHs,
-  onEditProxy,
 }) => {
   const [editPullSecret, setEditPullSecret] = React.useState(false);
   const [editSSHKey, setEditSSHKey] = React.useState(false);
   const [editNtpSources, setEditNtpSources] = React.useState(false);
-  const [pullSecret, setPullSecret] = React.useState<SecretK8sResource>();
-  const [pullSecretError, setPullSecretError] = React.useState<string>();
-  const [pullSecretLoading, setPullSecretLoading] = React.useState(true);
   const [editProxy, setEditProxy] = React.useState(false);
 
-  const namespace = infraEnv.metadata?.namespace ?? '';
-  const pullSecretName = infraEnv.spec?.pullSecretRef?.name ?? '';
+  const [pullSecret, pullSecretLoaded, pullSecretError] = useSecret(
+    infraEnv.spec?.pullSecretRef?.name
+      ? {
+          name: infraEnv.spec?.pullSecretRef?.name,
+          namespace: infraEnv.metadata?.namespace,
+        }
+      : null,
+  );
   const { t } = useTranslation();
-  React.useEffect(() => {
-    const fetch = async () => {
-      try {
-        if (namespace && pullSecretName) {
-          const result = await fetchSecret(namespace, pullSecretName);
-          setPullSecret(result);
-        }
-      } catch (err) {
-        setPullSecret(undefined);
-        // eslint-disable-next-line
-        if ((err as any).code !== 404) {
-          setPullSecretError((err as Error).message || t('ai:Could not fetch pull secret'));
-        }
-      } finally {
-        setPullSecretLoading(false);
-      }
-    };
-    void fetch();
-  }, [namespace, pullSecretName, fetchSecret, editPullSecret, t]);
 
   const hasProxy =
     infraEnv.spec?.proxy?.httpProxy ||
@@ -228,7 +202,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
                   <EditItem
                     title={t('ai:Pull secret')}
                     onEdit={() => setEditPullSecret(true)}
-                    isLoading={pullSecretLoading}
+                    isLoading={!pullSecretLoaded}
                     isWarning={!pullSecret}
                   />
                   <EditItem
@@ -243,36 +217,32 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
           </DescriptionList>
         </GridItem>
       </Grid>
-      <EditPullSecretModal
-        isOpen={editPullSecret}
-        onClose={() => setEditPullSecret(false)}
-        pullSecret={pullSecret}
-        pullSecretError={pullSecretError}
-        pullSecretLoading={pullSecretLoading}
-        onSubmit={onEditPullSecret}
-        infraEnv={infraEnv}
-        hasAgents={hasAgents}
-        hasBMHs={hasBMHs}
-      />
-      <EditSSHKeyModal
-        isOpen={editSSHKey}
-        onClose={() => setEditSSHKey(false)}
-        infraEnv={infraEnv}
-        onSubmit={onEditSSHKey}
-        hasAgents={hasAgents}
-        hasBMHs={hasBMHs}
-      />
-      <EditNtpSourcesModal
-        isOpen={editNtpSources}
-        onClose={() => setEditNtpSources(false)}
-        infraEnv={infraEnv}
-        onSubmit={onEditNtpSources}
-      />
+      {editPullSecret && (
+        <EditPullSecretModal
+          onClose={() => setEditPullSecret(false)}
+          pullSecret={pullSecret}
+          pullSecretError={pullSecretError}
+          pullSecretLoading={!pullSecretLoaded}
+          infraEnv={infraEnv}
+          hasAgents={hasAgents}
+          hasBMHs={hasBMHs}
+        />
+      )}
+      {editSSHKey && (
+        <EditSSHKeyModal
+          onClose={() => setEditSSHKey(false)}
+          infraEnv={infraEnv}
+          hasAgents={hasAgents}
+          hasBMHs={hasBMHs}
+        />
+      )}
+      {editNtpSources && (
+        <EditNtpSourcesModal onClose={() => setEditNtpSources(false)} infraEnv={infraEnv} />
+      )}
       {editProxy && (
         <EditProxyModal
           onClose={() => setEditProxy(false)}
           infraEnv={infraEnv}
-          onSubmit={onEditProxy}
           hasAgents={hasAgents}
           hasBMHs={hasBMHs}
         />

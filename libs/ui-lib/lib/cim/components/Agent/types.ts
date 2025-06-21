@@ -17,8 +17,6 @@ export type AddBmcValues = {
 
 export type BMCFormProps = {
   onClose: VoidFunction;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onCreateBMH: (values: AddBmcValues, nmState?: NMStateK8sResource) => Promise<any>;
   hasDHCP: boolean;
   infraEnv: InfraEnvK8sResource;
   usedHostnames: string[];

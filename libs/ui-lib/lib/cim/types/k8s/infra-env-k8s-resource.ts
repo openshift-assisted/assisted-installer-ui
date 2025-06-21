@@ -17,9 +17,9 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
     };
     sshAuthorizedKey?: string;
     proxy?: {
-      httpProxy: string;
-      httpsProxy: string;
-      noProxy: string;
+      httpProxy?: string;
+      httpsProxy?: string;
+      noProxy?: string;
     };
     nmStateConfigLabelSelector?: Selector;
     additionalNTPSources?: string[];

@@ -20,23 +20,22 @@ import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-ci
 import { UploadIcon } from '@patternfly/react-icons/dist/js/icons/upload-icon';
 import jsYaml from 'js-yaml';
 import { saveAs } from 'file-saver';
+import { useK8sModels } from '@openshift-console/dynamic-plugin-sdk';
 
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
-
 import { credentials, host1, host2 } from './constants';
 import { UploadActionModalProps } from './types';
+import { submitYamls } from '../YamlEditor/utils';
 
 import './AddBmcHostYamlForm.css';
 
-const AddBmcHostYamlForm: React.FC<
-  Pick<UploadActionModalProps, 'onClose' | 'onCreateBmcByYaml'>
-> = ({ onClose, onCreateBmcByYaml }) => {
+const AddBmcHostYamlForm: React.FC<Pick<UploadActionModalProps, 'onClose'>> = ({ onClose }) => {
   const [fileName, setFileName] = React.useState<string>();
   const [fileError, setFileError] = React.useState<string>();
   const [showOpenFileButton, setShowOpenFileButton] = React.useState(true);
   const [showOpeningMessage, setShowOpeningMessage] = React.useState(false);
-  const [yamlContent, setYamlContent] = React.useState<unknown>();
+  const [content, setContent] = React.useState<string>();
   const [error, setError] = React.useState<string | undefined>();
 
   const { t } = useTranslation();
@@ -65,20 +64,19 @@ const AddBmcHostYamlForm: React.FC<
         setShowOpenFileButton(false);
         setFileName(file.name);
         setFileError(t('ai:The file is too big. Upload a file up to 12 MiB.'));
-        setYamlContent(undefined);
+        setContent(undefined);
       } else {
         const reader = new FileReader();
         reader.readAsText(file, 'UTF-8');
         reader.onload = (readerEvent) => {
-          const content = readerEvent.target?.result;
+          const result = readerEvent.target?.result;
           // parse yaml
-          if (content && typeof content === 'string') {
+          if (result && typeof result === 'string') {
             try {
-              //await new Promise((r) => setTimeout(r, 100));
-              const yamlContent = jsYaml.loadAll(content);
+              jsYaml.loadAll(result);
               setFileName(file.name);
               setFileError(undefined);
-              setYamlContent(yamlContent);
+              setContent(result);
             } catch (err) {
               setFileName(file.name);
               setFileError(
@@ -86,10 +84,10 @@ const AddBmcHostYamlForm: React.FC<
                   'ai:File is not structured correctly. Use the template to use the right file structure.',
                 ),
               );
-              setYamlContent(undefined);
+              setContent(undefined);
             }
           } else {
-            setYamlContent(undefined);
+            setContent(undefined);
             setFileName(file.name);
             setFileError(
               t(
@@ -113,14 +111,15 @@ const AddBmcHostYamlForm: React.FC<
     setShowOpeningMessage(false);
   };
 
-  const handleSubmit = async () => {
-    try {
-      setShowOpeningMessage(false);
-      setError(undefined);
-      if (yamlContent !== undefined) {
-        await onCreateBmcByYaml(yamlContent);
-      }
+  const [models] = useK8sModels();
 
+  const handleSubmit = async () => {
+    setShowOpeningMessage(false);
+    setError(undefined);
+    try {
+      if (content?.length) {
+        await submitYamls(t, content, Object.values(models));
+      }
       onClose();
     } catch (e) {
       setError(getErrorMessage(e));
