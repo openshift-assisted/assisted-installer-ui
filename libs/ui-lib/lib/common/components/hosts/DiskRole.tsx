@@ -122,7 +122,6 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
       onSelect={onSelect}
       toggle={toggle}
       isOpen={isOpen}
-      isPlain
     >
       <DropdownList>{dropdownItems}</DropdownList>
     </Dropdown>
