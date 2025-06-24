@@ -27,6 +27,9 @@ describe(`Assisted Installer Dualstack Networking`, () => {
       networkingPage.getClusterManagedNetworking().should('be.enabled').and('be.checked');
       networkingPage.getVipDhcp().should('be.enabled').and('not.be.checked');
       networkingPage.getAdvancedNetwork().should('be.enabled').and('not.be.checked');
+      networkingPage
+        .getClusterSubnetCidrIpv4()
+        .should('contain.text', '192.168.122.0/24 (192.168.122.0 - 192.168.122.255)');
     });
 
     it('Can switch to dual-stack', () => {
@@ -38,6 +41,12 @@ describe(`Assisted Installer Dualstack Networking`, () => {
       networkingPage.getVipDhcp().should('be.disabled').and('not.be.checked');
       networkingPage.getOvnNetworkingField().should('not.be.enabled').and('be.checked');
       networkingPage.getSdnNetworkingField().should('not.be.enabled').and('not.be.checked');
+      networkingPage
+        .getClusterSubnetCidrIpv4()
+        .should('contain.text', '192.168.122.0/24 (192.168.122.0 - 192.168.122.255)');
+      networkingPage
+        .getClusterSubnetCidrIpv6()
+        .should('contain.text', '1001:db9::/120 (1001:db9:: - 1001:db9::ff)');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
 
       cy.wait('@update-cluster').then(({ request }) => {
