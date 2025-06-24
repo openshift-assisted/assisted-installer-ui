@@ -4,6 +4,9 @@
   "references": [
     {
       "path": "../../libs/ui-lib"
+    },
+     {
+      "path": "../../libs/chatbot"
     }
-  ]
+  ],
 }
