@@ -1,0 +1,14 @@
+.ai-chatbot {
+  position: fixed;
+  z-index: 29999;
+}
+
+.ai-chatbot .pf-chatbot__button {
+  inset-block-end: 20px;
+  inset-inline-end: 20px;
+}
+
+.ai-chatbot .pf-chatbot {
+  inset-block-end: 80px;
+  inset-inline-end: 20px;
+}
