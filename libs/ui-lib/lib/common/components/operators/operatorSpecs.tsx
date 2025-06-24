@@ -19,9 +19,6 @@ import {
   OPERATOR_NAME_PIPELINES,
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_SERVICEMESH,
-  OPERATOR_NAME_NODE_HEALTHCHECK,
-  OPERATOR_NAME_SELF_NODE_REMEDIATION,
-  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
   OPERATOR_NAME_NODE_MAINTENANCE,
   OPERATOR_NAME_KUBE_DESCHEDULER,
 } from '../../config/constants';
@@ -29,7 +26,6 @@ import { ExternalLink } from '../ui';
 import {
   AUTHORINO_OPERATOR_LINK,
   CNV_LINK,
-  FENCE_AGENTS_REMEDIATION_LINK,
   getKmmDocsLink,
   getKubeDeschedulerLink,
   getLsoLink,
@@ -40,7 +36,6 @@ import {
   getNvidiaGpuLink,
   getServiceMeshLink,
   MTV_LINK,
-  NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
   ODF_LINK,
   ODF_REQUIREMENTS_LINK,
@@ -49,7 +44,6 @@ import {
   OSC_LINK,
   OSC_REQUIREMENTS_LINK,
   PIPELINES_OPERATOR_LINK,
-  SELF_NODE_REMEDIATION_LINK,
   SERVERLESS_OPERATOR_LINK,
 } from '../../config';
 import { getMajorMinorVersion } from '../../utils';
@@ -60,20 +54,17 @@ import {
   DESCRIPTION_LSO,
   DESCRIPTION_MTV,
   DESCRIPTION_CNV,
-  DESCRIPTION_FENCE_AGENTS_REMEDIATION,
   DESCRIPTION_KMM,
   DESCRIPTION_KUBE_DESCHEDULER,
   DESCRIPTION_MCE,
   DESCRIPTION_NMSTATE,
   DESCRIPTION_NODE_FEATURE_DISCOVERY,
-  DESCRIPTION_NODE_HEALTHCHECK,
   DESCRIPTION_NODE_MAINTENANCE,
   DESCRIPTION_NVIDIA_GPU,
   DESCRIPTION_ODF,
   DESCRIPTION_OPENSHIFT_AI,
   DESCRIPTION_OSC,
   DESCRIPTION_PIPELINES,
-  DESCRIPTION_SELF_NODE_REMEDIATION,
   DESCRIPTION_SERVERLESS,
   DESCRIPTION_SERVICEMESH,
   DESCRIPTION_LVM,
@@ -267,53 +258,6 @@ export const getOperatorSpecs = (
         supportLevel: getFeatureSupportLevel('SERVICEMESH'),
       },
     ],
-    [categories[Category.REMEDIATION]]: [
-      {
-        operatorKey: OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
-        title: 'Fence Agents Remediation',
-        featureId: 'FENCE_AGENTS_REMEDIATION',
-        descriptionText: DESCRIPTION_FENCE_AGENTS_REMEDIATION,
-        Description: () => (
-          <>
-            {DESCRIPTION_FENCE_AGENTS_REMEDIATION}{' '}
-            <ExternalLink href={FENCE_AGENTS_REMEDIATION_LINK}>Learn more</ExternalLink>
-          </>
-        ),
-        notStandalone: true,
-        category: categories[Category.REMEDIATION],
-        supportLevel: getFeatureSupportLevel('FENCE_AGENTS_REMEDIATION'),
-      },
-      {
-        operatorKey: OPERATOR_NAME_NODE_HEALTHCHECK,
-        title: 'Node Healthcheck',
-        featureId: 'NODE_HEALTHCHECK',
-        descriptionText: DESCRIPTION_NODE_HEALTHCHECK,
-        Description: () => (
-          <>
-            {DESCRIPTION_NODE_HEALTHCHECK}{' '}
-            <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
-          </>
-        ),
-        notStandalone: true,
-        category: categories[Category.REMEDIATION],
-        supportLevel: getFeatureSupportLevel('NODE_HEALTHCHECK'),
-      },
-      {
-        operatorKey: OPERATOR_NAME_SELF_NODE_REMEDIATION,
-        title: 'Self Node Remediation',
-        featureId: 'SELF_NODE_REMEDIATION',
-        descriptionText: DESCRIPTION_SELF_NODE_REMEDIATION,
-        Description: () => (
-          <>
-            {DESCRIPTION_SELF_NODE_REMEDIATION}{' '}
-            <ExternalLink href={SELF_NODE_REMEDIATION_LINK}>Learn more</ExternalLink>
-          </>
-        ),
-        notStandalone: true,
-        category: categories[Category.REMEDIATION],
-        supportLevel: getFeatureSupportLevel('SELF_NODE_REMEDIATION'),
-      },
-    ],
     [categories[Category.OTHER]]: [
       {
         operatorKey: OPERATOR_NAME_AUTHORINO,
@@ -498,7 +442,6 @@ enum Category {
   VIRT,
   AI,
   NETWORK,
-  REMEDIATION,
   OTHER,
 }
 
@@ -507,6 +450,5 @@ export const categories: { [key in Category]: string } = {
   [Category.VIRT]: 'Virtualization',
   [Category.AI]: 'AI',
   [Category.NETWORK]: 'Network',
-  [Category.REMEDIATION]: 'Remediation',
   [Category.OTHER]: 'Other',
 };
