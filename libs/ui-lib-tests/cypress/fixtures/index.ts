@@ -13,6 +13,7 @@ export * from './cluster/base-cluster';
 export * from './cluster/default-config';
 export * from './custom-manifests';
 export * from './data/dummy-pull-secret';
+export * from './data/ocm-user-account';
 export * from './hosts';
 export * from './day2-flow/day1-responses';
 export * from './day2-flow/day2-responses';
