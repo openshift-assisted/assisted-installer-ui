@@ -91,7 +91,6 @@ export type OperatorSpec = {
   Description?: React.ComponentType<{ openshiftVersion?: string }>;
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
-  category: string;
   supportLevel?: SupportLevel | undefined;
 };
 
@@ -113,7 +112,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.STORAGE],
         supportLevel: getFeatureSupportLevel('LSO'),
       },
       {
@@ -130,7 +128,6 @@ export const getOperatorSpecs = (
           ) : (
             <>{DESCRIPTION_LVM}</>
           ),
-        category: categories[Category.STORAGE],
         supportLevel: getFeatureSupportLevel('LVM'),
       },
       {
@@ -148,7 +145,6 @@ export const getOperatorSpecs = (
             {DESCRIPTION_ODF} <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.STORAGE],
         supportLevel: getFeatureSupportLevel('ODF'),
       },
     ],
@@ -166,7 +162,6 @@ export const getOperatorSpecs = (
             {DESCRIPTION_CNV} <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.VIRT],
         supportLevel: getFeatureSupportLevel('CNV'),
       },
       {
@@ -179,8 +174,24 @@ export const getOperatorSpecs = (
             {DESCRIPTION_MTV} <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.VIRT],
         supportLevel: getFeatureSupportLevel('MTV'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_OSC,
+        title: 'OpenShift sandboxed containers',
+        featureId: 'OSC',
+        descriptionText: DESCRIPTION_OSC,
+        Requirements: () => (
+          <ExternalLink href={OSC_REQUIREMENTS_LINK}>
+            Learn more about the requirements for OpenShift sandboxed containers
+          </ExternalLink>
+        ),
+        Description: () => (
+          <>
+            {DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
+          </>
+        ),
+        supportLevel: getFeatureSupportLevel('OSC'),
       },
     ],
     [categories[Category.AI]]: [
@@ -198,7 +209,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.AI],
         supportLevel: getFeatureSupportLevel('OPENSHIFT_AI'),
       },
       {
@@ -208,7 +218,6 @@ export const getOperatorSpecs = (
         descriptionText: DESCRIPTION_AMD_GPU,
         Requirements: () => <>Requires at least one supported AMD GPU</>,
         Description: () => <>{DESCRIPTION_AMD_GPU}</>,
-        category: categories[Category.AI],
         supportLevel: getFeatureSupportLevel('AMD_GPU'),
       },
       {
@@ -223,7 +232,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.AI],
         supportLevel: getFeatureSupportLevel('NVIDIA_GPU'),
       },
     ],
@@ -239,7 +247,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.NETWORK],
         supportLevel: getFeatureSupportLevel('NMSTATE'),
       },
       {
@@ -254,11 +261,10 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.NETWORK],
         supportLevel: getFeatureSupportLevel('SERVICEMESH'),
       },
     ],
-    [categories[Category.OTHER]]: [
+    [categories[Category.SECURITY]]: [
       {
         operatorKey: OPERATOR_NAME_AUTHORINO,
         title: 'Authorino',
@@ -271,25 +277,23 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.OTHER],
         supportLevel: getFeatureSupportLevel('AUTHORINO'),
       },
       {
-        operatorKey: OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
-        title: 'Node Feature Discovery',
-        featureId: 'NODE_FEATURE_DISCOVERY',
-        descriptionText: DESCRIPTION_NODE_FEATURE_DISCOVERY,
+        operatorKey: OPERATOR_NAME_KMM,
+        title: 'Kernel Module Management',
+        featureId: 'KMM',
+        descriptionText: DESCRIPTION_KMM,
         Description: ({ openshiftVersion }) => (
           <>
-            {DESCRIPTION_NODE_FEATURE_DISCOVERY}{' '}
-            <ExternalLink href={getNodeFeatureDiscoveryLink(openshiftVersion)}>
-              Learn more
-            </ExternalLink>
+            {DESCRIPTION_KMM}{' '}
+            <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.OTHER],
-        supportLevel: getFeatureSupportLevel('NODE_FEATURE_DISCOVERY'),
+        supportLevel: getFeatureSupportLevel('KMM'),
       },
+    ],
+    [categories[Category.CI_CD]]: [
       {
         operatorKey: OPERATOR_NAME_PIPELINES,
         title: 'Pipelines',
@@ -302,7 +306,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.OTHER],
         supportLevel: getFeatureSupportLevel('PIPELINES'),
       },
       {
@@ -317,23 +320,10 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.OTHER],
         supportLevel: getFeatureSupportLevel('SERVERLESS'),
       },
-      {
-        operatorKey: OPERATOR_NAME_KMM,
-        title: 'Kernel Module Management',
-        featureId: 'KMM',
-        descriptionText: DESCRIPTION_KMM,
-        Description: ({ openshiftVersion }) => (
-          <>
-            {DESCRIPTION_KMM}{' '}
-            <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
-          </>
-        ),
-        category: categories[Category.OTHER],
-        supportLevel: getFeatureSupportLevel('KMM'),
-      },
+    ],
+    [categories[Category.PLATFORM]]: [
       {
         operatorKey: OPERATOR_NAME_MCE,
         title: 'Multicluster engine',
@@ -345,26 +335,38 @@ export const getOperatorSpecs = (
             <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.OTHER],
         supportLevel: getFeatureSupportLevel('MCE'),
       },
       {
-        operatorKey: OPERATOR_NAME_OSC,
-        title: 'OpenShift sandboxed containers',
-        featureId: 'OSC',
-        descriptionText: DESCRIPTION_OSC,
-        Requirements: () => (
-          <ExternalLink href={OSC_REQUIREMENTS_LINK}>
-            Learn more about the requirements for OpenShift sandboxed containers
-          </ExternalLink>
-        ),
+        operatorKey: OPERATOR_NAME_NODE_MAINTENANCE,
+        title: 'Node Maintenance',
+        featureId: 'NODE_MAINTENANCE',
+        descriptionText: DESCRIPTION_NODE_MAINTENANCE,
         Description: () => (
           <>
-            {DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
+            {DESCRIPTION_NODE_MAINTENANCE}{' '}
+            <ExternalLink href={NODE_MAINTENANCE_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.OTHER],
-        supportLevel: getFeatureSupportLevel('OSC'),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('NODE_MAINTENANCE'),
+      },
+    ],
+    [categories[Category.SCHEDULING]]: [
+      {
+        operatorKey: OPERATOR_NAME_NODE_FEATURE_DISCOVERY,
+        title: 'Node Feature Discovery',
+        featureId: 'NODE_FEATURE_DISCOVERY',
+        descriptionText: DESCRIPTION_NODE_FEATURE_DISCOVERY,
+        Description: ({ openshiftVersion }) => (
+          <>
+            {DESCRIPTION_NODE_FEATURE_DISCOVERY}{' '}
+            <ExternalLink href={getNodeFeatureDiscoveryLink(openshiftVersion)}>
+              Learn more
+            </ExternalLink>
+          </>
+        ),
+        supportLevel: getFeatureSupportLevel('NODE_FEATURE_DISCOVERY'),
       },
       {
         operatorKey: OPERATOR_NAME_KUBE_DESCHEDULER,
@@ -378,24 +380,7 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.OTHER],
         supportLevel: getFeatureSupportLevel('KUBE_DESCHEDULER'),
-      },
-
-      {
-        operatorKey: OPERATOR_NAME_NODE_MAINTENANCE,
-        title: 'Node Maintenance',
-        featureId: 'NODE_MAINTENANCE',
-        descriptionText: DESCRIPTION_NODE_MAINTENANCE,
-        Description: () => (
-          <>
-            {DESCRIPTION_NODE_MAINTENANCE}{' '}
-            <ExternalLink href={NODE_MAINTENANCE_LINK}>Learn more</ExternalLink>
-          </>
-        ),
-        notStandalone: true,
-        category: categories[Category.OTHER],
-        supportLevel: getFeatureSupportLevel('NODE_MAINTENANCE'),
       },
     ],
   };
@@ -442,7 +427,10 @@ enum Category {
   VIRT,
   AI,
   NETWORK,
-  OTHER,
+  CI_CD,
+  PLATFORM,
+  SECURITY,
+  SCHEDULING,
 }
 
 export const categories: { [key in Category]: string } = {
@@ -450,5 +438,8 @@ export const categories: { [key in Category]: string } = {
   [Category.VIRT]: 'Virtualization',
   [Category.AI]: 'AI',
   [Category.NETWORK]: 'Network',
-  [Category.OTHER]: 'Other',
+  [Category.SECURITY]: 'Security & Access Control',
+  [Category.CI_CD]: 'CI/CD & Dev Productivity',
+  [Category.PLATFORM]: 'Platform Operations & Lifecycle',
+  [Category.SCHEDULING]: 'Scheduling',
 };
