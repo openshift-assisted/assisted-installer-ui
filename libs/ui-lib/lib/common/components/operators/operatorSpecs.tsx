@@ -91,7 +91,6 @@ export type OperatorSpec = {
   Description?: React.ComponentType<{ openshiftVersion?: string }>;
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
-  category: string;
   supportLevel?: SupportLevel | undefined;
 };
 
@@ -113,7 +112,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.STORAGE],
         supportLevel: getFeatureSupportLevel('LSO'),
       },
       {
@@ -130,7 +128,6 @@ export const getOperatorSpecs = (
           ) : (
             <>{DESCRIPTION_LVM}</>
           ),
-        category: categories[Category.STORAGE],
         supportLevel: getFeatureSupportLevel('LVM'),
       },
       {
@@ -148,7 +145,6 @@ export const getOperatorSpecs = (
             {DESCRIPTION_ODF} <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.STORAGE],
         supportLevel: getFeatureSupportLevel('ODF'),
       },
     ],
@@ -166,7 +162,6 @@ export const getOperatorSpecs = (
             {DESCRIPTION_CNV} <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.VIRT],
         supportLevel: getFeatureSupportLevel('CNV'),
       },
       {
@@ -179,7 +174,6 @@ export const getOperatorSpecs = (
             {DESCRIPTION_MTV} <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.VIRT],
         supportLevel: getFeatureSupportLevel('MTV'),
       },
       {
@@ -197,7 +191,6 @@ export const getOperatorSpecs = (
             {DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.VIRT],
         supportLevel: getFeatureSupportLevel('OSC'),
       },
     ],
@@ -216,7 +209,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.AI],
         supportLevel: getFeatureSupportLevel('OPENSHIFT_AI'),
       },
       {
@@ -226,7 +218,6 @@ export const getOperatorSpecs = (
         descriptionText: DESCRIPTION_AMD_GPU,
         Requirements: () => <>Requires at least one supported AMD GPU</>,
         Description: () => <>{DESCRIPTION_AMD_GPU}</>,
-        category: categories[Category.AI],
         supportLevel: getFeatureSupportLevel('AMD_GPU'),
       },
       {
@@ -241,7 +232,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.AI],
         supportLevel: getFeatureSupportLevel('NVIDIA_GPU'),
       },
     ],
@@ -257,7 +247,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.NETWORK],
         supportLevel: getFeatureSupportLevel('NMSTATE'),
       },
       {
@@ -272,7 +261,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.NETWORK],
         supportLevel: getFeatureSupportLevel('SERVICEMESH'),
       },
     ],
@@ -289,7 +277,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.SECURITY],
         supportLevel: getFeatureSupportLevel('AUTHORINO'),
       },
       {
@@ -303,7 +290,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.SECURITY],
         supportLevel: getFeatureSupportLevel('KMM'),
       },
     ],
@@ -320,7 +306,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.CI_CD],
         supportLevel: getFeatureSupportLevel('PIPELINES'),
       },
       {
@@ -335,7 +320,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.CI_CD],
         supportLevel: getFeatureSupportLevel('SERVERLESS'),
       },
     ],
@@ -351,7 +335,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        category: categories[Category.PLATFORM],
         supportLevel: getFeatureSupportLevel('MCE'),
       },
       {
@@ -366,7 +349,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.PLATFORM],
         supportLevel: getFeatureSupportLevel('NODE_MAINTENANCE'),
       },
     ],
@@ -384,7 +366,6 @@ export const getOperatorSpecs = (
             </ExternalLink>
           </>
         ),
-        category: categories[Category.SCHEDULING],
         supportLevel: getFeatureSupportLevel('NODE_FEATURE_DISCOVERY'),
       },
       {
@@ -399,7 +380,6 @@ export const getOperatorSpecs = (
           </>
         ),
         notStandalone: true,
-        category: categories[Category.SCHEDULING],
         supportLevel: getFeatureSupportLevel('KUBE_DESCHEDULER'),
       },
     ],
