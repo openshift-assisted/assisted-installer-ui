@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { Cluster, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { FeatureId } from '../../types';
@@ -85,10 +84,6 @@ export const isOCPVersionEqualsOrMore = (
 };
 
 export const highlightMatch = (text: string, searchTerm?: string): React.ReactNode => {
-  console.log('-------------');
-  console.log(text);
-  console.log(searchTerm);
-  console.log('-----------');
   if (!searchTerm) return text;
   const regex = new RegExp(`(${searchTerm})`, 'gi');
 
