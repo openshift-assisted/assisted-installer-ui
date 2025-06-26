@@ -85,7 +85,8 @@ export const isOCPVersionEqualsOrMore = (
 
 export const highlightMatch = (text: string, searchTerm?: string): React.ReactNode => {
   if (!searchTerm) return text;
-  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  const escapeSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escapeSearchTerm})`, 'gi');
 
   const parts = text.split(regex);
 
