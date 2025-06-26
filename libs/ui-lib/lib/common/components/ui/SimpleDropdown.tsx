@@ -63,7 +63,6 @@ export const SimpleDropdown = ({
       onOpenChange={() => setOpen(!isOpen)}
       toggle={toggle}
       isOpen={isOpen}
-      isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
       popperProps={{ appendTo: menuAppendTo }}
     >

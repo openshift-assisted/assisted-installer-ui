@@ -24,6 +24,12 @@ export const networkingPage = {
         cy.get(Cypress.env('hostSubnetFieldId')).select(text);
       });
   },
+  getClusterSubnetCidrIpv4: () => {
+    return cy.get('#form-input-machineNetworks-0-cidr-field');
+  },
+  getClusterSubnetCidrIpv6: () => {
+    return cy.get('#form-input-machineNetworks-1-cidr-field');
+  },
   setClusterSubnetCidrIpv6: () => {
     cy.get('#form-input-machineNetworks-1-cidr-field')
       .contains(':')
