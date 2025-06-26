@@ -738,6 +738,7 @@
   "ai:Service networks": "Service networks",
   "ai:Set <bold>{{agent_location_label_key}}</bold> label in Agent resource to specify its location.": "Set <bold>{{agent_location_label_key}}</bold> label in Agent resource to specify its location.",
   "ai:Set all the hosts to boot using iPXE script file": "Set all the hosts to boot using iPXE script file",
+  "ai:Show all available versions": "Show all available versions",
   "ai:Show proxy settings": "Show proxy settings",
   "ai:Single node cluster cannot contain more than 1 host.": "Single node cluster cannot contain more than 1 host.",
   "ai:Single Node OpenShift disclaimer": "Single Node OpenShift disclaimer",

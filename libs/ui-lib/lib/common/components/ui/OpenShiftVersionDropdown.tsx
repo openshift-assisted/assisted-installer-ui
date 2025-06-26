@@ -55,7 +55,6 @@ export const OpenShiftVersionDropdown = ({
   const [isOpen, setOpen] = React.useState(false);
   const { t } = useTranslation();
   const fieldId = getFieldId(name, 'input');
-  const isDisabled = versions.length === 0;
   const {
     values: { customOpenshiftSelect },
   } = useFormikContext<ClusterDetailsValues>();
@@ -107,28 +106,30 @@ export const OpenShiftVersionDropdown = ({
         {dropdownItems}
       </DropdownGroup>
     ),
-    <DropdownGroup label="Custom releases" key="custom-releases">
-      {customDropdownItems}
-    </DropdownGroup>,
+    customDropdownItems.length && (
+      <DropdownGroup label="Custom releases" key="custom-releases">
+        {customDropdownItems}
+      </DropdownGroup>
+    ),
     <DropdownGroup key="all-available-versions">
-      <DropdownItem key="all-versions" id="all-versions">
+      <DropdownItem key="all-versions" id="all-versions" onSelect={(e) => e.preventDefault()}>
         <Button
           variant="link"
           isInline
           onClick={() => showOpenshiftVersionModal()}
           id="show-all-versions"
         >
-          Show all available versions
+          {t('ai:Show all available versions')}
         </Button>
       </DropdownItem>
     </DropdownGroup>,
-  ];
+  ].filter(Boolean);
 
   const onSelect = React.useCallback(
     (event?: React.MouseEvent<Element, MouseEvent>, val?: string | number) => {
       const newLabel = event?.currentTarget.textContent;
       const newValue = (val as string) || '';
-      if (newLabel && newValue !== 'all-versions') {
+      if (newLabel && event.currentTarget.id !== 'all-versions') {
         setCurrent(newLabel);
         setValue(newValue);
         setOpen(false);
@@ -144,10 +145,9 @@ export const OpenShiftVersionDropdown = ({
       ref={toggleRef}
       isFullWidth
       onClick={() => setOpen(!isOpen)}
-      isDisabled={isDisabled}
       isExpanded={isOpen}
     >
-      {current}
+      {current || t('ai:OpenShift version')}
     </MenuToggle>
   );
 
