@@ -223,7 +223,7 @@ const OperatorsBundle = ({
     <Stack hasGutter>
       <StackItem>
         <Title headingLevel="h2" size="lg">
-          Bundles
+          {bundles.length > 0 ? 'Bundles' : ''}
         </Title>
       </StackItem>
       <StackItem>

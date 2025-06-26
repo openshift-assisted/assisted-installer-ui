@@ -73,54 +73,58 @@ const OperatorsSelect = ({
   if (isLoading) {
     return <LoadingState />;
   }
-
+  let foundAtLeastOneOperator = false;
   return (
-    <ExpandableSection
-      toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
-      onToggle={() => setIsExpanded(!isExpanded)}
-      isExpanded={isExpanded}
-      data-testid="single-operators-section"
-    >
-      <Stack hasGutter data-testid={'operators-form'}>
-        {Object.entries(byCategory).map(([categoryName, specs]) => {
-          let categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
-          // Filter by searchTerm
-          if (searchTerm?.trim()) {
-            const term = searchTerm.trim().toLowerCase();
-            categoryOperators = categoryOperators.filter((spec) => {
-              const op = opSpecs[spec.operatorKey];
-              const title = op?.title?.toLowerCase() || '';
-              const description = op?.descriptionText?.toLowerCase() || '';
-              return title.includes(term) || description.includes(term);
-            });
-          }
-          if (categoryOperators.length === 0) {
-            return null;
-          }
+    <>
+      <ExpandableSection
+        toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+        onToggle={() => setIsExpanded(!isExpanded)}
+        isExpanded={isExpanded}
+        data-testid="single-operators-section"
+      >
+        <Stack hasGutter data-testid={'operators-form'}>
+          {Object.entries(byCategory).map(([categoryName, specs]) => {
+            let categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
+            // Filter by searchTerm
+            if (searchTerm?.trim()) {
+              const term = searchTerm.trim().toLowerCase();
+              categoryOperators = categoryOperators.filter((spec) => {
+                const op = opSpecs[spec.operatorKey];
+                const title = op?.title?.toLowerCase() || '';
+                const description = op?.descriptionText?.toLowerCase() || '';
+                return title.includes(term) || description.includes(term);
+              });
+            }
+            if (categoryOperators.length === 0) {
+              return null;
+            }
+            foundAtLeastOneOperator = true;
 
-          return (
-            <React.Fragment key={categoryName}>
-              <StackItem>
-                <strong>{categoryName}</strong>
-              </StackItem>
-              {categoryOperators.map((spec) => (
-                <StackItem key={spec.operatorKey}>
-                  <OperatorCheckbox
-                    bundles={bundles}
-                    operatorId={spec.operatorKey}
-                    cluster={cluster}
-                    openshiftVersion={cluster.openshiftVersion}
-                    preflightRequirements={preflightRequirements}
-                    searchTerm={searchTerm}
-                    {...spec}
-                  />
+            return (
+              <React.Fragment key={categoryName}>
+                <StackItem>
+                  <strong>{categoryName}</strong>
                 </StackItem>
-              ))}
-            </React.Fragment>
-          );
-        })}
-      </Stack>
-    </ExpandableSection>
+                {categoryOperators.map((spec) => (
+                  <StackItem key={spec.operatorKey}>
+                    <OperatorCheckbox
+                      bundles={bundles}
+                      operatorId={spec.operatorKey}
+                      cluster={cluster}
+                      openshiftVersion={cluster.openshiftVersion}
+                      preflightRequirements={preflightRequirements}
+                      searchTerm={searchTerm}
+                      {...spec}
+                    />
+                  </StackItem>
+                ))}
+              </React.Fragment>
+            );
+          })}
+        </Stack>
+      </ExpandableSection>
+      {!foundAtLeastOneOperator && !!searchTerm?.trim() && <StackItem>No results found</StackItem>}
+    </>
   );
 };
 
