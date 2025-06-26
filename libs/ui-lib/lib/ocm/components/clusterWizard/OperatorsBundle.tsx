@@ -30,17 +30,20 @@ import { useSelector } from 'react-redux';
 import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
 import { getNewBundleOperators } from '../clusterConfiguration/operators/utils';
 import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
-import { OperatorSpec, useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import {
+  highlightMatch,
+  OperatorSpec,
+  useOperatorSpecs,
+} from '../../../common/components/operators/operatorSpecs';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import './OperatorsBundle.css';
 
-const BundleLabel = ({ bundle }: { bundle: Bundle }) => {
+const BundleLabel = ({ bundle, searchTerm }: { bundle: Bundle; searchTerm?: string }) => {
   const { byKey: opSpecs } = useOperatorSpecs();
   const bundleSpec = bundleSpecs[bundle.id || ''];
-
   return (
     <>
-      <span>{bundle.title} </span>
+      <span>{highlightMatch(bundle.title || '', searchTerm)} </span>
       <PopoverIcon
         component={'a'}
         headerContent={<div>Requirements and dependencies</div>}
@@ -100,10 +103,12 @@ const BundleCard = ({
   bundle,
   bundles,
   preflightRequirements,
+  searchTerm,
 }: {
   bundle: Bundle;
   bundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 }) => {
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const isSNO = useSelector(selectIsCurrentClusterSNO);
@@ -177,13 +182,13 @@ const BundleCard = ({
           }}
         >
           <CardTitle>
-            <BundleLabel bundle={bundle} />
+            <BundleLabel bundle={bundle} searchTerm={searchTerm} />
           </CardTitle>
         </CardHeader>
         <CardBody isFilled>
           <Stack hasGutter>
             <StackItem isFilled>
-              <div>{bundle.description}</div>
+              <div>{highlightMatch(bundle.description || '', searchTerm)}</div>
             </StackItem>
             <StackItem>
               <Split>
@@ -206,9 +211,11 @@ const BundleCard = ({
 const OperatorsBundle = ({
   bundles,
   preflightRequirements,
+  searchTerm,
 }: {
   bundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 }) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
@@ -230,6 +237,7 @@ const OperatorsBundle = ({
                 bundle={bundle}
                 bundles={bundles}
                 preflightRequirements={preflightRequirements}
+                searchTerm={searchTerm}
               />
             </GalleryItem>
           ))}

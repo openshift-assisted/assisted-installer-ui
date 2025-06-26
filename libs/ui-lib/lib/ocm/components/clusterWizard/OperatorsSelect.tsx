@@ -24,10 +24,12 @@ const OperatorsSelect = ({
   cluster,
   bundles,
   preflightRequirements,
+  searchTerm,
 }: {
   cluster: Cluster;
   bundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 }) => {
   const [isLoading, setIsLoading] = useStateSafely(true);
   const { addAlert } = useAlerts();
@@ -64,13 +66,13 @@ const OperatorsSelect = ({
     });
   }, [isSingleClusterFeatureEnabled, supportedOperators]);
 
-  if (isLoading) {
-    return <LoadingState />;
-  }
-
   const selectedOperators = values.selectedOperators.filter(
     (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
   );
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
 
   return (
     <ExpandableSection
@@ -81,7 +83,17 @@ const OperatorsSelect = ({
     >
       <Stack hasGutter data-testid={'operators-form'}>
         {Object.entries(byCategory).map(([categoryName, specs]) => {
-          const categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
+          let categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
+          // Filter by searchTerm
+          if (searchTerm?.trim()) {
+            const term = searchTerm.trim().toLowerCase();
+            categoryOperators = categoryOperators.filter((spec) => {
+              const op = opSpecs[spec.operatorKey];
+              const title = op?.title?.toLowerCase() || '';
+              const description = op?.descriptionText?.toLowerCase() || '';
+              return title.includes(term) || description.includes(term);
+            });
+          }
           if (categoryOperators.length === 0) {
             return null;
           }
@@ -99,6 +111,7 @@ const OperatorsSelect = ({
                     cluster={cluster}
                     openshiftVersion={cluster.openshiftVersion}
                     preflightRequirements={preflightRequirements}
+                    searchTerm={searchTerm}
                     {...spec}
                   />
                 </StackItem>
