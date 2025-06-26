@@ -99,6 +99,10 @@ const OperatorsSelect = ({
               return null;
             }
             foundAtLeastOneOperator = true;
+            if (!!searchTerm?.trim() && !isExpanded) {
+              //if we found some results expand operators section
+              setIsExpanded(true);
+            }
 
             return (
               <React.Fragment key={categoryName}>
