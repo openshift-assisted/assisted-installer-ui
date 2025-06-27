@@ -9,14 +9,15 @@ import {
   DropdownList,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
+import toNumber from 'lodash-es/toNumber';
 import { getFieldId, PopoverIcon, PreviewBadgePosition, TechnologyPreview } from '../../../common';
+
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
 import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
 import OcmTNADisclaimer from './OcmTNADisclaimer';
-import toNumber from 'lodash-es/toNumber';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
@@ -71,16 +72,8 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
 
-  const snoSupportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
-    'SNO',
-    featureSupportLevelData ?? undefined,
-  );
   const snoExpansion = newFeatureSupportLevelContext.isFeatureSupported(
     'SINGLE_NODE_EXPANSION',
-    featureSupportLevelData ?? undefined,
-  );
-  const isDisabled = newFeatureSupportLevelContext.isFeatureDisabled(
-    'SNO',
     featureSupportLevelData ?? undefined,
   );
 
@@ -171,13 +164,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
           <DropdownList>{dropdownItems}</DropdownList>
         </Dropdown>
       </FormGroup>
-      {field.value === 1 && (
-        <OcmSNODisclaimer
-          isDisabled={isDisabled}
-          snoSupportLevel={snoSupportLevel || 'supported'}
-          snoExpansionSupported={snoExpansion}
-        />
-      )}
+      {field.value === 1 && <OcmSNODisclaimer snoExpansionSupported={snoExpansion} />}
       {field.value === 2 && <OcmTNADisclaimer />}
     </>
   );

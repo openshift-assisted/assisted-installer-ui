@@ -23,7 +23,7 @@ const baseCluster = (name = Cypress.env('CLUSTER_NAME')) => ({
     mode: 'tpmv2',
   },
   email_domain: 'Unknown',
-  high_availability_mode: 'None',
+  control_plane_count: 1,
   host_networks: [],
   hosts: [],
   hyperthreading: 'all',
