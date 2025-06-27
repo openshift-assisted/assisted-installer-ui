@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, StackItem } from '@patternfly/react-core';
+import { Flex, FlexItem, SearchInput, Stack, StackItem } from '@patternfly/react-core';
 import { Bundle } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterOperatorProps,
@@ -19,6 +19,7 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
   const [bundlesLoading, setBundlesLoading] = React.useState(true);
   const [bundles, setBundles] = React.useState<Bundle[]>([]);
   const { preflightRequirements, isLoading } = useClusterPreflightRequirements(cluster.id);
+  const [searchTerm, setSearchTerm] = React.useState('');
   React.useEffect(() => {
     const fetchBundles = async () => {
       try {
@@ -39,6 +40,12 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
     void fetchBundles();
   }, [addAlert]);
 
+  const filteredBundles = bundles.filter(
+    (bundle) =>
+      bundle.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bundle.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   if (isLoading || bundlesLoading) {
     return <LoadingState />;
   }
@@ -46,16 +53,36 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
   return (
     <Stack hasGutter data-testid={'operators-page'}>
       <StackItem>
-        <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
+        <Flex
+          justifyContent={{ default: 'justifyContentSpaceBetween' }}
+          alignItems={{ default: 'alignItemsCenter' }}
+        >
+          <FlexItem>
+            <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
+          </FlexItem>
+          <FlexItem style={{ minWidth: '300px' }}>
+            <SearchInput
+              placeholder={'Find bundles or operators'}
+              value={searchTerm}
+              onChange={(_e, value) => setSearchTerm(value)}
+              onClear={() => setSearchTerm('')}
+            />
+          </FlexItem>
+        </Flex>
       </StackItem>
       <StackItem>
-        <OperatorsBundle bundles={bundles} preflightRequirements={preflightRequirements} />
+        <OperatorsBundle
+          bundles={filteredBundles}
+          preflightRequirements={preflightRequirements}
+          searchTerm={searchTerm}
+        />
       </StackItem>
       <StackItem>
         <OperatorsSelect
           bundles={bundles}
           cluster={cluster}
           preflightRequirements={preflightRequirements}
+          searchTerm={searchTerm}
         />
       </StackItem>
     </Stack>

@@ -26,6 +26,7 @@ import { getFieldId, OperatorsValues, PopoverIcon } from '../../../../common';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { getNewOperators } from './utils';
 import {
+  highlightMatch,
   OperatorSpec,
   useOperatorSpecs,
 } from '../../../../common/components/operators/operatorSpecs';
@@ -118,12 +119,14 @@ const OperatorCheckbox = ({
   Requirements,
   openshiftVersion,
   preflightRequirements,
+  searchTerm,
 }: {
   bundles: Bundle[];
   cluster: Cluster;
   operatorId: string;
   openshiftVersion?: string;
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 } & OperatorSpec) => {
   const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();
   const { byKey: opSpecs } = useOperatorSpecs();
@@ -166,7 +169,7 @@ const OperatorCheckbox = ({
         label={
           <>
             <Tooltip hidden={!disabledReason} content={disabledReason}>
-              <span>{title} </span>
+              <span>{highlightMatch(title, searchTerm)} </span>
             </Tooltip>
             <OperatorRequirements
               operatorId={operatorId}
@@ -196,7 +199,7 @@ const OperatorCheckbox = ({
           !!Description && (
             <HelperText>
               <HelperTextItem variant="indeterminate">
-                <Description openshiftVersion={openshiftVersion} />
+                <Description openshiftVersion={openshiftVersion} searchTerm={searchTerm} />
               </HelperTextItem>
             </HelperText>
           )
