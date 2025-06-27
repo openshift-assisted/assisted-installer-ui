@@ -18,6 +18,9 @@ import { UploadSSH, sshPublicKeyValidationSchema } from '../../../common';
 import { EditSSHKeyFormikValues } from './types';
 import { getWarningMessage } from './utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
+import { InfraEnvModel } from '../../types/models';
+import { appendPatch } from '../../utils';
 
 const validationSchema = Yup.object({
   sshPublicKey: sshPublicKeyValidationSchema.required(
@@ -26,20 +29,15 @@ const validationSchema = Yup.object({
 });
 
 export type EditSSHKeyModalProps = {
-  isOpen: boolean;
   onClose: VoidFunction;
-  // eslint-disable-next-line
-  onSubmit: (values: EditSSHKeyFormikValues, infraEnv: InfraEnvK8sResource) => Promise<any>;
   infraEnv: InfraEnvK8sResource;
   hasAgents: boolean;
   hasBMHs: boolean;
 };
 
 const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
-  isOpen,
   onClose,
   infraEnv,
-  onSubmit,
   hasAgents,
   hasBMHs,
 }) => {
@@ -51,7 +49,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
     <Modal
       aria-label={t('ai:Edit SSH public key dialog')}
       title={t('ai:Edit SSH public key')}
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       variant={ModalVariant.small}
       hasNoBodyWrapper
@@ -63,8 +61,21 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
         }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
+          const patches: Patch[] = [];
+          appendPatch(
+            patches,
+            '/spec/sshAuthorizedKey',
+            values.sshPublicKey,
+            infraEnv.spec?.sshAuthorizedKey,
+          );
           try {
-            await onSubmit(values, infraEnv);
+            if (patches.length) {
+              await k8sPatch({
+                model: InfraEnvModel,
+                resource: infraEnv,
+                data: patches,
+              });
+            }
             onClose();
           } catch (err) {
             const error = err as Error;

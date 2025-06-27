@@ -4,16 +4,13 @@ import BMCForm from '../Agent/BMCForm';
 import { AddBmcHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
-import ProvisioningConfigErrorAlert from './ProvisioningConfigErrorAlert';
 
 const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
   isOpen,
   onClose,
   infraEnv,
-  onCreateBMH,
   usedHostnames,
   docVersion,
-  provisioningConfigError,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const { t } = useTranslation();
@@ -28,9 +25,7 @@ const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
       id="add-host-modal"
     >
       <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        <ProvisioningConfigErrorAlert error={provisioningConfigError} />
         <BMCForm
-          onCreateBMH={onCreateBMH}
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}

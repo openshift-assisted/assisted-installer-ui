@@ -1,6 +1,7 @@
 // without namespace
 export * from './types';
 export * from './components';
+export * from './utils';
 
 // re-export selected from common
 export * as Reducers from '../common/reducers';

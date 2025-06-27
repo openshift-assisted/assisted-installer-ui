@@ -2,7 +2,7 @@
   "dependencies": {
     "@openshift-assisted/locales": "workspace:*",
     "@openshift-assisted/types": "workspace:*",
-    "@openshift-console/dynamic-plugin-sdk": "0.0.3",
+    "@openshift-console/dynamic-plugin-sdk": "1.4.0",
     "@patternfly/patternfly": "5.2.0",
     "@patternfly/react-code-editor": "5.2.0",
     "@patternfly/react-core": "5.2.0",
@@ -117,11 +117,12 @@
     "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
   "scripts": {
-    "build": "yarn run -T tsc --build --verbose && yarn copy:css",
+    "build": "yarn run -T tsc --build --verbose && yarn copy:css && yarn copy:svg",
     "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./lib/index.ts",
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf node_modules build",
     "copy:css": "rsync -Ruv lib/./**/*.css build/cjs",
+    "copy:svg": "rsync -Ruv lib/./**/*.svg build/cjs",
     "format": "yarn run -T prettier --cache --check . \"!build\"",
     "fix-code-style": "yarn lint --fix && yarn format --write",
     "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache .",

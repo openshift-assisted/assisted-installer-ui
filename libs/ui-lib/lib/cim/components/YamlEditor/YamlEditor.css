@@ -1,0 +1,8 @@
+.cim-yaml-modal.pf-v5-c-modal-box {
+  height: 95vh;
+}
+
+/* Style of the bar with the line numbers */
+.cim-yaml-editor .monaco-editor .margin {
+  --vscode-editorGutter-background: #292e34;
+}
