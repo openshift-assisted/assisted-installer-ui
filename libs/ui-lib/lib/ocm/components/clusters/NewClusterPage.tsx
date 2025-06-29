@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { PageSectionVariants, PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
@@ -13,7 +13,7 @@ import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
-const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactNode }) => {
+const NewClusterPageGeneric = ({ children }: React.PropsWithChildren<unknown>) => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
@@ -24,7 +24,10 @@ const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactN
           >
             <OpenShiftVersionsContextProvider>
               <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-                {pageTitleSection}
+                {children}
+                <PageSection variant={PageSectionVariants.light}>
+                  <AssistedInstallerHeader />
+                </PageSection>
                 <PageSection variant={PageSectionVariants.light} isFilled>
                   <ClusterWizardContextProvider>
                     <NewClusterWizard />
@@ -39,16 +42,9 @@ const NewClusterPageGeneric = ({ pageTitleSection }: { pageTitleSection?: ReactN
   );
 };
 
-const NewClusterTitleSection = () => (
-  <>
-    <ClusterBreadcrumbs clusterName="New cluster" />
-    <PageSection variant={PageSectionVariants.light}>
-      <AssistedInstallerHeader />
-    </PageSection>
-  </>
-);
-
 export const NewSingleClusterPage = () => <NewClusterPageGeneric />;
 export const NewClusterPage = () => (
-  <NewClusterPageGeneric pageTitleSection={<NewClusterTitleSection />} />
+  <NewClusterPageGeneric>
+    <ClusterBreadcrumbs clusterName="New cluster" />
+  </NewClusterPageGeneric>
 );

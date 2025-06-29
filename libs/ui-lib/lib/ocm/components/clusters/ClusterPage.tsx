@@ -205,6 +205,9 @@ export const SingleClusterPage = ({
   resetModal: React.ReactNode;
 }) => (
   <AlertsContextProvider>
+    <PageSection variant={PageSectionVariants.light}>
+      <AssistedInstallerHeader />
+    </PageSection>
     <ClusterPageGeneric clusterId={clusterId} resetModal={resetModal} />
   </AlertsContextProvider>
 );

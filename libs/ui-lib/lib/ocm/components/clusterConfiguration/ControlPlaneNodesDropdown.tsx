@@ -9,18 +9,19 @@ import {
   DropdownList,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
-import { getFieldId, PopoverIcon } from '../../../common';
+import { getFieldId, PopoverIcon, PreviewBadgePosition, TechnologyPreview } from '../../../common';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
+import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
 import OcmTNADisclaimer from './OcmTNADisclaimer';
 import toNumber from 'lodash-es/toNumber';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
 const fieldId = getFieldId(INPUT_NAME, 'input');
-const DEFAULT_VALUE = 3;
+export const DEFAULT_VALUE_CPN = 3;
 
 export const ControlPlaneNodesLabel = () => {
   return (
@@ -42,13 +43,14 @@ export const ControlPlaneNodesLabel = () => {
 interface ControlPlaneNodesOption {
   value: number;
   label: string;
+  badge?: React.ReactNode;
 }
 
 interface ControlPlaneNodesDropdownProps {
   featureSupportLevelData?: NewFeatureSupportLevelMap | null;
 }
 
-const isDropdownItemEnabled = (
+export const isCPNDropdownItemEnabled = (
   controlPlaneNodeCount: number,
   isNonStandardControlPlaneEnabled: boolean,
   isTnaEnabled: boolean,
@@ -83,29 +85,37 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   );
 
   const disabledReason =
-    'This option is not available with the current configurations. Make sure that OpenShift version is 4.18 or newer, CPU architecture is x86_64 and no external platform integration is selected.';
+    'This option is not available with the current configurations. Make sure that OpenShift version is 4.19 or newer and no external platform integration is selected.';
 
   const isNonStandardControlPlaneEnabled = newFeatureSupportLevelContext.isFeatureSupported(
     'NON_STANDARD_HA_CONTROL_PLANE',
     featureSupportLevelData ?? undefined,
   );
 
+  const tnaSupport = newFeatureSupportLevelContext.getFeatureSupportLevel(
+    'TNA',
+    featureSupportLevelData ?? undefined,
+  );
+  const isTnaEnabled = isFeatureSupportedAndAvailable(tnaSupport || 'unsupported');
+
   const options: ControlPlaneNodesOption[] = [
     { value: 1, label: '1 (Single Node OpenShift)' },
-    { value: 2, label: '2 (Two-Nodes Arbiter)' },
+    {
+      value: 2,
+      label: '2 (Two-Nodes Arbiter)',
+      badge:
+        tnaSupport === 'tech-preview' ? (
+          <TechnologyPreview position={PreviewBadgePosition.default} />
+        ) : undefined,
+    },
     { value: 3, label: '3 (highly available cluster)' },
     { value: 4, label: '4 (highly available cluster+)' },
     { value: 5, label: '5 (highly available cluster++)' },
   ];
 
-  const isTnaEnabled = newFeatureSupportLevelContext.isFeatureSupported(
-    'TNA',
-    featureSupportLevelData ?? undefined,
-  );
-
   React.useEffect(() => {
     if (!field.value) {
-      setValue(DEFAULT_VALUE);
+      setValue(DEFAULT_VALUE_CPN);
     }
   }, [field.value, setValue]);
 
@@ -115,8 +125,8 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     setOpen(false);
   };
 
-  const dropdownItems = options.map(({ value, label }) => {
-    const isItemEnabled = isDropdownItemEnabled(
+  const dropdownItems = options.map(({ value, label, badge }) => {
+    const isItemEnabled = isCPNDropdownItemEnabled(
       value,
       isNonStandardControlPlaneEnabled,
       isTnaEnabled,
@@ -124,7 +134,9 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     return (
       <DropdownItem key={value} id={value.toString()} isAriaDisabled={!isItemEnabled}>
         <Tooltip hidden={isItemEnabled} content={disabledReason} position="top">
-          <div>{label}</div>
+          <div>
+            {label} {badge}
+          </div>
         </Tooltip>
       </DropdownItem>
     );
