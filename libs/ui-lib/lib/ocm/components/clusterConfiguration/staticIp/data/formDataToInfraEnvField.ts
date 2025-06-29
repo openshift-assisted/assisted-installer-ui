@@ -44,7 +44,7 @@ const getPrefixLength = (
 ): number => {
   const machineNetwork = networkWide.ipConfigs[protocolVersion].machineNetwork;
   if (machineNetwork.prefixLength === '') {
-    throw 'Machine network prefix length not configured';
+    throw 'Subnet prefix length not configured';
   }
   return machineNetwork.prefixLength;
 };

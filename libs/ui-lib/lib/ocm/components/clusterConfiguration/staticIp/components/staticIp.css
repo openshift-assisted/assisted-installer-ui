@@ -16,14 +16,14 @@
   font-weight: unset;
 }
 
-.machine-network .pf-l-flex > div:nth-child(1) {
+.subnet .pf-l-flex > div:nth-child(1) {
   flex: 0 0 24rem;
 }
 
-.machine-network .pf-l-flex > div:nth-child(3) {
+.subnet .pf-l-flex > div:nth-child(3) {
   flex: 0 0 6rem;
 }
 
-.machine-network .pf-v5-c-form__helper-text.pf-m-error {
+.subnet .pf-v5-c-form__helper-text.pf-m-error {
   margin-top: unset;
 }
