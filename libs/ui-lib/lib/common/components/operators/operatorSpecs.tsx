@@ -83,12 +83,34 @@ export const isOCPVersionEqualsOrMore = (
   );
 };
 
+export const highlightMatch = (text: string, searchTerm?: string): React.ReactNode => {
+  if (!searchTerm) return text;
+  try {
+    const escapeSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapeSearchTerm})`, 'gi');
+
+    const parts = text.split(regex);
+
+    return parts.map((part, i) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? <mark key={i}>{part}</mark> : part,
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log('failed to highlight search text', err);
+    return text;
+  }
+};
+
+export const HighlightedText = ({ text, searchTerm }: { text: string; searchTerm?: string }) => (
+  <>{highlightMatch(text, searchTerm)}</>
+);
+
 export type OperatorSpec = {
   operatorKey: string;
   title: string;
   featureId: FeatureId;
   descriptionText?: string;
-  Description?: React.ComponentType<{ openshiftVersion?: string }>;
+  Description?: React.ComponentType<{ openshiftVersion?: string; searchTerm?: string }>;
   notStandalone?: boolean;
   Requirements?: React.ComponentType<{ cluster: Cluster }>;
   supportLevel?: SupportLevel | undefined;
@@ -105,9 +127,9 @@ export const getOperatorSpecs = (
         title: 'Local Storage Operator',
         featureId: 'LSO',
         descriptionText: DESCRIPTION_LSO,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_LSO}{' '}
+            <HighlightedText text={DESCRIPTION_LSO} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getLsoLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
@@ -119,10 +141,10 @@ export const getOperatorSpecs = (
         title: useLVMS ? 'Logical Volume Manager Storage' : 'Logical Volume Manager',
         featureId: 'LVM',
         descriptionText: DESCRIPTION_LVM,
-        Description: ({ openshiftVersion }) =>
+        Description: ({ openshiftVersion, searchTerm }) =>
           useLVMS ? (
             <>
-              {DESCRIPTION_LVM}{' '}
+              <HighlightedText text={DESCRIPTION_LVM} searchTerm={searchTerm} />{' '}
               <ExternalLink href={getLvmsDocsLink(openshiftVersion)}>Learn more</ExternalLink>
             </>
           ) : (
@@ -140,9 +162,10 @@ export const getOperatorSpecs = (
             Learn more about the requirements for OpenShift Data Foundation
           </ExternalLink>
         ),
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_ODF} <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
+            <HighlightedText text={DESCRIPTION_ODF} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={ODF_LINK}>Learn more</ExternalLink>
           </>
         ),
         supportLevel: getFeatureSupportLevel('ODF'),
@@ -157,9 +180,10 @@ export const getOperatorSpecs = (
         Requirements: () => (
           <>Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes</>
         ),
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_CNV} <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
+            <HighlightedText text={DESCRIPTION_CNV} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={CNV_LINK}>Learn more</ExternalLink>
           </>
         ),
         supportLevel: getFeatureSupportLevel('CNV'),
@@ -169,9 +193,10 @@ export const getOperatorSpecs = (
         title: 'Migration Toolkit for Virtualization',
         featureId: 'MTV',
         descriptionText: DESCRIPTION_MTV,
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_MTV} <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
+            <HighlightedText text={DESCRIPTION_MTV} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={MTV_LINK}>Learn more</ExternalLink>
           </>
         ),
         supportLevel: getFeatureSupportLevel('MTV'),
@@ -203,9 +228,9 @@ export const getOperatorSpecs = (
         Requirements: () => (
           <ExternalLink href={OPENSHIFT_AI_REQUIREMENTS_LINK}>Learn more</ExternalLink>
         ),
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_OPENSHIFT_AI}{' '}
+            <HighlightedText text={DESCRIPTION_OPENSHIFT_AI} searchTerm={searchTerm} />{' '}
             <ExternalLink href={OPENSHIFT_AI_LINK}>Learn more</ExternalLink>
           </>
         ),
@@ -217,7 +242,12 @@ export const getOperatorSpecs = (
         featureId: 'AMD_GPU',
         descriptionText: DESCRIPTION_AMD_GPU,
         Requirements: () => <>Requires at least one supported AMD GPU</>,
-        Description: () => <>{DESCRIPTION_AMD_GPU}</>,
+        Description: ({ searchTerm }) => (
+          <>
+            {' '}
+            <HighlightedText text={DESCRIPTION_AMD_GPU} searchTerm={searchTerm} />{' '}
+          </>
+        ),
         supportLevel: getFeatureSupportLevel('AMD_GPU'),
       },
       {
@@ -226,9 +256,9 @@ export const getOperatorSpecs = (
         featureId: 'NVIDIA_GPU',
         descriptionText: DESCRIPTION_NVIDIA_GPU,
         Requirements: () => <>Requires at least one supported NVIDIA GPU</>,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_NVIDIA_GPU}
+            <HighlightedText text={DESCRIPTION_NVIDIA_GPU} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getNvidiaGpuLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
@@ -241,9 +271,9 @@ export const getOperatorSpecs = (
         title: 'NMState',
         featureId: 'NMSTATE',
         descriptionText: DESCRIPTION_NMSTATE,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_NMSTATE}{' '}
+            <HighlightedText text={DESCRIPTION_NMSTATE} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getNmstateLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
@@ -254,9 +284,9 @@ export const getOperatorSpecs = (
         title: 'Service Mesh',
         featureId: 'SERVICEMESH',
         descriptionText: DESCRIPTION_SERVICEMESH,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_SERVICEMESH}{' '}
+            <HighlightedText text={DESCRIPTION_SERVICEMESH} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getServiceMeshLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
@@ -270,9 +300,9 @@ export const getOperatorSpecs = (
         title: 'Authorino',
         featureId: 'AUTHORINO',
         descriptionText: DESCRIPTION_AUTHORINO,
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_AUTHORINO}{' '}
+            <HighlightedText text={DESCRIPTION_AUTHORINO} searchTerm={searchTerm} />{' '}
             <ExternalLink href={AUTHORINO_OPERATOR_LINK}>Learn more</ExternalLink>
           </>
         ),
@@ -284,9 +314,9 @@ export const getOperatorSpecs = (
         title: 'Kernel Module Management',
         featureId: 'KMM',
         descriptionText: DESCRIPTION_KMM,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_KMM}{' '}
+            <HighlightedText text={DESCRIPTION_KMM} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getKmmDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
@@ -299,9 +329,9 @@ export const getOperatorSpecs = (
         title: 'Pipelines',
         featureId: 'PIPELINES',
         descriptionText: DESCRIPTION_PIPELINES,
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_PIPELINES}{' '}
+            <HighlightedText text={DESCRIPTION_PIPELINES} searchTerm={searchTerm} />{' '}
             <ExternalLink href={PIPELINES_OPERATOR_LINK}>Learn more</ExternalLink>
           </>
         ),
@@ -313,9 +343,9 @@ export const getOperatorSpecs = (
         title: 'Serverless',
         featureId: 'SERVERLESS',
         descriptionText: DESCRIPTION_SERVERLESS,
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_SERVERLESS}{' '}
+            <HighlightedText text={DESCRIPTION_SERVERLESS} searchTerm={searchTerm} />{' '}
             <ExternalLink href={SERVERLESS_OPERATOR_LINK}>Learn more</ExternalLink>
           </>
         ),
@@ -329,9 +359,9 @@ export const getOperatorSpecs = (
         title: 'Multicluster engine',
         featureId: 'MCE',
         descriptionText: DESCRIPTION_MCE,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_MCE}{' '}
+            <HighlightedText text={DESCRIPTION_MCE} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getMceDocsLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
@@ -342,9 +372,9 @@ export const getOperatorSpecs = (
         title: 'Node Maintenance',
         featureId: 'NODE_MAINTENANCE',
         descriptionText: DESCRIPTION_NODE_MAINTENANCE,
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_NODE_MAINTENANCE}{' '}
+            <HighlightedText text={DESCRIPTION_NODE_MAINTENANCE} searchTerm={searchTerm} />{' '}
             <ExternalLink href={NODE_MAINTENANCE_LINK}>Learn more</ExternalLink>
           </>
         ),
@@ -373,9 +403,9 @@ export const getOperatorSpecs = (
         title: 'Kube Descheduler',
         featureId: 'KUBE_DESCHEDULER',
         descriptionText: DESCRIPTION_KUBE_DESCHEDULER,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_KUBE_DESCHEDULER}{' '}
+            <HighlightedText text={DESCRIPTION_KUBE_DESCHEDULER} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getKubeDeschedulerLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
