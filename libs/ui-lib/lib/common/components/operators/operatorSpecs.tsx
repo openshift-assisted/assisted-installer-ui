@@ -211,9 +211,10 @@ export const getOperatorSpecs = (
             Learn more about the requirements for OpenShift sandboxed containers
           </ExternalLink>
         ),
-        Description: () => (
+        Description: ({ searchTerm }) => (
           <>
-            {DESCRIPTION_OSC} <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
+            <HighlightedText text={DESCRIPTION_OSC} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={OSC_LINK}>Learn more</ExternalLink>
           </>
         ),
         supportLevel: getFeatureSupportLevel('OSC'),
@@ -388,9 +389,9 @@ export const getOperatorSpecs = (
         title: 'Node Feature Discovery',
         featureId: 'NODE_FEATURE_DISCOVERY',
         descriptionText: DESCRIPTION_NODE_FEATURE_DISCOVERY,
-        Description: ({ openshiftVersion }) => (
+        Description: ({ openshiftVersion, searchTerm }) => (
           <>
-            {DESCRIPTION_NODE_FEATURE_DISCOVERY}{' '}
+            <HighlightedText text={DESCRIPTION_NODE_FEATURE_DISCOVERY} searchTerm={searchTerm} />{' '}
             <ExternalLink href={getNodeFeatureDiscoveryLink(openshiftVersion)}>
               Learn more
             </ExternalLink>
