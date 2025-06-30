@@ -82,10 +82,10 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
       labelIcon={
         <PopoverIcon noVerticalAlign bodyContent="The range of IP addresses of the hosts." />
       }
-      label="Machine network"
+      label="Subnet"
       fieldId={fieldId}
       isRequired
-      className="machine-network"
+      className="subnet"
     >
       <Flex>
         <FlexItem spacer={{ default: 'spacerSm' }}>
