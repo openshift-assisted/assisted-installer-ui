@@ -85,14 +85,20 @@ export const isOCPVersionEqualsOrMore = (
 
 export const highlightMatch = (text: string, searchTerm?: string): React.ReactNode => {
   if (!searchTerm) return text;
-  const escapeSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escapeSearchTerm})`, 'gi');
+  try {
+    const escapeSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapeSearchTerm})`, 'gi');
 
-  const parts = text.split(regex);
+    const parts = text.split(regex);
 
-  return parts.map((part, i) =>
-    part.toLowerCase() === searchTerm.toLowerCase() ? <mark key={i}>{part}</mark> : part,
-  );
+    return parts.map((part, i) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? <mark key={i}>{part}</mark> : part,
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log('failed to highlight search text', err);
+    return text;
+  }
 };
 
 export const HighlightedText = ({ text, searchTerm }: { text: string; searchTerm?: string }) => (
