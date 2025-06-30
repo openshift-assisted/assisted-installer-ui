@@ -58,7 +58,6 @@ export const OpenShiftVersionDropdown = ({
   const [isOpen, setOpen] = React.useState(false);
   const { t } = useTranslation();
   const fieldId = getFieldId(name, 'input');
-  const isDisabled = versions.length === 0;
   const {
     values: { customOpenshiftSelect },
   } = useFormikContext<ClusterDetailsValues>();
@@ -107,29 +106,29 @@ export const OpenShiftVersionDropdown = ({
   });
 
   const dropdownGroup = [
-    <DropdownGroup label="Latest releases" key="latest-releases">
-      {dropdownItems}
-    </DropdownGroup>,
-    <DropdownGroup
-      label="Custom releases"
-      key="custom-releases"
-      hidden={customDropdownItems.length === 0}
-    >
-      {customDropdownItems}
-    </DropdownGroup>,
+    dropdownItems.length && (
+      <DropdownGroup label="Latest releases" key="latest-releases">
+        {dropdownItems}
+      </DropdownGroup>
+    ),
+    customDropdownItems.length && (
+      <DropdownGroup label="Custom releases" key="custom-releases">
+        {customDropdownItems}
+      </DropdownGroup>
+    ),
     <DropdownGroup key="all-available-versions">
-      <DropdownItem key="all-versions" id="all-versions">
+      <DropdownItem key="all-versions" id="all-versions" onSelect={(e) => e.preventDefault()}>
         <Button
           variant="link"
           isInline
           onClick={() => showOpenshiftVersionModal()}
           id="show-all-versions"
         >
-          Show all available versions
+          {t('ai:Show all available versions')}
         </Button>
       </DropdownItem>
     </DropdownGroup>,
-  ];
+  ].filter(Boolean);
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
@@ -147,16 +146,15 @@ export const OpenShiftVersionDropdown = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(_event, val) => setOpen(!isDisabled && val)}
+        onToggle={(_event, val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
         isText
         className="pf-v5-u-w-100"
       >
         {current}
       </DropdownToggle>
     ),
-    [setOpen, current, isDisabled],
+    [setOpen, current],
   );
 
   const helperText = getHelperText && getHelperText(field.value);
