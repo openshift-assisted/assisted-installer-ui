@@ -21,6 +21,10 @@ import { setServerUpdateError, updateCluster } from '../../store/slices/current-
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { canNextOperators } from './wizardTransition';
 
+// Balance debounce time: fast clicks should trigger a single API call,
+// but making it shorter will allow us to disable navigation buttons while changes are pending
+const operatorsAutoSaveDebounce = 500;
+
 const getOperatorsInitialValues = (
   uiSettings: UISettingsValues | undefined,
   cluster: Cluster,
@@ -34,7 +38,7 @@ const getOperatorsInitialValues = (
 const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
-  const isAutoSaveRunning = useFormikAutoSave();
+  const isAutoSaveRunning = useFormikAutoSave(operatorsAutoSaveDebounce);
   const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
   const navigate = useNavigate();
   const { pathname } = useLocation();
