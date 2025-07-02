@@ -85,8 +85,10 @@ export const VirtualIPControlGroup = ({
   const { t } = useTranslation();
 
   const ipHelperText = 'Make sure the IP is not used by any other device on your network.';
-  const ipPopoverContent =
-    'Provides an endpoint for users, both human and machine, to interact with and configure the platform.';
+  const apiIpPopoverContent =
+    'An API virtual IP provides an endpoint for users, both human and machine, to interact with and configure the platform.';
+  const ingressIpPopoverContent =
+    'An Ingress virtual IP provides an endpoint for users, both human and machine, to interact with and configure the platform.';
 
   const {
     'api-vips-defined': apiVipFailedValidationMessage,
@@ -145,7 +147,8 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>API IP{ipFieldsSuffix}</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>API IP{ipFieldsSuffix}</span>{' '}
+                <PopoverIcon bodyContent={apiIpPopoverContent} />
               </>
             }
             name="apiVip"
@@ -165,7 +168,7 @@ export const VirtualIPControlGroup = ({
             label={
               <>
                 <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                <PopoverIcon bodyContent={ipPopoverContent} />
+                <PopoverIcon bodyContent={ingressIpPopoverContent} />
               </>
             }
             name="ingressVip"
@@ -192,7 +195,7 @@ export const VirtualIPControlGroup = ({
                     label={
                       <>
                         <span>API IP{ipFieldsSuffix}</span>{' '}
-                        <PopoverIcon bodyContent={ipPopoverContent} />
+                        <PopoverIcon bodyContent={apiIpPopoverContent} />
                       </>
                     }
                     name="apiVips.0.ip"
@@ -209,7 +212,7 @@ export const VirtualIPControlGroup = ({
                     label={
                       <>
                         <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                        <PopoverIcon bodyContent={ipPopoverContent} />
+                        <PopoverIcon bodyContent={ingressIpPopoverContent} />
                       </>
                     }
                     helperText={ipHelperText}
