@@ -23,6 +23,9 @@ import {
 } from '../../../common';
 import { getErrorMessage } from '../../../common/utils';
 import { getWarningMessage } from './utils';
+import { k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
+import { appendPatch } from '../../utils';
+import { InfraEnvModel } from '../../types/models';
 
 const validationSchema = () =>
   Yup.lazy((values: ProxyFieldsType) =>
@@ -63,7 +66,6 @@ const Footer = ({ onClose }: { onClose: VoidFunction }) => {
 const EditProxyModal: React.FC<EditProxyModalProps> = ({
   onClose,
   infraEnv,
-  onSubmit,
   hasAgents,
   hasBMHs,
 }) => {
@@ -93,8 +95,30 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
         validationSchema={validationSchema}
         onSubmit={async (values: ProxyFieldsType) => {
           setError(undefined);
+          const patches: Patch[] = [];
+          const proxySettings: {
+            httpProxy?: string;
+            httpsProxy?: string;
+            noProxy?: string;
+          } = {};
+          if (values.httpProxy) {
+            proxySettings.httpProxy = values.httpProxy;
+          }
+          if (values.httpsProxy) {
+            proxySettings.httpsProxy = values.httpsProxy;
+          }
+          if (values.noProxy) {
+            proxySettings.noProxy = values.noProxy;
+          }
+          appendPatch(patches, '/spec/proxy', proxySettings, infraEnv.spec?.proxy);
           try {
-            await onSubmit(values, infraEnv);
+            if (patches.length) {
+              await k8sPatch({
+                model: InfraEnvModel,
+                resource: infraEnv,
+                data: patches,
+              });
+            }
             onClose();
           } catch (e) {
             setError(getErrorMessage(e));

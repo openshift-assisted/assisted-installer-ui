@@ -4,15 +4,12 @@ import { UploadActionModalProps } from './types';
 import AddBmcHostYamlForm from './AddBmcHostYamlForm';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
-import ProvisioningConfigErrorAlert from './ProvisioningConfigErrorAlert';
 
 const AddBmcHostYamlModal: React.FC<UploadActionModalProps> = ({
   isOpen,
   onClose,
-  onCreateBmcByYaml,
   infraEnv,
   docVersion,
-  provisioningConfigError,
 }) => {
   const { t } = useTranslation();
   return (
@@ -25,8 +22,7 @@ const AddBmcHostYamlModal: React.FC<UploadActionModalProps> = ({
       hasNoBodyWrapper
     >
       <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        <ProvisioningConfigErrorAlert error={provisioningConfigError} />
-        <AddBmcHostYamlForm onClose={onClose} onCreateBmcByYaml={onCreateBmcByYaml} />
+        <AddBmcHostYamlForm onClose={onClose} />
       </EnvironmentErrors>
     </Modal>
   );

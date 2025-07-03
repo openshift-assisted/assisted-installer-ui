@@ -21,6 +21,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostStatus } from '../../../common/components/hosts/types';
+import { onApproveAgent } from '../../utils';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;
@@ -91,14 +92,12 @@ const statusColumn = (
 
 type MassApproveAgentModalProps = {
   agents: AgentK8sResource[];
-  onApprove: (agent: AgentK8sResource) => Promise<AgentK8sResource>;
   isOpen: boolean;
   onClose: VoidFunction;
 };
 
 const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
   agents,
-  onApprove,
   isOpen,
   onClose,
 }) => {
@@ -113,7 +112,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       for (const agent of agents) {
         if (!agent.spec.approved) {
           setProgress((100 * (i + 1)) / agents.length);
-          await onApprove(agent);
+          await onApproveAgent(agent);
         }
         i++;
       }

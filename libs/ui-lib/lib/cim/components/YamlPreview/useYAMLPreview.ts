@@ -1,19 +1,22 @@
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import * as React from 'react';
 import * as yaml from 'js-yaml';
-import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
+import {
+  k8sGet,
+  K8sResourceCommon,
+  k8sList,
+  K8sModel,
+} from '@openshift-console/dynamic-plugin-sdk';
 import {
   ClusterDeploymentK8sResource,
   AgentClusterInstallK8sResource,
   SecretK8sResource,
 } from '../../types';
-
+import { KlusterletAddonConfigModel, ManagedClusterModel, SecretModel } from '../../types/models';
+import { KlusterletAddonConfigK8sResource } from '../../types/k8s/klusterlet';
 type YamlPreviewArgs = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
-  fetchSecret: (namespace: string, bmhName: string) => Promise<SecretK8sResource>;
-  fetchManagedClusters: () => Promise<K8sResourceCommon[]>;
-  fetchKlusterletAddonConfig: () => Promise<K8sResourceCommon[]>;
 };
 
 const resourceToString = (resource: K8sResourceCommon | undefined) => {
@@ -32,13 +35,15 @@ const resourceToString = (resource: K8sResourceCommon | undefined) => {
   return yaml.dump(resourceClone);
 };
 
-export const useYamlPreview = ({
-  clusterDeployment,
-  agentClusterInstall,
-  fetchSecret,
-  fetchManagedClusters,
-  fetchKlusterletAddonConfig,
-}: YamlPreviewArgs) => {
+const listItems = async (model: K8sModel) => {
+  const result = await k8sList({
+    model: model,
+    queryParams: {},
+  });
+  return result as K8sResourceCommon[];
+};
+
+export const useYamlPreview = ({ clusterDeployment, agentClusterInstall }: YamlPreviewArgs) => {
   const [loadingResources, setLoadingResources] = React.useState(true);
   const [pullSecret, setPullSecret] = React.useState<SecretK8sResource>();
   const [managedCluster, setManagedCluster] = React.useState<K8sResourceCommon>();
@@ -51,9 +56,13 @@ export const useYamlPreview = ({
   React.useEffect(() => {
     const fetch = async () => {
       const results = await Promise.allSettled([
-        fetchSecret(cdNamespace || '', secretName || ''),
-        fetchManagedClusters(),
-        fetchKlusterletAddonConfig(),
+        k8sGet<SecretK8sResource>({
+          model: SecretModel,
+          name: secretName,
+          ns: cdNamespace,
+        }),
+        listItems(ManagedClusterModel),
+        listItems(KlusterletAddonConfigModel),
       ]);
 
       const [secretResult, managedClustersResult, klusterletsResult] = results;
@@ -72,10 +81,8 @@ export const useYamlPreview = ({
         setKlusterlet(
           klusterletsResult.value.find(
             (kac) =>
-              // eslint-disable-next-line
-              (kac as any).spec.clusterName === cdName &&
-              // eslint-disable-next-line
-              (kac as any).spec.clusterNamespace === cdNamespace,
+              (kac as KlusterletAddonConfigK8sResource).spec.clusterName === cdName &&
+              (kac as KlusterletAddonConfigK8sResource).spec.clusterNamespace === cdNamespace,
           ),
         );
       }
@@ -84,14 +91,7 @@ export const useYamlPreview = ({
     };
 
     void fetch();
-  }, [
-    fetchSecret,
-    cdNamespace,
-    cdName,
-    secretName,
-    fetchManagedClusters,
-    fetchKlusterletAddonConfig,
-  ]);
+  }, [cdNamespace, cdName, secretName]);
 
   const code = React.useMemo(
     () =>

@@ -15,6 +15,58 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
 import { InfraEnvK8sResource } from '../../types';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
+import { k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
+import { appendPatch } from '../../utils';
+import { InfraEnvModel } from '../../types/models';
+
+export const onSaveISOParams = async (
+  values: DiscoveryImageFormValues,
+  infraEnv: InfraEnvK8sResource,
+) => {
+  const patches: Patch[] = [];
+  if (values.sshPublicKey) {
+    appendPatch(
+      patches,
+      '/spec/sshAuthorizedKey',
+      values.sshPublicKey,
+      infraEnv.spec?.sshAuthorizedKey,
+    );
+  } else if (infraEnv.spec?.sshAuthorizedKey) {
+    patches.push({
+      op: 'remove',
+      path: '/spec/sshAuthorizedKey',
+    });
+  }
+
+  const proxy = values.enableProxy
+    ? {
+        httpProxy: values.httpProxy,
+        httpsProxy: values.httpsProxy,
+        noProxy: values.noProxy,
+      }
+    : undefined;
+
+  if (proxy) {
+    appendPatch(patches, '/spec/proxy', proxy, infraEnv.spec?.proxy);
+  } else if (infraEnv.spec?.proxy) {
+    patches.push({
+      op: 'remove',
+      path: '/spec/proxy',
+    });
+  }
+
+  if (values.imageType) {
+    appendPatch(patches, '/spec/imageType', values.imageType, infraEnv.spec?.imageType);
+  }
+
+  if (patches.length) {
+    await k8sPatch({
+      model: InfraEnvModel,
+      data: patches,
+      resource: infraEnv,
+    });
+  }
+};
 
 type AddHostModalStepType = 'config' | 'download';
 
@@ -23,7 +75,6 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   onClose,
   infraEnv,
   agentClusterInstall,
-  onSaveISOParams,
   docVersion,
   isIPXE,
 }) => {
@@ -38,7 +89,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
     try {
-      await onSaveISOParams(values);
+      await onSaveISOParams(values, infraEnv);
       setDialogType('download');
     } catch (error) {
       formikActions.setStatus({

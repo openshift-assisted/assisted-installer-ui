@@ -15,7 +15,7 @@ import {
   HostsNotShowingLink,
   VMRebootConfigurationInfo,
 } from '../../../common';
-import { getIsSNOCluster, onAgentChangeHostname } from '../helpers';
+import { getIsSNOCluster } from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import { ClusterDeploymentHostsDiscoveryProps } from './types';
 import { EditBMHModal, EditAgentModal } from '../modals';
@@ -23,6 +23,7 @@ import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import AddHostDropdown from '../InfraEnv/AddHostDropdown';
+import { useNMStates } from '../../hooks/useNMStates';
 
 const DiscoveryInstructions = () => {
   const { t } = useTranslation();
@@ -55,21 +56,15 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   bareMetalHosts,
   aiConfigMap,
   infraEnv,
-  infraNMStates,
   usedHostnames,
-  onChangeHostname,
   onEditRole,
   onSetInstallationDiskId,
-  onSaveBMH,
-  fetchSecret,
-  onChangeBMHHostname,
-  onApproveAgent,
-  onDeleteHost,
   ...rest
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [editBMH, setEditBMH] = React.useState<BareMetalHostK8sResource>();
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
+  const [infraNMStates] = useNMStates(infraEnv);
 
   const isVM = true; // TODO(mlibra): calculate from agent's inventory
 
@@ -121,36 +116,27 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
                 onEditRole={onEditRole}
                 onSetInstallationDiskId={onSetInstallationDiskId}
                 onEditBMH={setEditBMH}
-                onChangeHostname={onChangeHostname}
-                onChangeBMHHostname={onChangeBMHHostname}
-                onApprove={onApproveAgent}
                 width={contentRect.bounds?.width}
-                onDeleteHost={onDeleteHost}
               />
             </div>
           )}
         </Measure>
-        <EditBMHModal
-          infraEnv={infraEnv}
-          bmh={editBMH}
-          nmStates={infraNMStates}
-          isOpen={!!editBMH}
-          onClose={() => setEditBMH(undefined)}
-          onEdit={onSaveBMH}
-          fetchSecret={fetchSecret}
-          usedHostnames={usedHostnames || []}
-        />
+        {editBMH && (
+          <EditBMHModal
+            infraEnv={infraEnv}
+            bmh={editBMH}
+            nmStates={infraNMStates}
+            onClose={() => setEditBMH(undefined)}
+            agents={agents}
+            bmhs={bareMetalHosts}
+          />
+        )}
         {editAgent && (
           <EditAgentModal
             onClose={() => setEditAgent(undefined)}
-            usedHostnames={usedHostnames}
+            agents={agents}
+            bmhs={bareMetalHosts}
             agent={editAgent}
-            onSave={onAgentChangeHostname(
-              agents,
-              bareMetalHosts,
-              onChangeHostname,
-              onChangeBMHHostname,
-            )}
           />
         )}
       </GridItem>

@@ -12,8 +12,7 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/exter
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentServiceConfigConditionType } from '../../../types';
 import { CimConfigProgressAlertProps } from './types';
-import { getConditionByType } from '../../../utils';
-import { isCIMConfigProgressing, isCIMConfigured } from './utils';
+import { getConditionByType, isCIMConfigProgressing, isCIMConfigured } from './utils';
 
 const LOCAL_STORAGE_ID_SUCCESS = 'cim-config-progress-alert';
 

@@ -20,6 +20,7 @@ import './AddHostDropdown.css';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom-v5-compat';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon';
+import { useProvisioningConfig } from '../../hooks/useProvisioningConfig';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;
 
@@ -43,17 +44,12 @@ const DropdownItemWithLoading = (
 const AddHostDropdown = ({
   infraEnv,
   agentClusterInstall,
-  onSaveISOParams,
   usedHostnames,
-  onCreateBMH,
   docVersion,
-  onCreateBmcByYaml,
-  provisioningConfigResult,
 }: AddHostDropdownProps) => {
   const [addModalType, setAddModalType] = React.useState<ModalType>(undefined);
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
-  const [provisioningConfig, provisioningConfigLoaded, provisioningConfigError] =
-    provisioningConfigResult;
+  const [provisioningConfig, loaded, error] = useProvisioningConfig();
   const { t } = useTranslation();
 
   return (
@@ -137,8 +133,8 @@ const AddHostDropdown = ({
               }}
               description={t('ai:Discover a single host via Baseboard Management Controller')}
               label={t('ai:With BMC form')}
-              isLoading={!provisioningConfigLoaded}
-              isDisabled={!provisioningConfig && !provisioningConfigError}
+              isLoading={!loaded}
+              isDisabled={!provisioningConfig || !!error}
             />
             <DropdownItemWithLoading
               key="upload-yaml"
@@ -150,8 +146,8 @@ const AddHostDropdown = ({
                 'ai:Discover multiple hosts by providing yaml with Bare Metal Host definitions',
               )}
               label={t('ai:By uploading a YAML')}
-              isLoading={!provisioningConfigLoaded}
-              isDisabled={!provisioningConfig && !provisioningConfigError}
+              isLoading={!loaded}
+              isDisabled={!provisioningConfig || !!error}
             />
           </DropdownList>,
         ]}
@@ -162,7 +158,6 @@ const AddHostDropdown = ({
           agentClusterInstall={agentClusterInstall}
           isOpen
           onClose={() => setAddModalType(undefined)}
-          onSaveISOParams={onSaveISOParams}
           docVersion={docVersion}
         />
       )}
@@ -172,7 +167,6 @@ const AddHostDropdown = ({
           agentClusterInstall={agentClusterInstall}
           isOpen
           onClose={() => setAddModalType(undefined)}
-          onSaveISOParams={onSaveISOParams}
           docVersion={docVersion}
           isIPXE
         />
@@ -182,10 +176,8 @@ const AddHostDropdown = ({
           infraEnv={infraEnv}
           isOpen
           onClose={() => setAddModalType(undefined)}
-          onCreateBMH={onCreateBMH}
           usedHostnames={usedHostnames}
           docVersion={docVersion}
-          provisioningConfigError={provisioningConfigError}
         />
       )}
       {addModalType === 'yaml' && (
@@ -193,9 +185,7 @@ const AddHostDropdown = ({
           infraEnv={infraEnv}
           isOpen
           onClose={() => setAddModalType(undefined)}
-          onCreateBmcByYaml={onCreateBmcByYaml}
           docVersion={docVersion}
-          provisioningConfigError={provisioningConfigError}
         />
       )}
     </>
