@@ -10,7 +10,6 @@ import {
   ToolbarContent,
   ToolbarItem,
   ToolbarProps,
-  Tooltip,
   Dropdown,
   DropdownItem,
   MenuToggle,
@@ -68,14 +67,20 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
         : null;
   }
 
-  const isDisabled = isChecked === false;
+  const isActionsDisabled = isChecked === false;
 
   const actionsDropdown = (
     <Dropdown
       onSelect={onActionsToggle}
       onOpenChange={onActionsToggle}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-        <MenuToggle ref={toggleRef} isFullWidth onClick={onActionsToggle} isExpanded={actionsOpen}>
+        <MenuToggle
+          ref={toggleRef}
+          isFullWidth
+          onClick={onActionsToggle}
+          isExpanded={actionsOpen}
+          isDisabled={isActionsDisabled}
+        >
           {t('ai:Actions')}
         </MenuToggle>
       )}
@@ -130,13 +135,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
           <ToolbarContent className="table-toolbar__content">
             <ToolbarItem>{SelectDropdown}</ToolbarItem>
             {children}
-            <ToolbarItem>
-              {isDisabled ? (
-                <Tooltip content={t('ai:Select one or more hosts')}>{actionsDropdown}</Tooltip>
-              ) : (
-                actionsDropdown
-              )}
-            </ToolbarItem>
+            <ToolbarItem>{actionsDropdown}</ToolbarItem>
           </ToolbarContent>
         </Toolbar>
       </SplitItem>

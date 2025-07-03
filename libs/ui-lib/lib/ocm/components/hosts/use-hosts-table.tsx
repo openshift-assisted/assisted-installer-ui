@@ -326,7 +326,14 @@ export const useHostsTable = (cluster: Cluster) => {
           throw new Error(`Failed to edit role in host: ${host.id}.\nMissing cluster_id`);
         }
         const { data } = await HostsService.updateRole(host, role);
-        resetCluster ? void resetCluster() : dispatch(updateHost(data));
+
+        if (resetCluster) {
+          void resetCluster();
+        } else {
+          dispatch(updateHost(data));
+          // Reload to obtain cluster-level validations that may be affected by role change
+          dispatch(forceReload());
+        }
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getApiErrorMessage(e) }),
