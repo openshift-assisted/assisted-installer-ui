@@ -12,6 +12,7 @@ export const getDefaultValuesForEnvironmentVariables = async () => {
     AIUI_APP_IMAGE_REPO: 'quay.io/edge-infrastructure/assisted-installer-ui',
     AIUI_APP_GIT_SHA: commitSignature,
     AIUI_APP_VERSION: `latest+sha.${commitSignature}`,
+    AIUI_APP_TOKEN: '',
   };
 };
 
@@ -41,6 +42,11 @@ export default defineConfig(async ({ mode }) => {
         '/api': {
           target: env.AIUI_APP_API_URL,
           changeOrigin: true,
+        },
+        '/chat': {
+          target: env.AIUI_CHATBOT_API_URL,
+          changeOrigin: true,
+          rewrite: (path: string) => path.replace(/^\/chat/, ''),
         },
       },
     },

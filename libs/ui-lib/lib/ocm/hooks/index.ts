@@ -6,3 +6,4 @@ export { default as useClusterPreflightRequirements } from './useClusterPrefligh
 export { default as useUISettings } from './useUISettings';
 export { default as useInfraEnv } from './useInfraEnv';
 export { useFeatureDetection } from './use-feature-detection';
+export { useFeature } from './use-feature';

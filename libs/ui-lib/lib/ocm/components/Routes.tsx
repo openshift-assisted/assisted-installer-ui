@@ -19,11 +19,13 @@ export const UILibRoutes = ({
   children,
   history,
   basename,
+  additionalComponents,
 }: {
   allEnabledFeatures: FeatureListType;
   children?: React.ReactNode;
   history?: HistoryRouterProps['history'];
   basename?: string;
+  additionalComponents?: React.ReactNode;
 }) => {
   useFeatureDetection(allEnabledFeatures);
 
@@ -49,6 +51,7 @@ export const UILibRoutes = ({
       ) : (
         routes
       )}
+      {additionalComponents}
     </Provider>
   );
 };
