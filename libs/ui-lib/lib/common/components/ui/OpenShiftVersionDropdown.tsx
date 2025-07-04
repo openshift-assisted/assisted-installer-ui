@@ -142,6 +142,7 @@ export const OpenShiftVersionDropdown = ({
     <MenuToggle
       id={fieldId}
       className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
       ref={toggleRef}
       isFullWidth
       onClick={() => setOpen(!isOpen)}
