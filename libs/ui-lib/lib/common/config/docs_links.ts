@@ -1,6 +1,6 @@
 import { isMajorMinorVersionEqualOrGreater } from '../utils';
 
-const LATEST_OPENSHIFT_DOCS_VERSION = '4.18';
+const LATEST_OPENSHIFT_DOCS_VERSION = '4.19';
 const MIN_OPENSHIFT_DOCS_VERSION = '4.14';
 
 const getDocsOpenshiftVersion = (ocpVersion?: string): string => {
@@ -164,20 +164,22 @@ export const getMtuLink = (ocpVersion?: string) =>
 
 export const AUTHORINO_OPERATOR_LINK = 'https://github.com/Kuadrant/authorino-operator';
 
-export const getLsoLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
-    ocpVersion,
-  )}/storage/persistent_storage/persistent_storage_local/ways-to-provision-local-storage.html`;
+export const getLsoLink = (ocpVersion?: string) => {
+  const version = getDocsOpenshiftVersion(ocpVersion);
+  return isMajorMinorVersionEqualOrGreater(ocpVersion, '4.19')
+    ? `https://docs.redhat.com/en/documentation/openshift_container_platform/${version}/html/storage/configuring-persistent-storage#persistent-storage-using-local-storage`
+    : `https://docs.openshift.com/container-platform/${version}/storage/persistent_storage/persistent_storage_local/ways-to-provision-local-storage.html`;
+};
 
 export const getNmstateLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/networking/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator.html`;
+  )}/html/networking/networking-operators#k8s-nmstate-about-the-k8s-nmstate-operator`;
 
 export const getNodeFeatureDiscoveryLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/hardware_enablement/psap-node-feature-discovery-operator.html`;
+  )}/html/specialized_hardware_and_driver_enablement/psap-node-feature-discovery-operator`;
 
 export const getNvidiaGpuLink = (ocpVersion?: string) => {
   const version = getDocsOpenshiftVersion(ocpVersion);
@@ -187,15 +189,13 @@ export const getNvidiaGpuLink = (ocpVersion?: string) => {
 };
 
 export const PIPELINES_OPERATOR_LINK =
-  'https://docs.openshift.com/pipelines/1.17/install_config/installing-pipelines.html';
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/1.18/html/installing_and_configuring/installing-pipelines';
 
-export const getServiceMeshLink = (ocpVersion?: string) =>
-  `https://docs.openshift.com/container-platform/${getDocsOpenshiftVersion(
-    ocpVersion,
-  )}/service_mesh/v1x/preparing-ossm-installation.html`;
+export const SERVICE_MESH_OPERATOR_LINK =
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.0/html/installing/ossm-installing-service-mesh';
 
 export const SERVERLESS_OPERATOR_LINK =
-  'https://docs.openshift.com/serverless/1.28/install/install-serverless-operator.html#serverless-install-web-console_install-serverless-operator';
+  'https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/1.36/html/installing_openshift_serverless/install-serverless-operator#serverless-install-web-console_install-serverless-operator';
 
 export const KUBECONFIG_INFO_LINK =
   'https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc#about-switches-between-cli-profiles_managing-cli-profiles';
