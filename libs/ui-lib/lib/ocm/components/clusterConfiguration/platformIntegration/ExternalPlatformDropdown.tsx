@@ -246,6 +246,7 @@ export const ExternalPlatformDropdown = ({
     <MenuToggle
       id={fieldId}
       className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
       ref={toggleRef}
       onClick={() => setOpen(!isOpen)}
       isDisabled={dropdownIsDisabled}
