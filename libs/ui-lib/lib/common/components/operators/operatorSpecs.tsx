@@ -34,7 +34,6 @@ import {
   getNmstateLink,
   getNodeFeatureDiscoveryLink,
   getNvidiaGpuLink,
-  getServiceMeshLink,
   MTV_LINK,
   NODE_MAINTENANCE_LINK,
   ODF_LINK,
@@ -45,6 +44,7 @@ import {
   OSC_REQUIREMENTS_LINK,
   PIPELINES_OPERATOR_LINK,
   SERVERLESS_OPERATOR_LINK,
+  SERVICE_MESH_OPERATOR_LINK,
 } from '../../config';
 import { getMajorMinorVersion } from '../../utils';
 import { GetFeatureSupportLevel, useNewFeatureSupportLevel } from '../newFeatureSupportLevels';
@@ -285,10 +285,10 @@ export const getOperatorSpecs = (
         title: 'Service Mesh',
         featureId: 'SERVICEMESH',
         descriptionText: DESCRIPTION_SERVICEMESH,
-        Description: ({ openshiftVersion, searchTerm }) => (
+        Description: ({ searchTerm }) => (
           <>
             <HighlightedText text={DESCRIPTION_SERVICEMESH} searchTerm={searchTerm} />{' '}
-            <ExternalLink href={getServiceMeshLink(openshiftVersion)}>Learn more</ExternalLink>
+            <ExternalLink href={SERVICE_MESH_OPERATOR_LINK}>Learn more</ExternalLink>
           </>
         ),
         notStandalone: true,
