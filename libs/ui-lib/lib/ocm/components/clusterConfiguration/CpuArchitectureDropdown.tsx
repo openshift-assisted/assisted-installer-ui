@@ -160,6 +160,7 @@ const CpuArchitectureDropdown = ({
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
       className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
     >
       {currentCpuArch}
     </MenuToggle>

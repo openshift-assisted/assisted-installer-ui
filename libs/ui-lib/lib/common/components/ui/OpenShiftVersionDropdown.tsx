@@ -141,6 +141,7 @@ export const OpenShiftVersionDropdown = ({
     <MenuToggle
       id={fieldId}
       className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
       ref={toggleRef}
       isFullWidth
       onClick={() => setOpen(!isOpen)}
@@ -180,11 +181,13 @@ export const OpenShiftVersionDropdown = ({
         </FormHelperText>
       )}
       {showReleasesLink && (
-        <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-          <span data-ouia-id="openshift-releases-link">
-            {t('ai:Learn more about OpenShift releases')}
-          </span>
-        </ExternalLink>
+        <div className="pf-v6-u-mt-sm">
+          <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
+            <span data-ouia-id="openshift-releases-link">
+              {t('ai:Learn more about OpenShift releases')}
+            </span>
+          </ExternalLink>
+        </div>
       )}
     </FormGroup>
   );
