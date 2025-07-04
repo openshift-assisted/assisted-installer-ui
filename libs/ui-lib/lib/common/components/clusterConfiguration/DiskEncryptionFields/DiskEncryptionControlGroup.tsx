@@ -129,30 +129,32 @@ const DiskEncryptionControlGroup = ({
             />
           </StackItem>
         </RenderIf>
+        <RenderIf condition={hasEnabledDiskEncryption}>
+          <StackItem>
+            <Alert
+              variant={AlertVariant.warning}
+              data-testid="alert-tpmv2-bios"
+              isInline
+              title={
+                <FlexItem>
+                  {diskEncryptionMode === 'tpmv2' && (
+                    <>
+                      To use this encryption method, enable TPMv2 encryption in the BIOS of each
+                      selected host.
+                    </>
+                  )}
+                  {diskEncryptionMode === 'tang' && (
+                    <>
+                      The use of Tang encryption mode to encrypt your disks is only supported for
+                      bare metal or vSphere installations on user-provisioned infrastructure.
+                    </>
+                  )}
+                </FlexItem>
+              }
+            />
+          </StackItem>
+        </RenderIf>
       </Stack>
-      {hasEnabledDiskEncryption && (
-        <Alert
-          variant={AlertVariant.warning}
-          data-testid="alert-tpmv2-bios"
-          isInline
-          title={
-            <FlexItem>
-              {diskEncryptionMode === 'tpmv2' && (
-                <>
-                  To use this encryption method, enable TPMv2 encryption in the BIOS of each
-                  selected host.
-                </>
-              )}
-              {diskEncryptionMode === 'tang' && (
-                <>
-                  The use of Tang encryption mode to encrypt your disks is only supported for bare
-                  metal or vSphere installations on user-provisioned infrastructure.
-                </>
-              )}
-            </FlexItem>
-          }
-        />
-      )}
     </FormGroup>
   );
 };
