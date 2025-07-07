@@ -1,7 +1,7 @@
 import React from 'react';
 import Highlight, { defaultProps, Language, PrismTheme } from 'prism-react-renderer';
 import { Content, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
-import { global_palette_purple_400 } from '@patternfly/react-tokens/dist/js/global_palette_purple_400';
+import { t_global_color_nonstatus_purple_300 } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_purple_300';
 import { t_global_color_nonstatus_blue_default as globalBlue } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_blue_default';
 import defaultTheme from 'prism-react-renderer/themes/github';
 import './PrismCode.css';
@@ -21,7 +21,7 @@ export const SimpleAIPrismTheme = {
     {
       types: ['class-name', 'function', 'tag', 'attr-name'],
       style: {
-        color: global_palette_purple_400.value,
+        color: t_global_color_nonstatus_purple_300.value,
       },
     },
   ],
