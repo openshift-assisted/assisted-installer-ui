@@ -83,9 +83,13 @@ const InputField: React.FC<
           <FormHelperText>
             <HelperText>
               <HelperTextItem
-                icon={errorMessage && <ExclamationCircleIcon />}
-                variant={showErrorMessage ? 'error' : 'default'}
-                id={showErrorMessage && !isValid ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+                icon={errorMessage && errorMessage.trim() !== '' ? <ExclamationCircleIcon /> : null}
+                variant={errorMessage && errorMessage.trim() !== '' ? 'error' : 'default'}
+                id={
+                  errorMessage && errorMessage.trim() !== ''
+                    ? `${fieldId}-helper-error`
+                    : `${fieldId}-helper`
+                }
               >
                 {showErrorMessage ? errorMessage : helperText}
               </HelperTextItem>
