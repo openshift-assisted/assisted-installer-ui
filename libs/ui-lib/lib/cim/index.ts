@@ -1,3 +1,6 @@
+// Import global CIM styles
+import './global.css';
+
 // without namespace
 export * from './types';
 export * from './components';
