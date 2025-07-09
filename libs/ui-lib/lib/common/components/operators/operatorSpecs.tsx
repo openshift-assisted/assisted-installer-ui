@@ -148,7 +148,9 @@ export const getOperatorSpecs = (
               <ExternalLink href={getLvmsDocsLink(openshiftVersion)}>Learn more</ExternalLink>
             </>
           ) : (
-            <>{DESCRIPTION_LVM}</>
+            <>
+              <HighlightedText text={DESCRIPTION_LVM} searchTerm={searchTerm} />{' '}
+            </>
           ),
         supportLevel: getFeatureSupportLevel('LVM'),
       },
