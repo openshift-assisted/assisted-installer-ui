@@ -35,7 +35,6 @@ const OperatorsSelect = ({
   const [supportedOperators, setSupportedOperators] = useStateSafely<string[]>([]);
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { values } = useFormikContext<OperatorsValues>();
-
   React.useEffect(() => {
     const fetchSupportedOperators = async () => {
       try {
@@ -68,9 +67,16 @@ const OperatorsSelect = ({
     return <LoadingState />;
   }
 
-  const selectedOperators = values.selectedOperators.filter(
-    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+  // Calculate all selected operators (direct selections + bundle selections)
+  const bundleOperators = values.selectedBundles.flatMap(
+    (bundleId) => bundles.find((b) => b.id === bundleId)?.operators || [],
   );
+
+  const allSelectedOperators = values.selectedOperators
+    .concat(bundleOperators)
+    .filter((op, index, array) => array.indexOf(op) === index); // Remove duplicates
+
+  const selectedOperators = allSelectedOperators.filter((opKey) => !!opSpecs[opKey]);
 
   return (
     <ExpandableSection
