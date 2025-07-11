@@ -105,41 +105,46 @@ const ChatBotWindow = ({
           break;
         }
 
-        const chunk = decoder.decode(value, { stream: true });
-        const ev = JSON.parse(chunk.slice(5).trim()) as StreamEvent;
-        if (ev.event === 'start') {
-          convId = ev.data.conversation_id;
-        } else if (ev.event === 'token' && ev.data.role === 'inference') {
-          setIsLoading(false);
-          setIsStreaming(true);
-          const token = ev.data.token;
-          completeMsg = `${completeMsg}${token}`;
-          setMessages((msgs) => {
-            const lastMsg = msgs[msgs.length - 1];
-            const msg =
-              lastMsg.timestamp === timestamp && lastMsg.role === 'bot' ? lastMsg : undefined;
-            if (!msg) {
+        const chunks = decoder.decode(value, { stream: true }).split('\n');
+        for (const chunk of chunks) {
+          if (!chunk.startsWith('data: ')) {
+            continue;
+          }
+          const ev = JSON.parse(chunk.slice(5).trim()) as StreamEvent;
+          if (ev.event === 'start') {
+            convId = ev.data.conversation_id;
+          } else if (ev.event === 'token' && ev.data.role === 'inference') {
+            setIsLoading(false);
+            setIsStreaming(true);
+            const token = ev.data.token;
+            completeMsg = `${completeMsg}${token}`;
+            setMessages((msgs) => {
+              const lastMsg = msgs[msgs.length - 1];
+              const msg =
+                lastMsg.timestamp === timestamp && lastMsg.role === 'bot' ? lastMsg : undefined;
+              if (!msg) {
+                return [
+                  ...msgs,
+                  {
+                    role: 'bot',
+                    content: token,
+                    name: 'AI',
+                    avatar: AIAvatar,
+                    timestamp: timestamp,
+                  },
+                ];
+              }
+
+              const allButLast = msgs.slice(0, -1);
               return [
-                ...msgs,
+                ...allButLast,
                 {
-                  role: 'bot',
-                  content: token,
-                  name: 'AI',
-                  avatar: AIAvatar,
-                  timestamp: timestamp,
+                  ...msg,
+                  content: `${msg.content || ''}${token}`,
                 },
               ];
-            }
-
-            const allButLast = msgs.slice(0, -1);
-            return [
-              ...allButLast,
-              {
-                ...msg,
-                content: `${msg.content || ''}${token}`,
-              },
-            ];
-          });
+            });
+          }
         }
       }
 
