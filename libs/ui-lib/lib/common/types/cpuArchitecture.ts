@@ -76,18 +76,12 @@ export const getSupportedCpuArchitectures = (
   day1CpuArchitecture?: SupportedCpuArchitecture,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  //Power/Z clusters can be only homogeneous clusters
-  if (
-    day1CpuArchitecture === CpuArchitecture.ppc64le ||
-    day1CpuArchitecture === CpuArchitecture.s390x
-  ) {
+  //Power clusters can be only homogeneous clusters
+  if (day1CpuArchitecture === CpuArchitecture.ppc64le) {
     newSupportedCpuArchs.push(day1CpuArchitecture);
   } else {
     cpuArchitectures.forEach((cpuArch) => {
-      if (
-        day1CpuArchitecture === undefined &&
-        (cpuArch === CpuArchitecture.ppc64le || cpuArch === CpuArchitecture.s390x)
-      ) {
+      if (day1CpuArchitecture === undefined && cpuArch === CpuArchitecture.ppc64le) {
         newSupportedCpuArchs.push(cpuArch);
       } else if (
         cpuArch !== CpuArchitecture.MULTI &&
