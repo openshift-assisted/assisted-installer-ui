@@ -263,7 +263,7 @@ export const useHostsTable = (cluster: Cluster) => {
       canDelete: (host: Host) => !isViewerMode && canDeleteUtil(cluster.status, host.status),
       canEditHost: (host: Host) => !isViewerMode && canEditHostUtil(cluster.status, host.status),
       canReset: (host: Host) => !isViewerMode && canResetUtil(cluster.status, host.status),
-      canEditHostname: () => !isViewerMode && canEditHostnameUtil(cluster.status),
+      canEditHostname: (host?: Host) => !isViewerMode && canEditHostnameUtil(cluster.status, host),
     }),
     [cluster, isViewerMode, isSingleClusterFeatureEnabled],
   );

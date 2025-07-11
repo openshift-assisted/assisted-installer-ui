@@ -40,7 +40,7 @@ export const agentHostnameColumn = (
   agents: AgentK8sResource[],
   bareMetalHosts: BareMetalHostK8sResource[],
   onEditHostname?: HostsTableActions['onEditHost'],
-  canEditHostname?: HostsTableActions['canEditHost'],
+  canEditHostname?: HostsTableActions['canEditHostname'],
   canEditBMH?: HostsTableActions['canEditBMH'],
 ): TableRow<Host> => ({
   header: {

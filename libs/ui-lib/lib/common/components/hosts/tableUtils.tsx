@@ -80,7 +80,7 @@ export const hostnameColumn = (
             inventory={inventory}
             onEditHostname={editHostname}
             hosts={hosts}
-            readonly={canEditHostname ? !canEditHostname() : false}
+            readonly={canEditHostname ? !canEditHostname(host) : false}
           />
         ),
         props: { 'data-testid': 'host-name' },

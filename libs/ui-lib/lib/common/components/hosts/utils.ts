@@ -80,8 +80,19 @@ export const canEditRole = (
   isSNO?: boolean,
 ) => canEditHost(clusterStatus, status) && !isSNO;
 
-export const canEditHostname = (clusterStatus: Cluster['status']) =>
-  ['insufficient', 'adding-hosts', 'ready', 'pending-for-input'].includes(clusterStatus);
+export const canEditHostname = (clusterStatus: Cluster['status'], host?: Host) => {
+  // First check if the cluster status allows hostname editing
+  if (!['insufficient', 'adding-hosts', 'ready', 'pending-for-input'].includes(clusterStatus)) {
+    return false;
+  }
+
+  // For Day2 hosts, also check the host status
+  if (host && host.kind === 'AddToExistingClusterHost') {
+    return canHostnameBeChanged(host.status);
+  }
+
+  return true;
+};
 
 export const canEditDisks = canEditHost;
 
