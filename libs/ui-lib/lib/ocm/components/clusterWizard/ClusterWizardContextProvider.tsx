@@ -4,6 +4,7 @@ import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardC
 import {
   ClusterWizardFlowStateType,
   ClusterWizardStepsType,
+  disconnectedSteps,
   getClusterWizardFirstStep,
   isStaticIpStep,
   isStepAfter,
@@ -87,9 +88,10 @@ const ClusterWizardContextProvider = ({
 }>) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
-  const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
+  const [connectedWizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
+  const [installDisconnected, setInstallDisconnected] = React.useState(false);
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -100,6 +102,8 @@ const ClusterWizardContextProvider = ({
   } = useUISettings(cluster?.id);
   const { clearAlerts, addAlert, alerts } = useAlerts();
   const setClusterPermissions = useSetClusterPermissions();
+
+  const wizardStepIds = installDisconnected ? disconnectedSteps : connectedWizardStepIds;
 
   React.useEffect(() => {
     if (!UISettingsLoading) {
@@ -237,7 +241,7 @@ const ClusterWizardContextProvider = ({
           );
         }
       },
-      wizardStepIds,
+      wizardStepIds: wizardStepIds,
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
       customManifestsStep,
@@ -246,6 +250,15 @@ const ClusterWizardContextProvider = ({
       setWizardPerPage,
       uiSettings,
       updateUISettings,
+      installDisconnected,
+      setInstallDisconnected: (enabled: boolean) => {
+        setInstallDisconnected(enabled);
+        if (enabled) {
+          onSetCurrentStepId(disconnectedSteps[0]);
+        } else {
+          connectedWizardStepIds?.length && onSetCurrentStepId(connectedWizardStepIds[0]);
+        }
+      },
     };
   }, [
     wizardStepIds,
@@ -257,6 +270,9 @@ const ClusterWizardContextProvider = ({
     clearAlerts,
     uiSettings,
     updateUISettings,
+    installDisconnected,
+    setInstallDisconnected,
+    connectedWizardStepIds,
   ]);
 
   if (!contextValue) {
