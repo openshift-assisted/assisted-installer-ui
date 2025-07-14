@@ -2,7 +2,7 @@ import React from 'react';
 import omit from 'lodash-es/omit.js';
 import { Pagination, PaginationVariant } from '@patternfly/react-core';
 import { EventList } from '@openshift-assisted/types/assisted-installer-service';
-import { EVENTS_POLLING_INTERVAL } from '../../config';
+import { REDUCED_POLLING_INTERVAL } from '../../config';
 import { ClusterEventsFiltersType, EventListFetchProps } from '../../types';
 import { useStateSafely } from '../../hooks';
 import { ErrorState, LoadingState } from '../ui/uiState';
@@ -72,7 +72,7 @@ export const EventListFetch = ({
         setLoading(false);
         setTotalEvents(totalEvents);
         setSeverityCount(severities);
-        timer = setTimeout(() => setLastPolling(Date.now()), EVENTS_POLLING_INTERVAL);
+        timer = setTimeout(() => setLastPolling(Date.now()), REDUCED_POLLING_INTERVAL);
       },
       (err: string) => {
         setError(err);

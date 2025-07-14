@@ -12,8 +12,8 @@ import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import buildManifest from '@openshift-assisted/ui-lib/package.json';
 import { isInOcm } from '../api/axiosClient';
 
-export const POLLING_INTERVAL = 10 * 1000;
-export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
+export const DEFAULT_POLLING_INTERVAL = 10 * 1000;
+export const REDUCED_POLLING_INTERVAL = 10 * 1000 * 6;
 
 export const hostRoles = (t: TFunction): HostRole[] => [
   {
