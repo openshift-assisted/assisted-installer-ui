@@ -15,23 +15,82 @@ import { Formik, FormikProps, FormikConfig } from 'formik';
 
 import {
   InputField,
-  CodeField,
   getRichTextValidation,
   RichInputField,
   BMCValidationMessages,
+  StaticIpView,
 } from '../../../../common';
-import { Language } from '@patternfly/react-code-editor';
 import { InfraEnvK8sResource, NMStateK8sResource } from '../../../types';
 import { AddBmcValues, BMCFormProps } from '../types';
 import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../common';
 import { getErrorMessage } from '../../../../common/utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { MacMapping } from './MacMapping';
 import { getInitValues, getValidationSchema } from './validationSchemas';
 import ProvisioningConfigErrorAlert from '../../modals/ProvisioningConfigErrorAlert';
+import { NMStateConfig } from './NMstateConfig';
 
 const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStateK8sResource => {
-  const config = yaml.load(values.nmState);
+  let config;
+  if (values.staticIPView === StaticIpView.YAML) {
+    config = yaml.load(values.nmState);
+  } else {
+    config = {
+      interfaces: [
+        {
+          name: values.macMapping[0].name,
+          type: values.useVlan ? 'vlan' : 'ethernet',
+          state: 'up',
+          vlan: values.useVlan
+            ? {
+                'base-iface': 'eth0',
+                id: values.vlanId,
+              }
+            : undefined,
+          ipv4: {
+            address: [
+              {
+                ip: values.ipConfigs.ipv4.machineNetwork.ip,
+                'prefix-length': values.ipConfigs.ipv4.machineNetwork.prefixLength,
+              },
+            ],
+            enabled: true,
+            dhcp: false,
+          },
+          ipv6:
+            values.protocolType === 'dualStack'
+              ? {
+                  address: [
+                    {
+                      ip: values.ipConfigs.ipv6.machineNetwork.ip,
+                      'prefix-length': values.ipConfigs.ipv6.machineNetwork.prefixLength,
+                    },
+                  ],
+                  enabled: true,
+                  dhcp: false,
+                }
+              : undefined,
+        },
+      ],
+      'dns-resolver': { config: { server: [values.dns] } },
+      routes: {
+        config: [
+          {
+            destination: '0.0.0.0/0',
+            'next-hop-address': values.ipConfigs.ipv4.gateway,
+            'next-hop-interface':
+              values.useVlan && values.vlanId ? `eth0.${values.vlanId}` : 'eth0',
+          },
+          values.protocolType === 'dualStack' && {
+            destination: '::/0',
+            'next-hop-address': values.ipConfigs.ipv6.gateway,
+            'next-hop-interface':
+              values.useVlan && values.vlanId ? `eth0.${values.vlanId}` : 'eth0',
+          },
+        ].filter(Boolean),
+      },
+    };
+  }
+
   const nmState = {
     apiVersion: 'agent-install.openshift.io/v1beta1',
     kind: 'NMStateConfig',
@@ -41,15 +100,16 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
       labels: {
         [AGENT_BMH_NAME_LABEL_KEY]: values.name,
         [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv?.metadata?.name || '',
+        'configured-via': values.staticIPView,
       },
     },
     spec: {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       config,
       interfaces: values.macMapping.filter((m) => m.macAddress.length && m.name.length),
     },
   };
-  return nmState;
+
+  return nmState as NMStateK8sResource;
 };
 
 const BMCForm: React.FC<BMCFormProps> = ({
@@ -144,19 +204,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 placeholder={t('ai:Enter a password for the BMC')}
                 isRequired
               />
-              {!hasDHCP && (
-                <>
-                  <CodeField
-                    label={t('ai:NMState')}
-                    name="nmState"
-                    language={Language.yaml}
-                    description={t(
-                      'ai:Upload a YAML file in NMstate format (not the entire NMstate config CR) that includes your network configuration (static IPs, bonds, etc.).',
-                    )}
-                  />
-                  <MacMapping />
-                </>
-              )}
+              {!hasDHCP && <NMStateConfig />}
             </Form>
             {error && (
               <Alert

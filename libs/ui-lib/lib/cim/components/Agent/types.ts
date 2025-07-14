@@ -1,3 +1,4 @@
+import { IpConfigs, StaticIpView, StaticProtocolType } from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { NMStateK8sResource } from '../../types/k8s/nm-state';
@@ -11,7 +12,14 @@ export type AddBmcValues = {
   bootMACAddress: string;
   disableCertificateVerification: boolean;
   online: boolean;
+  staticIPView: StaticIpView;
   nmState: string;
+
+  protocolType: StaticProtocolType;
+  useVlan: boolean;
+  vlanId: number | '';
+  dns: string;
+  ipConfigs: IpConfigs;
   macMapping: { macAddress: string; name: string }[];
 };
 

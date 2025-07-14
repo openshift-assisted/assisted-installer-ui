@@ -6,8 +6,14 @@ import { AddBmcValues } from '../types';
 import { BareMetalHostK8sResource, NMStateK8sResource, SecretK8sResource } from '../../../types';
 import {
   bmcAddressValidationSchema,
+  Cidr,
+  getDNSValidationSchema,
+  IpConfigs,
+  ipConfigsValidationSchemas,
   macAddressValidationSchema,
   richNameValidationSchema,
+  StaticIpView,
+  VlanIdValidationSchema,
 } from '../../../../common';
 import { BMH_HOSTNAME_ANNOTATION } from '../../common';
 
@@ -20,6 +26,7 @@ export const emptyValues: AddBmcValues = {
   bootMACAddress: '',
   disableCertificateVerification: true, // TODO(mlibra)
   online: true,
+  staticIPView: StaticIpView.FORM,
   nmState: `interfaces:
   - name: <nic1_name>
     type: ethernet
@@ -39,7 +46,41 @@ routes:
     next-hop-address: <next_hop_ip_address>
     next-hop-interface: <next_hop_nic1_name>
   `,
+
+  protocolType: 'ipv4',
+  useVlan: false,
+  vlanId: '',
+  dns: '',
+  ipConfigs: {
+    ipv4: { machineNetwork: { ip: '', prefixLength: '' }, gateway: '' },
+    ipv6: { machineNetwork: { ip: '', prefixLength: '' }, gateway: '' },
+  },
+
   macMapping: [{ macAddress: '', name: '' }],
+};
+
+const getIpConfigs = (nmState?: NMStateK8sResource) => {
+  if (!nmState || !nmState.spec?.interfaces || nmState.spec?.interfaces.length < 1) {
+    return {};
+  } else {
+    return {
+      ipv4: {
+        machineNetwork: {
+          ip: nmState?.spec?.config.interfaces?.[0].ipv4?.address?.[0].ip || '',
+          prefixLength: nmState?.spec?.config.interfaces?.[0].ipv4?.address?.[0]['prefix-length'],
+        } as Cidr,
+        gateway: nmState?.spec?.config.routes?.config?.[0]['next-hop-address'] || '',
+      },
+      ipv6: {
+        machineNetwork: {
+          ip: nmState.spec.config.interfaces?.[0].ipv6?.address?.[0].ip || '',
+          prefixLength:
+            nmState.spec.config.interfaces?.[0].ipv6?.address?.[0]['prefix-length'] || '',
+        } as Cidr,
+        gateway: nmState?.spec?.config.routes?.config?.[1]?.['next-hop-address'] || '',
+      },
+    };
+  }
 };
 
 export const getInitValues = (
@@ -50,6 +91,8 @@ export const getInitValues = (
   addNMState?: boolean,
 ): AddBmcValues => {
   let values = emptyValues;
+  const staticIpView = (nmState?.metadata?.labels?.['configured-via'] as StaticIpView) || 'form';
+  const ipConfigs = getIpConfigs(nmState) as IpConfigs;
 
   if (isEdit) {
     values = {
@@ -61,7 +104,19 @@ export const getInitValues = (
       bootMACAddress: bmh?.spec?.bootMACAddress || '',
       disableCertificateVerification: !!bmh?.spec?.bmc?.disableCertificateVerification,
       online: !!bmh?.spec?.online,
-      nmState: nmState ? yaml.dump(nmState?.spec?.config) : emptyValues.nmState,
+
+      staticIPView: staticIpView,
+      nmState:
+        nmState && staticIpView === StaticIpView.YAML
+          ? yaml.dump(nmState?.spec?.config)
+          : emptyValues.nmState,
+
+      protocolType: nmState?.spec?.config.interfaces?.[0].ipv6 ? 'dualStack' : 'ipv4',
+      useVlan: !!nmState?.spec?.config.interfaces?.[0].vlan,
+      vlanId: Number(nmState?.spec?.config.interfaces?.[0].vlan?.id),
+      dns: nmState?.spec?.config['dns-resolver']?.config.server?.[0] as string,
+      ipConfigs,
+
       macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
     };
   }
@@ -77,28 +132,38 @@ export const getValidationSchema = (
   origHostname: string,
   t: TFunction,
 ) => {
-  return Yup.object({
-    name: Yup.string().required(t('ai:Required field')),
-    hostname: richNameValidationSchema(t, usedHostnames, origHostname),
-    bmcAddress: bmcAddressValidationSchema(t),
-    username: Yup.string().required(t('ai:Required field')),
-    password: Yup.string().required(t('ai:Required field')),
-    bootMACAddress: macAddressValidationSchema,
-    nmState: Yup.string(),
-    macMapping: Yup.array().of(
-      Yup.object().shape(
-        {
-          macAddress: macAddressValidationSchema.when('name', {
-            is: (name: string) => !!name,
-            then: () => macAddressValidationSchema.required(t('ai:MAC has to be specified')),
-          }),
-          name: Yup.string().when('macAddress', {
-            is: (name: string) => !!name,
-            then: () => Yup.string().required(t('ai:Name has to be specified')),
-          }),
-        },
-        [['name', 'macAddress']],
+  return Yup.lazy((values: AddBmcValues) =>
+    Yup.object<AddBmcValues>({
+      name: Yup.string().required(t('ai:Required field')),
+      hostname: richNameValidationSchema(t, usedHostnames, origHostname),
+      bmcAddress: bmcAddressValidationSchema(t),
+      username: Yup.string().required(t('ai:Required field')),
+      password: Yup.string().required(t('ai:Required field')),
+      bootMACAddress: macAddressValidationSchema,
+      nmState: Yup.string(),
+
+      useVlan: Yup.boolean(),
+      vlanId: Yup.mixed().when('useVlan', {
+        is: (useVlan: boolean) => useVlan,
+        then: () => VlanIdValidationSchema(values.vlanId),
+      }),
+      dns: getDNSValidationSchema(values.protocolType),
+      ipConfigs: ipConfigsValidationSchemas(values.ipConfigs, values.protocolType),
+      macMapping: Yup.array().of(
+        Yup.object().shape(
+          {
+            macAddress: macAddressValidationSchema.when('name', {
+              is: (name: string) => !!name,
+              then: () => macAddressValidationSchema.required(t('ai:MAC has to be specified')),
+            }),
+            name: Yup.string().when('macAddress', {
+              is: (name: string) => !!name,
+              then: () => Yup.string().required(t('ai:Name has to be specified')),
+            }),
+          },
+          [['name', 'macAddress']],
+        ),
       ),
-    ),
-  });
+    }),
+  );
 };
