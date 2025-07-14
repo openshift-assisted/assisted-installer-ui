@@ -5,7 +5,7 @@ import {
   CpuArchitecture,
   ErrorState,
   LoadingState,
-  POLLING_INTERVAL,
+  DEFAULT_POLLING_INTERVAL,
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
@@ -134,7 +134,7 @@ export const HostsClusterDetailTabContent = ({
   React.useEffect(() => {
     const id = setInterval(() => {
       void refreshCluster();
-    }, POLLING_INTERVAL);
+    }, DEFAULT_POLLING_INTERVAL);
     return () => clearInterval(id);
   }, [refreshCluster]);
 
