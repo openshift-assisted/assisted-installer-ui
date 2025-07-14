@@ -5,15 +5,17 @@ import {
   FormViewHostsValues,
   ProtocolVersion,
 } from '../../data/dataTypes';
-import { macAddressValidationSchema } from '../../../../../../common';
-import { showIpv4, showIpv6 } from '../../data/protocolVersion';
-import { getInMachineNetworkValidationSchema } from '../FormViewNetworkWide/formViewNetworkWideValidationSchema';
+import {
+  getInMachineNetworkValidationSchema,
+  getIpIsNotNetworkOrBroadcastAddressSchema,
+  macAddressValidationSchema,
+} from '../../../../../../common';
+import { showIpv4, showIpv6 } from '../../../../../../common/components/staticIP/protocolVersion';
 import {
   getUniqueValidationSchema,
   UniqueStringArrayExtractor,
-  getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
-import { getMachineNetworkCidr } from '../../data/machineNetwork';
+import { getMachineNetworkCidr } from '../../../../../../common/components/staticIP/machineNetwork';
 const requiredMsg = 'A value is required';
 
 const getAllIpv4Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (

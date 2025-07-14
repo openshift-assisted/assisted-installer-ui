@@ -1,4 +1,5 @@
 import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
+import { IpConfigs } from '../../../../../common';
 
 export enum StaticIpView {
   YAML = 'yaml',
@@ -16,13 +17,6 @@ export type Cidr = {
   ip: string;
   prefixLength: number | '';
 };
-
-export type IpConfig = {
-  machineNetwork: Cidr;
-  gateway: string;
-};
-
-export type IpConfigs = { [protocolVersion in ProtocolVersion]: IpConfig };
 
 export type HostIps = { [protocolVersion in ProtocolVersion]: string };
 

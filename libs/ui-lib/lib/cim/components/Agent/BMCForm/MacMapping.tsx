@@ -4,10 +4,11 @@ import { getFieldId, InputField, useTranslation } from '../../../../common';
 import { Button, FormGroup, Grid, GridItem, Text, TextVariants } from '@patternfly/react-core';
 import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import MinusCircleIcon from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
+import { AddBmcValues } from '../types';
 
 type MacMappingFieldProps = { macAddress: string; name: string }[];
 
-const getFieldError = (errors: FormikErrors<MacMappingFieldProps>, fieldName: string): string => {
+const getFieldError = (errors: FormikErrors<AddBmcValues>, fieldName: string): string => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
@@ -18,7 +19,7 @@ export const MacMapping = () => {
   const [field] = useField<MacMappingFieldProps>({
     name: 'macMapping',
   });
-  const { errors } = useFormikContext<MacMappingFieldProps>();
+  const { errors } = useFormikContext<AddBmcValues>();
   const fieldId = getFieldId('macMapping', 'input');
   const { t } = useTranslation();
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as yaml from 'js-yaml';
 import {
   Alert,
   AlertActionCloseButton,
@@ -15,42 +14,16 @@ import { Formik, FormikProps, FormikConfig } from 'formik';
 
 import {
   InputField,
-  CodeField,
   getRichTextValidation,
   RichInputField,
   BMCValidationMessages,
 } from '../../../../common';
-import { Language } from '@patternfly/react-code-editor';
-import { InfraEnvK8sResource, NMStateK8sResource } from '../../../types';
 import { AddBmcValues, BMCFormProps } from '../types';
-import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../common';
 import { getErrorMessage } from '../../../../common/utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { MacMapping } from './MacMapping';
-import { getInitValues, getValidationSchema } from './validationSchemas';
+import { getInitValues, getNMState, getValidationSchema } from './validationSchemas';
 import ProvisioningConfigErrorAlert from '../../modals/ProvisioningConfigErrorAlert';
-
-const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStateK8sResource => {
-  const config = yaml.load(values.nmState);
-  const nmState = {
-    apiVersion: 'agent-install.openshift.io/v1beta1',
-    kind: 'NMStateConfig',
-    metadata: {
-      generateName: `${infraEnv.metadata?.name || ''}-`,
-      namespace: infraEnv.metadata?.namespace,
-      labels: {
-        [AGENT_BMH_NAME_LABEL_KEY]: values.name,
-        [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv?.metadata?.name || '',
-      },
-    },
-    spec: {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      config,
-      interfaces: values.macMapping.filter((m) => m.macAddress.length && m.name.length),
-    },
-  };
-  return nmState;
-};
+import { NMStateConfig } from './NMstateConfig';
 
 const BMCForm: React.FC<BMCFormProps> = ({
   onCreateBMH,
@@ -67,19 +40,20 @@ const BMCForm: React.FC<BMCFormProps> = ({
   const { t } = useTranslation();
   const [error, setError] = React.useState<string>();
 
-  const { initValues, validationSchema } = React.useMemo(() => {
-    const addNmState =
-      infraEnv.metadata?.labels && infraEnv.metadata?.labels['networkType'] === 'static';
+  const addNmState =
+    infraEnv.metadata?.labels && infraEnv.metadata?.labels['networkType'] === 'static';
 
+  const { initValues, validationSchema } = React.useMemo(() => {
     const initValues = getInitValues(bmh, nmState, secret, isEdit, addNmState);
     const validationSchema = getValidationSchema(usedHostnames, initValues.hostname, t);
     return { initValues, validationSchema };
-  }, [infraEnv.metadata?.labels, usedHostnames, bmh, nmState, secret, isEdit, t]);
+  }, [bmh, nmState, secret, isEdit, addNmState, usedHostnames, t]);
 
   const handleSubmit: FormikConfig<AddBmcValues>['onSubmit'] = async (values) => {
     try {
       setError(undefined);
-      const nmState = values.nmState ? getNMState(values, infraEnv) : undefined;
+      const nmState = addNmState ? getNMState(values, infraEnv) : undefined;
+
       await onCreateBMH(values, nmState);
       onClose();
     } catch (e) {
@@ -144,19 +118,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 placeholder={t('ai:Enter a password for the BMC')}
                 isRequired
               />
-              {!hasDHCP && (
-                <>
-                  <CodeField
-                    label={t('ai:NMState')}
-                    name="nmState"
-                    language={Language.yaml}
-                    description={t(
-                      'ai:Upload a YAML file in NMstate format (not the entire NMstate config CR) that includes your network configuration (static IPs, bonds, etc.).',
-                    )}
-                  />
-                  <MacMapping />
-                </>
-              )}
+              {!hasDHCP && <NMStateConfig />}
             </Form>
             {error && (
               <Alert

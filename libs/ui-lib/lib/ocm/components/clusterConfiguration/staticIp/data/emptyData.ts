@@ -1,12 +1,12 @@
 import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
 import {
   FormViewHost,
-  IpConfig,
   FormViewNetworkWideValues,
   FormViewHostsValues,
   YamlViewValues,
   HostIps,
 } from './dataTypes';
+import { IpConfig } from '../../../../../common';
 
 export const getEmptyHostIps = (): HostIps => {
   return {

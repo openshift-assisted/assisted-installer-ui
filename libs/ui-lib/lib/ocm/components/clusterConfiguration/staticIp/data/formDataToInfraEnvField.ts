@@ -21,7 +21,7 @@ import {
   getVlanNicName,
   YAML_COMMENT_CHAR,
 } from './nmstateYaml';
-import { getShownProtocolVersions } from './protocolVersion';
+import { getShownProtocolVersions } from '../../../../../common/components/staticIP/protocolVersion';
 import {
   Nmstate,
   NmstateInterface,
@@ -31,7 +31,7 @@ import {
 import { formDataFromInfraEnvField } from './formDataFromInfraEnvField';
 import { getStaticNetworkConfig } from './fromInfraEnv';
 import { DUMMY_NMSTATE_ADDRESSES, getDummyMacInterfaceMap, getDummyNicName } from './dummyData';
-import { getMachineNetworkCidr } from './machineNetwork';
+import { getMachineNetworkCidr } from '../../../../../common/components/staticIP/machineNetwork';
 import { getEmptyHostIps } from './emptyData';
 
 const REAL_NIC_NAME = 'eth0';
