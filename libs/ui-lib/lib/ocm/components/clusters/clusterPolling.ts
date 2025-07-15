@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResourceUIState, POLLING_INTERVAL } from '../../../common';
+import { ResourceUIState, DEFAULT_POLLING_INTERVAL } from '../../../common';
 import {
   fetchClusterAsync,
   cleanCluster,
@@ -53,7 +53,7 @@ export const useClusterPolling = (
 
   React.useEffect(() => {
     fetchCluster();
-    const timer = window.setInterval(() => dispatch(forceReload()), POLLING_INTERVAL);
+    const timer = window.setInterval(() => dispatch(forceReload()), DEFAULT_POLLING_INTERVAL);
     return () => {
       clearInterval(timer);
       dispatch(cancelForceReload());
