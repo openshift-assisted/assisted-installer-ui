@@ -76,6 +76,7 @@ export const getClusterDetailsInitialValues = ({
     diskEncryption: cluster?.diskEncryption ?? {},
     cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
     platform: cluster?.platform?.type || 'none',
+    customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
   };
 };

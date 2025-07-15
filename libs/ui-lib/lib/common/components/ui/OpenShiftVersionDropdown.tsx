@@ -1,113 +1,158 @@
 import React from 'react';
 import {
+  FormGroup,
+  FormHelperText,
+  Button,
   DropdownItem,
   DropdownToggle,
   Dropdown,
-  HelperText,
-  FormGroup,
-  DropdownSeparator,
+  DropdownGroup,
+  Divider,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 
 import { OpenshiftVersionOptionType } from '../../types';
-import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
+import { ClusterDetailsValues, ItemDropdown } from '../clusterWizard';
+import './OpenShiftVersionDropdown.css';
 
-export type HelperTextType = (
-  versions: OpenshiftVersionOptionType[],
-  value: string | undefined,
-  t: TFunction,
-) => JSX.Element | null;
+export type HelperTextType = (value: string | undefined, inModal?: boolean) => JSX.Element | null;
 
 type OpenShiftVersionDropdownProps = {
   name: string;
-  items: {
-    label: string;
-    value: string;
-  }[];
+  items: ItemDropdown;
   versions: OpenshiftVersionOptionType[];
-  getHelperText: HelperTextType;
+  getHelperText?: HelperTextType;
   showReleasesLink: boolean;
+  showOpenshiftVersionModal: () => void;
+  customItems: ItemDropdown;
 };
 
+const getParsedVersions = (items: ItemDropdown) => {
+  const versionsY = Array.from(new Set(items.map((val) => val.value.match(/^\d+\.(\d+)/)?.[1])));
+
+  const parsedVersions = versionsY.map((y) => ({
+    y: y,
+    versions: items.filter((val) => val.value.match(/^\d+\.(\d+)/)?.[1] === y),
+  }));
+  return { parsedVersions: parsedVersions.reverse() };
+};
 export const OpenShiftVersionDropdown = ({
   name,
   items,
   versions,
   getHelperText,
   showReleasesLink,
+  showOpenshiftVersionModal,
+  customItems,
 }: OpenShiftVersionDropdownProps) => {
-  const [field, , { setValue }] = useField(name);
+  const [field, , { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
   const { t } = useTranslation();
   const fieldId = getFieldId(name, 'input');
-  const isDisabled = versions.length === 0;
+  const {
+    values: { customOpenshiftSelect },
+  } = useFormikContext<ClusterDetailsValues>();
+  const [current, setCurrent] = React.useState<string>();
 
-  const { defaultLabel, defaultValue } = React.useMemo(() => {
-    const defaultVersion = versions.find((item) => item.default);
-    return {
-      defaultLabel: defaultVersion?.label || '',
-      defaultValue: defaultVersion?.value || '',
-    };
-  }, [versions]);
+  React.useEffect(() => {
+    const defaultVersion = customOpenshiftSelect
+      ? customOpenshiftSelect
+      : versions.find((item) => item.default);
+    setCurrent(defaultVersion?.label || '');
+    setValue(defaultVersion?.value || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customOpenshiftSelect]);
 
-  const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
-  const [current, setCurrent] = React.useState<string>(defaultLabel);
-
-  const versionsY = Array.from(new Set(items.map((val) => val.value.match(/^\d+\.(\d+)/)?.[1])));
-  const lastVersion = versionsY.slice(-1)[0];
-
-  const parsedVersions = versionsY.map((y) => ({
-    y: y,
-    versions: items.filter((val) => val.value.match(/^\d+\.(\d+)/)?.[1] === y),
-  }));
-
-  const dropdownItems = parsedVersions.map(({ y, versions }) => {
+  const parsedVersionsForItems = getParsedVersions(items);
+  let lastY: string | undefined = '';
+  const dropdownItems = parsedVersionsForItems.parsedVersions.map(({ y, versions }) => {
     const items = versions.map(({ value, label }) => (
-      <DropdownItem key={value} id={value}>
+      <DropdownItem key={value} id={value} value={value}>
         {label}
       </DropdownItem>
     ));
 
-    if (y !== lastVersion) {
-      items.push(<DropdownSeparator key={`separator-${y || ''}`} />);
+    if (lastY !== null && y !== lastY) {
+      items.push(<Divider key={`separator-${y || ''}`} />);
     }
-
+    lastY = y;
     return items;
   });
 
+  const parsedVersionsForCustomItems = getParsedVersions(customItems);
+  let lastCustomY: string | undefined = '';
+  const customDropdownItems = parsedVersionsForCustomItems.parsedVersions.map(({ y, versions }) => {
+    const customItems = versions.map(({ value, label }) => (
+      <DropdownItem key={value} id={value} value={value}>
+        {label}
+      </DropdownItem>
+    ));
+    if (lastCustomY !== null && y !== lastCustomY) {
+      customItems.push(<Divider key={`separator-${y || ''}`} />);
+    }
+    lastCustomY = y;
+    return customItems;
+  });
+
+  const dropdownGroup = [
+    dropdownItems.length && (
+      <DropdownGroup label="Latest releases" key="latest-releases">
+        {dropdownItems}
+      </DropdownGroup>
+    ),
+    customDropdownItems.length && (
+      <DropdownGroup label="Custom releases" key="custom-releases">
+        {customDropdownItems}
+      </DropdownGroup>
+    ),
+    <DropdownGroup key="all-available-versions">
+      <DropdownItem key="all-versions" id="all-versions" onSelect={(e) => e.preventDefault()}>
+        <Button
+          variant="link"
+          isInline
+          onClick={() => showOpenshiftVersionModal()}
+          id="show-all-versions"
+        >
+          {t('ai:Show all available versions')}
+        </Button>
+      </DropdownItem>
+    </DropdownGroup>,
+  ].filter(Boolean);
+
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const newLabel = event?.currentTarget.innerText;
+      const newLabel = event?.currentTarget.textContent;
       const newValue = event?.currentTarget.id;
-      if (newLabel && newValue) {
+      if (newLabel && newValue && event.currentTarget.id !== 'all-versions') {
         setCurrent(newLabel);
         setValue(newValue);
-        setHelperText(getHelperText(versions, newValue, t));
         setOpen(false);
       }
     },
-    [setCurrent, setHelperText, setOpen, getHelperText, t, versions, setValue],
+    [setValue],
   );
 
-  const toggle = React.useMemo(
+  const dropdownToggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
-        isDisabled={isDisabled}
-        isText
+        id={fieldId}
         className="pf-u-w-100"
+        onToggle={(val) => setOpen(val)}
+        toggleIndicator={CaretDownIcon}
+        isText
       >
-        {current}
+        {current || t('ai:OpenShift version')}
       </DropdownToggle>
     ),
-    [setOpen, current, isDisabled],
+    [fieldId, current, t],
   );
+
+  const helperText = getHelperText && getHelperText(field.value);
 
   return (
     <FormGroup
@@ -118,15 +163,15 @@ export const OpenShiftVersionDropdown = ({
     >
       <Dropdown
         {...field}
-        name={name}
-        id={fieldId}
-        onSelect={onSelect}
-        dropdownItems={dropdownItems}
-        toggle={toggle}
+        id={`${fieldId}-dropdown`}
         isOpen={isOpen}
+        onSelect={onSelect}
+        toggle={dropdownToggle}
+        dropdownItems={dropdownGroup}
         className="pf-u-w-100"
       />
-      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
       {showReleasesLink && (
         <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
           <span data-ouia-id="openshift-releases-link">
