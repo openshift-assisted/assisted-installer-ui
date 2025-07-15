@@ -1,7 +1,9 @@
 import React from 'react';
 
 // Must conform Unleash constants
-export type AssistedInstallerFeatureType = 'ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE';
+export type AssistedInstallerFeatureType =
+  | 'ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE'
+  | 'ASSISTED_INSTALLER_ABI';
 
 export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
