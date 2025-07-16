@@ -85,6 +85,7 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
       isDisabled={isDisabled}
       id={fieldId}
       className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
     >
       {currentDisplayValue}
     </MenuToggle>
