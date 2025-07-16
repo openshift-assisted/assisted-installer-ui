@@ -1,7 +1,12 @@
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { InputField, OpenShiftVersionSelect, PullSecret } from '../../../../../common';
+import {
+  InputField,
+  OpenShiftVersionDropdown,
+  OpenShiftVersionModal,
+  PullSecret,
+} from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { BaseDnsHelperText } from '../../../ClusterDeployment/ClusterDetailsFormFields';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
@@ -11,7 +16,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
   onValuesChanged,
   extensionAfter,
   ocpVersions,
+  allVersions,
 }) => {
+  const { t } = useTranslation();
+  const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
   const { values } = useFormikContext<DetailsFormValues>();
   useTemptiflySync({ values, onValuesChanged });
 
@@ -20,7 +28,30 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
     nameInputRef.current?.focus();
   }, []);
 
-  const { t } = useTranslation();
+  const selectOptions = React.useMemo(
+    () =>
+      ocpVersions.map((version) => ({
+        label: version.label,
+        value: version.value,
+      })),
+    [ocpVersions],
+  );
+
+  const additionalSelectOptions = React.useMemo(() => {
+    if (
+      values.customOpenshiftSelect &&
+      !selectOptions.some((option) => option.value === values.customOpenshiftSelect?.value)
+    ) {
+      return [
+        {
+          value: values.customOpenshiftSelect.value,
+          label: values.customOpenshiftSelect.label,
+        },
+      ];
+    }
+    return [];
+  }, [selectOptions, values.customOpenshiftSelect]);
+
   return (
     <Form>
       <InputField
@@ -38,7 +69,21 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
         placeholder="example.com"
         isRequired
       />
-      <OpenShiftVersionSelect versions={ocpVersions} />
+      <OpenShiftVersionDropdown
+        name="openshiftVersion"
+        items={selectOptions}
+        versions={ocpVersions}
+        showReleasesLink={false}
+        showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
+        customItems={additionalSelectOptions}
+      />
+      {openshiftVersionModalOpen && (
+        <OpenShiftVersionModal
+          allVersions={allVersions}
+          setOpenshiftVersionModalOpen={setOpenshiftVersionModalOpen}
+        />
+      )}
+
       <PullSecret />
     </Form>
   );
