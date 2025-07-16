@@ -99,6 +99,7 @@ export const DiscoveryImageTypeDropdown = ({
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
       isDisabled={isDisabled}
+      style={{ minWidth: '510px' }}
     >
       {current || value}
     </MenuToggle>
