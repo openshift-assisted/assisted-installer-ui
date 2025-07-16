@@ -7,6 +7,8 @@ import {
   CardExpandableContent,
   Grid,
   GridItem,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { ClusterProgress } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -42,17 +44,23 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
         )}
       </CardHeader>
       <CardBody>
-        <ClusterProgress
-          cluster={cluster}
-          minimizedView={!isCardExpanded}
-          totalPercentage={cluster.progress?.totalPercentage || 0}
-        />
-        <ClusterDetailsButtonGroup
-          cluster={cluster}
-          credentials={clusterVarieties.credentials}
-          credentialsError={clusterVarieties.credentialsError}
-          showKubeConfig={false}
-        />
+        <Stack hasGutter>
+          <StackItem>
+            <ClusterProgress
+              cluster={cluster}
+              minimizedView={!isCardExpanded}
+              totalPercentage={cluster.progress?.totalPercentage || 0}
+            />
+          </StackItem>
+          <StackItem>
+            <ClusterDetailsButtonGroup
+              cluster={cluster}
+              credentials={clusterVarieties.credentials}
+              credentialsError={clusterVarieties.credentialsError}
+              showKubeConfig={false}
+            />
+          </StackItem>
+        </Stack>
       </CardBody>
       <CardExpandableContent>
         <CardBody>
