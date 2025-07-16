@@ -20,8 +20,11 @@ export class OpenShiftVersionField {
 
   static selectVersion(version: string) {
     OpenShiftVersionField.findDropdown().click();
-    OpenShiftVersionField.findDropdown().within(() => {
-      cy.findByRole('menuitem', { name: new RegExp(`openshift ${version}`, 'i') }).click();
-    });
+    // Wait for dropdown to be expanded and items to be visible
+    cy.get('#form-input-openshiftVersion-field-dropdown .pf-c-dropdown__menu').should('be.visible');
+    // Select by clicking the <a> element with the matching value attribute
+    cy.get(
+      `#form-input-openshiftVersion-field-dropdown a[value="${version}"][role="menuitem"]`,
+    ).click();
   }
 }

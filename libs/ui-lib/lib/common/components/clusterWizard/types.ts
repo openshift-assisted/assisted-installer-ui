@@ -15,6 +15,7 @@ import {
 } from '../../types/hosts';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { WizardStepsValidationMap } from './validationsInfoUtils';
+import { OpenshiftVersionOptionType } from '../../types';
 
 export type ClusterDetailsValues = {
   name: string;
@@ -31,6 +32,7 @@ export type ClusterDetailsValues = {
   diskEncryption: DiskEncryption;
   cpuArchitecture: string;
   platform: PlatformType;
+  customOpenshiftSelect: OpenshiftVersionOptionType | null;
   userManagedNetworking: boolean;
 };
 
@@ -67,3 +69,8 @@ export type ValidationActionLinkProps<S extends string> = {
 };
 
 export type ClusterOperatorProps = Pick<Cluster, 'openshiftVersion'> & { clusterId: Cluster['id'] };
+
+export type ItemDropdown = {
+  label: string;
+  value: string;
+}[];

@@ -71,13 +71,23 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
     [versions, t],
   );
 
+  // Create a wrapper function that matches the new HelperTextType signature
+  const getHelperText = React.useCallback(
+    (value: string | undefined) => {
+      return getOpenshiftVersionHelperText(versions, value, t);
+    },
+    [versions, t],
+  );
+
   return (
     <OpenShiftVersionDropdown
       name="openshiftVersion"
       items={selectOptions}
       versions={versions}
-      getHelperText={getOpenshiftVersionHelperText}
+      getHelperText={getHelperText}
       showReleasesLink={isInOcm}
+      showOpenshiftVersionModal={() => null}
+      customItems={[]}
     />
   );
 };

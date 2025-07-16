@@ -4,6 +4,7 @@ import {
   AgentClusterInstallK8sResource,
   ClusterImageSetK8sResource,
   ClusterVersionK8sResource,
+  OsImage,
 } from '../../types';
 import { OpenshiftVersionOptionType } from '../../../common';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
@@ -36,8 +37,12 @@ const getSupportLevelFromChannel = (
 
 export const supportedNutanixPlatforms = ['x86_64', 'x86-64'];
 
-export const isValidImageSet = (cis: ClusterImageSetK8sResource, architectures?: string[]) => {
-  if (cis.metadata?.labels?.visible !== 'true') {
+export const isValidImageSet = (
+  cis: ClusterImageSetK8sResource,
+  architectures?: string[],
+  extended?: boolean,
+) => {
+  if (!extended && cis.metadata?.labels?.visible !== 'true') {
     return false;
   }
   if (!architectures) {
@@ -51,10 +56,15 @@ export const isValidImageSet = (cis: ClusterImageSetK8sResource, architectures?:
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
   isNutanix?: boolean | undefined,
+  osImages?: OsImage[],
+  extended?: boolean,
 ): OpenshiftVersionOptionType[] => {
+  const ocpImageVersions = Array.from(
+    new Set(osImages?.map((osImage) => osImage.openshiftVersion)),
+  );
   const versions = clusterImageSets
     .filter((clusterImageSet) =>
-      isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined),
+      isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined, extended),
     )
     .map((clusterImageSet): OpenshiftVersionOptionType => {
       const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
@@ -66,6 +76,10 @@ export const getOCPVersions = (
         // (rawagner) ACM does not have the warning so changing to 'production'
         supportLevel: 'production', // getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel),
       };
+    })
+    .filter((ocpVersion) => {
+      const ver = ocpVersion.version.split('.').slice(0, 2).join('.');
+      return !!ocpImageVersions.length ? ocpImageVersions.includes(ver) : true;
     })
     .sort(
       (versionA, versionB) => /* descending */ -1 * versionA.label.localeCompare(versionB.label),
@@ -86,8 +100,9 @@ export const getSelectedVersion = (
   const selectedClusterImage = clusterImages.find(
     (ci) => ci.metadata?.name === agentClusterInstall?.spec?.imageSetRef?.name,
   );
+
   return selectedClusterImage
-    ? getOCPVersions([selectedClusterImage])?.[0]?.version
+    ? getOCPVersions([selectedClusterImage], undefined, undefined, true)?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
 };
 
