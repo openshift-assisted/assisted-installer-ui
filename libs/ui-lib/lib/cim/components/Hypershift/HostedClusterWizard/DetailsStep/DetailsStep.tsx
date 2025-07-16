@@ -26,6 +26,7 @@ const useDetailsFormik: UseDetailsFormik = ({
       openshiftVersion: getDefaultOpenShiftVersion(ocpVersions),
       pullSecret: initPullSecret,
       baseDnsDomain: initBaseDomain,
+      customOpenshiftSelect: null,
     }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
@@ -53,6 +54,8 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   supportedVersionsCM,
 }) => {
   const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
+  const allVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM, true);
+
   const [initialValues, validationSchema] = useDetailsFormik({
     ocpVersions,
     usedClusterNames,
@@ -70,6 +73,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
       <DetailsForm
         onValuesChanged={onValuesChanged}
         ocpVersions={ocpVersions}
+        allVersions={allVersions}
         extensionAfter={extensionAfter}
       />
     </Formik>
