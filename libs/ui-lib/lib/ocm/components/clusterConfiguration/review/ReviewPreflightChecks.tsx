@@ -2,6 +2,8 @@ import React from 'react';
 import {
   Divider,
   ExpandableSection,
+  Flex,
+  FlexItem,
   Grid,
   GridItem,
   gridSpans,
@@ -94,25 +96,25 @@ const PreflightCheckInfo = ({
 }) => {
   return (
     <GridItem span={span} offset={offset} className={className}>
-      <Split hasGutter>
-        <SplitItem>{icon}</SplitItem>
-        <SplitItem>
+      <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+        <FlexItem style={{ display: 'flex', alignItems: 'center' }}>{icon}</FlexItem>
+        <FlexItem style={{ display: 'flex', alignItems: 'center' }}>
           <b>{title}</b>
-        </SplitItem>
-      </Split>
+        </FlexItem>
+      </Flex>
     </GridItem>
   );
 };
 
 const getCheckIcon = (validationStatuses: string[]) => {
   if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
-    return <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
+    return <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />;
   } else if (validationStatuses.includes('warning')) {
-    return <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
+    return <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />;
   } else if (validationStatuses.includes('pending')) {
-    return <UiIcon status="info" icon={<InfoCircleIcon />} />;
+    return <UiIcon size="sm" status="info" icon={<InfoCircleIcon />} />;
   }
-  return <UiIcon status="warning" icon={<CheckCircleIcon color={okColor.value} />} />;
+  return <UiIcon size="sm" icon={<CheckCircleIcon color={okColor.value} />} />;
 };
 
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
@@ -126,9 +128,9 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   );
 
   const supportLevelIcon = isFullySupported ? (
-    <CheckCircleIcon color={okColor.value} />
+    <UiIcon size="sm" icon={<CheckCircleIcon color={okColor.value} />} />
   ) : (
-    <InfoCircleIcon color={infoColor.value} />
+    <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.value} />} />
   );
 
   const clusterValidations = React.useMemo(
@@ -161,12 +163,17 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
       <PreflightCheckInfo
         title="Cluster preflight checks"
         icon={getCheckIcon(clusterValidations)}
+        span={3}
       />
-      <PreflightCheckInfo title="Host preflight checks" icon={getCheckIcon(hostValidations)} />
+      <PreflightCheckInfo
+        title="Host preflight checks"
+        icon={getCheckIcon(hostValidations)}
+        span={3}
+      />
       <PreflightCheckInfo
         title={`Cluster support level: ${isFullySupported ? 'Full' : 'Limited'}`}
         icon={supportLevelIcon}
-        span={4}
+        span={3}
       />
     </>
   );
