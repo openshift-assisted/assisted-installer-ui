@@ -9,7 +9,7 @@ import {
 import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
-import { Grid } from '@patternfly/react-core';
+import { Stack, StackItem } from '@patternfly/react-core';
 import { getErrorMessage } from '../../../common/utils';
 import {
   Cluster,
@@ -94,20 +94,24 @@ const ClusterDetailStatusVarieties = ({
     consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters
 
   return (
-    <Grid hasGutter>
+    <Stack hasGutter>
       {showClusterCredentials && (
-        <ClusterCredentials
-          cluster={cluster}
-          credentials={credentials}
-          error={!!credentialsError}
-          retry={fetchCredentials}
-          idPrefix={getClusterDetailId('cluster-creds')}
-          credentialsError={credentialsError}
-          isMceEnabled={hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_MCE)}
-        />
+        <StackItem className="pf-v6-u-mt-lg">
+          <ClusterCredentials
+            cluster={cluster}
+            credentials={credentials}
+            error={!!credentialsError}
+            retry={fetchCredentials}
+            idPrefix={getClusterDetailId('cluster-creds')}
+            credentialsError={credentialsError}
+            isMceEnabled={hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_MCE)}
+          />
+        </StackItem>
       )}
-      <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
-    </Grid>
+      <StackItem className="pf-v6-u-mt-lg">
+        <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
+      </StackItem>
+    </Stack>
   );
 };
 
