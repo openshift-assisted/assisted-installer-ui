@@ -64,16 +64,18 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
       </CardBody>
       <CardExpandableContent>
         <CardBody>
-          <Grid hasGutter>
-            <ClusterDetailStatusVarieties
-              cluster={cluster}
-              clusterVarieties={clusterVarieties}
-              showAddHostsInfo={false}
-            />
-            <GridItem>
+          <Stack hasGutter>
+            <StackItem className="pf-v6-u-mt-lg">
+              <ClusterDetailStatusVarieties
+                cluster={cluster}
+                clusterVarieties={clusterVarieties}
+                showAddHostsInfo={false}
+              />
+            </StackItem>
+            <StackItem className="pf-v6-u-mt-lg">
               <ClusterHostsTable cluster={cluster} skipDisabled />
-            </GridItem>
-          </Grid>
+            </StackItem>
+          </Stack>
         </CardBody>
       </CardExpandableContent>
     </Card>
