@@ -180,7 +180,9 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         >
           Create Cluster
         </ToolbarButton>
-        {clustersUIState === ResourceUIState.RELOADING && <Spinner size="lg" />}
+        {clustersUIState === ResourceUIState.RELOADING && (
+          <Spinner size="lg" data-testid="clusters-list-toolbar-spinner" />
+        )}
         <ToolbarGroup align={{ lg: 'alignEnd' }}>
           <ToolbarButton
             variant={ButtonVariant.plain}

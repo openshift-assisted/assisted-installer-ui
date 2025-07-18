@@ -61,7 +61,7 @@ const VipStaticValue = ({
   if (vipDhcpAllocation && machineNetworkCidr) {
     return (
       <>
-        <Spinner size="md" id={`${id}-allocating`} />
+        <Spinner size="md" id={`${id}-allocating`} data-testid={`vip-static-${id}-value-spinner`} />
         <i> This IP is being allocated by the DHCP server</i>
       </>
     );
