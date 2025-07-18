@@ -89,6 +89,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
               icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-label-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>

@@ -86,7 +86,9 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
               <FormGroup>
                 <FormHelperText>
                   <HelperText id={fieldId}>
-                    <HelperTextItem>
+                    <HelperTextItem
+                      data-testid={`input-ocmsinglenodecheckbox-${fieldId}-helper-text`}
+                    >
                       {t('ai:SNO enables you to install OpenShift using only one host.')}
                     </HelperTextItem>
                   </HelperText>

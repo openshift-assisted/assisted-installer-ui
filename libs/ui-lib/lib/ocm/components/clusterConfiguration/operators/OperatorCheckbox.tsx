@@ -195,7 +195,7 @@ const OperatorCheckbox = ({
         description={
           !!Description && (
             <HelperText>
-              <HelperTextItem>
+              <HelperTextItem data-testid={`operator-checkbox-description-${operatorId}`}>
                 <Description openshiftVersion={openshiftVersion} />
               </HelperTextItem>
             </HelperText>

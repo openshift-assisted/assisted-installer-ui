@@ -177,7 +177,9 @@ export const OpenShiftVersionDropdown = ({
       {helperText && (
         <FormHelperText>
           <HelperText>
-            <HelperTextItem variant="default">{helperText}</HelperTextItem>
+            <HelperTextItem variant="default" data-testid="openshift-version-dropdown-helper-text">
+              {helperText}
+            </HelperTextItem>
           </HelperText>
         </FormHelperText>
       )}
