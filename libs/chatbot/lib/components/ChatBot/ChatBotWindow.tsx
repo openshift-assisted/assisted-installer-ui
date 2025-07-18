@@ -15,6 +15,7 @@ import {
 import { Alert, AlertActionCloseButton, Button } from '@patternfly-6/react-core';
 import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/external-link-alt-icon';
 
+import BotMessage, { FeedbackRequest } from './BotMessage';
 import AIAvatar from '../../assets/rh-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
 
@@ -22,6 +23,9 @@ type StreamEvent =
   | { event: 'start'; data: { conversation_id: string } }
   | { event: 'token'; data: { token: string; role: string } }
   | { event: 'end' };
+
+const botRole = 'bot';
+const userRole = 'user';
 
 const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) {
@@ -46,6 +50,25 @@ export type ChatBotWindowProps = {
   username: string;
 };
 
+// Helper function to get the user question for a bot message
+const getUserQuestionForBotAnswer = (
+  messages: MsgProps[],
+  messageIndex: number,
+): string | undefined => {
+  if (messageIndex === 0) {
+    return undefined;
+  }
+  // Look backwards from the previous message to find the most recent user message
+  for (let i = messageIndex - 1; i >= 0; i--) {
+    const msg = messages[i];
+    if (msg?.role === userRole && msg.content) {
+      return String(msg.content);
+    }
+  }
+
+  return undefined;
+};
+
 const ChatBotWindow = ({
   conversationId,
   setConversationId,
@@ -63,6 +86,10 @@ const ChatBotWindow = ({
   );
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
 
+  const scrollToBottom = React.useCallback(() => {
+    scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   const handleSend = async (message: string | number) => {
     setError(undefined);
     setIsLoading(true);
@@ -71,7 +98,7 @@ const ChatBotWindow = ({
       setMessages((msgs) => [
         ...msgs,
         {
-          role: 'user',
+          role: userRole,
           content: `${message}`,
           name: username,
           avatar: UserAvatar,
@@ -121,12 +148,12 @@ const ChatBotWindow = ({
             setMessages((msgs) => {
               const lastMsg = msgs[msgs.length - 1];
               const msg =
-                lastMsg.timestamp === timestamp && lastMsg.role === 'bot' ? lastMsg : undefined;
+                lastMsg.timestamp === timestamp && lastMsg.role === botRole ? lastMsg : undefined;
               if (!msg) {
                 return [
                   ...msgs,
                   {
-                    role: 'bot',
+                    role: botRole,
                     content: token,
                     name: 'AI',
                     avatar: AIAvatar,
@@ -165,6 +192,37 @@ const ChatBotWindow = ({
       setIsLoading(false);
     }
   };
+
+  const onFeedbackSubmit = React.useCallback(
+    async (req: FeedbackRequest): Promise<void> => {
+      const botMessageIdx = req.messageIndex;
+
+      if (botMessageIdx < 0 || botMessageIdx >= messages.length) {
+        throw new Error(`Invalid message index: ${botMessageIdx}`);
+      }
+
+      const resp = await onApiCall('/v1/feedback', {
+        method: 'POST',
+        body: JSON.stringify({
+          conversation_id: conversationId,
+          user_question: getUserQuestionForBotAnswer(messages, botMessageIdx),
+          user_feedback: req.userFeedback,
+          llm_response: messages[botMessageIdx].content || '',
+          sentiment: req.sentiment,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!resp.ok) {
+        throw new Error(`Failed to submit feedback: ${resp.status} ${resp.statusText}`);
+      }
+
+      // Resolve the promise to avoid unhandled rejection
+      await resp.json();
+    },
+    [onApiCall, conversationId, messages],
+  );
 
   React.useEffect(() => {
     scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -213,10 +271,24 @@ const ChatBotWindow = ({
               description="How can I help you today?"
             />
           )}
-          {messages.map((message, index) => (
-            <Message key={conversationId ? `${conversationId}-${index}` : index} {...message} />
-          ))}
-          {isLoading && <Message isLoading role="bot" avatar={AIAvatar} />}
+          {messages.map((message, index) => {
+            const messageKey = conversationId ? `${conversationId}-${index}` : index;
+            const isBotMessage = message.role === botRole;
+            if (isBotMessage) {
+              return (
+                <BotMessage
+                  key={messageKey}
+                  messageIndex={index}
+                  message={message}
+                  onFeedbackSubmit={onFeedbackSubmit}
+                  onScrollToBottom={scrollToBottom}
+                />
+              );
+            }
+
+            return <Message key={messageKey} {...message} />;
+          })}
+          {isLoading && <Message isLoading role={botRole} avatar={AIAvatar} />}
           {error && (
             <ChatbotAlert
               variant="danger"
