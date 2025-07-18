@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { WizardHeader } from '@patternfly/react-core';
 import classNames from 'classnames';
 import { ClusterWizardStep } from '../../../../common';
@@ -52,6 +49,7 @@ const Day2Wizard = () => {
           title={'Add hosts'}
           description={'Choose the settings for adding a new host'}
           onClose={close}
+          data-testid="day2-wizard-header"
         />
         <Day2WizardStep />
       </div>

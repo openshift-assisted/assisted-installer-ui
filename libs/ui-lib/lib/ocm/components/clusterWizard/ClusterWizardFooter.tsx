@@ -119,6 +119,7 @@ const ClusterWizardFooter = ({
       cluster={cluster}
       onFetchEvents={onFetchEvents}
       {...rest}
+      data-testid="cluster-wizard-footer"
     />
   );
 };
