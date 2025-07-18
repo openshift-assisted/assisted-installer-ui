@@ -38,7 +38,7 @@ const getBaseCluster = ({ name }) => ({
   feature_usage: JSON.stringify(featureUsage),
   validations_info: JSON.stringify(initialClusterValidations.clusterValidationsInfo),
   ...baseCluster(name),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
 });
 
 const getBaseInfraEnv = () => ({

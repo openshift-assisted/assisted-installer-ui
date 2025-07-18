@@ -87,7 +87,7 @@ const storageCluster = {
   email_domain: 'Unknown',
   enabled_host_count: 5,
   feature_usage: JSON.stringify(featureUsage),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   host_networks: [
     {
       cidr: '192.168.122.0/24',

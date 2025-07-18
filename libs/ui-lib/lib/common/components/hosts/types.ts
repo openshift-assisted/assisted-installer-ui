@@ -47,7 +47,7 @@ export type HostsTableActions = {
   onEditBMH?: (host: Host) => void;
   canEditBMH?: (host: Host) => ActionCheck;
   onSelect?: (host: Host, selected: boolean) => void;
-  canEditHostname?: () => boolean;
+  canEditHostname?: (host?: Host) => boolean;
   canUnbindHost?: (host: Host) => ActionCheck;
   onUnbindHost?: (host: Host) => void;
   onExcludedODF?: (

@@ -15,8 +15,6 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
-import { FeatureSupportLevelData } from '../featureSupportLevels';
-import toNumber from 'lodash-es/toNumber';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -55,18 +53,16 @@ export const getClusterDetailsInitialValues = ({
 }): ClusterDetailsValues => {
   const {
     name = '',
-    highAvailabilityMode = 'Full',
     baseDnsDomain = baseDomain || '',
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
+    controlPlaneCount = 3,
   } = cluster || {};
-
   return {
     name,
-    highAvailabilityMode,
     openshiftVersion,
     pullSecret: pullSecret || '',
     baseDnsDomain,
-    SNODisclaimer: highAvailabilityMode === 'None',
+    controlPlaneCount,
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
     enableDiskEncryptionOnMasters: ['all', 'masters'].includes(
@@ -82,7 +78,6 @@ export const getClusterDetailsInitialValues = ({
     platform: cluster?.platform?.type || 'none',
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
-    controlPlaneCount: cluster?.controlPlaneCount || 3,
     enableDiskEncryptionOnArbiters: ['all', 'arbiters'].includes(
       cluster?.diskEncryption?.enableOn ?? 'none',
     ),
@@ -91,17 +86,13 @@ export const getClusterDetailsInitialValues = ({
 
 export const getClusterDetailsValidationSchema = ({
   usedClusterNames,
-  featureSupportLevels,
   pullSecretSet,
-  ocpVersions,
   validateUniqueName,
   isOcm,
   t,
 }: {
   usedClusterNames: string[];
-  featureSupportLevels?: FeatureSupportLevelData;
   pullSecretSet?: boolean;
-  ocpVersions?: OpenshiftVersionOptionType[];
   validateUniqueName?: boolean;
   isOcm?: boolean;
   t: TFunction;
@@ -123,28 +114,6 @@ export const getClusterDetailsValidationSchema = ({
         ? baseDomainValidationSchema.required('Required')
         : dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
-      SNODisclaimer: Yup.boolean().when(['controlPlaneCount', 'openshiftVersion'], {
-        // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
-        is: (
-          controlPlaneCount: Cluster['controlPlaneCount'],
-          openshiftVersion: Cluster['openshiftVersion'],
-        ) => {
-          const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
-          const versionToUse = selectedVersion?.value ?? openshiftVersion;
-          if (featureSupportLevels) {
-            return toNumber(controlPlaneCount) === 1 && versionToUse && featureSupportLevels
-              ? featureSupportLevels.getFeatureSupportLevel(versionToUse, 'SNO') === 'dev-preview'
-              : false;
-          } else {
-            return toNumber(controlPlaneCount) === 1 && versionToUse && values.isSNODevPreview;
-          }
-        },
-        then: () =>
-          Yup.boolean().oneOf(
-            [true],
-            t('ai:Confirm the Single Node OpenShift disclaimer to continue.'),
-          ),
-      }),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode: DiskEncryption['mode']) => {
           return diskEncryptionMode === 'tang';

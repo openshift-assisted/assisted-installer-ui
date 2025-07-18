@@ -12,8 +12,8 @@ import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 import buildManifest from '@openshift-assisted/ui-lib/package.json';
 import { isInOcm } from '../api/axiosClient';
 
-export const POLLING_INTERVAL = 10 * 1000;
-export const EVENTS_POLLING_INTERVAL = 10 * 1000 * 6;
+export const DEFAULT_POLLING_INTERVAL = 10 * 1000;
+export const REDUCED_POLLING_INTERVAL = 10 * 1000 * 6;
 
 export const hostRoles = (t: TFunction): HostRole[] => [
   {
@@ -70,7 +70,6 @@ export const clusterFieldLabels = (t: TFunction): { [key in string]: string } =>
   ingressVips: t('ai:Ingress IP'),
   pullSecret: t('ai:Pull secret'),
   sshPublicKey: t('ai:SSH public key'),
-  SNODisclaimer: t('ai:Single Node OpenShift disclaimer'),
   diskEncryptionTangServers: t("ai:Tang servers' URLs or thumbprints"),
   selectedHostIds: t('ai:Hosts selection'),
   httpProxy: t('ai:HTTP proxy'),
@@ -332,10 +331,7 @@ export const singleClusterOperators = [
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_MTV,
   OPERATOR_NAME_NMSTATE,
-  OPERATOR_NAME_NODE_HEALTHCHECK,
   OPERATOR_NAME_NODE_MAINTENANCE,
-  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
-  OPERATOR_NAME_SELF_NODE_REMEDIATION,
   OPERATOR_NAME_KUBE_DESCHEDULER,
 ];
 
