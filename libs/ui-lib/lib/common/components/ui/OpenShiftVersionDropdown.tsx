@@ -147,6 +147,7 @@ export const OpenShiftVersionDropdown = ({
       onClick={() => setOpen(!isOpen)}
       isDisabled={isDisabled}
       isExpanded={isOpen}
+      data-testid="openshift-version-dropdown-toggle"
     >
       {current}
     </MenuToggle>

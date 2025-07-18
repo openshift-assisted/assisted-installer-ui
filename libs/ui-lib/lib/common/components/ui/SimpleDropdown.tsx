@@ -52,6 +52,7 @@ export const SimpleDropdown = ({
       onClick={() => setOpen(!isOpen)}
       isDisabled={isDisabled}
       isExpanded={isOpen}
+      data-testid="simple-dropdown-toggle"
     >
       {current || defaultValue}
     </MenuToggle>

@@ -114,6 +114,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             onClick={() => onToggle(!isOpen)}
             isExpanded={isOpen}
             variant="typeahead"
+            data-testid="multi-select-field-toggle"
           >
             <TextInputGroup>
               <LabelGroup>

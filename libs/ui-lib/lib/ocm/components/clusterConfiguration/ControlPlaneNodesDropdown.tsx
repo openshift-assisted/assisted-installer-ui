@@ -149,6 +149,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
       className="pf-v6-u-w-100"
+      data-testid="control-plane-nodes-dropdown-toggle"
     >
       {options.find((opt) => opt.value === field.value)?.label || 'Select'}
     </MenuToggle>

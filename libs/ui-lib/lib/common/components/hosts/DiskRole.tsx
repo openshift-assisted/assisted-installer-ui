@@ -111,6 +111,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
       isDisabled={isDisabled}
+      data-testid="disk-role-dropdown-toggle"
     >
       {currentRoleLabel}
     </MenuToggle>
