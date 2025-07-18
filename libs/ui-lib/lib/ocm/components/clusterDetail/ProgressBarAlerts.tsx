@@ -114,7 +114,7 @@ export const HostsInstallationFailed = ({
   const { resetClusterDialog } = useModalDialogsContext();
   const getID = (suffix: string) => `cluster-install-error-${suffix}`;
   let title, message;
-  if (cluster.highAvailabilityMode === 'None' || failedHosts > 0) {
+  if (cluster.controlPlaneCount === 1 || failedHosts > 0) {
     title = 'Control plane was not installed';
     message = `${failedHosts}/${totalHosts} control plane nodes failed to install. Please check the installation logs for more information.`;
   } else if (isCriticalNumberOfWorkersFailed) {

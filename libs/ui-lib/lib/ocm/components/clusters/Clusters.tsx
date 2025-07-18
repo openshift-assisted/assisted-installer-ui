@@ -15,6 +15,7 @@ import {
   EmptyState,
   useAlerts,
   AlertsContextProvider,
+  REDUCED_POLLING_INTERVAL,
 } from '../../../common';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
@@ -60,8 +61,17 @@ const Clusters = () => {
   );
 
   const fetchClusters = React.useCallback(() => void dispatch(fetchClustersAsync()), [dispatch]);
+
   React.useEffect(() => {
+    // Fetch immediately on mount
     fetchClusters();
+
+    // Set up polling for subsequent updates
+    const timer = setInterval(() => {
+      fetchClusters();
+    }, REDUCED_POLLING_INTERVAL);
+
+    return () => clearInterval(timer);
   }, [fetchClusters]);
 
   switch (uiState.current) {

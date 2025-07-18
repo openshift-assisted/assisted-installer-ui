@@ -24,10 +24,12 @@ const OperatorsSelect = ({
   cluster,
   bundles,
   preflightRequirements,
+  searchTerm,
 }: {
   cluster: Cluster;
   bundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
+  searchTerm?: string;
 }) => {
   const [isLoading, setIsLoading] = useStateSafely(true);
   const { addAlert } = useAlerts();
@@ -63,57 +65,69 @@ const OperatorsSelect = ({
     });
   }, [isSingleClusterFeatureEnabled, supportedOperators]);
 
+  const selectedOperators = values.selectedOperators.filter(
+    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+  );
+
   if (isLoading) {
     return <LoadingState />;
   }
-
-  // Calculate all selected operators (direct selections + bundle selections)
-  const bundleOperators = values.selectedBundles.flatMap(
-    (bundleId) => bundles.find((b) => b.id === bundleId)?.operators || [],
-  );
-
-  const allSelectedOperators = values.selectedOperators
-    .concat(bundleOperators)
-    .filter((op, index, array) => array.indexOf(op) === index); // Remove duplicates
-
-  const selectedOperators = allSelectedOperators.filter((opKey) => !!opSpecs[opKey]);
-
+  let foundAtLeastOneOperator = false;
   return (
-    <ExpandableSection
-      toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
-      onToggle={() => setIsExpanded(!isExpanded)}
-      isExpanded={isExpanded}
-      data-testid="single-operators-section"
-    >
-      <Stack hasGutter data-testid={'operators-form'}>
-        {Object.entries(byCategory).map(([categoryName, specs]) => {
-          const categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
-          if (categoryOperators.length === 0) {
-            return null;
-          }
+    <>
+      <ExpandableSection
+        toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+        onToggle={() => setIsExpanded(!isExpanded)}
+        isExpanded={isExpanded}
+        data-testid="single-operators-section"
+      >
+        <Stack hasGutter data-testid={'operators-form'}>
+          {Object.entries(byCategory).map(([categoryName, specs]) => {
+            let categoryOperators = specs.filter((spec) => operators.includes(spec.operatorKey));
+            // Filter by searchTerm
+            if (searchTerm?.trim()) {
+              const term = searchTerm.trim().toLowerCase();
+              categoryOperators = categoryOperators.filter((spec) => {
+                const op = opSpecs[spec.operatorKey];
+                const title = op?.title?.toLowerCase() || '';
+                const description = op?.descriptionText?.toLowerCase() || '';
+                return title.includes(term) || description.includes(term);
+              });
+            }
+            if (categoryOperators.length === 0) {
+              return null;
+            }
+            foundAtLeastOneOperator = true;
+            if (!!searchTerm?.trim() && !isExpanded) {
+              //if we found some results expand operators section
+              setIsExpanded(true);
+            }
 
-          return (
-            <React.Fragment key={categoryName}>
-              <StackItem>
-                <strong>{categoryName}</strong>
-              </StackItem>
-              {categoryOperators.map((spec) => (
-                <StackItem key={spec.operatorKey}>
-                  <OperatorCheckbox
-                    bundles={bundles}
-                    operatorId={spec.operatorKey}
-                    cluster={cluster}
-                    openshiftVersion={cluster.openshiftVersion}
-                    preflightRequirements={preflightRequirements}
-                    {...spec}
-                  />
+            return (
+              <React.Fragment key={categoryName}>
+                <StackItem>
+                  <strong>{categoryName}</strong>
                 </StackItem>
-              ))}
-            </React.Fragment>
-          );
-        })}
-      </Stack>
-    </ExpandableSection>
+                {categoryOperators.map((spec) => (
+                  <StackItem key={spec.operatorKey}>
+                    <OperatorCheckbox
+                      bundles={bundles}
+                      operatorId={spec.operatorKey}
+                      cluster={cluster}
+                      openshiftVersion={cluster.openshiftVersion}
+                      preflightRequirements={preflightRequirements}
+                      searchTerm={searchTerm}
+                      {...spec}
+                    />
+                  </StackItem>
+                ))}
+              </React.Fragment>
+            );
+          })}
+        </Stack>
+      </ExpandableSection>
+      {!foundAtLeastOneOperator && !!searchTerm?.trim() && <StackItem>No results found</StackItem>}
+    </>
   );
 };
 

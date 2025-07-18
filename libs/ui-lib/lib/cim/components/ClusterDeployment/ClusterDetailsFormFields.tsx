@@ -55,7 +55,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   cpuArchitectures,
   allowHighlyAvailable,
 }) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
+  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
 
@@ -67,6 +67,15 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       })),
     [versions],
   );
+
+  React.useEffect(() => {
+    if (!versions.length && !values.openshiftVersion) {
+      const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
+      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
+      setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const additionalSelectOptions = React.useMemo(() => {
     if (
@@ -161,7 +170,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {/* <DiskEncryptionControlGroup
         values={values}
         isDisabled={isPullSecretSet}
-        isSNO={isSNO({ highAvailabilityMode })}
+        isSNO={isSNO({ controlPlaneCount })}
       /> */}
       {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tpmv2' && (
         <Alert
