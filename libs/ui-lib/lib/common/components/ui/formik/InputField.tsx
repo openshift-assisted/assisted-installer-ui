@@ -56,7 +56,12 @@ const InputField: React.FC<
       >
         {description && (
           <HelperText>
-            <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+            <HelperTextItem
+              variant="indeterminate"
+              data-testid=" input-field-description-${fieldId}-helper-text"
+            >
+              {description}
+            </HelperTextItem>
           </HelperText>
         )}
         <Split>
@@ -90,6 +95,7 @@ const InputField: React.FC<
                     ? `${fieldId}-helper-error`
                     : `${fieldId}-helper`
                 }
+                data-testid={`input-field-${fieldId}-helper-text`}
               >
                 {showErrorMessage ? errorMessage : helperText}
               </HelperTextItem>

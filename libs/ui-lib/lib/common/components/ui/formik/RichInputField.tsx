@@ -50,19 +50,26 @@ type RichValidationProps = {
   value: any;
   error: string | undefined;
   richValidationMessages: { [key: string]: string };
+  fieldId: string;
 };
 
 export const RichValidation: React.FC<RichValidationProps> = ({
   value,
   error,
   richValidationMessages,
+  fieldId,
 }) => {
   return (
     <PFHelperText component="ul" className="rich-input__rules">
       {Object.keys(richValidationMessages).map((key) => {
         const variant = getHelperTextVariant(richValidationMessages[key], value, error);
         return (
-          <HelperTextItem key={key} component="li" {...variant}>
+          <HelperTextItem
+            key={key}
+            component="li"
+            {...variant}
+            data-testid={`input-richinputvalidation-${fieldId}-helper-text`}
+          >
             {richValidationMessages[key]}
           </HelperTextItem>
         );
@@ -148,6 +155,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                   value={value}
                   error={error}
                   richValidationMessages={richValidationMessages as Record<string, string>}
+                  fieldId={fieldId}
                 />
               }
               withFocusTrap={false}
@@ -175,6 +183,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                 icon={errorMessage && <ExclamationCircleIcon />}
                 variant={isValid ? 'default' : 'error'}
                 id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
+                data-testid={`input-richinput-${fieldId}-helper-text`}
               >
                 {errorMessage ? errorMessage : helperText}
               </HelperTextItem>

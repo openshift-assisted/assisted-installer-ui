@@ -125,6 +125,7 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
               icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid="certificates-upload-field-helper-text"
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>

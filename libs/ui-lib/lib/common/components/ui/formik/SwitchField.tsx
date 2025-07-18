@@ -65,6 +65,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
               icon={<ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-switchfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : hText}
             </HelperTextItem>

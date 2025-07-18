@@ -90,6 +90,7 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
                 icon={errorMessage && <ExclamationCircleIcon />}
                 variant={errorMessage ? 'error' : 'default'}
                 id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+                data-testid={`input-numberinput-${fieldId}-helper-text`}
               >
                 {errorMessage ? errorMessage : helperText}
               </HelperTextItem>

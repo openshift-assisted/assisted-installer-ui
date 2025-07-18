@@ -32,7 +32,7 @@ export const BaseDnsHelperText = ({
 }) => (
   <FormHelperText>
     <HelperText id={fieldId}>
-      <HelperTextItem>
+      <HelperTextItem data-testid={`input-basednshelpertext-${fieldId}-helper-text`}>
         Enter the name of your domain [domainname] or [domainname.com]. This cannot be changed after
         cluster installed. All DNS records must include the cluster name and be subdomains of the
         base you enter. The full cluster address will be: <br />

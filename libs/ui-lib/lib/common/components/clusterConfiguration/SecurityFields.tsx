@@ -15,7 +15,7 @@ export const SshPublicKeyHelperText: React.FC<{
   const { t } = useTranslation();
   return (
     <HelperText id={fieldId}>
-      <HelperTextItem>
+      <HelperTextItem data-testid="ssh-public-key-helper-text">
         {t(
           'ai:Paste the content of a public ssh key you want to use to connect to the hosts into this field.',
         )}{' '}

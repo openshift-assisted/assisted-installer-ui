@@ -110,6 +110,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
               icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-uploadfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>

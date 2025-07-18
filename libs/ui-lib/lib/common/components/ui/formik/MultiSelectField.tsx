@@ -168,6 +168,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
               icon={<ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-multiselectfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : hText}
             </HelperTextItem>
