@@ -115,7 +115,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
           {isSubmitting && (
             <ActionListItem>
               <Content component={ContentVariants.small}>
-                <Spinner size="sm" /> {submittingText}
+                <Spinner size="sm" data-testid="wizard-footer-spinner" /> {submittingText}
               </Content>
             </ActionListItem>
           )}
