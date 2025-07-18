@@ -318,7 +318,7 @@ const ClusterEventsToolbar = ({
                 badge={
                   filters.severities?.length && <Badge isRead>{filters.severities.length}</Badge>
                 }
-                data-testid="cluster-events-severity-dropdown-button"
+                data-testid="severity-dropdown-toggle"
               >
                 <Placeholder text="Severity" />
               </MenuToggle>
@@ -359,7 +359,7 @@ const ClusterEventsToolbar = ({
                 icon={<SearchIcon />}
                 variant={ButtonVariant.control}
                 aria-label="search text button"
-               />
+              />
             </InputGroupItem>
           </InputGroup>
         </ToolbarItem>

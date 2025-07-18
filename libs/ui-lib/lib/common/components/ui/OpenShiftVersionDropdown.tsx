@@ -147,6 +147,7 @@ export const OpenShiftVersionDropdown = ({
       isFullWidth
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
+      data-testid="openshift-version-dropdown-toggle"
     >
       {current || t('ai:OpenShift version')}
     </MenuToggle>

@@ -161,6 +161,7 @@ const CpuArchitectureDropdown = ({
       isExpanded={isOpen}
       className="pf-v6-u-w-100"
       style={{ minWidth: '420px' }}
+      data-testid="cpu-architecture-dropdown-toggle"
     >
       {currentCpuArch}
     </MenuToggle>

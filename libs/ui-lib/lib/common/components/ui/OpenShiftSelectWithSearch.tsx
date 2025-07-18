@@ -195,6 +195,7 @@ export const OpenShiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
       onClick={onToggleClick}
       isExpanded={isOpen}
       isFullWidth
+      data-testid="openshift-version-dropdown-toggle"
     >
       <TextInputGroup isPlain>
         <TextInputGroupMain
@@ -214,7 +215,8 @@ export const OpenShiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
 
         <TextInputGroupUtilities>
           {!!inputValue && (
-            <Button icon={<TimesIcon aria-hidden />}
+            <Button
+              icon={<TimesIcon aria-hidden />}
               variant="plain"
               onClick={() => {
                 setSelected('');
@@ -223,7 +225,7 @@ export const OpenShiftSelectWithSearch: React.FunctionComponent<OpenshiftSelectW
                 textInputRef?.current?.focus();
               }}
               aria-label="Clear input value"
-             />
+            />
           )}
         </TextInputGroupUtilities>
       </TextInputGroup>

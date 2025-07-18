@@ -251,6 +251,7 @@ export const ExternalPlatformDropdown = ({
       onClick={() => setOpen(!isOpen)}
       isDisabled={dropdownIsDisabled}
       isExpanded={isOpen}
+      data-testid="external-platform-dropdown-toggle"
     >
       {externalPlatformTypes[field.value as PlatformType]?.label}
     </MenuToggle>

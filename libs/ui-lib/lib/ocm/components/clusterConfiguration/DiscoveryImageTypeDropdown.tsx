@@ -100,6 +100,7 @@ export const DiscoveryImageTypeDropdown = ({
       isExpanded={isOpen}
       isDisabled={isDisabled}
       style={{ minWidth: '510px' }}
+      data-testid="discovery-image-type-dropdown-toggle"
     >
       {current || value}
     </MenuToggle>

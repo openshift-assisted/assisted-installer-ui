@@ -72,6 +72,7 @@ export const OcmBaseDomainField = ({
         onClick={() => setOpen(!isOpen)}
         isExpanded={isOpen}
         className="pf-v6-u-w-100"
+        data-testid="base-domain-dropdown-toggle"
       >
         {selectedDomain ? getManagedDomainLabel(selectedDomain) : 'Base domain'}
       </MenuToggle>
