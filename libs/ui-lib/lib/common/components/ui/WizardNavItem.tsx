@@ -29,7 +29,11 @@ const NavItem = ({ isValid = () => true, children, ...props }: NavItemProps) => 
   const { content, isDisabled, isCurrent } = props;
 
   return (
-    <WizardNavItem {...props} content={getNavItemContent(content, isValid, isDisabled, isCurrent)}>
+    <WizardNavItem
+      {...props}
+      content={getNavItemContent(content, isValid, isDisabled, isCurrent)}
+      data-testid="cluster-wizard-navitem"
+    >
       {children}
     </WizardNavItem>
   );

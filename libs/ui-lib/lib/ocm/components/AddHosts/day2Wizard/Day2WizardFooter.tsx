@@ -41,6 +41,7 @@ const Day2WizardFooter = ({
       isBackDisabled={wizardContext.currentStepId === 'cluster-details'}
       isNextDisabled={disableNext}
       onCancel={closeWizard}
+      data-testid="day2-wizard-footer"
     />
   );
 };
