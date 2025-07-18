@@ -24,8 +24,8 @@
     "@types/react": "17.0.x"
   },
   "scripts": {
-    "_build:ui-lib": "yarn workspace @openshift-assisted/ui-lib build",
-    "_yalc:push": "bash -c \"for lib in ui-lib types locales; do yalc push --changed libs/\\${lib}; done\"",
+    "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
+    "_yalc:push": "bash -c \"for lib in ui-lib types locales chatbot; do yalc push --changed libs/\\${lib}; done\"",
     "build:all": "yarn workspaces foreach -v --topological-dev run build",
     "check:circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
     "check:translation_files": "yarn workspace @openshift-assisted/locales run validate_translation_files",
@@ -41,7 +41,7 @@
     "test:unit": "yarn workspaces foreach -v run test",
     "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
     "start:assisted_disconnected_ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui serve",
-    "start:watch_mode": "yarn build:all && yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales 'yarn _build:ui-lib' 'yarn _yalc:push'",
+    "start:watch_mode": "yarn build:all && yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales --dir=libs/chatbot 'yarn _build:lib' 'yarn _yalc:push'",
     "start:vitest-ui": "vitest --ui"
   },
   "type": "module",

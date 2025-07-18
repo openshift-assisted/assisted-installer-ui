@@ -6,7 +6,6 @@ import { HostsNetworkConfigurationField } from './Fields/HostsNetworkConfigurati
 import { OpenShiftVersionField } from './Fields/OpenShiftVersionField';
 import { PullSecretField } from './Fields/PullSecretField';
 import { CpuArchitectureField } from './Fields/CpuArchitectureField';
-import { SnoField } from './Fields/SnoField';
 import { ControlPlaneNodesField } from './Fields/ControlPlaneNodesField';
 
 export class ClusterDetailsForm {
@@ -48,10 +47,6 @@ export class ClusterDetailsForm {
 
   static get cpuArchitectureField() {
     return CpuArchitectureField.init(ClusterDetailsForm.alias);
-  }
-
-  static get snoField() {
-    return SnoField.init(ClusterDetailsForm.alias);
   }
 
   static get controlPlaneNodesField() {

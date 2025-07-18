@@ -56,8 +56,7 @@ export const isCompact = (cluster: Pick<Cluster, 'hosts'>) => {
   return !cluster.hosts || cluster.hosts.length <= 3;
 };
 
-export const isSNO = ({ highAvailabilityMode }: Partial<Cluster>) =>
-  highAvailabilityMode === 'None';
+export const isSNO = ({ controlPlaneCount }: Partial<Cluster>) => controlPlaneCount === 1;
 
 export const selectClusterValidationsInfo = ({
   validationsInfo,

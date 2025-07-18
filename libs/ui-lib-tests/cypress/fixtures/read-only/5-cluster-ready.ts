@@ -55,7 +55,7 @@ const readOnlyCluster = {
   status: 'ready',
   status_info: 'Cluster ready to be installed',
   validations_info: JSON.stringify(clusterReadyValidations.clusterValidationsInfo),
-  high_availability_mode: 'Full',
+  control_plane_count: 3,
   permissions: {
     canEdit: false,
   },
