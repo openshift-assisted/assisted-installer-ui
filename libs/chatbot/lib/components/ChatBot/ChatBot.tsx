@@ -24,6 +24,11 @@ const ChatBot = ({ onApiCall, username }: ChatBotProps) => {
           messages={messages}
           conversationId={conversationId}
           setConversationId={setConversationId}
+          onClose={() => {
+            setChatbotVisible(false);
+            setMessages([]);
+            setConversationId(undefined);
+          }}
           onApiCall={onApiCall}
           username={username}
         />
