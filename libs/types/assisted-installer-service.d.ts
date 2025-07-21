@@ -673,6 +673,7 @@ export type ClusterValidationId =
   | 'servicemesh-requirements-satisfied'
   | 'serverless-requirements-satisfied'
   | 'openshift-ai-requirements-satisfied'
+  | 'openshift-ai-gpu-requirements-satisfied'
   | 'authorino-requirements-satisfied'
   | 'nmstate-requirements-satisfied'
   | 'amd-gpu-requirements-satisfied'
@@ -1071,7 +1072,6 @@ export type FeatureSupportLevelId =
   | 'EXTERNAL_PLATFORM_OCI'
   | 'DUAL_STACK'
   | 'PLATFORM_MANAGED_NETWORKING'
-  | 'SKIP_MCO_REBOOT'
   | 'EXTERNAL_PLATFORM'
   | 'OVN_NETWORK_TYPE'
   | 'SDN_NETWORK_TYPE'
@@ -2928,6 +2928,10 @@ export interface VersionedHostRequirements {
    * Master node requirements
    */
   master?: ClusterHostRequirementsDetails;
+  /**
+   * Arbiter node requirements
+   */
+  arbiter?: ClusterHostRequirementsDetails;
   /**
    * Worker node requirements
    */
