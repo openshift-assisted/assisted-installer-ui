@@ -1,17 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
-import {
-	Button,
-	Form,
-	AlertVariant,
-	Alert,
-	Stack,
-	StackItem
-} from '@patternfly/react-core';
-import {
-	ModalBoxBody,
-	ModalBoxFooter
-} from '@patternfly/react-core/deprecated';
+import { Button, Form, AlertVariant, Alert, Stack, StackItem } from '@patternfly/react-core';
+import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { Formik, FormikHelpers } from 'formik';
 import {
   HostStaticNetworkConfig,
@@ -184,6 +174,7 @@ export const OcmDiscoveryImageConfigForm = ({
                     }}
                     isDisabled={isSubmitting}
                     isLoading={isSubmitting}
+                    data-testid="generate-discovery-iso-button"
                   >
                     {isSubmitting ? t('ai:Generating') : buttonText}
                   </Button>

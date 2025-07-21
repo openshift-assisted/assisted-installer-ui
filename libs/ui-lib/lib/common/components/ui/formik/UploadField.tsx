@@ -58,6 +58,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
         type="text"
         value={field.value as string}
         filename={filename}
+        data-testid={`upload-field-${fieldId}`}
         onDataChange={(_event, file: string) => {
           setValue(file);
           setTouched(true);
