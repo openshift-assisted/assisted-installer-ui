@@ -44,6 +44,7 @@ export const HostsNetworkConfigurationControlGroup = ({
       fieldId={fieldId}
       isInline
       role="radiogroup"
+      data-testid="hosts-network-configuration-control-group"
     >
       <RadioFieldWithTooltip
         name={GROUP_NAME}
