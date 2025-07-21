@@ -58,6 +58,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
         type="text"
         value={field.value as string}
         filename={filename}
+        data-testid={`upload-field-${fieldId}`}
         onDataChange={(_event, file: string) => {
           setValue(file);
           setTouched(true);
@@ -110,6 +111,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
               icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-uploadfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>

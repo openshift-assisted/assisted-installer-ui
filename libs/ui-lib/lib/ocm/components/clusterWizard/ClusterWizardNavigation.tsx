@@ -59,6 +59,7 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
         isCurrent={clusterWizardContext.currentStepId === stepId}
         isDisabled={isStepDisabled(idx, stepId)}
         isValid={() => isStepValid(stepId, cluster)}
+        data-testid={`cluster-wizard-nav-item-${stepId}`}
       />
     );
   };
@@ -72,8 +73,12 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
         key="static-network-configuration-form-view"
         isCurrent={isStaticIpStep(clusterWizardContext.currentStepId)}
         isDisabled={isStepIdxAfterCurrent(idx)}
+        data-testid={`cluster-wizard-nav-item-static-network-configuration-form-view`}
       >
-        <WizardNav isInnerList>
+        <WizardNav
+          isInnerList
+          data-testid="cluster-wizard-nav-item-static-network-configuration-form-view-inner-list"
+        >
           {staticIpFormViewSubSteps.map((stepId, subIdx) => {
             return getNavItem(idx + subIdx, stepId);
           })}
@@ -99,7 +104,7 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
     return navItems;
   };
 
-  return <WizardNav>{getWizardNavItems()}</WizardNav>;
+  return <WizardNav data-testid="cluster-wizard-nav">{getWizardNavItems()}</WizardNav>;
 };
 
 export default ClusterWizardNavigation;

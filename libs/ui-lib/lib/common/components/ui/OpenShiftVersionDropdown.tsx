@@ -147,6 +147,7 @@ export const OpenShiftVersionDropdown = ({
       isFullWidth
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
+      data-testid="openshift-version-dropdown-toggle"
     >
       {current || t('ai:OpenShift version')}
     </MenuToggle>
@@ -176,7 +177,9 @@ export const OpenShiftVersionDropdown = ({
       {helperText && (
         <FormHelperText>
           <HelperText>
-            <HelperTextItem variant="default">{helperText}</HelperTextItem>
+            <HelperTextItem variant="default" data-testid="openshift-version-dropdown-helper-text">
+              {helperText}
+            </HelperTextItem>
           </HelperText>
         </FormHelperText>
       )}

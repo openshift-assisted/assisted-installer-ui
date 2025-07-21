@@ -244,6 +244,7 @@ const ClusterEventsToolbar = ({
                   onClick={onHostToggle}
                   isExpanded={isHostExpanded}
                   badge={hostLabels.length && <Badge isRead>{hostLabels.length}</Badge>}
+                  data-testid="hosts-dropdown-toggle"
                 >
                   <Placeholder text="Hosts" />
                 </MenuToggle>
@@ -314,6 +315,7 @@ const ClusterEventsToolbar = ({
                 badge={
                   filters.severities?.length && <Badge isRead>{filters.severities.length}</Badge>
                 }
+                data-testid="severity-dropdown-toggle"
               >
                 <Placeholder text="Severity" />
               </MenuToggle>
@@ -354,7 +356,7 @@ const ClusterEventsToolbar = ({
                 icon={<SearchIcon />}
                 variant={ButtonVariant.control}
                 aria-label="search text button"
-               />
+              />
             </InputGroupItem>
           </InputGroup>
         </ToolbarItem>

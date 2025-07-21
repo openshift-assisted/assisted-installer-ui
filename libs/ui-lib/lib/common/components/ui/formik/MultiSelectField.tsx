@@ -114,6 +114,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             onClick={() => onToggle(!isOpen)}
             isExpanded={isOpen}
             variant="typeahead"
+            data-testid="multi-select-field-toggle"
           >
             <TextInputGroup>
               <LabelGroup>
@@ -167,6 +168,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
               icon={<ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-multiselectfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : hText}
             </HelperTextItem>

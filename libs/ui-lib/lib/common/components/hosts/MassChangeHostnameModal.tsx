@@ -191,7 +191,10 @@ const MassChangeHostnameForm = ({
               richValidationMessages={hostnameValidationMessages(t)}
             />
             <HelperText>
-              <HelperTextItem variant="indeterminate">
+              <HelperTextItem
+                variant="indeterminate"
+                data-testid="mass-change-hostname-helper-text"
+              >
                 {t('ai:For example: host-{{n}}', {
                   interpolation: { suffix: '###', prefix: '###' },
                 })}

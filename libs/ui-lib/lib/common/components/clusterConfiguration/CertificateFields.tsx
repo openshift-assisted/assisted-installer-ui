@@ -22,7 +22,7 @@ export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
     <FormGroup>
       <FormHelperText>
         <HelperText id={fieldId}>
-          <HelperTextItem>
+          <HelperTextItem data-testid="certificate-fields-helper-text">
             {t(
               'ai:Paste in 1 or more PEM formatted certificates that you want the cluster to trust.',
             )}

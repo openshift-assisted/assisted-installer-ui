@@ -65,6 +65,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
               icon={<ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-selectfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : hText}
             </HelperTextItem>

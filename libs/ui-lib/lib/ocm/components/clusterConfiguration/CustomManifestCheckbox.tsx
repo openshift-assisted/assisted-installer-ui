@@ -81,7 +81,9 @@ const CustomManifestCheckbox = ({ clusterId, isDisabled }: CustomManifestCheckbo
             <FormGroup>
               <FormHelperText>
                 <HelperText id={fieldId}>
-                  <HelperTextItem>
+                  <HelperTextItem
+                    data-testid={`input-custommanifestcheckbox-${fieldId}-helper-text`}
+                  >
                     Additional manifests will be applied at the install time for advanced
                     configuration of the cluster.
                   </HelperTextItem>

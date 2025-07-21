@@ -38,7 +38,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
       <ListItem>
         <Content component="p">{t('ai:The host machine is powered on')}</Content>
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-boot-time-helper">
             {t(
               'ai:Boot time depends on several factors such as your hardware and network configuration, and if you are booting from an ISO.',
             )}
@@ -60,7 +60,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
       <ListItem>
         <Content component="p">{t('ai:SSH into your machine')}</Content>
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-ssh-access-helper">
             {t(
               'ai:Verify that you can access your host machine using SSH, or a console such as BMC or virtual machine console. In the CLI, enter the following command:',
             )}
@@ -68,7 +68,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </HelperText>
         <PrismCode theme={SimpleAIPrismTheme} code="ssh -i <identity_file> core@<machine-ip>" />
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-ssh-auth-helper">
             {t(
               'ai:Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.',
             )}
@@ -80,7 +80,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
           {t('ai:Unable to SSH into your hosts through the network?')}
         </Content>
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-ssh-alternative-helper">
             {t(
               'ai:Try logging into the machine directly through physical access, out-of-band management, or a virtual machine console. To generate a new bootable image file with password-based login enabled, download the full image file and patch it locally with a login password of your choice using',
             )}{' '}
@@ -97,7 +97,9 @@ export const DiscoveryTroubleshootingModalContent = () => {
           </HelperTextItem>
         </HelperText>
         <HelperText>
-          <HelperTextItem>{t('ai:Run these commands to use the script:')}</HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-script-usage-helper">
+            {t('ai:Run these commands to use the script:')}
+          </HelperTextItem>
         </HelperText>
         <PrismCode
           theme={SimpleAIPrismTheme}
@@ -111,7 +113,9 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </Content>
         <PrismCode theme={SimpleAIPrismTheme} code={`ps -ef | grep agent`} />
         <HelperText>
-          <HelperTextItem>{t('ai:The output displays the following:')}</HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-agent-output-helper">
+            {t('ai:The output displays the following:')}
+          </HelperTextItem>
         </HelperText>
         <PrismCode
           theme={SimpleAIPrismTheme}
@@ -122,13 +126,13 @@ core        2362    2311  0 08:04 pts/0    00:00:00 grep --color=auto agent`}
       <ListItem>
         <Content component="p">{t('ai:The agent ran successfully')}</Content>
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-agent-logs-helper">
             {t('ai:To verify that the agent ran successfully, check the logs:')}
           </HelperTextItem>
         </HelperText>
         <PrismCode theme={SimpleAIPrismTheme} code="sudo journalctl -u agent.service" />
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-network-error-helper">
             {t('ai:In the following example, the errors indicate there is a network issue:')}
           </HelperTextItem>
         </HelperText>
@@ -146,7 +150,7 @@ Oct 15 11:26:35 localhost systemd[1]: agent.service: Failed with result 'exit-co
 Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         />
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-proxy-network-helper">
             <Trans
               t={t}
               components={{ code: <code /> }}
@@ -158,7 +162,7 @@ Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
       <ListItem>
         <Content component="p">{t('ai:Check agent logs')}</Content>
         <HelperText>
-          <HelperTextItem>
+          <HelperTextItem data-testid="discovery-troubleshooting-detailed-logs-helper">
             {t('ai:To view detailed agent logs and communication use following command:')}
           </HelperTextItem>
         </HelperText>
