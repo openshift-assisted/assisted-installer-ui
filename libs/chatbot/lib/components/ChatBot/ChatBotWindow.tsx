@@ -7,13 +7,23 @@ import {
   ChatbotDisplayMode,
   ChatbotFooter,
   ChatbotFootnote,
+  ChatbotHeader,
+  ChatbotHeaderTitle,
   ChatbotWelcomePrompt,
   Message,
   MessageBar,
   MessageBox,
 } from '@patternfly-6/chatbot';
-import { Alert, AlertActionCloseButton, Button } from '@patternfly-6/react-core';
+import {
+  Alert,
+  AlertActionCloseButton,
+  Button,
+  Flex,
+  FlexItem,
+  Tooltip,
+} from '@patternfly-6/react-core';
 import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/external-link-alt-icon';
+import { PlusIcon, TimesIcon } from '@patternfly-6/react-icons';
 
 import BotMessage, { FeedbackRequest } from './BotMessage';
 import AIAvatar from '../../assets/rh-logo.svg';
@@ -43,11 +53,12 @@ type MsgProps = React.ComponentProps<typeof Message>;
 
 export type ChatBotWindowProps = {
   conversationId: string | undefined;
-  setConversationId: (id: string) => void;
+  setConversationId: (id: string | undefined) => void;
   setMessages: React.Dispatch<React.SetStateAction<MsgProps[]>>;
   messages: MsgProps[];
   onApiCall: typeof fetch;
   username: string;
+  onClose: () => void;
 };
 
 // Helper function to get the user question for a bot message
@@ -75,6 +86,7 @@ const ChatBotWindow = ({
   messages,
   setMessages,
   onApiCall,
+  onClose,
   username,
 }: ChatBotWindowProps) => {
   const [error, setError] = React.useState<string>();
@@ -85,6 +97,10 @@ const ChatBotWindow = ({
     localStorage.getItem(CHAT_ALERT_LOCAL_STORAGE_KEY) !== 'true',
   );
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
+  const handleNewChat = () => {
+    setConversationId(undefined);
+    setMessages([]);
+  };
 
   const scrollToBottom = React.useCallback(() => {
     scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -230,6 +246,37 @@ const ChatBotWindow = ({
 
   return (
     <Chatbot displayMode={ChatbotDisplayMode.default}>
+      <ChatbotHeader>
+        <ChatbotHeaderTitle>
+          <Flex
+            justifyContent={{ default: 'justifyContentSpaceBetween' }}
+            className="pf-v6-u-w-100"
+          >
+            <FlexItem>
+              <Tooltip content="New chat">
+                <Button
+                  variant="plain"
+                  aria-label="New chat"
+                  id="new-chat-button"
+                  icon={<PlusIcon size={40} />}
+                  onClick={handleNewChat}
+                />
+              </Tooltip>
+            </FlexItem>
+            <FlexItem>
+              <Tooltip content="Close chat">
+                <Button
+                  variant="plain"
+                  aria-label="Close chat"
+                  id="close-chat-button"
+                  icon={<TimesIcon size={40} />}
+                  onClick={onClose}
+                />
+              </Tooltip>
+            </FlexItem>
+          </Flex>
+        </ChatbotHeaderTitle>
+      </ChatbotHeader>
       <ChatbotContent>
         <MessageBox announcement={announcement} position={'top'}>
           {isAlertVisible && (
