@@ -61,6 +61,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
               }
               onChange={(value) => handleUseBondChange(value)}
               name={`${fieldName}.useBond`}
+              data-testid={`use-bond-${hostIdx}`}
             />
           </FormGroup>
           {useBond.value && (
