@@ -191,7 +191,12 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'amd-gpu-requirements-satisfied',
     ],
   },
-  softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk', 'compatible-agent'],
+  softValidationIds: [
+    'no-skip-installation-disk',
+    'no-skip-missing-disk',
+    'compatible-agent',
+    'openshift-ai-gpu-requirements-satisfied',
+  ],
 };
 
 const storageStepValidationsMap: WizardStepValidationMap = {
