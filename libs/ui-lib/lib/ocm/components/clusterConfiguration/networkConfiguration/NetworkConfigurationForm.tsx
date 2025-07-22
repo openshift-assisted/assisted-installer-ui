@@ -89,7 +89,12 @@ const NetworkConfigurationForm: React.FC<{
       try {
         await ClustersAPI.updateInstallConfig(
           cluster.id,
-          JSON.stringify(JSON.stringify({ featureSet: 'TechPreviewNoUpgrade' })),
+          JSON.stringify(
+            JSON.stringify({
+              featureSet: 'CustomNoUpgrade',
+              featureGates: ['NoRegistryClusterOperations=true'],
+            }),
+          ),
         );
       } catch (e) {
         handleApiError(e, () =>
