@@ -123,6 +123,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     setStatusFilter,
     statusFilter,
     filteredHosts: hosts,
+    sorted,
   } = useAgentsFilter({
     agents,
     agentStatuses,
@@ -226,6 +227,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         <StackItem>
           <HostsTable
             hosts={hosts}
+            relevanceSorted={sorted}
             content={content}
             actionResolver={actionResolver}
             selectedIDs={selectedHostIDs}
