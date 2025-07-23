@@ -26,6 +26,7 @@ import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/ext
 import { PlusIcon, TimesIcon } from '@patternfly-6/react-icons';
 
 import BotMessage, { FeedbackRequest } from './BotMessage';
+import ConfirmNewChatModal from './ConfirmNewChatModal';
 import AIAvatar from '../../assets/rh-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
 
@@ -96,10 +97,22 @@ const ChatBotWindow = ({
   const [isAlertVisible, setIsAlertVisible] = React.useState(
     localStorage.getItem(CHAT_ALERT_LOCAL_STORAGE_KEY) !== 'true',
   );
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
-  const handleNewChat = () => {
+
+  const startNewChat = () => {
     setConversationId(undefined);
     setMessages([]);
+    setIsConfirmModalOpen(false);
+  };
+
+  const handleNewChat = () => {
+    // Only show confirmation if there are existing messages
+    if (messages.length > 0) {
+      setIsConfirmModalOpen(true);
+    } else {
+      startNewChat();
+    }
   };
 
   const scrollToBottom = React.useCallback(() => {
@@ -362,6 +375,12 @@ const ChatBotWindow = ({
           }}
         />
       </ChatbotFooter>
+      {isConfirmModalOpen && (
+        <ConfirmNewChatModal
+          onConfirm={startNewChat}
+          onCancel={() => setIsConfirmModalOpen(false)}
+        />
+      )}
     </Chatbot>
   );
 };
