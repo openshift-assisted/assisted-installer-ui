@@ -11,10 +11,10 @@ export const clusterDetailsPage = {
     return cy.get(Cypress.env('openshiftVersionFieldId'));
   },
   openOpenshiftVersionDropdown: () => {
-    clusterDetailsPage.getOpenshiftVersionField().find('button.pf-c-dropdown__toggle').click();
+    clusterDetailsPage.getOpenshiftVersionField().click();
   },
   getOpenshiftVersionDropdown: () => {
-    return clusterDetailsPage.getOpenshiftVersionField().find('.pf-c-dropdown__menu');
+    return cy.get(`${Cypress.env('openshiftVersionFieldId')}-dropdown`);
   },
   getSelectedOpenShiftVersion: () => {
     return clusterDetailsPage.getOpenshiftVersionField().find('.pf-c-dropdown__toggle-text');

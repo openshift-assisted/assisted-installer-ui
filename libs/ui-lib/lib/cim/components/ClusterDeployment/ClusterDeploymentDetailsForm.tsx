@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Alert, Stack, StackItem } from '@patternfly/react-core';
-import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
+import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource, OsImage } from '../../types';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { getOCPVersions, getSelectedVersion } from '../helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -15,6 +15,7 @@ type ClusterDeploymentDetailsFormProps = {
   agentClusterInstall?: AgentClusterInstallK8sResource;
   extensionAfter?: ClusterDetailsFormFieldsProps['extensionAfter'];
   isNutanix?: boolean;
+  osImages?: OsImage[];
 };
 
 const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
@@ -23,10 +24,16 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   clusterImages,
   extensionAfter,
   isNutanix,
+  osImages,
 }) => {
-  const ocpVersions = React.useMemo(
-    () => getOCPVersions(clusterImages, isNutanix),
-    [clusterImages, isNutanix],
+  const versions = React.useMemo(
+    () => getOCPVersions(clusterImages, isNutanix, osImages),
+    [clusterImages, isNutanix, osImages],
+  );
+
+  const allVersions = React.useMemo(
+    () => getOCPVersions(clusterImages, isNutanix, osImages, true),
+    [clusterImages, isNutanix, osImages],
   );
   const forceOpenshiftVersion = agentClusterInstall
     ? getSelectedVersion(clusterImages, agentClusterInstall)
@@ -46,7 +53,8 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
       )}
       <StackItem>
         <ClusterDetailsFormFields
-          versions={ocpVersions}
+          versions={versions}
+          allVersions={allVersions}
           isEditFlow={isEditFlow}
           forceOpenshiftVersion={forceOpenshiftVersion}
           extensionAfter={extensionAfter}

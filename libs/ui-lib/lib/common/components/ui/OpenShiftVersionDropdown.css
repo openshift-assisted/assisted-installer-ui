@@ -1,0 +1,7 @@
+#form-input-openshiftVersion-field-dropdown .pf-c-dropdown__menu ul,
+#form-input-openshiftVersion-field-dropdown .pf-c-dropdown__menu li {
+  margin: 0;
+  padding: 0;
+  list-style: none !important;
+  list-style-type: none !important;
+}
