@@ -1,0 +1,12 @@
+/*
+ In readonly form controls in PF5, text is unreadable in dark theme due to its background color.
+ Original color is disabled-color-300, see effect at https://v5-archive.patternfly.org/utility-classes/background-color
+
+ Applied to:
+ - Add hosts modal
+ - AI cluster installation progress card
+ */
+.pf-v5-theme-dark #add-host-modal .pf-v5-c-form-control.pf-m-readonly,
+.pf-v5-theme-dark #aiprogress .pf-v5-c-form-control.pf-m-readonly {
+  --pf-v5-c-form-control--m-readonly--BackgroundColor: var(--pf-v5-global--disabled-color--200);
+}
