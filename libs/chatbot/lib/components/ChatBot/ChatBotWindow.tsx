@@ -99,6 +99,7 @@ const ChatBotWindow = ({
   );
   const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
+  const hasInitiallyScrolled = React.useRef(false);
 
   const startNewChat = () => {
     setConversationId(undefined);
@@ -115,9 +116,16 @@ const ChatBotWindow = ({
     }
   };
 
-  const scrollToBottom = React.useCallback(() => {
-    scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = React.useCallback((behavior: ScrollBehavior = 'smooth') => {
+    scrollToBottomRef.current?.scrollIntoView({ behavior });
   }, []);
+
+  React.useEffect(() => {
+    // Determine scroll behavior: auto for initial render with existing messages, smooth for new content
+    const scrollBehavior = !hasInitiallyScrolled.current && messages.length > 0 ? 'auto' : 'smooth';
+    scrollToBottom(scrollBehavior);
+    hasInitiallyScrolled.current = true;
+  }, [messages, scrollToBottom]);
 
   const handleSend = async (message: string | number) => {
     setError(undefined);
@@ -252,10 +260,6 @@ const ChatBotWindow = ({
     },
     [onApiCall, conversationId, messages],
   );
-
-  React.useEffect(() => {
-    scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   return (
     <Chatbot displayMode={ChatbotDisplayMode.default}>
