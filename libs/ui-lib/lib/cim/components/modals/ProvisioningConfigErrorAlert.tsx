@@ -9,7 +9,12 @@ const ProvisioningConfigErrorAlert = ({ error }: { error: unknown }) => {
     return null;
   }
   return (
-    <Alert title={t('ai:Failed to get Provisioning Configuration')} variant="danger" isInline>
+    <Alert
+      title={t('ai:Failed to get Provisioning Configuration')}
+      variant="danger"
+      isInline
+      className="pf-v5-u-mb-md"
+    >
       {getErrorMessage(error)}
     </Alert>
   );
