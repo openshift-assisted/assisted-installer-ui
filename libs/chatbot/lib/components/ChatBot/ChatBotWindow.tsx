@@ -1,5 +1,4 @@
 import * as React from 'react';
-import isString from 'lodash-es/isString.js';
 import {
   Chatbot,
   ChatbotAlert,
@@ -23,10 +22,20 @@ import {
   Tooltip,
 } from '@patternfly-6/react-core';
 import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/external-link-alt-icon';
-import { PlusIcon, TimesIcon } from '@patternfly-6/react-icons';
+import { PlusIcon } from '@patternfly-6/react-icons/dist/js/icons/plus-icon';
+import { TimesIcon } from '@patternfly-6/react-icons/dist/js/icons/times-icon';
 
 import BotMessage, { FeedbackRequest } from './BotMessage';
 import ConfirmNewChatModal from './ConfirmNewChatModal';
+import {
+  focusSendMessageInput as focusNewMessageBox,
+  getErrorMessage,
+  getUserQuestionForBotAnswer,
+  MESSAGE_BAR_ID,
+  botRole,
+  userRole,
+  MsgProps,
+} from './helpers';
 import AIAvatar from '../../assets/rh-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
 
@@ -35,23 +44,7 @@ type StreamEvent =
   | { event: 'token'; data: { token: string; role: string } }
   | { event: 'end' };
 
-const botRole = 'bot';
-const userRole = 'user';
-
-const getErrorMessage = (error: unknown) => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (isString(error)) {
-    return error;
-  }
-  return 'Unexpected error';
-};
-
 const CHAT_ALERT_LOCAL_STORAGE_KEY = 'assisted.hide.chat.alert';
-const MESSAGE_BAR_ID = 'assisted-chatbot__message-bar';
-
-type MsgProps = React.ComponentProps<typeof Message>;
 
 export type ChatBotWindowProps = {
   conversationId: string | undefined;
@@ -61,25 +54,6 @@ export type ChatBotWindowProps = {
   onApiCall: typeof fetch;
   username: string;
   onClose: () => void;
-};
-
-// Helper function to get the user question for a bot message
-const getUserQuestionForBotAnswer = (
-  messages: MsgProps[],
-  messageIndex: number,
-): string | undefined => {
-  if (messageIndex === 0) {
-    return undefined;
-  }
-  // Look backwards from the previous message to find the most recent user message
-  for (let i = messageIndex - 1; i >= 0; i--) {
-    const msg = messages[i];
-    if (msg?.role === userRole && msg.content) {
-      return String(msg.content);
-    }
-  }
-
-  return undefined;
 };
 
 const ChatBotWindow = ({
@@ -106,13 +80,7 @@ const ChatBotWindow = ({
     setConversationId(undefined);
     setMessages([]);
     setIsConfirmModalOpen(false);
-    // Focus the input field after starting a new chat
-    requestAnimationFrame(() => {
-      const inputElement = document.querySelector(`#${MESSAGE_BAR_ID}`) as HTMLElement;
-      if (inputElement) {
-        inputElement.focus();
-      }
-    });
+    focusNewMessageBox();
   };
 
   const handleNewChat = () => {
