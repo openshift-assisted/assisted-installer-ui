@@ -49,6 +49,7 @@ const getErrorMessage = (error: unknown) => {
 };
 
 const CHAT_ALERT_LOCAL_STORAGE_KEY = 'assisted.hide.chat.alert';
+const MESSAGE_BAR_ID = 'assisted-chatbot__message-bar';
 
 type MsgProps = React.ComponentProps<typeof Message>;
 
@@ -105,6 +106,13 @@ const ChatBotWindow = ({
     setConversationId(undefined);
     setMessages([]);
     setIsConfirmModalOpen(false);
+    // Focus the input field after starting a new chat
+    requestAnimationFrame(() => {
+      const inputElement = document.querySelector(`#${MESSAGE_BAR_ID}`) as HTMLElement;
+      if (inputElement) {
+        inputElement.focus();
+      }
+    });
   };
 
   const handleNewChat = () => {
@@ -367,6 +375,7 @@ const ChatBotWindow = ({
       </ChatbotContent>
       <ChatbotFooter>
         <MessageBar
+          id={MESSAGE_BAR_ID}
           onSendMessage={(msg) => void handleSend(msg)}
           isSendButtonDisabled={isLoading || isStreaming}
           hasAttachButton={false}
