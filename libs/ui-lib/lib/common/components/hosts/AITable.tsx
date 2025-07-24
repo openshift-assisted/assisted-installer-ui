@@ -80,6 +80,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
   variant?: TableProps['variant'];
+  relevanceSorted?: boolean;
 };
 
 // eslint-disable-next-line
@@ -103,8 +104,21 @@ const AITable = <R extends any>({
   perPageOptions,
   canSelectAll,
   variant,
+  relevanceSorted,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
+  const [openRows, setOpenRows] = React.useState<OpenRows>({});
+
+  const sortByRef = React.useRef<ISortBy>();
+  const [sortBy, setSortBy] = React.useState<ISortBy>({
+    index: onSelect ? 1 : 0,
+    direction: SortByDirection.asc,
+  });
+
+  const dataRef = React.useRef(data);
+  if (dataRef.current !== data) {
+    dataRef.current = data;
+  }
 
   React.useEffect(() => {
     if (selectedIDs && setSelectedIDs) {
@@ -121,16 +135,29 @@ const AITable = <R extends any>({
     }
   }, [data, setSelectedIDs, selectedIDs, getDataId]);
 
-  const [openRows, setOpenRows] = React.useState<OpenRows>({});
-  const [sortBy, setSortBy] = React.useState<ISortBy>({
-    index: onSelect ? 1 : 0,
-    direction: SortByDirection.asc,
-  });
+  React.useEffect(() => {
+    if (relevanceSorted) {
+      sortByRef.current = sortBy;
+      setSortBy({
+        index: -1,
+        direction: SortByDirection.asc,
+      });
+    } else {
+      if (sortBy.index === -1 && sortByRef.current) {
+        setSortBy(sortByRef.current);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [relevanceSorted]);
 
-  const dataRef = React.useRef(data);
-  if (dataRef.current !== data) {
-    dataRef.current = data;
-  }
+  React.useEffect(() => {
+    if (!relevanceSorted) {
+      sortByRef.current = sortBy;
+    } else if (relevanceSorted && sortBy.index !== -1) {
+      sortByRef.current = sortBy;
+    }
+  }, [sortBy, relevanceSorted]);
+
   const onSelectAll = React.useCallback(
     (isChecked: boolean) => {
       setSelectedIDs?.(isChecked ? dataRef.current.map(getDataId) : []);
@@ -196,7 +223,6 @@ const AITable = <R extends any>({
     openRows,
     actionResolver,
   ]);
-
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;
@@ -226,7 +252,7 @@ const AITable = <R extends any>({
     return rows.sort(
       rowSorter(sortBy, (row: IRow, index = 0) => row.cells?.[index] as string | HumanizedSortable),
     );
-  }, [rows, sortBy]);
+  }, [sortBy, rows]);
 
   return (
     <>

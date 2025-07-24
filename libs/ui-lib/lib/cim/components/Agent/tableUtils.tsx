@@ -556,10 +556,10 @@ export const filterHosts = (
   hostnameFilter: string | undefined,
   statusFilter: string[],
 ) => {
-  const byHostname = filterByHostname(hosts, hostnameFilter);
+  const { hosts: byHostname, sorted } = filterByHostname(hosts, hostnameFilter);
   const byStatus = filterByStatus(byHostname, agents, agentStatuses, bareMetalHosts, statusFilter);
 
-  return byStatus;
+  return { hosts: byStatus, sorted };
 };
 
 type UseAgentsFilterArgs = {
@@ -597,7 +597,7 @@ export const useAgentsFilter = ({
     }
   });
 
-  const filteredHosts = filterHosts(
+  const { hosts: filteredHosts, sorted } = filterHosts(
     hosts,
     agents,
     agentStatuses,
@@ -613,5 +613,6 @@ export const useAgentsFilter = ({
     statusFilter,
     setStatusFilter,
     filteredHosts,
+    sorted,
   };
 };
