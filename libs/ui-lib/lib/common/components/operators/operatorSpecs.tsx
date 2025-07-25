@@ -19,6 +19,8 @@ import {
   OPERATOR_NAME_PIPELINES,
   OPERATOR_NAME_SERVERLESS,
   OPERATOR_NAME_SERVICEMESH,
+  OPERATOR_NAME_NODE_HEALTHCHECK,
+  OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
   OPERATOR_NAME_NODE_MAINTENANCE,
   OPERATOR_NAME_KUBE_DESCHEDULER,
 } from '../../config/constants';
@@ -26,6 +28,7 @@ import { ExternalLink } from '../ui';
 import {
   AUTHORINO_OPERATOR_LINK,
   CNV_LINK,
+  FENCE_AGENTS_REMEDIATION_LINK,
   getKmmDocsLink,
   getKubeDeschedulerLink,
   getLsoLink,
@@ -35,6 +38,7 @@ import {
   getNodeFeatureDiscoveryLink,
   getNvidiaGpuLink,
   MTV_LINK,
+  NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
   ODF_LINK,
   ODF_REQUIREMENTS_LINK,
@@ -54,11 +58,13 @@ import {
   DESCRIPTION_LSO,
   DESCRIPTION_MTV,
   DESCRIPTION_CNV,
+  DESCRIPTION_FENCE_AGENTS_REMEDIATION,
   DESCRIPTION_KMM,
   DESCRIPTION_KUBE_DESCHEDULER,
   DESCRIPTION_MCE,
   DESCRIPTION_NMSTATE,
   DESCRIPTION_NODE_FEATURE_DISCOVERY,
+  DESCRIPTION_NODE_HEALTHCHECK,
   DESCRIPTION_NODE_MAINTENANCE,
   DESCRIPTION_NVIDIA_GPU,
   DESCRIPTION_ODF,
@@ -297,6 +303,36 @@ export const getOperatorSpecs = (
         supportLevel: getFeatureSupportLevel('SERVICEMESH'),
       },
     ],
+    [categories[Category.REMEDIATION]]: [
+      {
+        operatorKey: OPERATOR_NAME_NODE_HEALTHCHECK,
+        title: 'Node Healthcheck',
+        featureId: 'NODE_HEALTHCHECK',
+        descriptionText: DESCRIPTION_NODE_HEALTHCHECK,
+        Description: ({ searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_NODE_HEALTHCHECK} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={NODE_HEALTHCHECK_LINK}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('NODE_HEALTHCHECK'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
+        title: 'Fence Agents Remediation',
+        featureId: 'FENCE_AGENTS_REMEDIATION',
+        descriptionText: DESCRIPTION_FENCE_AGENTS_REMEDIATION,
+        Description: ({ searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_FENCE_AGENTS_REMEDIATION} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={FENCE_AGENTS_REMEDIATION_LINK}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('FENCE_AGENTS_REMEDIATION'),
+      },
+    ],
     [categories[Category.SECURITY]]: [
       {
         operatorKey: OPERATOR_NAME_AUTHORINO,
@@ -464,6 +500,8 @@ enum Category {
   PLATFORM,
   SECURITY,
   SCHEDULING,
+  REMEDIATION,
+  OTHER,
 }
 
 export const categories: { [key in Category]: string } = {
@@ -475,4 +513,6 @@ export const categories: { [key in Category]: string } = {
   [Category.CI_CD]: 'CI/CD & Dev Productivity',
   [Category.PLATFORM]: 'Platform Operations & Lifecycle',
   [Category.SCHEDULING]: 'Scheduling',
+  [Category.REMEDIATION]: 'Remediation',
+  [Category.OTHER]: 'Other',
 };

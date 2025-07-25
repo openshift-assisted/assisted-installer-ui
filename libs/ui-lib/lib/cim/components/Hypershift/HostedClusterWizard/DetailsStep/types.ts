@@ -8,6 +8,7 @@ export type DetailsFormValues = {
   openshiftVersion: string;
   pullSecret: string;
   baseDnsDomain: string;
+  customOpenshiftSelect: OpenshiftVersionOptionType | null;
 };
 
 type UseDetailsFormikArgs = {
@@ -19,7 +20,10 @@ type UseDetailsFormikArgs = {
 
 export type UseDetailsFormik = (
   args: UseDetailsFormikArgs,
-) => [DetailsFormValues, ObjectSchema<Omit<DetailsFormValues, 'openshiftVersion'>>];
+) => [
+  DetailsFormValues,
+  ObjectSchema<Omit<DetailsFormValues, 'openshiftVersion' | 'customOpenshiftSelect'>>,
+];
 
 export type DetailsStepProps = {
   usedClusterNames: string[];
@@ -35,4 +39,5 @@ export type DetailsStepProps = {
 
 export type DetailsFormProps = Pick<DetailsStepProps, 'onValuesChanged' | 'extensionAfter'> & {
   ocpVersions: OpenshiftVersionOptionType[];
+  allVersions: OpenshiftVersionOptionType[];
 };
