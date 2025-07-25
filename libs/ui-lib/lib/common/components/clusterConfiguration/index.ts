@@ -1,6 +1,5 @@
 export { default as SNOControlGroup } from './SNOControlGroup';
 export { default as SNODisclaimer } from './SNODisclaimer';
-export { default as OpenShiftVersionSelect } from './OpenShiftVersionSelect';
 export { default as UploadSSH } from './UploadSSH';
 export { default as ProxyFields, ProxyInputFields } from './ProxyFields';
 export { default as DownloadIsoModal } from './DownloadIsoModal';
