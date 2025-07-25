@@ -15,6 +15,7 @@ import { ClusterDetailsValues } from '../../../common/components/clusterWizard/t
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
 import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+import { getNetworkType } from '../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -55,9 +56,25 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   cpuArchitectures,
   allowHighlyAvailable,
 }) => {
+  const { t } = useTranslation();
+  const nameInputRef = React.useRef<HTMLInputElement>();
+  const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
-  const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!versions.length && !values.openshiftVersion) {
+      const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
+      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
+      setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
+      setFieldValue('networkType', getNetworkType(fallbackOpenShiftVersion));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    nameInputRef.current?.focus();
+  }, []);
 
   const selectOptions = React.useMemo(
     () =>
@@ -67,15 +84,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       })),
     [versions],
   );
-
-  React.useEffect(() => {
-    if (!versions.length && !values.openshiftVersion) {
-      const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
-      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
-      setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const additionalSelectOptions = React.useMemo(() => {
     if (
@@ -92,14 +100,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     return [];
   }, [selectOptions, values.customOpenshiftSelect]);
 
-  const nameInputRef = React.useRef<HTMLInputElement>();
-  React.useEffect(() => {
-    nameInputRef.current?.focus();
-  }, []);
-  const atListOneDiskEncryptionEnableOn =
+  const isDiskEncryptionEnabled =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
-  const { t } = useTranslation();
   return (
     <Form id="wizard-cluster-details__form">
       {isEditFlow ? (
@@ -172,7 +175,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         isDisabled={isPullSecretSet}
         isSNO={isSNO({ highAvailabilityMode })}
       /> */}
-      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tpmv2' && (
+      {isDiskEncryptionEnabled && values.diskEncryptionMode === 'tpmv2' && (
         <Alert
           variant={AlertVariant.warning}
           isInline
@@ -185,7 +188,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           }
         />
       )}
-      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tang' && (
+      {isDiskEncryptionEnabled && values.diskEncryptionMode === 'tang' && (
         <Alert
           variant={AlertVariant.warning}
           isInline
