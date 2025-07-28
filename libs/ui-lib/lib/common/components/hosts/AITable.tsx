@@ -80,7 +80,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
   variant?: TableProps['variant'];
-  relevanceSorted?: boolean;
+  alreadySorted?: boolean;
 };
 
 // eslint-disable-next-line
@@ -104,7 +104,7 @@ const AITable = <R extends any>({
   perPageOptions,
   canSelectAll,
   variant,
-  relevanceSorted,
+  alreadySorted,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
@@ -136,7 +136,7 @@ const AITable = <R extends any>({
   }, [data, setSelectedIDs, selectedIDs, getDataId]);
 
   React.useEffect(() => {
-    if (relevanceSorted) {
+    if (alreadySorted) {
       sortByRef.current = sortBy;
       setSortBy({
         index: -1,
@@ -148,15 +148,15 @@ const AITable = <R extends any>({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [relevanceSorted]);
+  }, [alreadySorted]);
 
   React.useEffect(() => {
-    if (!relevanceSorted) {
+    if (!alreadySorted) {
       sortByRef.current = sortBy;
-    } else if (relevanceSorted && sortBy.index !== -1) {
+    } else if (alreadySorted && sortBy.index !== -1) {
       sortByRef.current = sortBy;
     }
-  }, [sortBy, relevanceSorted]);
+  }, [sortBy, alreadySorted]);
 
   const onSelectAll = React.useCallback(
     (isChecked: boolean) => {
@@ -244,13 +244,13 @@ const AITable = <R extends any>({
   }, []);
 
   const sortedRows = React.useMemo(() => {
-    if (relevanceSorted && sortBy.index === -1) {
+    if (alreadySorted && sortBy.index === -1) {
       return getRows(data);
     }
     return rows.sort(
       rowSorter(sortBy, (row: IRow, index = 0) => row.cells?.[index] as string | HumanizedSortable),
     );
-  }, [relevanceSorted, sortBy, rows, getRows, data]);
+  }, [alreadySorted, sortBy, rows, getRows, data]);
 
   return (
     <>
