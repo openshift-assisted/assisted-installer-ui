@@ -196,33 +196,28 @@ const AITable = <R extends any>({
     return [newContent, columns];
   }, [canSelectAll, content, getDataId, onSelect, onSelectAll]);
 
-  const hostRows = React.useMemo(() => {
-    const rows = (data || [])
-      .map<IRow>((obj) => {
-        const id = getDataId(obj);
-        const cells = contentWithAdditions.filter((c) => !!c.cell).map((c) => c.cell?.(obj));
-        const isOpen = !!openRows[id];
-        return {
-          isOpen,
-          cells,
-          key: `${id}-master`,
-          id,
-          actions: actionResolver ? actionResolver(obj) : undefined,
-          nestedComponent: ExpandComponent ? <ExpandComponent obj={obj} /> : undefined,
-        };
-      })
-      .slice((page - 1) * perPage, page * perPage);
-    return rows;
-  }, [
-    data,
-    page,
-    perPage,
-    ExpandComponent,
-    getDataId,
-    contentWithAdditions,
-    openRows,
-    actionResolver,
-  ]);
+  const getRows = React.useCallback(
+    (data: R[]) =>
+      (data || [])
+        .map<IRow>((obj) => {
+          const id = getDataId(obj);
+          const cells = contentWithAdditions.filter((c) => !!c.cell).map((c) => c.cell?.(obj));
+          const isOpen = !!openRows[id];
+          return {
+            isOpen,
+            cells,
+            key: `${id}-master`,
+            id,
+            actions: actionResolver ? actionResolver(obj) : undefined,
+            nestedComponent: ExpandComponent ? <ExpandComponent obj={obj} /> : undefined,
+          };
+        })
+        .slice((page - 1) * perPage, page * perPage),
+    [page, perPage, getDataId, contentWithAdditions, openRows, actionResolver, ExpandComponent],
+  );
+
+  const hostRows = React.useMemo(() => getRows(data), [data, getRows]);
+
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;
@@ -249,10 +244,13 @@ const AITable = <R extends any>({
   }, []);
 
   const sortedRows = React.useMemo(() => {
+    if (relevanceSorted && sortBy.index === -1) {
+      return getRows(data);
+    }
     return rows.sort(
       rowSorter(sortBy, (row: IRow, index = 0) => row.cells?.[index] as string | HumanizedSortable),
     );
-  }, [sortBy, rows]);
+  }, [relevanceSorted, sortBy, rows, getRows, data]);
 
   return (
     <>
