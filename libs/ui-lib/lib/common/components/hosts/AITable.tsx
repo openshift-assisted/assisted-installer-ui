@@ -80,6 +80,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
   variant?: TableProps['variant'];
+  alreadySorted?: boolean;
 };
 
 // eslint-disable-next-line
@@ -103,8 +104,21 @@ const AITable = <R extends any>({
   perPageOptions,
   canSelectAll,
   variant,
+  alreadySorted,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
+  const [openRows, setOpenRows] = React.useState<OpenRows>({});
+
+  const sortByRef = React.useRef<ISortBy>();
+  const [sortBy, setSortBy] = React.useState<ISortBy>({
+    index: onSelect ? 1 : 0,
+    direction: SortByDirection.asc,
+  });
+
+  const dataRef = React.useRef(data);
+  if (dataRef.current !== data) {
+    dataRef.current = data;
+  }
 
   React.useEffect(() => {
     if (selectedIDs && setSelectedIDs) {
@@ -121,16 +135,29 @@ const AITable = <R extends any>({
     }
   }, [data, setSelectedIDs, selectedIDs, getDataId]);
 
-  const [openRows, setOpenRows] = React.useState<OpenRows>({});
-  const [sortBy, setSortBy] = React.useState<ISortBy>({
-    index: onSelect ? 1 : 0,
-    direction: SortByDirection.asc,
-  });
+  React.useEffect(() => {
+    if (alreadySorted) {
+      sortByRef.current = sortBy;
+      setSortBy({
+        index: -1,
+        direction: SortByDirection.asc,
+      });
+    } else {
+      if (sortBy.index === -1 && sortByRef.current) {
+        setSortBy(sortByRef.current);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alreadySorted]);
 
-  const dataRef = React.useRef(data);
-  if (dataRef.current !== data) {
-    dataRef.current = data;
-  }
+  React.useEffect(() => {
+    if (!alreadySorted) {
+      sortByRef.current = sortBy;
+    } else if (alreadySorted && sortBy.index !== -1) {
+      sortByRef.current = sortBy;
+    }
+  }, [sortBy, alreadySorted]);
+
   const onSelectAll = React.useCallback(
     (isChecked: boolean) => {
       setSelectedIDs?.(isChecked ? dataRef.current.map(getDataId) : []);
@@ -169,33 +196,27 @@ const AITable = <R extends any>({
     return [newContent, columns];
   }, [canSelectAll, content, getDataId, onSelect, onSelectAll]);
 
-  const hostRows = React.useMemo(() => {
-    const rows = (data || [])
-      .map<IRow>((obj) => {
-        const id = getDataId(obj);
-        const cells = contentWithAdditions.filter((c) => !!c.cell).map((c) => c.cell?.(obj));
-        const isOpen = !!openRows[id];
-        return {
-          isOpen,
-          cells,
-          key: `${id}-master`,
-          id,
-          actions: actionResolver ? actionResolver(obj) : undefined,
-          nestedComponent: ExpandComponent ? <ExpandComponent obj={obj} /> : undefined,
-        };
-      })
-      .slice((page - 1) * perPage, page * perPage);
-    return rows;
-  }, [
-    data,
-    page,
-    perPage,
-    ExpandComponent,
-    getDataId,
-    contentWithAdditions,
-    openRows,
-    actionResolver,
-  ]);
+  const getRows = React.useCallback(
+    (data: R[]) =>
+      (data || [])
+        .map<IRow>((obj) => {
+          const id = getDataId(obj);
+          const cells = contentWithAdditions.filter((c) => !!c.cell).map((c) => c.cell?.(obj));
+          const isOpen = !!openRows[id];
+          return {
+            isOpen,
+            cells,
+            key: `${id}-master`,
+            id,
+            actions: actionResolver ? actionResolver(obj) : undefined,
+            nestedComponent: ExpandComponent ? <ExpandComponent obj={obj} /> : undefined,
+          };
+        })
+        .slice((page - 1) * perPage, page * perPage),
+    [page, perPage, getDataId, contentWithAdditions, openRows, actionResolver, ExpandComponent],
+  );
+
+  const hostRows = React.useMemo(() => getRows(data), [data, getRows]);
 
   const rows = React.useMemo(() => {
     if (hostRows.length) {
@@ -223,10 +244,13 @@ const AITable = <R extends any>({
   }, []);
 
   const sortedRows = React.useMemo(() => {
+    if (alreadySorted && sortBy.index === -1) {
+      return getRows(data);
+    }
     return rows.sort(
       rowSorter(sortBy, (row: IRow, index = 0) => row.cells?.[index] as string | HumanizedSortable),
     );
-  }, [rows, sortBy]);
+  }, [alreadySorted, sortBy, rows, getRows, data]);
 
   return (
     <>
