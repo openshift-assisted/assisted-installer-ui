@@ -14,9 +14,10 @@ jobs:
     steps:
       - name: Check workflow runs in a release branch or is CIM release
         run: |
-          if [[ "${{ github.event.release.target_commitish }}" != *releases* && ! "$GITHUB_REF_NAME" =~ -cim$ ]]; then
+          if [[ "${{ github.event.release.target_commitish }}" != *releases* && ! "$GITHUB_REF_NAME" =~ -(cim|chatbot)$ ]]; then
             echo "OCM: Expecting to be in a release branch, but we are in: ${{ github.event.release.target_commitish }}"
             echo "CIM: Not a CIM release, since tag does not end with '-cim'. Tag is: $GITHUB_REF_NAME"
+            echo "Chatbot: Not a Chatbot release, since tag does not end with '-chatbot'. Tag is: $GITHUB_REF_NAME"
             exit 1
           fi
 
@@ -28,11 +29,16 @@ jobs:
       - name: Lookup for workspaces to be published
         run: |
           declare -a LIBS=()
-          for pkg in libs/*/package.json; do
-            if [[ "$(jq '.publishConfig.access == "public"' "${pkg}")" = "true" ]]; then
-              LIBS+=("${pkg:5:-13}")
-            fi
-          done
+          if [[ "$GITHUB_REF_NAME" =~ -chatbot$ ]]; then
+            LIBS+=("chatbot")
+          else
+            for pkg in libs/*/package.json; do
+              lib_name="${pkg:5:-13}"
+              if [[ "$lib_name" != "chatbot" && "$(jq '.publishConfig.access == "public"' "${pkg}")" = "true" ]]; then
+                LIBS+=("$lib_name")
+              fi
+            done
+          fi
           echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
           (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 
