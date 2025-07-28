@@ -60,20 +60,32 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     | 'variant'
   > & {
     hosts: Host[];
+    alreadySorted?: boolean;
     skipDisabled?: boolean;
     children: React.ReactNode;
   };
 
-const HostsTable = ({ hosts, skipDisabled, ...rest }: HostsTableProps & WithTestID) => {
-  const data = React.useMemo(
-    () =>
-      (hosts || [])
-        .filter((host) => !skipDisabled || host.status !== 'disabled')
-        .sort((a, b) => (a.createdAt && b.createdAt && a.createdAt < b.createdAt ? -1 : 1)),
-    [hosts, skipDisabled],
-  );
+const HostsTable = ({
+  hosts,
+  skipDisabled,
+  alreadySorted,
+  ...rest
+}: HostsTableProps & WithTestID) => {
+  const data = React.useMemo(() => {
+    const filteredHosts = (hosts || []).filter(
+      (host) => !skipDisabled || host.status !== 'disabled',
+    );
 
-  return <AITable<Host> getDataId={getHostId} data={data} {...rest} />;
+    return alreadySorted
+      ? filteredHosts
+      : filteredHosts.sort((a, b) =>
+          a.createdAt && b.createdAt && a.createdAt < b.createdAt ? -1 : 1,
+        );
+  }, [hosts, skipDisabled, alreadySorted]);
+
+  return (
+    <AITable<Host> getDataId={getHostId} data={data} alreadySorted={alreadySorted} {...rest} />
+  );
 };
 
 export default HostsTable;
