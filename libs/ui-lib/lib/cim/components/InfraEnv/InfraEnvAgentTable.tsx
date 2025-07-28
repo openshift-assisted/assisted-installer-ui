@@ -227,7 +227,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         <StackItem>
           <HostsTable
             hosts={hosts}
-            relevanceSorted={sorted}
+            alreadySorted={sorted}
             content={content}
             actionResolver={actionResolver}
             selectedIDs={selectedHostIDs}

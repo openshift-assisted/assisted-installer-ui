@@ -60,7 +60,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     | 'variant'
   > & {
     hosts: Host[];
-    relevanceSorted?: boolean;
+    alreadySorted?: boolean;
     skipDisabled?: boolean;
     children: React.ReactNode;
   };
@@ -68,7 +68,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
 const HostsTable = ({
   hosts,
   skipDisabled,
-  relevanceSorted,
+  alreadySorted,
   ...rest
 }: HostsTableProps & WithTestID) => {
   const data = React.useMemo(() => {
@@ -76,15 +76,15 @@ const HostsTable = ({
       (host) => !skipDisabled || host.status !== 'disabled',
     );
 
-    return relevanceSorted
+    return alreadySorted
       ? filteredHosts
       : filteredHosts.sort((a, b) =>
           a.createdAt && b.createdAt && a.createdAt < b.createdAt ? -1 : 1,
         );
-  }, [hosts, skipDisabled, relevanceSorted]);
+  }, [hosts, skipDisabled, alreadySorted]);
 
   return (
-    <AITable<Host> getDataId={getHostId} data={data} relevanceSorted={relevanceSorted} {...rest} />
+    <AITable<Host> getDataId={getHostId} data={data} alreadySorted={alreadySorted} {...rest} />
   );
 };
 
