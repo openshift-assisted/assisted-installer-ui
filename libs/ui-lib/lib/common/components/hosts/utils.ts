@@ -196,7 +196,7 @@ export const getInventory = (host: Host) => {
 
 export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefined) => {
   if (!hostnameFilter) {
-    return hosts;
+    return { hosts, sorted: false };
   }
   const hostsWithHostname = hosts.map((host) => {
     const { inventory: inventoryString = '' } = host;
@@ -209,12 +209,28 @@ export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefin
   });
 
   const fuse = new Fuse(hostsWithHostname, {
+    includeScore: true,
     ignoreLocation: true,
     threshold: 0.3,
     keys: ['hostname'],
   });
 
-  return fuse.search(hostnameFilter).map(({ item }) => item.host);
+  const filteredHosts = fuse.search(hostnameFilter);
+
+  const sortedHosts = filteredHosts
+    .sort((a, b) => (a.score || 0) - (b.score || 0))
+    .map(({ item }) => item.host);
+
+  const sorted =
+    filteredHosts.length > 1 &&
+    filteredHosts.some(
+      (result, index) => index > 0 && (result.score || 0) !== (filteredHosts[0].score || 0),
+    );
+
+  return {
+    hosts: sortedHosts,
+    sorted,
+  };
 };
 
 export const getFailingHostValidations = (validationsInfo: HostValidationsInfo) =>
