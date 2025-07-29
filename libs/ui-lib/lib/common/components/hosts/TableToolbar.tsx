@@ -101,19 +101,19 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
           isFullWidth
           onClick={onSelectToggle}
           isExpanded={selectOpen}
-          splitButtonItems={[
-            <MenuToggleCheckbox
-              id="select-checkbox"
-              key="select-checkbox"
-              aria-label="Select all"
-              onChange={(checked, _event) => (checked ? onSelectAll() : onSelectNone())}
-              isChecked={isChecked}
-              data-testid="select-checkbox"
-            >
-              {selectedIDs.length} {t('ai:selected')}
-            </MenuToggleCheckbox>,
-          ]}
-        />
+          data-testid="select-dropdown-toggle"
+        >
+          <MenuToggleCheckbox
+            id="select-checkbox"
+            key="select-checkbox"
+            aria-label="Select all"
+            onChange={(checked, _event) => (checked ? onSelectAll() : onSelectNone())}
+            isChecked={isChecked}
+            data-testid="select-checkbox"
+          >
+            {selectedIDs.length} {t('ai:selected')}
+          </MenuToggleCheckbox>
+        </MenuToggle>
       )}
       isOpen={selectOpen}
     >
