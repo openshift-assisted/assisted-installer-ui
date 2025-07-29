@@ -64,7 +64,7 @@ func NewAssistedAPIHandler(tlsConfig *tls.Config) (*handler, error) {
 		return nil, fmt.Errorf("unexpected response code from Assisted Installer: %v", resp.StatusCode)
 	}
 	log.GetLog().Info("Successfuly connected to Assisted Installer")
-	target, proxy := createReverseProxy(fmt.Sprintf("%s/api", config.AssistedApiUrl))
+	target, proxy := createReverseProxy(fmt.Sprintf("%s/api/assisted-install", config.AssistedApiUrl))
 
 	proxy.Transport = &http.Transport{
 		TLSClientConfig: tlsConfig,
