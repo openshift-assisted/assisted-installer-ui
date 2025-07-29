@@ -59,7 +59,7 @@ const getBundleOperators = (
   bundle.operators?.forEach((op) => {
     getOperatorDependencies(op, preflightRequirements).forEach((dep) => bundleOperators.add(dep));
   });
-  return [...bundleOperators];
+  return Array.from(bundleOperators);
 };
 
 export const getNewBundleOperators = (
@@ -73,7 +73,8 @@ export const getNewBundleOperators = (
   const newBundleOperators = getBundleOperators(newBundle, preflightRequirements);
 
   if (add) {
-    return [...new Set([...currentOperators, ...newBundleOperators])];
+    const combined = [...currentOperators, ...newBundleOperators];
+    return Array.from(new Set(combined));
   }
 
   const newBundles = currentBundles.filter((b) => b !== newBundle.id);
