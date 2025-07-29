@@ -1,5 +1,5 @@
 import { Address4, Address6 } from 'ip-address';
-import { ProtocolVersion, StaticProtocolType } from './dataTypes';
+import { ProtocolVersion, StaticProtocolType } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const showIpv4 = (protocolType: StaticProtocolType) => {
@@ -26,9 +26,6 @@ export const getShownProtocolVersions = (protocolType: StaticProtocolType): Prot
     ? [ProtocolVersion.ipv4, ProtocolVersion.ipv6]
     : [ProtocolVersion.ipv4];
 };
-
-export const getProtocolVersionLabel = (protocolVersion: ProtocolVersion) =>
-  protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
 
 export const getAddressObject = (
   ip: string,
