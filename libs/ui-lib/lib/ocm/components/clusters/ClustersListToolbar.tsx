@@ -190,7 +190,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
             isDisabled={clustersUIState === ResourceUIState.RELOADING}
           >
             <Tooltip content="Refresh">
-              <SyncIcon />
+              <SyncIcon data-testid="refresh-clusters-icon" />
             </Tooltip>
           </ToolbarButton>
         </ToolbarGroup>
