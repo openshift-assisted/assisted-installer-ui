@@ -20,6 +20,8 @@ export default defineConfig(async ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), envVarsPrefix);
   const defaultValues = await getDefaultValuesForEnvironmentVariables();
 
+  const allEnvs = { ...defaultValues, ...env };
+
   return {
     build: {
       emptyOutDir: true,
@@ -30,7 +32,11 @@ export default defineConfig(async ({ mode }) => {
       conditions: ['source'],
     },
     plugins: [
-      EnvironmentPlugin(defaultValues, {
+      EnvironmentPlugin(allEnvs, {
+        prefix: envVarsPrefix,
+        defineOn: 'import.meta.env',
+      }),
+      EnvironmentPlugin(allEnvs, {
         prefix: envVarsPrefix,
         defineOn: 'process.env',
       }),
@@ -41,6 +47,11 @@ export default defineConfig(async ({ mode }) => {
         '/api': {
           target: env.AIUI_APP_API_URL,
           changeOrigin: true,
+        },
+        '/chatbot': {
+          target: env.AIUI_CHAT_API_URL,
+          changeOrigin: true,
+          rewrite: (path: string) => path.replace(/^\/chatbot/, ''),
         },
       },
     },

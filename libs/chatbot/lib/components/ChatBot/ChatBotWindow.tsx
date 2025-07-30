@@ -133,6 +133,11 @@ const ChatBotWindow = ({
         },
       });
 
+      if (!resp.ok) {
+        const errMsg = (await resp.json()) as { detail: string };
+        throw Error(errMsg.detail);
+      }
+
       reader = resp.body?.getReader();
       const decoder = new TextDecoder();
 

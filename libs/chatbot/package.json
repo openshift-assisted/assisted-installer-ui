@@ -15,7 +15,8 @@
   "typesVersions": {
     "*": {
       "index": [
-        "./build/@types/index.d.ts"
+        "./build/@types/index.d.ts",
+        "./lib/index.ts"
       ]
     }
   },
