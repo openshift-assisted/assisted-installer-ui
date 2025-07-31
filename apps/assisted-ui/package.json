@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@openshift-assisted/ui-lib": "workspace:*",
+    "@openshift-assisted/chatbot": "workspace:*",
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
     "@patternfly/patternfly": "5.2.0",
     "@patternfly/react-code-editor": "5.2.0",
