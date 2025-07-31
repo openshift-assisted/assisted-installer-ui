@@ -144,18 +144,25 @@ const ChatBotWindow = ({
       const timestamp = new Date().toLocaleString();
 
       let completeMsg = '';
+      let buffer = '';
       while (reader) {
         const { done, value } = await reader.read();
         if (done) {
           break;
         }
 
-        const chunks = decoder.decode(value, { stream: true }).split('\n');
-        for (const chunk of chunks) {
-          if (!chunk.startsWith('data: ')) {
-            continue;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() || '';
+        for (const part of parts) {
+          const lines = part.split('\n');
+          let data = '';
+          for (const line of lines) {
+            if (line.startsWith('data:')) {
+              data += line.slice(5).trim() + '\n';
+            }
           }
-          const ev = JSON.parse(chunk.slice(5).trim()) as StreamEvent;
+          const ev = JSON.parse(data) as StreamEvent;
           if (ev.event === 'start') {
             convId = ev.data.conversation_id;
           } else if (ev.event === 'token' && ev.data.role === 'inference') {
