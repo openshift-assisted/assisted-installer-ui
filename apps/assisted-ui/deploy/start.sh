@@ -4,12 +4,14 @@ set -eo pipefail
 export ASSISTED_SERVICE_URL="${ASSISTED_SERVICE_URL:-'http://localhost:8090'}"
 
 # shellcheck disable=SC2016
-envsubst '$ASSISTED_SERVICE_URL' < /deploy/nginx.conf > "$NGINX_DEFAULT_CONF_PATH/nginx.conf"
+envsubst '$ASSISTED_SERVICE_URL $AIUI_CHAT_API_URL' < /deploy/nginx.conf > "$NGINX_DEFAULT_CONF_PATH/nginx.conf"
 
 if [ "$ASSISTED_SERVICE_SCHEME" = "https" ]; then
     # shellcheck disable=SC2016
     envsubst '${HTTPS_CERT_FILE} ${HTTPS_KEY_FILE}' < /deploy/nginx_ssl.conf > "${NGINX_CONF_PATH}"
 fi
+
+envsubst '$AIUI_OCM_TOKEN' < $NGINX_APP_ROOT/src/env.template.js > $NGINX_APP_ROOT/src/env.js
 
 # Do not listen on IPv6 if it's not enabled in the hardware
 if grep 'ipv6.disable=1' /proc/cmdline; then
