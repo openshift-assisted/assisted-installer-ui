@@ -13,17 +13,6 @@
   inset-inline-end: 20px;
 }
 
-/*
-* Break long words in links, otherwise the horizontal scrollbar appears.
-*/
-.ai-chatbot .pf-chatbot__message-and-actions a.pf-m-link .pf-v6-c-button__text {
-  word-break: break-word;
-}
-
-/*
- * Break long words in inline code.
- * Workaround for links that are not formatted correctly by the service.
-*/
-.ai-chatbot .pf-chatbot__message-text .pf-chatbot__message-inline-code {
+.ai-chatbot .pf-chatbot__message-and-actions {
   word-break: break-word;
 }

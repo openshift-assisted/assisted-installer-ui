@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@openshift-assisted/chatbot": "workspace:*",
     "@openshift-assisted/ui-lib": "workspace:*",
+    "@openshift-assisted/chatbot": "workspace:*",
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
     "@patternfly-6/chatbot": "npm:@patternfly/chatbot@2.2.1",
     "@patternfly-6/patternfly": "npm:@patternfly/patternfly@6.2.2",
