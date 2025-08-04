@@ -2,6 +2,7 @@
 set -eo pipefail
 
 export ASSISTED_SERVICE_URL="${ASSISTED_SERVICE_URL:-'http://localhost:8090'}"
+export AIUI_CHAT_API_URL="${AIUI_CHAT_API_URL:-'http://localhost:1234'}"
 
 # shellcheck disable=SC2016
 envsubst '$ASSISTED_SERVICE_URL $AIUI_CHAT_API_URL' < /deploy/nginx.conf > "$NGINX_DEFAULT_CONF_PATH/nginx.conf"
