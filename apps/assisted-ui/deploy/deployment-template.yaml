@@ -34,6 +34,8 @@ spec:
           env:
             - name: ASSISTED_SERVICE_URL
               value: '__ASSISTED_SERVICE_URL__'
+            - name: AIUI_CHAT_API_URL
+              value: '__AIUI_CHAT_API_URL__' 
           ports:
             - containerPort: 80
       restartPolicy: Always

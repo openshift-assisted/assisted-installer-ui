@@ -12,13 +12,17 @@ DIRECTORY=$(dirname "$0")
 INPUT_TEMPLATE="${DIRECTORY}/deployment-template.yaml"
 
 ASSISTED_SERVICE_URL="http://assisted-service.__NAMESPACE__.svc.cluster.local:8090"
+AIUI_CHAT_API_URL="http://localhost:1234"
 IMAGE=${IMAGE:-"quay.io/edge-infrastructure/assisted-installer-ui:latest"}
 NAMESPACE="assisted-installer"
 
-while getopts ":u:i:t:n:h" opt; do
+while getopts ":u:c:i:t:n:h" opt; do
   case $opt in
     u)
       ASSISTED_SERVICE_URL="$OPTARG"
+      ;;
+    c)
+      AIUI_CHAT_API_URL="$OPTARG"
       ;;
     t)
       INPUT_TEMPLATE="$OPTARG"
@@ -47,7 +51,9 @@ while getopts ":u:i:t:n:h" opt; do
 done
 
 ASSISTED_SERVICE_URL=$(echo ${ASSISTED_SERVICE_URL} | sed "s#__NAMESPACE__#${NAMESPACE}#g")
+AIUI_CHAT_API_URL=$(echo ${AIUI_CHAT_API_URL} | sed "s#__NAMESPACE__#${NAMESPACE}#g")
 
 sed "s#__IMAGE__#${IMAGE}#g;
      s#__ASSISTED_SERVICE_URL__#${ASSISTED_SERVICE_URL}#g;
+     s#__AIUI_CHAT_API_URL__#${AIUI_CHAT_API_URL}#g;
      s#__NAMESPACE__#${NAMESPACE}#g" "${INPUT_TEMPLATE}"
