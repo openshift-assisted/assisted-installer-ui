@@ -76,11 +76,14 @@ const ChatBotWindow = ({
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
   const hasInitiallyScrolled = React.useRef(false);
 
+  React.useEffect(() => {
+    !isConfirmModalOpen && focusNewMessageBox();
+  }, [isConfirmModalOpen]);
+
   const startNewChat = () => {
     setConversationId(undefined);
     setMessages([]);
     setIsConfirmModalOpen(false);
-    focusNewMessageBox();
   };
 
   const handleNewChat = () => {
