@@ -65,6 +65,7 @@ const ChatBotWindow = ({
   onClose,
   username,
 }: ChatBotWindowProps) => {
+  const [msg, setMsg] = React.useState('');
   const [error, setError] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isStreaming, setIsStreaming] = React.useState(false);
@@ -356,9 +357,10 @@ const ChatBotWindow = ({
       <ChatbotFooter>
         <MessageBar
           id={MESSAGE_BAR_ID}
-          onSendMessage={(msg) => void handleSend(msg)}
-          isSendButtonDisabled={isLoading || isStreaming}
+          onSendMessage={() => void handleSend(msg)}
+          isSendButtonDisabled={isLoading || isStreaming || !msg.trim()}
           hasAttachButton={false}
+          onChange={(_, value) => setMsg(`${value}`)}
         />
         <ChatbotFootnote
           label="Always review AI generated content prior to use"
