@@ -4,7 +4,7 @@ import { CompatRouter, Route } from 'react-router-dom-v5-compat';
 import { Page } from '@patternfly/react-core';
 import * as OCM from '@openshift-assisted/ui-lib/ocm';
 import { Header } from './Header';
-import ChatBot, { getOcmToken } from './Chatbot';
+import ChatBot, { refreshToken } from './Chatbot';
 import '../i18n';
 
 const { HostsClusterDetailTabMock, UILibRoutes, Features, Config } = OCM;
@@ -16,7 +16,7 @@ export const App: React.FC = () => (
       <Page header={<Header />} isManagedSidebar defaultManagedSidebarIsOpen={false}>
         <UILibRoutes
           allEnabledFeatures={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES}
-          additionalComponents={getOcmToken() ? <ChatBot /> : undefined}
+          additionalComponents={refreshToken ? <ChatBot /> : undefined}
         >
           <Route path={'/day2-flow-mock'} element={<HostsClusterDetailTabMock />} />
         </UILibRoutes>

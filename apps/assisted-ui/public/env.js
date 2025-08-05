@@ -1,1 +1,1 @@
-window.OCM_TOKEN = '';
+window.OCM_REFRESH_TOKEN = '';
