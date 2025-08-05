@@ -4,7 +4,7 @@ import { App } from './components/App';
 
 declare global {
   interface Window {
-    OCM_TOKEN?: string;
+    OCM_REFRESH_TOKEN?: string;
   }
 }
 
