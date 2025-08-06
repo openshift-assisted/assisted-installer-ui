@@ -24,6 +24,7 @@ import {
   ClusterValidations,
   HostsValidations,
   useAlerts,
+  getPlatforms,
 } from '../../../common';
 import { getSelectedVersion, getAICluster, getClusterDeploymentCpuArchitecture } from '../helpers';
 import { isAgentOfCluster } from './helpers';
@@ -36,6 +37,7 @@ import {
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
 import { ValidationSection } from './components/ValidationSection';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDeploymentReviewStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -97,6 +99,10 @@ const ClusterDeploymentReviewStep = ({
   useWizardFooter(footer);
 
   const openShiftVersion = getSelectedVersion(clusterImages, agentClusterInstall);
+  const platform =
+    getPlatforms(t)[
+      (agentClusterInstall?.spec?.platformType?.toLowerCase() || 'baremetal') as PlatformType
+    ];
 
   const cluster = React.useMemo(
     () => getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents }),
@@ -126,6 +132,11 @@ const ClusterDeploymentReviewStep = ({
             title={t('ai:CPU architecture')}
             value={cpuArchitecture}
             testId="cpu-architecture"
+          />
+          <DetailItem
+            title={t('ai:External partner platform')}
+            value={platform}
+            testId="platform-type"
           />
           <DetailItem
             title={t('ai:API IP')}
