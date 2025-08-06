@@ -1,26 +1,26 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { EmptyState } from '../../../common';
-import { AgentTableActions } from './types';
+import { EmptyState } from '../../../../common';
+import { AgentTableActions } from '../types';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
-} from '../../types';
-import { getAICluster, getIsSNOCluster } from '../helpers';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
-import { agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';
-import HostsTable from '../../../common/components/hosts/HostsTable';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+} from '../../../types';
+import { getAICluster, getIsSNOCluster } from '../../helpers';
+import { AdditionalNTPSourcesDialogToggle } from '../components/AdditionalNTPSourcesDialogToggle';
+import { agentStatusColumn, useAgentsTable } from '../../Agent/tableUtils';
+import HostsTable from '../../../../common/components/hosts/HostsTable';
+import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
 import {
   activeNICColumn,
   hostnameColumn,
   roleColumn,
-} from '../../../common/components/hosts/tableUtils';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+} from '../../../../common/components/hosts/tableUtils';
+import { usePagination } from '../../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import { agentStatus } from '../helpers/agentStatus';
+import { agentStatus } from '../../helpers/agentStatus';
 
 type ExpandComponentContextType = {
   onSetInstallationDiskId?: ClusterDeploymentHostsNetworkTableProps['onSetInstallationDiskId'];

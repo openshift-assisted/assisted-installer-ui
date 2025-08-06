@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import { Flex, FlexItem, Form, FormGroup } from '@patternfly/react-core';
 import { getAgentsForSelection } from '../helpers/agents';
 import { AgentK8sResource } from '../../types/k8s/agent';
-import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
+import { ClusterDeploymentHostsSelectionAdvanced } from './hostSelection';
 import { ScaleUpFormValues } from './types';
 import SwitchField from '../../../common/components/ui/formik/SwitchField';
 import ClusterScaleUpAutoHostsSelection from './ClusterScaleUpAutoHostsSelection';

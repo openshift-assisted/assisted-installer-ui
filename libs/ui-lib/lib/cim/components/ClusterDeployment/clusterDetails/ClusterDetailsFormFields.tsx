@@ -6,20 +6,20 @@ import {
   ExternalPlatformsDropdown,
   OpenShiftVersionDropdown,
   OpenShiftVersionModal,
-} from '../../../common';
-import { StaticTextField } from '../../../common/components/ui/StaticTextField';
-import { PullSecret } from '../../../common/components/clusters';
-import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
+} from '../../../../common';
+import { StaticTextField } from '../../../../common/components/ui/StaticTextField';
+import { PullSecret } from '../../../../common/components/clusters';
+import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../../common/types';
 import {
   InputField,
   RichInputField,
   acmClusterNameValidationMessages,
-} from '../../../common/components/ui/formik';
-import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
-import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
-import { getNetworkType } from '../helpers';
+} from '../../../../common/components/ui/formik';
+import { ClusterDetailsValues } from '../../../../common/components/clusterWizard/types';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import CpuArchitectureDropdown from '../../common/CpuArchitectureDropdown';
+import ControlPlaneNodesDropdown from '../../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+import { getNetworkType } from '../../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -65,8 +65,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
-
-  console.log('values', values);
 
   React.useEffect(() => {
     if (!versions.length && !values.openshiftVersion) {

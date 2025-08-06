@@ -14,15 +14,15 @@ import {
   FormatDiskWarning,
   HostsNotShowingLink,
   VMRebootConfigurationInfo,
-} from '../../../common';
-import { getIsSNOCluster, onAgentChangeHostname } from '../helpers';
-import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
-import { ClusterDeploymentHostsDiscoveryProps } from './types';
-import { EditBMHModal, EditAgentModal } from '../modals';
-import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
+} from '../../../../common';
+import { getIsSNOCluster, onAgentChangeHostname } from '../../helpers';
+import MinimalHWRequirements from '../../Agent/MinimalHWRequirements';
+import { ClusterDeploymentHostsDiscoveryProps } from '../types';
+import { EditBMHModal, EditAgentModal } from '../../modals';
+import { AgentK8sResource, BareMetalHostK8sResource } from '../../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import AddHostDropdown from '../InfraEnv/AddHostDropdown';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import AddHostDropdown from '../../InfraEnv/AddHostDropdown';
 
 const DiscoveryInstructions = () => {
   const { t } = useTranslation();

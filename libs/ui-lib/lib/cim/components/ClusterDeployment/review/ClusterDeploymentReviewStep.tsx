@@ -8,14 +8,14 @@ import {
   WizardFooter,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import { canNextFromReviewStep } from './wizardTransition';
+import { canNextFromReviewStep } from '../wizardTransition';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   ClusterImageSetK8sResource,
   InfraEnvK8sResource,
-} from '../../types';
+} from '../../../types';
 import {
   ClusterWizardStepHeader,
   DetailList,
@@ -25,18 +25,22 @@ import {
   HostsValidations,
   useAlerts,
   getPlatforms,
-} from '../../../common';
-import { getSelectedVersion, getAICluster, getClusterDeploymentCpuArchitecture } from '../helpers';
-import { isAgentOfCluster } from './helpers';
-import { wizardStepNames } from './constants';
+} from '../../../../common';
+import {
+  getSelectedVersion,
+  getAICluster,
+  getClusterDeploymentCpuArchitecture,
+} from '../../helpers';
+import { isAgentOfCluster } from '../helpers';
+import { wizardStepNames } from '../constants';
 import {
   wizardStepsValidationsMap,
   ClusterWizardStepsType,
   allClusterWizardSoftValidationIds,
-} from './wizardTransition';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
-import { ValidationSection } from './components/ValidationSection';
+} from '../wizardTransition';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
+import { ValidationSection } from '../components/ValidationSection';
 import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDeploymentReviewStepProps = {
@@ -49,7 +53,7 @@ type ClusterDeploymentReviewStepProps = {
   infraEnv?: InfraEnvK8sResource;
 };
 
-const ClusterDeploymentReviewStep = ({
+export const ClusterDeploymentReviewStep = ({
   agentClusterInstall,
   agents,
   onFinish,
@@ -193,5 +197,3 @@ const ClusterDeploymentReviewStep = ({
     </Grid>
   );
 };
-
-export default ClusterDeploymentReviewStep;

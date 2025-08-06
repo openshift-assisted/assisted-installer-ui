@@ -4,15 +4,15 @@ import React from 'react';
 import Measure from 'react-measure';
 import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
 
-import { AgentK8sResource } from '../../types';
-import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
-import LocationsSelector from './LocationsSelector';
-import { ClusterDeploymentHostsSelectionValues, ScaleUpFormValues } from './types';
-import LabelsSelector, { infraEnvLabelKeys } from './LabelsSelector';
-import AgentsSelectionTable from '../Agent/AgentsSelectionTable';
-import { AgentTableActions } from './types';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { CpuArchitecture } from '../../../common';
+import { AgentK8sResource } from '../../../types';
+import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../../common';
+import LocationsSelector from '../LocationsSelector';
+import { ClusterDeploymentHostsSelectionValues, ScaleUpFormValues } from '../types';
+import LabelsSelector, { infraEnvLabelKeys } from '../LabelsSelector';
+import AgentsSelectionTable from '../../Agent/AgentsSelectionTable';
+import { AgentTableActions } from '../types';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { CpuArchitecture } from '../../../../common';
 
 type ClusterDeploymentHostsSelectionAdvancedProps = {
   availableAgents: AgentK8sResource[];
@@ -25,7 +25,7 @@ type ClusterDeploymentHostsSelectionAdvancedProps = {
 
 type FormValues = ClusterDeploymentHostsSelectionValues | ScaleUpFormValues;
 
-const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
+export const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
   availableAgents,
   onEditRole,
   onSetInstallationDiskId,
@@ -103,5 +103,3 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
     </>
   );
 };
-
-export default ClusterDeploymentHostsSelectionAdvanced;
