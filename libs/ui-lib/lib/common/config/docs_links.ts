@@ -199,3 +199,23 @@ export const SERVERLESS_OPERATOR_LINK =
 
 export const KUBECONFIG_INFO_LINK =
   'https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc#about-switches-between-cli-profiles_managing-cli-profiles';
+
+export const getOadpLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/backup_and_restore/oadp-application-backup-and-restore`;
+
+export const getMetalLbLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/networking_operators/metallb-operator`;
+
+export const getClusterObservabilityLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/cluster_observability_operator/cluster-observability-operator-overview`;
+
+export const getNumaResourcesLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/scalability_and_performance/cnf-numa-aware-scheduling`;
