@@ -8,7 +8,7 @@ import {
   PullSecret,
 } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { BaseDnsHelperText } from '../../../ClusterDeployment/ClusterDetailsFormFields';
+import { BaseDnsHelperText } from '../../../ClusterDeployment/clusterDetails/ClusterDetailsFormFields';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { DetailsFormProps, DetailsFormValues } from './types';
 

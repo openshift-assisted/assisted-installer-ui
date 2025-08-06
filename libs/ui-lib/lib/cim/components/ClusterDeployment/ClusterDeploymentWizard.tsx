@@ -2,17 +2,17 @@ import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Grid, GridItem, Wizard, WizardStep } from '@patternfly/react-core';
 import { AlertsContextProvider, LoadingState } from '../../../common';
-import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
-import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
-import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
 import { ClusterDeploymentWizardProps } from './types';
-import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
-import ClusterDeploymentReviewStep from './ClusterDeploymentReviewStep';
 import { YamlPreview, useYamlPreview } from '../YamlPreview';
 import { wizardStepNames } from './constants';
 import { ClusterDeploymentWizardContextProvider } from './ClusterDeploymentWizardContext';
 import { isCIMFlow } from './helpers';
+import { ClusterDeploymentDetailsStep } from './clusterDetails';
+import { ClusterDeploymentHostSelectionStep } from './hostSelection';
+import { ClusterDeploymentHostsDiscoveryStep } from './hostDiscovery';
+import { ClusterDeploymentNetworkingStep } from './networking';
+import { ClusterDeploymentReviewStep } from './review';
 
 export const ClusterDeploymentWizard = ({
   className,

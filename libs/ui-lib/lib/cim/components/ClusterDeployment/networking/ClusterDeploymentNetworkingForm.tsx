@@ -20,25 +20,21 @@ import {
   SecurityFields,
   ProxyFields,
   ProxyInputFields,
-} from '../../../common';
-import NetworkConfiguration from './NetworkConfiguration';
+} from '../../../../common';
+import NetworkConfiguration from '../NetworkConfiguration';
 import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
-import { getAICluster, getIsSNOCluster } from '../helpers';
+import { getAICluster, getIsSNOCluster } from '../../helpers';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   InfraEnvK8sResource,
-} from '../../types';
-import { AgentTableActions, ClusterDeploymentNetworkingValues } from './types';
+} from '../../../types';
+import { AgentTableActions, ClusterDeploymentNetworkingValues } from '../types';
 import { useFormikContext } from 'formik';
-import { getGridSpans } from './helpers';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getGridSpans } from '../helpers';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
-import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
-
-// TODO(mlibra): So far a constant. Should be queried from somewhere.
-export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
 
 type ClusterDeploymentNetworkingFormProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -140,7 +136,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
                 cluster={cluster}
                 hostSubnets={hostSubnets}
                 isVipDhcpAllocationDisabled
-                defaultNetworkSettings={defaultNetworkSettings}
+                defaultNetworkSettings={CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4}
                 hideManagedNetworking={getIsSNOCluster(agentClusterInstall) || isNutanix}
               />
             </GridItem>
