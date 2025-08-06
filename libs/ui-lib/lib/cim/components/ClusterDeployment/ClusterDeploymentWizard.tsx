@@ -145,6 +145,9 @@ export const ClusterDeploymentWizard = ({
                     isNutanix={isNutanix}
                   />
                 </WizardStep>
+
+                {/** TODO: Add the custom manifest step here */}
+
                 <WizardStep name={stepNames['review']} id={'review'}>
                   <ClusterDeploymentReviewStep
                     onFinish={onFinish}

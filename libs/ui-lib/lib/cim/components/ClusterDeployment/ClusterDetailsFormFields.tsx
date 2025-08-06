@@ -2,7 +2,11 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
+import {
+  ExternalPlatformsDropdown,
+  OpenShiftVersionDropdown,
+  OpenShiftVersionModal,
+} from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../common/components/clusters';
 import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
@@ -61,6 +65,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
+
+  console.log('values', values);
 
   React.useEffect(() => {
     if (!versions.length && !values.openshiftVersion) {
@@ -167,6 +173,11 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
+
+      <ExternalPlatformsDropdown isDisabled={isEditFlow} />
+
+      {/** TODO: custom manifests checkbox here */}
+
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
