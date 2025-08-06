@@ -11,7 +11,7 @@ let token = '';
 
 export const getOcmToken = async () => {
   // if token expires in less than 5s, refresh it
-  if (Date.now() - 5000 > expiration) {
+  if (Date.now() > expiration - 5000) {
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
