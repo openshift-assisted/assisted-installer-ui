@@ -682,7 +682,11 @@ export type ClusterValidationId =
   | 'self-node-remediation-requirements-satisfied'
   | 'fence-agents-remediation-requirements-satisfied'
   | 'node-maintenance-requirements-satisfied'
-  | 'kube-descheduler-requirements-satisfied';
+  | 'kube-descheduler-requirements-satisfied'
+  | 'cluster-observability-requirements-satisfied'
+  | 'numa-resources-requirements-satisfied'
+  | 'oadp-requirements-satisfied'
+  | 'metallb-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1091,7 +1095,11 @@ export type FeatureSupportLevelId =
   | 'SELF_NODE_REMEDIATION'
   | 'FENCE_AGENTS_REMEDIATION'
   | 'NODE_MAINTENANCE'
-  | 'KUBE_DESCHEDULER';
+  | 'KUBE_DESCHEDULER'
+  | 'CLUSTER_OBSERVABILITY'
+  | 'NUMA_RESOURCES'
+  | 'OADP'
+  | 'METALLB';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1652,7 +1660,11 @@ export type HostValidationId =
   | 'self-node-remediation-requirements-satisfied'
   | 'fence-agents-remediation-requirements-satisfied'
   | 'node-maintenance-requirements-satisfied'
-  | 'kube-descheduler-requirements-satisfied';
+  | 'kube-descheduler-requirements-satisfied'
+  | 'cluster-observability-requirements-satisfied'
+  | 'numa-resources-requirements-satisfied'
+  | 'oadp-requirements-satisfied'
+  | 'metallb-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
