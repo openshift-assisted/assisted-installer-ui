@@ -29,7 +29,9 @@ export type ClusterWizardStepsType =
   | 'networking'
   | 'review'
   | 'custom-manifests'
-  | 'credentials-download';
+  | 'credentials-download'
+  | 'disconnected-basic'
+  | 'disconnected-review';
 
 const wizardStepsOrder: ClusterWizardStepsType[] = [
   'cluster-details',
@@ -43,6 +45,11 @@ const wizardStepsOrder: ClusterWizardStepsType[] = [
   'custom-manifests',
   'credentials-download',
   'review',
+];
+
+export const disconnectedSteps: ClusterWizardStepsType[] = [
+  'disconnected-basic',
+  'disconnected-review',
 ];
 
 export const ClusterWizardFlowStateNew = 'new';
@@ -251,6 +258,8 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
 const credentialsValidationMap = buildEmptyValidationsMap();
 
 const customManifestsValidationsMap = buildEmptyValidationsMap();
+const disconnectedReviewValidationsMap = buildEmptyValidationsMap();
+const disconnectedBasicValidationsMap = buildEmptyValidationsMap();
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
@@ -264,6 +273,8 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
   'credentials-download': credentialsValidationMap,
+  'disconnected-review': disconnectedReviewValidationsMap,
+  'disconnected-basic': disconnectedBasicValidationsMap,
 };
 
 export const allClusterWizardSoftValidationIds =
