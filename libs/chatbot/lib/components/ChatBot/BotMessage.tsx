@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Message } from '@patternfly-6/chatbot';
 import MessageLoading from '@patternfly-6/chatbot/dist/cjs/Message/MessageLoading';
 import { UserFeedbackProps } from '@patternfly-6/chatbot/dist/cjs/Message/UserFeedback/UserFeedback';
-
-type MsgProps = React.ComponentProps<typeof Message>;
+import { MsgProps } from './helpers';
+import { Button, Stack, StackItem } from '@patternfly-6/react-core';
+import { saveAs } from 'file-saver';
+import { DownloadIcon } from '@patternfly-6/react-icons';
 
 type SentimentActionClick = (isPositive: boolean) => void;
 
@@ -86,7 +88,7 @@ const BotMessage = ({
   }, [isNegativeFeedback, onScrollToBottom]);
 
   const actions = React.useMemo(() => {
-    return getActions(message.content || '', (positiveFeedback) => {
+    return getActions(message.pfProps.content || '', (positiveFeedback) => {
       if (positiveFeedback) {
         const submitPositiveFeedback = async () => {
           try {
@@ -104,7 +106,7 @@ const BotMessage = ({
         setIsNegativeFeedback(true);
       }
     });
-  }, [message.content, onFeedbackSubmit, messageIndex]);
+  }, [message.pfProps.content, onFeedbackSubmit, messageIndex]);
 
   const userFeedbackFormConfig = React.useMemo<UserFeedbackProps | undefined>(() => {
     return isNegativeFeedback
@@ -131,16 +133,37 @@ const BotMessage = ({
   }, [isNegativeFeedback, onFeedbackSubmit, messageIndex]);
 
   return (
-    <>
-      <Message
-        {...message}
-        actions={isLoading ? undefined : actions}
-        userFeedbackForm={userFeedbackFormConfig}
-        extraContent={{
-          afterMainContent: isLoading && <MsgLoading />,
-        }}
-      />
-    </>
+    <Message
+      {...message.pfProps}
+      actions={isLoading ? undefined : actions}
+      userFeedbackForm={userFeedbackFormConfig}
+      extraContent={{
+        afterMainContent: isLoading ? (
+          <MsgLoading />
+        ) : message.actions?.length ? (
+          <Stack hasGutter>
+            {message.actions.map(({ title, url }, idx) => (
+              <StackItem key={idx}>
+                <Button
+                  onClick={() => {
+                    try {
+                      saveAs(url);
+                    } catch (error) {
+                      // eslint-disable-next-line
+                      console.error('Download failed: ', error);
+                    }
+                  }}
+                  variant="secondary"
+                  icon={<DownloadIcon />}
+                >
+                  {title}
+                </Button>
+              </StackItem>
+            ))}
+          </Stack>
+        ) : undefined,
+      }}
+    />
   );
 };
 
