@@ -16,7 +16,7 @@ import {
   yamlToNmstateObject,
 } from './nmstateYaml';
 
-import { getShownProtocolVersions } from './protocolVersion';
+import { getShownProtocolVersions } from '../../../../../common/components/staticIP/protocolVersion';
 import { getEmptyNetworkWideConfigurations } from './emptyData';
 import {
   Nmstate,
