@@ -21,10 +21,11 @@ import {
 import RemoveNodePoolModal from '../modals/RemoveNodePoolModal';
 import NodePoolStatus from './NodePoolStatus';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { getNodepoolAgents } from '../utils';
+import { getNodepoolAgents, getNodePoolStatus } from '../utils';
 
 import './NodePoolsTable.css';
 import { fileSize } from '../../../../common/utils';
+import { TFunction } from 'i18next';
 
 type NodePoolsTableProps = {
   nodePools: NodePoolK8sResource[];
@@ -62,6 +63,34 @@ export const nodePoolNameColumn = (): TableRow<NodePoolWithAgents> => {
         sortableValue: nodePool.metadata?.name,
       };
     },
+  };
+};
+
+const getNodePoolActions = (
+  nodePool: NodePoolK8sResource,
+  agents: AgentK8sResource[],
+  t: TFunction,
+  setManageHostsOpen: (uid?: string) => void,
+  setRemoveNodePoolOpen: (uid?: string) => void,
+) => {
+  const { type } = getNodePoolStatus(nodePool, agents, t);
+  const isDisabled = ['error', 'pending'].includes(type);
+  return {
+    items: [
+      {
+        title: t('ai:Manage hosts'),
+        onClick: () => setManageHostsOpen(nodePool.metadata?.uid),
+        isAriaDisabled: isDisabled,
+        tooltipProps: {
+          content: t('ai:Nodepool is not ready'),
+          isVisible: isDisabled,
+        },
+      },
+      {
+        title: t('ai:Remove Nodepool'),
+        onClick: () => setRemoveNodePoolOpen(nodePool.metadata?.uid),
+      },
+    ],
   };
 };
 
@@ -167,18 +196,13 @@ const NodePoolsTable = ({
                     <Td>{nodePoolAgents.length ? fileSize(totals.memory, 2, 'iec') : '-'}</Td>
                     <Td>{nodePoolAgents.length ? fileSize(totals.disk, 2, 'si') : '-'}</Td>
                     <Td
-                      actions={{
-                        items: [
-                          {
-                            title: t('ai:Manage hosts'),
-                            onClick: () => setManageHostsOpen(np.metadata?.uid),
-                          },
-                          {
-                            title: t('ai:Remove Nodepool'),
-                            onClick: () => setRemoveNodePoolOpen(np.metadata?.uid),
-                          },
-                        ],
-                      }}
+                      actions={getNodePoolActions(
+                        np,
+                        nodePoolAgents,
+                        t,
+                        setManageHostsOpen,
+                        setRemoveNodePoolOpen,
+                      )}
                     />
                   </Tr>,
                 );
