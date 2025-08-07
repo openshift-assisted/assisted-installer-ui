@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { Message } from '@patternfly-6/chatbot';
+import MessageLoading from '@patternfly-6/chatbot/dist/cjs/Message/MessageLoading';
 import { UserFeedbackProps } from '@patternfly-6/chatbot/dist/cjs/Message/UserFeedback/UserFeedback';
 
 type MsgProps = React.ComponentProps<typeof Message>;
 
 type SentimentActionClick = (isPositive: boolean) => void;
+
+// eslint-disable-next-line
+// @ts-ignore
+const MsgLoading = () => <MessageLoading loadingWord="Loading message" />;
 
 export type FeedbackRequest = {
   messageIndex: number;
@@ -55,6 +60,7 @@ export type BotMessageProps = {
   messageIndex: number;
   message: MsgProps;
   onScrollToBottom: () => void;
+  isLoading: boolean;
 };
 
 const BotMessage = ({
@@ -62,6 +68,7 @@ const BotMessage = ({
   messageIndex,
   message,
   onScrollToBottom,
+  isLoading,
 }: BotMessageProps) => {
   const [isNegativeFeedback, setIsNegativeFeedback] = React.useState<boolean>(false);
 
@@ -123,7 +130,18 @@ const BotMessage = ({
       : undefined;
   }, [isNegativeFeedback, onFeedbackSubmit, messageIndex]);
 
-  return <Message {...message} actions={actions} userFeedbackForm={userFeedbackFormConfig} />;
+  return (
+    <>
+      <Message
+        {...message}
+        actions={isLoading ? undefined : actions}
+        userFeedbackForm={userFeedbackFormConfig}
+        extraContent={{
+          afterMainContent: isLoading && <MsgLoading />,
+        }}
+      />
+    </>
+  );
 };
 
 export default BotMessage;

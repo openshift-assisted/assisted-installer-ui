@@ -111,6 +111,7 @@ const ChatBotWindow = ({
     setError(undefined);
     setIsLoading(true);
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined = undefined;
+    let eventEnded = false;
     try {
       setMessages((msgs) => [
         ...msgs,
@@ -138,8 +139,15 @@ const ChatBotWindow = ({
       });
 
       if (!resp.ok) {
-        const errMsg = (await resp.json()) as { detail: string };
-        throw Error(errMsg.detail);
+        let errMsg = 'An error occured';
+        try {
+          const detailMsg = ((await resp.json()) as { detail: string }).detail;
+          if (detailMsg) {
+            errMsg = detailMsg;
+          }
+        } catch {}
+
+        throw Error(`${resp.status}: ${errMsg}`);
       }
 
       reader = resp.body?.getReader();
@@ -167,9 +175,11 @@ const ChatBotWindow = ({
             }
           }
           const ev = JSON.parse(data) as StreamEvent;
-          if (ev.event === 'start') {
+          if (ev.event === 'end') {
+            eventEnded = true;
+          } else if (ev.event === 'start') {
             convId = ev.data.conversation_id;
-          } else if (ev.event === 'token' && ev.data.role === 'inference') {
+          } else if (ev.event === 'token' && ev.data.role === 'inference' && !!ev.data.token) {
             setIsLoading(false);
             setIsStreaming(true);
             const token = ev.data.token;
@@ -206,6 +216,9 @@ const ChatBotWindow = ({
 
       setConversationId(convId);
       setAnnouncement(`Message from Bot: ${completeMsg}`);
+      if (!eventEnded) {
+        setError('An error occured retrieving response');
+      }
     } catch (e) {
       if (reader) {
         try {
@@ -338,6 +351,7 @@ const ChatBotWindow = ({
                   message={message}
                   onFeedbackSubmit={onFeedbackSubmit}
                   onScrollToBottom={scrollToBottom}
+                  isLoading={index === messages.length - 1 && isStreaming}
                 />
               );
             }
@@ -349,7 +363,7 @@ const ChatBotWindow = ({
             <ChatbotAlert
               variant="danger"
               onClose={() => setError(undefined)}
-              title="Failed to send the message"
+              title="An error occured"
             >
               {error}
             </ChatbotAlert>

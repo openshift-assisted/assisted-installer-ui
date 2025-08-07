@@ -32,7 +32,7 @@
     "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "dependencies": {
-    "@patternfly-6/chatbot": "npm:@patternfly/chatbot@2.2.1",
+    "@patternfly-6/chatbot": "npm:@patternfly/chatbot@6.3.2",
     "@patternfly-6/patternfly": "npm:@patternfly/patternfly@6.2.2",
     "@patternfly-6/react-core": "npm:@patternfly/react-core@6.2.2",
     "@patternfly-6/react-icons": "npm:@patternfly/react-icons@6.2.2",
