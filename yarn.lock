@@ -845,6 +845,7 @@ __metadata:
     "@types/node": ^18.14.6
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.3.0
+    file-saver: ^2.0.2
     lodash-es: ^4.17.21
   peerDependencies:
     react: ^18

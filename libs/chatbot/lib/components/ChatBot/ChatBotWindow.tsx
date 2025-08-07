@@ -35,14 +35,18 @@ import {
   botRole,
   userRole,
   MsgProps,
+  getToolAction,
 } from './helpers';
 import AIAvatar from '../../assets/rh-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
-
-type StreamEvent =
-  | { event: 'start'; data: { conversation_id: string } }
-  | { event: 'token'; data: { token: string; role: string } }
-  | { event: 'end' };
+import {
+  isEndStreamEvent,
+  isInferenceStreamEvent,
+  isStartStreamEvent,
+  isToolArgStreamEvent,
+  isToolResponseStreamEvent,
+  StreamEvent,
+} from './types';
 
 const CHAT_ALERT_LOCAL_STORAGE_KEY = 'assisted.hide.chat.alert';
 
@@ -67,7 +71,6 @@ const ChatBotWindow = ({
 }: ChatBotWindowProps) => {
   const [msg, setMsg] = React.useState('');
   const [error, setError] = React.useState<string>();
-  const [isLoading, setIsLoading] = React.useState(false);
   const [isStreaming, setIsStreaming] = React.useState(false);
   const [announcement, setAnnouncement] = React.useState<string>();
   const [isAlertVisible, setIsAlertVisible] = React.useState(
@@ -109,23 +112,39 @@ const ChatBotWindow = ({
 
   const handleSend = async (message: string | number) => {
     setError(undefined);
-    setIsLoading(true);
+    setIsStreaming(true);
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined = undefined;
     let eventEnded = false;
+    const timestamp = new Date().toLocaleString();
     try {
       setMessages((msgs) => [
         ...msgs,
         {
-          role: userRole,
-          content: `${message}`,
-          name: username,
-          avatar: UserAvatar,
-          timestamp: new Date().toLocaleString(),
+          pfProps: {
+            role: userRole,
+            content: `${message}`,
+            name: username,
+            avatar: UserAvatar,
+            timestamp,
+          },
         },
       ]);
       setAnnouncement(`Message from User: ${message}. Message from Bot is loading.`);
 
       let convId = '';
+
+      setMessages((msgs) => [
+        ...msgs,
+        {
+          pfProps: {
+            role: botRole,
+            content: '',
+            name: 'AI',
+            avatar: AIAvatar,
+            timestamp,
+          },
+        },
+      ]);
 
       const resp = await onApiCall('/v1/streaming_query', {
         method: 'POST',
@@ -153,10 +172,9 @@ const ChatBotWindow = ({
       reader = resp.body?.getReader();
       const decoder = new TextDecoder();
 
-      const timestamp = new Date().toLocaleString();
-
       let completeMsg = '';
       let buffer = '';
+      const toolArgs: { [key: number]: { [key: string]: string } } = {};
       while (reader) {
         const { done, value } = await reader.read();
         if (done) {
@@ -175,41 +193,48 @@ const ChatBotWindow = ({
             }
           }
           const ev = JSON.parse(data) as StreamEvent;
-          if (ev.event === 'end') {
+          if (isEndStreamEvent(ev)) {
             eventEnded = true;
-          } else if (ev.event === 'start') {
+          } else if (isStartStreamEvent(ev)) {
             convId = ev.data.conversation_id;
-          } else if (ev.event === 'token' && ev.data.role === 'inference' && !!ev.data.token) {
-            setIsLoading(false);
-            setIsStreaming(true);
+          } else if (isInferenceStreamEvent(ev)) {
             const token = ev.data.token;
             completeMsg = `${completeMsg}${token}`;
             setMessages((msgs) => {
               const lastMsg = msgs[msgs.length - 1];
-              const msg =
-                lastMsg.timestamp === timestamp && lastMsg.role === botRole ? lastMsg : undefined;
-              if (!msg) {
-                return [
-                  ...msgs,
-                  {
-                    role: botRole,
-                    content: token,
-                    name: 'AI',
-                    avatar: AIAvatar,
-                    timestamp: timestamp,
-                  },
-                ];
-              }
-
               const allButLast = msgs.slice(0, -1);
               return [
                 ...allButLast,
                 {
-                  ...msg,
-                  content: `${msg.content || ''}${token}`,
+                  ...lastMsg,
+                  pfProps: {
+                    ...lastMsg.pfProps,
+                    content: `${lastMsg.pfProps.content || ''}${token}`,
+                  },
                 },
               ];
             });
+          } else if (isToolArgStreamEvent(ev)) {
+            toolArgs[ev.data.id] = ev.data.token.arguments;
+          } else if (isToolResponseStreamEvent(ev)) {
+            const action = getToolAction({
+              toolName: ev.data.token.tool_name,
+              response: ev.data.token.response,
+              args: toolArgs[ev.data.id],
+            });
+            if (action) {
+              setMessages((msgs) => {
+                const lastMsg = msgs[msgs.length - 1];
+                const allButLast = msgs.slice(0, -1);
+                return [
+                  ...allButLast,
+                  {
+                    ...lastMsg,
+                    actions: lastMsg.actions ? [...lastMsg.actions, action] : [action],
+                  },
+                ];
+              });
+            }
           }
         }
       }
@@ -231,7 +256,6 @@ const ChatBotWindow = ({
       setError(getErrorMessage(e));
     } finally {
       setIsStreaming(false);
-      setIsLoading(false);
     }
   };
 
@@ -249,7 +273,7 @@ const ChatBotWindow = ({
           conversation_id: conversationId,
           user_question: getUserQuestionForBotAnswer(messages, botMessageIdx),
           user_feedback: req.userFeedback,
-          llm_response: messages[botMessageIdx].content || '',
+          llm_response: messages[botMessageIdx].pfProps.content || '',
           sentiment: req.sentiment,
         }),
         headers: {
@@ -342,7 +366,7 @@ const ChatBotWindow = ({
           )}
           {messages.map((message, index) => {
             const messageKey = conversationId ? `${conversationId}-${index}` : index;
-            const isBotMessage = message.role === botRole;
+            const isBotMessage = message.pfProps.role === botRole;
             if (isBotMessage) {
               return (
                 <BotMessage
@@ -356,9 +380,8 @@ const ChatBotWindow = ({
               );
             }
 
-            return <Message key={messageKey} {...message} />;
+            return <Message key={messageKey} {...message.pfProps} />;
           })}
-          {isLoading && <Message isLoading role={botRole} avatar={AIAvatar} />}
           {error && (
             <ChatbotAlert
               variant="danger"
@@ -375,7 +398,7 @@ const ChatBotWindow = ({
         <MessageBar
           id={MESSAGE_BAR_ID}
           onSendMessage={() => void handleSend(msg)}
-          isSendButtonDisabled={isLoading || isStreaming || !msg.trim()}
+          isSendButtonDisabled={isStreaming || !msg.trim()}
           hasAttachButton={false}
           onChange={(_, value) => setMsg(`${value}`)}
         />

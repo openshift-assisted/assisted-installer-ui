@@ -38,6 +38,7 @@
     "@patternfly-6/react-icons": "npm:@patternfly/react-icons@6.2.2",
     "@patternfly-6/react-styles": "npm:@patternfly/react-styles@6.2.2",
     "@patternfly-6/react-tokens": "npm:@patternfly/react-tokens@6.2.2",
+    "file-saver": "^2.0.2",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
