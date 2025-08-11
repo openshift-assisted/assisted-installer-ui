@@ -13,6 +13,7 @@ import type { FeatureListType } from '../../common/features/featureGate';
 import { AssistedUILibVersion } from './ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
+import './Routes.css';
 
 export const UILibRoutes = ({
   allEnabledFeatures,
