@@ -3,10 +3,9 @@ import {
   Alert,
   AlertVariant,
   FormGroup,
-  StackItem,
+  GridItem,
   TextInputTypes,
   Grid,
-  Stack,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
 import {
@@ -69,8 +68,8 @@ const AdvancedNetworkFields = () => {
             {values.clusterNetworks?.map((_, index) => {
               const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
-                <Stack key={index}>
-                  <StackItem className={'network-field-group pf-v6-u-pb-md'}>
+                <Grid hasGutter key={index}>
+                  <GridItem className={'network-field-group pf-v6-u-pb-md'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.cidr`}
                       label={
@@ -85,8 +84,8 @@ const AdvancedNetworkFields = () => {
                       isRequired
                       labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                     />
-                  </StackItem>
-                  <StackItem className={'network-field-group pf-v6-u-pb-md'}>
+                  </GridItem>
+                  <GridItem className={'network-field-group pf-v6-u-pb-md'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.hostPrefix`}
                       label={
@@ -108,8 +107,8 @@ const AdvancedNetworkFields = () => {
                       helperText={ClusterPrefixHelperText}
                       isRequired
                     />
-                  </StackItem>
-                </Stack>
+                  </GridItem>
+                </Grid>
               );
             })}
           </FormGroup>
@@ -124,7 +123,7 @@ const AdvancedNetworkFields = () => {
         {() => (
           <FormGroup fieldId="serviceNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.serviceNetworks?.map((_, index) => (
-              <StackItem key={index} className={'network-field-group pf-v6-u-pb-md'}>
+              <GridItem key={index} className={'network-field-group pf-v6-u-pb-md'}>
                 <OcmInputField
                   name={`serviceNetworks.${index}.cidr`}
                   label={
@@ -141,7 +140,7 @@ const AdvancedNetworkFields = () => {
                   isRequired
                   labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                 />
-              </StackItem>
+              </GridItem>
             ))}
           </FormGroup>
         )}
