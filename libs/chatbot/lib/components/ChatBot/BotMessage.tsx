@@ -46,7 +46,7 @@ const getActions = (text: string, onActionClick: SentimentActionClick) => ({
 const userFeedbackForm = (
   onSubmit: (quickResponse: string | undefined, additionalFeedback: string | undefined) => void,
   onClose: VoidFunction,
-) => ({
+): UserFeedbackProps => ({
   onClose,
   onSubmit,
   title: 'Please provide feedback',
@@ -54,38 +54,45 @@ const userFeedbackForm = (
   textAreaPlaceholder: 'Add details here',
   hasTextArea: true,
   closeButtonAriaLabel: 'Close feedback form',
-  focusOnLoad: false,
+  focusOnLoad: true,
 });
 
 export type BotMessageProps = {
   onFeedbackSubmit: (req: FeedbackRequest) => Promise<void>;
   messageIndex: number;
   message: MsgProps;
-  onScrollToBottom: () => void;
   isLoading: boolean;
+  isLastMsg: boolean;
+  initHeight?: number;
 };
 
 const BotMessage = ({
   onFeedbackSubmit,
   messageIndex,
   message,
-  onScrollToBottom,
   isLoading,
+  initHeight,
+  isLastMsg,
 }: BotMessageProps) => {
+  const [height, setHeight] = React.useState(initHeight);
   const [isNegativeFeedback, setIsNegativeFeedback] = React.useState<boolean>(false);
+  const msgRef = React.useRef<HTMLDivElement>(null);
+  const scrollToMsgRef = React.useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when negative feedback form opens
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (isNegativeFeedback) {
-      // Use requestAnimationFrame to ensure the form is rendered and painted
-      requestAnimationFrame(() => {
-        // Double RAF to ensure layout is complete
-        requestAnimationFrame(() => {
-          onScrollToBottom();
-        });
-      });
+      scrollToMsgRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [isNegativeFeedback, onScrollToBottom]);
+  }, [isNegativeFeedback]);
+
+  // run on every re-render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useLayoutEffect(() => {
+    if (height && !isLoading && msgRef.current && msgRef.current.scrollHeight > height) {
+      setHeight(undefined);
+    }
+  });
 
   const actions = React.useMemo(() => {
     return getActions(message.pfProps.content || '', (positiveFeedback) => {
@@ -133,37 +140,45 @@ const BotMessage = ({
   }, [isNegativeFeedback, onFeedbackSubmit, messageIndex]);
 
   return (
-    <Message
-      {...message.pfProps}
-      actions={isLoading ? undefined : actions}
-      userFeedbackForm={userFeedbackFormConfig}
-      extraContent={{
-        afterMainContent: isLoading ? (
-          <MsgLoading />
-        ) : message.actions?.length ? (
-          <Stack hasGutter>
-            {message.actions.map(({ title, url }, idx) => (
-              <StackItem key={idx}>
-                <Button
-                  onClick={() => {
-                    try {
-                      saveAs(url);
-                    } catch (error) {
-                      // eslint-disable-next-line
-                      console.error('Download failed: ', error);
-                    }
-                  }}
-                  variant="secondary"
-                  icon={<DownloadIcon />}
-                >
-                  {title}
-                </Button>
-              </StackItem>
-            ))}
-          </Stack>
-        ) : undefined,
-      }}
-    />
+    <>
+      <Message
+        {...message.pfProps}
+        style={height && isLastMsg ? { minHeight: height } : undefined}
+        actions={isLoading ? undefined : actions}
+        userFeedbackForm={userFeedbackFormConfig}
+        innerRef={msgRef}
+        extraContent={{
+          afterMainContent: (
+            <>
+              <div ref={scrollToMsgRef} />
+              {isLoading && <MsgLoading />}
+              {!isLoading && message.actions?.length && (
+                <Stack hasGutter>
+                  {message.actions.map(({ title, url }, idx) => (
+                    <StackItem key={idx}>
+                      <Button
+                        onClick={() => {
+                          try {
+                            saveAs(url);
+                          } catch (error) {
+                            // eslint-disable-next-line
+                            console.error('Download failed: ', error);
+                          }
+                        }}
+                        variant="secondary"
+                        icon={<DownloadIcon />}
+                      >
+                        {title}
+                      </Button>
+                    </StackItem>
+                  ))}
+                </Stack>
+              )}
+            </>
+          ),
+        }}
+      />
+    </>
   );
 };
 
