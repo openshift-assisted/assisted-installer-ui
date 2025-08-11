@@ -155,6 +155,7 @@ const ChatBotWindow = ({
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
 
       if (!resp.ok) {
