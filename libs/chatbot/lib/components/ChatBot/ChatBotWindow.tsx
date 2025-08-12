@@ -35,6 +35,7 @@ export type ChatBotWindowProps = {
   startNewConversation: VoidFunction;
   isStreaming: boolean;
   announcement: string | undefined;
+  openClusterDetails: (clusterId: string) => void;
 };
 
 const ChatBotWindow = ({
@@ -49,6 +50,7 @@ const ChatBotWindow = ({
   announcement,
   error,
   resetError,
+  openClusterDetails,
 }: ChatBotWindowProps) => {
   const [triggerScroll, setTriggerScroll] = React.useState(0);
   const [msg, setMsg] = React.useState('');
@@ -145,6 +147,7 @@ const ChatBotWindow = ({
                   isLoading={index === messages.length - 1 && isStreaming}
                   initHeight={isLastMsg ? getVisibleHeight() : undefined}
                   isLastMsg={isLastMsg}
+                  openClusterDetails={openClusterDetails}
                 />
               );
             }
