@@ -30,15 +30,18 @@ export const UILibRoutes = ({
   useFeatureDetection(allEnabledFeatures);
 
   const routes = (
-    <Routes>
-      <Route path="assisted-installer/clusters" element={<Outlet />}>
-        <Route path="~new" element={<NewClusterPage />} />
-        <Route path=":clusterId" element={<ClusterPage />} />
-        <Route index element={<Clusters />} />
-      </Route>
-      {children}
-      <Route path="*" element={<Navigate to="assisted-installer/clusters" />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="assisted-installer/clusters" element={<Outlet />}>
+          <Route path="~new" element={<NewClusterPage />} />
+          <Route path=":clusterId" element={<ClusterPage />} />
+          <Route index element={<Clusters />} />
+        </Route>
+        {children}
+        <Route path="*" element={<Navigate to="assisted-installer/clusters" />} />
+      </Routes>
+      {additionalComponents}
+    </>
   );
 
   return (
@@ -51,7 +54,6 @@ export const UILibRoutes = ({
       ) : (
         routes
       )}
-      {additionalComponents}
     </Provider>
   );
 };
