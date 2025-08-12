@@ -12,6 +12,7 @@ import {
   Message,
   MessageBar,
   MessageBox,
+  MessageBoxHandle,
 } from '@patternfly-6/chatbot';
 import {
   Alert,
@@ -69,6 +70,7 @@ const ChatBotWindow = ({
   onClose,
   username,
 }: ChatBotWindowProps) => {
+  const [triggerScroll, setTriggerScroll] = React.useState(0);
   const [msg, setMsg] = React.useState('');
   const [error, setError] = React.useState<string>();
   const [isStreaming, setIsStreaming] = React.useState(false);
@@ -78,7 +80,8 @@ const ChatBotWindow = ({
   );
   const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
-  const hasInitiallyScrolled = React.useRef(false);
+  const lastUserMsgRef = React.useRef<HTMLDivElement>(null);
+  const msgBoxRef = React.useRef<MessageBoxHandle>(null);
 
   React.useEffect(() => {
     !isConfirmModalOpen && focusNewMessageBox();
@@ -99,16 +102,26 @@ const ChatBotWindow = ({
     }
   };
 
-  const scrollToBottom = React.useCallback((behavior: ScrollBehavior = 'smooth') => {
-    scrollToBottomRef.current?.scrollIntoView({ behavior });
-  }, []);
-
   React.useEffect(() => {
-    // Determine scroll behavior: auto for initial render with existing messages, smooth for new content
-    const scrollBehavior = !hasInitiallyScrolled.current && messages.length > 0 ? 'auto' : 'smooth';
-    scrollToBottom(scrollBehavior);
-    hasInitiallyScrolled.current = true;
-  }, [messages, scrollToBottom]);
+    if (triggerScroll === 0) {
+      scrollToBottomRef.current?.scrollIntoView({ behavior: 'auto' });
+    } else {
+      const msgTop = lastUserMsgRef.current?.offsetTop;
+      if (msgTop !== undefined && msgBoxRef.current) {
+        msgBoxRef.current.scrollTo({
+          top: msgTop,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [triggerScroll]);
+
+  const getVisibleHeight = () => {
+    if (lastUserMsgRef.current && msgBoxRef.current) {
+      return msgBoxRef.current.clientHeight - lastUserMsgRef.current.clientHeight - 64;
+    }
+    return undefined;
+  };
 
   const handleSend = async (message: string | number) => {
     setError(undefined);
@@ -117,6 +130,7 @@ const ChatBotWindow = ({
     let eventEnded = false;
     const timestamp = new Date().toLocaleString();
     try {
+      setAnnouncement(`Message from User: ${message}. Message from Bot is loading.`);
       setMessages((msgs) => [
         ...msgs,
         {
@@ -128,13 +142,6 @@ const ChatBotWindow = ({
             timestamp,
           },
         },
-      ]);
-      setAnnouncement(`Message from User: ${message}. Message from Bot is loading.`);
-
-      let convId = '';
-
-      setMessages((msgs) => [
-        ...msgs,
         {
           pfProps: {
             role: botRole,
@@ -145,6 +152,9 @@ const ChatBotWindow = ({
           },
         },
       ]);
+      setTriggerScroll(triggerScroll + 1);
+
+      let convId = '';
 
       const resp = await onApiCall('/v1/streaming_query', {
         method: 'POST',
@@ -291,6 +301,8 @@ const ChatBotWindow = ({
     [onApiCall, conversationId, messages],
   );
 
+  const lastUserMsg = [...messages].reverse().findIndex((msg) => msg.pfProps.role === userRole);
+
   return (
     <Chatbot displayMode={ChatbotDisplayMode.default}>
       <ChatbotHeader>
@@ -325,7 +337,7 @@ const ChatBotWindow = ({
         </ChatbotHeaderTitle>
       </ChatbotHeader>
       <ChatbotContent>
-        <MessageBox announcement={announcement} position={'top'}>
+        <MessageBox announcement={announcement} position={'top'} ref={msgBoxRef}>
           {isAlertVisible && (
             <Alert
               variant="info"
@@ -366,6 +378,7 @@ const ChatBotWindow = ({
             />
           )}
           {messages.map((message, index) => {
+            const isLastMsg = index === messages.length - 1;
             const messageKey = conversationId ? `${conversationId}-${index}` : index;
             const isBotMessage = message.pfProps.role === botRole;
             if (isBotMessage) {
@@ -375,13 +388,20 @@ const ChatBotWindow = ({
                   messageIndex={index}
                   message={message}
                   onFeedbackSubmit={onFeedbackSubmit}
-                  onScrollToBottom={scrollToBottom}
                   isLoading={index === messages.length - 1 && isStreaming}
+                  initHeight={isLastMsg ? getVisibleHeight() : undefined}
+                  isLastMsg={isLastMsg}
                 />
               );
             }
 
-            return <Message key={messageKey} {...message.pfProps} />;
+            return (
+              <Message
+                key={messageKey}
+                {...message.pfProps}
+                innerRef={index === messages.length - 1 - lastUserMsg ? lastUserMsgRef : undefined}
+              />
+            );
           })}
           {error && (
             <ChatbotAlert
