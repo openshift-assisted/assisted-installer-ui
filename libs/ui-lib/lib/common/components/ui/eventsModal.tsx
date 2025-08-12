@@ -91,7 +91,12 @@ export const EventsModal = ({
       aria-label={t('ai:Displays events')}
       hasNoBodyWrapper
       actions={[
-        <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
+        <Button
+          key="close"
+          variant={ButtonVariant.primary}
+          onClick={onClose}
+          data-testid="close-events-modal"
+        >
           {t('ai:Close')}
         </Button>,
       ]}
