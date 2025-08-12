@@ -56,3 +56,15 @@ export const DESCRIPTION_SERVICEMESH =
 
 export const DESCRIPTION_LVM =
   'Storage virtualization that offers a more flexible approach for disk space management.';
+
+export const DESCRIPTION_CLUSTER_OBSERVABILITY =
+  'Provides observability and monitoring capabilities for your OpenShift cluster.';
+
+export const DESCRIPTION_NUMA_RESOURCES =
+  'Provides NUMA-aware scheduling to improve workload performance on NUMA systems.';
+
+export const DESCRIPTION_OADP =
+  'Backup and restore OpenShift cluster resources and persistent volumes.';
+
+export const DESCRIPTION_METALLB =
+  'Provides load balancer services for bare metal OpenShift clusters.';
