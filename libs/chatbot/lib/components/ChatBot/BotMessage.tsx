@@ -4,7 +4,7 @@ import MessageLoading from '@patternfly-6/chatbot/dist/cjs/Message/MessageLoadin
 import { MsgProps } from './helpers';
 import { Button, Stack, StackItem } from '@patternfly-6/react-core';
 import { saveAs } from 'file-saver';
-import { DownloadIcon } from '@patternfly-6/react-icons';
+import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly-6/react-icons';
 import FeedbackForm from './FeedbackCard';
 
 // eslint-disable-next-line
@@ -25,6 +25,7 @@ export type BotMessageProps = {
   onApiCall: typeof fetch;
   conversationId: string | undefined;
   userMsg: string;
+  openClusterDetails: (clusterId: string) => void;
 };
 
 const BotMessage = ({
@@ -35,6 +36,7 @@ const BotMessage = ({
   isLastMsg,
   conversationId,
   userMsg,
+  openClusterDetails,
 }: BotMessageProps) => {
   const [openFeedback, setOpenFeedback] = React.useState(false);
   const [height, setHeight] = React.useState(initHeight);
@@ -112,22 +114,33 @@ const BotMessage = ({
               {isLoading && <MsgLoading />}
               {!isLoading && message.actions?.length && (
                 <Stack hasGutter>
-                  {message.actions.map(({ title, url }, idx) => (
+                  {message.actions.map(({ title, url, clusterId }, idx) => (
                     <StackItem key={idx}>
-                      <Button
-                        onClick={() => {
-                          try {
-                            saveAs(url);
-                          } catch (error) {
-                            // eslint-disable-next-line
-                            console.error('Download failed: ', error);
-                          }
-                        }}
-                        variant="secondary"
-                        icon={<DownloadIcon />}
-                      >
-                        {title}
-                      </Button>
+                      {url && (
+                        <Button
+                          onClick={() => {
+                            try {
+                              saveAs(url);
+                            } catch (error) {
+                              // eslint-disable-next-line
+                              console.error('Download failed: ', error);
+                            }
+                          }}
+                          variant="secondary"
+                          icon={<DownloadIcon />}
+                        >
+                          {title}
+                        </Button>
+                      )}
+                      {clusterId && (
+                        <Button
+                          onClick={() => openClusterDetails(clusterId)}
+                          variant="secondary"
+                          icon={<ExternalLinkAltIcon />}
+                        >
+                          {title}
+                        </Button>
+                      )}
                     </StackItem>
                   ))}
                 </Stack>

@@ -1,9 +1,11 @@
 import isString from 'lodash-es/isString.js';
 import { Message } from '@patternfly-6/chatbot';
 
+type MsgAction = { title: string; url?: string; clusterId?: string };
+
 export type MsgProps = {
   pfProps: React.ComponentProps<typeof Message>;
-  actions?: { title: string; url: string }[];
+  actions?: MsgAction[];
 };
 
 export const MESSAGE_BAR_ID = 'assisted-chatbot__message-bar';
@@ -30,7 +32,7 @@ export const getToolAction = ({
   toolName,
   response,
   args,
-}: GetToolActionArgs): { title: string; url: string } | undefined => {
+}: GetToolActionArgs): MsgAction | undefined => {
   switch (toolName) {
     case 'cluster_iso_download_url': {
       if (!response) {
@@ -68,6 +70,23 @@ export const getToolAction = ({
         return {
           title: `Download ${args?.file_name || 'credentials'}`,
           url: res.url,
+        };
+      }
+    }
+    case 'install_cluster': {
+      if (args?.cluster_id) {
+        return {
+          title: 'Open cluster details page',
+          clusterId: args.cluster_id,
+        };
+      }
+    }
+    case 'create_cluster': {
+      // TODO we need better response format to detect failures
+      if (response && !response.startsWith('Failed')) {
+        return {
+          title: 'Open cluster details page',
+          clusterId: response,
         };
       }
     }
