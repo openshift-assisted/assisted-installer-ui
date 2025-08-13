@@ -15,6 +15,12 @@ const ConfirmNewChatModal = ({
   onConfirm: VoidFunction;
   onCancel: VoidFunction;
 }) => {
+  const btnRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    btnRef.current?.focus();
+  }, []);
+
   return (
     <Modal variant={ModalVariant.small} isOpen onClose={onCancel}>
       <ModalHeader title="Start a new chat?" />
@@ -26,7 +32,7 @@ const ConfirmNewChatModal = ({
         <Button variant="link" onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={onConfirm}>
+        <Button variant="danger" onClick={onConfirm} ref={btnRef}>
           Erase and start a new chat
         </Button>
       </ModalFooter>

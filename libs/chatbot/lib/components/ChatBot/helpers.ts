@@ -20,34 +20,6 @@ export const getErrorMessage = (error: unknown) => {
   return 'Unexpected error';
 };
 
-export const focusSendMessageInput = () => {
-  requestAnimationFrame(() => {
-    const inputElement = document.querySelector(`#${MESSAGE_BAR_ID}`) as HTMLElement;
-    if (inputElement) {
-      inputElement.focus();
-    }
-  });
-};
-
-// Helper function to get the user question for a bot message
-export const getUserQuestionForBotAnswer = (
-  messages: MsgProps[],
-  messageIndex: number,
-): string | undefined => {
-  if (messageIndex === 0) {
-    return undefined;
-  }
-  // Look backwards from the previous message to find the most recent user message
-  for (let i = messageIndex - 1; i >= 0; i--) {
-    const msg = messages[i];
-    if (msg?.pfProps.role === userRole && msg.pfProps.content) {
-      return String(msg.pfProps.content);
-    }
-  }
-
-  return undefined;
-};
-
 type GetToolActionArgs = {
   toolName: string;
   response: string;
