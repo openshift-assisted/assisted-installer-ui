@@ -118,7 +118,8 @@ const BotMessage = ({
                     <StackItem key={idx}>
                       {url && (
                         <Button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault();
                             try {
                               saveAs(url);
                             } catch (error) {
@@ -127,6 +128,8 @@ const BotMessage = ({
                             }
                           }}
                           variant="secondary"
+                          component="a"
+                          href={url}
                           icon={<DownloadIcon />}
                         >
                           {title}
