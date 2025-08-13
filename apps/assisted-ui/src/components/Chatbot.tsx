@@ -1,4 +1,6 @@
+import * as React from 'react';
 import { ChatBot as AIChatBot, ChatBotWindowProps } from '@openshift-assisted/chatbot';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import '@patternfly-6/react-core/dist/styles/base.css';
 import '@patternfly-6/chatbot/dist/css/main.css';
@@ -46,7 +48,8 @@ export const getOcmToken = async () => {
 };
 
 const ChatBot = () => {
-  const onApiCall: ChatBotWindowProps['onApiCall'] = async (input, init) => {
+  const navigate = useNavigate();
+  const onApiCall = React.useCallback<ChatBotWindowProps['onApiCall']>(async (input, init) => {
     const token = await getOcmToken();
     return fetch(`/chatbot${input.toString()}`, {
       ...(init || {}),
@@ -55,9 +58,20 @@ const ChatBot = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-  };
+  }, []);
 
-  return <AIChatBot onApiCall={onApiCall} username={'Assisted Installer user'} />;
+  const openClusterDetails = React.useCallback<ChatBotWindowProps['openClusterDetails']>(
+    (id) => navigate(`/assisted-installer/clusters/${id}`),
+    [navigate],
+  );
+
+  return (
+    <AIChatBot
+      onApiCall={onApiCall}
+      username={'Assisted Installer user'}
+      openClusterDetails={openClusterDetails}
+    />
+  );
 };
 
 export default ChatBot;

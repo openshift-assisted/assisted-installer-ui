@@ -68,7 +68,6 @@ export const useMessages = ({
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include',
         });
 
         if (!resp.ok) {
