@@ -68,7 +68,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const isABIEnabled = useFeature('ASSISTED_INSTALLER_ABI');
 
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
@@ -165,7 +164,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               <GridItem>
                 <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
               </GridItem>
-              {!isSingleClusterFeatureEnabled && isABIEnabled && (
+              {!isSingleClusterFeatureEnabled && (
                 <GridItem>
                   <Switch
                     id="disconnected-install-switch"
