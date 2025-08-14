@@ -27,8 +27,7 @@ import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/W
 
 const BasicStep = () => {
   const { t } = useTranslation();
-  const { installDisconnected, setInstallDisconnected, moveNext, moveBack } =
-    useClusterWizardContext();
+  const { installDisconnected, setInstallDisconnected, moveNext } = useClusterWizardContext();
 
   return (
     <Formik
@@ -39,7 +38,7 @@ const BasicStep = () => {
     >
       <ClusterWizardStep
         navigation={<ClusterWizardNavigation />}
-        footer={<ClusterWizardFooter onNext={moveNext} onBack={moveBack} />}
+        footer={<ClusterWizardFooter onNext={moveNext} />}
       >
         <WithErrorBoundary title="Failed to load Basic step">
           <Grid hasGutter>
