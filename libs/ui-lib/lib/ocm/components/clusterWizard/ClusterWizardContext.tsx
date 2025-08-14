@@ -7,8 +7,8 @@ import { UISettingsValues } from '../../../common';
 export type ClusterWizardContextType = {
   currentStepId: ClusterWizardStepsType;
   setCurrentStepId(stepId: ClusterWizardStepsType): void;
-  moveBack(): void;
-  moveNext(): void;
+  moveBack: () => void;
+  moveNext: () => void;
   wizardStepIds: ClusterWizardStepsType[];
   onUpdateStaticIpView(view: StaticIpView): void;
   onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
@@ -18,6 +18,8 @@ export type ClusterWizardContextType = {
   setWizardPerPage: (perPage: number) => void;
   updateUISettings: (data: UISettingsValues) => Promise<void>;
   uiSettings?: UISettingsValues;
+  installDisconnected: boolean;
+  setInstallDisconnected: (enabled: boolean) => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);
