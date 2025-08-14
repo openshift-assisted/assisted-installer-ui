@@ -597,6 +597,7 @@
   "ai:Node Maintenance requirements": "Node Maintenance requirements",
   "ai:Nodepool": "Nodepool",
   "ai:Nodepool conditions": "Nodepool conditions",
+  "ai:Nodepool is not ready": "Nodepool is not ready",
   "ai:Nodepool name": "Nodepool name",
   "ai:Non overlapping subnets": "Non overlapping subnets",
   "ai:None": "None",
