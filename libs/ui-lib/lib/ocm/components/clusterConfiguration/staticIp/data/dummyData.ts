@@ -10,7 +10,7 @@ import {
 } from './dataTypes';
 import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';
-import { getShownProtocolVersions } from './protocolVersion';
+import { getShownProtocolVersions } from '../../../../../common/components/staticIP/protocolVersion';
 
 const DUMMY_MAC_4 = '01:23:45:67:89:AB';
 const DUMMY_MAC_6 = '01:23:45:67:89:AC';

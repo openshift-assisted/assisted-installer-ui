@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
-import BMCForm from '../Agent/BMCForm';
+import BMCForm from '../Agent/BMCForm/BMCForm';
 import { AddBmcHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
-import ProvisioningConfigErrorAlert from './ProvisioningConfigErrorAlert';
 
 const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
   isOpen,
@@ -28,13 +27,13 @@ const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
       id="add-host-modal"
     >
       <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        <ProvisioningConfigErrorAlert error={provisioningConfigError} />
         <BMCForm
           onCreateBMH={onCreateBMH}
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}
           usedHostnames={usedHostnames}
+          provisioningConfigError={provisioningConfigError}
         />
       </EnvironmentErrors>
     </Modal>
