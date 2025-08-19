@@ -1,6 +1,5 @@
-FROM registry.ci.openshift.org/edge-infrastructure/nodejs-18-minimal:latest as ui-build
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.19 AS ui-build
 USER root
-RUN microdnf install -y rsync git
 
 WORKDIR /app
 COPY --chown=1001:0 / /app
