@@ -66,7 +66,6 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
         MAX_PREFIX_LENGTH[protocolVersion],
         `Prefix length must be less than or equal to ${MAX_PREFIX_LENGTH[protocolVersion]}`,
       )
-      .nullable()
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
