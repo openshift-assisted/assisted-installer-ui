@@ -7,6 +7,8 @@ import { saveAs } from 'file-saver';
 import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly-6/react-icons';
 import FeedbackForm from './FeedbackCard';
 
+import AIAvatar from '../../assets/lightspeed-logo.svg';
+
 // eslint-disable-next-line
 // @ts-ignore
 const MsgLoading = () => <MessageLoading loadingWord="Loading message" />;
@@ -77,6 +79,15 @@ const BotMessage = ({
     <>
       <Message
         {...message.pfProps}
+        name="Red Hat Lightspeed"
+        avatarProps={{
+          style: {
+            height: 48,
+            width: 48,
+          },
+        }}
+        avatar={AIAvatar}
+        hasRoundAvatar={false}
         style={height && isLastMsg ? { minHeight: height } : undefined}
         actions={
           isLoading

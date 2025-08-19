@@ -11,7 +11,6 @@ type ChatBotProps = Pick<ChatBotWindowProps, 'onApiCall' | 'username' | 'openClu
 const ChatBot = ({ onApiCall, username, openClusterDetails }: ChatBotProps) => {
   const messagesProps = useMessages({
     onApiCall,
-    username,
   });
   const [chatbotVisible, setChatbotVisible] = React.useState<boolean>(false);
   return (

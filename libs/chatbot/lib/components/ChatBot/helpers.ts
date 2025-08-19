@@ -4,7 +4,7 @@ import { Message } from '@patternfly-6/chatbot';
 type MsgAction = { title: string; url?: string; clusterId?: string };
 
 export type MsgProps = {
-  pfProps: React.ComponentProps<typeof Message>;
+  pfProps: Pick<React.ComponentProps<typeof Message>, 'role' | 'content' | 'timestamp'>;
   actions?: MsgAction[];
 };
 

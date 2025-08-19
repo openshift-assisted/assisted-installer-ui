@@ -14,7 +14,7 @@ import {
   MessageBox,
   MessageBoxHandle,
 } from '@patternfly-6/chatbot';
-import { Button, Flex, FlexItem, Tooltip } from '@patternfly-6/react-core';
+import { Brand, Button, Flex, FlexItem, Tooltip } from '@patternfly-6/react-core';
 import { PlusIcon } from '@patternfly-6/react-icons/dist/js/icons/plus-icon';
 import { TimesIcon } from '@patternfly-6/react-icons/dist/js/icons/times-icon';
 
@@ -22,6 +22,9 @@ import BotMessage from './BotMessage';
 import ConfirmNewChatModal from './ConfirmNewChatModal';
 import { MESSAGE_BAR_ID, botRole, userRole, MsgProps } from './helpers';
 import AIAlert from './AIAlert';
+
+import LightSpeedLogo from '../../assets/lightspeed-logo.svg';
+import UserAvatar from '../../assets/avatarimg.svg';
 
 export type ChatBotWindowProps = {
   error?: string;
@@ -110,6 +113,13 @@ const ChatBotWindow = ({
               </Tooltip>
             </FlexItem>
             <FlexItem>
+              <Brand
+                src={LightSpeedLogo}
+                alt="Red Hat Lightspeed"
+                style={{ height: 40, width: 40 }}
+              />
+            </FlexItem>
+            <FlexItem>
               <Tooltip content="Close chat">
                 <Button
                   variant="plain"
@@ -157,6 +167,15 @@ const ChatBotWindow = ({
                 key={messageKey}
                 {...message.pfProps}
                 innerRef={index === messages.length - 1 - lastUserMsg ? lastUserMsgRef : undefined}
+                avatar={UserAvatar}
+                name={username}
+                hasRoundAvatar={false}
+                avatarProps={{
+                  style: {
+                    height: 48,
+                    width: 48,
+                  },
+                }}
               />
             );
           })}
