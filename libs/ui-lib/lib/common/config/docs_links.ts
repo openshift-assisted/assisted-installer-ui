@@ -162,7 +162,8 @@ export const getMtuLink = (ocpVersion?: string) =>
     ocpVersion,
   )}/html/networking/changing-cluster-network-mtu#nw-cluster-mtu-change-about_changing-cluster-network-mtu`;
 
-export const AUTHORINO_OPERATOR_LINK = 'https://github.com/Kuadrant/authorino-operator';
+export const AUTHORINO_OPERATOR_LINK =
+  'https://github.com/Kuadrant/authorino-operator/blob/main/README.md';
 
 export const getLsoLink = (ocpVersion?: string) => {
   const version = getDocsOpenshiftVersion(ocpVersion);
