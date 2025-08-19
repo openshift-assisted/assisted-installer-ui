@@ -88,7 +88,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
       return `Prefix length must be at most ${MAX_PREFIX_LENGTH[protocolVersion]}`;
     }
     return undefined;
-  };
+  }
 
   const fieldId = getFieldId(`${fieldName}`, 'input');
   return (
