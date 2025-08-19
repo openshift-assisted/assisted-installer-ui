@@ -76,20 +76,6 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
     const cidr = getMachineNetworkCidr(value);
     return getHumanizedSubnetRange(getAddressObject(cidr, protocolVersion));
   }, [value, protocolVersion, errorMessage]);
-
-  const handleValidatePrefixLength = (value: string) => {
-    if (!value || value === '') {
-      return 'Prefix length is required';
-    }
-    if (Number(value) < MIN_PREFIX_LENGTH) {
-      return `Prefix length must be at least ${MIN_PREFIX_LENGTH}`;
-    }
-    if (Number(value) > MAX_PREFIX_LENGTH[protocolVersion]) {
-      return `Prefix length must be at most ${MAX_PREFIX_LENGTH[protocolVersion]}`;
-    }
-    return undefined;
-  }
-
   const fieldId = getFieldId(`${fieldName}`, 'input');
   return (
     <FormGroup
@@ -124,7 +110,6 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
                 ? MAX_PREFIX_LENGTH.ipv4
                 : MAX_PREFIX_LENGTH.ipv6
             }
-            validate={handleValidatePrefixLength}
           />
         </FlexItem>
       </Flex>
