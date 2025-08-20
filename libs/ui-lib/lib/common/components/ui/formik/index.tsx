@@ -17,6 +17,7 @@ export { default as RemovableField } from './RemovableField';
 export { default as AddButton } from './AddButton';
 export { default as PencilEditField } from './PencilEditField';
 export { default as AlertFormikError } from './AlertFormikError';
+export { default as SelectFieldWithSearch } from './SelectFieldWithSearch';
 
 export * from './utils';
 export * from './PullSecretField';

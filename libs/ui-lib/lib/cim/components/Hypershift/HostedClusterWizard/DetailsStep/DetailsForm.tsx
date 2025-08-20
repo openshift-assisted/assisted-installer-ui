@@ -37,20 +37,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
     [ocpVersions],
   );
 
-  const additionalSelectOptions = React.useMemo(() => {
+  const additionalSelectOption = React.useMemo(() => {
     if (
       values.customOpenshiftSelect &&
-      !selectOptions.some((option) => option.value === values.customOpenshiftSelect?.value)
+      !selectOptions.some((option) => option.value === values.customOpenshiftSelect)
     ) {
-      return [
-        {
-          value: values.customOpenshiftSelect.value,
-          label: values.customOpenshiftSelect.label,
-        },
-      ];
+      return allVersions.find((version) => version.value === values.customOpenshiftSelect);
     }
-    return [];
-  }, [selectOptions, values.customOpenshiftSelect]);
+    return undefined;
+  }, [allVersions, selectOptions, values.customOpenshiftSelect]);
 
   return (
     <Form>
@@ -75,7 +70,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
         versions={ocpVersions}
         showReleasesLink={false}
         showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
-        customItems={additionalSelectOptions}
+        customItem={additionalSelectOption}
       />
       {openshiftVersionModalOpen && (
         <OpenShiftVersionModal

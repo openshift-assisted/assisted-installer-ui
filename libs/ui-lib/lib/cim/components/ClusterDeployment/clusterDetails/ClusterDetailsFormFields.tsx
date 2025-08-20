@@ -69,7 +69,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   React.useEffect(() => {
     if (!versions.length && !values.openshiftVersion) {
       const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
-      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
+      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion?.value);
       setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
       setFieldValue('networkType', getNetworkType(fallbackOpenShiftVersion));
     }
@@ -89,20 +89,15 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     [versions],
   );
 
-  const additionalSelectOptions = React.useMemo(() => {
+  const additionalSelectOption = React.useMemo(() => {
     if (
       values.customOpenshiftSelect &&
-      !selectOptions.some((option) => option.value === values.customOpenshiftSelect?.value)
+      !versions.some((version) => version.value === values.customOpenshiftSelect)
     ) {
-      return [
-        {
-          value: values.customOpenshiftSelect.value,
-          label: values.customOpenshiftSelect.label,
-        },
-      ];
+      return allVersions.find((option) => option.value === values.customOpenshiftSelect);
     }
-    return [];
-  }, [selectOptions, values.customOpenshiftSelect]);
+    return undefined;
+  }, [allVersions, values.customOpenshiftSelect, versions]);
 
   const isDiskEncryptionEnabled =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
@@ -154,7 +149,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
             versions={versions}
             showReleasesLink={false}
             showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
-            customItems={additionalSelectOptions}
+            customItem={additionalSelectOption}
           />
           {openshiftVersionModalOpen && (
             <OpenShiftVersionModal
