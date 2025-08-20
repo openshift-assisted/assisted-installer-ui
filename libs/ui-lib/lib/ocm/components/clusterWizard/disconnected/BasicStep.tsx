@@ -8,7 +8,6 @@ import {
   useTranslation,
 } from '../../../../common';
 import {
-  Switch,
   Split,
   SplitItem,
   TextContent,
@@ -24,10 +23,11 @@ import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
+import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
 
 const BasicStep = () => {
   const { t } = useTranslation();
-  const { installDisconnected, setInstallDisconnected, moveNext } = useClusterWizardContext();
+  const { moveNext } = useClusterWizardContext();
 
   return (
     <Formik
@@ -55,13 +55,7 @@ const BasicStep = () => {
               </Split>
             </GridItem>
             <GridItem>
-              <Switch
-                id="disconnected-install-switch"
-                label="I'm installing on a disconnected/air-gapped/secured environment"
-                isChecked={installDisconnected}
-                onChange={(_, checked) => setInstallDisconnected(checked)}
-                ouiaId="DisconnectedInstall"
-              />
+              <InstallDisconnectedSwitch />
             </GridItem>
             <GridItem>
               <Form id="wizard-cluster-basic-info__form">
