@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, ButtonVariant, FormGroup, Modal, ModalVariant } from '@patternfly/react-core';
 import { OpenShiftSelectWithSearch } from './OpenShiftSelectWithSearch';
 import { HelperTextType } from './OpenShiftVersionDropdown';
@@ -18,14 +18,10 @@ export const OpenShiftVersionModal = ({
   getHelperText,
 }: OpenShiftVersionModalProps) => {
   const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
-  const onClose = () => setOpenshiftVersionModalOpen(false);
-  const [customOpenshiftSelect, setCustomOpenshiftSelect] = useState<OpenshiftVersionOptionType>(); // Cambiar el tipo según lo que esperes aquí
 
-  const handleSelect = () => {
-    if (customOpenshiftSelect) {
-      setFieldValue('customOpenshiftSelect', customOpenshiftSelect);
-    }
-    onClose();
+  const onCancel = () => {
+    setFieldValue('customOpenshiftSelect', null);
+    setOpenshiftVersionModalOpen(false);
   };
 
   return (
@@ -34,14 +30,18 @@ export const OpenShiftVersionModal = ({
       id="available-openshift-versions-modal"
       isOpen
       actions={[
-        <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={handleSelect}>
+        <Button
+          key="select-custom-ocp"
+          variant={ButtonVariant.primary}
+          onClick={() => setOpenshiftVersionModalOpen(false)}
+        >
           Select
         </Button>,
-        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onClose}>
+        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onCancel}>
           Cancel
         </Button>,
       ]}
-      onClose={onClose}
+      onClose={onCancel}
       variant={ModalVariant.small}
     >
       <FormGroup
@@ -50,11 +50,7 @@ export const OpenShiftVersionModal = ({
         label={'OpenShift version'}
         isRequired
       >
-        <OpenShiftSelectWithSearch
-          versions={allVersions}
-          getHelperText={getHelperText}
-          setCustomOpenshiftSelect={setCustomOpenshiftSelect}
-        />
+        <OpenShiftSelectWithSearch versions={allVersions} getHelperText={getHelperText} />
       </FormGroup>
     </Modal>
   );

@@ -19,6 +19,9 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
   const {
     values: { customOpenshiftSelect },
   } = useFormikContext<ClusterDetailsValues>();
+  const { allVersions } = useOpenShiftVersionsContext();
+  const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
+
   const selectOptions = React.useMemo(
     () =>
       versions.map((version) => ({
@@ -32,31 +35,23 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
       })),
     [versions, t],
   );
-  const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
-
-  const showOpenshiftVersionModal = () => {
-    setIsOpenshiftVersionModalOpen(true);
-  };
 
   const updatedSelectOptions = React.useMemo(() => {
     if (
       customOpenshiftSelect &&
-      !selectOptions.find((option) => option.value === customOpenshiftSelect.value)
+      !selectOptions.some((version) => version.value === customOpenshiftSelect)
     ) {
-      return [
-        {
-          label: customOpenshiftSelect.label,
-          value: customOpenshiftSelect.value,
-        },
-      ];
+      return allVersions.find((version) => version.value === customOpenshiftSelect);
     }
-    return [];
-  }, [selectOptions, customOpenshiftSelect]);
+    return undefined;
+  }, [allVersions, customOpenshiftSelect, selectOptions]);
 
-  const { allVersions } = useOpenShiftVersionsContext();
-
-  const getHelperText = (value: string | undefined, inModal?: boolean) => {
+  const getHelperText = (value: string | null, inModal?: boolean) => {
     return getOpenshiftVersionHelperText(allVersions, value, t, inModal);
+  };
+
+  const showOpenshiftVersionModal = () => {
+    setIsOpenshiftVersionModalOpen(true);
   };
 
   return (
@@ -68,7 +63,7 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
         getHelperText={getHelperText}
         showReleasesLink={isInOcm}
         showOpenshiftVersionModal={showOpenshiftVersionModal}
-        customItems={updatedSelectOptions}
+        customItem={updatedSelectOptions}
       />
       {isOpenshiftVersionModalOpen && (
         <OpenShiftVersionModal

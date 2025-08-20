@@ -730,6 +730,7 @@
   "ai:Saving changes...": "Saving changes...",
   "ai:Secret and keys": "Secret and keys",
   "ai:Select all": "Select all",
+  "ai:Select an OpenShift version from the list or use the type ahead to narrow down the list.": "Select an OpenShift version from the list or use the type ahead to narrow down the list.",
   "ai:Select how you'd like to add hosts (Discovery ISO, iPXE, or BMC form) and follow the instructions that appear.": "Select the method of adding hosts (Discovery ISO, iPXE, or BMC form) and follow the instructions.",
   "ai:Select none": "Select none",
   "ai:Select one or more locations to view hosts": "Select one or more locations to view hosts",

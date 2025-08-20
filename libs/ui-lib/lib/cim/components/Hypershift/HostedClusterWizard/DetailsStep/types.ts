@@ -8,7 +8,7 @@ export type DetailsFormValues = {
   openshiftVersion: string;
   pullSecret: string;
   baseDnsDomain: string;
-  customOpenshiftSelect: OpenshiftVersionOptionType | null;
+  customOpenshiftSelect: string | null;
 };
 
 type UseDetailsFormikArgs = {
