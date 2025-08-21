@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
-import { Grid, GridItem, Switch } from '@patternfly/react-core';
+import { Grid, GridItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -32,6 +32,7 @@ import {
   ManagedDomain,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeature } from '../../hooks/use-feature';
+import InstallDisconnectedSwitch from './disconnected/InstallDisconnectedSwitch';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -62,8 +63,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     navigation,
   } = props;
 
-  const { installDisconnected, setInstallDisconnected, customManifestsStep, moveNext } =
-    useClusterWizardContext();
+  const { customManifestsStep, moveNext } = useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
@@ -166,13 +166,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               </GridItem>
               {!isSingleClusterFeatureEnabled && (
                 <GridItem>
-                  <Switch
-                    id="disconnected-install-switch"
-                    label="I'm installing on a disconnected/air-gapped/secured environment"
-                    isChecked={installDisconnected}
-                    onChange={(_, checked) => setInstallDisconnected(checked)}
-                    ouiaId="DisconnectedInstall"
-                  />
+                  <InstallDisconnectedSwitch isDisabled={!!cluster} />
                 </GridItem>
               )}
               <GridItem span={12} lg={10} xl={9} xl2={7}>
