@@ -7,6 +7,10 @@ import {
   ChatbotFooter,
   ChatbotFootnote,
   ChatbotHeader,
+  ChatbotHeaderActions,
+  ChatbotHeaderCloseButton,
+  ChatbotHeaderMain,
+  ChatbotHeaderMenu,
   ChatbotHeaderTitle,
   ChatbotWelcomePrompt,
   Message,
@@ -14,17 +18,15 @@ import {
   MessageBox,
   MessageBoxHandle,
 } from '@patternfly-6/chatbot';
-import { Brand, Button, Flex, FlexItem, Tooltip } from '@patternfly-6/react-core';
-import { PlusIcon } from '@patternfly-6/react-icons/dist/js/icons/plus-icon';
-import { TimesIcon } from '@patternfly-6/react-icons/dist/js/icons/times-icon';
+import { Brand, EmptyState, Spinner } from '@patternfly-6/react-core';
 
 import BotMessage from './BotMessage';
-import ConfirmNewChatModal from './ConfirmNewChatModal';
 import { MESSAGE_BAR_ID, botRole, userRole, MsgProps } from './helpers';
 import AIAlert from './AIAlert';
 
 import LightSpeedLogo from '../../assets/lightspeed-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
+import ChatBotHistory from './ChatBotHistory';
 
 export type ChatBotWindowProps = {
   error?: string;
@@ -39,6 +41,8 @@ export type ChatBotWindowProps = {
   isStreaming: boolean;
   announcement: string | undefined;
   openClusterDetails: (clusterId: string) => void;
+  isLoading: boolean;
+  loadConversation: (convId: string) => Promise<unknown>;
 };
 
 const ChatBotWindow = ({
@@ -54,20 +58,22 @@ const ChatBotWindow = ({
   error,
   resetError,
   openClusterDetails,
+  isLoading,
+  loadConversation,
 }: ChatBotWindowProps) => {
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [triggerScroll, setTriggerScroll] = React.useState(0);
   const [msg, setMsg] = React.useState('');
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
   const lastUserMsgRef = React.useRef<HTMLDivElement>(null);
   const msgBoxRef = React.useRef<MessageBoxHandle>(null);
   const msgBarRef = React.useRef<HTMLTextAreaElement>(null);
 
   React.useLayoutEffect(() => {
-    if (!isConfirmModalOpen) {
-      msgBarRef.current?.focus();
+    if (!isDrawerOpen) {
+      requestAnimationFrame(() => msgBarRef.current?.focus());
     }
-  }, [isConfirmModalOpen]);
+  }, [isDrawerOpen, isLoading]);
 
   React.useEffect(() => {
     if (triggerScroll === 0) {
@@ -81,7 +87,7 @@ const ChatBotWindow = ({
         });
       }
     }
-  }, [triggerScroll]);
+  }, [triggerScroll, isLoading]);
 
   const getVisibleHeight = () => {
     if (lastUserMsgRef.current && msgBoxRef.current) {
@@ -94,131 +100,122 @@ const ChatBotWindow = ({
 
   return (
     <Chatbot displayMode={ChatbotDisplayMode.default}>
-      <ChatbotHeader>
-        <ChatbotHeaderTitle>
-          <Flex
-            justifyContent={{ default: 'justifyContentSpaceBetween' }}
-            className="pf-v6-u-w-100"
-          >
-            <FlexItem>
-              <Tooltip content="New chat">
-                <Button
-                  variant="plain"
-                  aria-label="New chat"
-                  id="new-chat-button"
-                  icon={<PlusIcon size={40} />}
-                  onClick={() => setIsConfirmModalOpen(true)}
-                  isDisabled={messages.length === 0}
-                />
-              </Tooltip>
-            </FlexItem>
-            <FlexItem>
-              <Brand
-                src={LightSpeedLogo}
-                alt="Red Hat Lightspeed"
-                style={{ height: 40, width: 40 }}
+      <ChatBotHistory
+        isOpen={isDrawerOpen}
+        setIsOpen={setIsDrawerOpen}
+        onApiCall={onApiCall}
+        startNewConversation={() => {
+          startNewConversation();
+          setIsDrawerOpen(false);
+        }}
+        loadConversation={(id) => {
+          setTriggerScroll(0);
+          return loadConversation(id);
+        }}
+        conversationId={conversationId}
+      >
+        <>
+          <ChatbotHeader>
+            <ChatbotHeaderMain>
+              <ChatbotHeaderMenu
+                aria-expanded={isDrawerOpen}
+                onMenuToggle={() => setIsDrawerOpen(!isDrawerOpen)}
               />
-            </FlexItem>
-            <FlexItem>
-              <Tooltip content="Close chat">
-                <Button
-                  variant="plain"
-                  aria-label="Close chat"
-                  id="close-chat-button"
-                  icon={<TimesIcon size={40} />}
-                  onClick={onClose}
+              <ChatbotHeaderTitle>
+                <Brand
+                  src={LightSpeedLogo}
+                  alt="Red Hat Lightspeed"
+                  style={{ height: 40, width: 40 }}
                 />
-              </Tooltip>
-            </FlexItem>
-          </Flex>
-        </ChatbotHeaderTitle>
-      </ChatbotHeader>
-      <ChatbotContent>
-        <MessageBox announcement={announcement} position={'top'} ref={msgBoxRef}>
-          <AIAlert />
-          {messages.length === 0 && (
-            <ChatbotWelcomePrompt
-              title={`Hi, ${username}!`}
-              description="How can I help you today?"
-            />
-          )}
-          {messages.map((message, index) => {
-            const isLastMsg = index === messages.length - 1;
-            const messageKey = conversationId ? `${conversationId}-${index}` : index;
-            const isBotMessage = message.pfProps.role === botRole;
-            if (isBotMessage) {
-              return (
-                <BotMessage
-                  key={messageKey}
-                  message={message}
-                  onApiCall={onApiCall}
-                  conversationId={conversationId}
-                  userMsg={index > 0 ? messages[index - 1].pfProps.content || '' : ''}
-                  isLoading={index === messages.length - 1 && isStreaming}
-                  initHeight={isLastMsg ? getVisibleHeight() : undefined}
-                  isLastMsg={isLastMsg}
-                  openClusterDetails={openClusterDetails}
-                />
-              );
-            }
+              </ChatbotHeaderTitle>
+            </ChatbotHeaderMain>
+            <ChatbotHeaderActions>
+              <ChatbotHeaderCloseButton onClick={onClose} />
+            </ChatbotHeaderActions>
+          </ChatbotHeader>
+          <ChatbotContent>
+            {isLoading ? (
+              <EmptyState titleText="Loading conversation" headingLevel="h4" icon={Spinner} />
+            ) : (
+              <MessageBox announcement={announcement} position={'top'} ref={msgBoxRef}>
+                <AIAlert />
+                {messages.length === 0 && (
+                  <ChatbotWelcomePrompt
+                    title={`Hi, ${username}!`}
+                    description="How can I help you today?"
+                  />
+                )}
+                {messages.map((message, index) => {
+                  const isLastMsg = index === messages.length - 1;
+                  const messageKey = conversationId ? `${conversationId}-${index}` : index;
+                  const isBotMessage = message.pfProps.role === botRole;
+                  if (isBotMessage) {
+                    return (
+                      <BotMessage
+                        key={messageKey}
+                        message={message}
+                        onApiCall={onApiCall}
+                        conversationId={conversationId}
+                        userMsg={index > 0 ? messages[index - 1].pfProps.content || '' : ''}
+                        isLoading={index === messages.length - 1 && isStreaming}
+                        initHeight={isLastMsg ? getVisibleHeight() : undefined}
+                        isLastMsg={isLastMsg}
+                        openClusterDetails={openClusterDetails}
+                      />
+                    );
+                  }
 
-            return (
-              <Message
-                key={messageKey}
-                {...message.pfProps}
-                innerRef={index === messages.length - 1 - lastUserMsg ? lastUserMsgRef : undefined}
-                avatar={UserAvatar}
-                name={username}
-                hasRoundAvatar={false}
-                avatarProps={{
-                  style: {
-                    height: 48,
-                    width: 48,
-                  },
-                }}
-              />
-            );
-          })}
-          {error && (
-            <ChatbotAlert variant="danger" onClose={resetError} title="An error occurred">
-              {error}
-            </ChatbotAlert>
-          )}
-          <div ref={scrollToBottomRef} />
-        </MessageBox>
-      </ChatbotContent>
-      <ChatbotFooter>
-        <MessageBar
-          id={MESSAGE_BAR_ID}
-          onSendMessage={() => {
-            void sentMessage(msg);
-            setTriggerScroll(triggerScroll + 1);
-            setMsg('');
-          }}
-          isSendButtonDisabled={isStreaming || !msg.trim()}
-          hasAttachButton={false}
-          onChange={(_, value) => setMsg(`${value}`)}
-          ref={msgBarRef}
-        />
-        <ChatbotFootnote
-          label="Always review AI generated content prior to use"
-          popover={{
-            title: 'Feature preview',
-            description: `This tool is a preview, and while we strive for accuracy, there's always a possibility of errors. We recommend that you review AI generated content prior to use.`,
-          }}
-        />
-      </ChatbotFooter>
-      {isConfirmModalOpen && (
-        <ConfirmNewChatModal
-          onConfirm={() => {
-            startNewConversation();
-            setIsConfirmModalOpen(false);
-          }}
-          onCancel={() => {
-            setIsConfirmModalOpen(false);
-          }}
-        />
-      )}
+                  return (
+                    <Message
+                      key={messageKey}
+                      {...message.pfProps}
+                      innerRef={
+                        index === messages.length - 1 - lastUserMsg ? lastUserMsgRef : undefined
+                      }
+                      avatar={UserAvatar}
+                      name={username}
+                      hasRoundAvatar={false}
+                      avatarProps={{
+                        style: {
+                          height: 48,
+                          width: 48,
+                        },
+                      }}
+                    />
+                  );
+                })}
+                {error && (
+                  <ChatbotAlert variant="danger" onClose={resetError} title="An error occurred">
+                    {error}
+                  </ChatbotAlert>
+                )}
+                <div ref={scrollToBottomRef} />
+              </MessageBox>
+            )}
+          </ChatbotContent>
+          <ChatbotFooter>
+            <MessageBar
+              id={MESSAGE_BAR_ID}
+              onSendMessage={() => {
+                void sentMessage(msg);
+                setTriggerScroll(triggerScroll + 1);
+                setMsg('');
+              }}
+              isSendButtonDisabled={isStreaming || !msg.trim() || isLoading}
+              hasAttachButton={false}
+              onChange={(_, value) => setMsg(`${value}`)}
+              ref={msgBarRef}
+            />
+            <ChatbotFootnote
+              label="Always review AI generated content prior to use"
+              popover={{
+                title: 'Feature preview',
+                description: `This tool is a preview, and while we strive for accuracy, there's always a possibility of errors. We recommend that you review AI generated content prior to use.`,
+              }}
+            />
+          </ChatbotFooter>
+        </>
+      </ChatBotHistory>
     </Chatbot>
   );
 };
