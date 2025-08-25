@@ -198,7 +198,7 @@ const ChatBotWindow = ({
               id={MESSAGE_BAR_ID}
               onSendMessage={() => {
                 void sentMessage(msg);
-                setTriggerScroll(triggerScroll + 1);
+                setTriggerScroll((prev) => prev + 1);
                 setMsg('');
               }}
               isSendButtonDisabled={isStreaming || !msg.trim() || isLoading}

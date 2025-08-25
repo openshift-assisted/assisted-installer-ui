@@ -32,31 +32,38 @@ const ChatBotHistory = ({
   const [error, setError] = React.useState<string>();
 
   React.useEffect(() => {
-    if (isOpen) {
-      setIsLoading(true);
-      setError(undefined);
-      void (async () => {
-        try {
-          const resp = await onApiCall('/v1/conversations');
-          if (!resp.ok) {
-            throw Error(`Unexpected response code: ${resp.status}`);
-          }
-          const cnvs = (await resp.json()) as ConversationHistory;
-          setConversations(
-            cnvs.conversations
-              .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
-              .map(({ conversation_id, created_at }) => ({
-                id: conversation_id,
-                text: new Date(created_at).toLocaleString(),
-              })),
-          );
-        } catch (e) {
-          setError(getErrorMessage(e));
-        } finally {
-          setIsLoading(false);
-        }
-      })();
+    if (!isOpen) {
+      return;
     }
+    const abortController = new AbortController();
+    setIsLoading(true);
+    setError(undefined);
+    void (async () => {
+      try {
+        const resp = await onApiCall('/v1/conversations');
+        if (!resp.ok) {
+          throw Error(`Unexpected response code: ${resp.status}`);
+        }
+        const cnvs = (await resp.json()) as ConversationHistory;
+        setConversations(
+          cnvs.conversations
+            .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+            .map(({ conversation_id, created_at }) => ({
+              id: conversation_id,
+              text: new Date(created_at).toLocaleString(),
+            })),
+        );
+      } catch (e) {
+        // aborting fetch trows 'AbortError', we can ignore it
+        if (abortController.signal.aborted) {
+          return;
+        }
+        setError(getErrorMessage(e));
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+    return () => abortController.abort();
   }, [isOpen, onApiCall]);
 
   return (

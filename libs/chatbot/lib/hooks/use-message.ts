@@ -17,7 +17,7 @@ import {
   StreamEvent,
 } from '../components/ChatBot/types';
 
-type Conversation = {
+type ConversationHistory = {
   chat_history: {
     messages: { content: string; type: 'user' | 'assistant' }[];
     completed_at: string;
@@ -43,7 +43,7 @@ export const useMessages = ({ onApiCall }: { onApiCall: typeof fetch }) => {
         if (!resp.ok) {
           throw Error(`Unexpected response code: ${resp.status}`);
         }
-        const conv = (await resp.json()) as Conversation;
+        const conv = (await resp.json()) as ConversationHistory;
 
         const msgs = conv.chat_history.flatMap(({ messages, completed_at }) => {
           const timestamp = new Date(completed_at).toLocaleString();
