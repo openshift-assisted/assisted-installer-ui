@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { ChatBotWindowProps } from '../components/ChatBot/ChatBotWindow';
-import { botRole, getErrorMessage, getToolAction, userRole } from '../components/ChatBot/helpers';
+import {
+  botRole,
+  getErrorMessage,
+  getToolAction,
+  MsgProps,
+  userRole,
+} from '../components/ChatBot/helpers';
 
 import {
   isEndStreamEvent,
@@ -11,12 +17,53 @@ import {
   StreamEvent,
 } from '../components/ChatBot/types';
 
+type ConversationHistory = {
+  chat_history: {
+    messages: { content: string; type: 'user' | 'assistant' }[];
+    completed_at: string;
+  }[];
+};
+
 export const useMessages = ({ onApiCall }: { onApiCall: typeof fetch }) => {
   const [error, setError] = React.useState<string>();
   const [isStreaming, setIsStreaming] = React.useState(false);
   const [announcement, setAnnouncement] = React.useState<string>();
   const [messages, setMessages] = React.useState<ChatBotWindowProps['messages']>([]);
   const [conversationId, setConversationId] = React.useState<string>();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const loadConversation = React.useCallback(
+    async (convId: string) => {
+      setIsLoading(true);
+      setError(undefined);
+      setConversationId(convId);
+      setMessages([]);
+      try {
+        const resp = await onApiCall(`/v1/conversations/${convId}`);
+        if (!resp.ok) {
+          throw Error(`Unexpected response code: ${resp.status}`);
+        }
+        const conv = (await resp.json()) as ConversationHistory;
+
+        const msgs = conv.chat_history.flatMap(({ messages, completed_at }) => {
+          const timestamp = new Date(completed_at).toLocaleString();
+          return messages.map<MsgProps>(({ content, type }) => ({
+            pfProps: {
+              content,
+              role: type === 'assistant' ? botRole : userRole,
+              timestamp,
+            },
+          }));
+        });
+        setMessages(msgs);
+      } catch (e) {
+        setError(getErrorMessage(e));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onApiCall],
+  );
 
   const sentMessage = React.useCallback(
     async (message: string) => {
@@ -178,5 +225,7 @@ export const useMessages = ({ onApiCall }: { onApiCall: typeof fetch }) => {
     announcement,
     error,
     resetError,
+    isLoading,
+    loadConversation,
   };
 };
