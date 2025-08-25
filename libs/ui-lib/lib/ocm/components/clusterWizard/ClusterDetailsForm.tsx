@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Grid, GridItem, Split, SplitItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -11,6 +11,7 @@ import {
   getRichTextValidation,
   CpuArchitecture,
   useAlerts,
+  DeveloperPreview,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -166,7 +167,14 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               </GridItem>
               {!isSingleClusterFeatureEnabled && (
                 <GridItem>
-                  <InstallDisconnectedSwitch isDisabled={!!cluster} />
+                  <Split>
+                    <SplitItem>
+                      <InstallDisconnectedSwitch isDisabled={!!cluster} />
+                    </SplitItem>
+                    <SplitItem>
+                      <DeveloperPreview />
+                    </SplitItem>
+                  </Split>
                 </GridItem>
               )}
               <GridItem span={12} lg={10} xl={9} xl2={7}>
