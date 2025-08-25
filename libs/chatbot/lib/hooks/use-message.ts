@@ -2,8 +2,6 @@ import * as React from 'react';
 import { ChatBotWindowProps } from '../components/ChatBot/ChatBotWindow';
 import { botRole, getErrorMessage, getToolAction, userRole } from '../components/ChatBot/helpers';
 
-import UserAvatar from '../assets/avatarimg.svg';
-import AIAvatar from '../assets/rh-logo.svg';
 import {
   isEndStreamEvent,
   isInferenceStreamEvent,
@@ -13,13 +11,7 @@ import {
   StreamEvent,
 } from '../components/ChatBot/types';
 
-export const useMessages = ({
-  username,
-  onApiCall,
-}: {
-  username: string;
-  onApiCall: typeof fetch;
-}) => {
+export const useMessages = ({ onApiCall }: { onApiCall: typeof fetch }) => {
   const [error, setError] = React.useState<string>();
   const [isStreaming, setIsStreaming] = React.useState(false);
   const [announcement, setAnnouncement] = React.useState<string>();
@@ -41,8 +33,6 @@ export const useMessages = ({
             pfProps: {
               role: userRole,
               content: `${message}`,
-              name: username,
-              avatar: UserAvatar,
               timestamp,
             },
           },
@@ -50,8 +40,6 @@ export const useMessages = ({
             pfProps: {
               role: botRole,
               content: '',
-              name: 'AI',
-              avatar: AIAvatar,
               timestamp,
             },
           },
@@ -171,7 +159,7 @@ export const useMessages = ({
         setIsStreaming(false);
       }
     },
-    [conversationId, onApiCall, username],
+    [conversationId, onApiCall],
   );
 
   const startNewConversation = React.useCallback(() => {
