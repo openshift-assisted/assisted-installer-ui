@@ -2,7 +2,7 @@
   "dependencies": {
     "@openshift-assisted/locales": "workspace:*",
     "@openshift-assisted/types": "workspace:*",
-    "@openshift-console/dynamic-plugin-sdk": "0.0.3",
+    "@openshift-console/dynamic-plugin-sdk": "1.0.0",
     "@patternfly/patternfly": "5.2.0",
     "@patternfly/react-code-editor": "5.2.0",
     "@patternfly/react-core": "5.2.0",
