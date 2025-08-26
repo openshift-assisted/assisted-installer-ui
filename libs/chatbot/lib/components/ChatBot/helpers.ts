@@ -55,6 +55,7 @@ export const getToolAction = ({
           url,
         };
       }
+      return undefined;
     }
     case 'cluster_credentials_download_url': {
       if (!response) {
@@ -73,6 +74,7 @@ export const getToolAction = ({
           url: res.url,
         };
       }
+      return undefined;
     }
     case 'install_cluster': {
       if (args?.cluster_id) {
@@ -81,6 +83,7 @@ export const getToolAction = ({
           clusterId: args.cluster_id,
         };
       }
+      return undefined;
     }
     case 'create_cluster': {
       if (response && uuidValidate(response)) {
@@ -89,6 +92,7 @@ export const getToolAction = ({
           clusterId: response,
         };
       }
+      return undefined;
     }
   }
   return undefined;
