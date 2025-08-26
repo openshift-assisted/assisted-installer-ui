@@ -3,7 +3,7 @@ import {
   ChatbotConversationHistoryNav,
   ChatbotDisplayMode,
   Conversation,
-} from '@patternfly-6/chatbot';
+} from '@patternfly/chatbot';
 import { Alert } from '@patternfly-6/react-core';
 import { getErrorMessage } from './helpers';
 
@@ -40,7 +40,7 @@ const ChatBotHistory = ({
     setError(undefined);
     void (async () => {
       try {
-        const resp = await onApiCall('/v1/conversations');
+        const resp = await onApiCall('/v1/conversations', { signal: abortController.signal });
         if (!resp.ok) {
           throw Error(`Unexpected response code: ${resp.status}`);
         }
@@ -54,7 +54,7 @@ const ChatBotHistory = ({
             })),
         );
       } catch (e) {
-        // aborting fetch trows 'AbortError', we can ignore it
+        // aborting fetch throws 'AbortError', we can ignore it
         if (abortController.signal.aborted) {
           return;
         }
