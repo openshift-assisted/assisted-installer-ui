@@ -54,6 +54,7 @@ export const getToolAction = ({
           url,
         };
       }
+      return undefined;
     }
     case 'cluster_credentials_download_url': {
       if (!response) {
@@ -72,6 +73,7 @@ export const getToolAction = ({
           url: res.url,
         };
       }
+      return undefined;
     }
     case 'install_cluster': {
       if (args?.cluster_id) {
@@ -80,6 +82,7 @@ export const getToolAction = ({
           clusterId: args.cluster_id,
         };
       }
+      return undefined;
     }
     case 'create_cluster': {
       // TODO we need better response format to detect failures
@@ -89,6 +92,7 @@ export const getToolAction = ({
           clusterId: response,
         };
       }
+      return undefined;
     }
   }
   return undefined;
