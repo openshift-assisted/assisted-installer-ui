@@ -1,5 +1,6 @@
 import isString from 'lodash-es/isString.js';
 import { Message } from '@patternfly-6/chatbot';
+import { validate as uuidValidate } from 'uuid';
 
 type MsgAction = { title: string; url?: string; clusterId?: string };
 
@@ -82,8 +83,7 @@ export const getToolAction = ({
       }
     }
     case 'create_cluster': {
-      // TODO we need better response format to detect failures
-      if (response && !response.startsWith('Failed')) {
+      if (response && uuidValidate(response)) {
         return {
           title: 'Open cluster details page',
           clusterId: response,

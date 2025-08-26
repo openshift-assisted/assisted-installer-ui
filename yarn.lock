@@ -847,6 +847,7 @@ __metadata:
     "@types/react-dom": ^18.3.0
     file-saver: ^2.0.2
     lodash-es: ^4.17.21
+    uuid: ^8.1
   peerDependencies:
     react: ^18
     react-dom: ^18
