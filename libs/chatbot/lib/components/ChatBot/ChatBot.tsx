@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChatbotToggle } from '@patternfly-6/chatbot';
+import { ChatbotToggle } from '@patternfly/chatbot';
 
 import ChatBotWindow, { ChatBotWindowProps } from './ChatBotWindow';
 import { useMessages } from '../../hooks/use-message';
