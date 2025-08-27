@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Message } from '@patternfly-6/chatbot';
-import MessageLoading from '@patternfly-6/chatbot/dist/cjs/Message/MessageLoading';
+import { Message } from '@patternfly/chatbot';
+import MessageLoading from '@patternfly/chatbot/dist/cjs/Message/MessageLoading';
 import { MsgProps } from './helpers';
 import { Button, Stack, StackItem } from '@patternfly-6/react-core';
 import { saveAs } from 'file-saver';
