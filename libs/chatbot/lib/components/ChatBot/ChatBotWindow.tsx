@@ -17,7 +17,7 @@ import {
   MessageBar,
   MessageBox,
   MessageBoxHandle,
-} from '@patternfly-6/chatbot';
+} from '@patternfly/chatbot';
 import { Brand, EmptyState, Spinner } from '@patternfly-6/react-core';
 
 import BotMessage from './BotMessage';
@@ -181,6 +181,7 @@ const ChatBotWindow = ({
                           width: 48,
                         },
                       }}
+                      isMarkdownDisabled
                     />
                   );
                 })}

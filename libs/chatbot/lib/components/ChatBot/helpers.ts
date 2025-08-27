@@ -1,5 +1,5 @@
 import isString from 'lodash-es/isString.js';
-import { Message } from '@patternfly-6/chatbot';
+import { Message } from '@patternfly/chatbot';
 import { validate as uuidValidate } from 'uuid';
 
 type MsgAction = { title: string; url?: string; clusterId?: string };
