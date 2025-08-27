@@ -1,6 +1,6 @@
-import { Alert, AlertActionCloseButton, Button, Stack, StackItem } from '@patternfly-6/react-core';
-import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/external-link-alt-icon';
+import { Alert, AlertActionCloseButton, Stack, StackItem } from '@patternfly-6/react-core';
 import * as React from 'react';
+import ExternalLink from './ExternalLink';
 
 const CHAT_ALERT_LOCAL_STORAGE_KEY = 'assisted.hide.chat.alert';
 
@@ -24,18 +24,9 @@ const AIAlert = () => {
             your input. Interactions may be used to improve Red Hat's products or services.
           </StackItem>
           <StackItem>
-            <Button
-              variant="link"
-              isInline
-              icon={<ExternalLinkAltIcon />}
-              component="a"
-              href="https://www.redhat.com/en/about/privacy-policy"
-              iconPosition="end"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <ExternalLink href="https://www.redhat.com/en/about/privacy-policy">
               Red Hat Privacy Statement
-            </Button>
+            </ExternalLink>
           </StackItem>
         </Stack>
       }

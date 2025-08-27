@@ -3,14 +3,26 @@
   z-index: 29999;
 }
 
-.ai-chatbot .pf-chatbot__button {
+.ai-chatbot .ai-chatbot__button {
+  position: fixed;
   inset-block-end: 20px;
   inset-inline-end: 20px;
+  height: 46px;
+  width: 46px;
+  box-shadow: var(--pf-t--global--box-shadow--lg);
+  border-radius: 10px;
 }
 
 .ai-chatbot .pf-chatbot {
   inset-block-end: 80px;
   inset-inline-end: 20px;
+}
+
+.ai-chatbot .ai-chatbot__brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .ai-chatbot .pf-chatbot__message-and-actions {
