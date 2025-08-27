@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ChatbotToggle } from '@patternfly/chatbot';
 
 import ChatBotWindow, { ChatBotWindowProps } from './ChatBotWindow';
 import { useMessages } from '../../hooks/use-message';
+import ChatBotButton from './ChatBotButton';
 
 import './Chatbot.css';
 
@@ -13,13 +13,10 @@ const ChatBot = ({ onApiCall, username, openClusterDetails }: ChatBotProps) => {
     onApiCall,
   });
   const [chatbotVisible, setChatbotVisible] = React.useState<boolean>(false);
+
   return (
     <div className="ai-chatbot">
-      <ChatbotToggle
-        tooltipLabel="Chatbot"
-        isChatbotVisible={chatbotVisible}
-        onToggleChatbot={() => setChatbotVisible(!chatbotVisible)}
-      />
+      <ChatBotButton chatbotVisible={chatbotVisible} setChatbotVisible={setChatbotVisible} />
       {chatbotVisible && (
         <ChatBotWindow
           {...messagesProps}
