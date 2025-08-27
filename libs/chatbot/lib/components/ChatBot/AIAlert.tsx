@@ -1,4 +1,4 @@
-import { Alert, AlertActionCloseButton, Button } from '@patternfly-6/react-core';
+import { Alert, AlertActionCloseButton, Button, Stack, StackItem } from '@patternfly-6/react-core';
 import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/external-link-alt-icon';
 import * as React from 'react';
 
@@ -18,23 +18,26 @@ const AIAlert = () => {
       variant="info"
       isInline
       title={
-        <>
-          This feature uses AI technology. Do not include personal or sensitive information in your
-          input. Interactions may be used to improve Red Hat's products or services. For more
-          information about Red Hat's privacy practices, please refer to the
-          <Button
-            variant="link"
-            isInline
-            icon={<ExternalLinkAltIcon />}
-            component="a"
-            href="https://www.redhat.com/en/about/privacy-policy"
-            iconPosition="end"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Red Hat Privacy Statement
-          </Button>
-        </>
+        <Stack>
+          <StackItem>
+            This feature uses AI technology. Do not include personal or sensitive information in
+            your input. Interactions may be used to improve Red Hat's products or services.
+          </StackItem>
+          <StackItem>
+            <Button
+              variant="link"
+              isInline
+              icon={<ExternalLinkAltIcon />}
+              component="a"
+              href="https://www.redhat.com/en/about/privacy-policy"
+              iconPosition="end"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Red Hat Privacy Statement
+            </Button>
+          </StackItem>
+        </Stack>
       }
       actionClose={
         <AlertActionCloseButton

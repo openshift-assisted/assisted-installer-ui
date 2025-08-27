@@ -27,6 +27,7 @@ import AIAlert from './AIAlert';
 import LightSpeedLogo from '../../assets/lightspeed-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
 import ChatBotHistory from './ChatBotHistory';
+import DevPreviewBadge from './DevPreviewBadge';
 
 export type ChatBotWindowProps = {
   error?: string;
@@ -130,6 +131,7 @@ const ChatBotWindow = ({
               </ChatbotHeaderTitle>
             </ChatbotHeaderMain>
             <ChatbotHeaderActions>
+              <DevPreviewBadge />
               <ChatbotHeaderCloseButton onClick={onClose} />
             </ChatbotHeaderActions>
           </ChatbotHeader>
@@ -207,13 +209,7 @@ const ChatBotWindow = ({
               onChange={(_, value) => setMsg(`${value}`)}
               ref={msgBarRef}
             />
-            <ChatbotFootnote
-              label="Always review AI generated content prior to use"
-              popover={{
-                title: 'Feature preview',
-                description: `This tool is a preview, and while we strive for accuracy, there's always a possibility of errors. We recommend that you review AI generated content prior to use.`,
-              }}
-            />
+            <ChatbotFootnote label="Always review AI generated content prior to use" />
           </ChatbotFooter>
         </>
       </ChatBotHistory>
