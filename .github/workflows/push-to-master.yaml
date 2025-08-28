@@ -8,6 +8,7 @@ on:
       - 'v*'
       - '!v*-cim'
       - '!v*-virt'
+      - '!v*-chatbot'
 
 env:
   QUAY_ORG: quay.io/edge-infrastructure
