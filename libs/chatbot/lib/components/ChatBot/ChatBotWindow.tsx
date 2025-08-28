@@ -27,7 +27,7 @@ import AIAlert from './AIAlert';
 import LightSpeedLogo from '../../assets/lightspeed-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
 import ChatBotHistory from './ChatBotHistory';
-import DevPreviewBadge from './DevPreviewBadge';
+import PreviewBadge from './PreviewBadge';
 
 export type ChatBotWindowProps = {
   error?: string;
@@ -122,16 +122,16 @@ const ChatBotWindow = ({
                 aria-expanded={isDrawerOpen}
                 onMenuToggle={() => setIsDrawerOpen(!isDrawerOpen)}
               />
-              <ChatbotHeaderTitle>
+              <ChatbotHeaderTitle className="ai-chatbot__brand">
                 <Brand
                   src={LightSpeedLogo}
-                  alt="Red Hat Lightspeed"
-                  style={{ height: 40, width: 40 }}
+                  alt="OpenShift Lightspeed"
+                  style={{ height: 46, width: 46, maxHeight: 46 }}
                 />
               </ChatbotHeaderTitle>
             </ChatbotHeaderMain>
             <ChatbotHeaderActions>
-              <DevPreviewBadge />
+              <PreviewBadge />
               <ChatbotHeaderCloseButton onClick={onClose} />
             </ChatbotHeaderActions>
           </ChatbotHeader>

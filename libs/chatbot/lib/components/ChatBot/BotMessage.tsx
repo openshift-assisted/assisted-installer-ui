@@ -79,7 +79,7 @@ const BotMessage = ({
     <>
       <Message
         {...message.pfProps}
-        name="Red Hat Lightspeed"
+        name="OpenShift Lightspeed"
         avatarProps={{
           style: {
             height: 48,
