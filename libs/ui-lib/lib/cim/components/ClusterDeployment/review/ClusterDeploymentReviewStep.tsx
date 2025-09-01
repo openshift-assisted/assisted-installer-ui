@@ -83,7 +83,7 @@ export const ClusterDeploymentReviewStep = ({
       await onFinish();
     } catch (err) {
       const error = err as Error;
-      addAlert({ title: error.message || t('ai:An error occured while starting installation.') });
+      addAlert({ title: error.message || t('ai:An error occurred while starting installation.') });
     } finally {
       setSubmitting(false);
     }
@@ -188,7 +188,7 @@ export const ClusterDeploymentReviewStep = ({
       {syncError && (
         <GridItem>
           <ValidationSection currentStepId={'review'} hosts={[]}>
-            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
               {syncError}
             </Alert>
           </ValidationSection>

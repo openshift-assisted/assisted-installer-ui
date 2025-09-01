@@ -174,7 +174,7 @@ export const ClusterDeploymentHostsDiscoveryStep = ({
       {!!syncError && (
         <GridItem>
           <ValidationSection currentStepId={'hosts-selection'} hosts={[]}>
-            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
               {syncError}
             </Alert>
           </ValidationSection>
