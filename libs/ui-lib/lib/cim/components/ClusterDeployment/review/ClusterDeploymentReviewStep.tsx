@@ -40,6 +40,7 @@ import {
 } from '../wizardTransition';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
+import { ReviewConfigMapsTable } from './ReviewConfigMapsTable';
 import { ValidationSection } from '../components/ValidationSection';
 import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -157,6 +158,13 @@ export const ClusterDeploymentReviewStep = ({
             testId="cluster-summary"
             value={<ReviewHostsInventory hosts={cluster.hosts} />}
           />
+
+          {!!agentClusterInstall.spec?.manifestsConfigMapRefs?.length ? (
+            <DetailItem
+              title={t('ai:Custom manifests')}
+              value={<ReviewConfigMapsTable agentClusterInstall={agentClusterInstall} />}
+            />
+          ) : undefined}
 
           <DetailItem
             title={t('ai:Cluster validations')}
