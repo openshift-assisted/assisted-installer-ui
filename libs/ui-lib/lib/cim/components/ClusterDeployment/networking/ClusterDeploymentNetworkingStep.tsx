@@ -200,7 +200,7 @@ export const NetworkingForm = ({
         {syncError && (
           <GridItem>
             <ValidationSection currentStepId={'networking'} hosts={[]}>
-              <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+              <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
                 {syncError}
               </Alert>
             </ValidationSection>

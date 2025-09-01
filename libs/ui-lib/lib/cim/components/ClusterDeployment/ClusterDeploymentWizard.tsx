@@ -13,6 +13,7 @@ import { ClusterDeploymentHostSelectionStep } from './hostSelection';
 import { ClusterDeploymentHostsDiscoveryStep } from './hostDiscovery';
 import { ClusterDeploymentNetworkingStep } from './networking';
 import { ClusterDeploymentReviewStep } from './review';
+import { ClusterDeploymentCustomManifestsStep } from './customManifests';
 
 export const ClusterDeploymentWizard = ({
   className,
@@ -76,6 +77,7 @@ export const ClusterDeploymentWizard = ({
                   id={'installation-type'}
                   isDisabled
                 />
+
                 <WizardStep name={stepNames['cluster-details']} id={'cluster-details'}>
                   <ClusterDeploymentDetailsStep
                     clusterImages={clusterImages}
@@ -89,7 +91,9 @@ export const ClusterDeploymentWizard = ({
                     isNutanix={isNutanix}
                   />
                 </WizardStep>
+
                 <WizardStep name={stepNames['automation']} id={'automation'} isDisabled />
+
                 {isCIMFlow(clusterDeployment) ? (
                   <WizardStep name={stepNames['hosts-selection']} id={'host-selection'}>
                     {agentClusterInstall?.metadata?.name ? (
@@ -131,6 +135,7 @@ export const ClusterDeploymentWizard = ({
                     )}
                   </WizardStep>
                 )}
+
                 <WizardStep name={stepNames['networking']} id={'networking'}>
                   <ClusterDeploymentNetworkingStep
                     clusterDeployment={clusterDeployment}
@@ -146,7 +151,9 @@ export const ClusterDeploymentWizard = ({
                   />
                 </WizardStep>
 
-                {/** TODO: Add the custom manifest step here */}
+                <WizardStep name={stepNames['custom-manifests']} id={'custom-manifests'}>
+                  <ClusterDeploymentCustomManifestsStep agentClusterInstall={agentClusterInstall} />
+                </WizardStep>
 
                 <WizardStep name={stepNames['review']} id={'review'}>
                   <ClusterDeploymentReviewStep

@@ -255,7 +255,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   const errorsSection = (
     <ValidationSection currentStepId={'cluster-details'} hosts={[]}>
       {syncError && (
-        <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+        <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
           {syncError}
         </Alert>
       )}

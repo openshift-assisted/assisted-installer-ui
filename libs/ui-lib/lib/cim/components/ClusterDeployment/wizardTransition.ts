@@ -15,6 +15,7 @@ export type ClusterWizardStepsType =
   | 'hosts-selection'
   | 'hosts-discovery'
   | 'networking'
+  | 'custom-manifests'
   | 'review';
 
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
@@ -98,6 +99,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'hosts-discovery': hostDiscoveryStepValidationsMap,
   'hosts-selection': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
+  'custom-manifests': networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };
 
