@@ -1,4 +1,20 @@
+##################################################
+#
+# nodejs frontend build
 FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.19 AS ui-build
+
+USER 0
+
+ARG YARN_VERSION=v3.4.1
+
+# bootstrap yarn so we can install and run the other tools.
+RUN CACHED_YARN=./artifacts/yarn-${YARN_VERSION}.tar.gz; \
+    if [ -f ${CACHED_YARN} ]; then \
+      npm install -g ${CACHED_YARN}; \
+    else \
+      npm install https://github.com/yarnpkg/yarn/releases/download/${YARN_VERSION}/yarn-${YARN_VERSION}.tar.gz; \
+      exit 1; \
+    fi
 
 # The REMOTE_SOURCES value is set by the build system to indicate the location of the cachito-backed artifacts cache.
 # As cachito might not be available in all environments, we need to make sure the value is set before trying to use it and
@@ -9,23 +25,10 @@ ARG REMOTE_SOURCES_DIR=/remote-sources
 
 COPY $REMOTE_SOURCES $REMOTE_SOURCES_DIR
 
-USER root
-
 WORKDIR /app
 COPY --chown=1001:0 . /app
 ENV NODE_OPTIONS='--max-old-space-size=8192'
 RUN git config --global --add safe.directory /app
-
-# bootstrap yarn so we can install and run the other tools.
-USER 0
-ARG YARN_VERSION=v3.4.1
-RUN CACHED_YARN=./artifacts/yarn-${YARN_VERSION}.tar.gz; \
-    if [ -f ${CACHED_YARN} ]; then \
-      npm install -g ${CACHED_YARN}; \
-    else \
-      npm install https://github.com/yarnpkg/yarn/releases/download/${YARN_VERSION}/yarn-${YARN_VERSION}.tar.gz; \
-      exit 1; \
-    fi
 
 # use dependencies provided by Cachito
 RUN test -d ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps || exit 1; \
@@ -33,9 +36,15 @@ RUN test -d ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps || exit 1; \
  && source ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env \
  && yarn install --immutable && yarn build:all
 
+##################################################
+#
+# go backend build
 FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.23-openshift-4.19 as proxy-build
+
 ARG REMOTE_SOURCES_DIR=/remote-sources
+
 WORKDIR /app
+
 # Use Cachito-provided source + deps for offline build
 COPY --from=ui-build ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/app/ /app
 USER 0
@@ -45,6 +54,9 @@ RUN source ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env; \
     if [ -d vendor ]; then export GOFLAGS="-mod=vendor"; fi; \
     go build -o assisted-disconnected-ui .
 
+##################################################
+#
+# actual base image for final product
 FROM registry.ci.openshift.org/ocp/ubi-micro:9
 COPY --from=ui-build /app/apps/assisted-disconnected-ui/build /app/proxy/dist
 COPY --from=proxy-build /app/assisted-disconnected-ui /app/proxy
