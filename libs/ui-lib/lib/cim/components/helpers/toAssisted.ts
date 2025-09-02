@@ -180,7 +180,7 @@ export const getAICluster = ({
     networkType: agentClusterInstall?.spec?.networking.networkType,
     controlPlaneCount: agentClusterInstall?.spec?.provisionRequirements.controlPlaneAgents || 3,
     platform: {
-      type: (agentClusterInstall?.spec?.platformType?.toLowerCase() || 'none') as PlatformType,
+      type: (agentClusterInstall?.spec?.platformType?.toLowerCase() || 'baremetal') as PlatformType,
     },
   };
   /*

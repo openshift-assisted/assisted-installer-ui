@@ -22,7 +22,7 @@ export const ExternalPlatformsDropdown = ({ isDisabled }: { isDisabled: boolean 
   const platforms = getPlatforms(t);
 
   const options = Object.entries(platforms)
-    .filter(([key]) => key !== 'baremetal')
+    .filter(([key]) => key !== 'none')
     .map(([platform, label]) => (
       <DropdownItem
         key={platform}

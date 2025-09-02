@@ -169,8 +169,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
 
       <ExternalPlatformsDropdown isDisabled={isEditFlow} />
 
-      {/** TODO: custom manifests checkbox here */}
-
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
