@@ -4,7 +4,7 @@ FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.19 AS 
 # As cachito might not be available in all environments, we need to make sure the value is set before trying to use it and
 # that the COPY layer below doesn't fail. Setting it to be the Dockerfile itself is fairly safe, as it will always be
 # available.
-ARG REMOTE_SOURCES
+ARG REMOTE_SOURCES=apps/assisted-disconnected-ui/Containerfile
 ARG REMOTE_SOURCES_DIR=/remote-sources
 
 COPY $REMOTE_SOURCES $REMOTE_SOURCES_DIR
@@ -23,7 +23,7 @@ RUN CACHED_YARN=./artifacts/yarn-${YARN_VERSION}.tar.gz; \
     if [ -f ${CACHED_YARN} ]; then \
       npm install -g ${CACHED_YARN}; \
     else \
-      echo "need yarn at ${CACHED_YARN}"; \
+      npm install https://github.com/yarnpkg/yarn/releases/download/${YARN_VERSION}/yarn-${YARN_VERSION}.tar.gz; \
       exit 1; \
     fi
 
