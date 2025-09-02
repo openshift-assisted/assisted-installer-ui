@@ -33,7 +33,7 @@ RUN git config --global --add safe.directory /app
 # use dependencies provided by Cachito
 RUN test -d ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps || exit 1; \
     cp -f $REMOTE_SOURCES_DIR/cachito-gomod-with-deps/app/{.npmrc,.yarnrc,yarn.lock,registry-ca.pem} . \
- && source ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env \
+ && . ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env \
  && yarn install --immutable && yarn build:all
 
 ##################################################
@@ -50,7 +50,7 @@ COPY --from=ui-build ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/app/ /app
 USER 0
 # Build deterministically and name the output explicitly
 ENV CGO_ENABLED=0
-RUN source ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env; \
+RUN . ${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env; \
     if [ -d vendor ]; then export GOFLAGS="-mod=vendor"; fi; \
     go build -o assisted-disconnected-ui .
 
