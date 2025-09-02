@@ -20,7 +20,7 @@ RUN CACHED_YARN=./artifacts/yarn-${YARN_VERSION}.tar.gz; \
 # As cachito might not be available in all environments, we need to make sure the value is set before trying to use it and
 # that the COPY layer below doesn't fail. Setting it to be the Dockerfile itself is fairly safe, as it will always be
 # available.
-ARG REMOTE_SOURCES=apps/assisted-disconnected-ui/Containerfile
+ARG REMOTE_SOURCES=apps/assisted-disconnected-ui/Containerfile.ocp
 ARG REMOTE_SOURCES_DIR=/remote-sources
 
 COPY $REMOTE_SOURCES $REMOTE_SOURCES_DIR
