@@ -105,9 +105,9 @@ const ChatBotWindow = ({
         isOpen={isDrawerOpen}
         setIsOpen={setIsDrawerOpen}
         onApiCall={onApiCall}
-        startNewConversation={() => {
+        startNewConversation={(closeDrawer = true) => {
           startNewConversation();
-          setIsDrawerOpen(false);
+          closeDrawer && setIsDrawerOpen(false);
         }}
         loadConversation={(id) => {
           setTriggerScroll(0);
