@@ -2,7 +2,7 @@ import isString from 'lodash-es/isString.js';
 import { Message } from '@patternfly/chatbot';
 import { validate as uuidValidate } from 'uuid';
 
-type MsgAction = { title: string; url?: string; clusterId?: string };
+export type MsgAction = { title: string; url?: string; clusterId?: string };
 
 export type MsgProps = {
   pfProps: Pick<React.ComponentProps<typeof Message>, 'role' | 'content' | 'timestamp'>;
