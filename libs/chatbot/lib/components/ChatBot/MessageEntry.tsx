@@ -114,45 +114,41 @@ const MessageEntry = ({ message, avatar, openClusterDetails, onApiCall }: Messag
         timestamp={messageDate}
         actions={feedback}
         extraContent={{
-          afterMainContent: (
-            <>
-              {actions?.length && (
-                <Stack hasGutter>
-                  {actions.map(({ title, url, clusterId }, idx) => (
-                    <StackItem key={idx}>
-                      {url && (
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            try {
-                              saveAs(url);
-                            } catch (error) {
-                              // eslint-disable-next-line
-                              console.error('Download failed: ', error);
-                            }
-                          }}
-                          variant="secondary"
-                          component="a"
-                          href={url}
-                          icon={<DownloadIcon />}
-                        >
-                          {title}
-                        </Button>
-                      )}
-                      {clusterId && (
-                        <Button
-                          onClick={() => openClusterDetails(clusterId)}
-                          variant="secondary"
-                          icon={<ExternalLinkAltIcon />}
-                        >
-                          {title}
-                        </Button>
-                      )}
-                    </StackItem>
-                  ))}
-                </Stack>
-              )}
-            </>
+          afterMainContent: !!actions?.length && (
+            <Stack hasGutter>
+              {actions.map(({ title, url, clusterId }, idx) => (
+                <StackItem key={idx}>
+                  {url && (
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        try {
+                          saveAs(url);
+                        } catch (error) {
+                          // eslint-disable-next-line
+                          console.error('Download failed: ', error);
+                        }
+                      }}
+                      variant="secondary"
+                      component="a"
+                      href={url}
+                      icon={<DownloadIcon />}
+                    >
+                      {title}
+                    </Button>
+                  )}
+                  {clusterId && (
+                    <Button
+                      onClick={() => openClusterDetails(clusterId)}
+                      variant="secondary"
+                      icon={<ExternalLinkAltIcon />}
+                    >
+                      {title}
+                    </Button>
+                  )}
+                </StackItem>
+              ))}
+            </Stack>
           ),
           endContent: openFeedback && (
             <FeedbackForm
