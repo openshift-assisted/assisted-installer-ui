@@ -2,17 +2,18 @@ import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Grid, GridItem, Wizard, WizardStep } from '@patternfly/react-core';
 import { AlertsContextProvider, LoadingState } from '../../../common';
-import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
-import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
-import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
 import { ClusterDeploymentWizardProps } from './types';
-import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
-import ClusterDeploymentReviewStep from './ClusterDeploymentReviewStep';
 import { YamlPreview, useYamlPreview } from '../YamlPreview';
 import { wizardStepNames } from './constants';
 import { ClusterDeploymentWizardContextProvider } from './ClusterDeploymentWizardContext';
 import { isCIMFlow } from './helpers';
+import { ClusterDeploymentDetailsStep } from './clusterDetails';
+import { ClusterDeploymentHostSelectionStep } from './hostSelection';
+import { ClusterDeploymentHostsDiscoveryStep } from './hostDiscovery';
+import { ClusterDeploymentNetworkingStep } from './networking';
+import { ClusterDeploymentReviewStep } from './review';
+import { ClusterDeploymentCustomManifestsStep } from './customManifests';
 
 export const ClusterDeploymentWizard = ({
   className,
@@ -76,6 +77,7 @@ export const ClusterDeploymentWizard = ({
                   id={'installation-type'}
                   isDisabled
                 />
+
                 <WizardStep name={stepNames['cluster-details']} id={'cluster-details'}>
                   <ClusterDeploymentDetailsStep
                     clusterImages={clusterImages}
@@ -89,7 +91,9 @@ export const ClusterDeploymentWizard = ({
                     isNutanix={isNutanix}
                   />
                 </WizardStep>
+
                 <WizardStep name={stepNames['automation']} id={'automation'} isDisabled />
+
                 {isCIMFlow(clusterDeployment) ? (
                   <WizardStep name={stepNames['hosts-selection']} id={'host-selection'}>
                     {agentClusterInstall?.metadata?.name ? (
@@ -131,6 +135,7 @@ export const ClusterDeploymentWizard = ({
                     )}
                   </WizardStep>
                 )}
+
                 <WizardStep name={stepNames['networking']} id={'networking'}>
                   <ClusterDeploymentNetworkingStep
                     clusterDeployment={clusterDeployment}
@@ -145,6 +150,11 @@ export const ClusterDeploymentWizard = ({
                     isNutanix={isNutanix}
                   />
                 </WizardStep>
+
+                <WizardStep name={stepNames['custom-manifests']} id={'custom-manifests'}>
+                  <ClusterDeploymentCustomManifestsStep agentClusterInstall={agentClusterInstall} />
+                </WizardStep>
+
                 <WizardStep name={stepNames['review']} id={'review'}>
                   <ClusterDeploymentReviewStep
                     onFinish={onFinish}

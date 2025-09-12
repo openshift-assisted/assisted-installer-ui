@@ -2,20 +2,24 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
-import { StaticTextField } from '../../../common/components/ui/StaticTextField';
-import { PullSecret } from '../../../common/components/clusters';
-import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
+import {
+  ExternalPlatformsDropdown,
+  OpenShiftVersionDropdown,
+  OpenShiftVersionModal,
+} from '../../../../common';
+import { StaticTextField } from '../../../../common/components/ui/StaticTextField';
+import { PullSecret } from '../../../../common/components/clusters';
+import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../../common/types';
 import {
   InputField,
   RichInputField,
   acmClusterNameValidationMessages,
-} from '../../../common/components/ui/formik';
-import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
-import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
-import { getNetworkType } from '../helpers';
+} from '../../../../common/components/ui/formik';
+import { ClusterDetailsValues } from '../../../../common/components/clusterWizard/types';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import CpuArchitectureDropdown from '../../common/CpuArchitectureDropdown';
+import ControlPlaneNodesDropdown from '../../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+import { getNetworkType } from '../../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -65,7 +69,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   React.useEffect(() => {
     if (!versions.length && !values.openshiftVersion) {
       const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
-      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
+      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion?.value);
       setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
       setFieldValue('networkType', getNetworkType(fallbackOpenShiftVersion));
     }
@@ -85,20 +89,15 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     [versions],
   );
 
-  const additionalSelectOptions = React.useMemo(() => {
+  const additionalSelectOption = React.useMemo(() => {
     if (
       values.customOpenshiftSelect &&
-      !selectOptions.some((option) => option.value === values.customOpenshiftSelect?.value)
+      !versions.some((version) => version.value === values.customOpenshiftSelect)
     ) {
-      return [
-        {
-          value: values.customOpenshiftSelect.value,
-          label: values.customOpenshiftSelect.label,
-        },
-      ];
+      return allVersions.find((option) => option.value === values.customOpenshiftSelect);
     }
-    return [];
-  }, [selectOptions, values.customOpenshiftSelect]);
+    return undefined;
+  }, [allVersions, values.customOpenshiftSelect, versions]);
 
   const isDiskEncryptionEnabled =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
@@ -150,7 +149,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
             versions={versions}
             showReleasesLink={false}
             showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
-            customItems={additionalSelectOptions}
+            customItem={additionalSelectOption}
           />
           {openshiftVersionModalOpen && (
             <OpenShiftVersionModal
@@ -167,6 +166,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
+
+      <ExternalPlatformsDropdown isDisabled={isEditFlow} />
+
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {!isEditFlow && <PullSecret />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}

@@ -11,7 +11,6 @@ import {
   InfraEnvK8sResource,
 } from '../../types';
 import { getAICluster } from '../helpers';
-import { defaultNetworkSettings } from './ClusterDeploymentNetworkingForm';
 import { useDeepCompareMemoize } from '../../../common/hooks';
 import {
   HostSubnets,
@@ -22,6 +21,7 @@ import {
   hostSubnetValidationSchema,
   httpProxyValidationSchema,
   noProxyValidationSchema,
+  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -79,7 +79,7 @@ export const useNetworkingFormik = ({
         agents,
       });
       return {
-        ...getNetworkInitialValues(cluster, defaultNetworkSettings),
+        ...getNetworkInitialValues(cluster, CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4),
         enableProxy: false,
         editProxy: false,
       };

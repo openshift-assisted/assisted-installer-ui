@@ -8,18 +8,26 @@ import {
   useWizardFooter,
   WizardFooter,
 } from '@patternfly/react-core';
-import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource, OsImage } from '../../types';
-import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
-import { getOCPVersions, getSelectedVersion } from '../helpers';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import {
+  AgentClusterInstallK8sResource,
+  ClusterDeploymentK8sResource,
+  OsImage,
+} from '../../../types';
+import { ClusterImageSetK8sResource } from '../../../types/k8s/cluster-image-set';
+import { getOCPVersions, getSelectedVersion } from '../../helpers';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import {
   ClusterDetailsFormFields,
   ClusterDetailsFormFieldsProps,
 } from './ClusterDetailsFormFields';
 import { useFormikContext } from 'formik';
-import { ClusterDetailsValues, CpuArchitecture, SupportedCpuArchitecture } from '../../../common';
-import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
-import { ValidationSection } from './components/ValidationSection';
+import {
+  ClusterDetailsValues,
+  CpuArchitecture,
+  SupportedCpuArchitecture,
+} from '../../../../common';
+import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
+import { ValidationSection } from '../components/ValidationSection';
 import { toNumber } from 'lodash-es';
 
 type ClusterDeploymentDetailsFormProps = {
@@ -74,7 +82,7 @@ export const ClusterDeploymentDetailsFormWrapper = ({
       {syncError && (
         <StackItem>
           <ValidationSection currentStepId={'networking'} hosts={[]}>
-            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
               {syncError}
             </Alert>
           </ValidationSection>
@@ -84,7 +92,7 @@ export const ClusterDeploymentDetailsFormWrapper = ({
   );
 };
 
-const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
+export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
   agentClusterInstall,
   clusterDeployment,
   clusterImages,
@@ -150,5 +158,3 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
     </>
   );
 };
-
-export default ClusterDeploymentDetailsForm;

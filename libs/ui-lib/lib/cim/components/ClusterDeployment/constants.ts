@@ -18,6 +18,7 @@ export const wizardStepNames = (
   'hosts-selection': t('ai:Cluster hosts'),
   'hosts-discovery': t('ai:Cluster hosts'),
   networking: t('ai:Networking'),
+  'custom-manifests': t('ai:Custom manifests'),
   review: t('ai:Review and create'),
 });
 

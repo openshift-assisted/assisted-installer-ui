@@ -2,13 +2,13 @@ import React from 'react';
 import { Formik, FormikProps, useFormikContext } from 'formik';
 import { Stack } from '@patternfly/react-core';
 import noop from 'lodash-es/noop.js';
-import { ClusterDetailsValues, getRichTextValidation } from '../../../common';
-import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
-import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
+import { ClusterDetailsValues, getRichTextValidation } from '../../../../common';
+import { ClusterImageSetK8sResource } from '../../../types/k8s/cluster-image-set';
 import { useDetailsFormik } from './ClusterDeploymentDetailsStep';
 import { ClusterDetailsFormFieldsProps } from './ClusterDetailsFormFields';
-import { OsImage } from '../../types';
-import { getOCPVersions } from '../helpers';
+import { OsImage } from '../../../types';
+import { getOCPVersions } from '../../helpers';
+import { ClusterDeploymentDetailsForm } from './ClusterDeploymentDetailsForm';
 
 type DetailsFormBodyProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -49,7 +49,7 @@ type ACMClusterDeploymentDetailsStepProps = DetailsFormBodyProps & {
   formRef: React.Ref<FormikProps<ClusterDetailsValues>>;
 };
 
-const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepProps> = ({
+export const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepProps> = ({
   clusterImages,
   formRef,
   usedClusterNames,
@@ -80,5 +80,3 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
     </Formik>
   );
 };
-
-export default ACMClusterDeploymentDetailsStep;

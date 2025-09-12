@@ -22,7 +22,7 @@ const OpenShiftLifeCycleDatesLink = () => {
 
 export const getOpenshiftVersionHelperText = (
   versions: OpenshiftVersionOptionType[],
-  selectedVersionValue: string | undefined,
+  selectedVersionValue: string | null,
   t: TFunction,
   isModal?: boolean,
 ) => {
