@@ -1,5 +1,4 @@
 import * as React from 'react';
-import isString from 'lodash-es/isString.js';
 import {
   Chatbot,
   ChatbotAlert,
@@ -8,379 +7,212 @@ import {
   ChatbotFooter,
   ChatbotFootnote,
   ChatbotHeader,
+  ChatbotHeaderActions,
+  ChatbotHeaderCloseButton,
+  ChatbotHeaderMain,
+  ChatbotHeaderMenu,
   ChatbotHeaderTitle,
   ChatbotWelcomePrompt,
   Message,
   MessageBar,
   MessageBox,
-} from '@patternfly-6/chatbot';
-import {
-  Alert,
-  AlertActionCloseButton,
-  Button,
-  Flex,
-  FlexItem,
-  Tooltip,
-} from '@patternfly-6/react-core';
-import { ExternalLinkAltIcon } from '@patternfly-6/react-icons/dist/js/icons/external-link-alt-icon';
-import { PlusIcon, TimesIcon } from '@patternfly-6/react-icons';
+  MessageBoxHandle,
+} from '@patternfly/chatbot';
+import { Brand, EmptyState, Spinner } from '@patternfly-6/react-core';
 
-import BotMessage, { FeedbackRequest } from './BotMessage';
-import ConfirmNewChatModal from './ConfirmNewChatModal';
-import AIAvatar from '../../assets/rh-logo.svg';
+import BotMessage from './BotMessage';
+import { MESSAGE_BAR_ID, botRole, userRole, MsgProps } from './helpers';
+import AIAlert from './AIAlert';
+
+import LightSpeedLogo from '../../assets/lightspeed-logo.svg';
 import UserAvatar from '../../assets/avatarimg.svg';
-
-type StreamEvent =
-  | { event: 'start'; data: { conversation_id: string } }
-  | { event: 'token'; data: { token: string; role: string } }
-  | { event: 'end' };
-
-const botRole = 'bot';
-const userRole = 'user';
-
-const getErrorMessage = (error: unknown) => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (isString(error)) {
-    return error;
-  }
-  return 'Unexpected error';
-};
-
-const CHAT_ALERT_LOCAL_STORAGE_KEY = 'assisted.hide.chat.alert';
-
-type MsgProps = React.ComponentProps<typeof Message>;
+import ChatBotHistory from './ChatBotHistory';
+import PreviewBadge from './PreviewBadge';
 
 export type ChatBotWindowProps = {
+  error?: string;
+  resetError: VoidFunction;
   conversationId: string | undefined;
-  setConversationId: (id: string | undefined) => void;
-  setMessages: React.Dispatch<React.SetStateAction<MsgProps[]>>;
   messages: MsgProps[];
   onApiCall: typeof fetch;
   username: string;
   onClose: () => void;
-};
-
-// Helper function to get the user question for a bot message
-const getUserQuestionForBotAnswer = (
-  messages: MsgProps[],
-  messageIndex: number,
-): string | undefined => {
-  if (messageIndex === 0) {
-    return undefined;
-  }
-  // Look backwards from the previous message to find the most recent user message
-  for (let i = messageIndex - 1; i >= 0; i--) {
-    const msg = messages[i];
-    if (msg?.role === userRole && msg.content) {
-      return String(msg.content);
-    }
-  }
-
-  return undefined;
+  sentMessage: (msg: string) => Promise<unknown>;
+  startNewConversation: VoidFunction;
+  isStreaming: boolean;
+  announcement: string | undefined;
+  openClusterDetails: (clusterId: string) => void;
+  isLoading: boolean;
+  loadConversation: (convId: string) => Promise<unknown>;
 };
 
 const ChatBotWindow = ({
   conversationId,
-  setConversationId,
   messages,
-  setMessages,
   onApiCall,
   onClose,
   username,
+  sentMessage,
+  startNewConversation,
+  isStreaming,
+  announcement,
+  error,
+  resetError,
+  openClusterDetails,
+  isLoading,
+  loadConversation,
 }: ChatBotWindowProps) => {
-  const [error, setError] = React.useState<string>();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isStreaming, setIsStreaming] = React.useState(false);
-  const [announcement, setAnnouncement] = React.useState<string>();
-  const [isAlertVisible, setIsAlertVisible] = React.useState(
-    localStorage.getItem(CHAT_ALERT_LOCAL_STORAGE_KEY) !== 'true',
-  );
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [triggerScroll, setTriggerScroll] = React.useState(0);
+  const [msg, setMsg] = React.useState('');
   const scrollToBottomRef = React.useRef<HTMLDivElement>(null);
+  const lastUserMsgRef = React.useRef<HTMLDivElement>(null);
+  const msgBoxRef = React.useRef<MessageBoxHandle>(null);
+  const msgBarRef = React.useRef<HTMLTextAreaElement>(null);
 
-  const startNewChat = () => {
-    setConversationId(undefined);
-    setMessages([]);
-    setIsConfirmModalOpen(false);
-  };
-
-  const handleNewChat = () => {
-    // Only show confirmation if there are existing messages
-    if (messages.length > 0) {
-      setIsConfirmModalOpen(true);
-    } else {
-      startNewChat();
+  React.useLayoutEffect(() => {
+    if (!isDrawerOpen) {
+      requestAnimationFrame(() => msgBarRef.current?.focus());
     }
-  };
-
-  const scrollToBottom = React.useCallback(() => {
-    scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  const handleSend = async (message: string | number) => {
-    setError(undefined);
-    setIsLoading(true);
-    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined = undefined;
-    try {
-      setMessages((msgs) => [
-        ...msgs,
-        {
-          role: userRole,
-          content: `${message}`,
-          name: username,
-          avatar: UserAvatar,
-          timestamp: new Date().toLocaleString(),
-        },
-      ]);
-      setAnnouncement(`Message from User: ${message}. Message from Bot is loading.`);
-
-      let convId = '';
-
-      const resp = await onApiCall('/v1/streaming_query', {
-        method: 'POST',
-        body: JSON.stringify({
-          query: `${message}`,
-          conversation_id: conversationId,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      reader = resp.body?.getReader();
-      const decoder = new TextDecoder();
-
-      const timestamp = new Date().toLocaleString();
-
-      let completeMsg = '';
-      while (reader) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
-        }
-
-        const chunks = decoder.decode(value, { stream: true }).split('\n');
-        for (const chunk of chunks) {
-          if (!chunk.startsWith('data: ')) {
-            continue;
-          }
-          const ev = JSON.parse(chunk.slice(5).trim()) as StreamEvent;
-          if (ev.event === 'start') {
-            convId = ev.data.conversation_id;
-          } else if (ev.event === 'token' && ev.data.role === 'inference') {
-            setIsLoading(false);
-            setIsStreaming(true);
-            const token = ev.data.token;
-            completeMsg = `${completeMsg}${token}`;
-            setMessages((msgs) => {
-              const lastMsg = msgs[msgs.length - 1];
-              const msg =
-                lastMsg.timestamp === timestamp && lastMsg.role === botRole ? lastMsg : undefined;
-              if (!msg) {
-                return [
-                  ...msgs,
-                  {
-                    role: botRole,
-                    content: token,
-                    name: 'AI',
-                    avatar: AIAvatar,
-                    timestamp: timestamp,
-                  },
-                ];
-              }
-
-              const allButLast = msgs.slice(0, -1);
-              return [
-                ...allButLast,
-                {
-                  ...msg,
-                  content: `${msg.content || ''}${token}`,
-                },
-              ];
-            });
-          }
-        }
-      }
-
-      setConversationId(convId);
-      setAnnouncement(`Message from Bot: ${completeMsg}`);
-    } catch (e) {
-      if (reader) {
-        try {
-          await reader.cancel('An error occured');
-        } catch (e) {
-          // eslint-disable-next-line
-          console.warn('Failed to cancel reader:', e);
-        }
-      }
-      setError(getErrorMessage(e));
-    } finally {
-      setIsStreaming(false);
-      setIsLoading(false);
-    }
-  };
-
-  const onFeedbackSubmit = React.useCallback(
-    async (req: FeedbackRequest): Promise<void> => {
-      const botMessageIdx = req.messageIndex;
-
-      if (botMessageIdx < 0 || botMessageIdx >= messages.length) {
-        throw new Error(`Invalid message index: ${botMessageIdx}`);
-      }
-
-      const resp = await onApiCall('/v1/feedback', {
-        method: 'POST',
-        body: JSON.stringify({
-          conversation_id: conversationId,
-          user_question: getUserQuestionForBotAnswer(messages, botMessageIdx),
-          user_feedback: req.userFeedback,
-          llm_response: messages[botMessageIdx].content || '',
-          sentiment: req.sentiment,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!resp.ok) {
-        throw new Error(`Failed to submit feedback: ${resp.status} ${resp.statusText}`);
-      }
-
-      // Resolve the promise to avoid unhandled rejection
-      await resp.json();
-    },
-    [onApiCall, conversationId, messages],
-  );
+  }, [isDrawerOpen, isLoading]);
 
   React.useEffect(() => {
-    scrollToBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (triggerScroll === 0) {
+      scrollToBottomRef.current?.scrollIntoView({ behavior: 'auto' });
+    } else {
+      const msgTop = lastUserMsgRef.current?.offsetTop;
+      if (msgTop !== undefined && msgBoxRef.current) {
+        msgBoxRef.current.scrollTo({
+          top: msgTop,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [triggerScroll, isLoading]);
+
+  const getVisibleHeight = () => {
+    if (lastUserMsgRef.current && msgBoxRef.current) {
+      return msgBoxRef.current.clientHeight - lastUserMsgRef.current.clientHeight - 64;
+    }
+    return undefined;
+  };
+
+  const lastUserMsg = [...messages].reverse().findIndex((msg) => msg.pfProps.role === userRole);
 
   return (
     <Chatbot displayMode={ChatbotDisplayMode.default}>
-      <ChatbotHeader>
-        <ChatbotHeaderTitle>
-          <Flex
-            justifyContent={{ default: 'justifyContentSpaceBetween' }}
-            className="pf-v6-u-w-100"
-          >
-            <FlexItem>
-              <Tooltip content="New chat">
-                <Button
-                  variant="plain"
-                  aria-label="New chat"
-                  id="new-chat-button"
-                  icon={<PlusIcon size={40} />}
-                  onClick={handleNewChat}
+      <ChatBotHistory
+        isOpen={isDrawerOpen}
+        setIsOpen={setIsDrawerOpen}
+        onApiCall={onApiCall}
+        startNewConversation={(closeDrawer = true) => {
+          startNewConversation();
+          closeDrawer && setIsDrawerOpen(false);
+        }}
+        loadConversation={(id) => {
+          setTriggerScroll(0);
+          return loadConversation(id);
+        }}
+        conversationId={conversationId}
+      >
+        <>
+          <ChatbotHeader>
+            <ChatbotHeaderMain>
+              <ChatbotHeaderMenu
+                aria-expanded={isDrawerOpen}
+                onMenuToggle={() => setIsDrawerOpen(!isDrawerOpen)}
+              />
+              <ChatbotHeaderTitle className="ai-chatbot__brand">
+                <Brand
+                  src={LightSpeedLogo}
+                  alt="OpenShift Lightspeed"
+                  style={{ height: 46, width: 46, maxHeight: 46 }}
                 />
-              </Tooltip>
-            </FlexItem>
-            <FlexItem>
-              <Tooltip content="Close chat">
-                <Button
-                  variant="plain"
-                  aria-label="Close chat"
-                  id="close-chat-button"
-                  icon={<TimesIcon size={40} />}
-                  onClick={onClose}
-                />
-              </Tooltip>
-            </FlexItem>
-          </Flex>
-        </ChatbotHeaderTitle>
-      </ChatbotHeader>
-      <ChatbotContent>
-        <MessageBox announcement={announcement} position={'top'}>
-          {isAlertVisible && (
-            <Alert
-              variant="info"
-              isInline
-              title={
-                <>
-                  This feature uses AI technology. Do not include personal or sensitive information
-                  in your input. Interactions may be used to improve Red Hat's products or services.
-                  For more information about Red Hat's privacy practices, please refer to the
-                  <Button
-                    variant="link"
-                    isInline
-                    icon={<ExternalLinkAltIcon />}
-                    component="a"
-                    href="https://www.redhat.com/en/about/privacy-policy"
-                    iconPosition="end"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Red Hat Privacy Statement
-                  </Button>
-                </>
-              }
-              actionClose={
-                <AlertActionCloseButton
-                  onClose={() => {
-                    localStorage.setItem(CHAT_ALERT_LOCAL_STORAGE_KEY, 'true');
-                    setIsAlertVisible(false);
-                  }}
-                />
-              }
-            />
-          )}
-          {messages.length === 0 && (
-            <ChatbotWelcomePrompt
-              title={`Hi, ${username}!`}
-              description="How can I help you today?"
-            />
-          )}
-          {messages.map((message, index) => {
-            const messageKey = conversationId ? `${conversationId}-${index}` : index;
-            const isBotMessage = message.role === botRole;
-            if (isBotMessage) {
-              return (
-                <BotMessage
-                  key={messageKey}
-                  messageIndex={index}
-                  message={message}
-                  onFeedbackSubmit={onFeedbackSubmit}
-                  onScrollToBottom={scrollToBottom}
-                />
-              );
-            }
+              </ChatbotHeaderTitle>
+            </ChatbotHeaderMain>
+            <ChatbotHeaderActions>
+              <PreviewBadge />
+              <ChatbotHeaderCloseButton onClick={onClose} />
+            </ChatbotHeaderActions>
+          </ChatbotHeader>
+          <ChatbotContent>
+            {isLoading ? (
+              <EmptyState titleText="Loading conversation" headingLevel="h4" icon={Spinner} />
+            ) : (
+              <MessageBox announcement={announcement} position={'top'} ref={msgBoxRef}>
+                <AIAlert />
+                {messages.length === 0 && (
+                  <ChatbotWelcomePrompt
+                    title={`Hi, ${username}!`}
+                    description="How can I help you today?"
+                  />
+                )}
+                {messages.map((message, index) => {
+                  const isLastMsg = index === messages.length - 1;
+                  const messageKey = conversationId ? `${conversationId}-${index}` : index;
+                  const isBotMessage = message.pfProps.role === botRole;
+                  if (isBotMessage) {
+                    return (
+                      <BotMessage
+                        key={messageKey}
+                        message={message}
+                        onApiCall={onApiCall}
+                        conversationId={conversationId}
+                        userMsg={index > 0 ? messages[index - 1].pfProps.content || '' : ''}
+                        isLoading={index === messages.length - 1 && isStreaming}
+                        initHeight={isLastMsg ? getVisibleHeight() : undefined}
+                        isLastMsg={isLastMsg}
+                        openClusterDetails={openClusterDetails}
+                      />
+                    );
+                  }
 
-            return <Message key={messageKey} {...message} />;
-          })}
-          {isLoading && <Message isLoading role={botRole} avatar={AIAvatar} />}
-          {error && (
-            <ChatbotAlert
-              variant="danger"
-              onClose={() => setError(undefined)}
-              title="Failed to send the message"
-            >
-              {error}
-            </ChatbotAlert>
-          )}
-          <div ref={scrollToBottomRef} />
-        </MessageBox>
-      </ChatbotContent>
-      <ChatbotFooter>
-        <MessageBar
-          onSendMessage={(msg) => void handleSend(msg)}
-          isSendButtonDisabled={isLoading || isStreaming}
-          hasAttachButton={false}
-        />
-        <ChatbotFootnote
-          label="Always review AI generated content prior to use"
-          popover={{
-            title: 'Feature preview',
-            description: `This tool is a preview, and while we strive for accuracy, there's always a possibility of errors. We recommend that you review AI generated content prior to use.`,
-          }}
-        />
-      </ChatbotFooter>
-      {isConfirmModalOpen && (
-        <ConfirmNewChatModal
-          onConfirm={startNewChat}
-          onCancel={() => setIsConfirmModalOpen(false)}
-        />
-      )}
+                  return (
+                    <Message
+                      key={messageKey}
+                      {...message.pfProps}
+                      innerRef={
+                        index === messages.length - 1 - lastUserMsg ? lastUserMsgRef : undefined
+                      }
+                      avatar={UserAvatar}
+                      name={username}
+                      hasRoundAvatar={false}
+                      avatarProps={{
+                        style: {
+                          height: 48,
+                          width: 48,
+                        },
+                      }}
+                      isMarkdownDisabled
+                    />
+                  );
+                })}
+                {error && (
+                  <ChatbotAlert variant="danger" onClose={resetError} title="An error occurred">
+                    {error}
+                  </ChatbotAlert>
+                )}
+                <div ref={scrollToBottomRef} />
+              </MessageBox>
+            )}
+          </ChatbotContent>
+          <ChatbotFooter>
+            <MessageBar
+              id={MESSAGE_BAR_ID}
+              onSendMessage={() => {
+                void sentMessage(msg);
+                setTriggerScroll((prev) => prev + 1);
+                setMsg('');
+              }}
+              isSendButtonDisabled={isStreaming || !msg.trim() || isLoading}
+              hasAttachButton={false}
+              onChange={(_, value) => setMsg(`${value}`)}
+              ref={msgBarRef}
+            />
+            <ChatbotFootnote label="Always review AI generated content prior to use" />
+          </ChatbotFooter>
+        </>
+      </ChatBotHistory>
     </Chatbot>
   );
 };

@@ -43,7 +43,7 @@ const AddNodePoolModal = ({
   const handleSubmit = async (values: NodePoolFormValues) => {
     setError(undefined);
     const nodePool: NodePoolK8sResource = {
-      apiVersion: 'hypershift.openshift.io/v1alpha1',
+      apiVersion: 'hypershift.openshift.io/v1beta1',
       kind: 'NodePool',
       metadata: {
         name: values.nodePoolName,

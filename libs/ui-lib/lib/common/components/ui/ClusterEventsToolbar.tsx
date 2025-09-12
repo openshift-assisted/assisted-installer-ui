@@ -254,6 +254,7 @@ const ClusterEventsToolbar = ({
               <DropdownList>
                 <DropdownItem
                   id={`checkbox-${CLUSTER_LEVEL}`}
+                  data-testid="cluster-level-events-filter-option"
                   hasCheckbox
                   isSelected={getSelections().includes(CLUSTER_LEVEL)}
                   key={CLUSTER_LEVEL}
@@ -263,6 +264,7 @@ const ClusterEventsToolbar = ({
                 </DropdownItem>
                 <DropdownItem
                   id={`checkbox-${DELETED_HOSTS}`}
+                  data-testid="deleted-hosts-filter-option"
                   hasCheckbox
                   isSelected={getSelections().includes(DELETED_HOSTS)}
                   key={DELETED_HOSTS}
@@ -273,6 +275,7 @@ const ClusterEventsToolbar = ({
                 {...sortedHosts.map((host) => (
                   <DropdownItem
                     id={`checkbox-${host.id}`}
+                    data-testid={`host-${host.id}-filter-option`}
                     hasCheckbox
                     isSelected={getSelections().includes(host.id)}
                     key={host.id}

@@ -22,7 +22,6 @@ import { HostsFormValues } from './types';
 import { useFormikContext } from 'formik';
 import { getAgentsForSelection } from '../../../helpers';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { useFormikHelpers } from '../../../../../common/hooks/useFormikHelpers';
 
 import './NodePoolForm.css';
 import NodePoolAgentsForm from '../../forms/NodePoolAgentsForm';
@@ -37,14 +36,8 @@ type NodePoolFormProps = {
 const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, onRemove }) => {
   const { t } = useTranslation();
   const { values } = useFormikContext<HostsFormValues>();
-  const { setValue: setCountValue } = useFormikHelpers(`nodePools[${index}].count`);
-  const { setValue: setMinAutoscalingValue } = useFormikHelpers(
-    `nodePools[${index}].autoscaling.minReplicas`,
-  );
-  const { setValue: setMaxAutoscalingValue } = useFormikHelpers(
-    `nodePools[${index}].autoscaling.maxReplicas`,
-  );
   const [isExpanded, setExpanded] = React.useState(true);
+
   const infraEnvAgents = React.useMemo(() => {
     const infraEnv = infraEnvs.find((ie) => ie.metadata?.namespace === values.agentNamespace);
     return agents.filter((agent) => isAgentOfInfraEnv(infraEnv, agent));
@@ -78,31 +71,6 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     0,
     Math.min(matchingAgents.length, availableAgents.length - previousNodePoolsCount),
   );
-
-  const currentCount = values.nodePools[index].useAutoscaling
-    ? values.nodePools[index].autoscaling.maxReplicas
-    : values.nodePools[index].count;
-
-  React.useEffect(() => {
-    if (currentCount > maxAgents) {
-      if (values.nodePools[index].useAutoscaling) {
-        if (maxAgents === 0) {
-          void setMinAutoscalingValue(maxAgents);
-        }
-        void setMaxAutoscalingValue(maxAgents);
-      } else {
-        void setCountValue(maxAgents);
-      }
-    }
-  }, [
-    maxAgents,
-    currentCount,
-    values.nodePools,
-    index,
-    setCountValue,
-    setMinAutoscalingValue,
-    setMaxAutoscalingValue,
-  ]);
 
   return (
     <Stack hasGutter>

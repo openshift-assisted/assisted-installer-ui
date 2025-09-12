@@ -18,16 +18,24 @@ The library's `package.json` must contain the following section in order to be s
 }
 ```
 
+There are 3 possible releases, driven by the suffix in the release name:
+
+- OCM - no suffix
+- CIM - suffix `-cim`
+- Chatbot - suffix `-chatbot`
+
 ## Instructions
 
 1. Make sure you have been granted the `maintaner` role in the project settings.
 2. Create a new branch from `master` and name it following this pattern:
-   `releases/v<some-semver-string>`.
+   `releases/v<some-semver-string>-<optionally_a_suffix>`.
 3. [Draft a new release through GitHub's interface](https://github.com/openshift-assisted/assisted-installer-ui/releases/new).
 4. Fill the form with the following details:
-   1. Tag: `v<some-semver-string>`
-   2. Target branch: `releases/v<some-semver-string>` (the same as in the previous step).
-   3. Title: `v<some-semver-string>` (again, the same as in the previous step).
+   1. Tag: `v<some-semver-string>-<optionally_a_suffix>`
+   2. Target branch: `releases/v<some-semver-string>-<optionally_a_suffix>` (the same as in the
+      previous step).
+   3. Title: `v<some-semver-string>-<optionally_a_suffix>` (again, the same as in the previous
+      step).
    4. Description: Generate the release notes automatically (recommended), or edit the field
       manually.
 
@@ -36,4 +44,5 @@ The library's `package.json` must contain the following section in order to be s
 - [@openshift-assisted/ui-lib](https://www.npmjs.com/package/@openshift-assisted/ui-lib)
 - [@openshift-assisted/types](https://www.npmjs.com/package/@openshift-assisted/types)
 - [@openshift-assisted/locales](https://www.npmjs.com/package/@openshift-assisted/locales)
+- [@openshift-assisted/chatbot](https://www.npmjs.com/package/@openshift-assisted/chatbot)
 - https://quay.io/repository/edge-infrastructure/assisted-installer-ui?tab=tags

@@ -1,129 +1,179 @@
 import * as React from 'react';
-import { Message } from '@patternfly-6/chatbot';
-import { UserFeedbackProps } from '@patternfly-6/chatbot/dist/cjs/Message/UserFeedback/UserFeedback';
+import { Message } from '@patternfly/chatbot';
+import MessageLoading from '@patternfly/chatbot/dist/cjs/Message/MessageLoading';
+import { MsgProps } from './helpers';
+import { Button, Stack, StackItem } from '@patternfly-6/react-core';
+import { saveAs } from 'file-saver';
+import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly-6/react-icons';
+import FeedbackForm from './FeedbackCard';
 
-type MsgProps = React.ComponentProps<typeof Message>;
+import AIAvatar from '../../assets/lightspeed-logo.svg';
 
-type SentimentActionClick = (isPositive: boolean) => void;
+// eslint-disable-next-line
+// @ts-ignore
+const MsgLoading = () => <MessageLoading loadingWord="Loading message" />;
 
 export type FeedbackRequest = {
-  messageIndex: number;
   userFeedback: string;
   sentiment: number;
+  category?: string;
 };
 
-const getActions = (text: string, onActionClick: SentimentActionClick) => ({
-  positive: {
-    ariaLabel: 'Good response',
-    tooltipContent: 'Good response',
-    clickedTooltipContent: 'Feedback sent',
-    onClick: () => {
-      onActionClick(true);
-    },
-  },
-  negative: {
-    ariaLabel: 'Bad response',
-    tooltipContent: 'Bad response',
-    clickedTooltipContent: 'Feedback sent',
-    onClick: () => {
-      onActionClick(false);
-    },
-  },
-  copy: {
-    onClick: () => {
-      void navigator.clipboard.writeText(text);
-    },
-  },
-});
-
-const userFeedbackForm = (
-  onSubmit: (quickResponse: string | undefined, additionalFeedback: string | undefined) => void,
-  onClose: VoidFunction,
-) => ({
-  onClose,
-  onSubmit,
-  title: 'Please provide feedback',
-  textAreaAriaLabel: 'Additional feedback',
-  textAreaPlaceholder: 'Add details here',
-  hasTextArea: true,
-  closeButtonAriaLabel: 'Close feedback form',
-  focusOnLoad: false,
-});
-
 export type BotMessageProps = {
-  onFeedbackSubmit: (req: FeedbackRequest) => Promise<void>;
-  messageIndex: number;
   message: MsgProps;
-  onScrollToBottom: () => void;
+  isLoading: boolean;
+  isLastMsg: boolean;
+  initHeight?: number;
+  onApiCall: typeof fetch;
+  conversationId: string | undefined;
+  userMsg: string;
+  openClusterDetails: (clusterId: string) => void;
 };
 
 const BotMessage = ({
-  onFeedbackSubmit,
-  messageIndex,
+  onApiCall,
   message,
-  onScrollToBottom,
+  isLoading,
+  initHeight,
+  isLastMsg,
+  conversationId,
+  userMsg,
+  openClusterDetails,
 }: BotMessageProps) => {
-  const [isNegativeFeedback, setIsNegativeFeedback] = React.useState<boolean>(false);
+  const [openFeedback, setOpenFeedback] = React.useState(false);
+  const [height, setHeight] = React.useState(initHeight);
+  const msgRef = React.useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when negative feedback form opens
-  React.useEffect(() => {
-    if (isNegativeFeedback) {
-      // Use requestAnimationFrame to ensure the form is rendered and painted
-      requestAnimationFrame(() => {
-        // Double RAF to ensure layout is complete
-        requestAnimationFrame(() => {
-          onScrollToBottom();
-        });
+  const onFeedbackSubmit = React.useCallback(
+    async (req: FeedbackRequest): Promise<void> => {
+      const resp = await onApiCall('/v1/feedback', {
+        method: 'POST',
+        body: JSON.stringify({
+          conversation_id: conversationId,
+          user_question: userMsg,
+          user_feedback: req.userFeedback,
+          llm_response: message.pfProps.content || '',
+          sentiment: req.sentiment,
+          category: req.category,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-    }
-  }, [isNegativeFeedback, onScrollToBottom]);
-
-  const actions = React.useMemo(() => {
-    return getActions(message.content || '', (positiveFeedback) => {
-      if (positiveFeedback) {
-        const submitPositiveFeedback = async () => {
-          try {
-            await onFeedbackSubmit({
-              messageIndex,
-              userFeedback: '',
-              sentiment: 1,
-            });
-          } finally {
-            setIsNegativeFeedback(false);
-          }
-        };
-        void submitPositiveFeedback();
-      } else {
-        setIsNegativeFeedback(true);
+      if (!resp.ok) {
+        throw new Error(`${resp.status} ${resp.statusText}`);
       }
-    });
-  }, [message.content, onFeedbackSubmit, messageIndex]);
+    },
+    [onApiCall, conversationId, message, userMsg],
+  );
 
-  const userFeedbackFormConfig = React.useMemo<UserFeedbackProps | undefined>(() => {
-    return isNegativeFeedback
-      ? userFeedbackForm(
-          (_quickResponse: string | undefined, additionalFeedback: string | undefined) => {
-            const submitNegativeFeedback = async () => {
-              try {
-                await onFeedbackSubmit({
-                  messageIndex,
-                  userFeedback: additionalFeedback || '',
-                  sentiment: -1,
-                });
-              } finally {
-                setIsNegativeFeedback(false);
+  // run on every re-render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useLayoutEffect(() => {
+    if (height && !isLoading && msgRef.current && msgRef.current.scrollHeight > height) {
+      setHeight(undefined);
+    }
+  });
+
+  return (
+    <>
+      <Message
+        {...message.pfProps}
+        name="OpenShift Lightspeed"
+        avatarProps={{
+          style: {
+            height: 48,
+            width: 48,
+          },
+        }}
+        avatar={AIAvatar}
+        hasRoundAvatar={false}
+        style={height && isLastMsg ? { minHeight: height } : undefined}
+        actions={
+          isLoading
+            ? undefined
+            : {
+                positive: {
+                  ariaLabel: 'Good response',
+                  tooltipContent: 'Good response',
+                  clickedTooltipContent: 'Feedback sent',
+                  onClick: () => {
+                    void onFeedbackSubmit({
+                      userFeedback: '',
+                      sentiment: 1,
+                    });
+                  },
+                },
+                negative: {
+                  ariaLabel: 'Bad response',
+                  tooltipContent: 'Bad response',
+                  clickedTooltipContent: 'Feedback sent',
+                  onClick: () => setOpenFeedback(true),
+                },
+                copy: {
+                  isDisabled: !message.pfProps.content,
+                  onClick: () => {
+                    void navigator.clipboard.writeText(message.pfProps.content || '');
+                  },
+                },
               }
-            };
-            void submitNegativeFeedback();
-          },
-          () => {
-            setIsNegativeFeedback(false);
-          },
-        )
-      : undefined;
-  }, [isNegativeFeedback, onFeedbackSubmit, messageIndex]);
-
-  return <Message {...message} actions={actions} userFeedbackForm={userFeedbackFormConfig} />;
+        }
+        innerRef={msgRef}
+        extraContent={{
+          afterMainContent: (
+            <>
+              {isLoading && <MsgLoading />}
+              {!isLoading && message.actions?.length && (
+                <Stack hasGutter>
+                  {message.actions.map(({ title, url, clusterId }, idx) => (
+                    <StackItem key={idx}>
+                      {url && (
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            try {
+                              saveAs(url);
+                            } catch (error) {
+                              // eslint-disable-next-line
+                              console.error('Download failed: ', error);
+                            }
+                          }}
+                          variant="secondary"
+                          component="a"
+                          href={url}
+                          icon={<DownloadIcon />}
+                        >
+                          {title}
+                        </Button>
+                      )}
+                      {clusterId && (
+                        <Button
+                          onClick={() => openClusterDetails(clusterId)}
+                          variant="secondary"
+                          icon={<ExternalLinkAltIcon />}
+                        >
+                          {title}
+                        </Button>
+                      )}
+                    </StackItem>
+                  ))}
+                </Stack>
+              )}
+            </>
+          ),
+          endContent: openFeedback && (
+            <FeedbackForm
+              onFeedbackSubmit={async (req: FeedbackRequest) => {
+                await onFeedbackSubmit(req);
+                setOpenFeedback(false);
+              }}
+              onClose={() => setOpenFeedback(false)}
+            />
+          ),
+        }}
+      />
+    </>
+  );
 };
 
 export default BotMessage;

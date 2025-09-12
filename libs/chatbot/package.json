@@ -15,7 +15,8 @@
   "typesVersions": {
     "*": {
       "index": [
-        "./build/@types/index.d.ts"
+        "./build/@types/index.d.ts",
+        "./lib/index.ts"
       ]
     }
   },
@@ -31,13 +32,22 @@
     "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "dependencies": {
-    "@patternfly-6/chatbot": "npm:@patternfly/chatbot@2.2.1",
-    "@patternfly-6/patternfly": "npm:@patternfly/patternfly@6.2.2",
-    "@patternfly-6/react-core": "npm:@patternfly/react-core@6.2.2",
-    "@patternfly-6/react-icons": "npm:@patternfly/react-icons@6.2.2",
-    "@patternfly-6/react-styles": "npm:@patternfly/react-styles@6.2.2",
-    "@patternfly-6/react-tokens": "npm:@patternfly/react-tokens@6.2.2",
-    "lodash-es": "^4.17.21"
+    "@patternfly-6/patternfly": "npm:@patternfly/patternfly@6.3.1",
+    "@patternfly-6/react-core": "npm:@patternfly/react-core@6.3.1",
+    "@patternfly-6/react-icons": "npm:@patternfly/react-icons@6.3.1",
+    "@patternfly-6/react-styles": "npm:@patternfly/react-styles@6.3.1",
+    "@patternfly-6/react-tokens": "npm:@patternfly/react-tokens@6.3.1",
+    "@patternfly/chatbot": "6.4.0-prerelease.4",
+    "@patternfly/patternfly": "6.3.1",
+    "@patternfly/react-core": "6.3.1",
+    "@patternfly/react-icons": "6.3.1",
+    "@patternfly/react-styles": "6.3.1",
+    "@patternfly/react-tokens": "6.3.1",
+    "@redhat-cloud-services/ai-client-state": "^0.14.0",
+    "@redhat-cloud-services/lightspeed-client": "^0.14.0",
+    "file-saver": "^2.0.2",
+    "lodash-es": "^4.17.21",
+    "uuid": "^8.1"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",

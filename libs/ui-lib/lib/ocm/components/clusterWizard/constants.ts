@@ -12,6 +12,8 @@ export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   'custom-manifests': 'Custom manifests',
   review: 'Review and create',
   'credentials-download': 'Download credentials',
+  'disconnected-review': 'Review and download ISO',
+  'disconnected-basic': 'Basic information',
 };
 
 export const defaultWizardSteps: ClusterWizardStepsType[] = [

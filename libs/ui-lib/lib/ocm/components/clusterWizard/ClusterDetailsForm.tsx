@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Grid, GridItem, Split, SplitItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -11,6 +11,7 @@ import {
   getRichTextValidation,
   CpuArchitecture,
   useAlerts,
+  DeveloperPreview,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -32,6 +33,7 @@ import {
   ManagedDomain,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeature } from '../../hooks/use-feature';
+import InstallDisconnectedSwitch from './disconnected/InstallDisconnectedSwitch';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -41,7 +43,6 @@ type ClusterDetailsFormProps = {
   ocpVersions: OpenshiftVersionOptionType[];
   usedClusterNames: string[];
   navigation: React.ReactNode;
-  moveNext: () => void;
   handleClusterCreate: (params: ClusterCreateParams, addCustomManifests: boolean) => Promise<void>;
   handleClusterUpdate: (
     clusterId: Cluster['id'],
@@ -58,13 +59,12 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     managedDomains,
     ocpVersions,
     usedClusterNames = [],
-    moveNext,
     handleClusterUpdate,
     handleClusterCreate,
     navigation,
   } = props;
 
-  const clusterWizardContext = useClusterWizardContext();
+  const { customManifestsStep, moveNext } = useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
@@ -119,17 +119,9 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         managedDomains,
         ocpVersions,
         urlSearchParams: search,
-        addCustomManifests: clusterWizardContext.customManifestsStep,
+        addCustomManifests: customManifestsStep,
       }),
-    [
-      infraEnv,
-      cluster,
-      pullSecret,
-      managedDomains,
-      ocpVersions,
-      search,
-      clusterWizardContext.customManifestsStep,
-    ],
+    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search, customManifestsStep],
   );
 
   const { t } = useTranslation();
@@ -173,6 +165,18 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               <GridItem>
                 <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
               </GridItem>
+              {!isSingleClusterFeatureEnabled && (
+                <GridItem>
+                  <Split>
+                    <SplitItem>
+                      <InstallDisconnectedSwitch isDisabled={!!cluster} />
+                    </SplitItem>
+                    <SplitItem>
+                      <DeveloperPreview />
+                    </SplitItem>
+                  </Split>
+                </GridItem>
+              )}
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields
                   versions={ocpVersions}

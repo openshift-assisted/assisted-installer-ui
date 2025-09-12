@@ -23,20 +23,28 @@ import {
   OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
   OPERATOR_NAME_NODE_MAINTENANCE,
   OPERATOR_NAME_KUBE_DESCHEDULER,
+  OPERATOR_NAME_CLUSTER_OBSERVABILITY,
+  OPERATOR_NAME_NUMA_RESOURCES,
+  OPERATOR_NAME_OADP,
+  OPERATOR_NAME_METALLB,
 } from '../../config/constants';
 import { ExternalLink } from '../ui';
 import {
   AUTHORINO_OPERATOR_LINK,
   CNV_LINK,
   FENCE_AGENTS_REMEDIATION_LINK,
+  getClusterObservabilityLink,
   getKmmDocsLink,
   getKubeDeschedulerLink,
   getLsoLink,
   getLvmsDocsLink,
   getMceDocsLink,
+  getMetalLbLink,
   getNmstateLink,
   getNodeFeatureDiscoveryLink,
+  getNumaResourcesLink,
   getNvidiaGpuLink,
+  getOadpLink,
   MTV_LINK,
   NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
@@ -74,6 +82,10 @@ import {
   DESCRIPTION_SERVERLESS,
   DESCRIPTION_SERVICEMESH,
   DESCRIPTION_LVM,
+  DESCRIPTION_CLUSTER_OBSERVABILITY,
+  DESCRIPTION_NUMA_RESOURCES,
+  DESCRIPTION_OADP,
+  DESCRIPTION_METALLB,
 } from './operatorDescriptions';
 
 // TODO check if it's unused and it can be deleted in favor of "isMajorMinorVersionEqualOrGreater"
@@ -177,6 +189,20 @@ export const getOperatorSpecs = (
           </>
         ),
         supportLevel: getFeatureSupportLevel('ODF'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_OADP,
+        title: 'OADP',
+        featureId: 'OADP',
+        descriptionText: DESCRIPTION_OADP,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_OADP} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getOadpLink(openshiftVersion)}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('OADP'),
       },
     ],
     [categories[Category.VIRT]]: [
@@ -302,6 +328,20 @@ export const getOperatorSpecs = (
         notStandalone: true,
         supportLevel: getFeatureSupportLevel('SERVICEMESH'),
       },
+      {
+        operatorKey: OPERATOR_NAME_METALLB,
+        title: 'MetalLB',
+        featureId: 'METALLB',
+        descriptionText: DESCRIPTION_METALLB,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_METALLB} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getMetalLbLink(openshiftVersion)}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('METALLB'),
+      },
     ],
     [categories[Category.REMEDIATION]]: [
       {
@@ -420,6 +460,22 @@ export const getOperatorSpecs = (
         notStandalone: true,
         supportLevel: getFeatureSupportLevel('NODE_MAINTENANCE'),
       },
+      {
+        operatorKey: OPERATOR_NAME_CLUSTER_OBSERVABILITY,
+        title: 'Cluster Observability',
+        featureId: 'CLUSTER_OBSERVABILITY',
+        descriptionText: DESCRIPTION_CLUSTER_OBSERVABILITY,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_CLUSTER_OBSERVABILITY} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getClusterObservabilityLink(openshiftVersion)}>
+              Learn more
+            </ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('CLUSTER_OBSERVABILITY'),
+      },
     ],
     [categories[Category.SCHEDULING]]: [
       {
@@ -450,6 +506,20 @@ export const getOperatorSpecs = (
         ),
         notStandalone: true,
         supportLevel: getFeatureSupportLevel('KUBE_DESCHEDULER'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_NUMA_RESOURCES,
+        title: 'NUMA Resources',
+        featureId: 'NUMA_RESOURCES',
+        descriptionText: DESCRIPTION_NUMA_RESOURCES,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_NUMA_RESOURCES} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getNumaResourcesLink(openshiftVersion)}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('NUMA_RESOURCES'),
       },
     ],
   };
