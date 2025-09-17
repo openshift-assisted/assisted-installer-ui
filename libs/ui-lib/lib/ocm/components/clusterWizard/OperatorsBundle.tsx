@@ -8,8 +8,6 @@ import {
   GalleryItem,
   List,
   ListItem,
-  Split,
-  SplitItem,
   Stack,
   StackItem,
   Title,
@@ -19,9 +17,6 @@ import {
   Bundle,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
-import NewFeatureSupportLevelBadge, {
-  NewSupportLevelBadgeProps,
-} from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { ExternalLink, OperatorsValues, PopoverIcon, singleClusterBundles } from '../../../common';
 import { useFormikContext } from 'formik';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
@@ -32,7 +27,6 @@ import { getNewBundleOperators } from '../clusterConfiguration/operators/utils';
 import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
 import {
   highlightMatch,
-  OperatorSpec,
   useOperatorSpecs,
 } from '../../../common/components/operators/operatorSpecs';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -78,27 +72,6 @@ const BundleLabel = ({ bundle, searchTerm }: { bundle: Bundle; searchTerm?: stri
   );
 };
 
-const getBundleSupportLevel = (
-  bundle: Bundle,
-  opSpecsByKey: Record<string, OperatorSpec>,
-): NewSupportLevelBadgeProps['supportLevel'] => {
-  let supportLevel: NewSupportLevelBadgeProps['supportLevel'] = undefined;
-  if (bundle.operators) {
-    for (const op of bundle.operators) {
-      const operatorSpec = opSpecsByKey[op];
-      if (operatorSpec) {
-        if (operatorSpec.supportLevel === 'dev-preview') {
-          supportLevel = 'dev-preview';
-          break;
-        } else if (operatorSpec.supportLevel === 'tech-preview') {
-          supportLevel = 'tech-preview';
-        }
-      }
-    }
-  }
-  return supportLevel;
-};
-
 const BundleCard = ({
   bundle,
   bundles,
@@ -115,8 +88,6 @@ const BundleCard = ({
   const { isFeatureSupported } = useNewFeatureSupportLevel();
   const { byKey: opSpecs } = useOperatorSpecs();
   const { uiSettings } = useClusterWizardContext();
-
-  const supportLevel = getBundleSupportLevel(bundle, opSpecs);
 
   const hasUnsupportedOperators = !!bundle.operators?.some((op) => {
     const operatorSpec = opSpecs[op];
@@ -189,17 +160,6 @@ const BundleCard = ({
           <Stack hasGutter>
             <StackItem isFilled>
               <div>{highlightMatch(bundle.description || '', searchTerm)}</div>
-            </StackItem>
-            <StackItem>
-              <Split>
-                <SplitItem isFilled />
-                <SplitItem>
-                  <NewFeatureSupportLevelBadge
-                    featureId={bundle.id || ''}
-                    supportLevel={supportLevel}
-                  />
-                </SplitItem>
-              </Split>
             </StackItem>
           </Stack>
         </CardBody>
