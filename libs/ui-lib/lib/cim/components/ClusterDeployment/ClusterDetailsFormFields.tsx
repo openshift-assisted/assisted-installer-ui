@@ -2,7 +2,11 @@ import * as React from 'react';
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import { OpenShiftVersionDropdown, OpenShiftVersionModal } from '../../../common';
+import {
+  isMajorMinorVersionEqualOrGreater,
+  OpenShiftVersionDropdown,
+  OpenShiftVersionModal,
+} from '../../../common';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../common/components/clusters';
 import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
@@ -100,6 +104,14 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     return [];
   }, [selectOptions, values.customOpenshiftSelect]);
 
+  const allowTNA = React.useMemo(() => {
+    const current =
+      values.customOpenshiftSelect?.version ||
+      versions.find((version) => version.value === values.openshiftVersion)?.version;
+
+    return isMajorMinorVersionEqualOrGreater(current, '4.19') && values.platform === 'baremetal';
+  }, [values.customOpenshiftSelect?.version, values.openshiftVersion, values.platform, versions]);
+
   return (
     <Form id="wizard-cluster-details__form">
       {isEditFlow ? (
@@ -160,6 +172,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       <ControlPlaneNodesDropdown
         isDisabled={isEditFlow}
         allowHighlyAvailable={allowHighlyAvailable}
+        allowTNA={allowTNA}
       />
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />

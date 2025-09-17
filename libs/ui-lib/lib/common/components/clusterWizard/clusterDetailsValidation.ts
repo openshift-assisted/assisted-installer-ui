@@ -75,7 +75,7 @@ export const getClusterDetailsInitialValues = ({
     diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
     diskEncryption: cluster?.diskEncryption ?? {},
     cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
-    platform: cluster?.platform?.type || 'none',
+    platform: cluster?.platform?.type || 'baremetal',
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
     enableDiskEncryptionOnArbiters: ['all', 'arbiters'].includes(
