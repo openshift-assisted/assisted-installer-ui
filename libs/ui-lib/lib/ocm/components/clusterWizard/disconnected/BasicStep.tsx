@@ -14,6 +14,7 @@ import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
+import { Formik } from 'formik';
 
 const BasicStep = () => {
   const { t } = useTranslation();

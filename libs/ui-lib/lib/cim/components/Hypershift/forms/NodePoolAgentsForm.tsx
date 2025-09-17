@@ -1,4 +1,4 @@
-import { Alert, AlertVariant, Grid, GridItem, Text } from '@patternfly/react-core';
+import { Alert, AlertVariant, Grid, GridItem, Content } from '@patternfly/react-core';
 import * as React from 'react';
 import { CheckboxField, NumberInputField, PopoverIcon } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -95,7 +95,7 @@ const NodePoolAgentsForm = ({
             variant={AlertVariant.warning}
             title={t('ai:Host count exceeds the current number of available hosts.')}
           >
-            <Text>{t('ai:Scale down the nodepool or make more hosts available.')}</Text>
+            <Content>{t('ai:Scale down the nodepool or make more hosts available.')}</Content>
           </Alert>
         </GridItem>
       )}
