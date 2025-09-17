@@ -5,8 +5,6 @@ import {
   CardBody,
   CardHeader,
   CardExpandableContent,
-  Grid,
-  GridItem,
   Stack,
   StackItem,
 } from '@patternfly/react-core';

@@ -6,7 +6,7 @@ import { OperatorsValues } from '../../../common';
 function calculateSelectedOperators(
   values: OperatorsValues,
   bundles: Bundle[],
-  opSpecs: Record<string, any>,
+  opSpecs: Record<string, unknown>,
 ): string[] {
   // Calculate all selected operators (direct selections + bundle selections)
   const bundleOperators = values.selectedBundles.flatMap(

@@ -7,8 +7,6 @@ import {
   Grid,
   GridItem,
   gridSpans,
-  Split,
-  SplitItem,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
