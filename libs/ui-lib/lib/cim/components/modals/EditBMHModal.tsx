@@ -1,8 +1,5 @@
 import * as React from 'react';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import BMCForm from '../Agent/BMCForm';
 import { SecretK8sResource } from '../../types';
 import { LoadingState } from '../../../common';

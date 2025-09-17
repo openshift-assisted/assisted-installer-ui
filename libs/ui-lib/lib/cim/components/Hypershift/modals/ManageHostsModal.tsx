@@ -1,15 +1,9 @@
+import { Alert, Button, Spinner, Stack, StackItem } from '@patternfly/react-core';
 import {
-	Alert,
-	Button,
-	Spinner,
-	Stack,
-	StackItem
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalBoxBody,
-	ModalBoxFooter,
-	ModalVariant
+  Modal,
+  ModalBoxBody,
+  ModalBoxFooter,
+  ModalVariant,
 } from '@patternfly/react-core/deprecated';
 import { Formik, FormikConfig } from 'formik';
 import * as React from 'react';

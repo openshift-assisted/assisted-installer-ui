@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-	Button,
-	ButtonVariant
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type DeleteHostModalProps = {

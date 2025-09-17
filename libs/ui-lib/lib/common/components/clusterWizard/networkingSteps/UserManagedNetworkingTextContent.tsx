@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, Content,  } from '@patternfly/react-core';
+import { List, ListItem, Content } from '@patternfly/react-core';
 import { RenderIf, ExternalLink } from '../../ui';
 import { getOpenShiftNetworkingDocsLink } from '../../../config';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';

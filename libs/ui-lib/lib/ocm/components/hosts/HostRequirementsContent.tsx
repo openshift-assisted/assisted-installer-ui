@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, Content,  } from '@patternfly/react-core';
+import { List, ListItem, Content } from '@patternfly/react-core';
 import { DISK_WRITE_SPEED_LINK, ErrorState, ExternalLink, LoadingState } from '../../../common';
 import { useClusterPreflightRequirements } from '../../hooks';
 import { fileSize } from '../../../common/utils';
@@ -42,7 +42,9 @@ const HostRequirementsContent = ({
   if (isAddingHosts) {
     return (
       <Content>
-        <Content component={'p'}>{`Worker hosts must have at least ${contentForWorkerNodes}`}</Content>
+        <Content
+          component={'p'}
+        >{`Worker hosts must have at least ${contentForWorkerNodes}`}</Content>
       </Content>
     );
   }

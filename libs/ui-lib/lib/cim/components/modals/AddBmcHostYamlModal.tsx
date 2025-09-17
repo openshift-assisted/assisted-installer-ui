@@ -1,8 +1,5 @@
 import * as React from 'react';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { UploadActionModalProps } from './types';
 import AddBmcHostYamlForm from './AddBmcHostYamlForm';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';

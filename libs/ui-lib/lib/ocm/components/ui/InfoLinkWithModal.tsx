@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-	Button,
-	ButtonVariant,
-	IconComponentProps
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalProps
-} from '@patternfly/react-core/deprecated';
+import { Button, ButtonVariant, IconComponentProps } from '@patternfly/react-core';
+import { Modal, ModalProps } from '@patternfly/react-core/deprecated';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { UiIcon } from '../../../common';
 

@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Alert,
-  AlertVariant,
-  Content,
-  ContentVariants,
-  } from '@patternfly/react-core';
+import { Alert, AlertVariant, Content, ContentVariants } from '@patternfly/react-core';
 import { StatusCondition } from '../../types';
 
 import './ResourceAlerts.css';

@@ -1,9 +1,5 @@
 import React, { ReactChild, ReactNode } from 'react';
-import {
-  Content,
-  ContentVariants,
-  ContentProps,
-} from '@patternfly/react-core';
+import { Content, ContentVariants, ContentProps } from '@patternfly/react-core';
 import { WithTestID } from '../../types';
 
 import './DetailList.css';

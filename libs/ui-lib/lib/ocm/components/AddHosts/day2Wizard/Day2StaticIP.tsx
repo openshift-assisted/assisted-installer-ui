@@ -91,7 +91,7 @@ const Day2StaticIP = () => {
 
   if (hasLoadError) {
     return (
-      <PageSection hasBodyWrapper={false}  isFilled>
+      <PageSection hasBodyWrapper={false} isFilled>
         <ErrorState
           title="Cannot load the Static IP configuration for this cluster"
           content="For non-multi-architecture clusters, make sure you select the Day1 cpu architecture"

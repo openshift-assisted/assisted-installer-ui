@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Popover,
-  Content,
-  ContentVariants,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Popover, Content, ContentVariants } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Trans } from 'react-i18next';
 import { PrismCode, UiIcon } from '../../../common/components/ui';

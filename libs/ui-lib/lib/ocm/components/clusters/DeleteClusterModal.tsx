@@ -1,11 +1,6 @@
 import * as React from 'react';
-import {
-	Button
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Button } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 
 type DeleteClusterModalProps = {
   name: string;

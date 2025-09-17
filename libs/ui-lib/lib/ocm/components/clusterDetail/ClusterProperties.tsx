@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridItem, Content,  } from '@patternfly/react-core';
+import { GridItem, Content } from '@patternfly/react-core';
 import {
   DetailItem,
   DetailList,

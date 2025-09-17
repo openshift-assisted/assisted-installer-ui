@@ -16,7 +16,13 @@ const ExternalLink: React.FC<ExternalLinkProps> = ({ href, onClick, children }) 
   };
 
   return (
-    <Content component="a" href={href} onClick={handleClick} target="_blank" rel="noopener noreferrer">
+    <Content
+      component="a"
+      href={href}
+      onClick={handleClick}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {children ? children : href} <ExternalLinkAltIcon color="rgb(0, 123, 186)" />
     </Content>
   );

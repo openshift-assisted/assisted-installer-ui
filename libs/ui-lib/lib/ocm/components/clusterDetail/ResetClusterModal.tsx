@@ -1,15 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import {
-	Button,
-	ButtonVariant,
-	Content,
-	
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Button, ButtonVariant, Content } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 import { getApiErrorMessage, handleApiError } from '../../../common/api';

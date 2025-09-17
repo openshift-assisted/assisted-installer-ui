@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { Form, Grid, GridItem, Content,  } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Content } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,

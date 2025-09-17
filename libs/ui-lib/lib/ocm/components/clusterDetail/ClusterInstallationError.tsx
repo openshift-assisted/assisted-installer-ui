@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  GridItem,
-  Alert,
-  AlertVariant,
-  AlertActionLink,
-  Content,
-  } from '@patternfly/react-core';
+import { GridItem, Alert, AlertVariant, AlertActionLink, Content } from '@patternfly/react-core';
 import { getReportIssueLink, canDownloadClusterLogs, useAlerts, toSentence } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';

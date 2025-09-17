@@ -5,7 +5,7 @@ import {
   EmptyStateBody,
   EmptyStateFooter,
   EmptyStateVariant,
-  } from '@patternfly/react-core';
+} from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   TroubleshootingOpenshiftConsoleButton,
@@ -22,7 +22,7 @@ const SingleClusterFinalizerPage = ({
   const { t } = useTranslation();
   return (
     <Bullseye>
-      <EmptyState  headingLevel="h4"   titleText={t('ai:Finalizing')} variant={EmptyStateVariant.xl}>
+      <EmptyState headingLevel="h4" titleText={t('ai:Finalizing')} variant={EmptyStateVariant.xl}>
         <EmptyStateBody>
           {t('ai:Cluster installation is still in-progress.')}
           <br />

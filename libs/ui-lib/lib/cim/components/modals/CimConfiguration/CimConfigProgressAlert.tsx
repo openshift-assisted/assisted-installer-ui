@@ -64,13 +64,14 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   }
 
   const assistedServiceDeploymentLink = (
-    <Button icon={<ExternalLinkAltIcon />}
+    <Button
+      icon={<ExternalLinkAltIcon />}
       variant={ButtonVariant.link}
       isInline
       key="assisted-service-deployment"
       onClick={() => navigate(assistedServiceDeploymentUrl)}
     >
-      {t('ai:Troubleshoot in the assisted service deployment')} 
+      {t('ai:Troubleshoot in the assisted service deployment')}
     </Button>
   );
 

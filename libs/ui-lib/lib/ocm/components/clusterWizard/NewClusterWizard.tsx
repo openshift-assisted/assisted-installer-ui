@@ -21,7 +21,7 @@ const NewClusterWizard: React.FC = () => {
   const { currentStepId } = useClusterWizardContext();
   return (
     <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
-      {getCurrentStep(currentStepId)}   
+      {getCurrentStep(currentStepId)}
     </div>
   );
 };

@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-	Button,
-	ButtonVariant,
-	Content,
-	ExpandableSection
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Button, ButtonVariant, Content, ExpandableSection } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { removeProtocolFromURL } from '../../api';
 import { ToolbarButton } from '../ui/Toolbar';

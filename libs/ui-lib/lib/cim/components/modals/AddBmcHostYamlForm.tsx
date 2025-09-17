@@ -1,21 +1,18 @@
 import * as React from 'react';
 import {
-	Alert,
-	AlertActionCloseButton,
-	AlertVariant,
-	Button,
-	ButtonVariant,
-	EmptyState,
-	EmptyStateBody,
-	EmptyStateVariant,
-	Spinner,
-	Stack,
-	StackItem
+  Alert,
+  AlertActionCloseButton,
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateVariant,
+  Spinner,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
-import {
-	ModalBoxBody,
-	ModalBoxFooter
-} from '@patternfly/react-core/deprecated';
+import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
 import { UploadIcon } from '@patternfly/react-icons/dist/js/icons/upload-icon';
 import jsYaml from 'js-yaml';
@@ -132,7 +129,12 @@ const AddBmcHostYamlForm: React.FC<
       <ModalBoxBody>
         <Stack hasGutter>
           <StackItem>
-            <EmptyState  headingLevel="h4" icon={UploadIcon}  titleText={<>{t('ai:Upload a YAML file')}</>} variant={EmptyStateVariant.lg}>
+            <EmptyState
+              headingLevel="h4"
+              icon={UploadIcon}
+              titleText={<>{t('ai:Upload a YAML file')}</>}
+              variant={EmptyStateVariant.lg}
+            >
               <EmptyStateBody>
                 <p>
                   {t(

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Content,
-  ContentVariants,
-  Popover,
-  Alert,
-  AlertVariant,
-} from '@patternfly/react-core';
+import { Content, ContentVariants, Popover, Alert, AlertVariant } from '@patternfly/react-core';
 import { TableVariant, Thead, Tbody, Table, Th, Tr, Td } from '@patternfly/react-table';
 import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';

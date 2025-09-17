@@ -1,11 +1,4 @@
-import {
-  Flex,
-  FlexItem,
-  Label,
-  StackItem,
-  Content,
-  ContentVariants,
-  } from '@patternfly/react-core';
+import { Flex, FlexItem, Label, StackItem, Content, ContentVariants } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import React from 'react';
 

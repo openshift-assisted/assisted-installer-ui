@@ -1,17 +1,11 @@
 import * as React from 'react';
 import * as Yup from 'yup';
+import { Alert, Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
 import {
-	Alert,
-	Button,
-	ButtonVariant,
-	Stack,
-	StackItem
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalBoxBody,
-	ModalBoxFooter,
-	ModalVariant
+  Modal,
+  ModalBoxBody,
+  ModalBoxFooter,
+  ModalVariant,
 } from '@patternfly/react-core/deprecated';
 import { Formik, FormikProps } from 'formik';
 

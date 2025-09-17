@@ -1,23 +1,20 @@
 import * as React from 'react';
 import * as yaml from 'js-yaml';
 import {
-	Alert,
-	AlertActionCloseButton,
-	AlertVariant,
-	Button,
-	ButtonVariant,
-	Form,
-	FormGroup,
-	Grid,
-	GridItem,
-	Content,
-	TextInputTypes,
-	ContentVariants
+  Alert,
+  AlertActionCloseButton,
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  Form,
+  FormGroup,
+  Grid,
+  GridItem,
+  Content,
+  TextInputTypes,
+  ContentVariants,
 } from '@patternfly/react-core';
-import {
-	ModalBoxBody,
-	ModalBoxFooter
-} from '@patternfly/react-core/deprecated';
+import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import {
   Formik,
   FormikProps,

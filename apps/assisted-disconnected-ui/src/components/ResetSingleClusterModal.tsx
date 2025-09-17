@@ -1,16 +1,6 @@
 import React from 'react';
-import {
-	Button,
-	ButtonVariant,
-	Content,
-	Stack,
-	StackItem,
-	Alert
-} from '@patternfly/react-core';
-import {
-	Modal,
-	ModalVariant
-} from '@patternfly/react-core/deprecated';
+import { Button, ButtonVariant, Content, Stack, StackItem, Alert } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { useModalDialogsContext, ClustersService } from '@openshift-assisted/ui-lib/ocm';
 import {
   getApiErrorMessage,

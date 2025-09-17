@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  GridItem,
-  Content,
-  OrderType,
-  } from '@patternfly/react-core';
+import { Grid, GridItem, Content, OrderType } from '@patternfly/react-core';
 import Measure from 'react-measure';
 import {
   DiscoveryTroubleshootingModal,

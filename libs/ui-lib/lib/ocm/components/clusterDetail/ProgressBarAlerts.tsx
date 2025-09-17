@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertActionLink, Content,  } from '@patternfly/react-core';
+import { Alert, AlertActionLink, Content } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
 import {
   RenderIf,

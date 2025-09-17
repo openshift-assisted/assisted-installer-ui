@@ -1,5 +1,5 @@
 import React from 'react';
-import { Content, OrderType, } from '@patternfly/react-core';
+import { Content, OrderType } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 

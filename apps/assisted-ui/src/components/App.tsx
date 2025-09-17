@@ -13,7 +13,7 @@ window.__app__ = { OCM };
 export const App: React.FC = () => (
   <BrowserRouter basename={Config.routeBasePath}>
     <CompatRouter>
-    <Page header={<Header />} isManagedSidebar defaultManagedSidebarIsOpen={false}>
+      <Page header={<Header />} isManagedSidebar defaultManagedSidebarIsOpen={false}>
         <UILibRoutes
           allEnabledFeatures={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES}
           additionalComponents={refreshToken ? <ChatBot /> : undefined}
