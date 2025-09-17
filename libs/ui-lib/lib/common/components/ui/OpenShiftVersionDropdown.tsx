@@ -116,7 +116,10 @@ export const OpenShiftVersionDropdown = ({
         <Button
           variant="link"
           isInline
-          onClick={() => showOpenshiftVersionModal()}
+          onClick={() => {
+            setOpen(false);
+            showOpenshiftVersionModal();
+          }}
           id="show-all-versions"
         >
           {t('ai:Show all available versions')}
