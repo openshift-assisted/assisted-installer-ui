@@ -17,7 +17,7 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
 import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
-import OcmTNADisclaimer from './OcmTNADisclaimer';
+import OcmTNADisclaimer from '../../../common/components/clusterConfiguration/OcmTNADisclaimer';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';

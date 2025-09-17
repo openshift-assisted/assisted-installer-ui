@@ -4,6 +4,7 @@ import { useFormikContext } from 'formik';
 
 import {
   ExternalPlatformsDropdown,
+  isMajorMinorVersionEqualOrGreater,
   OpenShiftVersionDropdown,
   OpenShiftVersionModal,
 } from '../../../../common';
@@ -99,6 +100,14 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     return undefined;
   }, [allVersions, values.customOpenshiftSelect, versions]);
 
+  const allowTNA = React.useMemo(() => {
+    const current =
+      values.customOpenshiftSelect ||
+      versions.find((version) => version.value === values.openshiftVersion)?.version;
+
+    return isMajorMinorVersionEqualOrGreater(current, '4.19') && values.platform === 'baremetal';
+  }, [values.customOpenshiftSelect, values.openshiftVersion, values.platform, versions]);
+
   return (
     <Form id="wizard-cluster-details__form">
       {isEditFlow ? (
@@ -159,6 +168,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       <ControlPlaneNodesDropdown
         isDisabled={isEditFlow}
         allowHighlyAvailable={allowHighlyAvailable}
+        allowTNA={allowTNA}
       />
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
