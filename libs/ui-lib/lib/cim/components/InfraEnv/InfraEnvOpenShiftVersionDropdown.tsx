@@ -65,7 +65,7 @@ const InfraEnvOpenShiftVersionDropdown = ({ osImages }: { osImages: OsImage[] })
           onOpenChange={() => setOsImageOpen(!osImageOpen)}
         >
           <DropdownList>
-            {filteredImages.map((image) => (
+          {filteredImages.sort((a, b) => a.openshiftVersion.localeCompare(b.openshiftVersion)).map((image) => (
               <DropdownItem
                 key={image.openshiftVersion}
                 id={image.openshiftVersion}
