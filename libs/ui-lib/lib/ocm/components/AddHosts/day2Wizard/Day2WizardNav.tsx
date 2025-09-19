@@ -24,6 +24,7 @@ const Day2WizardNav = () => {
         onClick={() => wizardContext.setCurrentStepId(stepId)}
         isCurrent={wizardContext.currentStepId === stepId}
         isDisabled={isStepDisabled(idx, stepId)}
+        data-testid={`day2-wizard-nav-item-${stepId}`}
       />
     );
   };
@@ -37,8 +38,12 @@ const Day2WizardNav = () => {
         key="static-network-configuration-form-view"
         isCurrent={isStaticIpStep(wizardContext.currentStepId)}
         isDisabled={isStepIdxAfterCurrent(idx)}
+        data-testid={`day2-wizard-nav-item-static-network-configuration-form-view`}
       >
-        <WizardNav isInnerList>
+        <WizardNav
+          isInnerList
+          data-testid="day2-wizard-nav-item-static-network-configuration-form-view-inner-list"
+        >
           {staticIpFormViewSubSteps.map((stepId, subIdx) => {
             return getNavItem(idx + subIdx, stepId);
           })}
@@ -64,7 +69,7 @@ const Day2WizardNav = () => {
     return navItems;
   };
 
-  return <WizardNav>{getWizardNavItems()}</WizardNav>;
+  return <WizardNav data-testid="day2-wizard-nav">{getWizardNavItems()}</WizardNav>;
 };
 
 export default Day2WizardNav;

@@ -3,10 +3,10 @@
 }
 
 .detail-list dd {
-  margin-bottom: var(--pf-v5-global--spacer--sm);
+  margin-bottom: var(--pf-v6-global--spacer--sm);
 }
 
 .detail-list ul ul,
 .detail-list ul li {
-  margin-top: var(--pf-v5-c-content--dt--sm--MarginTop);
+  margin-top: var(--pf-v6-c-content--dt--sm--MarginTop);
 }

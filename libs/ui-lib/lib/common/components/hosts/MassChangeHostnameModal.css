@@ -1,6 +1,6 @@
 .hostname-preview {
-  background-color: var(--pf-v5-global--BackgroundColor--200);
-  padding: var(--pf-v5-global--spacer--sm);
+  background-color: var(--pf-v6-global--BackgroundColor--200);
+  padding: var(--pf-v6-global--spacer--sm);
   max-height: 10rem;
   overflow-y: auto;
 }

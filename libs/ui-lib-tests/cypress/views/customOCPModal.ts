@@ -7,27 +7,27 @@ export const customOCPModal = {
   },
   getSearchResponse: (searchResponse: string) => {
     cy.get('#select-typeahead-listbox').within(() => {
-      return cy.get('.pf-v5-c-menu__list-item').contains(searchResponse);
+      return cy.get('.pf-v6-c-menu__list-item').contains(searchResponse);
     });
   },
   selectFirstSearchResponse: (searchResponse: string) => {
     cy.get('#select-typeahead-listbox').within(() => {
-      cy.get('.pf-v5-c-menu__list-item').contains(searchResponse).click();
+      cy.get('.pf-v6-c-menu__list-item').contains(searchResponse).click();
     });
   },
   getSelectModalButton: () => {
     return customOCPModal
       .getCustomOCPModalId()
-      .get('.pf-v5-c-modal-box__footer > button.pf-m-primary');
+      .get('.pf-v6-c-modal-box__footer > button.pf-m-primary');
   },
   getCloseModalButton: () => {
     return customOCPModal
       .getCustomOCPModalId()
-      .get('.pf-v5-c-modal-box__footer > button.pf-m-link');
+      .get('.pf-v6-c-modal-box__footer > button.pf-m-link');
   },
   getCloseModalIcon: () => {
     return customOCPModal
       .getCustomOCPModalId()
-      .get('.pf-v5-c-modal-box__close > button.pf-m-plain');
+      .get('.pf-v6-c-modal-box__close > button.pf-m-plain');
   },
 };

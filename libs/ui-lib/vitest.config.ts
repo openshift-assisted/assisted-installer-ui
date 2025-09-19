@@ -11,5 +11,6 @@ export default defineConfig({
         inline: [/@patternfly/],
       },
     },
+    exclude: ['build/**'],
   },
 });

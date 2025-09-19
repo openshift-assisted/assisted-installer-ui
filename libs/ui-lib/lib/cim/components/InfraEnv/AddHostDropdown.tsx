@@ -103,7 +103,7 @@ const AddHostDropdown = ({
             {!provisioningConfig && (
               <DropdownItem
                 isAriaDisabled
-                className="pf-v5-u-color-200" // visually muted
+                className="pf-v6-u-color-200" // visually muted
                 component="div"
               >
                 <Flex

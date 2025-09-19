@@ -116,7 +116,10 @@ export const OpenShiftVersionDropdown = ({
         <Button
           variant="link"
           isInline
-          onClick={() => showOpenshiftVersionModal()}
+          onClick={() => {
+            setOpen(false);
+            showOpenshiftVersionModal();
+          }}
           id="show-all-versions"
         >
           {t('ai:Show all available versions')}
@@ -141,11 +144,13 @@ export const OpenShiftVersionDropdown = ({
   const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       id={fieldId}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
       ref={toggleRef}
       isFullWidth
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
+      data-testid="openshift-version-dropdown-toggle"
     >
       {current || t('ai:OpenShift version')}
     </MenuToggle>
@@ -175,16 +180,20 @@ export const OpenShiftVersionDropdown = ({
       {helperText && (
         <FormHelperText>
           <HelperText>
-            <HelperTextItem variant="default">{helperText}</HelperTextItem>
+            <HelperTextItem variant="default" data-testid="openshift-version-dropdown-helper-text">
+              {helperText}
+            </HelperTextItem>
           </HelperText>
         </FormHelperText>
       )}
       {showReleasesLink && (
-        <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-          <span data-ouia-id="openshift-releases-link">
-            {t('ai:Learn more about OpenShift releases')}
-          </span>
-        </ExternalLink>
+        <div className="pf-v6-u-mt-sm">
+          <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
+            <span data-ouia-id="openshift-releases-link">
+              {t('ai:Learn more about OpenShift releases')}
+            </span>
+          </ExternalLink>
+        </div>
       )}
     </FormGroup>
   );

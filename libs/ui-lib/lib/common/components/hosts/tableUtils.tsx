@@ -65,7 +65,6 @@ export const hostnameColumn = (
       title: t('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
-        modifier: 'breakWord',
       },
       sort: true,
     },

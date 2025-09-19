@@ -245,11 +245,13 @@ export const ExternalPlatformDropdown = ({
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       id={fieldId}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
+      style={{ minWidth: '420px' }}
       ref={toggleRef}
       onClick={() => setOpen(!isOpen)}
       isDisabled={dropdownIsDisabled}
       isExpanded={isOpen}
+      data-testid="external-platform-dropdown-toggle"
     >
       {externalPlatformTypes[field.value as PlatformType]?.label}
     </MenuToggle>

@@ -7,23 +7,14 @@ import {
   StaticTextField,
   useTranslation,
 } from '../../../../common';
-import {
-  Split,
-  SplitItem,
-  TextContent,
-  Text,
-  TextVariants,
-  Grid,
-  GridItem,
-  Form,
-} from '@patternfly/react-core';
-import { Formik } from 'formik';
+import { Split, SplitItem, Grid, GridItem, Form, Content } from '@patternfly/react-core';
 import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
+import { Formik } from 'formik';
 
 const BasicStep = () => {
   const { t } = useTranslation();
@@ -45,9 +36,9 @@ const BasicStep = () => {
             <GridItem>
               <Split>
                 <SplitItem>
-                  <TextContent>
-                    <Text component={TextVariants.h2}>Basic information</Text>
-                  </TextContent>
+                  <Content>
+                    <Content component="h2">Basic information</Content>
+                  </Content>
                 </SplitItem>
                 <SplitItem>
                   <DeveloperPreview />

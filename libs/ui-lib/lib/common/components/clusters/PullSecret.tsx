@@ -28,7 +28,7 @@ const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm = fals
       <>
         <Checkbox
           id="checkbox-pull-secret"
-          className="pf-v5-u-display-inline-flex"
+          className="pf-v6-u-display-inline-flex"
           aria-label={t('ai:edit pull secret')}
           isChecked={isExpanded}
           onChange={onCheckboxChange}

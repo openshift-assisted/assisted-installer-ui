@@ -1,6 +1,13 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom-v5-compat';
-import { Brand, Masthead, MastheadBrand, MastheadMain, Page } from '@patternfly/react-core';
+import {
+  Brand,
+  Masthead,
+  MastheadLogo,
+  MastheadMain,
+  MastheadBrand,
+  Page,
+} from '@patternfly/react-core';
 import { Provider } from 'react-redux';
 import { Store, useFeatureDetection } from '@openshift-assisted/ui-lib/ocm';
 import { FeatureListType } from '@openshift-assisted/ui-lib/lib/common';
@@ -28,13 +35,15 @@ export const App: React.FC = () => {
     <Masthead id="masthead">
       <MastheadMain>
         <MastheadBrand>
-          <Brand
-            src="/logo.svg"
-            alt="OpenShift Container Platform Assisted Installer"
-            style={{ width: '188px' }}
-          >
-            <source src="/logo.svg" />
-          </Brand>
+          <MastheadLogo>
+            <Brand
+              src="/logo.svg"
+              alt="OpenShift Container Platform Assisted Installer"
+              style={{ width: '188px' }}
+            >
+              <source src="/logo.svg" />
+            </Brand>
+          </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
     </Masthead>
@@ -43,7 +52,7 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Provider store={Store.storeDay1}>
-        <Page header={header} isManagedSidebar defaultManagedSidebarIsOpen={false}>
+        <Page masthead={header} isManagedSidebar defaultManagedSidebarIsOpen={false}>
           <AppRouter />
         </Page>
       </Provider>

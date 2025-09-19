@@ -44,7 +44,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
   const acceptedFiles = { 'application/x-ssh-key': ['.pub'] };
   const maxFileSize = 2048;
   return (
-    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelIcon={labelIcon}>
+    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelHelp={labelIcon}>
       {children}
       <FileUpload
         filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
@@ -58,6 +58,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
         type="text"
         value={field.value as string}
         filename={filename}
+        data-testid={`upload-field-${fieldId}`}
         onDataChange={(_event, file: string) => {
           setValue(file);
           setTouched(true);
@@ -110,6 +111,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
               icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-uploadfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>

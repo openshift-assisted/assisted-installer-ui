@@ -51,12 +51,17 @@ const InputField: React.FC<
         fieldId={fieldId}
         label={label}
         isRequired={isRequired}
-        labelIcon={labelIcon}
+        labelHelp={labelIcon}
         labelInfo={labelInfo}
       >
         {description && (
           <HelperText>
-            <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+            <HelperTextItem
+              variant="indeterminate"
+              data-testid=" input-field-description-${fieldId}-helper-text"
+            >
+              {description}
+            </HelperTextItem>
           </HelperText>
         )}
         <Split>
@@ -83,9 +88,14 @@ const InputField: React.FC<
           <FormHelperText>
             <HelperText>
               <HelperTextItem
-                icon={errorMessage && <ExclamationCircleIcon />}
-                variant={showErrorMessage ? 'error' : 'default'}
-                id={showErrorMessage && !isValid ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+                icon={errorMessage && errorMessage.trim() !== '' ? <ExclamationCircleIcon /> : null}
+                variant={errorMessage && errorMessage.trim() !== '' ? 'error' : 'default'}
+                id={
+                  errorMessage && errorMessage.trim() !== ''
+                    ? `${fieldId}-helper-error`
+                    : `${fieldId}-helper`
+                }
+                data-testid={`input-field-${fieldId}-helper-text`}
               >
                 {showErrorMessage ? errorMessage : helperText}
               </HelperTextItem>

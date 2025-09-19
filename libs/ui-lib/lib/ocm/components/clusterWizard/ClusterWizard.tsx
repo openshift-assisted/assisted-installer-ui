@@ -57,7 +57,7 @@ const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps
   }
   return (
     <WithErrorBoundary>
-      <div className={classNames('pf-v5-c-wizard', 'cluster-wizard')}>{renderCurrentStep()}</div>
+      <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>{renderCurrentStep()}</div>
     </WithErrorBoundary>
   );
 };

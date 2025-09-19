@@ -5,11 +5,10 @@ import {
   ButtonVariant,
   ButtonType,
   Form,
-  ModalBoxBody,
-  ModalBoxFooter,
   AlertVariant,
   Alert,
 } from '@patternfly/react-core';
+import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 
 import { Formik } from 'formik';
 import { TFunction } from 'i18next';

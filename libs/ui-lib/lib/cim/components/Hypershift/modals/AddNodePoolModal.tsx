@@ -1,15 +1,11 @@
 import * as React from 'react';
+import { Alert, Button, Spinner, Stack, StackItem } from '@patternfly/react-core';
 import {
-  Alert,
-  Button,
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
-  Spinner,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { Formik } from 'formik';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';

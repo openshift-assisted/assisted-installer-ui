@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, StackItem, TextContent } from '@patternfly/react-core';
+import { Stack, StackItem, Content } from '@patternfly/react-core';
 import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
 
 const ClusterProgressItem = ({
@@ -14,7 +14,7 @@ const ClusterProgressItem = ({
       <BorderedIcon>{icon}</BorderedIcon>
     </StackItem>
     <StackItem>
-      <TextContent>{children}</TextContent>
+      <Content>{children}</Content>
     </StackItem>
   </Stack>
 );

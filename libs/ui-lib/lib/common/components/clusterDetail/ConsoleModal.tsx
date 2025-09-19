@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Modal,
-  Button,
-  ButtonVariant,
-  Text,
-  ModalVariant,
-  ExpandableSection,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, ExpandableSection } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { removeProtocolFromURL } from '../../api';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -77,21 +71,21 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const { t } = useTranslation();
   return (
     <>
-      <Text component="p">
+      <Content component="p">
         {t(
           'ai:In order to access the OpenShift Web Console, use external DNS server or local configuration to resolve its hostname. To do so, either:',
         )}
-      </Text>
+      </Content>
       <ModalExpandableSection
         toggleText={t('ai:Option 1: Add the following records to your DNS server (recommended)')}
-        className="pf-v5-u-pb-md"
+        className="pf-v6-u-pb-md"
         isExpanded={isDNSExpanded}
         onToggle={handleToggle}
         requiredList={aRecords}
       />
       <ModalExpandableSection
         toggleText={t('ai:Option 2: Update your local /etc/hosts or /etc/resolv.conf files')}
-        className="pf-v5-u-pb-md"
+        className="pf-v6-u-pb-md"
         isExpanded={!isDNSExpanded}
         onToggle={handleToggle}
         requiredList={etcHosts}

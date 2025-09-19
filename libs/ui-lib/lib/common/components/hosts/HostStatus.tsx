@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Popover,
-  Button,
-  Text,
-  TextContent,
-  FlexItem,
-  Flex,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Popover, Button, Content, FlexItem, Flex, Stack, StackItem } from '@patternfly/react-core';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
 
@@ -59,38 +50,38 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   const { t } = useTranslation();
   if (['installing-in-progress'].includes(status)) {
     return (
-      <TextContent>
+      <Content>
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
   if (['error', 'cancelled', 'installing-pending-user-action'].includes(status)) {
     return (
-      <TextContent>
-        <Text>
+      <Content>
+        <Content component="p">
           {details}
           <br />
           {toSentence(statusInfo)}
-        </Text>
+        </Content>
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
   if (['installed'].includes(status)) {
     return (
-      <TextContent>
-        <Text>{details}</Text>
+      <Content>
+        <Content component="p">{details}</Content>
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
   if (['added-to-existing-cluster'].includes(status)) {
     return (
-      <TextContent>
-        <Text>{details}</Text>
+      <Content>
+        <Content component="p">{details}</Content>
         {!autoCSR && (
           <>
             <br />
@@ -107,7 +98,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
           </>
         )}
         <HostProgress host={host} />
-      </TextContent>
+      </Content>
     );
   }
 
@@ -125,9 +116,9 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   ) {
     // No additional error messages shown
     return (
-      <TextContent>
-        <Text>{details}</Text>
-      </TextContent>
+      <Content>
+        <Content component="p">{details}</Content>
+      </Content>
     );
   }
 
@@ -136,9 +127,9 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       {additionalPopoverContent}
       <StackItem>
         {details && (
-          <TextContent>
-            <Text>{details}</Text>
-          </TextContent>
+          <Content>
+            <Content component="p">{details}</Content>
+          </Content>
         )}
         <HostValidationGroups openshiftVersion={openshiftVersion} {...props} />
       </StackItem>
@@ -294,8 +285,8 @@ const HostStatus: React.FC<HostStatusProps> = ({
         {children && <FlexItem>{children}</FlexItem>}
         {sublabel && (
           <FlexItem
-            className="pf-v5-u-font-size-xs"
-            style={{ marginTop: 'calc(-1 * var(--pf-v5-l-flex--spacer--xs))' }}
+            className="pf-v6-u-font-size-xs"
+            style={{ marginTop: 'calc(-1 * var(--pf-v6-l-flex--spacer--xs))' }}
           >
             <WithHostStatusPopover {...popoverProps}>{sublabel}</WithHostStatusPopover>
           </FlexItem>

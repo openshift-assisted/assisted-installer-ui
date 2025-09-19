@@ -5,8 +5,8 @@ import {
   CardBody,
   CardHeader,
   CardExpandableContent,
-  Grid,
-  GridItem,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { ClusterProgress } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -36,36 +36,44 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
           Installation progress
         </Title>
         {!isCardExpanded && (
-          <div className="pf-v5-u-ml-md">
+          <div className="pf-v6-u-ml-md">
             <ClusterStatusIcon status={cluster.status} />
           </div>
         )}
       </CardHeader>
       <CardBody>
-        <ClusterProgress
-          cluster={cluster}
-          minimizedView={!isCardExpanded}
-          totalPercentage={cluster.progress?.totalPercentage || 0}
-        />
-        <ClusterDetailsButtonGroup
-          cluster={cluster}
-          credentials={clusterVarieties.credentials}
-          credentialsError={clusterVarieties.credentialsError}
-          showKubeConfig={false}
-        />
+        <Stack hasGutter>
+          <StackItem>
+            <ClusterProgress
+              cluster={cluster}
+              minimizedView={!isCardExpanded}
+              totalPercentage={cluster.progress?.totalPercentage || 0}
+            />
+          </StackItem>
+          <StackItem>
+            <ClusterDetailsButtonGroup
+              cluster={cluster}
+              credentials={clusterVarieties.credentials}
+              credentialsError={clusterVarieties.credentialsError}
+              showKubeConfig={false}
+            />
+          </StackItem>
+        </Stack>
       </CardBody>
       <CardExpandableContent>
         <CardBody>
-          <Grid hasGutter>
-            <ClusterDetailStatusVarieties
-              cluster={cluster}
-              clusterVarieties={clusterVarieties}
-              showAddHostsInfo={false}
-            />
-            <GridItem>
+          <Stack hasGutter>
+            <StackItem className="pf-v6-u-mt-lg">
+              <ClusterDetailStatusVarieties
+                cluster={cluster}
+                clusterVarieties={clusterVarieties}
+                showAddHostsInfo={false}
+              />
+            </StackItem>
+            <StackItem className="pf-v6-u-mt-lg">
               <ClusterHostsTable cluster={cluster} skipDisabled />
-            </GridItem>
-          </Grid>
+            </StackItem>
+          </Stack>
         </CardBody>
       </CardExpandableContent>
     </Card>

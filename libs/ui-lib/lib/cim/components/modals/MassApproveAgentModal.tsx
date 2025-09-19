@@ -1,14 +1,6 @@
 import * as React from 'react';
-import {
-  Alert,
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Alert, Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
+import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';
@@ -27,7 +19,7 @@ type ApproveTableRowProps = {
 };
 
 const ApproveTableRow: React.FC<ApproveTableRowProps> = ({ agent, children }) => (
-  <div className={agent?.spec.approved ? 'pf-v5-u-color-200' : undefined}>{children}</div>
+  <div className={agent?.spec.approved ? 'pf-v6-u-color-200' : undefined}>{children}</div>
 );
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {

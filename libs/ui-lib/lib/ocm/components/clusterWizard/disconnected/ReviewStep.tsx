@@ -14,9 +14,6 @@ import {
   SplitItem,
   Alert,
   Grid,
-  Text,
-  TextContent,
-  TextVariants,
   DescriptionList,
   DescriptionListGroup,
   DescriptionListTerm,
@@ -25,6 +22,7 @@ import {
   ListItem,
   ListComponent,
   OrderType,
+  Content,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
@@ -64,9 +62,9 @@ const ReviewStep = () => {
           <Grid hasGutter>
             <Split>
               <SplitItem>
-                <TextContent>
-                  <Text component={TextVariants.h2}>Review and download ISO</Text>
-                </TextContent>
+                <Content>
+                  <Content component="h2">Review and download ISO</Content>
+                </Content>
               </SplitItem>
               <SplitItem>
                 <DeveloperPreview />

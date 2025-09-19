@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Popover,
-  Alert,
-  AlertVariant,
-} from '@patternfly/react-core';
+import { Content, ContentVariants, Popover, Alert, AlertVariant } from '@patternfly/react-core';
 import { TableVariant, Thead, Tbody, Table, Th, Tr, Td } from '@patternfly/react-table';
 import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';
@@ -53,9 +46,9 @@ const diskColumns = (t: TFunction, showFormat: boolean) =>
   ].filter(Boolean) as { title: string | React.ReactNode }[];
 
 const SkipFormattingDisk = () => (
-  <TextContent>
-    <Text component={TextVariants.p}>This bootable disk will skip formatting</Text>
-  </TextContent>
+  <Content>
+    <Content component={ContentVariants.p}>This bootable disk will skip formatting</Content>
+  </Content>
 );
 
 const getDiskLimitation = (

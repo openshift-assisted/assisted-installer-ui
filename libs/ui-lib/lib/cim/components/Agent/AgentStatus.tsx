@@ -90,7 +90,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
             </Button>
           }
         >
-          <Button variant="link" isInline className="pf-v5-u-font-size-xs">
+          <Button variant="link" isInline className="pf-v6-u-font-size-xs">
             {t('ai:Approve host')}
           </Button>
         </Popover>

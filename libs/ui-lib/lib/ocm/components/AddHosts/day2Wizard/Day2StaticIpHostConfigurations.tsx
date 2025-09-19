@@ -3,9 +3,8 @@ import {
   Flex,
   FlexItem,
   FormGroup,
-  TextContent,
-  TextVariants,
-  Text,
+  Content,
+  ContentVariants,
   Tooltip,
 } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
@@ -25,9 +24,9 @@ const Day2HostStaticIpConfigurations = ({ isDisabled }: { isDisabled: boolean })
   return (
     <FormGroup
       label={
-        <TextContent>
-          <Text component={TextVariants.h4}>Hosts' network configuration</Text>
-        </TextContent>
+        <Content>
+          <Content component={ContentVariants.h4}>Hosts' network configuration</Content>
+        </Content>
       }
       fieldId={getFieldId(GROUP_NAME, 'radio')}
       isInline

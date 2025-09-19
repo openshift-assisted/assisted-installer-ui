@@ -2,18 +2,18 @@ import React from 'react';
 import {
   Divider,
   ExpandableSection,
+  Flex,
+  FlexItem,
   Grid,
   GridItem,
   gridSpans,
-  Split,
-  SplitItem,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
-import { global_info_color_100 as infoColor } from '@patternfly/react-tokens/dist/js/global_info_color_100';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+import { t_global_color_status_info_100 as infoColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_info_100';
 import {
   ClusterValidations,
   DetailItem,
@@ -57,7 +57,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        classNameValue={'pf-v5-u-mb-md'}
+        classNameValue={'pf-v6-u-mb-md'}
         testId="cluster-preflight-checks"
       />
       <DetailItem
@@ -71,7 +71,7 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        classNameValue={'pf-v5-u-mb-md'}
+        classNameValue={'pf-v6-u-mb-md'}
         testId="host-preflight-checks"
       />
       <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
@@ -94,25 +94,25 @@ const PreflightCheckInfo = ({
 }) => {
   return (
     <GridItem span={span} offset={offset} className={className}>
-      <Split hasGutter>
-        <SplitItem>{icon}</SplitItem>
-        <SplitItem>
+      <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+        <FlexItem style={{ display: 'flex', alignItems: 'center' }}>{icon}</FlexItem>
+        <FlexItem style={{ display: 'flex', alignItems: 'center' }}>
           <b>{title}</b>
-        </SplitItem>
-      </Split>
+        </FlexItem>
+      </Flex>
     </GridItem>
   );
 };
 
 const getCheckIcon = (validationStatuses: string[]) => {
   if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
-    return <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
+    return <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />;
   } else if (validationStatuses.includes('warning')) {
-    return <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
+    return <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />;
   } else if (validationStatuses.includes('pending')) {
-    return <UiIcon status="info" icon={<InfoCircleIcon />} />;
+    return <UiIcon size="sm" status="info" icon={<InfoCircleIcon />} />;
   }
-  return <UiIcon status="warning" icon={<CheckCircleIcon color={okColor.value} />} />;
+  return <UiIcon size="sm" icon={<CheckCircleIcon color={okColor.value} />} />;
 };
 
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
@@ -126,9 +126,9 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   );
 
   const supportLevelIcon = isFullySupported ? (
-    <CheckCircleIcon color={okColor.value} />
+    <UiIcon size="sm" icon={<CheckCircleIcon color={okColor.value} />} />
   ) : (
-    <InfoCircleIcon color={infoColor.value} />
+    <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.value} />} />
   );
 
   const clusterValidations = React.useMemo(
@@ -161,12 +161,17 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
       <PreflightCheckInfo
         title="Cluster preflight checks"
         icon={getCheckIcon(clusterValidations)}
+        span={3}
       />
-      <PreflightCheckInfo title="Host preflight checks" icon={getCheckIcon(hostValidations)} />
+      <PreflightCheckInfo
+        title="Host preflight checks"
+        icon={getCheckIcon(hostValidations)}
+        span={3}
+      />
       <PreflightCheckInfo
         title={`Cluster support level: ${isFullySupported ? 'Full' : 'Limited'}`}
         icon={supportLevelIcon}
-        span={4}
+        span={3}
       />
     </>
   );

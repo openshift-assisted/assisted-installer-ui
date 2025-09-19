@@ -1,14 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import {
-  Stack,
-  StackItem,
-  TextContent,
-  Text,
-  ButtonVariant,
-  GridItem,
-  Grid,
-} from '@patternfly/react-core';
+import { Stack, StackItem, Content, ButtonVariant, GridItem, Grid } from '@patternfly/react-core';
 import { ToolbarButton, Alerts, getEnabledHosts, selectOlmOperators, isSNO } from '../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -62,9 +54,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       <StackItem>
         <Grid hasGutter>
           <GridItem>
-            <TextContent>
-              <Text component="h2">Installation progress</Text>
-            </TextContent>
+            <Content>
+              <Content component="h2">Installation progress</Content>
+            </Content>
           </GridItem>
           <GridItem span={6}>
             <ClusterProgress
