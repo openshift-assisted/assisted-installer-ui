@@ -9,7 +9,9 @@ export const AboutButton: React.FC = () => {
   const handleClick = () => setIsModalOpen(true);
   return (
     <>
-      <Button icon="About" variant={ButtonVariant.plain} onClick={handleClick} id="button-about" />
+      <Button variant={ButtonVariant.plain} onClick={handleClick} id="button-about">
+        About
+      </Button>
       <AboutModal isOpen={isModalOpen} onClose={handleCloseAboutModal} />
     </>
   );
