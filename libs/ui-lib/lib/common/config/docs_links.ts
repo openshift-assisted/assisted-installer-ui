@@ -172,10 +172,12 @@ export const getLsoLink = (ocpVersion?: string) => {
     : `https://docs.openshift.com/container-platform/${version}/storage/persistent_storage/persistent_storage_local/ways-to-provision-local-storage.html`;
 };
 
-export const getNmstateLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
-    ocpVersion,
-  )}/html/networking/networking-operators#k8s-nmstate-about-the-k8s-nmstate-operator`;
+export const getNmstateLink = (ocpVersion?: string) => {
+  const version = getDocsOpenshiftVersion(ocpVersion);
+  return isMajorMinorVersionEqualOrGreater(ocpVersion, '4.17')
+    ? `https://docs.redhat.com/en/documentation/openshift_container_platform/${version}/html/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator`
+    : `https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator`;
+};
 
 export const getNodeFeatureDiscoveryLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
