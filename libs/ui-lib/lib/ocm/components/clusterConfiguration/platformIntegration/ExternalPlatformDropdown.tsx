@@ -11,6 +11,9 @@ import {
   MenuToggle,
   MenuToggleElement,
   DropdownList,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
 import {
@@ -19,6 +22,8 @@ import {
   SupportedCpuArchitecture,
   architectureData,
   getFieldId,
+  ExternalLink,
+  VSPHERE_LIMITATIONS_LINK,
 } from '../../../../common';
 import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
 import { PlatformType, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
@@ -258,33 +263,46 @@ export const ExternalPlatformDropdown = ({
   );
 
   return (
-    <FormGroup
-      id={`form-control__${fieldId}`}
-      fieldId={fieldId}
-      label={'Integrate with external partner platforms'}
-    >
-      <Tooltip
-        content={tooltipDropdownDisabled}
-        hidden={!dropdownIsDisabled}
-        position="top"
-        distance={7}
+    <>
+      <FormGroup
+        id={`form-control__${fieldId}`}
+        fieldId={fieldId}
+        label={'Integrate with external partner platforms'}
       >
-        <Dropdown
-          id={`${fieldId}-dropdown`}
-          toggle={toggle}
-          isOpen={isOpen}
-          onOpenChange={() => setOpen(!isOpen)}
-          onSelect={(event) => {
-            const selectedPlatform = event?.currentTarget.id as PlatformType;
-            setValue(selectedPlatform);
-            setOpen(false);
-            onChange(selectedPlatform);
-          }}
-          shouldFocusToggleOnSelect
+        <Tooltip
+          content={tooltipDropdownDisabled}
+          hidden={!dropdownIsDisabled}
+          position="top"
+          distance={7}
         >
-          <DropdownList>{enabledItems}</DropdownList>
-        </Dropdown>
-      </Tooltip>
-    </FormGroup>
+          <Dropdown
+            id={`${fieldId}-dropdown`}
+            toggle={toggle}
+            isOpen={isOpen}
+            onOpenChange={() => setOpen(!isOpen)}
+            onSelect={(event) => {
+              const selectedPlatform = event?.currentTarget.id as PlatformType;
+              setValue(selectedPlatform);
+              setOpen(false);
+              onChange(selectedPlatform);
+            }}
+            shouldFocusToggleOnSelect
+          >
+            <DropdownList>{enabledItems}</DropdownList>
+          </Dropdown>
+        </Tooltip>
+      </FormGroup>
+      {field.value === 'vsphere' && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>
+              <ExternalLink href={VSPHERE_LIMITATIONS_LINK}>
+                Learn more about vSphere limitations
+              </ExternalLink>
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
+    </>
   );
 };
