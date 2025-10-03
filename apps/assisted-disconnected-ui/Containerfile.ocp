@@ -35,6 +35,9 @@ USER 0
 RUN export GOFLAGS="-mod=vendor"; go build
 
 FROM registry.ci.openshift.org/ocp/4.21:base-rhel9
+
+LABEL io.openshift.release.operator=true
+
 COPY --from=ui-build /app/apps/assisted-disconnected-ui/build /app/proxy/dist
 COPY --from=proxy-build /app/assisted-disconnected-ui /app/proxy
 WORKDIR /app/proxy
