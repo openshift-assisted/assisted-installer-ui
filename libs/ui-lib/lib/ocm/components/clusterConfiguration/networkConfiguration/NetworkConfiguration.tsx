@@ -224,10 +224,10 @@ const NetworkConfiguration = ({
   );
 
   React.useEffect(() => {
-    if (!isViewerMode && isDualStack && !isUserManagedNetworking) {
+    if (!isViewerMode && isDualStack) {
       toggleAdvConfiguration(true);
     }
-  }, [isDualStack, isUserManagedNetworking, isViewerMode, toggleAdvConfiguration]);
+  }, [isDualStack, isViewerMode, toggleAdvConfiguration]);
 
   const managedNetworkingState = React.useMemo(
     () =>
@@ -292,6 +292,7 @@ const NetworkConfiguration = ({
               hostSubnets.length === 0 ||
               false
             }
+            openshiftVersion={cluster.openshiftVersion}
           />
         </StackItem>
       )}

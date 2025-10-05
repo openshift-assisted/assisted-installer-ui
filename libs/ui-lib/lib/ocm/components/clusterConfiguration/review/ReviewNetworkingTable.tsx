@@ -58,7 +58,16 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'machine-networks' },
           },
-          isDualStack(cluster) ? { title: 'Primary' } : { title: '' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion })
+            ? {
+                title: cluster.machineNetworks?.map((network, index) => (
+                  <span key={network.cidr}>
+                    {index === 0 ? 'Primary' : 'Secondary'}
+                    <br />
+                  </span>
+                )),
+              }
+            : { title: '' },
         ],
       });
 
@@ -106,7 +115,14 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-cidr' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+            title: cluster.clusterNetworks?.map((network, index) => (
+              <span key={network.cidr}>
+                {index === 0 ? 'Primary' : 'Secondary'}
+                <br />
+              </span>
+            )),
+          },
         ].filter(Boolean),
       },
       {
@@ -122,7 +138,14 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-prefix' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+            title: cluster.clusterNetworks?.map((network, index) => (
+              <span key={network.hostPrefix}>
+                {index === 0 ? 'Primary' : 'Secondary'}
+                <br />
+              </span>
+            )),
+          },
         ].filter(Boolean),
       },
       {
@@ -138,7 +161,14 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'service-network-cidr' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+            title: cluster.serviceNetworks?.map((network, index) => (
+              <span key={network.cidr}>
+                {index === 0 ? 'Primary' : 'Secondary'}
+                <br />
+              </span>
+            )),
+          },
         ].filter(Boolean),
       },
       {

@@ -200,8 +200,9 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   );
 
   const memoizedValidationSchema = React.useMemo(
-    () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
-    [hostSubnets, initialValues],
+    () =>
+      getNetworkConfigurationValidationSchema(initialValues, hostSubnets, cluster.openshiftVersion),
+    [hostSubnets, initialValues, cluster.openshiftVersion],
   );
 
   React.useEffect(() => {

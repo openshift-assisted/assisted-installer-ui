@@ -8,6 +8,7 @@ import {
   Grid,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
+import { Address6 } from 'ip-address';
 import {
   DUAL_STACK,
   PREFIX_MAX_RESTRICTION,
@@ -15,10 +16,6 @@ import {
   PopoverIcon,
 } from '../../../../common';
 import { OcmInputField } from '../../ui/OcmFormFields';
-
-const getNetworkLabelSuffix = (index: number, isDualStack: boolean) => {
-  return isDualStack ? ` (${index === 0 ? 'IPv4' : 'IPv6'})` : '';
-};
 
 const IPv4PrefixPopoverText =
   'For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.';
@@ -36,9 +33,61 @@ const serviceCidrHelperText =
   'Enter only 1 IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
 
 const AdvancedNetworkFields = () => {
-  const { values, errors } = useFormikContext<NetworkConfigurationValues>();
+  const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
 
   const isDualStack = values.stackType === DUAL_STACK;
+
+  // Reorder Cluster Networks and Service Networks when Machine Network primary changes
+  React.useEffect(() => {
+    if (!isDualStack || !values.machineNetworks?.[0]?.cidr) return;
+
+    const primaryMachineNetworkCidr = values.machineNetworks[0].cidr;
+    const isPrimaryIPv6 = Address6.isValid(primaryMachineNetworkCidr);
+
+    // Check Cluster Networks
+    if (values.clusterNetworks && values.clusterNetworks.length >= 2) {
+      const firstClusterCidr = values.clusterNetworks[0].cidr;
+      if (!firstClusterCidr) return;
+
+      const isFirstClusterIPv6 = Address6.isValid(firstClusterCidr);
+
+      // If primary machine is IPv6 but first cluster is IPv4, swap them
+      if (isPrimaryIPv6 && !isFirstClusterIPv6) {
+        const reordered = [values.clusterNetworks[1], values.clusterNetworks[0]];
+        setFieldValue('clusterNetworks', reordered, false);
+      }
+      // If primary machine is IPv4 but first cluster is IPv6, swap them
+      else if (!isPrimaryIPv6 && isFirstClusterIPv6) {
+        const reordered = [values.clusterNetworks[1], values.clusterNetworks[0]];
+        setFieldValue('clusterNetworks', reordered, false);
+      }
+    }
+
+    // Check Service Networks
+    if (values.serviceNetworks && values.serviceNetworks.length >= 2) {
+      const firstServiceCidr = values.serviceNetworks[0].cidr;
+      if (!firstServiceCidr) return;
+
+      const isFirstServiceIPv6 = Address6.isValid(firstServiceCidr);
+
+      // If primary machine is IPv6 but first service is IPv4, swap them
+      if (isPrimaryIPv6 && !isFirstServiceIPv6) {
+        const reordered = [values.serviceNetworks[1], values.serviceNetworks[0]];
+        setFieldValue('serviceNetworks', reordered, false);
+      }
+      // If primary machine is IPv4 but first service is IPv6, swap them
+      else if (!isPrimaryIPv6 && isFirstServiceIPv6) {
+        const reordered = [values.serviceNetworks[1], values.serviceNetworks[0]];
+        setFieldValue('serviceNetworks', reordered, false);
+      }
+    }
+  }, [
+    isDualStack,
+    values.machineNetworks,
+    values.clusterNetworks,
+    values.serviceNetworks,
+    setFieldValue,
+  ]);
 
   const clusterNetworkCidrPrefix = (index: number) =>
     parseInt(
@@ -66,7 +115,6 @@ const AdvancedNetworkFields = () => {
         {() => (
           <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.clusterNetworks?.map((_, index) => {
-              const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
                 <Grid key={index} className="pf-v6-u-pb-md">
                   <GridItem className={'network-field-group'}>
@@ -74,7 +122,7 @@ const AdvancedNetworkFields = () => {
                       name={`clusterNetworks.${index}.cidr`}
                       label={
                         <>
-                          <span>{`Cluster network CIDR${networkSuffix} `}</span>
+                          <span>Cluster network CIDR </span>
                           <PopoverIcon
                             bodyContent={'IP address blocks from which Pod IPs are allocated.'}
                           />
@@ -82,7 +130,7 @@ const AdvancedNetworkFields = () => {
                       }
                       helperText={clusterCidrHelperText}
                       isRequired
-                      labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                      labelInfo={isDualStack ? (index === 0 ? 'Primary' : 'Secondary') : ''}
                     />
                   </GridItem>
                   <GridItem className={'network-field-group'}>
@@ -90,7 +138,7 @@ const AdvancedNetworkFields = () => {
                       name={`clusterNetworks.${index}.hostPrefix`}
                       label={
                         <>
-                          <span>Cluster network host prefix{networkSuffix} </span>
+                          <span>Cluster network host prefix </span>
                           <PopoverIcon
                             bodyContent={clusterNetworkHostPrefixPopoverText(index)}
                             minWidth="30rem"
@@ -128,9 +176,7 @@ const AdvancedNetworkFields = () => {
                   name={`serviceNetworks.${index}.cidr`}
                   label={
                     <>
-                      <span>
-                        {`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)} `}
-                      </span>
+                      <span>Service network CIDR </span>
                       <PopoverIcon
                         bodyContent={'The IP address pool used for service IP addresses.'}
                       />
@@ -138,7 +184,7 @@ const AdvancedNetworkFields = () => {
                   }
                   helperText={serviceCidrHelperText}
                   isRequired
-                  labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                  labelInfo={isDualStack ? (index === 0 ? 'Primary' : 'Secondary') : ''}
                 />
               </GridItem>
             ))}
