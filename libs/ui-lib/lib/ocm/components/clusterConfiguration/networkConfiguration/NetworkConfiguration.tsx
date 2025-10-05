@@ -292,6 +292,7 @@ const NetworkConfiguration = ({
               hostSubnets.length === 0 ||
               false
             }
+            openshiftVersion={cluster.openshiftVersion}
           />
         </StackItem>
       )}
