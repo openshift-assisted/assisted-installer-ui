@@ -16,10 +16,6 @@ import {
 } from '../../../../common';
 import { OcmInputField } from '../../ui/OcmFormFields';
 
-const getNetworkLabelSuffix = (index: number, isDualStack: boolean) => {
-  return isDualStack ? ` (${index === 0 ? 'IPv4' : 'IPv6'})` : '';
-};
-
 const IPv4PrefixPopoverText =
   'For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.';
 
@@ -66,7 +62,6 @@ const AdvancedNetworkFields = () => {
         {() => (
           <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.clusterNetworks?.map((_, index) => {
-              const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
                 <Grid key={index} className="pf-v6-u-pb-md">
                   <GridItem className={'network-field-group'}>
@@ -74,7 +69,7 @@ const AdvancedNetworkFields = () => {
                       name={`clusterNetworks.${index}.cidr`}
                       label={
                         <>
-                          <span>{`Cluster network CIDR${networkSuffix} `}</span>
+                          <span>Cluster network CIDR </span>
                           <PopoverIcon
                             bodyContent={'IP address blocks from which Pod IPs are allocated.'}
                           />
@@ -82,7 +77,9 @@ const AdvancedNetworkFields = () => {
                       }
                       helperText={clusterCidrHelperText}
                       isRequired
-                      labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                      labelInfo={
+                        isDualStack ? (index === 0 ? 'Primary' : 'Secondary') : ''
+                      }
                     />
                   </GridItem>
                   <GridItem className={'network-field-group'}>
@@ -90,7 +87,7 @@ const AdvancedNetworkFields = () => {
                       name={`clusterNetworks.${index}.hostPrefix`}
                       label={
                         <>
-                          <span>Cluster network host prefix{networkSuffix} </span>
+                          <span>Cluster network host prefix </span>
                           <PopoverIcon
                             bodyContent={clusterNetworkHostPrefixPopoverText(index)}
                             minWidth="30rem"
@@ -128,9 +125,7 @@ const AdvancedNetworkFields = () => {
                   name={`serviceNetworks.${index}.cidr`}
                   label={
                     <>
-                      <span>
-                        {`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)} `}
-                      </span>
+                      <span>Service network CIDR </span>
                       <PopoverIcon
                         bodyContent={'The IP address pool used for service IP addresses.'}
                       />
@@ -138,7 +133,9 @@ const AdvancedNetworkFields = () => {
                   }
                   helperText={serviceCidrHelperText}
                   isRequired
-                  labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                  labelInfo={
+                    isDualStack ? (index === 0 ? 'Primary' : 'Secondary') : ''
+                  }
                 />
               </GridItem>
             ))}
