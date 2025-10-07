@@ -163,32 +163,32 @@ export const getValidationSchema = (
       bmcAddress: bmcAddressValidationSchema(t),
       username: Yup.string().required(t('ai:Required field')),
       password: Yup.string().required(t('ai:Required field')),
-      bootMACAddress: macAddressValidationSchema,
+      bootMACAddress: macAddressValidationSchema(t),
       nmState: Yup.mixed().when('staticIPView', {
         is: (staticIpView: StaticIpView) => staticIpView === StaticIpView.YAML,
-        then: () => Yup.string().required(),
+        then: () => Yup.string().required(t('ai:Required field')),
       }),
 
       useVlan: Yup.boolean(),
       vlanId: Yup.mixed().when('useVlan', {
         is: (useVlan: boolean) => useVlan,
-        then: () => VlanIdValidationSchema(values.vlanId),
+        then: () => VlanIdValidationSchema(values.vlanId, t),
       }),
       dns: Yup.mixed().when('staticIPView', {
         is: (staticIpView: StaticIpView) => staticIpView === StaticIpView.FORM,
-        then: () => getDNSValidationSchema(values.protocolType),
+        then: () => getDNSValidationSchema(values.protocolType, t),
       }),
       ipConfigs: Yup.mixed().when('staticIPView', {
         is: (staticIpView: StaticIpView) => staticIpView === StaticIpView.FORM,
-        then: () => ipConfigsValidationSchemas(values.ipConfigs, values.protocolType),
+        then: () => ipConfigsValidationSchemas(values.ipConfigs, values.protocolType, t),
       }),
 
       macMapping: Yup.array().of(
         Yup.object().shape(
           {
-            macAddress: macAddressValidationSchema.when('name', {
+            macAddress: macAddressValidationSchema(t).when('name', {
               is: (name: string) => !!name,
-              then: () => macAddressValidationSchema.required(t('ai:MAC has to be specified')),
+              then: () => macAddressValidationSchema(t).required(t('ai:MAC has to be specified')),
             }),
             name: Yup.string().when('macAddress', {
               is: (name: string) => !!name,

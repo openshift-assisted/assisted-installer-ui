@@ -15,6 +15,7 @@ import {
   HostStaticNetworkConfig,
   MacInterfaceMap,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { TFunction } from 'i18next';
 
 const requiredMsg = 'A value is required';
 
@@ -59,24 +60,26 @@ const getInterfaceNamesInCurrentHost: UniqueStringArrayExtractor<YamlViewValues>
   });
 };
 
-const macInterfaceMapValidationSchema = Yup.array<MacInterfaceMap>().of(
-  Yup.object({
-    macAddress: macAddressValidationSchema
-      .required(requiredMsg)
-      .concat(getUniqueValidationSchema(getAllMacAddresses)),
-    logicalNicName: Yup.string()
-      .required(requiredMsg)
-      .concat(getUniqueValidationSchema(getInterfaceNamesInCurrentHost))
-      .max(15, 'Interface name must be 15 characters at most.')
-      .matches(/^\S+$/, 'Interface name can not contain spaces.'),
-  }),
-);
-
-export const yamlViewValidationSchema = Yup.object({
-  hosts: Yup.array<HostStaticNetworkConfig>().of(
-    Yup.object().shape({
-      networkYaml: networkYamlValidationSchema,
-      macInterfaceMap: macInterfaceMapValidationSchema,
+const macInterfaceMapValidationSchema = (t: TFunction) =>
+  Yup.array<MacInterfaceMap>().of(
+    Yup.object({
+      macAddress: macAddressValidationSchema(t)
+        .required(requiredMsg)
+        .concat(getUniqueValidationSchema(getAllMacAddresses)),
+      logicalNicName: Yup.string()
+        .required(requiredMsg)
+        .concat(getUniqueValidationSchema(getInterfaceNamesInCurrentHost))
+        .max(15, 'Interface name must be 15 characters at most.')
+        .matches(/^\S+$/, 'Interface name can not contain spaces.'),
     }),
-  ),
-});
+  );
+
+export const yamlViewValidationSchema = (t: TFunction) =>
+  Yup.object({
+    hosts: Yup.array<HostStaticNetworkConfig>().of(
+      Yup.object().shape({
+        networkYaml: networkYamlValidationSchema,
+        macInterfaceMap: macInterfaceMapValidationSchema(t),
+      }),
+    ),
+  });

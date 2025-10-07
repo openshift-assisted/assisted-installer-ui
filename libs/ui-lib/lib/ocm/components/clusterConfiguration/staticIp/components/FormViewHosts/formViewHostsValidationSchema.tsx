@@ -13,6 +13,7 @@ import {
   UniqueStringArrayExtractor,
 } from '../../commonValidationSchemas';
 import { getMachineNetworkCidr } from '../../../../../../common/components/staticIP/machineNetwork';
+import { TFunction } from 'i18next';
 const requiredMsg = 'A value is required';
 
 const getAllIpv4Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
@@ -38,12 +39,12 @@ const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
   ]);
 };
 
-const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
+const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues, t: TFunction) =>
   Yup.object({
     macAddress: Yup.mixed().when('useBond', {
       is: false,
       then: () =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .required(requiredMsg)
           .concat(getUniqueValidationSchema(getAllMacAddresses)),
       otherwise: () => Yup.mixed().notRequired(),
@@ -53,6 +54,7 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
         ? getInMachineNetworkValidationSchema(
             ProtocolVersion.ipv4,
             networkWideValues.ipConfigs['ipv4'].machineNetwork,
+            t,
           )
             .required(requiredMsg)
             .concat(getUniqueValidationSchema(getAllIpv4Addresses))
@@ -60,6 +62,7 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
               getIpIsNotNetworkOrBroadcastAddressSchema(
                 ProtocolVersion.ipv4,
                 getMachineNetworkCidr(networkWideValues.ipConfigs['ipv4'].machineNetwork),
+                t,
               ),
             )
         : Yup.string(),
@@ -67,6 +70,7 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
         ? getInMachineNetworkValidationSchema(
             ProtocolVersion.ipv6,
             networkWideValues.ipConfigs['ipv6'].machineNetwork,
+            t,
           )
             .required(requiredMsg)
             .concat(getUniqueValidationSchema(getAllIpv6Addresses))
@@ -74,6 +78,7 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
               getIpIsNotNetworkOrBroadcastAddressSchema(
                 ProtocolVersion.ipv6,
                 getMachineNetworkCidr(networkWideValues.ipConfigs['ipv6'].machineNetwork),
+                t,
               ),
             )
         : Yup.string(),
@@ -81,7 +86,7 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     bondPrimaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .required(requiredMsg)
           .concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
@@ -89,15 +94,18 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     bondSecondaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .required(requiredMsg)
           .concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
     }),
   });
 
-export const getFormViewHostsValidationSchema = (networkWideValues: FormViewNetworkWideValues) => {
+export const getFormViewHostsValidationSchema = (
+  networkWideValues: FormViewNetworkWideValues,
+  t: TFunction,
+) => {
   return Yup.object().shape({
-    hosts: Yup.array(getHostValidationSchema(networkWideValues)),
+    hosts: Yup.array(getHostValidationSchema(networkWideValues, t)),
   });
 };

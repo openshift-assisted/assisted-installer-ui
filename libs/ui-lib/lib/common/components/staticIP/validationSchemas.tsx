@@ -5,9 +5,12 @@ import { Address4, Address6 } from 'ip-address';
 import { getAddressObject, showProtocolVersion } from './protocolVersion';
 import { isInSubnet } from 'is-in-subnet';
 import { getMachineNetworkCidr } from './machineNetwork';
+import { TFunction } from 'i18next';
 
-const REQUIRED_MESSAGE = 'A value is required';
-const MUST_BE_A_NUMBER = 'Must be a number';
+const getValidationMesages = (t: TFunction) => ({
+  REQUIRED_MESSAGE: t('ai:A value is required'),
+  MUST_BE_A_NUMBER: t('ai:Must be a number'),
+});
 
 export const MIN_PREFIX_LENGTH = 1;
 export const MAX_PREFIX_LENGTH = {
@@ -30,14 +33,16 @@ const transformNumber = (originalValue: number) => {
   return isNaN(originalValue) ? null : originalValue;
 };
 
-export const VlanIdValidationSchema = (vlanId: number | '') =>
-  Yup.number()
-    .required(REQUIRED_MESSAGE)
-    .min(1, `Must be more than or equal to 1`)
-    .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
-    .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(vlanId))
+export const VlanIdValidationSchema = (vlanId: number | '', t: TFunction) => {
+  const messages = getValidationMesages(t);
+  return Yup.number()
+    .required(messages.REQUIRED_MESSAGE)
+    .min(1, t('ai:Must be more than or equal to 1'))
+    .max(MAX_VLAN_ID, t('ai:Must be less than or equal to {{value}}', { value: MAX_VLAN_ID }))
+    .test('not-number', messages.MUST_BE_A_NUMBER, () => validateNumber(vlanId))
     .nullable()
     .transform(transformNumber) as Yup.NumberSchema;
+};
 
 export const isReservedIpv6Address = (ipv6Address: Address6) => {
   return ipv6Address.isLoopback() || ipv6Address.isMulticast();
@@ -161,22 +166,27 @@ export const isNotReservedHostDNSAddress = (protocolVersion?: ProtocolVersion) =
   );
 };
 
-export const getDNSValidationSchema = (protocolType: StaticProtocolType) => {
+export const getDNSValidationSchema = (protocolType: StaticProtocolType, t: TFunction) => {
+  const messages = getValidationMesages(t);
   if (protocolType === 'dualStack') {
     return getMultipleIpAddressValidationSchema()
-      .required(REQUIRED_MESSAGE)
+      .required(messages.REQUIRED_MESSAGE)
       .concat(isNotReservedHostDNSAddress());
   }
   return getMultipleIpAddressValidationSchema(ProtocolVersion.ipv4)
-    .required(REQUIRED_MESSAGE)
+    .required(messages.REQUIRED_MESSAGE)
     .concat(isNotReservedHostDNSAddress(ProtocolVersion.ipv4));
 };
 
-export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) => {
+export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion, t: TFunction) => {
   const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
   return Yup.string().test(
     protocolVersion,
-    `Value \${value} is not a valid ${protocolVersionLabel} address`,
+    (value: string) =>
+      t('ai:Value {{value}} is not a valid {{protocolVersionLabel}} address', {
+        value,
+        protocolVersionLabel,
+      }),
     (value?: string) => {
       if (!value) {
         return true;
@@ -189,6 +199,7 @@ export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) =
 export const getIpAddressInSubnetValidationSchema = (
   protocolVersion: ProtocolVersion,
   subnet: string,
+  t: TFunction,
 ) => {
   return Yup.string().test(
     'is-in-subnet',
@@ -197,7 +208,7 @@ export const getIpAddressInSubnetValidationSchema = (
       if (!value) {
         return true;
       }
-      const ipValidationSchema = getIpAddressValidationSchema(protocolVersion);
+      const ipValidationSchema = getIpAddressValidationSchema(protocolVersion, t);
       try {
         ipValidationSchema.validateSync(value);
       } catch (err) {
@@ -218,20 +229,23 @@ export const getIpAddressInSubnetValidationSchema = (
 export const getInMachineNetworkValidationSchema = (
   protocolVersion: ProtocolVersion,
   machineNetwork: Cidr,
+  t: TFunction,
 ) => {
   return getIpAddressInSubnetValidationSchema(
     protocolVersion,
     getMachineNetworkCidr(machineNetwork),
+    t,
   );
 };
 
 export const getIpIsNotNetworkOrBroadcastAddressSchema = (
   protocolVersion: ProtocolVersion,
   subnet: string,
+  t: TFunction,
 ) => {
   return Yup.string().test(
     'is-not-network-or-broadcast',
-    `The IP address must not match the network or broadcast address`,
+    t('ai:The IP address must not match the network or broadcast address'),
     (value) => {
       // Allow both addresses for IPv4 /31 subnets (RFC 3021)
       if (protocolVersion === ProtocolVersion.ipv4 && subnet.endsWith('/31')) {
@@ -252,22 +266,26 @@ export const getIpIsNotNetworkOrBroadcastAddressSchema = (
 export const getIsNotNetworkOrBroadcastAddressSchema = (
   protocolVersion: ProtocolVersion,
   machineNetwork: Cidr,
+  t: TFunction,
 ) => {
   return getIpIsNotNetworkOrBroadcastAddressSchema(
     protocolVersion,
     getMachineNetworkCidr(machineNetwork),
+    t,
   );
 };
 
-const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
+const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion, t: TFunction) =>
   Yup.object<Cidr>().shape({
-    ip: getIPValidationSchema(protocolVersion),
+    ip: getIPValidationSchema(protocolVersion, t),
     prefixLength: Yup.number()
-      .required('Prefix length is required')
-      .min(1, `Prefix length must be more than or equal to 1`)
+      .required(t('ai:Prefix length is required'))
+      .min(1, t('ai:Prefix length must be more than or equal to 1'))
       .max(
         MAX_PREFIX_LENGTH[protocolVersion],
-        `Prefix length must be less than or equal to ${MAX_PREFIX_LENGTH[protocolVersion]}`,
+        t('ai:Prefix length must be less than or equal to {{value}}', {
+          value: MAX_PREFIX_LENGTH[protocolVersion],
+        }),
       )
       .nullable()
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
@@ -293,28 +311,34 @@ export const isNotReservedHostIPAddress = (protocolVersion?: ProtocolVersion) =>
   );
 };
 
-const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
-  return getIpAddressValidationSchema(protocolVersion)
-    .required(REQUIRED_MESSAGE)
+const getIPValidationSchema = (protocolVersion: ProtocolVersion, t: TFunction) => {
+  const messages = getValidationMesages(t);
+  return getIpAddressValidationSchema(protocolVersion, t)
+    .required(messages.REQUIRED_MESSAGE)
     .concat(isNotReservedHostIPAddress(protocolVersion));
 };
 
-const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
+const getAddressDataValidationSchema = (
+  protocolVersion: ProtocolVersion,
+  ipConfig: IpConfig,
+  t: TFunction,
+) => {
   return Yup.object({
-    machineNetwork: getMachineNetworkValidationSchema(protocolVersion),
-    gateway: getIPValidationSchema(protocolVersion)
-      .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork))
-      .concat(getIsNotNetworkOrBroadcastAddressSchema(protocolVersion, ipConfig.machineNetwork)),
+    machineNetwork: getMachineNetworkValidationSchema(protocolVersion, t),
+    gateway: getIPValidationSchema(protocolVersion, t)
+      .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork, t))
+      .concat(getIsNotNetworkOrBroadcastAddressSchema(protocolVersion, ipConfig.machineNetwork, t)),
   });
 };
 
 export const ipConfigsValidationSchemas = (
   ipConfigs: IpConfigs,
   protocolType: StaticProtocolType,
+  t: TFunction,
 ) =>
   Yup.object({
-    ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, ipConfigs.ipv4),
+    ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, ipConfigs.ipv4, t),
     ipv6: showProtocolVersion(protocolType, ProtocolVersion.ipv6)
-      ? getAddressDataValidationSchema(ProtocolVersion.ipv6, ipConfigs.ipv6)
+      ? getAddressDataValidationSchema(ProtocolVersion.ipv6, ipConfigs.ipv6, t)
       : Yup.object<IpConfig>(),
   });
