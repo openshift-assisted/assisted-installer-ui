@@ -24,6 +24,7 @@ import {
   UISettingService,
 } from '../../services';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import BundleService from '../../services/BundleService';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -81,9 +82,17 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       try {
         const searchParams = new URLSearchParams(location.search);
         const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
-        //For Assisted Migration we need to LVMs operator
+        //For Assisted Migration we need the LVMs operator and also the virtualization bundle operators
         if (isAssistedMigration) {
           params.olmOperators = [{ name: 'lvm' }];
+          const selectedBundle = (await BundleService.listBundles()).find(
+            (b) => b.id === 'virtualization',
+          );
+          const virtOperators = selectedBundle?.operators;
+          params.olmOperators = [
+            ...params.olmOperators,
+            ...(virtOperators ? virtOperators.map((op) => ({ name: op })) : []),
+          ];
         }
         const cluster = await ClustersService.create(params, isAssistedMigration);
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
