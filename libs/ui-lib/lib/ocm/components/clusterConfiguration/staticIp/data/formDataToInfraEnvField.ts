@@ -4,13 +4,7 @@ import {
   InfraEnv,
   MacInterfaceMap,
 } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  ProtocolVersion,
-  FormViewHost,
-  FormViewNetworkWideValues,
-  StaticFormData,
-  HostIps,
-} from './dataTypes';
+import { FormViewHost, FormViewNetworkWideValues, StaticFormData, HostIps } from './dataTypes';
 import {
   FORM_VIEW_PREFIX,
   getDnsSection,
@@ -33,6 +27,7 @@ import { getStaticNetworkConfig } from './fromInfraEnv';
 import { DUMMY_NMSTATE_ADDRESSES, getDummyMacInterfaceMap, getDummyNicName } from './dummyData';
 import { getMachineNetworkCidr } from '../../../../../common/components/staticIP/machineNetwork';
 import { getEmptyHostIps } from './emptyData';
+import { ProtocolVersion } from '../../../../../common';
 
 const REAL_NIC_NAME = 'eth0';
 const REAL_NIC_NAME_1 = 'eth1';

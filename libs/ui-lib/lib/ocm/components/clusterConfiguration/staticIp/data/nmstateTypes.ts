@@ -1,4 +1,4 @@
-import { ProtocolVersion } from './dataTypes';
+import { ProtocolVersion } from '../../../../../common';
 
 export enum NmstateInterfaceType {
   ETHERNET = 'ethernet',

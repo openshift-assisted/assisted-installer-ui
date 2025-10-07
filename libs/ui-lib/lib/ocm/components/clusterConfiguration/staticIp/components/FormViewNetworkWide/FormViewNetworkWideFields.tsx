@@ -19,16 +19,12 @@ import {
   MAX_VLAN_ID,
   PopoverIcon,
   useTranslation,
+  StaticProtocolType,
+  ProtocolVersion,
 } from '../../../../../../common';
 import { getShownProtocolVersions } from '../../../../../../common/components/staticIP/protocolVersion';
-import * as types from '../../data/dataTypes';
 import { getEmptyIpConfig } from '../../data/emptyData';
-import {
-  FormViewHost,
-  FormViewNetworkWideValues,
-  ProtocolVersion,
-  StaticProtocolType,
-} from '../../data/dataTypes';
+import { FormViewHost, FormViewNetworkWideValues } from '../../data/dataTypes';
 import { OcmCheckboxField, OcmInputField, OcmRadioField } from '../../../../ui/OcmFormFields';
 
 import '../staticIp.css';
@@ -57,7 +53,7 @@ export const ProtocolTypeSelect = () => {
   const { values } = useFormikContext<FormViewNetworkWideValues>();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newProtocolType = e.target.value as types.StaticProtocolType;
+    const newProtocolType = e.target.value as StaticProtocolType;
     if (newProtocolType === protocolType) {
       return;
     }
@@ -128,11 +124,11 @@ export const ProtocolTypeSelect = () => {
           }
           onClose={() => {
             setConfirmModal(false);
-            setProtocolType('dualStack');
+            setProtocolType(StaticProtocolType.dualStack);
           }}
           onConfirm={() => {
             setConfirmModal(false);
-            setProtocolType('ipv4');
+            setProtocolType(StaticProtocolType.ipv4);
           }}
         />
       )}

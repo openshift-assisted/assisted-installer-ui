@@ -55,7 +55,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       title={t('ai:Edit BMH')}
       isOpen={isOpen}
       onClose={onClose}
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       hasNoBodyWrapper
       id="edit-bmh-modal"
     >

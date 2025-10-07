@@ -8,7 +8,10 @@ export enum ProtocolVersion {
   ipv6 = 'ipv6',
 }
 
-export type StaticProtocolType = 'ipv4' | 'dualStack';
+export enum StaticProtocolType {
+  ipv4 = 'ipv4',
+  dualStack = 'dualStack',
+}
 
 export type Cidr = {
   ip: string;

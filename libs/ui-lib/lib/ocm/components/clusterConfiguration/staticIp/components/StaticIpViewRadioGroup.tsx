@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, AlertVariant, ButtonVariant, Form, FormGroup } from '@patternfly/react-core';
-import { StaticIpView } from '../data/dataTypes';
-import { getFieldId, useAlerts } from '../../../../../common';
+import { getFieldId, StaticIpView, useAlerts } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
 import { OcmRadio } from '../../../ui/OcmFormFields';
 

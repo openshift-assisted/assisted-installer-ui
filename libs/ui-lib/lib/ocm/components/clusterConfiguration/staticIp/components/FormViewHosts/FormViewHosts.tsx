@@ -2,7 +2,8 @@ import React from 'react';
 import { StaticIpForm } from '../StaticIpForm';
 import { StaticIpFormProps, StaticIpViewProps } from '../propTypes';
 
-import { FormViewHostsValues, StaticProtocolType } from '../../data/dataTypes';
+import { StaticProtocolType } from '../../../../../../common';
+import { FormViewHostsValues } from '../../data/dataTypes';
 import { FormViewHostsFields } from './FormViewHostsFields';
 import { getFormViewHostsValidationSchema } from './formViewHostsValidationSchema';
 import { formViewHostsToInfraEnvField } from '../../data/formDataToInfraEnvField';

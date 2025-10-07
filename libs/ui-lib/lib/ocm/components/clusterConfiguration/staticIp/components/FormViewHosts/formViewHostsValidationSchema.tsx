@@ -1,14 +1,11 @@
 import * as Yup from 'yup';
 
-import {
-  FormViewNetworkWideValues,
-  FormViewHostsValues,
-  ProtocolVersion,
-} from '../../data/dataTypes';
+import { FormViewNetworkWideValues, FormViewHostsValues } from '../../data/dataTypes';
 import {
   getInMachineNetworkValidationSchema,
   getIpIsNotNetworkOrBroadcastAddressSchema,
   macAddressValidationSchema,
+  ProtocolVersion,
 } from '../../../../../../common';
 import { showIpv4, showIpv6 } from '../../../../../../common/components/staticIP/protocolVersion';
 import {

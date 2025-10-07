@@ -6,10 +6,11 @@ import {
   getFieldId,
   getProtocolVersionLabel,
   PopoverIcon,
+  StaticProtocolType,
   useTranslation,
 } from '../../../../../../common';
 import HostSummary from '../CollapsedHost';
-import { FormViewHost, StaticProtocolType } from '../../data/dataTypes';
+import { FormViewHost } from '../../data/dataTypes';
 import { getShownProtocolVersions } from '../../../../../../common/components/staticIP/protocolVersion';
 import { getEmptyFormViewHost } from '../../data/emptyData';
 import { OcmCheckboxField, OcmInputField } from '../../../../ui/OcmFormFields';

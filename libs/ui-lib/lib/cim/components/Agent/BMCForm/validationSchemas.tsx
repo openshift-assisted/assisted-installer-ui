@@ -13,7 +13,7 @@ import {
   bmcAddressValidationSchema,
   Cidr,
   getDNSValidationSchema,
-  IpConfigs,
+  StaticProtocolType,
   ipConfigsValidationSchemas,
   macAddressValidationSchema,
   richNameValidationSchema,
@@ -56,7 +56,7 @@ routes:
     next-hop-interface: <next_hop_nic1_name>
   `,
 
-  protocolType: 'ipv4',
+  protocolType: StaticProtocolType.ipv4,
   useVlan: false,
   vlanId: '',
   dns: '',
@@ -70,7 +70,7 @@ routes:
 
 const getIpConfigs = (nmState?: NMStateK8sResource) => {
   if (!nmState || !nmState.spec?.interfaces || nmState.spec?.interfaces.length < 1) {
-    return {};
+    return emptyValues.ipConfigs;
   } else {
     return {
       ipv4: {
@@ -100,11 +100,14 @@ export const getInitValues = (
   addNMState?: boolean,
 ): AddBmcValues => {
   let values = emptyValues;
-  const staticIpView = (nmState?.metadata?.labels?.['configured-via'] as StaticIpView) || 'form';
-  const ipConfigs = getIpConfigs(nmState) as IpConfigs;
+  const staticIpView =
+    nmState?.metadata?.labels?.['configured-via'] === StaticIpView.YAML
+      ? StaticIpView.YAML
+      : StaticIpView.FORM;
 
   if (isEdit) {
     values = {
+      ...values,
       name: bmh?.metadata?.name || '',
       hostname: bmh?.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION] || '',
       bmcAddress: bmh?.spec?.bmc?.address || '',
@@ -115,24 +118,36 @@ export const getInitValues = (
       online: !!bmh?.spec?.online,
 
       staticIPView: staticIpView,
-      nmState:
-        nmState && staticIpView === StaticIpView.YAML
-          ? yaml.dump(nmState?.spec?.config)
-          : emptyValues.nmState,
-
-      protocolType: nmState?.spec?.config.interfaces?.[0].ipv6 ? 'dualStack' : 'ipv4',
-      useVlan: !!nmState?.spec?.config.interfaces?.[0].vlan,
-      vlanId: Number(nmState?.spec?.config.interfaces?.[0].vlan?.id),
-      dns: nmState?.spec?.config['dns-resolver']?.config.server?.[0] as string,
-      ipConfigs,
-
       macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
     };
+
+    if (addNMState && staticIpView === StaticIpView.FORM) {
+      const staticIpFormValues = {
+        protocolType: nmState?.spec?.config.interfaces?.[0].ipv6
+          ? StaticProtocolType.dualStack
+          : StaticProtocolType.ipv4,
+        useVlan: !!nmState?.spec?.config.interfaces?.[0].vlan,
+        vlanId: nmState?.spec?.config.interfaces?.[0].vlan?.id
+          ? Number(nmState?.spec?.config.interfaces?.[0].vlan?.id)
+          : emptyValues.vlanId,
+        dns: nmState?.spec?.config['dns-resolver']?.config.server?.[0] || emptyValues.dns,
+        ipConfigs: getIpConfigs(nmState),
+      };
+
+      values = { ...values, ...staticIpFormValues };
+    } else if (addNMState && staticIpView === StaticIpView.YAML) {
+      const staticIpYamlValues = {
+        nmState: nmState ? yaml.dump(nmState?.spec?.config) : emptyValues.nmState,
+      };
+
+      values = { ...values, ...staticIpYamlValues };
+    }
   }
 
   if (!addNMState) {
     values.nmState = '';
   }
+
   return values;
 };
 
@@ -149,15 +164,25 @@ export const getValidationSchema = (
       username: Yup.string().required(t('ai:Required field')),
       password: Yup.string().required(t('ai:Required field')),
       bootMACAddress: macAddressValidationSchema,
-      nmState: Yup.string(),
+      nmState: Yup.mixed().when('staticIPView', {
+        is: (staticIpView: StaticIpView) => staticIpView === StaticIpView.YAML,
+        then: () => Yup.string().required(),
+      }),
 
       useVlan: Yup.boolean(),
       vlanId: Yup.mixed().when('useVlan', {
         is: (useVlan: boolean) => useVlan,
         then: () => VlanIdValidationSchema(values.vlanId),
       }),
-      dns: getDNSValidationSchema(values.protocolType),
-      ipConfigs: ipConfigsValidationSchemas(values.ipConfigs, values.protocolType),
+      dns: Yup.mixed().when('staticIPView', {
+        is: (staticIpView: StaticIpView) => staticIpView === StaticIpView.FORM,
+        then: () => getDNSValidationSchema(values.protocolType),
+      }),
+      ipConfigs: Yup.mixed().when('staticIPView', {
+        is: (staticIpView: StaticIpView) => staticIpView === StaticIpView.FORM,
+        then: () => ipConfigsValidationSchemas(values.ipConfigs, values.protocolType),
+      }),
+
       macMapping: Yup.array().of(
         Yup.object().shape(
           {
@@ -182,6 +207,7 @@ export const getNMState = (
   infraEnv: InfraEnvK8sResource,
 ): NMStateK8sResource => {
   let config;
+
   if (values.staticIPView === StaticIpView.YAML) {
     config = yaml.load(values.nmState);
   } else {

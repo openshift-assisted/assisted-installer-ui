@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, TextContent, TextVariants, Alert, AlertVariant, Grid } from '@patternfly/react-core';
-import { StaticIpInfo, StaticIpView } from '../data/dataTypes';
+import { StaticIpView } from '../../../../../common';
+import { StaticIpInfo } from '../data/dataTypes';
 import StaticIpViewRadioGroup from './StaticIpViewRadioGroup';
 import { getStaticIpInfo } from '../data/fromInfraEnv';
 import { StaticIpFormState, StaticIpPageProps, StaticIpViewProps } from './propTypes';
