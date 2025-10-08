@@ -23,7 +23,7 @@ import { getAddressObject } from './protocolVersion';
 export const MachineNetworkField = ({
   fieldName,
   protocolVersion,
-  isDisabled,
+  isDisabled = false,
 }: {
   fieldName: string;
   protocolVersion: ProtocolVersion;

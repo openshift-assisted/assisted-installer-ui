@@ -1,19 +1,26 @@
 import React from 'react';
 import { FormGroup, Grid } from '@patternfly/react-core';
+import { TFunction } from 'react-i18next';
 
 import { getFieldId, InputField, PopoverIcon } from '../ui';
 import { MachineNetworkField } from './MachineNetworkField';
 import { ProtocolVersion } from './types';
 import { useTranslation } from '../../hooks';
-import { TFunction } from 'react-i18next';
+
+type IpConfigFieldsProps = {
+  fieldName: string;
+  protocolVersion: ProtocolVersion;
+  isDisabled?: boolean;
+};
 
 export const getProtocolVersionLabel = (protocolVersion: ProtocolVersion, t: TFunction) =>
   protocolVersion === ProtocolVersion.ipv4 ? t('ai:IPv4') : t('ai:IPv6');
 
-export const IpConfigFields: React.FC<{
-  fieldName: string;
-  protocolVersion: ProtocolVersion;
-}> = ({ protocolVersion, fieldName }) => {
+export const IpConfigFields = ({
+  protocolVersion,
+  fieldName,
+  isDisabled = false,
+}: IpConfigFieldsProps) => {
   const { t } = useTranslation();
 
   return (
@@ -25,11 +32,11 @@ export const IpConfigFields: React.FC<{
         <MachineNetworkField
           fieldName={`${fieldName}.machineNetwork`}
           protocolVersion={protocolVersion}
-          isDisabled={false} // todo
+          isDisabled={isDisabled}
         />
         <InputField
           isRequired
-          isDisabled={false} //todo
+          isDisabled={isDisabled}
           label={t('ai:Default gateway')}
           labelIcon={
             <PopoverIcon

@@ -9,6 +9,7 @@ import {
   ButtonVariant,
 } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
+import { useSelector } from 'react-redux';
 import {
   ConfirmationModal,
   getFieldId,
@@ -26,6 +27,7 @@ import { getShownProtocolVersions } from '../../../../../../common/components/st
 import { getEmptyIpConfig } from '../../data/emptyData';
 import { FormViewHost, FormViewNetworkWideValues } from '../../data/dataTypes';
 import { OcmCheckboxField, OcmInputField, OcmRadioField } from '../../../../ui/OcmFormFields';
+import { selectCurrentClusterPermissionsState } from '../../../../../store/slices/current-cluster/selectors';
 
 import '../staticIp.css';
 
@@ -66,6 +68,7 @@ export const ProtocolTypeSelect = () => {
     }
   };
   const isIpv4Selected = protocolType === 'ipv4';
+
   return (
     <>
       <FormGroup
@@ -135,8 +138,11 @@ export const ProtocolTypeSelect = () => {
     </>
   );
 };
+
 export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
+
   return (
     <>
       <TextContent>
@@ -191,6 +197,7 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
           fieldName={`ipConfigs.${protocolVersion}`}
           protocolVersion={protocolVersion}
           key={protocolVersion}
+          isDisabled={isViewerMode}
         />
       ))}
     </>
