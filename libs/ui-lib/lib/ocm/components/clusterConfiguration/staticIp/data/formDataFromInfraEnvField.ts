@@ -1,12 +1,6 @@
 import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
 
-import {
-  FormViewHost,
-  FormViewNetworkWideValues,
-  ProtocolVersion,
-  StaticFormData,
-  StaticProtocolType,
-} from './dataTypes';
+import { FormViewHost, FormViewNetworkWideValues, StaticFormData } from './dataTypes';
 import findLastIndex from 'lodash-es/findLastIndex.js';
 import {
   getProtocolVersionIdx,
@@ -16,7 +10,7 @@ import {
   yamlToNmstateObject,
 } from './nmstateYaml';
 
-import { getShownProtocolVersions } from './protocolVersion';
+import { getShownProtocolVersions } from '../../../../../common/components/staticIP/protocolVersion';
 import { getEmptyNetworkWideConfigurations } from './emptyData';
 import {
   Nmstate,
@@ -28,6 +22,7 @@ import {
   NmstateInterfaceType,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
+import { ProtocolVersion, StaticProtocolType } from '../../../../../common';
 
 /* handle four cases:
     1. right after create, there are no network wide configurations - yaml contains a dummy ipv4 interface and no machine network fields in the comments

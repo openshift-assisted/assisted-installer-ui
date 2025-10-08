@@ -180,10 +180,11 @@ export const ipNoSuffixValidationSchema = Yup.string().test(
   },
 );
 
-export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
-  message: 'Value "${value}" is not valid MAC address.', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const macAddressValidationSchema = (t: TFunction) =>
+  Yup.string().matches(MAC_REGEX, {
+    message: (value) => t('ai:Value "{{value}}" is not valid MAC address.', { value }),
+    excludeEmptyString: true,
+  });
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,

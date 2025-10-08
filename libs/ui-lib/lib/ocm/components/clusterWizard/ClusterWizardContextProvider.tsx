@@ -11,9 +11,12 @@ import {
 } from './wizardTransition';
 import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
-import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../common';
+import {
+  AssistedInstallerOCMPermissionTypesListType,
+  StaticIpView,
+  useAlerts,
+} from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { useUISettings } from '../../hooks';

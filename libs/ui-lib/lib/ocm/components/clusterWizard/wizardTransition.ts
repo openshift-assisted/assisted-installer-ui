@@ -6,7 +6,7 @@ import {
   WizardStepValidationMap,
 } from '../../../common/components/clusterWizard/validationsInfoUtils';
 import { Day2WizardStepsType } from '../AddHosts/day2Wizard/constants';
-import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
+import { StaticIpInfo } from '../clusterConfiguration/staticIp/data/dataTypes';
 import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
@@ -17,6 +17,7 @@ import {
   Host,
   HostValidationId,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { StaticIpView } from '../../../common';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'

@@ -2,15 +2,10 @@ import {
   HostStaticNetworkConfig,
   MacInterfaceMap,
 } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  FormViewNetworkWideValues,
-  ProtocolVersion,
-  StaticIpInfo,
-  StaticIpView,
-} from './dataTypes';
+import { FormViewNetworkWideValues, StaticIpInfo } from './dataTypes';
+import { getShownProtocolVersions, ProtocolVersion, StaticIpView } from '../../../../../common';
 import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';
-import { getShownProtocolVersions } from './protocolVersion';
 
 const DUMMY_MAC_4 = '01:23:45:67:89:AB';
 const DUMMY_MAC_6 = '01:23:45:67:89:AC';

@@ -2,7 +2,8 @@ import React from 'react';
 import { StaticIpForm } from '../StaticIpForm';
 import { StaticIpFormProps, StaticIpViewProps } from '../propTypes';
 
-import { FormViewHostsValues, StaticProtocolType } from '../../data/dataTypes';
+import { StaticProtocolType, useTranslation } from '../../../../../../common';
+import { FormViewHostsValues } from '../../data/dataTypes';
 import { FormViewHostsFields } from './FormViewHostsFields';
 import { getFormViewHostsValidationSchema } from './formViewHostsValidationSchema';
 import { formViewHostsToInfraEnvField } from '../../data/formDataToInfraEnvField';
@@ -11,6 +12,7 @@ import { getFormViewHostsValues, getFormViewNetworkWideValues } from '../../data
 import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 export const FormViewHosts: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
+  const { t } = useTranslation();
   const [protocolType, setProtocolType] = React.useState<StaticProtocolType>();
   const [formProps, setFormProps] = React.useState<StaticIpFormProps<FormViewHostsValues>>();
   React.useEffect(() => {
@@ -20,7 +22,7 @@ export const FormViewHosts: React.FC<StaticIpViewProps> = ({ infraEnv, ...props 
     if (networkWideValues) {
       setFormProps({
         infraEnv,
-        validationSchema: getFormViewHostsValidationSchema(networkWideValues),
+        validationSchema: getFormViewHostsValidationSchema(networkWideValues, t),
         getInitialValues: (infraEnv: InfraEnv) => {
           return getFormViewHostsValues(infraEnv);
         },

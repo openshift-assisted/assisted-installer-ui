@@ -8,13 +8,9 @@ import {
   NmstateProtocolConfigs,
   NmstateRoutesConfig,
 } from './nmstateTypes';
-import {
-  FormViewNetworkWideValues,
-  MachineNetworks,
-  ProtocolVersion,
-  StaticProtocolType,
-} from './dataTypes';
+import { FormViewNetworkWideValues, MachineNetworks } from './dataTypes';
 import findLastIndex from 'lodash-es/findLastIndex.js';
+import { ProtocolVersion, StaticProtocolType } from '../../../../../common';
 
 const REAL_NIC_NAME = 'eth0';
 const REAL_NIC_NAME_1 = 'eth1';
@@ -69,10 +65,10 @@ export const getMachineNetworks = (comments: string[]): MachineNetworks => {
 export const getProtocolType = (comments: string[]): StaticProtocolType | null => {
   const machineNetworks = getMachineNetworks(comments);
   if (machineNetworks[ProtocolVersion.ipv4] && machineNetworks[ProtocolVersion.ipv6]) {
-    return 'dualStack';
+    return StaticProtocolType.dualStack;
   }
   if (machineNetworks[ProtocolVersion.ipv4]) {
-    return 'ipv4';
+    return StaticProtocolType.ipv4;
   }
   return null;
 };

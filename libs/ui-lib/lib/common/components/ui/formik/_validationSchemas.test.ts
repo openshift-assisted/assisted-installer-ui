@@ -181,7 +181,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .validate(value)
           .catch((msg: string) => expect(value).toBe(`was rejected but is valid: ${msg}`)),
       ),
@@ -190,10 +190,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        macAddressValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        macAddressValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 

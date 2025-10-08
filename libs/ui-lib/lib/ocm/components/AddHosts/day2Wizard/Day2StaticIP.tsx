@@ -9,7 +9,7 @@ import {
   Button,
   ButtonVariant,
 } from '@patternfly/react-core';
-import { ClusterWizardStep, ErrorState, LoadingState } from '../../../../common';
+import { ClusterWizardStep, ErrorState, LoadingState, StaticIpView } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
@@ -19,7 +19,7 @@ import {
 } from '../../clusterConfiguration/staticIp/components/propTypes';
 import StaticIpViewRadioGroup from '../../clusterConfiguration/staticIp/components/StaticIpViewRadioGroup';
 import { YamlView } from '../../clusterConfiguration/staticIp/components/YamlView/YamlView';
-import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { StaticIpInfo } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
 import { getDummyStaticIpInfo } from '../../clusterConfiguration/staticIp/data/dummyData';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';

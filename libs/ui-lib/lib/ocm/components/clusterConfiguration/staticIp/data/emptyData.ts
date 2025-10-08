@@ -1,12 +1,12 @@
 import { HostStaticNetworkConfig } from '@openshift-assisted/types/assisted-installer-service';
 import {
   FormViewHost,
-  IpConfig,
   FormViewNetworkWideValues,
   FormViewHostsValues,
   YamlViewValues,
   HostIps,
 } from './dataTypes';
+import { IpConfig, StaticProtocolType } from '../../../../../common';
 
 export const getEmptyHostIps = (): HostIps => {
   return {
@@ -49,7 +49,7 @@ export const getEmptyNetworkWideConfigurations = (): FormViewNetworkWideValues =
       ipv4: getEmptyIpConfig(),
       ipv6: getEmptyIpConfig(),
     },
-    protocolType: 'ipv4',
+    protocolType: StaticProtocolType.ipv4,
     useVlan: false,
     vlanId: '',
     dns: '',

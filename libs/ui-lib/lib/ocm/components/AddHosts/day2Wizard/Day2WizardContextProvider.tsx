@@ -4,10 +4,10 @@ import {
   AssistedInstallerOCMPermissionTypesListType,
   CpuArchitecture,
   getDefaultCpuArchitecture,
+  StaticIpView,
 } from '../../../../common';
 import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { HostsNetworkConfigurationType } from '../../../services';
-import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 const getWizardStepIds = (staticIpView?: string): Day2WizardStepsType[] => {

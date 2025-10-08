@@ -5,7 +5,6 @@ import {
 import { FORM_VIEW_PREFIX, getProtocolType, getYamlComments } from './nmstateYaml';
 import {
   StaticIpInfo,
-  StaticIpView,
   StaticFormData,
   FormViewHostsValues,
   FormViewNetworkWideValues,
@@ -15,6 +14,7 @@ import { isDummyYaml } from './dummyData';
 import { formDataFromInfraEnvField } from './formDataFromInfraEnvField';
 import { getEmptyFormViewHost } from './emptyData';
 import { stringToJSON } from '../../../../../common/utils';
+import { StaticIpView } from '../../../../../common';
 
 export const getStaticNetworkConfig = (
   infraEnv: InfraEnv,

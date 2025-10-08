@@ -2,10 +2,16 @@ import React from 'react';
 import { FormGroup, Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
-import { getFieldId, PopoverIcon } from '../../../../../../common';
+import {
+  getFieldId,
+  getProtocolVersionLabel,
+  PopoverIcon,
+  StaticProtocolType,
+  useTranslation,
+} from '../../../../../../common';
 import HostSummary from '../CollapsedHost';
-import { FormViewHost, StaticProtocolType } from '../../data/dataTypes';
-import { getProtocolVersionLabel, getShownProtocolVersions } from '../../data/protocolVersion';
+import { FormViewHost } from '../../data/dataTypes';
+import { getShownProtocolVersions } from '../../../../../../common/components/staticIP/protocolVersion';
 import { getEmptyFormViewHost } from '../../data/emptyData';
 import { OcmCheckboxField, OcmInputField } from '../../../../ui/OcmFormFields';
 import '../staticIp.css';
@@ -14,6 +20,7 @@ import BondsConfirmationModal from './BondsConfirmationModal';
 
 const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
   const Component: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
+    const { t } = useTranslation();
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
     const { setFieldValue } = useFormikContext();
     const [bondPrimaryField] = useField(`${fieldName}.bondPrimaryInterface`);
@@ -92,7 +99,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
           )}
           {getShownProtocolVersions(protocolType).map((protocolVersion) => (
             <FormGroup
-              label={`IP address (${getProtocolVersionLabel(protocolVersion)})`}
+              label={`IP address (${getProtocolVersionLabel(protocolVersion, t)})`}
               fieldId={getFieldId(`${fieldName}.ips.${protocolVersion}`, 'input')}
               key={protocolVersion}
             >
