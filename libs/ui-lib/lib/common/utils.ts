@@ -113,7 +113,7 @@ export const getMajorMinorVersion = (version = '') => {
 };
 
 // Converts an Openshift version to a comparable integer
-const getComparableVersionInt = (version: string): number => {
+export const getComparableVersionInt = (version: string): number => {
   const majorMinorParts = version.split('.').slice(0, 2).map(Number);
   if (majorMinorParts.length < 2 || majorMinorParts.some(isNaN)) {
     // If the version doesn't have the required format, returning 0 makes it be considered
