@@ -7,9 +7,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const SkipFormattingDisks = () => (
-  <Content>
-    <Content component={ContentVariants.p}>Some bootable disks will skip formatting</Content>
-  </Content>
+  <Content component={ContentVariants.p}>Some bootable disks will skip formatting</Content>
 );
 
 export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<Host> => {

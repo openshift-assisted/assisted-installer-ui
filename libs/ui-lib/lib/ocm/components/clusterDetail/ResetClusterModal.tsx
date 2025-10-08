@@ -64,7 +64,7 @@ const ResetClusterModal: React.FC = () => {
     }
 
     return (
-      <Content>
+      <>
         <Content component="p">
           This will reset the installation and return to the cluster configuration. Some hosts may
           need to be re-registered by rebooting into the Discovery ISO.
@@ -83,7 +83,7 @@ const ResetClusterModal: React.FC = () => {
         </Content>
 
         <Content component="p">Are you sure you want to reset the cluster?</Content>
-      </Content>
+      </>
     );
   };
 

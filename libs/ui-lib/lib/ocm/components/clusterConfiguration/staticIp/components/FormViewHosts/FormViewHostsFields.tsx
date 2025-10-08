@@ -150,9 +150,7 @@ export const FormViewHostsFields: React.FC<{ protocolType: StaticProtocolType }>
   const ExpandedHostComponent = getExpandedHostComponent(protocolType);
   return (
     <>
-      <Content>
-        <Content component={ContentVariants.h3}>Host specific configurations</Content>
-      </Content>
+      <Content component={ContentVariants.h3}>Host specific configurations</Content>
       <StaticIpHostsArray<FormViewHost>
         CollapsedHostComponent={CollapsedHostComponent}
         ExpandedHostComponent={ExpandedHostComponent}

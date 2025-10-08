@@ -37,14 +37,12 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
       </StackItem>
       <StackItem data-testid="discovery-image-modal-section">
         {!isViewerMode && !isSingleClusterFeatureEnabled && (
-          <Content>
-            <Content component="p">
-              <DiscoveryImageModalButton
-                ButtonComponent={Button}
-                cluster={cluster}
-                idPrefix="host-inventory"
-              />
-            </Content>
+          <Content component="p">
+            <DiscoveryImageModalButton
+              ButtonComponent={Button}
+              cluster={cluster}
+              idPrefix="host-inventory"
+            />
           </Content>
         )}
       </StackItem>
@@ -77,9 +75,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <InformationAndAlerts cluster={cluster} />
       </StackItem>
       <StackItem data-testid="host-inventory-title">
-        <Content>
-          <Content component="h3">Host Inventory</Content>
-        </Content>
+        <Content component="h3">Host Inventory</Content>
       </StackItem>
       <StackItem data-testid="hosts-discovery-table-wrapper">
         <HostsDiscoveryTable cluster={cluster} />

@@ -23,11 +23,7 @@ const Day2HostStaticIpConfigurations = ({ isDisabled }: { isDisabled: boolean })
 
   return (
     <FormGroup
-      label={
-        <Content>
-          <Content component={ContentVariants.h4}>Hosts' network configuration</Content>
-        </Content>
-      }
+      label={<Content component={ContentVariants.h4}>Hosts' network configuration</Content>}
       fieldId={getFieldId(GROUP_NAME, 'radio')}
       isInline
       onChange={onChangeNetworkType}

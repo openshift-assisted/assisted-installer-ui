@@ -17,14 +17,12 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        <Content>
+        <Day2WizardContextProvider>
           <Content component="p">
-            <Day2WizardContextProvider>
-              <Day2DiscoveryImageModalButton cluster={cluster} />
-              <Day2Wizard />
-            </Day2WizardContextProvider>
+            <Day2DiscoveryImageModalButton cluster={cluster} />
           </Content>
-        </Content>
+          <Day2Wizard />
+        </Day2WizardContextProvider>
       </StackItem>
       <StackItem>
         <InformationAndAlerts cluster={cluster} />
