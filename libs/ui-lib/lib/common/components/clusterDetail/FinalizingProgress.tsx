@@ -87,12 +87,10 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
               zIndex={300} // set the zIndex below Cluster Events Modal
               headerContent={<>{t('ai:Initialization')}</>}
               bodyContent={
-                <Content>
-                  <Content component="p">
-                    {t(
-                      'ai:This stage may take a while to finish. To view detailed information, click the events log link below.',
-                    )}
-                  </Content>
+                <Content component="p">
+                  {t(
+                    'ai:This stage may take a while to finish. To view detailed information, click the events log link below.',
+                  )}
                 </Content>
               }
               footerContent={

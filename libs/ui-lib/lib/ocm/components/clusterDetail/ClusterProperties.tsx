@@ -78,9 +78,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
     <>
       {!externalMode && (
         <GridItem>
-          <Content>
-            <Content component="h2">{t('ai:Cluster Details')}</Content>
-          </Content>
+          <Content component="h2">{t('ai:Cluster Details')}</Content>
         </GridItem>
       )}
       <GridItem md={6} data-testid="cluster-details">
