@@ -103,6 +103,8 @@ const DownloadIso = ({
                 }
               />
             </DetailList>
+          </StackItem>
+          <StackItem>
             <Alert
               variant="info"
               isInline
