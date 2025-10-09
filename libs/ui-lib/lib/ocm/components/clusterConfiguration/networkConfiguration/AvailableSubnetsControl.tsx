@@ -79,6 +79,7 @@ export const AvailableSubnetsControl = ({
                       name={`machineNetworks.${index}.cidr`}
                       machineSubnets={machineSubnets}
                       isDisabled={isDisabled}
+                      data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
                     />
                   </StackItem>
                 );
@@ -89,6 +90,7 @@ export const AvailableSubnetsControl = ({
                   name={`machineNetworks.0.cidr`}
                   machineSubnets={IPv4Subnets}
                   isDisabled={isDisabled}
+                  data-testid={'subnets-dropdown-toggle-ipv4'}
                 />
               </StackItem>
             )}
