@@ -1,5 +1,11 @@
 import React from 'react';
-import { Dropdown, DropdownItem, MenuToggle, MenuToggleElement } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  MenuToggle,
+  MenuToggleElement,
+  MenuToggleProps,
+} from '@patternfly/react-core';
 import { useField } from 'formik';
 import { getFieldId, HostSubnet, NO_SUBNET_SET } from '../../../../common';
 
@@ -32,7 +38,12 @@ const noSubnetAvailableOption = {
   id: 'form-input-hostSubnet-field-option-no-subnet-available',
 };
 
-export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDropdownProps) => {
+export const SubnetsDropdown = ({
+  name,
+  machineSubnets,
+  isDisabled,
+  ...props
+}: SubnetsDropdownProps & MenuToggleProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
@@ -79,7 +90,7 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
       id={fieldId}
       className="pf-v6-u-w-100"
       style={{ minWidth: '100%' }}
-      data-testid="subnets-dropdown-toggle"
+      {...props}
     >
       {currentDisplayValue}
     </MenuToggle>
