@@ -61,15 +61,15 @@ const AdvancedNetworkFields = () => {
   );
 
   return (
-    <Grid hasGutter className="pf-v6-u-ml-lg">
+    <Grid className="pf-v6-u-ml-lg">
       <FieldArray name="clusterNetworks">
         {() => (
           <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.clusterNetworks?.map((_, index) => {
               const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
-                <Grid hasGutter key={index}>
-                  <GridItem className={'network-field-group pf-v6-u-pb-md'}>
+                <Grid key={index} className="pf-v6-u-pb-md">
+                  <GridItem className={'network-field-group'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.cidr`}
                       label={
@@ -85,7 +85,7 @@ const AdvancedNetworkFields = () => {
                       labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                     />
                   </GridItem>
-                  <GridItem className={'network-field-group pf-v6-u-pb-md'}>
+                  <GridItem className={'network-field-group'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.hostPrefix`}
                       label={
@@ -123,7 +123,7 @@ const AdvancedNetworkFields = () => {
         {() => (
           <FormGroup fieldId="serviceNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.serviceNetworks?.map((_, index) => (
-              <GridItem key={index} className={'network-field-group pf-v6-u-pb-md'}>
+              <GridItem key={index} className={'network-field-group'}>
                 <OcmInputField
                   name={`serviceNetworks.${index}.cidr`}
                   label={
