@@ -14,6 +14,7 @@ import {
   InputGroupItem,
   FormHelperText,
   HelperText,
+  ButtonVariant,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
@@ -170,7 +171,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                     <InfoCircleIcon color={blueInfoColor.value} />
                   )
                 }
-                variant="plain"
+                variant={ButtonVariant.control}
                 aria-label="Validation"
               />
             </Popover>
