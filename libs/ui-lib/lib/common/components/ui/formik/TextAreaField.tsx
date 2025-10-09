@@ -61,13 +61,22 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
         <FormHelperText>
           <HelperText>
             <HelperTextItem
-              icon={errorMessage && <ExclamationCircleIcon />}
-              variant={errorMessage ? 'error' : 'default'}
-              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              variant={'default'}
+              id={`${fieldId}-helper`}
               data-testid={`input-textarea-${fieldId}-helper-text`}
             >
-              {errorMessage ? errorMessage : helperText}
+              {helperText}
             </HelperTextItem>
+            {errorMessage && (
+              <HelperTextItem
+                icon={<ExclamationCircleIcon />}
+                variant={'error'}
+                id={`${fieldId}-helper-error`}
+                data-testid={`input-textarea-${fieldId}-helper-text`}
+              >
+                {errorMessage}
+              </HelperTextItem>
+            )}
           </HelperText>
         </FormHelperText>
       )}
