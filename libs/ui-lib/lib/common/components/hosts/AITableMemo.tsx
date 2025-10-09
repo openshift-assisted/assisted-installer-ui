@@ -73,6 +73,7 @@ export const AITableMemo = React.memo(
                 </Th>
               ))}
             </Tr>
+            <Tr isBorderRow />
           </Thead>
           <Tbody>
             {rows.map((row, i) => (
