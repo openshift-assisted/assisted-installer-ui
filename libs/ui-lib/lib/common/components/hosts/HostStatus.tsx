@@ -125,12 +125,14 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   return (
     <Stack hasGutter>
       {additionalPopoverContent}
-      <StackItem>
-        {details && (
+      {details && (
+        <StackItem>
           <Content>
             <Content component="p">{details}</Content>
           </Content>
-        )}
+        </StackItem>
+      )}
+      <StackItem>
         <HostValidationGroups openshiftVersion={openshiftVersion} {...props} />
       </StackItem>
     </Stack>
