@@ -14,19 +14,21 @@ import { AssistedUILibVersion } from './ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
 
+type UILibRoutesProps = {
+  allEnabledFeatures: FeatureListType;
+  children?: React.ReactNode;
+  history?: HistoryRouterProps['history'];
+  basename?: string;
+  additionalComponents?: React.ReactNode;
+};
+
 export const UILibRoutes = ({
   allEnabledFeatures,
   children,
   history,
   basename,
   additionalComponents,
-}: {
-  allEnabledFeatures: FeatureListType;
-  children?: React.ReactNode;
-  history?: HistoryRouterProps['history'];
-  basename?: string;
-  additionalComponents?: React.ReactNode;
-}) => {
+}: UILibRoutesProps) => {
   useFeatureDetection(allEnabledFeatures);
 
   const routes = (

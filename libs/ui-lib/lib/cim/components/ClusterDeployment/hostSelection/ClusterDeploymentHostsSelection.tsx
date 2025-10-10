@@ -1,21 +1,21 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Grid, GridItem, TextContent, Form } from '@patternfly/react-core';
-import { SwitchField } from '../../../common';
+import { SwitchField } from '../../../../common';
 import {
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
-} from './types';
+} from '../types';
 import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
-import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
+import { ClusterDeploymentHostsSelectionAdvanced } from './ClusterDeploymentHostsSelectionAdvanced';
 import {
   getAgentsForSelection,
   getClusterDeploymentCpuArchitecture,
   getIsSNOCluster,
-} from '../helpers';
-import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
-import NoAgentsAlert from '../Agent/NoAgentsAlert';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+} from '../../helpers';
+import MinimalHWRequirements from '../../Agent/MinimalHWRequirements';
+import NoAgentsAlert from '../../Agent/NoAgentsAlert';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,

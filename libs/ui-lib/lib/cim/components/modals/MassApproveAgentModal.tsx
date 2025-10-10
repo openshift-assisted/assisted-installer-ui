@@ -121,7 +121,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       onClose();
     } catch (err) {
       setError({
-        title: t('ai:An error occured while approving agents'),
+        title: t('ai:An error occurred while approving agents'),
         message: getErrorMessage(err),
       });
       setProgress(null);

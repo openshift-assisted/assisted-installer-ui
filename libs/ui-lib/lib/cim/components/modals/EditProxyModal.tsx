@@ -111,7 +111,7 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
                 <Form>
                   <ProxyInputFields />
                   {error && (
-                    <Alert variant="danger" title={t('ai:An error occured')} isInline>
+                    <Alert variant="danger" title={t('ai:An error occurred')} isInline>
                       {error}
                     </Alert>
                   )}

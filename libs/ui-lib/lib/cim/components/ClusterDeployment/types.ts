@@ -44,6 +44,7 @@ export type ClusterDeploymentWizardStepsType =
   | 'hosts-selection'
   | 'hosts-discovery'
   | 'networking'
+  | 'custom-manifests'
   | 'review';
 
 export type ClusterDeploymentDetailsProps = {

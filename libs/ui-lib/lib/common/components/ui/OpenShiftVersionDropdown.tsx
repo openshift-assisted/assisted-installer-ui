@@ -21,7 +21,7 @@ import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
 import { ClusterDetailsValues, ItemDropdown } from '../clusterWizard';
 
-export type HelperTextType = (value: string | undefined, inModal?: boolean) => JSX.Element | null;
+export type HelperTextType = (value: string | null, inModal?: boolean) => JSX.Element | null;
 
 type OpenShiftVersionDropdownProps = {
   name: string;
@@ -30,7 +30,7 @@ type OpenShiftVersionDropdownProps = {
   getHelperText?: HelperTextType;
   showReleasesLink: boolean;
   showOpenshiftVersionModal: () => void;
-  customItems: ItemDropdown;
+  customItem?: OpenshiftVersionOptionType;
 };
 
 const getParsedVersions = (items: ItemDropdown) => {
@@ -49,7 +49,7 @@ export const OpenShiftVersionDropdown = ({
   getHelperText,
   showReleasesLink,
   showOpenshiftVersionModal,
-  customItems,
+  customItem,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -61,9 +61,13 @@ export const OpenShiftVersionDropdown = ({
   const [current, setCurrent] = React.useState<string>();
 
   React.useEffect(() => {
-    const defaultVersion = customOpenshiftSelect
-      ? customOpenshiftSelect
-      : versions.find((item) => item.default);
+    let defaultVersion = versions.find((item) => item.default);
+    if (customOpenshiftSelect && customItem) {
+      defaultVersion = customItem;
+    } else if (customOpenshiftSelect) {
+      defaultVersion = versions.find((item) => item.value === customOpenshiftSelect);
+    }
+
     setCurrent(defaultVersion?.label || '');
     setValue(defaultVersion?.value || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,30 +89,17 @@ export const OpenShiftVersionDropdown = ({
     return items;
   });
 
-  const parsedVersionsForCustomItems = getParsedVersions(customItems);
-  let lastCustomY: string | undefined = '';
-  const customDropdownItems = parsedVersionsForCustomItems.parsedVersions.map(({ y, versions }) => {
-    const customItems = versions.map(({ value, label }) => (
-      <DropdownItem key={value} id={value} value={value}>
-        {label}
-      </DropdownItem>
-    ));
-    if (lastCustomY !== null && y !== lastCustomY) {
-      customItems.push(<Divider key={`separator-${y || ''}`} />);
-    }
-    lastCustomY = y;
-    return customItems;
-  });
-
   const dropdownGroup = [
     dropdownItems.length && (
       <DropdownGroup label="Latest releases" key="latest-releases">
         {dropdownItems}
       </DropdownGroup>
     ),
-    customDropdownItems.length && (
+    customItem && (
       <DropdownGroup label="Custom releases" key="custom-releases">
-        {customDropdownItems}
+        <DropdownItem key={customItem.value} id={customItem.value} value={customItem.value}>
+          {customItem.label}
+        </DropdownItem>
       </DropdownGroup>
     ),
     <DropdownGroup key="all-available-versions">
