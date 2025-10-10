@@ -58,7 +58,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'machine-networks' },
           },
-          isDualStack(cluster) ? { title: 'Primary' } : { title: '' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion })
+            ? { title: 'Primary' }
+            : { title: '' },
         ],
       });
 
@@ -106,7 +108,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-cidr' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+            title: 'Primary',
+          },
         ].filter(Boolean),
       },
       {
@@ -122,7 +126,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-prefix' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+            title: 'Primary',
+          },
         ].filter(Boolean),
       },
       {
@@ -138,7 +144,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'service-network-cidr' },
           },
-          isDualStack(cluster) && { title: 'Primary' },
+          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+            title: 'Primary',
+          },
         ].filter(Boolean),
       },
       {
