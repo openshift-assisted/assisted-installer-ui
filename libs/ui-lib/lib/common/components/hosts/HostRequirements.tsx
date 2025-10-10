@@ -1,4 +1,4 @@
-import { List, ListItem, Content } from '@patternfly/react-core';
+import { List, ListItem } from '@patternfly/react-core';
 import * as React from 'react';
 import ExternalLink from '../ui/ExternalLink';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -83,9 +83,7 @@ export const HostRequirementsList: React.FC<HostRequirementsListProps> = ({
 };
 
 const HostRequirements: React.FC<HostRequirementsListProps> = (props) => (
-  <Content>
-    <HostRequirementsList {...props} />
-  </Content>
+  <HostRequirementsList {...props} />
 );
 
 export default HostRequirements;

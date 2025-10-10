@@ -19,35 +19,33 @@ export const SingleResourceAlerts: React.FC<{
       isInline
       className="cim-resource-alerts cim-resource-alerts--noul"
     >
-      <Content>
-        <Content component={ContentVariants.ul}>
-          {conditions.map((c) => {
-            if (c.message) {
-              const [title, ...messages] = c.message.split(/:|\.,/);
-              return (
-                <React.Fragment key={c.type}>
-                  <Content component={ContentVariants.li}>
-                    <strong>{title}</strong>
+      <Content component={ContentVariants.ul}>
+        {conditions.map((c) => {
+          if (c.message) {
+            const [title, ...messages] = c.message.split(/:|\.,/);
+            return (
+              <React.Fragment key={c.type}>
+                <Content component={ContentVariants.li}>
+                  <strong>{title}</strong>
+                </Content>
+                {messages.map((m) => (
+                  <Content key={m} component={ContentVariants.li}>
+                    {m}
                   </Content>
-                  {messages.map((m) => (
-                    <Content key={m} component={ContentVariants.li}>
-                      {m}
-                    </Content>
-                  ))}
-                </React.Fragment>
-              );
-            } else {
-              return (
-                <React.Fragment key={c.type}>
-                  <Content component={ContentVariants.li}>
-                    <strong>{c.type}</strong>
-                  </Content>
-                  <Content component={ContentVariants.li}>{c.reason || ''}</Content>
-                </React.Fragment>
-              );
-            }
-          })}
-        </Content>
+                ))}
+              </React.Fragment>
+            );
+          } else {
+            return (
+              <React.Fragment key={c.type}>
+                <Content component={ContentVariants.li}>
+                  <strong>{c.type}</strong>
+                </Content>
+                <Content component={ContentVariants.li}>{c.reason || ''}</Content>
+              </React.Fragment>
+            );
+          }
+        })}
       </Content>
     </Alert>
   );

@@ -14,7 +14,7 @@ const DiscoveryInstructions = ({
 }: DiscoveryInstructionsProps) => {
   const { t } = useTranslation();
   return (
-    <Content>
+    <>
       <Content component="h3">{t('ai:Adding hosts instructions')}</Content>
       <Content component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
         <Content component="li" hidden={!showAllInstructions}>
@@ -42,7 +42,7 @@ const DiscoveryInstructions = ({
           )}
         </Content>
       </Content>
-    </Content>
+    </>
   );
 };
 

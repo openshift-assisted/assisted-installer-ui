@@ -82,10 +82,8 @@ export const StaticTextField: React.FC<StaticFieldProps> = ({ children, ...props
 
   return (
     <StaticField {...props}>
-      <Content>
-        <Content component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
-          {children}
-        </Content>
+      <Content component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
+        {children}
       </Content>
     </StaticField>
   );

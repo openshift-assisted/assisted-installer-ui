@@ -153,9 +153,7 @@ const NetworkConfigurationForm: React.FC<{
             </Grid>
           </GridItem>
           <GridItem>
-            <Content>
-              <Content component="h2">Host inventory</Content>
-            </Content>
+            <Content component="h2">Host inventory</Content>
             <NetworkConfigurationTable cluster={cluster} />
           </GridItem>
         </Grid>

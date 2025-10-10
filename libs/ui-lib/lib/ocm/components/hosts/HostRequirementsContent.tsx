@@ -41,11 +41,9 @@ const HostRequirementsContent = ({
 
   if (isAddingHosts) {
     return (
-      <Content>
-        <Content
-          component={'p'}
-        >{`Worker hosts must have at least ${contentForWorkerNodes}`}</Content>
-      </Content>
+      <Content
+        component={'p'}
+      >{`Worker hosts must have at least ${contentForWorkerNodes}`}</Content>
     );
   }
 

@@ -54,9 +54,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       <StackItem>
         <Grid hasGutter>
           <GridItem>
-            <Content>
-              <Content component="h2">Installation progress</Content>
-            </Content>
+            <Content component="h2">Installation progress</Content>
           </GridItem>
           <GridItem span={6}>
             <ClusterProgress

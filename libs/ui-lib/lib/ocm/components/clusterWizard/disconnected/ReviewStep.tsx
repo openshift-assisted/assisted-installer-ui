@@ -62,9 +62,7 @@ const ReviewStep = () => {
           <Grid hasGutter>
             <Split>
               <SplitItem>
-                <Content>
-                  <Content component="h2">Review and download ISO</Content>
-                </Content>
+                <Content component="h2">Review and download ISO</Content>
               </SplitItem>
               <SplitItem>
                 <DeveloperPreview />

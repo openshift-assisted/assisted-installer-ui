@@ -116,9 +116,7 @@ export const DiskEncryptionMode = ({
         <Stack>
           &nbsp;
           <StackItem>
-            <Content>
-              <Content component={ContentVariants.h6}>{t('ai:Tang servers')}</Content>
-            </Content>
+            <Content component={ContentVariants.h6}>{t('ai:Tang servers')}</Content>
           </StackItem>
           &nbsp;
           <TangServers isDisabled={isDisabled} tooltipProps={tooltipProps} />

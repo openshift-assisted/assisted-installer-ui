@@ -10,10 +10,8 @@ const UnsupportedVersion = ({ version }: { version: string }) => {
   const { t } = useTranslation();
 
   const hint = (
-    <Content>
-      <Content component={ContentVariants.p}>
-        {t('ai:Please note that this version is not production-ready.')}
-      </Content>
+    <Content component={ContentVariants.p}>
+      {t('ai:Please note that this version is not production-ready.')}
     </Content>
   );
   return (

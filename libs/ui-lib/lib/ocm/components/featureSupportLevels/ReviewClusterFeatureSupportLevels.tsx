@@ -86,7 +86,7 @@ export const LimitedSupportedCluster = ({
   clusterFeatureSupportLevels: FeatureIdToSupportLevel;
   showVersionWarning: boolean;
 }) => (
-  <Content>
+  <>
     {showVersionWarning && (
       <Content component="p">
         <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.var} />} />
@@ -100,7 +100,7 @@ export const LimitedSupportedCluster = ({
         <Content component="ul">{getPreviewFeatureList(clusterFeatureSupportLevels)}</Content>
       </>
     )}
-  </Content>
+  </>
 );
 
 export const FullySupportedCluster = () => (

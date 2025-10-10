@@ -19,7 +19,7 @@ import AddHostDropdown from '../InfraEnv/AddHostDropdown';
 const DiscoveryInstructions = () => {
   const { t } = useTranslation();
   return (
-    <Content>
+    <>
       <Content component="h3">{t('ai:Adding hosts instructions')}</Content>
       <Content component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
         <Content component="li">{t('ai:Click the Add hosts button.')}</Content>
@@ -37,7 +37,7 @@ const DiscoveryInstructions = () => {
           )}
         </Content>
       </Content>
-    </Content>
+    </>
   );
 };
 
@@ -70,9 +70,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   return (
     <Grid hasGutter>
       <GridItem>
-        <Content>
-          <DiscoveryInstructions />
-        </Content>
+        <DiscoveryInstructions />
       </GridItem>
       <GridItem span={5}>
         <AddHostDropdown

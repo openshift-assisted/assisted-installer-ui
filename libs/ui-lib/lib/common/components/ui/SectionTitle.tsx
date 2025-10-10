@@ -8,10 +8,8 @@ interface SectionTitleProps extends WithTestID {
 
 const SectionTitle = ({ title, testId }: SectionTitleProps) => (
   <GridItem>
-    <Content>
-      <Content data-testid={testId} component={ContentVariants.h3}>
-        {title}
-      </Content>
+    <Content data-testid={testId} component={ContentVariants.h3}>
+      {title}
     </Content>
   </GridItem>
 );

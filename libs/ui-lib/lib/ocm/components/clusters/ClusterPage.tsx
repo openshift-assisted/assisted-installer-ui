@@ -91,9 +91,7 @@ const ClusterPageGeneric = ({
         <>
           {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
           <PageSection hasBodyWrapper={false}>
-            <Content>
-              <Content component="h1">{cluster.name}</Content>
-            </Content>
+            <Content component="h1">{cluster.name}</Content>
           </PageSection>
           <PageSection hasBodyWrapper={false} isFilled>
             <ClusterDetail cluster={cluster} />

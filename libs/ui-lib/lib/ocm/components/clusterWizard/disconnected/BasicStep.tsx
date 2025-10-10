@@ -36,9 +36,7 @@ const BasicStep = () => {
             <GridItem>
               <Split>
                 <SplitItem>
-                  <Content>
-                    <Content component="h2">Basic information</Content>
-                  </Content>
+                  <Content component="h2">Basic information</Content>
                 </SplitItem>
                 <SplitItem>
                   <DeveloperPreview />

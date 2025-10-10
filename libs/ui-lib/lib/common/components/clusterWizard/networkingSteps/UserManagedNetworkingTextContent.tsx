@@ -16,7 +16,7 @@ export const UserManagedNetworkingTextContent = ({
 }: UserManagedNetworkingTextContentProps) => {
   const { t } = useTranslation();
   return (
-    <Content>
+    <>
       <Content component={'p'}>
         <Trans t={t}>
           ai:Please refer to the{' '}
@@ -34,6 +34,6 @@ export const UserManagedNetworkingTextContent = ({
         <ListItem>{t('ai:Network ports')}</ListItem>
         <ListItem>{t('ai:DNS')}</ListItem>
       </List>
-    </Content>
+    </>
   );
 };

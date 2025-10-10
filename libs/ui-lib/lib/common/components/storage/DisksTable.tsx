@@ -46,9 +46,7 @@ const diskColumns = (t: TFunction, showFormat: boolean) =>
   ].filter(Boolean) as { title: string | React.ReactNode }[];
 
 const SkipFormattingDisk = () => (
-  <Content>
-    <Content component={ContentVariants.p}>This bootable disk will skip formatting</Content>
-  </Content>
+  <Content component={ContentVariants.p}>This bootable disk will skip formatting</Content>
 );
 
 const getDiskLimitation = (
