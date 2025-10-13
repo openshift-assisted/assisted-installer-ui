@@ -1,6 +1,12 @@
 import * as React from 'react';
-import { Button } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 
 type DeleteClusterModalProps = {
   name: string;
@@ -18,12 +24,13 @@ const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({
   isOpen,
 }) => (
   <Modal
-    title="Delete cluster"
     isOpen={isOpen}
-    onClose={onClose}
+    onClose={isDeleteInProgress ? undefined : () => onClose()}
     variant={ModalVariant.small}
-    showClose={!isDeleteInProgress}
-    actions={[
+  >
+    <ModalHeader title="Delete cluster" />
+    <ModalBody>Are you sure you want to delete cluster {name} ?</ModalBody>
+    <ModalFooter>
       <Button
         data-testid="delete-cluster-submit"
         key="confirm"
@@ -33,13 +40,11 @@ const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({
         isLoading={isDeleteInProgress}
       >
         Delete
-      </Button>,
+      </Button>
       <Button key="cancel" variant="link" onClick={onClose} isDisabled={isDeleteInProgress}>
         Cancel
-      </Button>,
-    ]}
-  >
-    Are you sure you want to delete cluster {name} ?
+      </Button>
+    </ModalFooter>
   </Modal>
 );
 

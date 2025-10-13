@@ -1,6 +1,14 @@
 import React from 'react';
-import { Button, ButtonVariant, IconComponentProps } from '@patternfly/react-core';
-import { Modal, ModalProps } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  IconComponentProps,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalProps,
+} from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { UiIcon } from '../../../common';
 
@@ -41,11 +49,10 @@ const InfoLinkWithModal = ({
         )}
         {linkText}
       </Button>
-      <Modal
-        title={modalTitle}
-        id={modalId}
-        isOpen={isModalOpen}
-        actions={[
+      <Modal id={modalId} isOpen={isModalOpen} onClose={handleModalClose} variant={modalVariant}>
+        <ModalHeader title={modalTitle} />
+        <ModalBody>{children}</ModalBody>
+        <ModalFooter>
           <Button
             id={closebuttonId}
             key="close"
@@ -53,12 +60,8 @@ const InfoLinkWithModal = ({
             onClick={handleModalClose}
           >
             Close
-          </Button>,
-        ]}
-        onClose={handleModalClose}
-        variant={modalVariant}
-      >
-        {children}
+          </Button>
+        </ModalFooter>
       </Modal>
     </>
   );

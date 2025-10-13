@@ -1,7 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, ButtonVariant, Content } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -52,11 +60,10 @@ const CancelInstallationModal: React.FC = () => {
   };
 
   return (
-    <Modal
-      title="Abort Cluster Installation"
-      isOpen={isOpen}
-      variant={ModalVariant.small}
-      actions={[
+    <Modal isOpen={isOpen} variant={ModalVariant.small} onClose={onClose}>
+      <ModalHeader title="Abort Cluster Installation" />
+      <ModalBody>{getModalContent()}</ModalBody>
+      <ModalFooter>
         <Button
           key="submit"
           variant={ButtonVariant.danger}
@@ -66,7 +73,7 @@ const CancelInstallationModal: React.FC = () => {
           isDisabled={isSubmitting}
         >
           Abort installation
-        </Button>,
+        </Button>
         <Button
           key="cancel"
           variant={ButtonVariant.link}
@@ -74,11 +81,8 @@ const CancelInstallationModal: React.FC = () => {
           isDisabled={isSubmitting}
         >
           Cancel
-        </Button>,
-      ]}
-      onClose={onClose}
-    >
-      {getModalContent()}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

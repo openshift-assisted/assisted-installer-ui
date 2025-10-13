@@ -1,7 +1,15 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Button, Form, AlertVariant, Alert, Stack, StackItem } from '@patternfly/react-core';
-import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  Form,
+  AlertVariant,
+  Alert,
+  Stack,
+  StackItem,
+  ModalBody,
+  ModalFooter,
+} from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -106,7 +114,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
       {({ submitForm, isSubmitting, status }) => {
         return (
           <>
-            <ModalBoxBody>
+            <ModalBody>
               <Stack hasGutter>
                 {hasDHCP === false && (
                   <StackItem>
@@ -131,8 +139,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                   </Form>
                 </StackItem>
               </Stack>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Button
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={submitForm}
@@ -148,7 +156,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}
               </Button>
-            </ModalBoxFooter>
+            </ModalFooter>
           </>
         );
       }}
