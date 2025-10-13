@@ -6,10 +6,11 @@ import {
   ButtonVariant,
   ClipboardCopy,
   clipboardCopyFunc,
+  ModalBody,
+  ModalFooter,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
 import { StaticIPInfo } from './DiscoveryImageConfigForm';
@@ -48,7 +49,7 @@ const DownloadIso = ({
 
   return (
     <>
-      <ModalBoxBody>
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             <Alert
@@ -114,8 +115,8 @@ const DownloadIso = ({
             />
           </StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           variant={ButtonVariant.primary}
           onClick={() => downloadUrl && saveAs(downloadUrl)}
@@ -132,7 +133,7 @@ const DownloadIso = ({
             {t('ai:Edit ISO configuration')}
           </Button>
         )}
-      </ModalBoxFooter>
+      </ModalFooter>
     </>
   );
 };

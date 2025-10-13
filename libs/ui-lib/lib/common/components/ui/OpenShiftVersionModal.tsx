@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { Button, ButtonVariant, FormGroup } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { OpenShiftSelectWithSearch } from './OpenShiftSelectWithSearch';
 import { HelperTextType } from './OpenShiftVersionDropdown';
 import { useFormikContext } from 'formik';
@@ -31,32 +39,34 @@ export const OpenShiftVersionModal = ({
 
   return (
     <Modal
-      title="Available OpenShift Versions"
       id="available-openshift-versions-modal"
       isOpen
-      actions={[
-        <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={handleSelect}>
-          Select
-        </Button>,
-        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onClose}>
-          Cancel
-        </Button>,
-      ]}
       onClose={onClose}
       variant={ModalVariant.small}
     >
-      <FormGroup
-        id={`form-control__customOpenshiftSelect`}
-        fieldId={'customOpenshiftSelect'}
-        label={'OpenShift version'}
-        isRequired
-      >
-        <OpenShiftSelectWithSearch
-          versions={allVersions}
-          getHelperText={getHelperText}
-          setCustomOpenshiftSelect={setCustomOpenshiftSelect}
-        />
-      </FormGroup>
+      <ModalHeader title="Available OpenShift Versions" />
+      <ModalBody>
+        <FormGroup
+          id={`form-control__customOpenshiftSelect`}
+          fieldId={'customOpenshiftSelect'}
+          label={'OpenShift version'}
+          isRequired
+        >
+          <OpenShiftSelectWithSearch
+            versions={allVersions}
+            getHelperText={getHelperText}
+            setCustomOpenshiftSelect={setCustomOpenshiftSelect}
+          />
+        </FormGroup>
+      </ModalBody>
+      <ModalFooter>
+        <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={handleSelect}>
+          Select
+        </Button>
+        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onClose}>
+          Cancel
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

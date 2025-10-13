@@ -9,8 +9,12 @@ import {
   OrderType,
   HelperText,
   HelperTextItem,
+  Modal,
+  ModalVariant,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
 } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -219,24 +223,23 @@ export const DiscoveryTroubleshootingModal = ({
   setDiscoveryHintModalOpen,
   isOpen,
 }: DiscoveryTroubleshootingModalProps) => {
+  const { t } = useTranslation();
   const onClose = React.useCallback(
     () => setDiscoveryHintModalOpen(false),
     [setDiscoveryHintModalOpen],
   );
-  const { t } = useTranslation();
+
   return (
-    <Modal
-      title={t('ai:Hosts not showing up troubleshooter')}
-      isOpen={isOpen}
-      actions={[
+    <Modal isOpen={isOpen} onClose={onClose} variant={ModalVariant.large}>
+      <ModalHeader title={t('ai:Hosts not showing up troubleshooter')} />
+      <ModalBody>
+        <DiscoveryTroubleshootingModalContent />
+      </ModalBody>
+      <ModalFooter>
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
           {t('ai:Close')}
-        </Button>,
-      ]}
-      onClose={onClose}
-      variant={ModalVariant.large}
-    >
-      <DiscoveryTroubleshootingModalContent />
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

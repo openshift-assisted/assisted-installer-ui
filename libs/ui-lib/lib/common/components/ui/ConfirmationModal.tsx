@@ -1,11 +1,19 @@
 import * as React from 'react';
-import { Button, ButtonProps } from '@patternfly/react-core';
-import { Modal, ModalVariant, ModalProps } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonProps,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalHeaderProps,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ConfirmationModalProps = {
   title: string;
-  titleIconVariant?: ModalProps['titleIconVariant'];
+  titleIconVariant?: ModalHeaderProps['titleIconVariant'];
   content: React.ReactNode;
   confirmationButtonVariant?: ButtonProps['variant'];
   confirmationButtonText?: string;
@@ -24,13 +32,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <Modal
-      title={title}
-      titleIconVariant={titleIconVariant}
-      isOpen={true}
-      onClose={onClose}
-      variant={ModalVariant.small}
-      actions={[
+    <Modal isOpen={true} onClose={onClose} variant={ModalVariant.small}>
+      <ModalHeader title={title} titleIconVariant={titleIconVariant} />
+      <ModalBody>{content}</ModalBody>
+      <ModalFooter>
         <Button
           data-testid="confirm-modal-submit"
           key="confirm"
@@ -38,13 +43,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           onClick={onConfirm}
         >
           {confirmationButtonText}
-        </Button>,
+        </Button>
         <Button key="cancel" variant="link" onClick={onClose}>
           {t('ai:Cancel')}
-        </Button>,
-      ]}
-    >
-      {content}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

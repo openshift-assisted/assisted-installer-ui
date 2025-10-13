@@ -1,6 +1,5 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
-import { WizardHeader } from '@patternfly/react-core';
+import { Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
 import classNames from 'classnames';
 import { ClusterWizardStep } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
@@ -40,8 +39,7 @@ const Day2Wizard = () => {
       aria-label={'Day 2 Wizard'}
       isOpen={isOpen}
       variant={ModalVariant.large}
-      showClose={false}
-      hasNoBodyWrapper
+      onClose={undefined}
       id="generate-discovery-iso-modal"
     >
       <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>

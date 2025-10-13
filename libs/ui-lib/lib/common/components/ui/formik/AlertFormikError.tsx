@@ -14,16 +14,14 @@ export const AlertFormikError = ({ status, onClose }: AlertFormikErrorProps) => 
   const actionClose = onClose ? <AlertActionCloseButton onClose={onClose} /> : undefined;
 
   return (
-    <>
-      <Alert
-        variant={AlertVariant.danger}
-        title={status.error.title}
-        isInline
-        actionClose={actionClose}
-      >
-        {status.error.message}
-      </Alert>
-    </>
+    <Alert
+      variant={AlertVariant.danger}
+      title={status.error.title}
+      isInline
+      actionClose={actionClose}
+    >
+      {status.error.message}
+    </Alert>
   );
 };
 

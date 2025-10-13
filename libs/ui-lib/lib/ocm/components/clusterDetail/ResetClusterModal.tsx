@@ -1,7 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, ButtonVariant, Content } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 import { getApiErrorMessage, handleApiError } from '../../../common/api';
@@ -110,14 +118,10 @@ const ResetClusterModal: React.FC = () => {
   );
 
   return (
-    <Modal
-      title="Reset Cluster Installation"
-      isOpen={isOpen}
-      variant={ModalVariant.small}
-      actions={actions}
-      onClose={handleClose}
-    >
-      {getModalContent()}
+    <Modal isOpen={isOpen} variant={ModalVariant.small} onClose={handleClose}>
+      <ModalHeader title="Reset Cluster Installation" />
+      <ModalBody>{getModalContent()}</ModalBody>
+      <ModalFooter>{actions}</ModalFooter>
     </Modal>
   );
 };

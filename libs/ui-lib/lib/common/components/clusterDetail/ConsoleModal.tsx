@@ -1,6 +1,15 @@
 import React from 'react';
-import { Button, ButtonVariant, Content, ExpandableSection } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  ExpandableSection,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { removeProtocolFromURL } from '../../api';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -174,14 +183,12 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
     </Button>,
   ];
   return (
-    <Modal
-      title={t('ai:OpenShift Web Console troubleshooting')}
-      isOpen={isOpen}
-      onClose={closeModal}
-      actions={actions}
-      variant={ModalVariant.large}
-    >
-      <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
+    <Modal isOpen={isOpen} onClose={closeModal} variant={ModalVariant.large}>
+      <ModalHeader title={t('ai:OpenShift Web Console troubleshooting')} />
+      <ModalBody>
+        <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
+      </ModalBody>
+      <ModalFooter>{actions}</ModalFooter>
     </Modal>
   );
 };
