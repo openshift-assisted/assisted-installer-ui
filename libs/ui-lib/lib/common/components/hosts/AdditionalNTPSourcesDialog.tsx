@@ -2,13 +2,15 @@ import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
-import { Form, Button } from '@patternfly/react-core';
 import {
+  Form,
+  Button,
+  ModalBody,
+  ModalFooter,
   Modal,
   ModalVariant,
-  ModalBoxBody,
-  ModalBoxFooter,
-} from '@patternfly/react-core/deprecated';
+  ModalHeader,
+} from '@patternfly/react-core';
 import {
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
@@ -74,7 +76,7 @@ const AdditionalNTPSourcesForm = ({
       {({ submitForm, status, setStatus, isSubmitting, isValid, dirty }) => {
         return (
           <>
-            <ModalBoxBody>
+            <ModalBody>
               <Form>
                 <AlertFormikError
                   status={status as StatusErrorType}
@@ -90,8 +92,8 @@ const AdditionalNTPSourcesForm = ({
                   isRequired
                 />
               </Form>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Button
                 key="submit"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -104,7 +106,7 @@ const AdditionalNTPSourcesForm = ({
               <Button key="cancel" variant="link" onClick={onClose}>
                 {t('ai:Cancel')}
               </Button>
-            </ModalBoxFooter>
+            </ModalFooter>
           </>
         );
       }}
@@ -124,12 +126,11 @@ export const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProp
 }) => (
   <Modal
     aria-label="Add NTP sources"
-    title="Add NTP sources"
     isOpen={isOpen}
     onClose={onClose}
     variant={ModalVariant.small}
-    hasNoBodyWrapper
   >
+    <ModalHeader title="Add NTP sources" />
     <AdditionalNTPSourcesForm
       additionalNtpSource={additionalNtpSource}
       onClose={onClose}

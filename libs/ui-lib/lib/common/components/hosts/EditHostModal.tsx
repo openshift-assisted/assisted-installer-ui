@@ -1,8 +1,8 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import EditHostForm, { EditHostFormProps } from './EditHostForm';
+import { Modal, ModalHeader, ModalVariant } from '@patternfly/react-core';
 
 type EditHostModalProps = Pick<
   EditHostFormProps,
@@ -33,12 +33,11 @@ const EditHostModal = ({
   return (
     <Modal
       aria-label="Change hostname dialog"
-      title={t('ai:Change hostname')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
     >
+      <ModalHeader title={t('ai:Change hostname')} />
       <EditHostForm
         host={host}
         inventory={inventory}

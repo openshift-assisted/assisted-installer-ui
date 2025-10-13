@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import UpdateDay2ApiVipForm, { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
+import { Modal, ModalHeader, ModalVariant } from '@patternfly/react-core';
 
 type UpdateDay2ApiVipModalProps = {
   isOpen: boolean;
@@ -13,12 +13,11 @@ const UpdateDay2ApiVipModal: React.FC<UpdateDay2ApiVipModalProps> = ({
 }) => (
   <Modal
     aria-label="Update cluster hostname"
-    title="Update cluster hostname"
     isOpen={isOpen}
     variant={ModalVariant.small}
-    hasNoBodyWrapper
     onClose={onClose}
   >
+    <ModalHeader title="Update cluster hostname" />
     <UpdateDay2ApiVipForm {...props} onClose={onClose} />
   </Modal>
 );

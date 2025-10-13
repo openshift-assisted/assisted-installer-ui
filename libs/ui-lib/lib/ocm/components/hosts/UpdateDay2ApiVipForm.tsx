@@ -1,7 +1,13 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Button, ButtonVariant, ButtonType, Form } from '@patternfly/react-core';
-import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  ButtonType,
+  Form,
+  ModalBody,
+  ModalFooter,
+} from '@patternfly/react-core';
 import { Formik } from 'formik';
 import {
   AlertFormikError,
@@ -69,7 +75,7 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
       {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => {
         return (
           <Form onSubmit={handleSubmit}>
-            <ModalBoxBody>
+            <ModalBody>
               <GridGap>
                 <AlertFormikError
                   status={status as StatusErrorType}
@@ -83,8 +89,8 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
                   isRequired
                 />
               </GridGap>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Button
                 key="submit"
                 type={ButtonType.submit}
@@ -95,7 +101,7 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
               <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
                 Cancel
               </Button>
-            </ModalBoxFooter>
+            </ModalFooter>
           </Form>
         );
       }}
