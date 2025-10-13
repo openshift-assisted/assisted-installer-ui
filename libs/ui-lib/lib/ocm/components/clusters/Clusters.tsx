@@ -108,9 +108,7 @@ const Clusters = () => {
           <>
             <ClusterBreadcrumbs />
             <PageSection hasBodyWrapper={false}>
-              <Content>
-                <Content component="h1">Assisted Clusters</Content>
-              </Content>
+              <Content component="h1">Assisted Clusters</Content>
             </PageSection>
             <PageSection hasBodyWrapper={false} isFilled>
               <Alerts />

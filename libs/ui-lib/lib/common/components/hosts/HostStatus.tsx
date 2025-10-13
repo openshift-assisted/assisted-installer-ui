@@ -127,9 +127,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       {additionalPopoverContent}
       {details && (
         <StackItem>
-          <Content>
-            <Content component="p">{details}</Content>
-          </Content>
+          <Content component="p">{details}</Content>
         </StackItem>
       )}
       <StackItem>

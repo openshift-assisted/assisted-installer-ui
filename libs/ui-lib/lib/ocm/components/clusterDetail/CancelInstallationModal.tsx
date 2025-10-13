@@ -43,10 +43,8 @@ const CancelInstallationModal: React.FC = () => {
       return <ErrorState title={error.title} content={error.message} />;
     }
     return (
-      <Content>
-        <Content component="p">
-          This will abort cluster installation. Are you sure you want to proceed?
-        </Content>
+      <Content component="p">
+        This will abort cluster installation. Are you sure you want to proceed?
       </Content>
     );
   };

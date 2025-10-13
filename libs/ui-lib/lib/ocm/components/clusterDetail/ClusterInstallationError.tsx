@@ -51,13 +51,11 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
         }
         isInline
       >
-        <Content>
-          <Content component="p">
-            {toSentence(cluster.statusInfo)}
-            <br />
-            Reset the installation process to return to the configuration and try again. Some hosts
-            may need to be re-registered by rebooting into the Discovery ISO.
-          </Content>
+        <Content component="p">
+          {toSentence(cluster.statusInfo)}
+          <br />
+          Reset the installation process to return to the configuration and try again. Some hosts
+          may need to be re-registered by rebooting into the Discovery ISO.
         </Content>
       </Alert>
     </GridItem>

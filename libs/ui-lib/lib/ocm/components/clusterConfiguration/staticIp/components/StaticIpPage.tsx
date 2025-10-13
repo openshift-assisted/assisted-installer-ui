@@ -1,5 +1,12 @@
 import React from 'react';
-import { Content, ContentVariants, Alert, AlertVariant, Grid } from '@patternfly/react-core';
+import {
+  Content,
+  ContentVariants,
+  Alert,
+  AlertVariant,
+  Grid,
+  GridItem,
+} from '@patternfly/react-core';
 import { StaticIpInfo, StaticIpView } from '../data/dataTypes';
 import StaticIpViewRadioGroup from './StaticIpViewRadioGroup';
 import { getStaticIpInfo } from '../data/fromInfraEnv';
@@ -77,13 +84,13 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   }
   return (
     <Grid hasGutter>
-      <Content>
+      <GridItem>
         <Content component={ContentVariants.h2}>Static network configurations</Content>
         <Content component={ContentVariants.small}>
           Network configuration can be done using either the form view or YAML view. Configurations
           done in this step are for discovering hosts.
         </Content>
-      </Content>
+      </GridItem>
 
       {clusterWizardContext.currentStepId === 'static-ip-network-wide-configurations' && (
         <StaticIpViewRadioGroup
