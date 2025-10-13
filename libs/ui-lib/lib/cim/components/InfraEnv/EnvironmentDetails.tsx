@@ -63,11 +63,7 @@ const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning
 
 const NotConfigured = () => {
   const { t } = useTranslation();
-  return (
-    <Content>
-      <Content component={ContentVariants.small}>{t('ai:Not configured')}</Content>
-    </Content>
-  );
+  return <Content component={ContentVariants.small}>{t('ai:Not configured')}</Content>;
 };
 
 type EnvironmentDetailsProps = {

@@ -83,14 +83,12 @@ export const YamlViewFields = () => {
   const emptyHostData = getEmptyYamlHost();
   return (
     <Grid hasGutter>
-      <Content>
-        <Content component={ContentVariants.small}>
-          Upload, drag and drop, or copy and paste a YAML file that contains NMState into the editor
-          for network configurations. Each host also needs the MAC to interface name mapping.{' '}
-          <a href={NMSTATE_EXAMPLES_LINK} target="_blank" rel="noopener noreferrer">
-            Learn more about NMState <ExternalLinkAltIcon />
-          </a>
-        </Content>
+      <Content component={ContentVariants.small}>
+        Upload, drag and drop, or copy and paste a YAML file that contains NMState into the editor
+        for network configurations. Each host also needs the MAC to interface name mapping.{' '}
+        <a href={NMSTATE_EXAMPLES_LINK} target="_blank" rel="noopener noreferrer">
+          Learn more about NMState <ExternalLinkAltIcon />
+        </a>
       </Content>
 
       <StaticIpHostsArray<HostStaticNetworkConfig>

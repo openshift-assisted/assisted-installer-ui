@@ -41,9 +41,7 @@ const HostSummary: React.FC<HostSummaryProps> = ({
       <StackItem data-testid={`collapsed-host-${hostIdx}`}>
         <Flex>
           <FlexItem>
-            <Content>
-              <Content component={ContentVariants.small}>{title}</Content>
-            </Content>
+            <Content component={ContentVariants.small}>{title}</Content>
           </FlexItem>
           {hasError && (
             <Label
