@@ -1,6 +1,14 @@
 import * as React from 'react';
-import { Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
-import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 
 import ModalProgress from '../ui/ModalProgress';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
@@ -51,15 +59,13 @@ const MassDeleteHostModal = ({
   return (
     <Modal
       aria-label={t('ai:Remove hosts dialog')}
-      title={t('ai:Remove hosts?')}
       isOpen={isOpen}
       onClose={onClose}
-      hasNoBodyWrapper
       id="mass-delete-modal"
       variant="medium"
-      titleIconVariant="warning"
     >
-      <ModalBoxBody>
+      <ModalHeader title={t('ai:Remove hosts?')} titleIconVariant="warning" />
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>{t('ai:All of the listed hosts will be removed.')}</StackItem>
           <StackItem>{children}</StackItem>
@@ -67,8 +73,8 @@ const MassDeleteHostModal = ({
             <ModalProgress error={error} progress={progress} />
           </StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           onClick={() => void onClick()}
           isDisabled={progress !== null}
@@ -79,7 +85,7 @@ const MassDeleteHostModal = ({
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </Modal>
   );
 };

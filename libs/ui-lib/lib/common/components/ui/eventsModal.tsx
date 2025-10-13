@@ -1,6 +1,14 @@
 import React from 'react';
-import { Button, ButtonVariant, Spinner, Title } from '@patternfly/react-core';
-import { Modal, ModalVariant, ModalBoxBody } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+  Spinner,
+} from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { t_global_icon_color_status_warning_default as globalIconColorWarning } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 import { ToolbarButton } from './Toolbar';
@@ -82,30 +90,21 @@ export const EventsModal = ({
 
   return (
     <Modal
-      header={
-        <Title headingLevel={'h1'}>
-          {title} {isLoading && <Spinner size="lg" data-testid="events-modal-spinner" />}
-        </Title>
-      }
       isOpen={isOpen}
       aria-label={t('ai:Displays events')}
-      hasNoBodyWrapper
-      actions={[
-        <Button
-          key="close"
-          variant={ButtonVariant.primary}
-          onClick={onClose}
-          data-testid="close-events-modal"
-        >
-          {t('ai:Close')}
-        </Button>,
-      ]}
       onClose={onClose}
       variant={ModalVariant.large}
       className="events-modal"
       id={'events-modal'}
     >
-      <ModalBoxBody className="events-modal__body">
+      <ModalHeader
+        title={
+          <>
+            {title} {isLoading && <Spinner size="lg" data-testid="events-modal-spinner" />}
+          </>
+        }
+      />
+      <ModalBody className="events-modal__body">
         {fallbackEventsURL ? (
           <ErrorState
             title={t('ai:Could not load events')}
@@ -123,7 +122,17 @@ export const EventsModal = ({
         ) : (
           <EventListFetch className="events-modal__event-list" setLoading={setLoading} {...rest} />
         )}
-      </ModalBoxBody>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          key="close"
+          variant={ButtonVariant.primary}
+          onClick={onClose}
+          data-testid="close-events-modal"
+        >
+          {t('ai:Close')}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };
