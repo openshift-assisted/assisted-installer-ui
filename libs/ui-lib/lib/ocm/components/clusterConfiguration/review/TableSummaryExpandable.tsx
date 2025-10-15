@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExpandableSection } from '@patternfly/react-core';
+import { ExpandableSection, Content } from '@patternfly/react-core';
 
 export const TableSummaryExpandable = ({
   title,
@@ -13,7 +13,7 @@ export const TableSummaryExpandable = ({
   const [isExpanded, setExpanded] = React.useState(true);
   return (
     <ExpandableSection
-      toggleContent={<b>{title}</b>}
+      toggleContent={<Content className="pf-v6-u-font-weight-bold">{title}</Content>}
       isExpanded={isExpanded}
       onToggle={() => setExpanded(!isExpanded)}
       isIndented

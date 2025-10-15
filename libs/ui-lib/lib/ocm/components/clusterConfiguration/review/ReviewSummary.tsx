@@ -1,4 +1,5 @@
 import React from 'react';
+import { ExpandableSection } from '@patternfly/react-core';
 import {
   DetailItem,
   DetailList,
@@ -67,9 +68,14 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
 
 const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   return (
-    <TableSummaryExpandable title={'Cluster summary'} id={'summary-expandable'}>
+    <ExpandableSection
+      toggleContent={'Cluster summary'}
+      id={'summary-expandable'}
+      isExpanded={true}
+      isIndented
+    >
       <ReviewSummaryContent cluster={cluster} />
-    </TableSummaryExpandable>
+    </ExpandableSection>
   );
 };
 

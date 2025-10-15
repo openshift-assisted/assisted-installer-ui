@@ -18,14 +18,12 @@
   width: 100%;
 }
 
-.summary-expandable .pf-v6-c-expandable-section__toggle,
+#summary-expandable > .pf-v6-c-expandable-section__toggle .pf-v6-c-button__text,
 .review-expandable > .pf-v6-c-expandable-section__toggle {
   color: initial;
   text-align: left;
 }
 
-.summary-expandable
-  > .pf-v6-c-expandable-section__toggle
-  > .pf-v6-c-expandable-section__toggle-icon {
+#summary-expandable > .pf-v6-c-expandable-section__toggle .pf-v6-c-button__icon {
   visibility: hidden;
 }
