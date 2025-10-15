@@ -186,7 +186,9 @@ const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
       <ExpandableSection
         toggleContent={
           <Grid>
-            <GridItem span={2}>Preflight checks</GridItem>
+            <GridItem span={2} className="pf-v6-u-text-align-start">
+              Preflight checks
+            </GridItem>
             {!isChecksExpanded && <PreflightChecksDetailCollapsed cluster={cluster} />}
           </Grid>
         }
