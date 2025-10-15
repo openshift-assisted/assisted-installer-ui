@@ -1,6 +1,6 @@
 import React from 'react';
 import { Language } from '@patternfly/react-code-editor';
-import { ExpandableSection, Grid, GridItem, TextInput } from '@patternfly/react-core';
+import { ExpandableSection, Grid, GridItem } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
 import { CustomManifestValues } from '../data/dataTypes';
@@ -30,12 +30,6 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
     >
       <Grid hasGutter span={12}>
         <GridItem span={6}>
-          <TextInput
-            hidden={true}
-            name={`${fieldName}.fakeId`}
-            data-testid={`fakeId-${manifestIdx}`}
-            id={`fakeId-${manifestIdx}`}
-          />
           <FolderDropdown name={`${fieldName}.folder`} data-testid={`folder-${manifestIdx}`} />
         </GridItem>
         <GridItem span={6}>
