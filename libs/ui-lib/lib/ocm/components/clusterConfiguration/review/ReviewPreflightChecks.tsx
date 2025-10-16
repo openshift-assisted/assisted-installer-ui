@@ -1,9 +1,8 @@
 import React from 'react';
 import {
+  Content,
   Divider,
   ExpandableSection,
-  Flex,
-  FlexItem,
   Grid,
   GridItem,
   gridSpans,
@@ -94,12 +93,9 @@ const PreflightCheckInfo = ({
 }) => {
   return (
     <GridItem span={span} offset={offset} className={className}>
-      <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-        <FlexItem style={{ display: 'flex', alignItems: 'center' }}>{icon}</FlexItem>
-        <FlexItem style={{ display: 'flex', alignItems: 'center' }}>
-          <b>{title}</b>
-        </FlexItem>
-      </Flex>
+      <Content className="pf-v6-u-text-wrap pf-v6-u-font-weight-bold">
+        {icon} {title}
+      </Content>
     </GridItem>
   );
 };
@@ -186,7 +182,9 @@ const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
       <ExpandableSection
         toggleContent={
           <Grid>
-            <GridItem span={2}>Preflight checks</GridItem>
+            <GridItem span={2} className="pf-v6-u-text-wrap">
+              Preflight checks
+            </GridItem>
             {!isChecksExpanded && <PreflightChecksDetailCollapsed cluster={cluster} />}
           </Grid>
         }
