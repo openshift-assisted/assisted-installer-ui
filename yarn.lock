@@ -2690,7 +2690,7 @@ __metadata:
     "@vitest/ui": ^0.34.5
     dpdm: ^3.14.0
     eslint: ^8.36.0
-    happy-dom: ^20.0.0
+    happy-dom: ^20.0.2
     msw: ^1.3.1
     prettier: 2.8.4
     rimraf: ^4.4.0
@@ -5685,14 +5685,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "happy-dom@npm:20.0.0"
+"happy-dom@npm:^20.0.2":
+  version: 20.0.2
+  resolution: "happy-dom@npm:20.0.2"
   dependencies:
     "@types/node": ^20.0.0
     "@types/whatwg-mimetype": ^3.0.2
     whatwg-mimetype: ^3.0.0
-  checksum: 0a814c4ca052e3695ae016f0a09243a25a1e372ecf1ebf12b405f282529618068d0bbd406980f8e82704f67640b78b24dc13e728a393232932c421c7fc6574a1
+  checksum: 1ee07fa3ca446ae57cc8333d4bc11d0e937ff58e1afe044a62590261d5d72154bde8bf3e3e65ec5350f52f05139d595f854ec5dfe91d564ffb97905c95c6bd53
   languageName: node
   linkType: hard
 
