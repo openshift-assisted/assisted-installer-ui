@@ -2,6 +2,7 @@ import { test, describe, expect } from 'vitest';
 import {
   baseDomainValidationSchema,
   dnsNameValidationSchema,
+  dualStackValidationSchema,
   hostPrefixValidationSchema,
   ipBlockValidationSchema,
   ipValidationSchema,
@@ -346,5 +347,86 @@ describe('validationSchemas', () => {
     );
 
     expect(counter).toBe(invalid.length);
+  });
+
+  describe('dualStackValidationSchema', () => {
+    describe('OCP < 4.12 (legacy behavior)', () => {
+      const schema = dualStackValidationSchema('machine networks', '4.11');
+
+      test('validates IPv4 as primary and IPv6 as secondary', async () => {
+        const validValues = [[{ cidr: '192.168.1.0/24' }, { cidr: '2001:db8::/64' }]];
+
+        for (const value of validValues) {
+          await expect(schema.validate(value)).resolves.toBe(value);
+        }
+      });
+
+      test('rejects IPv6 as primary for OCP < 4.12', async () => {
+        const invalidValues = [[{ cidr: '2001:db8::/64' }, { cidr: '192.168.1.0/24' }]];
+
+        for (const value of invalidValues) {
+          await expect(schema.validate(value)).rejects.toThrow(
+            'First network has to be IPv4 subnet',
+          );
+        }
+      });
+    });
+
+    describe('OCP >= 4.12 (new behavior)', () => {
+      const schema = dualStackValidationSchema('machine networks', '4.12');
+
+      test('validates IPv4 as primary and IPv6 as secondary', async () => {
+        const validValues = [[{ cidr: '192.168.1.0/24' }, { cidr: '2001:db8::/64' }]];
+
+        for (const value of validValues) {
+          await expect(schema.validate(value)).resolves.toBe(value);
+        }
+      });
+
+      test('validates IPv6 as primary and IPv4 as secondary', async () => {
+        const validValues = [[{ cidr: '2001:db8::/64' }, { cidr: '192.168.1.0/24' }]];
+
+        for (const value of validValues) {
+          await expect(schema.validate(value)).resolves.toBe(value);
+        }
+      });
+    });
+
+    describe('no version specified (defaults to legacy behavior)', () => {
+      const schema = dualStackValidationSchema('machine networks');
+
+      test('validates IPv4 as primary and IPv6 as secondary', async () => {
+        const validValues = [[{ cidr: '192.168.1.0/24' }, { cidr: '2001:db8::/64' }]];
+
+        for (const value of validValues) {
+          await expect(schema.validate(value)).resolves.toBe(value);
+        }
+      });
+
+      test('rejects IPv6 as primary when no version specified', async () => {
+        const invalidValues = [[{ cidr: '2001:db8::/64' }, { cidr: '192.168.1.0/24' }]];
+
+        for (const value of invalidValues) {
+          await expect(schema.validate(value)).rejects.toThrow(
+            'First network has to be IPv4 subnet',
+          );
+        }
+      });
+    });
+
+    describe('edge cases', () => {
+      test('validates maximum 2 networks', async () => {
+        const schema = dualStackValidationSchema('machine networks', '4.12');
+        const invalidValue = [
+          { cidr: '192.168.1.0/24' },
+          { cidr: '2001:db8::/64' },
+          { cidr: '10.0.0.0/24' },
+        ];
+
+        await expect(schema.validate(invalidValue)).rejects.toThrow(
+          'Maximum number of machine networks subnets in dual stack is 2',
+        );
+      });
+    });
   });
 });
