@@ -8,7 +8,6 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { LinkIcon } from '@patternfly/react-icons/dist/js/icons/link-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
-import { PlusIcon } from '@patternfly/react-icons/dist/js/icons/plus-icon';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
@@ -95,7 +94,7 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'known-unbound',
       title: t('ai:Available'),
       category: 'Discovery related',
-      icon: <PlusIcon color={blueColor.value} />,
+      icon: <ConnectedIcon color={blueColor.value} />,
       details: t(
         'ai:This host meets the minimum hardware and networking requirements and can be included in the cluster.',
       ),
