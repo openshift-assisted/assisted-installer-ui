@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
+import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import {
   ExternalPlatformsDropdown,
+  isMajorMinorVersionEqualOrGreater,
   OpenShiftVersionDropdown,
   OpenShiftVersionModal,
 } from '../../../../common';
@@ -99,8 +100,13 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     return undefined;
   }, [allVersions, values.customOpenshiftSelect, versions]);
 
-  const isDiskEncryptionEnabled =
-    values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
+  const allowTNA = React.useMemo(() => {
+    const current =
+      values.customOpenshiftSelect ||
+      versions.find((version) => version.value === values.openshiftVersion)?.version;
+
+    return isMajorMinorVersionEqualOrGreater(current, '4.19') && values.platform === 'baremetal';
+  }, [values.customOpenshiftSelect, values.openshiftVersion, values.platform, versions]);
 
   return (
     <Form id="wizard-cluster-details__form">
@@ -162,6 +168,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       <ControlPlaneNodesDropdown
         isDisabled={isEditFlow}
         allowHighlyAvailable={allowHighlyAvailable}
+        allowTNA={allowTNA}
       />
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
@@ -170,39 +177,10 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       <ExternalPlatformsDropdown isDisabled={isEditFlow} />
 
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
+
       {!isEditFlow && <PullSecret />}
+
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
-      {/* <DiskEncryptionControlGroup
-        values={values}
-        isDisabled={isPullSecretSet}
-        isSNO={isSNO({ controlPlaneCount })}
-      /> */}
-      {isDiskEncryptionEnabled && values.diskEncryptionMode === 'tpmv2' && (
-        <Alert
-          variant={AlertVariant.warning}
-          isInline
-          title={
-            <FlexItem>
-              {t(
-                'ai:To use this encryption method, enable TPMv2 encryption in the BIOS of each selected host.',
-              )}
-            </FlexItem>
-          }
-        />
-      )}
-      {isDiskEncryptionEnabled && values.diskEncryptionMode === 'tang' && (
-        <Alert
-          variant={AlertVariant.warning}
-          isInline
-          title={
-            <FlexItem>
-              {t(
-                'ai:The use of Tang encryption mode to encrypt your disks is only supported for bare metal or vSphere installations on user-provisioned infrastructure.',
-              )}
-            </FlexItem>
-          }
-        />
-      )}
     </Form>
   );
 };
