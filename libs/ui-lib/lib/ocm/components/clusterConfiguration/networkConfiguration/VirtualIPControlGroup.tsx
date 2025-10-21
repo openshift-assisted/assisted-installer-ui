@@ -16,7 +16,6 @@ import {
   NETWORK_TYPE_SDN,
   selectMachineNetworkCIDR,
   getVipValidationsById,
-  DUAL_STACK,
   PopoverIcon,
   selectApiVip,
   selectIngressVip,
@@ -117,7 +116,6 @@ export const VirtualIPControlGroup = ({
     setFieldValue(field, [{ ip: e.target.value, clusterId: cluster.id }], true);
   };
 
-  const ipFieldsSuffix = values.stackType === DUAL_STACK ? ' (IPv4)' : '';
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
@@ -145,7 +143,7 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>API IP{ipFieldsSuffix}</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
               </>
             }
             name="apiVip"
@@ -164,8 +162,7 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
               </>
             }
             name="ingressVip"
@@ -191,8 +188,7 @@ export const VirtualIPControlGroup = ({
                   <OcmInputField
                     label={
                       <>
-                        <span>API IP{ipFieldsSuffix}</span>{' '}
-                        <PopoverIcon bodyContent={ipPopoverContent} />
+                        <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
                       </>
                     }
                     name="apiVips.0.ip"
@@ -208,8 +204,7 @@ export const VirtualIPControlGroup = ({
                     name="ingressVips.0.ip"
                     label={
                       <>
-                        <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                        <PopoverIcon bodyContent={ipPopoverContent} />
+                        <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
                       </>
                     }
                     helperText={ipHelperText}

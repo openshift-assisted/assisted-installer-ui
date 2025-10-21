@@ -28,6 +28,7 @@ import {
   nameValidationMessages,
 } from './constants';
 import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { isMajorMinorVersionEqualOrGreater } from '../../../utils';
 import { selectApiVip, selectIngressVip } from '../../../selectors';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
 
@@ -703,20 +704,25 @@ export const serviceNetworkValidationSchema = Yup.array().of(
   }),
 );
 
-export const dualStackValidationSchema = (field: string) =>
+export const dualStackValidationSchema = (field: string, openshiftVersion?: string) =>
   Yup.array()
     .max(2, `Maximum number of ${field} subnets in dual stack is 2.`)
     .test(
       'dual-stack-ipv4',
-      'First network has to be IPv4 subnet.',
-      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean =>
-        !!values?.[0].cidr && Address4.isValid(values[0].cidr),
-    )
-    .test(
-      'dual-stack-ipv6',
-      'Second network has to be IPv6 subnet.',
-      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean =>
-        !!values?.[1].cidr && Address6.isValid(values[1].cidr),
+      openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')
+        ? 'First network has to be a valid IPv4 or IPv6 subnet.'
+        : 'First network has to be IPv4 subnet.',
+      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean => {
+        // For OCP versions > 4.11, allow IPv6 as primary network
+        if (openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')) {
+          return (
+            !!values?.[0].cidr &&
+            (Address4.isValid(values[0].cidr) || Address6.isValid(values[0].cidr))
+          );
+        }
+        // For older versions, require IPv4 as primary network
+        return !!values?.[0].cidr && Address4.isValid(values[0].cidr);
+      },
     );
 
 export const IPv4ValidationSchema = Yup.array().test(

@@ -9,6 +9,7 @@ import {
   NetworkConfigurationValues,
   DUAL_STACK,
   NO_SUBNET_SET,
+  isMajorMinorVersionEqualOrGreater,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { SubnetsDropdown } from './SubnetsDropdown';
@@ -35,6 +36,7 @@ export interface AvailableSubnetsControlProps {
   hostSubnets: HostSubnet[];
   isRequired: boolean;
   isDisabled: boolean;
+  openshiftVersion?: string;
 }
 
 export const AvailableSubnetsControl = ({
@@ -42,10 +44,15 @@ export const AvailableSubnetsControl = ({
   hostSubnets,
   isRequired = false,
   isDisabled,
+  openshiftVersion,
 }: AvailableSubnetsControlProps) => {
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const isDualStack = values.stackType === DUAL_STACK;
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+
+  // Check if OCP version supports IPv6 as primary network
+  const supportsIPv6Primary =
+    openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12');
 
   const IPv4Subnets = hostSubnets
     .filter((subnet) => Address4.isValid(subnet.subnet))
@@ -54,53 +61,106 @@ export const AvailableSubnetsControl = ({
     .filter((subnet) => Address6.isValid(subnet.subnet))
     .sort(subnetSort);
 
+  // For OCP >= 4.12, both networks can use either IPv4 or IPv6
+  const allSubnets = supportsIPv6Primary
+    ? [...IPv4Subnets, ...IPv6Subnets].sort(subnetSort)
+    : IPv4Subnets;
+
+  // For auto-selection, always use IPv4 subnets for single-stack
   const cidr = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
   const hasEmptySelection = (values.machineNetworks ?? []).length === 0;
   const autoSelectNetwork = !isViewerMode && hasEmptySelection;
   useAutoSelectSingleAvailableSubnet(autoSelectNetwork, setFieldValue, cidr, clusterId);
 
   return (
-    <FormGroup
-      label="Machine network"
-      labelInfo={isDualStack && 'Primary'}
-      fieldId="machine-networks"
-      isRequired={isRequired}
-    >
-      <FieldArray name="machineNetworks">
-        {() => (
-          <Stack>
-            {isDualStack ? (
-              values.machineNetworks?.map((_machineNetwork, index) => {
-                const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
+    <>
+      <FormGroup
+        label="Machine network"
+        labelInfo={isDualStack && 'Primary'}
+        fieldId="machine-networks"
+        isRequired={isRequired}
+      >
+        <FieldArray name="machineNetworks">
+          {() => (
+            <Stack>
+              {isDualStack ? (
+                values.machineNetworks?.map((machineNetwork, index) => {
+                  if (index > 0) return null;
 
-                return (
-                  <StackItem key={index}>
-                    <SubnetsDropdown
-                      name={`machineNetworks.${index}.cidr`}
-                      machineSubnets={machineSubnets}
-                      isDisabled={isDisabled}
-                      data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
-                    />
-                  </StackItem>
-                );
-              })
-            ) : (
-              <StackItem>
-                <SubnetsDropdown
-                  name={`machineNetworks.0.cidr`}
-                  machineSubnets={IPv4Subnets}
-                  isDisabled={isDisabled}
-                  data-testid={'subnets-dropdown-toggle-ipv4'}
-                />
-              </StackItem>
-            )}
-          </Stack>
+                  const machineSubnets = supportsIPv6Primary ? allSubnets : IPv4Subnets;
+
+                  return (
+                    <StackItem key={index}>
+                      <SubnetsDropdown
+                        name={`machineNetworks.${index}.cidr`}
+                        machineSubnets={machineSubnets}
+                        isDisabled={isDisabled}
+                        data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
+                      />
+                    </StackItem>
+                  );
+                })
+              ) : (
+                <StackItem>
+                  <SubnetsDropdown
+                    name={`machineNetworks.0.cidr`}
+                    machineSubnets={IPv4Subnets}
+                    isDisabled={isDisabled}
+                    data-testid={'subnets-dropdown-toggle-primary'}
+                  />
+                </StackItem>
+              )}
+            </Stack>
+          )}
+        </FieldArray>
+
+        {typeof errors.machineNetworks === 'string' && (
+          <Alert variant={AlertVariant.warning} title={errors.machineNetworks} isInline />
         )}
-      </FieldArray>
+      </FormGroup>
 
-      {typeof errors.machineNetworks === 'string' && (
-        <Alert variant={AlertVariant.warning} title={errors.machineNetworks} isInline />
+      {isDualStack && values.machineNetworks && values.machineNetworks.length > 1 && (
+        <FormGroup
+          label="Machine network"
+          labelInfo="Secondary"
+          fieldId="machine-networks-secondary"
+          isRequired={isRequired}
+        >
+          <FieldArray name="machineNetworks">
+            {() => {
+              const index = 1;
+              let machineSubnets;
+
+              if (supportsIPv6Primary) {
+                // For OCP >= 4.12, smart filtering based on the other network's selection
+                const firstNetworkCidr = values.machineNetworks?.[0]?.cidr;
+                if (firstNetworkCidr && Address6.isValid(firstNetworkCidr)) {
+                  // If first is IPv6, second should be IPv4
+                  machineSubnets = IPv4Subnets;
+                } else if (firstNetworkCidr && Address4.isValid(firstNetworkCidr)) {
+                  // If first is IPv4, second should be IPv6
+                  machineSubnets = IPv6Subnets;
+                } else {
+                  // If first is not selected yet, show all subnets
+                  machineSubnets = allSubnets;
+                }
+              } else {
+                // For older versions, second network is IPv6
+                machineSubnets = IPv6Subnets;
+              }
+
+              return (
+                <SubnetsDropdown
+                  name={`machineNetworks.${index}.cidr`}
+                  machineSubnets={machineSubnets}
+                  isDisabled={isDisabled}
+                  data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
+                />
+              );
+            }}
+          </FieldArray>
+        </FormGroup>
       )}
-    </FormGroup>
+    </>
   );
 };
