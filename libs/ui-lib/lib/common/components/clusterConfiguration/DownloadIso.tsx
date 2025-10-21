@@ -1,5 +1,4 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import {
   Alert,
   Button,
@@ -119,9 +118,12 @@ const DownloadIso = ({
       <ModalFooter>
         <Button
           variant={ButtonVariant.primary}
-          onClick={() => downloadUrl && saveAs(downloadUrl)}
           data-testid="download-iso-btn"
           isDisabled={!downloadUrl}
+          component={'a'}
+          target="_blank"
+          href={downloadUrl}
+          download
         >
           {t('ai:Download Discovery ISO')}
         </Button>
