@@ -124,6 +124,7 @@ const DownloadIso = ({
           target="_blank"
           href={downloadUrl}
           download
+          rel="noopener noreferrer"
         >
           {t('ai:Download Discovery ISO')}
         </Button>
