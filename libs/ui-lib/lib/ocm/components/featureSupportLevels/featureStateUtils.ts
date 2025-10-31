@@ -294,9 +294,7 @@ const getOpenShiftAIDisabledReason = (
   if (isArm) {
     return `${operatorTitle} is not available when ARM CPU architecture is selected.`;
   }
-  if (isSNO(cluster)) {
-    return `${operatorTitle} is not available when deploying a Single Node OpenShift.`;
-  }
+
   if (!isSupported) {
     return `The installer cannot currently enable ${operatorTitle} with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.`;
   }

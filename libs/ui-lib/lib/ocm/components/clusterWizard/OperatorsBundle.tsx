@@ -106,7 +106,9 @@ const BundleCard = ({
   const disabledReason = hasUnsupportedOperators
     ? 'Some operators in this bundle are not supported with the current configuration.'
     : isSNO && bundleSpec?.noSNO
-    ? 'This bundle is not available when deploying a Single Node OpenShift.'
+    ? bundle.id === 'openshift-ai'
+      ? 'This bundle is not available when deploying a Single Node OpenShift, but you can use the standalone operator instead.'
+      : 'This bundle is not available when deploying a Single Node OpenShift.'
     : incompatibleBundle
     ? `Bundle cannot be installed together with ${
         bundles.find(({ id }) => id === incompatibleBundle)?.title || incompatibleBundle
