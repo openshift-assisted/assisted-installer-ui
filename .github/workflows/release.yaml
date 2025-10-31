@@ -53,6 +53,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           always-auth: true
 
+      - name: Configure Yarn for npm registry
+        run: |
+          yarn config set npmRegistryServer https://registry.npmjs.org
+          yarn config set npmAlwaysAuth true
+
       - name: Install dependencies
         run: yarn install --immutable
 
@@ -76,7 +81,7 @@ jobs:
         run: |
           for LIB in $(echo ${LIBS}); do
             printf 'Publishing @openshift-assisted/%s\n' "${LIB}"
-            yarn workspace @openshift-assisted/${LIB} npm publish
+            yarn workspace @openshift-assisted/${LIB} npm publish --access public
             # Verify the package has been published before publishing another one.
             until [[ "$(yarn npm info @openshift-assisted/${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
               printf '@openshift-assisted/%s has not ben published yet\n' "${LIB}"
