@@ -50,6 +50,8 @@ jobs:
         with:
           cache: yarn
           node-version: ${{ vars.NODEJS_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          always-auth: true
 
       - name: Install dependencies
         run: yarn install --immutable
