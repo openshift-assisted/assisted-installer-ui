@@ -6,9 +6,16 @@ import {
   MenuToggle,
   MenuToggleElement,
   MenuToggleProps,
+  Divider,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
-import { getFieldId, HostSubnet, NO_SUBNET_SET } from '../../../../common';
+import {
+  getFieldId,
+  HostSubnet,
+  NO_SUBNET_SET,
+  TechnologyPreview,
+  PreviewBadgePosition,
+} from '../../../../common';
 import { Address4, Address6 } from 'ip-address';
 
 type SubnetsDropdownProps = {
@@ -62,7 +69,8 @@ export const SubnetsDropdown = ({
     const ipv4Subnets = machineSubnets.filter((subnet) => Address4.isValid(subnet.subnet));
     const ipv6Subnets = machineSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
 
-    let currentDisplayValue = itemsSubnets[0].label; // The placeholder is the fallback
+    let currentDisplayValue =
+      itemsSubnets.length > 1 ? itemsSubnets[1].label : itemsSubnets[0].label; // The placeholder is the fallback in some cases
     if (field.value) {
       const subnetItem = itemsSubnets.find((item) => item.value === field.value);
       if (subnetItem) {
@@ -100,7 +108,7 @@ export const SubnetsDropdown = ({
           {label}
         </DropdownItem>
       ));
-
+      ipv4Items.push(<Divider key="ipv4-divider" />);
       const ipv6Items = toFormSelectOptions(ipv6Subnets).map(({ value, label, isDisabled }) => (
         <DropdownItem key={value} id={value} isDisabled={isDisabled} value={value}>
           {label}
@@ -119,7 +127,7 @@ export const SubnetsDropdown = ({
         <DropdownGroup label="IPv4" key="ipv4-group">
           {ipv4Items}
         </DropdownGroup>,
-        <DropdownGroup label="IPv6" key="ipv6-group">
+        <DropdownGroup label="IPv6 (Technology Preview)" key="ipv6-group">
           {ipv6Items}
         </DropdownGroup>,
       ];
@@ -138,6 +146,9 @@ export const SubnetsDropdown = ({
     setOpen(false);
   };
 
+  const currentItem = itemsSubnets.find((i) => i.label === currentDisplayValue);
+  const showBadge = Boolean(currentItem && Address6.isValid(currentItem.value));
+
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       ref={toggleRef}
@@ -150,6 +161,11 @@ export const SubnetsDropdown = ({
       {...props}
     >
       {currentDisplayValue}
+      {showBadge && (
+        <span onClick={(e) => e.stopPropagation()}>
+          <TechnologyPreview position={PreviewBadgePosition.inlineRight} />
+        </span>
+      )}
     </MenuToggle>
   );
 
