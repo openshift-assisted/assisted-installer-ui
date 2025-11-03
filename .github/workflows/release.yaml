@@ -74,10 +74,9 @@ jobs:
         run: |
           yarn config set npmRegistryServer https://registry.npmjs.org
           yarn config set npmAlwaysAuth true
+          yarn config set npmAuthToken "${NODE_AUTH_TOKEN}"
 
       - name: Publish workspaces to NPM
-        env:
-          NPM_CONFIG_PROVENANCE: true
         run: |
           for LIB in $(echo ${LIBS}); do
             printf 'Publishing @openshift-assisted/%s\n' "${LIB}"
