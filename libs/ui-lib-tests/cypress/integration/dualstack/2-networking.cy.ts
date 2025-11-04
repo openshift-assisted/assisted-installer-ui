@@ -47,6 +47,7 @@ describe(`Assisted Installer Dualstack Networking`, () => {
       networkingPage
         .getClusterSubnetCidrIpv6()
         .should('contain.text', '1001:db9::/120 (1001:db9:: - 1001:db9::ff)');
+      networkingPage.inputApiVipIngressVipSecondary('1001:db9::1', '1001:db9::2');
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
 
       cy.wait('@update-cluster').then(({ request }) => {
