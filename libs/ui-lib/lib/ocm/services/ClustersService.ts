@@ -26,7 +26,11 @@ const ClustersService = {
     return hosts.find((host) => host.id === hostId);
   },
 
-  async create(params: ClusterCreateParamsWithStaticNetworking, isAssistedMigration?: boolean) {
+  async create(
+    params: ClusterCreateParamsWithStaticNetworking,
+    isAssistedMigration?: boolean,
+    isSingleClusterFeatureEnabled?: boolean,
+  ) {
     if (isAssistedMigration) {
       params.tags = AI_ASSISTED_MIGRATION_TAG;
     }
@@ -44,7 +48,9 @@ const ClustersService = {
       infraEnvCreateParams.imageType = 'minimal-iso';
     }
 
-    await InfraEnvsService.create(infraEnvCreateParams);
+    if (!isSingleClusterFeatureEnabled) {
+      await InfraEnvsService.create(infraEnvCreateParams);
+    }
 
     return cluster;
   },

@@ -25,6 +25,7 @@ import {
 } from '../../services';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import BundleService from '../../services/BundleService';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -45,6 +46,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     latestVersions: versions,
   } = useOpenShiftVersionsContext();
   const location = useLocation();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const handleClusterUpdate = React.useCallback(
     async (
@@ -94,7 +96,11 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
             ...(virtOperators ? virtOperators.map((op) => ({ name: op })) : []),
           ];
         }
-        const cluster = await ClustersService.create(params, isAssistedMigration);
+        const cluster = await ClustersService.create(
+          params,
+          isAssistedMigration,
+          isSingleClusterFeatureEnabled,
+        );
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
         const uiPatch: UISettingsValues = { addCustomManifests };
@@ -114,7 +120,15 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, location.search, navigate, clusterWizardContext, addAlert, dispatch],
+    [
+      clearAlerts,
+      location.search,
+      isSingleClusterFeatureEnabled,
+      navigate,
+      clusterWizardContext,
+      addAlert,
+      dispatch,
+    ],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
