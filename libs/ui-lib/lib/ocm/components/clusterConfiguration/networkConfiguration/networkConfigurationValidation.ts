@@ -74,9 +74,17 @@ export const getNetworkConfigurationValidationSchema = (
   hostSubnets: HostSubnets,
   openshiftVersion?: string,
 ) =>
-  Yup.lazy((values: NetworkConfigurationValues) =>
-    Yup.object<NetworkConfigurationValues>().shape({
-      apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
+  Yup.lazy((values: NetworkConfigurationValues) => {
+    const apiVipSchema =
+      values.stackType === DUAL_STACK
+        ? vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips).min(
+            2,
+            'Provide both Primary and Secondary API IPs.',
+          )
+        : vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips);
+
+    return Yup.object<NetworkConfigurationValues>().shape({
+      apiVips: apiVipSchema,
       ingressVips: vipArrayValidationSchema<IngressVip>(
         hostSubnets,
         values,
@@ -116,5 +124,5 @@ export const getNetworkConfigurationValidationSchema = (
               )
             : Yup.array(),
       }),
-    }),
-  );
+    });
+  });
