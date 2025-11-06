@@ -4,6 +4,10 @@ import { getClusterNameOfAgent } from './agents';
 export const getIsSNOCluster = (agentClusterInstall?: AgentClusterInstallK8sResource) =>
   agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
 
+export const getIsTNACluster = (agentClusterInstall?: AgentClusterInstallK8sResource) =>
+  agentClusterInstall?.spec?.provisionRequirements.arbiterAgents === 1 &&
+  agentClusterInstall.spec.provisionRequirements.controlPlaneAgents === 2;
+
 export const getAgentClusterInstallOfAgent = (
   agentClusterInstalls: AgentClusterInstallK8sResource[],
   agent?: AgentK8sResource,
