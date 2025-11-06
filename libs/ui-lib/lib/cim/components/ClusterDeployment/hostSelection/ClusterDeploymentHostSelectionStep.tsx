@@ -45,9 +45,12 @@ const getInitialValues = ({
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
+
   let hostCount =
     (agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents || 0) +
+    (agentClusterInstall?.spec?.provisionRequirements?.arbiterAgents || 0) +
     (agentClusterInstall?.spec?.provisionRequirements?.workerAgents || 0);
+
   if (isSNOCluster) {
     hostCount = 1;
   } else if (hostCount === 2 || hostCount === 0) {

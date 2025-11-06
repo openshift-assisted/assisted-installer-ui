@@ -12,10 +12,25 @@ import {
   getAgentsForSelection,
   getClusterDeploymentCpuArchitecture,
   getIsSNOCluster,
+  getIsTNACluster,
 } from '../../helpers';
 import MinimalHWRequirements from '../../Agent/MinimalHWRequirements';
 import NoAgentsAlert from '../../Agent/NoAgentsAlert';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
+
+const getHostRequirementText = (isSNO: boolean, isTNA: boolean, t: TFunction) => {
+  if (isSNO) {
+    return t(
+      'ai:Exactly 1 host is required, capable of functioning both as control plane and worker node.',
+    );
+  } else if (isTNA) {
+    return t(
+      'ai:Exactly 2 hosts capable of functioning as control plane nodes, and one arbiter, are required.',
+    );
+  }
+  return t('ai:At least 3 hosts are required, capable of functioning as control plane nodes.');
+};
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,
@@ -28,9 +43,11 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   onSetInstallationDiskId,
   isNutanix,
 }) => {
+  const { t } = useTranslation();
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { autoSelectHosts } = values;
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+  const isTNA = getIsTNACluster(agentClusterInstall);
 
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
@@ -45,22 +62,20 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           !agent.spec.clusterDeploymentName?.namespace &&
           agent.status?.inventory.cpu?.architecture === cpuArchitecture),
     );
+
     return isNutanix
       ? filtered.filter((a) => a.status?.inventory?.systemVendor?.manufacturer === 'Nutanix')
       : filtered;
   }, [agents, cdNamespace, cdName, cpuArchitecture, isNutanix]);
-  const { t } = useTranslation();
+
+  const hostRequirementText = getHostRequirementText(isSNOCluster, isTNA, t);
+
   return (
     <Grid hasGutter>
       <GridItem>
-        <TextContent>
-          {isSNOCluster
-            ? t(
-                'ai:Exactly 1 host is required, capable of functioning both as control plane and worker node.',
-              )
-            : t('ai:At least 3 hosts are required, capable of functioning as control plane nodes.')}
-        </TextContent>
+        <TextContent>{hostRequirementText}</TextContent>
       </GridItem>
+
       {aiConfigMap && (
         <GridItem>
           <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />

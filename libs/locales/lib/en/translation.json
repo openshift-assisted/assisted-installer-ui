@@ -327,6 +327,7 @@
   "ai:Error parsing cluster feature_usage field": "Error parsing cluster feature_usage field",
   "ai:Events table": "Events table",
   "ai:Exactly 1 host is required, capable of functioning both as control plane and worker node.": "Exactly 1 host is required, capable of functioning both as control plane and worker node.",
+  "ai:Exactly 2 hosts capable of functioning as control plane nodes, and one arbiter, are required.": "Exactly 2 hosts capable of functioning as control plane nodes, and one arbiter, are required.",
   "ai:Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.": "Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.",
   "ai:Exposes the service externally using a cloud provider's load balancer": "Exposes the service externally using a cloud provider's load balancer",
   "ai:Exposes the service on each node's IP at a static port": "Exposes the service on each node's IP at a static port",
