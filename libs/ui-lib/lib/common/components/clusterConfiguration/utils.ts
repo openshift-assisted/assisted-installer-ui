@@ -206,9 +206,7 @@ export const isDualStack = ({
   clusterNetworks,
   serviceNetworks,
   openshiftVersion,
-}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'> & {
-  openshiftVersion?: string;
-}) =>
+}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks' | 'openshiftVersion'>) =>
   areNetworksDualStack(machineNetworks, openshiftVersion) &&
   areNetworksDualStack(clusterNetworks, openshiftVersion) &&
   areNetworksDualStack(serviceNetworks, openshiftVersion);
