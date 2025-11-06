@@ -41,7 +41,7 @@ export const getManagementType = ({ userManagedNetworking }: Cluster): string =>
 };
 
 export const getStackTypeLabel = (cluster: Cluster): string =>
-  isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) ? 'Dual-stack' : 'IPv4';
+  isDualStack({ ...cluster }) ? 'Dual-stack' : 'IPv4';
 
 export const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enableOn']) => {
   let diskEncryptionType = null;
@@ -67,7 +67,7 @@ export const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption[
 
 const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
   const { t } = useTranslation();
-  const isDualStackType = isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion });
+  const isDualStackType = isDualStack({ ...cluster });
   const featureSupportLevelContext = useNewFeatureSupportLevel();
 
   const activeFeatureConfiguration = featureSupportLevelContext.activeFeatureConfiguration;

@@ -1,12 +1,7 @@
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import React from 'react';
-import {
-  genericTableRowKey,
-  isDualStack,
-  selectApiVip,
-  selectIngressVip,
-} from '../../../../common';
+import { genericTableRowKey, isDualStack } from '../../../../common';
 import {
   getManagementType,
   getStackTypeLabel,
@@ -58,7 +53,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'machine-networks' },
           },
-          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion })
+          isDualStack({ ...cluster })
             ? {
                 title: cluster.machineNetworks?.map((network, index) => (
                   <span key={network.cidr}>
@@ -78,9 +73,24 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'API IP' },
           {
-            title: selectApiVip(cluster),
-            props: { 'data-testid': 'api-vip', colSpan: 2 },
+            title: cluster.apiVips?.map((apiVip) => (
+              <span key={apiVip.ip}>
+                {apiVip.ip}
+                <br />
+              </span>
+            )),
+            props: { 'data-testid': 'api-vip' },
           },
+          isDualStack({ ...cluster })
+            ? {
+                title: cluster.apiVips?.map((apiVip, index) => (
+                  <span key={apiVip.ip}>
+                    {index === 0 ? 'Primary' : 'Secondary'}
+                    <br />
+                  </span>
+                )),
+              }
+            : { title: '' },
         ],
       });
 
@@ -91,9 +101,24 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'Ingress IP' },
           {
-            title: selectIngressVip(cluster),
-            props: { 'data-testid': 'ingress-vip', colSpan: 2 },
+            title: cluster.ingressVips?.map((ingressVip) => (
+              <span key={ingressVip.ip}>
+                {ingressVip.ip}
+                <br />
+              </span>
+            )),
+            props: { 'data-testid': 'api-vip' },
           },
+          isDualStack({ ...cluster })
+            ? {
+                title: cluster.ingressVips?.map((ingressVip, index) => (
+                  <span key={ingressVip.ip}>
+                    {index === 0 ? 'Primary' : 'Secondary'}
+                    <br />
+                  </span>
+                )),
+              }
+            : { title: '' },
         ],
       });
 
@@ -115,7 +140,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-cidr' },
           },
-          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+          isDualStack({ ...cluster }) && {
             title: cluster.clusterNetworks?.map((network, index) => (
               <span key={network.cidr}>
                 {index === 0 ? 'Primary' : 'Secondary'}
@@ -138,7 +163,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-prefix' },
           },
-          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+          isDualStack({ ...cluster }) && {
             title: cluster.clusterNetworks?.map((network, index) => (
               <span key={network.hostPrefix}>
                 {index === 0 ? 'Primary' : 'Secondary'}
@@ -161,7 +186,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'service-network-cidr' },
           },
-          isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion }) && {
+          isDualStack({ ...cluster }) && {
             title: cluster.serviceNetworks?.map((network, index) => (
               <span key={network.cidr}>
                 {index === 0 ? 'Primary' : 'Secondary'}
