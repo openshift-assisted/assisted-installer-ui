@@ -34,7 +34,7 @@ export const getNetworkInitialValues = (
   isClusterManagedNetworkingUnsupported: boolean,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
-  const isDualStackType = isDualStack({ ...cluster, openshiftVersion: cluster.openshiftVersion });
+  const isDualStackType = isDualStack(cluster);
 
   return {
     apiVips: cluster.apiVips,
