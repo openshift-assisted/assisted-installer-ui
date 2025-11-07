@@ -53,7 +53,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'machine-networks' },
           },
-          isDualStack({ ...cluster })
+          isDualStack(cluster)
             ? {
                 title: cluster.machineNetworks?.map((network, index) => (
                   <span key={network.cidr}>
@@ -81,7 +81,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'api-vip' },
           },
-          isDualStack({ ...cluster })
+          isDualStack(cluster)
             ? {
                 title: cluster.apiVips?.map((apiVip, index) => (
                   <span key={apiVip.ip}>
@@ -107,9 +107,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
                 <br />
               </span>
             )),
-            props: { 'data-testid': 'api-vip' },
+            props: { 'data-testid': 'ingress-vip' },
           },
-          isDualStack({ ...cluster })
+          isDualStack(cluster)
             ? {
                 title: cluster.ingressVips?.map((ingressVip, index) => (
                   <span key={ingressVip.ip}>
@@ -140,7 +140,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-cidr' },
           },
-          isDualStack({ ...cluster }) && {
+          isDualStack(cluster) && {
             title: cluster.clusterNetworks?.map((network, index) => (
               <span key={network.cidr}>
                 {index === 0 ? 'Primary' : 'Secondary'}
@@ -163,7 +163,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'cluster-network-prefix' },
           },
-          isDualStack({ ...cluster }) && {
+          isDualStack(cluster) && {
             title: cluster.clusterNetworks?.map((network, index) => (
               <span key={network.hostPrefix}>
                 {index === 0 ? 'Primary' : 'Secondary'}
@@ -186,7 +186,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             )),
             props: { 'data-testid': 'service-network-cidr' },
           },
-          isDualStack({ ...cluster }) && {
+          isDualStack(cluster) && {
             title: cluster.serviceNetworks?.map((network, index) => (
               <span key={network.cidr}>
                 {index === 0 ? 'Primary' : 'Secondary'}
