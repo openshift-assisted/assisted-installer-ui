@@ -68,11 +68,12 @@ export const StackTypeControlGroup = ({
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
 
+    // Determine whether the first machine network is IPv4
+    const firstNetwork = values.machineNetworks?.[0];
+    const isFirstIPv4 = Boolean(firstNetwork?.cidr && Address4.isValid(firstNetwork.cidr));
+
     if (values.machineNetworks && values.machineNetworks?.length >= 2) {
       // For single-stack IPv4, prefer IPv4 machine network
-      const firstNetwork = values.machineNetworks[0];
-      const isFirstIPv4 = firstNetwork?.cidr && Address4.isValid(firstNetwork.cidr);
-
       if (isFirstIPv4) {
         // Keep the first network if it's IPv4
         setFieldValue('machineNetworks', [firstNetwork]);
@@ -123,6 +124,24 @@ export const StackTypeControlGroup = ({
       setFieldValue('serviceNetworks', [ipv4Service]);
     }
 
+    // Keep only IPv4 VIPs when switching to single-stack (unless DHCP allocation is used)
+    if (!values.vipDhcpAllocation) {
+      const pruneVips = (
+        vips?: { ip?: string; clusterId?: Cluster['id'] }[],
+      ): { ip: string; clusterId: Cluster['id'] }[] => {
+        if (!vips || vips.length === 0) return [];
+        // Choose which index to keep based on whether the first network is IPv4
+        const keepIndex = isFirstIPv4 ? 0 : 1;
+        const chosen = vips[keepIndex];
+        return chosen && chosen.ip
+          ? [{ ip: chosen.ip, clusterId: chosen.clusterId || clusterId }]
+          : [];
+      };
+
+      setFieldValue('apiVips', pruneVips(values.apiVips));
+      setFieldValue('ingressVips', pruneVips(values.ingressVips));
+    }
+
     void validateForm();
   }, [
     setFieldValue,
@@ -133,6 +152,9 @@ export const StackTypeControlGroup = ({
     values.clusterNetworks,
     values.machineNetworks,
     values.serviceNetworks,
+    values.apiVips,
+    values.ingressVips,
+    values.vipDhcpAllocation,
   ]);
 
   const setDualStack = () => {
