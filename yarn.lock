@@ -843,8 +843,8 @@ __metadata:
     "@patternfly/react-icons": 6.3.1
     "@patternfly/react-styles": 6.3.1
     "@patternfly/react-tokens": 6.3.1
-    "@redhat-cloud-services/ai-client-state": ^0.14.0
-    "@redhat-cloud-services/lightspeed-client": ^0.14.0
+    "@redhat-cloud-services/ai-client-state": ^0.15.0
+    "@redhat-cloud-services/lightspeed-client": ^0.15.0
     "@tsconfig/recommended": ^1.0.2
     "@types/node": ^18.14.6
     "@types/react": ^18.0.0
@@ -1378,21 +1378,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-cloud-services/ai-client-state@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@redhat-cloud-services/ai-client-state@npm:0.14.0"
+"@redhat-cloud-services/ai-client-state@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "@redhat-cloud-services/ai-client-state@npm:0.15.0"
   dependencies:
     "@redhat-cloud-services/ai-client-common": 0.13.0
-  checksum: 0bf91b1289da3fb4a6702f11cc3c5d39d0e31d069cf7a857e3a87e2e920fa2f55cdbe3ab19ee4754652428d2d3fb728ef626c0a1d4c67e0aac7796814fc25068
+  checksum: 6e7d4c95223100ba5b04a945630780a717309454727c03c0cec2667acc79c4efe00114e6c39eebaf678752e15c6f37764bb9328d92298605a412d9984a00f958
   languageName: node
   linkType: hard
 
-"@redhat-cloud-services/lightspeed-client@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@redhat-cloud-services/lightspeed-client@npm:0.14.0"
+"@redhat-cloud-services/lightspeed-client@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "@redhat-cloud-services/lightspeed-client@npm:0.15.0"
   dependencies:
     "@redhat-cloud-services/ai-client-common": 0.13.0
-  checksum: a57b602e277f4720e4037e689a0f95d2be234849f013da1af30de2ba94d78c13855639df80e9766a3c79cca209d27911377ff4158f0d1a527b55d6af5b54b441
+  checksum: 4af1f27f48a952412c8cea22ed95a2b61193166ce36207ffa9a6535dd94b65fa0a00276346e8b12e04c26e2032ad02244edb65d6cb61447f6a78683337124343
   languageName: node
   linkType: hard
 
