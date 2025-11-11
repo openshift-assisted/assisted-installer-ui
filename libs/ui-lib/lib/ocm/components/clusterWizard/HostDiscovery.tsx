@@ -22,6 +22,7 @@ import {
   Cluster,
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import useLateBinding from '../../hooks/useLateBinding';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -29,12 +30,14 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+  const isBinding = useLateBinding(cluster);
 
   const isNextDisabled =
     !isValid ||
     !!alerts.length ||
     isAutoSaveRunning ||
     isSubmitting ||
+    isBinding ||
     !canNextHostDiscovery({ cluster });
 
   const footer = (

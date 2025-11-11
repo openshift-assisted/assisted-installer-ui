@@ -55,6 +55,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     onMassDeleteHost,
     ...modalProps
   } = useHostsTable(cluster);
+
   const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
 
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
