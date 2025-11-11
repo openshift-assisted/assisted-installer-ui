@@ -24,7 +24,7 @@ export const AssistedInstallerHeader = () => {
         </SplitItem>
         {isInOcm && (
           <SplitItem>
-            <Content component="a" data-testid="whats-new-link">
+            <Content component="a" data-testid="whats-new-link" hidden={true}>
               What's new in Assisted Installer?
             </Content>
           </SplitItem>
