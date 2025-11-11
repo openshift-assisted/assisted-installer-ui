@@ -810,6 +810,11 @@ export const dualStackValidationSchema = (field: string, openshiftVersion?: stri
         if (!first || !second) {
           return true;
         }
+        const firstIsCidr = isCIDR.v4(first) || isCIDR.v6(first);
+        const secondIsCidr = isCIDR.v4(second) || isCIDR.v6(second);
+        if (!firstIsCidr || !secondIsCidr) {
+          return true;
+        }
         return first !== second;
       },
     )
