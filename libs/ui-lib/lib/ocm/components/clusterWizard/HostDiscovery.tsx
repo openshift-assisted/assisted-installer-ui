@@ -22,6 +22,8 @@ import {
   Cluster,
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import useLateBinding from '../../hooks/useLateBinding';
+import { useFeature } from '../../hooks/use-feature';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -29,12 +31,15 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const { isBinding } = useLateBinding(cluster, isSingleClusterFeatureEnabled);
 
   const isNextDisabled =
     !isValid ||
     !!alerts.length ||
     isAutoSaveRunning ||
     isSubmitting ||
+    isBinding ||
     !canNextHostDiscovery({ cluster });
 
   const footer = (

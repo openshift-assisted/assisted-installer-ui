@@ -40,9 +40,10 @@ const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
+  hosts: Host[];
 };
 
-const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
+const HostsDiscoveryTable = ({ cluster, hosts }: HostsDiscoveryTableProps) => {
   const {
     onEditHost,
     actionChecks,
@@ -55,6 +56,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     onMassDeleteHost,
     ...modalProps
   } = useHostsTable(cluster);
+
   const { wizardPerPage, setWizardPerPage } = useClusterWizardContext();
 
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -83,7 +85,6 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     [t, onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
 
-  const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length, wizardPerPage, setWizardPerPage);
   const itemIDs = hosts.map((h) => h.id);
   const showBulkActions = !(isViewerMode || isSNOCluster);
