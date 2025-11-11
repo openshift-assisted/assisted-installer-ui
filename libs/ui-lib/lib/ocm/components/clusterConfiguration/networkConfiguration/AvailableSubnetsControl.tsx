@@ -72,6 +72,35 @@ export const AvailableSubnetsControl = ({
   const autoSelectNetwork = !isViewerMode && hasEmptySelection;
   useAutoSelectSingleAvailableSubnet(autoSelectNetwork, setFieldValue, cidr, clusterId);
 
+  // Ensure primary and secondary machine networks are not duplicated.
+  // If the user switches primary to the same CIDR as secondary, adjust secondary to the opposite family or clear it.
+  React.useEffect(() => {
+    if (!isDualStack) {
+      return;
+    }
+    if (!values.machineNetworks || values.machineNetworks.length < 2) {
+      return;
+    }
+    const first = values.machineNetworks?.[0]?.cidr || '';
+    const second = values.machineNetworks?.[1]?.cidr || '';
+    if (!first || !second) {
+      return;
+    }
+    if (first === second) {
+      if (Address6.isValid(first)) {
+        const nextIPv4 = IPv4Subnets[0]?.subnet || NO_SUBNET_SET;
+        const replacement = nextIPv4 !== first ? nextIPv4 : NO_SUBNET_SET;
+        setFieldValue('machineNetworks.1.cidr', replacement, true);
+      } else if (Address4.isValid(first)) {
+        const nextIPv6 = IPv6Subnets[0]?.subnet || NO_SUBNET_SET;
+        const replacement = nextIPv6 !== first ? nextIPv6 : NO_SUBNET_SET;
+        setFieldValue('machineNetworks.1.cidr', replacement, true);
+      } else {
+        setFieldValue('machineNetworks.1.cidr', NO_SUBNET_SET, true);
+      }
+    }
+  }, [isDualStack, values.machineNetworks, IPv4Subnets, IPv6Subnets, setFieldValue]);
+
   return (
     <>
       <FormGroup
