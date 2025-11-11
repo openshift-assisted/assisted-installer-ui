@@ -46,15 +46,22 @@ const MessageEntry = ({ message, avatar, openClusterDetails, onApiCall }: Messag
   const messageDate = `${message.date?.toLocaleDateString()} ${message.date?.toLocaleTimeString()}`;
   const isLoading = message.role === 'bot' && message.answer === '';
 
-  const toolArgs: { [key: string]: { [key: string]: string } } = {};
+  const toolArgs = ((message.additionalAttributes?.toolCalls || []) as StreamEvent[]).reduce(
+    (acc, ev) => {
+      if (isToolArgStreamEvent(ev)) {
+        acc[ev.data.id] = ev.data.token.arguments;
+      }
+      return acc;
+    },
+    {} as { [key: string]: { [key: string]: string } },
+  );
+
   const actions =
     message.role === 'user' || isLoading
       ? []
-      : (message.additionalAttributes?.toolCalls as StreamEvent[])?.reduce<MsgAction[]>(
+      : (message.additionalAttributes?.toolResults as StreamEvent[])?.reduce<MsgAction[]>(
           (acc, ev) => {
-            if (isToolArgStreamEvent(ev)) {
-              toolArgs[ev.data.id] = ev.data.token.arguments;
-            } else if (isToolResponseStreamEvent(ev)) {
+            if (isToolResponseStreamEvent(ev)) {
               const action = getToolAction({
                 toolName: ev.data.token.tool_name,
                 response: ev.data.token.response,
