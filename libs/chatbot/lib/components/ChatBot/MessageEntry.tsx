@@ -6,7 +6,12 @@ import { saveAs } from 'file-saver';
 import { Button, Stack, StackItem } from '@patternfly-6/react-core';
 import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly-6/react-icons';
 
-import { isToolArgStreamEvent, isToolResponseStreamEvent, StreamEvent } from './types';
+import {
+  isOldToolResponseStreamEvent,
+  isToolArgStreamEvent,
+  isToolResponseStreamEvent,
+  StreamEvent,
+} from './types';
 import { getToolAction, MsgAction } from './helpers';
 import FeedbackForm from './FeedbackCard';
 import { FeedbackRequest } from './BotMessage';
@@ -59,22 +64,24 @@ const MessageEntry = ({ message, avatar, openClusterDetails, onApiCall }: Messag
   const actions =
     message.role === 'user' || isLoading
       ? []
-      : (message.additionalAttributes?.toolResults as StreamEvent[])?.reduce<MsgAction[]>(
-          (acc, ev) => {
-            if (isToolResponseStreamEvent(ev)) {
-              const action = getToolAction({
-                toolName: ev.data.token.tool_name,
-                response: ev.data.token.response,
-                args: toolArgs[ev.data.id],
-              });
-              if (action) {
-                acc.push(action);
-              }
+      : (
+          [
+            ...(message.additionalAttributes?.toolResults || []),
+            ...(message.additionalAttributes?.toolCalls || []),
+          ] as StreamEvent[]
+        ).reduce<MsgAction[]>((acc, ev) => {
+          if (isToolResponseStreamEvent(ev) || isOldToolResponseStreamEvent(ev)) {
+            const action = getToolAction({
+              toolName: ev.data.token.tool_name,
+              response: ev.data.token.response,
+              args: toolArgs[ev.data.id],
+            });
+            if (action) {
+              acc.push(action);
             }
-            return acc;
-          },
-          [],
-        );
+          }
+          return acc;
+        }, []);
 
   const feedback =
     message.role === 'user' || isLoading
