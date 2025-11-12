@@ -33,3 +33,6 @@ export const isToolArgStreamEvent = (e: StreamEvent): e is ToolArgStreamEvent =>
 
 export const isToolResponseStreamEvent = (e: StreamEvent): e is ToolResponseStreamEvent =>
   e.event === 'tool_result' && typeof e.data.token === 'object' && 'response' in e.data.token;
+
+export const isOldToolResponseStreamEvent = (e: StreamEvent): e is ToolResponseStreamEvent =>
+  e.event === 'tool_call' && typeof e.data.token === 'object' && 'response' in e.data.token;
