@@ -78,7 +78,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <Content component="h3">Host Inventory</Content>
       </StackItem>
       <StackItem data-testid="hosts-discovery-table-wrapper">
-        <HostsDiscoveryTable cluster={cluster} />
+        <HostsDiscoveryTable cluster={cluster} hosts={cluster.hosts || []} />
       </StackItem>
     </Stack>
   );

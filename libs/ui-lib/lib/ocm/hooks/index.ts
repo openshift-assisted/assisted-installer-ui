@@ -5,4 +5,5 @@ export { default as usePullSecret } from './usePullSecret';
 export { default as useClusterPreflightRequirements } from './useClusterPreflightRequirements';
 export { default as useUISettings } from './useUISettings';
 export { default as useInfraEnv } from './useInfraEnv';
+export { default as useInfraEnvHosts } from './useInfraEnvHosts';
 export { useFeatureDetection } from './use-feature-detection';

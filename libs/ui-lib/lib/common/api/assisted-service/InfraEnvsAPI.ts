@@ -4,6 +4,7 @@ import {
   InfraEnvCreateParams,
   PresignedUrl,
   InfraEnvUpdateParams,
+  Host,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { AxiosResponse } from 'axios';
 
@@ -66,6 +67,11 @@ const InfraEnvsAPI = {
     return client.get<PresignedUrl>(
       `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/downloads/files-presigned?file_name=ipxe-script`,
     );
+  },
+  getHosts(infraEnvId: InfraEnv['id']) {
+    return client.get<Host[]>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}/hosts`, {
+      signal: _getRequestAbortController.signal,
+    });
   },
 };
 

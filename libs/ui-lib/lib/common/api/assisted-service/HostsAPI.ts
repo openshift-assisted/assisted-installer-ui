@@ -1,4 +1,5 @@
 import {
+  Cluster,
   Host,
   HostUpdateParams,
   InfraEnv,
@@ -60,6 +61,18 @@ const HostsAPI = {
   installHost(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
     return client.post<Host, AxiosResponse<Host>, never>(
       `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/install`,
+    );
+  },
+  bindHost(infraEnvId: InfraEnv['id'], hostId: Host['id'], clusterId: Cluster['id']) {
+    return client.post<Host, AxiosResponse<Host>, { cluster_id: string }>(
+      `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/bind`,
+      { cluster_id: clusterId },
+      {
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
     );
   },
 };

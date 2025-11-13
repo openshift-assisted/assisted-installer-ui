@@ -1,4 +1,5 @@
 import {
+  Cluster,
   Disk,
   DiskRole,
   Host,
@@ -82,6 +83,14 @@ const HostsService = {
     }
 
     return HostsAPI.installHost(host.infraEnvId, host.id);
+  },
+
+  bind(host: Host, clusterId: Cluster['id']) {
+    if (!host.infraEnvId) {
+      throw new Error(`Cannot bind host ${host.id}, missing infraEnvId`);
+    }
+
+    return HostsAPI.bindHost(host.infraEnvId, host.id, clusterId);
   },
 
   installAll(hosts: Host[]) {
