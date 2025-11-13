@@ -318,17 +318,6 @@ export const canUnbindAgent = (
   }
 
   const statusKey = getAgentStatusKey(agent);
-  if (
-    [
-      'preparing-for-installation',
-      'installing',
-      'installing-in-progress',
-      'installing-pending-user-action',
-      'resetting-pending-user-action',
-    ].includes(statusKey)
-  ) {
-    return [false, t('ai:It is not possible to remove a host which is being installed.')];
-  }
 
   if (
     ['installed', 'error', 'cancelled'].includes(statusKey) &&
