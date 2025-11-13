@@ -18,13 +18,19 @@ export const getPlatforms = (t: TFunction): { [key in PlatformType]: string } =>
 export const ExternalPlatformsDropdown = ({ isDisabled }: { isDisabled: boolean }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [{ value }, , { setValue }] = useField<PlatformType>('platform');
-  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
+  const { setFieldValue, values } = useFormikContext<ClusterDetailsValues>();
   const { t } = useTranslation();
 
   const platforms = getPlatforms(t);
-
+  const isSNO = values.controlPlaneCount === 1;
   const options = Object.entries(platforms)
-    .filter(([key]) => key !== 'none')
+    .filter(([key]) => {
+      if (isSNO) {
+        return key === 'none' || key === 'vsphere' || key === 'external';
+      } else {
+        return key !== 'none';
+      }
+    })
     .map(([platform, label]) => (
       <DropdownItem
         key={platform}
@@ -44,7 +50,7 @@ export const ExternalPlatformsDropdown = ({ isDisabled }: { isDisabled: boolean 
     setValue(value as PlatformType);
     setIsOpen(false);
 
-    if (value === 'external') {
+    if (value === 'external' || values.controlPlaneCount === 1) {
       setFieldValue('userManagedNetworking', true);
     } else {
       setFieldValue('userManagedNetworking', false);
