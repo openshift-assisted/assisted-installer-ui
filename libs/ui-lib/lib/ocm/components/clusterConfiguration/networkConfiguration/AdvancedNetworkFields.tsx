@@ -46,38 +46,46 @@ const AdvancedNetworkFields = () => {
 
     // Check Cluster Networks
     if (values.clusterNetworks && values.clusterNetworks.length >= 2) {
-      const firstClusterCidr = values.clusterNetworks[0].cidr;
-      if (!firstClusterCidr) return;
+      const first = values.clusterNetworks[0];
+      const second = values.clusterNetworks[1];
+      const firstClusterCidr = first?.cidr;
+      const secondClusterCidr = second?.cidr;
+      if (!firstClusterCidr || !secondClusterCidr) return;
 
       const isFirstClusterIPv6 = Address6.isValid(firstClusterCidr);
+      const isSecondClusterIPv6 = Address6.isValid(secondClusterCidr);
 
-      // If primary machine is IPv6 but first cluster is IPv4, swap them
-      if (isPrimaryIPv6 && !isFirstClusterIPv6) {
-        const reordered = [values.clusterNetworks[1], values.clusterNetworks[0]];
+      // Only swap when families are opposite and mismatched with primary
+      if (isFirstClusterIPv6 === isSecondClusterIPv6) {
+        // Both have the same family; don't attempt to reorder to avoid oscillation
+      } else if (isPrimaryIPv6 && !isFirstClusterIPv6 && isSecondClusterIPv6) {
+        const reordered = [second, first];
         setFieldValue('clusterNetworks', reordered, false);
-      }
-      // If primary machine is IPv4 but first cluster is IPv6, swap them
-      else if (!isPrimaryIPv6 && isFirstClusterIPv6) {
-        const reordered = [values.clusterNetworks[1], values.clusterNetworks[0]];
+      } else if (!isPrimaryIPv6 && isFirstClusterIPv6 && !isSecondClusterIPv6) {
+        const reordered = [second, first];
         setFieldValue('clusterNetworks', reordered, false);
       }
     }
 
     // Check Service Networks
     if (values.serviceNetworks && values.serviceNetworks.length >= 2) {
-      const firstServiceCidr = values.serviceNetworks[0].cidr;
-      if (!firstServiceCidr) return;
+      const first = values.serviceNetworks[0];
+      const second = values.serviceNetworks[1];
+      const firstServiceCidr = first?.cidr;
+      const secondServiceCidr = second?.cidr;
+      if (!firstServiceCidr || !secondServiceCidr) return;
 
       const isFirstServiceIPv6 = Address6.isValid(firstServiceCidr);
+      const isSecondServiceIPv6 = Address6.isValid(secondServiceCidr);
 
-      // If primary machine is IPv6 but first service is IPv4, swap them
-      if (isPrimaryIPv6 && !isFirstServiceIPv6) {
-        const reordered = [values.serviceNetworks[1], values.serviceNetworks[0]];
+      // Only swap when families are opposite and mismatched with primary
+      if (isFirstServiceIPv6 === isSecondServiceIPv6) {
+        // Both have the same family; don't attempt to reorder to avoid oscillation
+      } else if (isPrimaryIPv6 && !isFirstServiceIPv6 && isSecondServiceIPv6) {
+        const reordered = [second, first];
         setFieldValue('serviceNetworks', reordered, false);
-      }
-      // If primary machine is IPv4 but first service is IPv6, swap them
-      else if (!isPrimaryIPv6 && isFirstServiceIPv6) {
-        const reordered = [values.serviceNetworks[1], values.serviceNetworks[0]];
+      } else if (!isPrimaryIPv6 && isFirstServiceIPv6 && !isSecondServiceIPv6) {
+        const reordered = [second, first];
         setFieldValue('serviceNetworks', reordered, false);
       }
     }

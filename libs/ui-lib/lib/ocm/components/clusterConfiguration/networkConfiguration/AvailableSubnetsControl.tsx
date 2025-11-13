@@ -26,7 +26,7 @@ const useAutoSelectSingleAvailableSubnet = (
 ) => {
   useEffect(() => {
     if (autoSelectNetwork) {
-      setFieldValue('machineNetworks', [{ cidr, clusterId }], true);
+      setFieldValue('machineNetworks', [{ cidr, clusterId }], false);
     }
   }, [autoSelectNetwork, cidr, clusterId, setFieldValue]);
 };
@@ -90,13 +90,19 @@ export const AvailableSubnetsControl = ({
       if (Address6.isValid(first)) {
         const nextIPv4 = IPv4Subnets[0]?.subnet || NO_SUBNET_SET;
         const replacement = nextIPv4 !== first ? nextIPv4 : NO_SUBNET_SET;
-        setFieldValue('machineNetworks.1.cidr', replacement, true);
+        if (replacement !== second) {
+          setFieldValue('machineNetworks.1.cidr', replacement, false);
+        }
       } else if (Address4.isValid(first)) {
         const nextIPv6 = IPv6Subnets[0]?.subnet || NO_SUBNET_SET;
         const replacement = nextIPv6 !== first ? nextIPv6 : NO_SUBNET_SET;
-        setFieldValue('machineNetworks.1.cidr', replacement, true);
+        if (replacement !== second) {
+          setFieldValue('machineNetworks.1.cidr', replacement, false);
+        }
       } else {
-        setFieldValue('machineNetworks.1.cidr', NO_SUBNET_SET, true);
+        if (second !== NO_SUBNET_SET) {
+          setFieldValue('machineNetworks.1.cidr', NO_SUBNET_SET, false);
+        }
       }
     }
   }, [isDualStack, values.machineNetworks, IPv4Subnets, IPv6Subnets, setFieldValue]);
