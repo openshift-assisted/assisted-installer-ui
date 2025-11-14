@@ -8,7 +8,6 @@ import {
   Grid,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import { Address6 } from 'ip-address';
 import {
   DUAL_STACK,
   PREFIX_MAX_RESTRICTION,
@@ -33,69 +32,9 @@ const serviceCidrHelperText =
   'Enter only 1 IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
 
 const AdvancedNetworkFields = () => {
-  const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const { values, errors } = useFormikContext<NetworkConfigurationValues>();
 
   const isDualStack = values.stackType === DUAL_STACK;
-
-  // Reorder Cluster Networks and Service Networks when Machine Network primary changes
-  React.useEffect(() => {
-    if (!isDualStack || !values.machineNetworks?.[0]?.cidr) return;
-
-    const primaryMachineNetworkCidr = values.machineNetworks[0].cidr;
-    const isPrimaryIPv6 = Address6.isValid(primaryMachineNetworkCidr);
-
-    // Check Cluster Networks
-    if (values.clusterNetworks && values.clusterNetworks.length >= 2) {
-      const first = values.clusterNetworks[0];
-      const second = values.clusterNetworks[1];
-      const firstClusterCidr = first?.cidr;
-      const secondClusterCidr = second?.cidr;
-      if (!firstClusterCidr || !secondClusterCidr) return;
-
-      const isFirstClusterIPv6 = Address6.isValid(firstClusterCidr);
-      const isSecondClusterIPv6 = Address6.isValid(secondClusterCidr);
-
-      // Only swap when families are opposite and mismatched with primary
-      if (isFirstClusterIPv6 === isSecondClusterIPv6) {
-        // Both have the same family; don't attempt to reorder to avoid oscillation
-      } else if (isPrimaryIPv6 && !isFirstClusterIPv6 && isSecondClusterIPv6) {
-        const reordered = [second, first];
-        setFieldValue('clusterNetworks', reordered, false);
-      } else if (!isPrimaryIPv6 && isFirstClusterIPv6 && !isSecondClusterIPv6) {
-        const reordered = [second, first];
-        setFieldValue('clusterNetworks', reordered, false);
-      }
-    }
-
-    // Check Service Networks
-    if (values.serviceNetworks && values.serviceNetworks.length >= 2) {
-      const first = values.serviceNetworks[0];
-      const second = values.serviceNetworks[1];
-      const firstServiceCidr = first?.cidr;
-      const secondServiceCidr = second?.cidr;
-      if (!firstServiceCidr || !secondServiceCidr) return;
-
-      const isFirstServiceIPv6 = Address6.isValid(firstServiceCidr);
-      const isSecondServiceIPv6 = Address6.isValid(secondServiceCidr);
-
-      // Only swap when families are opposite and mismatched with primary
-      if (isFirstServiceIPv6 === isSecondServiceIPv6) {
-        // Both have the same family; don't attempt to reorder to avoid oscillation
-      } else if (isPrimaryIPv6 && !isFirstServiceIPv6 && isSecondServiceIPv6) {
-        const reordered = [second, first];
-        setFieldValue('serviceNetworks', reordered, false);
-      } else if (!isPrimaryIPv6 && isFirstServiceIPv6 && !isSecondServiceIPv6) {
-        const reordered = [second, first];
-        setFieldValue('serviceNetworks', reordered, false);
-      }
-    }
-  }, [
-    isDualStack,
-    values.machineNetworks,
-    values.clusterNetworks,
-    values.serviceNetworks,
-    setFieldValue,
-  ]);
 
   const clusterNetworkCidrPrefix = (index: number) =>
     parseInt(
