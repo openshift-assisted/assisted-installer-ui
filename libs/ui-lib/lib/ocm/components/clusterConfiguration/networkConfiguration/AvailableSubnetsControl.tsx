@@ -13,6 +13,7 @@ import {
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { SubnetsDropdown } from './SubnetsDropdown';
+import { reorderNetworksForPrimary } from './reorderNetworks';
 import { Cluster, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
@@ -130,6 +131,9 @@ export const AvailableSubnetsControl = ({
                         name={`machineNetworks.${index}.cidr`}
                         machineSubnets={machineSubnets}
                         isDisabled={isDisabled}
+                        onAfterSelect={(newSelection) =>
+                          reorderNetworksForPrimary(newSelection, values, setFieldValue)
+                        }
                         data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
                       />
                     </StackItem>
@@ -141,6 +145,9 @@ export const AvailableSubnetsControl = ({
                     name={`machineNetworks.0.cidr`}
                     machineSubnets={IPv4Subnets}
                     isDisabled={isDisabled}
+                    onAfterSelect={(newSelection) =>
+                      reorderNetworksForPrimary(newSelection, values, setFieldValue)
+                    }
                     data-testid={'subnets-dropdown-toggle-primary'}
                   />
                 </StackItem>
