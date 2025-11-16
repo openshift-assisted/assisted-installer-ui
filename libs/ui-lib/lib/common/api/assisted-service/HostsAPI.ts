@@ -75,6 +75,11 @@ const HostsAPI = {
       },
     );
   },
+  unbindHost(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
+    return client.post<Host, AxiosResponse<Host>, never>(
+      `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/unbind`,
+    );
+  },
 };
 
 export default HostsAPI;

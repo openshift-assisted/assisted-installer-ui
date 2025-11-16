@@ -93,6 +93,14 @@ const HostsService = {
     return HostsAPI.bindHost(host.infraEnvId, host.id, clusterId);
   },
 
+  unbind(host: Host) {
+    if (!host.infraEnvId) {
+      throw new Error(`Cannot unbind host ${host.id}, missing infraEnvId`);
+    }
+
+    return HostsAPI.unbindHost(host.infraEnvId, host.id);
+  },
+
   installAll(hosts: Host[]) {
     const promises = [];
     for (const host of hosts) {
