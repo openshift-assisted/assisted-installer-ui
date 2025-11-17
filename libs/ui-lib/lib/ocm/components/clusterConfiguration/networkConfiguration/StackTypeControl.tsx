@@ -18,6 +18,7 @@ import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmRadioField } from '../../ui/OcmFormFields';
+import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
 import {
   Cluster,
   ClusterNetwork,
@@ -215,6 +216,8 @@ export const StackTypeControlGroup = ({
         false,
       );
     }
+    // Ensure cluster/service networks ordering matches the new primary family
+    reorderNetworksByCurrentPrimary(values, setFieldValue);
   };
 
   const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {

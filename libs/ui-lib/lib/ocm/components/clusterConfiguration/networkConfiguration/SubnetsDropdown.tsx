@@ -22,6 +22,7 @@ type SubnetsDropdownProps = {
   name: string;
   machineSubnets: HostSubnet[];
   isDisabled: boolean;
+  onAfterSelect?: (selectedValue: string) => void;
 };
 
 const toFormSelectOptions = (subnets: HostSubnet[]) => {
@@ -51,6 +52,7 @@ export const SubnetsDropdown = ({
   name,
   machineSubnets,
   isDisabled,
+  onAfterSelect,
   ...props
 }: SubnetsDropdownProps & MenuToggleProps) => {
   const [field, , { setValue }] = useField(name);
@@ -142,8 +144,12 @@ export const SubnetsDropdown = ({
   }, [machineSubnets, ipv4Subnets, ipv6Subnets, itemsSubnets]);
 
   const onSelect = (event?: React.MouseEvent<Element, MouseEvent>): void => {
-    setValue(event?.currentTarget.id);
+    const nextValue = event?.currentTarget.id;
+    setValue(nextValue);
     setOpen(false);
+    if (onAfterSelect && nextValue) {
+      onAfterSelect(nextValue);
+    }
   };
 
   const currentItem = itemsSubnets.find((i) => i.label === currentDisplayValue);
