@@ -92,7 +92,7 @@ const NetworkConfigurationForm: React.FC<{
           JSON.stringify(
             JSON.stringify({
               featureSet: 'CustomNoUpgrade',
-              featureGates: ['NoRegistryClusterOperations=true'],
+              featureGates: ['NoRegistryClusterInstall=true'],
             }),
           ),
         );
