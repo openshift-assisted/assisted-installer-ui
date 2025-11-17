@@ -3,6 +3,7 @@ import { CpuArchitecture } from '../../common';
 import { InfraEnvsAPI } from './apis';
 import InfraEnvCache from './InfraEnvIdsCacheService';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
+import { isAxiosError } from '../../common/api/axiosExtensions';
 import {
   Cluster,
   HostStaticNetworkConfig,
@@ -65,6 +66,47 @@ const InfraEnvsService = {
 
     InfraEnvCache.updateInfraEnvs(params.clusterId, [infraEnv]);
     return infraEnv;
+  },
+
+  async getOrCreate(
+    params: InfraEnvCreateParams,
+    isSingleClusterFeatureEnabled?: boolean,
+  ): Promise<InfraEnv> {
+    if (!params.clusterId) {
+      throw new Error('Cannot create InfraEnv, clusterId is missing');
+    }
+
+    if (!params.cpuArchitecture) {
+      throw new Error('Cannot get or create InfraEnv, cpuArchitecture is missing');
+    }
+
+    // Check if an InfraEnv already exists
+    try {
+      const existingInfraEnvId = await InfraEnvsService.getInfraEnvId(
+        params.clusterId,
+        params.cpuArchitecture as CpuArchitecture,
+        isSingleClusterFeatureEnabled,
+      );
+
+      if (existingInfraEnvId && !(existingInfraEnvId instanceof Error)) {
+        // InfraEnv exists, fetch and return it
+        const { data: infraEnv } = await InfraEnvsAPI.get(existingInfraEnvId);
+        // Update cache to maintain consistency
+        InfraEnvCache.updateInfraEnvs(params.clusterId, [infraEnv]);
+        return infraEnv;
+      }
+    } catch (error) {
+      // Only suppress 404 (not found) errors - let other errors propagate
+      if (isAxiosError(error) && error.response?.status === 404) {
+        // Fall through to create a new InfraEnv
+      } else {
+        // Re-throw authentication, network, and other unexpected errors
+        throw error;
+      }
+    }
+
+    // No InfraEnv exists, create one
+    return InfraEnvsService.create(params);
   },
 
   async removeAll(clusterId: Cluster['id']) {
