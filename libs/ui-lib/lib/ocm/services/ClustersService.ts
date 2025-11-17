@@ -48,9 +48,7 @@ const ClustersService = {
       infraEnvCreateParams.imageType = 'minimal-iso';
     }
 
-    if (!isSingleClusterFeatureEnabled) {
-      await InfraEnvsService.create(infraEnvCreateParams);
-    }
+    await InfraEnvsService.getOrCreate(infraEnvCreateParams, isSingleClusterFeatureEnabled);
 
     return cluster;
   },

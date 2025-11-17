@@ -248,6 +248,8 @@ const addClusterPatchAndDetailsIntercepts = () => {
 
 const addDay1InfraEnvIntercepts = () => {
   const infraEnvApiPath = getDay1InfraEnvApiPath();
+  let infraEnvCreated = false;
+
   // Actions on particular infraEnv
   cy.intercept('GET', infraEnvApiPath, mockInfraEnvResponse).as('infra-env-details');
 
@@ -258,11 +260,26 @@ const addDay1InfraEnvIntercepts = () => {
   // Actions on all the infraEnvs
   cy.intercept('PATCH', infraEnvApiPath, mockInfraEnvResponse).as('update-infra-env');
 
-  cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${Cypress.env('clusterId')}`, [
-    fixtures.baseInfraEnv,
-  ]).as('filter-infra-envs');
+  cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${Cypress.env('clusterId')}`, (req) => {
+    // Return empty array until POST creates the infraEnv, or if signal indicates it already exists
+    // Signal starts as '' and is set to a value after cluster/infraenv creation
+    const currentSignal = Cypress.env('AI_LAST_SIGNAL');
+    const willReturnFixture = infraEnvCreated || (currentSignal !== '' && currentSignal !== undefined && currentSignal !== null);
 
-  cy.intercept('POST', allInfraEnvsApiPath, mockInfraEnvResponse).as('create-infra-env');
+    console.log(`GET infra-envs: signal="${currentSignal}", infraEnvCreated=${infraEnvCreated}, returning ${willReturnFixture ? 'fixture' : 'empty'}`);
+
+    if (willReturnFixture) {
+      req.reply([fixtures.baseInfraEnv]);
+    } else {
+      req.reply([]);
+    }
+  }).as('filter-infra-envs');
+
+  cy.intercept('POST', allInfraEnvsApiPath, (req) => {
+    console.log('POST infra-env');
+    infraEnvCreated = true;
+    mockInfraEnvResponse(req);
+  }).as('create-infra-env');
 };
 
 const getDay2InfraEnvByCpuArch = (req) => {
