@@ -117,6 +117,18 @@ export const getAIHosts = (
   return [...hosts, ...restBmhs];
 };
 
+const extractVersionFromImageSetRef = (imageSetRefName?: string): string | undefined => {
+  if (!imageSetRefName) {
+    return undefined;
+  }
+  // Match pattern like "4.19.18" or "4.19" in strings like "img4.19.18-multi-appsub"
+  const versionMatch = imageSetRefName.match(/(\d+\.\d+)(?:\.\d+)?/);
+  if (versionMatch && versionMatch[1]) {
+    return versionMatch[1];
+  }
+  return undefined;
+};
+
 export const getAICluster = ({
   clusterDeployment,
   agentClusterInstall,
@@ -128,9 +140,13 @@ export const getAICluster = ({
   agents?: AgentK8sResource[];
   infraEnv?: InfraEnvK8sResource;
 }): Cluster => {
+  const imageSetRefName = agentClusterInstall?.spec?.imageSetRef?.name;
+  const extractedVersion = extractVersionFromImageSetRef(imageSetRefName);
+
   const installVersion =
     clusterDeployment.status?.installVersion ||
-    clusterDeployment.metadata?.labels?.[OCP_VERSION_MAJOR_MINOR];
+    clusterDeployment.metadata?.labels?.[OCP_VERSION_MAJOR_MINOR] ||
+    extractedVersion;
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
   const aiCluster: Cluster = {
     id: clusterDeployment.metadata?.uid || '',
