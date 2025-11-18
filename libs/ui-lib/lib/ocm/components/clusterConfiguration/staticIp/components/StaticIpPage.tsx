@@ -92,7 +92,8 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
         </Content>
       </GridItem>
 
-      {clusterWizardContext.currentStepId === 'static-ip-network-wide-configurations' && (
+      {(clusterWizardContext.currentStepId === 'static-ip-network-wide-configurations' ||
+        clusterWizardContext.currentStepId === 'static-ip-yaml-view') && (
         <StaticIpViewRadioGroup
           initialView={initialStaticIpInfo.view}
           confirmOnChangeView={confirmOnChangeView}
