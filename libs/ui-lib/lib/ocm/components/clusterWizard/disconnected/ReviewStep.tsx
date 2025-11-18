@@ -26,15 +26,18 @@ import {
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
-
-const downloadUrl =
-  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
+import ClustersService from '../../../services/ClustersService';
+import { handleApiError, getApiErrorMessage } from '../../../../common/api';
+import { useAlerts } from '../../../../common/components/AlertsContextProvider';
+import { AlertVariant } from '@patternfly/react-core';
 
 const ReviewStep = () => {
-  const { moveBack } = useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv, setDisconnectedInfraEnv } = useClusterWizardContext();
+  const { clusterId } = useParams<{ clusterId: string }>();
+  const { addAlert } = useAlerts();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -50,11 +53,40 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              downloadUrl && saveAs(downloadUrl);
-              navigate('/cluster-list');
+              void (async () => {
+                if (disconnectedInfraEnv?.downloadUrl) {
+                  saveAs(disconnectedInfraEnv.downloadUrl);
+                }
+                if (clusterId) {
+                  try {
+                    await ClustersService.remove(clusterId);
+                    // Remove infraEnv from wizard context after successful deregistration
+                    setDisconnectedInfraEnv(undefined);
+                    // Navigate to cluster-list only after successful deregistration
+                    navigate('/cluster-list');
+                  } catch (error) {
+                    handleApiError(error, () => {
+                      addAlert({
+                        title: 'Failed to deregister cluster',
+                        message: getApiErrorMessage(error),
+                        variant: AlertVariant.danger,
+                      });
+                    });
+                    // Error handling: continue with navigation even if deregistration fails
+                    // Still clear the context to avoid stale data
+                    setDisconnectedInfraEnv(undefined);
+                    // Navigate even on error to avoid getting stuck
+                    navigate('/cluster-list');
+                  }
+                } else {
+                  // If there's no cluster to deregister, navigate immediately
+                  navigate('/cluster-list');
+                }
+              })();
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"
+            disconnectedClusterId={clusterId}
           />
         }
       >
