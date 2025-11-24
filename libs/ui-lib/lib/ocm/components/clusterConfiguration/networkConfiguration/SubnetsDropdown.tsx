@@ -153,7 +153,10 @@ export const SubnetsDropdown = ({
   };
 
   const currentItem = itemsSubnets.find((i) => i.label === currentDisplayValue);
-  const showBadge = Boolean(currentItem && Address6.isValid(currentItem.value));
+  const isPrimaryMachineNetwork = name === 'machineNetworks.0.cidr';
+  const showBadge = Boolean(
+    isPrimaryMachineNetwork && currentItem && Address6.isValid(currentItem.value),
+  );
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
