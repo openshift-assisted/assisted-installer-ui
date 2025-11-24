@@ -32,6 +32,7 @@ const InputField: React.FC<
       description,
       labelInfo,
       showErrorMessage = true,
+      type = 'text',
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
@@ -80,6 +81,7 @@ const InputField: React.FC<
                   onChange && onChange(event);
                 }
               }}
+              type={type}
             />
           </SplitItem>
           <SplitItem>{children}</SplitItem>
