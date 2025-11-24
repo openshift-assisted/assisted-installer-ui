@@ -229,7 +229,6 @@ export const VirtualIPControlGroup = ({
                       }
                       name="apiVips.1.ip"
                       helperText={ipHelperText}
-                      isRequired
                       labelInfo={'Secondary'}
                       onChange={(e) =>
                         setVipValueAtIndex('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
@@ -263,7 +262,6 @@ export const VirtualIPControlGroup = ({
                         </>
                       }
                       helperText={ipHelperText}
-                      isRequired
                       labelInfo={'Secondary'}
                       onChange={(e) =>
                         setVipValueAtIndex(
