@@ -298,59 +298,6 @@ const createAgentServiceConfig = async ({
   }
 };
 
-/* Following functions are tested but recently not used.
-const patchAgentServiceConfig = async ({
-  t,
-  setError,
-  patchResource,
-  agentServiceConfig,
-  imgVolSizeGB,
-}: {
-  t: TFunction;
-  setError: SetErrorFuncType;
-  patchResource: PatchResourceFuncType;
-  agentServiceConfig: AgentServiceConfigK8sResource;
-
-  imgVolSizeGB: number;
-}): Promise<boolean> => {
-  try {
-    const patches: ResourcePatch[] = [
-      {
-        op: 'replace',
-        path: '/spec/imageStorage/resources/requests/storage',
-        value: `${imgVolSizeGB}G`,
-      },
-    ];
-    await patchResource(agentServiceConfig, patches);
-    return true;
-  } catch (e) {
-    console.error('Failed to patch AgentServiceConfig: ', e);
-    setError({
-      title: t('ai:Failed to update the AgentServiceConfig'),
-    });
-    return false;
-  }
-};
-
-export const onDeleteCimConfig = async ({
-  deleteResource,
-}: {
-  deleteResource: DeleteResourceFuncType;
-}) => {
-  try {
-    await deleteResource({
-      apiVersion: 'agent-install.openshift.io/v1beta1',
-      kind: 'AgentServiceConfig',
-      metadata: {
-        name: 'agent',
-        // cluster-scoped resource
-      },
-    });
-  } catch (e) {
-    console.error('Failed to delete AgentServiceConfig: ', e);
-  }
-};
-*/
 // https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/multicluster_engine/multicluster_engine_overview#enable-cim
 export const onEnableCIM = async ({
   t,
