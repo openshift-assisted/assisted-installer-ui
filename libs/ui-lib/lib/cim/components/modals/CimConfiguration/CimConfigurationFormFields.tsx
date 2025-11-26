@@ -29,7 +29,6 @@ export const CimConfigurationFormFields = ({
   isInProgressPeriod,
   configureLoadBalancerInitial,
   setConfigureLoadBalancerInitial,
-  getResource,
 }: CimConfigurationFormFieldsProps) => {
   const { t } = useTranslation();
 
@@ -39,7 +38,7 @@ export const CimConfigurationFormFields = ({
     () => {
       const doItAsync = async (): Promise<void> => {
         if (platform === 'AWS') {
-          if (!isEdit || (await isIngressController(getResource))) {
+          if (!isEdit || (await isIngressController())) {
             setFieldValue('configureLoadBalancer', true);
             setConfigureLoadBalancerInitial(true);
             return;
