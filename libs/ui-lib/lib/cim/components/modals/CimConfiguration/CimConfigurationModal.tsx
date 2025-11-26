@@ -32,11 +32,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   docDisconnectedUrl,
   docConfigUrl,
   docConfigAwsUrl,
-
-  getResource,
-  listResources,
-  patchResource,
-  createResource,
 }) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState<AlertPayload>();
@@ -56,12 +51,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       await onEnableCIM({
         t,
         setError,
-        getResource,
-        listResources,
-        patchResource,
-        createResource,
         agentServiceConfig,
-
         platform,
         dbVolSizeGiB: values.dbVolSize,
         fsVolSizeGiB: values.fsVolSize,
@@ -180,7 +170,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
                 docConfigAwsUrl={docConfigAwsUrl}
                 configureLoadBalancerInitial={configureLoadBalancerInitial}
                 setConfigureLoadBalancerInitial={setConfigureLoadBalancerInitial}
-                getResource={getResource}
               />
             </StackItem>
 

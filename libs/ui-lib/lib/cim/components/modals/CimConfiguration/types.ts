@@ -1,9 +1,3 @@
-import {
-  CreateResourceFuncType,
-  GetResourceFuncType,
-  ListResourcesFuncType,
-  PatchResourceFuncType,
-} from '../../../types';
 import { AgentServiceConfigK8sResource } from '../../../types/k8s/agent-service-config';
 
 export type CimConfigurationValues = {
@@ -26,7 +20,6 @@ export type CimConfigurationFormFieldsProps = {
   platform: string;
   configureLoadBalancerInitial: boolean;
   setConfigureLoadBalancerInitial: (value: boolean) => void;
-  getResource: GetResourceFuncType;
 };
 
 export type CimConfigurationModalProps = {
@@ -37,11 +30,6 @@ export type CimConfigurationModalProps = {
   docDisconnectedUrl: string;
   docConfigUrl: string;
   docConfigAwsUrl: string;
-
-  createResource: CreateResourceFuncType;
-  getResource: GetResourceFuncType;
-  listResources: ListResourcesFuncType;
-  patchResource: PatchResourceFuncType;
 };
 
 export type CimConfigMissingAlertProps = {
