@@ -92,6 +92,9 @@ const ClusterWizardContextProvider = ({
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
+  const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>(
+    infraEnv,
+  );
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -259,6 +262,8 @@ const ClusterWizardContextProvider = ({
           connectedWizardStepIds?.length && onSetCurrentStepId(connectedWizardStepIds[0]);
         }
       },
+      disconnectedInfraEnv,
+      setDisconnectedInfraEnv,
     };
   }, [
     wizardStepIds,
@@ -273,6 +278,7 @@ const ClusterWizardContextProvider = ({
     installDisconnected,
     setInstallDisconnected,
     connectedWizardStepIds,
+    disconnectedInfraEnv,
   ]);
 
   if (!contextValue) {
