@@ -1,17 +1,21 @@
-import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
+import {
+  k8sCreate,
+  k8sGet,
+  k8sListItems,
+  k8sPatch,
+  K8sResourceCommon,
+} from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
 import { getErrorMessage } from '../../../../common/utils';
 
 import {
   AgentServiceConfigK8sResource,
-  convertOCPtoCIMResourceHeader,
-  CreateResourceFuncType,
-  GetResourceFuncType,
-  ListResourcesFuncType,
-  PatchResourceFuncType,
-  ResourcePatch,
+  AgentServiceConfigModel,
+  IngressControllerModel,
+  ProvisioningModel,
   RouteK8sResource,
+  RouteModel,
 } from '../../../types';
 import { LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP } from './utils';
 
@@ -32,14 +36,10 @@ const ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX = 'assisted-image-service-multicluster
 const getAssistedImageServiceRoute = async (
   t: TFunction,
   setError: SetErrorFuncType,
-  listResources: ListResourcesFuncType,
 ): Promise<RouteK8sResource | undefined> => {
-  let allRoutes;
+  let allRoutes: RouteK8sResource[] = [];
   try {
-    allRoutes = (await listResources({
-      kind: 'Route',
-      apiVersion: 'route.openshift.io/v1',
-    })) as RouteK8sResource[];
+    allRoutes = await k8sListItems({ model: RouteModel, queryParams: {} });
   } catch (e) {
     // console.error('Failed to read all routes: ', allRoutes);
     setError({
@@ -50,7 +50,7 @@ const getAssistedImageServiceRoute = async (
   }
 
   const assistedImageServiceRoute = allRoutes?.find(
-    (r: RouteK8sResource) => r.metadata?.name === 'assisted-image-service',
+    (r) => r.metadata?.name === 'assisted-image-service',
   );
 
   if (!assistedImageServiceRoute?.spec?.host) {
@@ -92,7 +92,6 @@ const getClusterDomain = (
 const patchAssistedImageServiceRoute = async (
   t: TFunction,
   setError: SetErrorFuncType,
-  patchResource: PatchResourceFuncType,
 
   assistedImageServiceRoute: RouteK8sResource,
   domain: string,
@@ -102,7 +101,7 @@ const patchAssistedImageServiceRoute = async (
   const labels = assistedImageServiceRoute.metadata?.labels || {};
   labels['router-type'] = 'nlb';
 
-  const patches: ResourcePatch[] = [
+  const patches = [
     {
       op: 'replace',
       path: '/spec/host',
@@ -116,7 +115,11 @@ const patchAssistedImageServiceRoute = async (
   ];
 
   try {
-    await patchResource(convertOCPtoCIMResourceHeader(assistedImageServiceRoute), patches);
+    await k8sPatch({
+      model: RouteModel,
+      resource: assistedImageServiceRoute,
+      data: patches,
+    });
   } catch (e) {
     // console.error('Failed to patch assisted-image-service route: ', e, patches);
     setError({
@@ -128,15 +131,12 @@ const patchAssistedImageServiceRoute = async (
   return true;
 };
 
-export const isIngressController = async (getResource: GetResourceFuncType): Promise<boolean> => {
+export const isIngressController = async (): Promise<boolean> => {
   try {
-    await getResource({
-      apiVersion: 'operator.openshift.io/v1',
-      kind: 'IngressController',
-      metadata: {
-        name: 'ingress-controller-with-nlb',
-        namespace: 'openshift-ingress-operator',
-      },
+    await k8sGet({
+      name: 'ingress-controller-with-nlb',
+      ns: 'openshift-ingress-operator',
+      model: IngressControllerModel,
     });
 
     return true;
@@ -148,7 +148,6 @@ export const isIngressController = async (getResource: GetResourceFuncType): Pro
 const createIngressController = async (
   t: TFunction,
   setError: SetErrorFuncType,
-  createResource: CreateResourceFuncType,
 
   domain: string,
 ): Promise<boolean> => {
@@ -184,7 +183,7 @@ const createIngressController = async (
   };
 
   try {
-    await createResource(ingressController);
+    await k8sCreate({ model: IngressControllerModel, data: ingressController });
     return true;
   } catch (e) {
     // console.error('Create IngressController error: ', e);
@@ -199,24 +198,19 @@ const createIngressController = async (
 const patchProvisioningConfiguration = async ({
   t,
   setError,
-  patchResource,
-  getResource,
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
-  patchResource: PatchResourceFuncType;
-  getResource: GetResourceFuncType;
 }) => {
   try {
-    const provisioning = (await getResource({
-      kind: 'Provisioning',
-      apiVersion: 'metal3.io/v1alpha1',
-      metadata: {
-        name: 'provisioning-configuration',
-      },
-    })) as K8sResourceCommon & { spec?: { watchAllNamespaces?: boolean } };
+    const provisioning = await k8sGet<
+      K8sResourceCommon & { spec?: { watchAllNamespaces?: boolean } }
+    >({
+      model: ProvisioningModel,
+      name: 'provisioning-configuration',
+    });
 
-    const patches: ResourcePatch[] = [
+    const patches = [
       {
         op: provisioning.spec?.watchAllNamespaces ? 'replace' : 'add',
         path: '/spec/watchAllNamespaces',
@@ -224,7 +218,11 @@ const patchProvisioningConfiguration = async ({
       },
     ];
 
-    await patchResource(convertOCPtoCIMResourceHeader(provisioning), patches);
+    await k8sPatch({
+      model: ProvisioningModel,
+      resource: provisioning,
+      data: patches,
+    });
   } catch (e) {
     // console.error('Failed to patch provisioning-configuration: ', e);
     setError({
@@ -238,14 +236,12 @@ const patchProvisioningConfiguration = async ({
 const createAgentServiceConfig = async ({
   t,
   setError,
-  createResource,
   dbVolSizeGiB,
   fsVolSizeGiB,
   imgVolSizeGiB,
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
-  createResource: CreateResourceFuncType;
 
   dbVolSizeGiB: number;
   fsVolSizeGiB: number;
@@ -286,10 +282,12 @@ const createAgentServiceConfig = async ({
       },
     };
 
-    await createResource(agentServiceConfig);
+    await k8sCreate({
+      model: AgentServiceConfigModel,
+      data: agentServiceConfig,
+    });
     return true;
   } catch (e) {
-    // console.error('Failed to create AgentServiceConfig: ', e);
     setError({
       title: t('ai:Failed to create AgentServiceConfig'),
       message: getErrorMessage(e),
@@ -302,10 +300,6 @@ const createAgentServiceConfig = async ({
 export const onEnableCIM = async ({
   t,
   setError,
-  createResource,
-  getResource,
-  listResources,
-  patchResource,
 
   agentServiceConfig,
   platform,
@@ -318,10 +312,6 @@ export const onEnableCIM = async ({
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
-  createResource: CreateResourceFuncType;
-  getResource: GetResourceFuncType;
-  listResources: ListResourcesFuncType;
-  patchResource: PatchResourceFuncType;
 
   agentServiceConfig?: AgentServiceConfigK8sResource;
   platform: string;
@@ -333,17 +323,14 @@ export const onEnableCIM = async ({
   configureLoadBalancer: boolean;
 }) => {
   if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
-    await patchProvisioningConfiguration({ t, setError, patchResource, getResource });
+    await patchProvisioningConfiguration({ t, setError });
   }
 
-  if (agentServiceConfig) {
-    // console.log('The AgentServiceConfig recently can not be patched. Delete and create instead.');
-  } else {
+  if (!agentServiceConfig) {
     if (
       !(await createAgentServiceConfig({
         t,
         setError,
-        createResource,
         dbVolSizeGiB,
         fsVolSizeGiB,
         imgVolSizeGiB,
@@ -358,16 +345,11 @@ export const onEnableCIM = async ({
 
   if (configureLoadBalancer) {
     // Recently No to Yes only (since we do not delete the ingress controller)
-    if (await isIngressController(getResource)) {
-      // console.log('IngressController already present, we do not patch it.');
+    if (await isIngressController()) {
       return true /* Not an error */;
     }
 
-    const assistedImageServiceRoute = await getAssistedImageServiceRoute(
-      t,
-      setError,
-      listResources,
-    );
+    const assistedImageServiceRoute = await getAssistedImageServiceRoute(t, setError);
     if (!assistedImageServiceRoute) {
       return false;
     }
@@ -378,14 +360,8 @@ export const onEnableCIM = async ({
     }
 
     if (
-      !(await createIngressController(t, setError, createResource, domain)) ||
-      !(await patchAssistedImageServiceRoute(
-        t,
-        setError,
-        patchResource,
-        assistedImageServiceRoute,
-        domain,
-      ))
+      !(await createIngressController(t, setError, domain)) ||
+      !(await patchAssistedImageServiceRoute(t, setError, assistedImageServiceRoute, domain))
     ) {
       return false;
     }
