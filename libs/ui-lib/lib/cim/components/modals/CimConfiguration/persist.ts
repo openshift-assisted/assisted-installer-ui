@@ -239,6 +239,7 @@ const createAgentServiceConfig = async ({
   dbVolSizeGiB,
   fsVolSizeGiB,
   imgVolSizeGiB,
+  ciscoIntersightURL,
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
@@ -246,6 +247,7 @@ const createAgentServiceConfig = async ({
   dbVolSizeGiB: number;
   fsVolSizeGiB: number;
   imgVolSizeGiB: number;
+  ciscoIntersightURL?: string;
 }): Promise<boolean> => {
   try {
     const agentServiceConfig = {
@@ -253,6 +255,7 @@ const createAgentServiceConfig = async ({
       kind: 'AgentServiceConfig',
       metadata: {
         name: 'agent',
+        annotations: {},
       },
       spec: {
         databaseStorage: {
@@ -282,10 +285,18 @@ const createAgentServiceConfig = async ({
       },
     };
 
+    if (ciscoIntersightURL) {
+      agentServiceConfig.metadata = {
+        ...agentServiceConfig.metadata,
+        annotations: { ciscoIntersightURL },
+      };
+    }
+
     await k8sCreate({
       model: AgentServiceConfigModel,
       data: agentServiceConfig,
     });
+
     return true;
   } catch (e) {
     setError({
@@ -309,6 +320,7 @@ export const onEnableCIM = async ({
   imgVolSizeGiB,
 
   configureLoadBalancer,
+  ciscoIntersightURL,
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
@@ -321,6 +333,7 @@ export const onEnableCIM = async ({
   imgVolSizeGiB: number;
 
   configureLoadBalancer: boolean;
+  ciscoIntersightURL?: string;
 }) => {
   if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
     await patchProvisioningConfiguration({ t, setError });
@@ -334,6 +347,7 @@ export const onEnableCIM = async ({
         dbVolSizeGiB,
         fsVolSizeGiB,
         imgVolSizeGiB,
+        ciscoIntersightURL,
       }))
     ) {
       return false;
