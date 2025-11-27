@@ -247,6 +247,7 @@ export const clusterValidationLabels = (
   'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
   'mce-requirements-satisfied': t('ai:MCE requirements'),
+  'openshift-ai-gpu-requirements-satisfied': t('ai:OpenShift AI GPU requirements'),
   'platform-requirements-satisfied': t('ai:Platform requirements'),
   'cluster-observability-requirements-satisfied': t('ai:Cluster Observability requirements'),
   'numa-resources-requirements-satisfied': t('ai:NUMA Resources requirements'),

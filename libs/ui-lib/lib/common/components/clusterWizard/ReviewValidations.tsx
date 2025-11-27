@@ -108,7 +108,10 @@ const FailingValidation = <S extends string>({
       </>
     );
   } else {
-    if (validation.id === 'platform-requirements-satisfied') {
+    if (
+      validation.id === 'platform-requirements-satisfied' ||
+      validation.id === 'openshift-ai-gpu-requirements-satisfied'
+    ) {
       fix = validation.message;
     }
     // console.error(
