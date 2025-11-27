@@ -11,6 +11,8 @@ import {
   InputGroupText,
   Content,
   ContentVariants,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { HelpIcon } from '@patternfly/react-icons/dist/js/icons/help-icon';
@@ -32,7 +34,7 @@ export const CimConfigurationFormFields = ({
 }: CimConfigurationFormFieldsProps) => {
   const { t } = useTranslation();
 
-  const { setFieldValue } = useFormikContext<CimConfigurationValues>();
+  const { setFieldValue, values } = useFormikContext<CimConfigurationValues>();
 
   React.useEffect(
     () => {
@@ -188,30 +190,70 @@ export const CimConfigurationFormFields = ({
         </FlexItem>
       </Flex>
 
-      <CheckboxField
-        name="configureLoadBalancer"
-        label={t('ai:Configure load balancer on Amazon Web Services for me.')}
-        labelIcon={
-          <PopoverIcon
-            noVerticalAlign
-            bodyContent={t(
-              "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balancer if it is not already configured. Learn more about enabling CIM on AWS.",
-            )}
-            footerContent={
-              <a href={docConfigAwsUrl} target="_blank" rel="noreferrer">
-                <Trans t={t}>
-                  ai:Learn more about enabling CIM on AWS <ExternalLinkAltIcon />
-                </Trans>
-              </a>
+      <Stack>
+        <StackItem>
+          <CheckboxField
+            name="configureLoadBalancer"
+            label={
+              <>
+                {t('ai:Configure load balancer on Amazon Web Services for me.')}{' '}
+                <PopoverIcon
+                  noVerticalAlign
+                  bodyContent={t(
+                    "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balancer if it is not already configured. Learn more about enabling CIM on AWS.",
+                  )}
+                  footerContent={
+                    <a href={docConfigAwsUrl} target="_blank" rel="noreferrer">
+                      <Trans t={t}>
+                        ai:Learn more about enabling CIM on AWS <ExternalLinkAltIcon />
+                      </Trans>
+                    </a>
+                  }
+                  aria-label={t('ai:More info for load balancer on Amazon web services')}
+                >
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
+                </PopoverIcon>
+              </>
             }
-          >
-            <Icon>
-              <HelpIcon />
-            </Icon>
-          </PopoverIcon>
-        }
-        isDisabled={isInProgressPeriod || (isEdit && configureLoadBalancerInitial)}
-      />
+            isDisabled={isInProgressPeriod || (isEdit && configureLoadBalancerInitial)}
+          />
+        </StackItem>
+
+        <StackItem>
+          <CheckboxField
+            name={'addCiscoIntersightUrl'}
+            isDisabled={isEdit}
+            label={
+              <>
+                {t('ai:Configure custom URL for Cisco Intersight')}{' '}
+                <PopoverIcon
+                  noVerticalAlign
+                  bodyContent={t(
+                    'ai:Configure a custom URL to add hosts from Cisco Intersight on disconnected environments.',
+                  )}
+                >
+                  <Icon>
+                    <HelpIcon />
+                  </Icon>
+                </PopoverIcon>
+              </>
+            }
+          />
+
+          {values.addCiscoIntersightUrl && (
+            <InputField
+              name={'ciscoIntersightURL'}
+              label={t('ai:Cisco Intersight URL')}
+              isRequired
+              isDisabled={isEdit}
+              placeholder="https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO"
+              helperText={t('ai:Provide the complete URL, including the protocol and parameters.')}
+            />
+          )}
+        </StackItem>
+      </Stack>
     </Form>
   );
 };

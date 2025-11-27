@@ -11,6 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { Formik, FormikHelpers } from 'formik';
+import parseUrl from 'parse-url';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getStorageSizeGiB } from '../../helpers';
@@ -57,6 +58,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         fsVolSizeGiB: values.fsVolSize,
         imgVolSizeGiB: values.imgVolSize,
         configureLoadBalancer: values.configureLoadBalancer,
+        ciscoIntersightURL: values.addCiscoIntersightUrl ? values.ciscoIntersightURL : undefined,
       })
     ) {
       // successfully persisted
@@ -89,13 +91,33 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage,
     ),
     configureLoadBalancer: platform === 'AWS',
+    addCiscoIntersightUrl: !!agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'],
+    ciscoIntersightURL: agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'] || '',
   };
 
-  const validationSchema = Yup.object({
+  const validationSchema = Yup.object<CimConfigurationValues>({
     dbVolSize: Yup.number().min(MIN_DB_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
     fsVolSize: Yup.number().min(MIN_FS_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
     imgVolSize: Yup.number().min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi')).required(),
     configureLoadBalancer: Yup.boolean(),
+    ciscoIntersightURL: Yup.string().when('addCiscoIntersightUrl', {
+      is: true,
+      then: (schema) =>
+        schema
+          .required(t('ai:Cisco Intersight URL is required'))
+          .test(
+            'url-valid',
+            t('ai:Cisco Intersight URL must be a valid URL starting with "http://" or "https://"'),
+            (val) => {
+              try {
+                const url = parseUrl(val);
+                return url.protocol === 'http' || url.protocol === 'https';
+              } catch (error) {
+                return false;
+              }
+            },
+          ),
+    }),
   });
 
   return (
