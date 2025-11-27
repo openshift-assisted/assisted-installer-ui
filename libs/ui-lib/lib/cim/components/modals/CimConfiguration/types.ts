@@ -1,24 +1,12 @@
-import {
-  CreateResourceFuncType,
-  GetResourceFuncType,
-  ListResourcesFuncType,
-  PatchResourceFuncType,
-} from '../../../types';
 import { AgentServiceConfigK8sResource } from '../../../types/k8s/agent-service-config';
 
-export type CimConfiguratioProps = {
+export type CimConfigurationValues = {
   dbVolSize: number;
-  dbVolSizeValidation?: string;
-  setDbVolSize: (v: number) => void;
   fsVolSize: number;
-  fsVolSizeValidation?: string;
-  setFsVolSize: (v: number) => void;
   imgVolSize: number;
-  imgVolSizeValidation?: string;
-  setImgVolSize: (v: number) => void;
   configureLoadBalancer: boolean;
-  configureLoadBalancerInitial: boolean;
-  setConfigureLoadBalancer: (v: boolean) => void;
+  addCiscoIntersightUrl: boolean;
+  ciscoIntersightURL: string;
 };
 
 export type CimConfigProgressAlertProps = {
@@ -26,12 +14,14 @@ export type CimConfigProgressAlertProps = {
   assistedServiceDeploymentUrl: string;
 };
 
-export type CimConfigurationFormProps = CimConfiguratioProps & {
-  onClose: () => void;
+export type CimConfigurationFormFieldsProps = {
   isEdit: boolean;
   isInProgressPeriod: boolean;
   docConfigUrl: string;
   docConfigAwsUrl: string;
+  platform: string;
+  configureLoadBalancerInitial: boolean;
+  setConfigureLoadBalancerInitial: (value: boolean) => void;
 };
 
 export type CimConfigurationModalProps = {
@@ -42,11 +32,6 @@ export type CimConfigurationModalProps = {
   docDisconnectedUrl: string;
   docConfigUrl: string;
   docConfigAwsUrl: string;
-
-  createResource: CreateResourceFuncType;
-  getResource: GetResourceFuncType;
-  listResources: ListResourcesFuncType;
-  patchResource: PatchResourceFuncType;
 };
 
 export type CimConfigMissingAlertProps = {
