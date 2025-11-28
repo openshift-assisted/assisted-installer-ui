@@ -17,6 +17,7 @@ import {
   disksColumn,
   gpusColumn,
   hostnameColumn,
+  labelsColumn,
   memoryColumn,
   roleColumn,
 } from '../../../../common/components/hosts/tableUtils';
@@ -94,8 +95,14 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       }),
       roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
       ...(addAll
+        ? [
+            discoveredAtColumn(t),
+            cpuCoresColumn(t),
             gpusColumn(t),
             memoryColumn(t),
+            disksColumn(t),
+            labelsColumn(t),
+          ]
         : []),
     ],
     [
