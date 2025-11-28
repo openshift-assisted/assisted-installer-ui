@@ -205,6 +205,10 @@ export const getInventory = (host: Host) => {
   return stringToJSON<Inventory>(inventoryString) || {};
 };
 
+export const getHostLabels = (host: Host) => {
+  return host.nodeLabels ? (JSON.parse(host.nodeLabels) as { [key: string]: string }) : {};
+};
+
 export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefined) => {
   if (!hostnameFilter) {
     return { hosts, sorted: false };

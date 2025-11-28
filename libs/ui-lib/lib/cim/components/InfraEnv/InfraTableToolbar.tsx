@@ -66,11 +66,14 @@ type InfraTableToolbarProps = ReturnType<typeof usePagination> & {
   setSelectedHostIDs: (items: string[]) => void;
   massActions: React.ReactNode[];
   hosts: Host[];
+  hostLabels: { [key in string]: number };
   statusFilter: string[];
+  labelFilter: string[];
   statusCount: StatusCount;
   hostnameFilter: string | undefined;
   setHostnameFilter: (hostname: string | undefined) => void;
   setStatusFilter: (status: string[]) => void;
+  setLabelFilter: (label: string[]) => void;
   selectedHostIDs: string[];
 };
 
@@ -78,17 +81,22 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
   setSelectedHostIDs,
   massActions,
   hosts,
+  hostLabels,
   statusFilter,
+  labelFilter,
   statusCount,
   hostnameFilter,
   setHostnameFilter,
   setStatusFilter,
+  setLabelFilter,
   selectedHostIDs,
   ...paginationProps
 }) => {
   const { t } = useTranslation();
   const agentStatuses = agentStatus(t);
   const [statusFilterOpen, setStatusFilterOpen] = React.useState(false);
+  const [labelFilterOpen, setLabelFilterOpen] = React.useState(false);
+
   const itemIDs = React.useMemo(() => hosts.map((h) => h.id), [hosts]);
   const filterStatuses = React.useMemo(() => getStatusesForFilter(agentStatuses), [agentStatuses]);
   const categoryLabels = getCategoryLabels(t);
@@ -106,13 +114,29 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
     }
   };
 
+  const onLabelFilterToggle = () => setLabelFilterOpen(!labelFilterOpen);
+  const onLabelFilterSelect = (
+    e?: React.MouseEvent<Element, MouseEvent>,
+    value?: string | number,
+  ) => {
+    if (!labelFilter?.includes(value as string)) {
+      const newItems = (labelFilter ? [...labelFilter, value] : [value]) as string[];
+      setLabelFilter(newItems);
+    } else {
+      setLabelFilter(labelFilter?.filter((f) => f !== value));
+    }
+  };
+
   return (
     <TableToolbar
       selectedIDs={selectedHostIDs || []}
       itemIDs={itemIDs}
       setSelectedIDs={setSelectedHostIDs}
       actions={massActions}
-      clearAllFilters={() => setStatusFilter([])}
+      clearAllFilters={() => {
+        setStatusFilter([]);
+        setLabelFilter([]);
+      }}
       {...paginationProps}
     >
       <ToolbarItem>
@@ -123,6 +147,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
           onClear={() => setHostnameFilter(undefined)}
         />
       </ToolbarItem>
+
       <ToolbarItem>
         <ToolbarFilter
           chips={statusFilter}
@@ -172,6 +197,51 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
                 ))}
               </Grid>,
             ]}
+          </Dropdown>
+        </ToolbarFilter>
+      </ToolbarItem>
+
+      <ToolbarItem>
+        <ToolbarFilter
+          chips={labelFilter}
+          deleteChip={(_, chip) => setLabelFilter(labelFilter.filter((f) => f !== chip))}
+          deleteChipGroup={() => setLabelFilter([])}
+          categoryName={'Labels'}
+        >
+          <Dropdown
+            isOpen={labelFilterOpen}
+            onSelect={onLabelFilterSelect}
+            onOpenChange={onLabelFilterToggle}
+            shouldFocusToggleOnSelect
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                isFullWidth
+                onClick={onLabelFilterToggle}
+                isExpanded={labelFilterOpen}
+                icon={<FilterIcon />}
+              >
+                {t('ai:Labels')}
+              </MenuToggle>
+            )}
+          >
+            <DropdownGroup label={t('ai:Labels')}>
+              {Object.entries(hostLabels).map(([label, count]) => (
+                <DropdownItem
+                  hasCheckbox
+                  key={`host-label-${label}`}
+                  value={label}
+                  isSelected={labelFilter?.includes(label)}
+                >
+                  <Split hasGutter>
+                    <SplitItem>{label}</SplitItem>
+                    <SplitItem>
+                      <Badge isRead>{count || 0}</Badge>
+                    </SplitItem>
+                  </Split>
+                </DropdownItem>
+              ))}
+            </DropdownGroup>
           </Dropdown>
         </ToolbarFilter>
       </ToolbarItem>
