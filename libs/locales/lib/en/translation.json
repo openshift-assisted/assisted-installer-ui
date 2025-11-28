@@ -378,6 +378,7 @@
   "ai:Go to cluster configuration to start the installation": "Go to cluster configuration to start the installation.",
   "ai:GPU": "GPU",
   "ai:GPU_plural": "GPUs",
+  "ai:GPUs": "GPUs",
   "ai:Guest": "Guest",
   "ai:Hardware": "Hardware",
   "ai:Hardware information": "Hardware information",

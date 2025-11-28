@@ -280,6 +280,24 @@ export const disksColumn = (t: TFunction): TableRow<Host> => ({
   },
 });
 
+export const gpusColumn = (t: TFunction): TableRow<Host> => ({
+  header: {
+    title: t('ai:GPUs'),
+    props: {
+      id: 'col-header-gpus',
+    },
+    sort: true,
+  },
+  cell: (host) => {
+    const { gpus } = getInventory(host);
+    return {
+      title: <>{gpus?.length ?? '--'}</>,
+      props: { 'data-testid': 'host-gpus' },
+      sortableValue: gpus?.length ?? 0,
+    };
+  },
+});
+
 export const countColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: <HostsCount cluster={cluster} inParenthesis /> },
 });

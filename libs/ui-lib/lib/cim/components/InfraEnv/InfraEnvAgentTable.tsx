@@ -22,6 +22,7 @@ import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
+  gpusColumn,
   memoryColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
