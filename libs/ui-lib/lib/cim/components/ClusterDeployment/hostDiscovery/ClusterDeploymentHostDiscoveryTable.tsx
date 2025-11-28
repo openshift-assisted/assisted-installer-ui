@@ -15,6 +15,7 @@ import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
+  gpusColumn,
   hostnameColumn,
   memoryColumn,
   roleColumn,
@@ -93,7 +94,8 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       }),
       roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
       ...(addAll
-        ? [discoveredAtColumn(t), cpuCoresColumn(t), memoryColumn(t), disksColumn(t)]
+            gpusColumn(t),
+            memoryColumn(t),
         : []),
     ],
     [
