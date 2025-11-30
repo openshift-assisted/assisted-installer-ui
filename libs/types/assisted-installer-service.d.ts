@@ -686,7 +686,9 @@ export type ClusterValidationId =
   | 'cluster-observability-requirements-satisfied'
   | 'numa-resources-requirements-satisfied'
   | 'oadp-requirements-satisfied'
-  | 'metallb-requirements-satisfied';
+  | 'metallb-requirements-satisfied'
+  | 'loki-requirements-satisfied'
+  | 'openshift-logging-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1099,7 +1101,9 @@ export type FeatureSupportLevelId =
   | 'CLUSTER_OBSERVABILITY'
   | 'NUMA_RESOURCES'
   | 'OADP'
-  | 'METALLB';
+  | 'METALLB'
+  | 'LOKI'
+  | 'OPENSHIFT_LOGGING';
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1664,7 +1668,9 @@ export type HostValidationId =
   | 'cluster-observability-requirements-satisfied'
   | 'numa-resources-requirements-satisfied'
   | 'oadp-requirements-satisfied'
-  | 'metallb-requirements-satisfied';
+  | 'metallb-requirements-satisfied'
+  | 'loki-requirements-satisfied'
+  | 'openshift-logging-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
