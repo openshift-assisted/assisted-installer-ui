@@ -487,7 +487,6 @@
   "ai:iSCSI NIC belongs to machine CIDR": "iSCSI NIC belongs to machine CIDR",
   "ai:It can be fixed in the <1>{pageURL.name}</1> page.": "It can be fixed in the <1>{pageURL.name}</1> page.",
   "ai:It can be fixed in the <2></2> step.": "It can be fixed in the <2></2> step.",
-  "ai:It is not possible to remove a host which is being installed.": "It is not possible to remove a host that is being installed.",
   "ai:It is not possible to remove a node from a cluster during installation.": "It is not possible to remove a node from a cluster during installation.",
   "ai:It is not possible to remove control plane node from an installed cluster.": "It is not possible to remove control plane node from an installed cluster.",
   "ai:It is not possible to remove this node from the cluster.": "It is not possible to remove this node from the cluster.",
