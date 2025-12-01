@@ -220,6 +220,16 @@ export const getClusterObservabilityLink = (ocpVersion?: string) =>
     ocpVersion,
   )}/html/cluster_observability_operator/cluster-observability-operator-overview`;
 
+export const getLokiLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/network_observability/network-observability-overview`;
+
+export const getOpenShiftLoggingLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/logging`;
+
 export const getNumaResourcesLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,

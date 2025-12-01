@@ -24,6 +24,8 @@ import {
   OPERATOR_NAME_NODE_MAINTENANCE,
   OPERATOR_NAME_KUBE_DESCHEDULER,
   OPERATOR_NAME_CLUSTER_OBSERVABILITY,
+  OPERATOR_NAME_LOKI,
+  OPERATOR_NAME_OPENSHIFT_LOGGING,
   OPERATOR_NAME_NUMA_RESOURCES,
   OPERATOR_NAME_OADP,
   OPERATOR_NAME_METALLB,
@@ -36,6 +38,7 @@ import {
   getClusterObservabilityLink,
   getKmmDocsLink,
   getKubeDeschedulerLink,
+  getLokiLink,
   getLsoLink,
   getLvmsDocsLink,
   getMceDocsLink,
@@ -45,6 +48,7 @@ import {
   getNumaResourcesLink,
   getNvidiaGpuLink,
   getOadpLink,
+  getOpenShiftLoggingLink,
   MTV_LINK,
   NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
@@ -83,6 +87,8 @@ import {
   DESCRIPTION_SERVICEMESH,
   DESCRIPTION_LVM,
   DESCRIPTION_CLUSTER_OBSERVABILITY,
+  DESCRIPTION_LOKI,
+  DESCRIPTION_OPENSHIFT_LOGGING,
   DESCRIPTION_NUMA_RESOURCES,
   DESCRIPTION_OADP,
   DESCRIPTION_METALLB,
@@ -473,8 +479,35 @@ export const getOperatorSpecs = (
             </ExternalLink>
           </>
         ),
-        notStandalone: true,
         supportLevel: getFeatureSupportLevel('CLUSTER_OBSERVABILITY'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_LOKI,
+        title: 'Loki Operator',
+        featureId: 'CLUSTER_OBSERVABILITY',
+        descriptionText: DESCRIPTION_LOKI,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_LOKI} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getLokiLink(openshiftVersion)}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('LOKI'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_OPENSHIFT_LOGGING,
+        title: 'OpenShift Logging',
+        featureId: 'CLUSTER_OBSERVABILITY',
+        descriptionText: DESCRIPTION_OPENSHIFT_LOGGING,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_OPENSHIFT_LOGGING} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getOpenShiftLoggingLink(openshiftVersion)}>Learn more</ExternalLink>
+          </>
+        ),
+        notStandalone: true,
+        supportLevel: getFeatureSupportLevel('OPENSHIFT_LOGGING'),
       },
     ],
     [categories[Category.SCHEDULING]]: [

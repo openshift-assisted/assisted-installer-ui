@@ -145,6 +145,8 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'node-maintenance-requirements-satisfied': t('ai:Node Maintenance requirements'),
   'kube-descheduler-requirements-satisfied': t('ai:Kube Descheduler requirements'),
   'cluster-observability-requirements-satisfied': t('ai:Cluster Observability requirements'),
+  'loki-requirements-satisfied': t('ai:Loki Operator requirements'),
+  'openshift-logging-requirements-satisfied': t('ai:OpenShift Logging Operator requirements'),
   'numa-resources-requirements-satisfied': t('ai:NUMA Resources requirements'),
   'oadp-requirements-satisfied': t('ai:OADP requirements'),
   'metallb-requirements-satisfied': t('ai:MetalLB requirements'),
@@ -216,6 +218,8 @@ export const hostValidationFailureHints = (
   'node-maintenance-requirements-satisfied': '',
   'kube-descheduler-requirements-satisfied': '',
   'cluster-observability-requirements-satisfied': '',
+  'loki-requirements-satisfied': '',
+  'openshift-logging-requirements-satisfied': '',
   'numa-resources-requirements-satisfied': '',
   'oadp-requirements-satisfied': '',
   'metallb-requirements-satisfied': '',
@@ -249,6 +253,8 @@ export const clusterValidationLabels = (
   'mce-requirements-satisfied': t('ai:MCE requirements'),
   'platform-requirements-satisfied': t('ai:Platform requirements'),
   'cluster-observability-requirements-satisfied': t('ai:Cluster Observability requirements'),
+  'loki-requirements-satisfied': t('ai:Loki Operator requirements'),
+  'openshift-logging-requirements-satisfied': t('ai:OpenShift Logging Operator requirements'),
   'numa-resources-requirements-satisfied': t('ai:NUMA Resources requirements'),
   'oadp-requirements-satisfied': t('ai:OADP requirements'),
   'metallb-requirements-satisfied': t('ai:MetalLB requirements'),
@@ -333,6 +339,8 @@ export const OPERATOR_NAME_FENCE_AGENTS_REMEDIATION = 'fence-agents-remediation'
 export const OPERATOR_NAME_NODE_MAINTENANCE = 'node-maintenance';
 export const OPERATOR_NAME_KUBE_DESCHEDULER = 'kube-descheduler';
 export const OPERATOR_NAME_CLUSTER_OBSERVABILITY = 'cluster-observability';
+export const OPERATOR_NAME_LOKI = 'loki';
+export const OPERATOR_NAME_OPENSHIFT_LOGGING = 'openshift-logging';
 export const OPERATOR_NAME_NUMA_RESOURCES = 'numaresources';
 export const OPERATOR_NAME_OADP = 'oadp';
 export const OPERATOR_NAME_METALLB = 'metallb';
@@ -345,6 +353,9 @@ export const singleClusterOperators = [
   OPERATOR_NAME_NODE_MAINTENANCE,
   OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
   OPERATOR_NAME_KUBE_DESCHEDULER,
+  OPERATOR_NAME_CLUSTER_OBSERVABILITY,
+  OPERATOR_NAME_LOKI,
+  OPERATOR_NAME_OPENSHIFT_LOGGING,
 ];
 
 export const singleClusterBundles = ['virtualization'];
