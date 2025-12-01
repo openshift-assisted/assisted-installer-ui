@@ -104,16 +104,16 @@ export const getClusterDetailsValidationSchema = ({
       return Yup.object({
         name: validateName(),
         baseDnsDomain: isOcm
-          ? baseDomainValidationSchema.required('Required')
-          : dnsNameValidationSchema.required('Required'),
+          ? baseDomainValidationSchema.required(t('ai:Required field'))
+          : dnsNameValidationSchema.required(t('ai:Required field')),
       });
     }
     return Yup.object({
       name: validateName(),
       baseDnsDomain: isOcm
-        ? baseDomainValidationSchema.required('Required')
-        : dnsNameValidationSchema.required('Required'),
-      pullSecret: pullSecretValidationSchema.required('Required.'),
+        ? baseDomainValidationSchema.required(t('ai:Required field'))
+        : dnsNameValidationSchema.required(t('ai:Required field')),
+      pullSecret: pullSecretValidationSchema.required(t('ai:Required field')),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode: DiskEncryption['mode']) => {
           return diskEncryptionMode === 'tang';
@@ -125,8 +125,8 @@ export const getClusterDetailsValidationSchema = ({
                 .url(
                   t('ai:Tang Server URL must be a valid URL starting with "http://" or "https://"'),
                 )
-                .required(t('ai:Required.')),
-              thumbprint: Yup.string().required(t('ai:Required.')),
+                .required(t('ai:Required field')),
+              thumbprint: Yup.string().required(t('ai:Required field')),
             }),
           ),
       }),

@@ -57,7 +57,7 @@ export const nameValidationSchema = (
 ) => {
   const clusterNameValidationMessagesList = clusterNameValidationMessages(t);
   return Yup.string()
-    .required('Required')
+    .required(t('ai:Required field'))
     .matches(CLUSTER_NAME_VALID_CHARS_REGEX, {
       message: clusterNameValidationMessagesList.INVALID_VALUE,
       excludeEmptyString: true,
