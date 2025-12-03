@@ -18,9 +18,13 @@ const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
 export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
   agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
 
-export const getAgentsForSelection = (agents: AgentK8sResource[]) =>
+export const getAgentsForSelection = (agents: AgentK8sResource[], isSubmitting?: boolean) =>
   agents.filter((agent) => {
     const key = getAgentStatusKey(agent);
+    if (isSubmitting) {
+      return [...AGENT_FOR_SELECTION_STATUSES, 'specSyncErr'].includes(key as AgentStatus);
+    }
+
     return AGENT_FOR_SELECTION_STATUSES.includes(key as AgentStatus);
   });
 

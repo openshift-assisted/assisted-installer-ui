@@ -178,6 +178,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   onAutoSelectChange: VoidFunction;
   onHostSelect: VoidFunction;
   isNutanix: boolean;
+  hostsBinding?: boolean;
 };
 
 export type InfraEnvAgentTableProps = Pick<
