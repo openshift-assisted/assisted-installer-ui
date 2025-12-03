@@ -75,6 +75,7 @@ export const getAIHosts = (
       infraEnvId: `${agent.metadata?.namespace || ''}/${
         agent.metadata?.labels?.['infraenvs.agent-install.openshift.io'] || ''
       }`,
+      nodeLabels: JSON.stringify(agent.metadata?.labels || {}),
     };
   });
 
