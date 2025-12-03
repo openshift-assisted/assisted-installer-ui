@@ -23,6 +23,7 @@ export type DownloadISOProps = {
   isSNO?: boolean;
   fileName?: string;
   downloadUrl: string;
+  ciscoUrl?: string;
   onClose: () => void;
   onReset?: () => void;
   docVersion?: string;
@@ -38,13 +39,14 @@ const DownloadIso = ({
   isSNO = false,
   docVersion,
   updateTagsForCiscoIntersight,
+  ciscoUrl,
 }: DownloadISOProps) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl || ''}'`;
   const { t } = useTranslation();
 
   const openCiscoIntersightHostsLink = (downloadUrl: string) => {
     updateTagsForCiscoIntersight ? updateTagsForCiscoIntersight() : '';
-    window.open(getCiscoIntersightLink(downloadUrl), '_blank', 'noopener');
+    window.open(getCiscoIntersightLink(downloadUrl, ciscoUrl), '_blank', 'noopener');
   };
 
   return (
