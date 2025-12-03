@@ -40,13 +40,17 @@ export const getNewOperators = (
   }
 
   const newOperators = currentOperators.filter((op) => op !== operatorId);
-  // uncheck unneeded not-standalone dependencies too
   const notStandaloneDeps = dependencies
     .filter((dep) => opSpecs[dep]?.notStandalone)
-    .filter((dep) =>
-      // some other operator may still depend on the not-standalone operator
-      newOperators.every((op) => !getOperatorDependencies(op, preflightRequirements).includes(dep)),
-    );
+    .filter((dep) => {
+      const hasDependency = newOperators.some((op) =>
+        getOperatorDependencies(op, preflightRequirements).includes(dep),
+      );
+      if (!hasDependency) {
+        newOperators.splice(newOperators.indexOf(dep), 1);
+      }
+      return !hasDependency;
+    });
 
   return currentOperators.filter((op) => op !== operatorId && !notStandaloneDeps.includes(op));
 };
