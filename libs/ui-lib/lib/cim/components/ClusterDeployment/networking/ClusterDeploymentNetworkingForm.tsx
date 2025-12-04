@@ -157,7 +157,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           )}
         </StackItem>
         <StackItem>
-          <SecurityFields clusterSshKey={cluster.sshPublicKey} />
+          <SecurityFields clusterSshKey={cluster.sshPublicKey} allowMultipleKeys={true} />
         </StackItem>
         <StackItem>
           <TextContent>

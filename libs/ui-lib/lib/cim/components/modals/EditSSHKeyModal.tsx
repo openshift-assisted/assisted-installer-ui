@@ -14,13 +14,13 @@ import {
 import { Formik, FormikProps } from 'formik';
 
 import { InfraEnvK8sResource } from '../../types';
-import { UploadSSH, sshPublicKeyValidationSchema } from '../../../common';
+import { UploadSSH, sshPublicKeyListValidationSchema } from '../../../common';
 import { EditSSHKeyFormikValues } from './types';
 import { getWarningMessage } from './utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const validationSchema = Yup.object({
-  sshPublicKey: sshPublicKeyValidationSchema.required(
+  sshPublicKey: sshPublicKeyListValidationSchema.required(
     'An SSH key is required to debug hosts as they register.',
   ),
 });

@@ -17,7 +17,7 @@ import {
   hostPrefixValidationSchema,
   ipBlockValidationSchema,
   vipArrayValidationSchema,
-  sshPublicKeyValidationSchema,
+  sshPublicKeyListValidationSchema,
   hostSubnetValidationSchema,
   httpProxyValidationSchema,
   noProxyValidationSchema,
@@ -52,7 +52,7 @@ const getNetworkConfigurationValidationSchema = (
       serviceNetworkCidr: ipBlockValidationSchema(values.clusterNetworkCidr),
       apiVips: vipArrayValidationSchema(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema(hostSubnets, values, initialValues.ingressVips),
-      sshPublicKey: sshPublicKeyValidationSchema,
+      sshPublicKey: sshPublicKeyListValidationSchema,
       hostSubnet: hostSubnetValidationSchema,
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
       httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported

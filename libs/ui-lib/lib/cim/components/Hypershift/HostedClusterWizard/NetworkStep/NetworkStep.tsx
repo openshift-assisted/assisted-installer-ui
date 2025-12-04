@@ -11,14 +11,14 @@ import {
   httpProxyValidationSchema,
   ipBlockValidationSchema,
   noProxyValidationSchema,
-  sshPublicKeyValidationSchema,
+  sshPublicKeyListValidationSchema,
 } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const getValidationSchema = (t: TFunction) =>
   Yup.lazy((values: NetworkFormValues) =>
     Yup.object<NetworkFormValues>().shape({
-      sshPublicKey: sshPublicKeyValidationSchema.required(t('ai:Required field')),
+      sshPublicKey: sshPublicKeyListValidationSchema.required(t('ai:Required field')),
       clusterNetworkCidr: values.isAdvanced
         ? ipBlockValidationSchema(values.serviceNetworkCidr)
         : Yup.string(),

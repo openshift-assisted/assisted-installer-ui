@@ -24,7 +24,7 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
   PullSecretField,
-  sshPublicKeyValidationSchema,
+  sshPublicKeyListValidationSchema,
   LabelField,
   UploadSSH,
   ProxyFields,
@@ -78,7 +78,7 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
       name: richNameValidationSchema(t, usedNames),
       location: locationValidationSchema(t).required(t('ai:Location is a required field.')),
       pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
-      sshPublicKey: sshPublicKeyValidationSchema,
+      sshPublicKey: sshPublicKeyListValidationSchema,
       httpProxy: httpProxyValidationSchema({
         values,
         pairValueName: 'httpsProxy',
