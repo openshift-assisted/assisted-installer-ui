@@ -3,7 +3,7 @@ import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import {
   ClusterWizardStep,
-  DeveloperPreview,
+  TechPreview,
   getRichTextValidation,
   sshPublicKeyValidationSchema,
   pullSecretValidationSchema,
@@ -121,7 +121,7 @@ const OptionalConfigurationsStep = () => {
               name: `disconnected-cluster_infra-env`,
               pullSecret: values.pullSecret || pullSecret,
               clusterId: cluster.id,
-              openshiftVersion: '4.19',
+              openshiftVersion: '4.20',
               cpuArchitecture: 'x86_64' as const,
               ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
             };
@@ -172,7 +172,7 @@ const OptionalConfigurationsStep = () => {
                       <Content component="h2">Optional configurations</Content>
                     </SplitItem>
                     <SplitItem>
-                      <DeveloperPreview />
+                      <TechPreview />
                     </SplitItem>
                   </Split>
                 </GridItem>

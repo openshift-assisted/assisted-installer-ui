@@ -786,6 +786,8 @@
   "ai:Tang Server URL must be a valid URL starting with \"http://\" or \"https://\"": "Tang Server URL must be a valid URL starting with \"http://\" or \"https://\"",
   "ai:Tang servers": "Tang servers",
   "ai:Tang servers' URLs or thumbprints": "Tang servers' URLs or thumbprints",
+  "ai:Tech Preview": "Tech preview",
+  "ai:Tech preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.": "Tech preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.",
   "ai:Technology Preview": "Technology Preview",
   "ai:Technology preview features provide early access to upcoming product innovations, enabling you to test functionality and provide feedback during the development process.": "Technology preview features provide early access to upcoming product innovations, enabling you to test functionality and provide feedback during the development process.",
   "ai:The agent is not bound to a cluster.": "The agent is not bound to a cluster.",
