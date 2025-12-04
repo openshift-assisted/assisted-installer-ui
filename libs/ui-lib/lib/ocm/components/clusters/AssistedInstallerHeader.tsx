@@ -2,7 +2,7 @@ import React from 'react';
 import { TextContent, Text, Split, SplitItem } from '@patternfly/react-core';
 import {
   ASSISTED_INSTALLER_DOCUMENTATION_LINK,
-  DeveloperPreview,
+  TechnologyPreview,
   ExternalLink,
   isInOcm,
 } from '../../../common';
@@ -15,7 +15,7 @@ export const AssistedInstallerHeader = () => {
       <Text component="h1" className="pf-v5-u-display-inline">
         Install OpenShift with the Assisted Installer
       </Text>
-      {isSingleClusterFeatureEnabled && <DeveloperPreview />}
+      {isSingleClusterFeatureEnabled && <TechnologyPreview />}
       <Split hasGutter>
         <SplitItem>
           <ExternalLink href={ASSISTED_INSTALLER_DOCUMENTATION_LINK}>
