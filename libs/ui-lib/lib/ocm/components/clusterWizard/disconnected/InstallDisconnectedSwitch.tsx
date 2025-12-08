@@ -10,7 +10,6 @@ const InstallDisconnectedSwitch = ({ isDisabled }: { isDisabled?: boolean }) => 
   const switchBtn = (
     <Switch
       id="disconnected-install-switch"
-      label={t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
       isChecked={installDisconnected}
       onChange={(_, checked) => setInstallDisconnected(checked)}
       ouiaId="DisconnectedInstall"
