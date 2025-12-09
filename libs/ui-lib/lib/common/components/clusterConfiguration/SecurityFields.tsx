@@ -11,14 +11,19 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export const SshPublicKeyHelperText: React.FC<{
   fieldId?: string;
-}> = ({ fieldId = 'sshPublicKey' }) => {
+  allowMultipleKeys?: boolean;
+}> = ({ fieldId = 'sshPublicKey', allowMultipleKeys = false }) => {
   const { t } = useTranslation();
   return (
     <HelperText id={fieldId}>
       <HelperTextItem>
-        {t(
-          'ai:Paste the content of a public ssh key you want to use to connect to the hosts into this field.',
-        )}{' '}
+        {allowMultipleKeys
+          ? t(
+              'ai:Paste the content of public SSH keys you want to use to connect to the hosts into this field. Multiple keys can be separated by newlines.',
+            )
+          : t(
+              'ai:Paste the content of a public SSH key you want to use to connect to the hosts into this field.',
+            )}{' '}
         <ExternalLink href={SSH_GENERATION_DOC_LINK}>{t('ai:Learn more')}</ExternalLink>
       </HelperTextItem>
     </HelperText>
@@ -29,12 +34,14 @@ interface SecurityFieldsFieldsProps {
   clusterSshKey: Cluster['sshPublicKey'];
   imageSshKey?: Cluster['imageInfo']['sshPublicKey'];
   isDisabled?: boolean;
+  allowMultipleKeys?: boolean;
 }
 
 const SecurityFields = ({
   clusterSshKey,
   imageSshKey,
   isDisabled = false,
+  allowMultipleKeys = false,
 }: SecurityFieldsFieldsProps) => {
   //shareSshKey shouldn't response to changes. imageSshKey stays the same, there's a loading state while it's requested
   //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
@@ -77,7 +84,7 @@ const SecurityFields = ({
         <RenderIf condition={!shareSshKey}>
           <TextAreaField
             name="sshPublicKey"
-            helperText={<SshPublicKeyHelperText />}
+            helperText={<SshPublicKeyHelperText allowMultipleKeys={allowMultipleKeys} />}
             onBlur={handleSshKeyBlur}
             isDisabled={isDisabled}
           />

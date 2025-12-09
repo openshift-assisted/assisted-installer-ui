@@ -9,7 +9,7 @@ import {
   NetworkConfigurationValues,
   serviceNetworkValidationSchema,
   IPv4ValidationSchema,
-  sshPublicKeyListValidationSchema,
+  sshPublicKeyValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
   vipArrayValidationSchema,
@@ -75,7 +75,7 @@ export const getNetworkConfigurationValidationSchema = (
         values,
         initialValues.ingressVips,
       ),
-      sshPublicKey: sshPublicKeyListValidationSchema,
+      sshPublicKey: sshPublicKeyValidationSchema,
       machineNetworks:
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
