@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   ClusterWizardStep,
-  DeveloperPreview,
+  TechnologyPreview,
   ExternalLink,
   OCP_RELEASES_PAGE,
   StaticTextField,
@@ -16,6 +16,7 @@ import {
   Grid,
   GridItem,
   Form,
+  Flex,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
@@ -50,16 +51,21 @@ const BasicStep = () => {
                   </TextContent>
                 </SplitItem>
                 <SplitItem>
-                  <DeveloperPreview />
+                  <TechnologyPreview />
                 </SplitItem>
               </Split>
             </GridItem>
             <GridItem>
-              <InstallDisconnectedSwitch />
+              <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
+                <InstallDisconnectedSwitch />
+                <span>
+                  {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
+                </span>
+              </Flex>
             </GridItem>
             <GridItem>
               <Form id="wizard-cluster-basic-info__form">
-                <OcmOpenShiftVersion openshiftVersion="4.19" withPreviewText withMultiText>
+                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
                   <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
                     <span data-ouia-id="openshift-releases-link">
                       {t('ai:Learn more about OpenShift releases')}
