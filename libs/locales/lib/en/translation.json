@@ -961,6 +961,5 @@
   "ai:You should use your cluster's Kubeconfig file to gain access to the cluster.": "You should use your cluster's Kubeconfig file to gain access to the cluster.",
   "ai:You'll first need to have a storage operator in order to create the storage class. If you don't have one installed, we recommend OpenShift Data Foundation operator, but you may use any.": "You need a storage operator installed, such as OpenShift Data Foundation, to create the storage class.",
   "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
-  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources",
-  "ai:Arbiter_plural": "Arbiter"
+  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources"
 }
