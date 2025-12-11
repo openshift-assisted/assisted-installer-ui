@@ -6,8 +6,21 @@ const BundleAPI = {
     return `/v2/operators/bundles`;
   },
 
-  list() {
-    return client.get<Bundle[]>(`${BundleAPI.makeBaseURI()}`);
+  list(
+    openshiftVersion?: string,
+    cpuArchitecture?: string,
+    platformType?: string,
+    featureIds?: string,
+  ) {
+    return client.get<Bundle[]>(`${BundleAPI.makeBaseURI()}`, {
+      params: {
+        openshift_version: openshiftVersion,
+        cpu_architecture: cpuArchitecture,
+        platform_type: platformType,
+        feature_ids: featureIds,
+        ...(platformType === 'external' ? { external_platform_name: 'oci' } : {}),
+      },
+    });
   },
 
   listOperatorsForBundle(bundleName: string) {
