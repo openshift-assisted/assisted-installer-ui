@@ -22,7 +22,9 @@ import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
+  gpusColumn,
   memoryColumn,
+  labelsColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
   DiscoveryTroubleshootingModal,
@@ -122,6 +124,9 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     setHostnameFilter,
     setStatusFilter,
     statusFilter,
+    labelFilter,
+    setLabelFilter,
+    hostLabels,
     filteredHosts: hosts,
     sorted,
   } = useAgentsFilter({
@@ -157,8 +162,10 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         clusterColumn(agents, agentMachines, getClusterDeploymentLink, t),
         discoveredAtColumn(t),
         cpuCoresColumn(t),
+        gpusColumn(t),
         memoryColumn(t),
         disksColumn(t),
+        labelsColumn(t),
       ].filter(Boolean),
     [
       t,
@@ -219,6 +226,9 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
             hostnameFilter={hostnameFilter}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
+            hostLabels={hostLabels}
+            labelFilter={labelFilter}
+            setLabelFilter={setLabelFilter}
             selectedHostIDs={selectedHostIDs}
             setHostnameFilter={setHostnameFilter}
             {...paginationProps}
@@ -241,6 +251,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
                 onClearFilters={() => {
                   setHostnameFilter(undefined);
                   setStatusFilter([]);
+                  setLabelFilter([]);
                 }}
               />
             ) : (
