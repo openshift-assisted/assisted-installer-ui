@@ -38,7 +38,7 @@ describe('Create a new cluster and show correct validations for every field', ()
 
   it('Pull secret (Field not empty)', () => {
     const emptyPullSecret = '{}';
-    let pullSecretError = 'Required.';
+    let pullSecretError = 'Required field';
     clusterDetailsPage.inputPullSecret(emptyPullSecret);
     clusterDetailsPage.clearPullSecret();
     clusterDetailsPage.validateInputPullSecretFieldHelper(pullSecretError);

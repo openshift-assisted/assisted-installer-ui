@@ -732,7 +732,6 @@
   "ai:Rename hostnames using the custom template:": "Rename hostnames using the custom template:",
   "ai:Report a bug": "Report a bug",
   "ai:Required field": "Required field",
-  "ai:Required.": "Required.",
   "ai:Requirements for Two Node control plane OpenShift": "Requirements for Two Node control plane OpenShift",
   "ai:Reset": "Reset",
   "ai:Reset cluster": "Reset cluster",
