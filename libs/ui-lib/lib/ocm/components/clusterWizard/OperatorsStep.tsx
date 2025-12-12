@@ -18,13 +18,26 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
   const { addAlert } = useAlerts();
   const [bundlesLoading, setBundlesLoading] = React.useState(true);
   const [bundles, setBundles] = React.useState<Bundle[]>([]);
+  const [allBundles, setAllBundles] = React.useState<Bundle[]>([]);
   const { preflightRequirements, isLoading } = useClusterPreflightRequirements(cluster.id);
   const [searchTerm, setSearchTerm] = React.useState('');
   React.useEffect(() => {
     const fetchBundles = async () => {
       try {
-        const fetchedBundles = await BundleService.listBundles();
+        const fetchedBundles = await BundleService.listBundles(
+          cluster?.openshiftVersion || '',
+          cluster?.cpuArchitecture || '',
+          cluster?.platform?.type || '',
+          cluster?.controlPlaneCount === 1 ? 'SNO' : undefined,
+        );
+        const allBundles = await BundleService.listBundles(
+          cluster?.openshiftVersion || '',
+          cluster?.cpuArchitecture || '',
+          cluster?.platform?.type || '',
+          undefined,
+        );
         setBundles(fetchedBundles);
+        setAllBundles(allBundles);
       } catch (error) {
         handleApiError(error, () =>
           addAlert({
@@ -38,7 +51,13 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
     };
 
     void fetchBundles();
-  }, [addAlert]);
+  }, [
+    addAlert,
+    cluster.cpuArchitecture,
+    cluster.openshiftVersion,
+    cluster.platform?.type,
+    cluster.controlPlaneCount,
+  ]);
 
   const filteredBundles = bundles.filter(
     (bundle) =>
@@ -75,6 +94,7 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
           bundles={filteredBundles}
           preflightRequirements={preflightRequirements}
           searchTerm={searchTerm}
+          allBundles={allBundles}
         />
       </StackItem>
       <StackItem>
