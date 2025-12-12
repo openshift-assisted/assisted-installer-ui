@@ -21,8 +21,6 @@ import { ExternalLink, OperatorsValues, PopoverIcon, singleClusterBundles } from
 import { useFormikContext } from 'formik';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { useFeature } from '../../hooks/use-feature';
-import { useSelector } from 'react-redux';
-import { selectIsCurrentClusterSNO } from '../../store/slices/current-cluster/selectors';
 import { getNewBundleOperators } from '../clusterConfiguration/operators/utils';
 import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
 import {
@@ -84,7 +82,6 @@ const BundleCard = ({
   searchTerm?: string;
 }) => {
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
-  const isSNO = useSelector(selectIsCurrentClusterSNO);
   const { isFeatureSupported } = useNewFeatureSupportLevel();
   const { byKey: opSpecs } = useOperatorSpecs();
   const { uiSettings } = useClusterWizardContext();
@@ -105,16 +102,14 @@ const BundleCard = ({
   const isAssistedMigration = uiSettings?.isAssistedMigration;
   const disabledReason = hasUnsupportedOperators
     ? 'Some operators in this bundle are not supported with the current configuration.'
-    : isSNO && bundleSpec?.noSNO
-    ? bundle.id === 'openshift-ai'
-      ? 'This bundle is not available when deploying a Single Node OpenShift, but you can use the standalone operator instead.'
-      : 'This bundle is not available when deploying a Single Node OpenShift.'
     : incompatibleBundle
     ? `Bundle cannot be installed together with ${
         bundles.find(({ id }) => id === incompatibleBundle)?.title || incompatibleBundle
       }`
     : isAssistedMigration
     ? 'This bundle needs to be selected for clusters created from Migration Assessment'
+    : !bundles.some((b) => b.id === bundle.id)
+    ? 'This bundle is not available for the current configuration, you might be able to use the standalone operators instead.'
     : undefined;
 
   const onSelect = (checked: boolean) => {
@@ -172,10 +167,12 @@ const BundleCard = ({
 
 const OperatorsBundle = ({
   bundles,
+  allBundles,
   preflightRequirements,
   searchTerm,
 }: {
   bundles: Bundle[];
+  allBundles: Bundle[];
   preflightRequirements: PreflightHardwareRequirements | undefined;
   searchTerm?: string;
 }) => {
@@ -191,8 +188,8 @@ const OperatorsBundle = ({
       <StackItem>
         <Gallery hasGutter minWidths={{ default: '350px' }}>
           {(isSingleClusterFeatureEnabled
-            ? bundles.filter((b) => b.id && singleClusterBundles.includes(b.id))
-            : bundles
+            ? allBundles.filter((b) => b.id && singleClusterBundles.includes(b.id))
+            : allBundles
           ).map((bundle) => (
             <GalleryItem key={bundle.id}>
               <BundleCard

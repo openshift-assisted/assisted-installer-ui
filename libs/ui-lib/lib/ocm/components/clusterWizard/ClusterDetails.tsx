@@ -87,9 +87,13 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         //For Assisted Migration we need the LVMs operator and also the virtualization bundle operators
         if (isAssistedMigration) {
           params.olmOperators = [{ name: 'lvm' }];
-          const selectedBundle = (await BundleService.listBundles()).find(
-            (b) => b.id === 'virtualization',
-          );
+          const selectedBundle = (
+            await BundleService.listBundles(
+              params.openshiftVersion,
+              params.cpuArchitecture,
+              params.platform?.type,
+            )
+          ).find((b) => b.id === 'virtualization');
           const virtOperators = selectedBundle?.operators;
           params.olmOperators = [
             ...params.olmOperators,
