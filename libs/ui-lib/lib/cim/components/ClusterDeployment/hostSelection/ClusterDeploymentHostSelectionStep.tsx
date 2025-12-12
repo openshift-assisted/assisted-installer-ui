@@ -313,6 +313,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
           onAutoSelectChange={onAutoSelectChange}
           onHostSelect={onHostSelect}
           isNutanix={isNutanix}
+          hostsBinding={nextRequested && !showClusterErrors}
         />
       </GridItem>
       {(showClusterErrors || showFormErrors) && !!alerts.length && (
