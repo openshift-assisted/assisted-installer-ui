@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Label, LabelGroup } from '@patternfly/react-core';
 import { Address4, Address6 } from 'ip-address';
 import type {
   Cluster,
@@ -20,6 +21,7 @@ import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
 import {
   areOnlySoftValidationsFailing,
+  getHostLabels,
   getHostname,
   getHostRole,
   getHostStatus,
@@ -280,6 +282,24 @@ export const disksColumn = (t: TFunction): TableRow<Host> => ({
   },
 });
 
+export const gpusColumn = (t: TFunction): TableRow<Host> => ({
+  header: {
+    title: t('ai:GPUs'),
+    props: {
+      id: 'col-header-gpus',
+    },
+    sort: true,
+  },
+  cell: (host) => {
+    const { gpus } = getInventory(host);
+    return {
+      title: <>{gpus?.length ?? '--'}</>,
+      props: { 'data-testid': 'host-gpus' },
+      sortableValue: gpus?.length ?? 0,
+    };
+  },
+});
+
 export const countColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: <HostsCount cluster={cluster} inParenthesis /> },
 });
@@ -359,6 +379,31 @@ export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
       title: selectedNic?.macAddress || DASH,
       props: { 'data-testid': 'nic-mac-address' },
       sortableValue: selectedNic?.macAddress || DASH,
+    };
+  },
+});
+
+export const labelsColumn = (t: TFunction): TableRow<Host> => ({
+  header: {
+    title: t('ai:Labels'),
+    props: {
+      id: 'col-header-labels',
+    },
+    sort: false,
+  },
+  cell: (host) => {
+    const labels = getHostLabels(host);
+    return {
+      title: (
+        <LabelGroup>
+          {Object.entries(labels).map(([key, value], index) => (
+            <Label key={`${host.id}-host-label-${index}`} isCompact>
+              {key} = {value}
+            </Label>
+          ))}
+        </LabelGroup>
+      ),
+      props: { 'data-testid': 'host-labels' },
     };
   },
 });
