@@ -42,6 +42,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   onHostSelect,
   onSetInstallationDiskId,
   isNutanix,
+  hostsBinding,
 }) => {
   const { t } = useTranslation();
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
@@ -54,7 +55,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   const cpuArchitecture = getClusterDeploymentCpuArchitecture(clusterDeployment);
 
   const availableAgents = React.useMemo(() => {
-    const filtered = getAgentsForSelection(agents).filter(
+    const filtered = getAgentsForSelection(agents, hostsBinding).filter(
       (agent) =>
         (agent.spec.clusterDeploymentName?.name === cdName &&
           agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
@@ -66,7 +67,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
     return isNutanix
       ? filtered.filter((a) => a.status?.inventory?.systemVendor?.manufacturer === 'Nutanix')
       : filtered;
-  }, [agents, cdNamespace, cdName, cpuArchitecture, isNutanix]);
+  }, [agents, hostsBinding, isNutanix, cdName, cdNamespace, cpuArchitecture]);
 
   const hostRequirementText = getHostRequirementText(isSNOCluster, isTNA, t);
 
