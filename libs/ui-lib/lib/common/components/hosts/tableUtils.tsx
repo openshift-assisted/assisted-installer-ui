@@ -394,7 +394,7 @@ export const labelsColumn = (t: TFunction): TableRow<Host> => ({
   cell: (host) => {
     const labels = getHostLabels(host);
     return {
-      title: (
+      title: Object.entries(labels).length > 0 ? (
         <LabelGroup>
           {Object.entries(labels).map(([key, value], index) => (
             <Label key={`${host.id}-host-label-${index}`} isCompact>
@@ -402,6 +402,8 @@ export const labelsColumn = (t: TFunction): TableRow<Host> => ({
             </Label>
           ))}
         </LabelGroup>
+      ) : (
+        '--'
       ),
       props: { 'data-testid': 'host-labels' },
     };
