@@ -226,21 +226,27 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
             )}
           >
             <DropdownGroup label={t('ai:Labels')}>
-              {Object.entries(hostLabels).map(([label, count]) => (
-                <DropdownItem
-                  hasCheckbox
-                  key={`host-label-${label}`}
-                  value={label}
-                  isSelected={labelFilter?.includes(label)}
-                >
-                  <Split hasGutter>
-                    <SplitItem>{label}</SplitItem>
-                    <SplitItem>
-                      <Badge isRead>{count || 0}</Badge>
-                    </SplitItem>
-                  </Split>
+              {Object.keys(hostLabels).length > 0 ? (
+                Object.entries(hostLabels).map(([label, count]) => (
+                  <DropdownItem
+                    hasCheckbox
+                    key={`host-label-${label}`}
+                    value={label}
+                    isSelected={labelFilter?.includes(label)}
+                  >
+                    <Split hasGutter>
+                      <SplitItem>{label}</SplitItem>
+                      <SplitItem>
+                        <Badge isRead>{count || 0}</Badge>
+                      </SplitItem>
+                    </Split>
+                  </DropdownItem>
+                ))
+              ) : (
+                <DropdownItem key="no-labels" isDisabled>
+                  {t('ai:No labels available')}
                 </DropdownItem>
-              ))}
+              )}
             </DropdownGroup>
           </Dropdown>
         </ToolbarFilter>
