@@ -57,7 +57,7 @@ export const nameValidationSchema = (
 ) => {
   const clusterNameValidationMessagesList = clusterNameValidationMessages(t);
   return Yup.string()
-    .required('Required')
+    .required(t('ai:Required field'))
     .matches(CLUSTER_NAME_VALID_CHARS_REGEX, {
       message: clusterNameValidationMessagesList.INVALID_VALUE,
       excludeEmptyString: true,
@@ -122,14 +122,12 @@ export const sshPublicKeyListValidationSchema = Yup.string()
       if (!value) {
         return true;
       }
-      return !!trimSshPublicKey(value).match(SSH_PUBLIC_KEY_REGEX);
 
-      // disable until mutliple keys are supported (https://issues.redhat.com/browse/METAL-250)
-      // return (
-      //   trimSshPublicKey(value)
-      //     .split('\n')
-      //     .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
-      // );
+      return (
+        trimSshPublicKey(value)
+          .split('\n')
+          .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
+      );
     },
   )
   .test('ssh-public-keys-unique', 'SSH public keys must be unique.', (value?: string) => {
