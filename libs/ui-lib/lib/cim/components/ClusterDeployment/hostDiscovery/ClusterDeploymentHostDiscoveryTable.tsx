@@ -6,34 +6,36 @@ import {
   agentStatusColumn,
   useAgentsTable,
   canChangeHostname,
-} from '../Agent/tableUtils';
+} from '../../Agent/tableUtils';
 import HostsTable, {
   DefaultExpandComponent,
   HostsTableEmptyState,
-} from '../../../common/components/hosts/HostsTable';
+} from '../../../../common/components/hosts/HostsTable';
 import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
+  gpusColumn,
   hostnameColumn,
+  labelsColumn,
   memoryColumn,
   roleColumn,
-} from '../../../common/components/hosts/tableUtils';
+} from '../../../../common/components/hosts/tableUtils';
 import {
   DiscoveryTroubleshootingModal,
   ChangeHostnameAction,
   MassChangeHostnameModal,
   TableToolbar,
-} from '../../../common';
-import { ClusterDeploymentHostDiscoveryTableProps } from '../ClusterDeployment/types';
-import MassApproveAgentModal from '../modals/MassApproveAgentModal';
-import MassApproveAction from '../modals/MassApproveAction';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ExpandComponent } from '../Agent/AgentsSelectionTable';
-import { HostsTableDetailContextProvider } from '../../../common/components/hosts/HostsTableDetailContext';
-import { agentStatus, bmhStatus } from '../helpers/agentStatus';
-import { onAgentChangeHostname } from '../helpers';
+} from '../../../../common';
+import { ClusterDeploymentHostDiscoveryTableProps } from '../types';
+import MassApproveAgentModal from '../../modals/MassApproveAgentModal';
+import MassApproveAction from '../../modals/MassApproveAction';
+import { usePagination } from '../../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { ExpandComponent } from '../../Agent/AgentsSelectionTable';
+import { HostsTableDetailContextProvider } from '../../../../common/components/hosts/HostsTableDetailContext';
+import { agentStatus, bmhStatus } from '../../helpers/agentStatus';
+import { onAgentChangeHostname } from '../../helpers';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -93,7 +95,14 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       }),
       roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
       ...(addAll
-        ? [discoveredAtColumn(t), cpuCoresColumn(t), memoryColumn(t), disksColumn(t)]
+        ? [
+            discoveredAtColumn(t),
+            cpuCoresColumn(t),
+            gpusColumn(t),
+            memoryColumn(t),
+            disksColumn(t),
+            labelsColumn(t),
+          ]
         : []),
     ],
     [

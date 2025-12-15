@@ -62,7 +62,7 @@ const getPatches = (values: NodePoolFormValues, nodePool: NodePoolK8sResource) =
       );
     }
   } else {
-    if (!!nodePool.spec.replicas) {
+    if (nodePool.spec.replicas !== undefined) {
       patches.push({
         op: 'replace',
         value: values.count,
@@ -123,7 +123,7 @@ const ManageHostsModal = ({
           agentLabels: labelsToFormikValue(
             nodePool.spec.platform?.agent?.agentLabelSelector?.matchLabels || {},
           ),
-          count: nodePool.spec.replicas || 1,
+          count: nodePool.spec.replicas || 0,
           useAutoscaling: !!nodePool.spec.autoScaling,
           autoscaling: {
             minReplicas: nodePool.spec.autoScaling?.min || 1,

@@ -33,7 +33,7 @@ const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      const hostname = agent?.spec.hostname || agent?.status?.inventory.hostname;
+      const hostname = agent?.spec?.hostname || agent?.status?.inventory?.hostname;
       return {
         title: <ApproveTableRow agent={agent}>{hostname}</ApproveTableRow>,
         props: { 'data-testid': 'hostname' },
@@ -113,7 +113,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       onClose();
     } catch (err) {
       setError({
-        title: t('ai:An error occured while approving agents'),
+        title: t('ai:An error occurred while approving agents'),
         message: getErrorMessage(err),
       });
       setProgress(null);

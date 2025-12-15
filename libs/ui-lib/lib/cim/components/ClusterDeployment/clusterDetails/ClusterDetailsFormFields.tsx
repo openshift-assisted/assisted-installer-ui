@@ -3,23 +3,24 @@ import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import {
+  ExternalPlatformsDropdown,
   isMajorMinorVersionEqualOrGreater,
   OpenShiftVersionDropdown,
   OpenShiftVersionModal,
-} from '../../../common';
-import { StaticTextField } from '../../../common/components/ui/StaticTextField';
-import { PullSecret } from '../../../common/components/clusters';
-import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../common/types';
+} from '../../../../common';
+import { StaticTextField } from '../../../../common/components/ui/StaticTextField';
+import { PullSecret } from '../../../../common/components/clusters';
+import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../../common/types';
 import {
   InputField,
   RichInputField,
   acmClusterNameValidationMessages,
-} from '../../../common/components/ui/formik';
-import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import CpuArchitectureDropdown from '../common/CpuArchitectureDropdown';
-import ControlPlaneNodesDropdown from '../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
-import { getNetworkType } from '../helpers';
+} from '../../../../common/components/ui/formik';
+import { ClusterDetailsValues } from '../../../../common/components/clusterWizard/types';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import CpuArchitectureDropdown from '../../common/CpuArchitectureDropdown';
+import ControlPlaneNodesDropdown from '../../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
+import { getNetworkType } from '../../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -69,7 +70,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   React.useEffect(() => {
     if (!versions.length && !values.openshiftVersion) {
       const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
-      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
+      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion?.value);
       setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
       setFieldValue('networkType', getNetworkType(fallbackOpenShiftVersion));
     }
@@ -89,28 +90,23 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     [versions],
   );
 
-  const additionalSelectOptions = React.useMemo(() => {
+  const additionalSelectOption = React.useMemo(() => {
     if (
       values.customOpenshiftSelect &&
-      !selectOptions.some((option) => option.value === values.customOpenshiftSelect?.value)
+      !versions.some((version) => version.value === values.customOpenshiftSelect)
     ) {
-      return [
-        {
-          value: values.customOpenshiftSelect.value,
-          label: values.customOpenshiftSelect.label,
-        },
-      ];
+      return allVersions.find((option) => option.value === values.customOpenshiftSelect);
     }
-    return [];
-  }, [selectOptions, values.customOpenshiftSelect]);
+    return undefined;
+  }, [allVersions, values.customOpenshiftSelect, versions]);
 
   const allowTNA = React.useMemo(() => {
     const current =
-      values.customOpenshiftSelect?.version ||
+      values.customOpenshiftSelect ||
       versions.find((version) => version.value === values.openshiftVersion)?.version;
 
     return isMajorMinorVersionEqualOrGreater(current, '4.19') && values.platform === 'baremetal';
-  }, [values.customOpenshiftSelect?.version, values.openshiftVersion, values.platform, versions]);
+  }, [values.customOpenshiftSelect, values.openshiftVersion, values.platform, versions]);
 
   return (
     <Form id="wizard-cluster-details__form">
@@ -159,7 +155,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
             versions={versions}
             showReleasesLink={false}
             showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
-            customItems={additionalSelectOptions}
+            customItem={additionalSelectOption}
           />
           {openshiftVersionModalOpen && (
             <OpenShiftVersionModal
@@ -177,6 +173,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!isNutanix && (
         <CpuArchitectureDropdown cpuArchitectures={cpuArchitectures} isDisabled={isEditFlow} />
       )}
+
+      <ExternalPlatformsDropdown isDisabled={isEditFlow} />
 
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
 

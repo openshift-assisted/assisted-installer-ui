@@ -44,6 +44,7 @@ export type ClusterDeploymentWizardStepsType =
   | 'hosts-selection'
   | 'hosts-discovery'
   | 'networking'
+  | 'custom-manifests'
   | 'review';
 
 export type ClusterDeploymentDetailsProps = {
@@ -177,6 +178,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   onAutoSelectChange: VoidFunction;
   onHostSelect: VoidFunction;
   isNutanix: boolean;
+  hostsBinding?: boolean;
 };
 
 export type InfraEnvAgentTableProps = Pick<

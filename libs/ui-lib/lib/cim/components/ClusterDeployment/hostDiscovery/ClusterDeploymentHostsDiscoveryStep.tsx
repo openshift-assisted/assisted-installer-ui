@@ -12,17 +12,17 @@ import {
   useWizardContext,
 } from '@patternfly/react-core';
 
-import { Alerts, ClusterWizardStepHeader } from '../../../common';
-import { ClusterDeploymentHostsDiscoveryStepProps } from './types';
+import { Alerts, ClusterWizardStepHeader } from '../../../../common';
+import { ClusterDeploymentHostsDiscoveryStepProps } from '../types';
 import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
-import { getAgentsHostsNames, isAgentOfInfraEnv } from './helpers';
-import { getIsSNOCluster, getWizardStepAgentStatus } from '../helpers';
-import { canNextFromHostDiscoveryStep } from './wizardTransition';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ValidationSection } from './components/ValidationSection';
-import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
+import { getAgentsHostsNames, isAgentOfInfraEnv } from '../helpers';
+import { getIsSNOCluster, getWizardStepAgentStatus } from '../../helpers';
+import { canNextFromHostDiscoveryStep } from '../wizardTransition';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { ValidationSection } from '../components/ValidationSection';
+import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
 
-const ClusterDeploymentHostsDiscoveryStep = ({
+export const ClusterDeploymentHostsDiscoveryStep = ({
   agentClusterInstall,
   agents: allAgents,
   infraEnv,
@@ -174,7 +174,7 @@ const ClusterDeploymentHostsDiscoveryStep = ({
       {!!syncError && (
         <GridItem>
           <ValidationSection currentStepId={'hosts-selection'} hosts={[]}>
-            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
               {syncError}
             </Alert>
           </ValidationSection>
@@ -183,4 +183,3 @@ const ClusterDeploymentHostsDiscoveryStep = ({
     </Grid>
   );
 };
-export default ClusterDeploymentHostsDiscoveryStep;
