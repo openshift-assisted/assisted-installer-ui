@@ -51,8 +51,9 @@ describe(`Assisted Installer Disk Encryption`, () => {
     diskEncryptionSection.getWorkersEncryptionSwitch().click({ force: true });
     //enableTangServers
     diskEncryptionSection.getEncryptionMode().check('tang');
-    diskEncryptionSection.getTangServerUrl(0).scrollIntoView().should('be.visible');
-    diskEncryptionSection.getTangServerThumbprint(0).should('be.visible');
+    diskEncryptionSection.getTangServerUrl(0).scrollAndCheckVisible();
+    diskEncryptionSection.getTangServerThumbprint(0).scrollAndCheckVisible();
+
     diskEncryptionSection.getEncryptionMode().first().check();
   });
 

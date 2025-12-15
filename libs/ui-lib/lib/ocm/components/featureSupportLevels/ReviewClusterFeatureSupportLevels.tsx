@@ -1,8 +1,9 @@
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import React from 'react';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
-import { Text, TextList, TextListItem, TextContent } from '@patternfly/react-core';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+import { t_global_color_status_info_100 as infoColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_info_100';
+import { Content } from '@patternfly/react-core';
 import {
   FeatureId,
   FeatureIdToSupportLevel,
@@ -22,6 +23,7 @@ import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
+import { useFeature } from '../../hooks/use-feature';
 
 const getFeatureReviewText = (featureId: FeatureId): string => {
   switch (featureId) {
@@ -64,14 +66,16 @@ const getPreviewFeatureList = (supportLevelMap: FeatureIdToSupportLevel) => {
     return null;
   }
   const featureList = previewSupportLevels[supportLevel].map((featureId: FeatureId) => (
-    <TextListItem key={featureId}>{getFeatureReviewText(featureId)}</TextListItem>
+    <Content component="li" key={featureId}>
+      {getFeatureReviewText(featureId)}
+    </Content>
   ));
   return (
     <>
-      <TextListItem>
+      <Content component="li">
         {getPreviewSupportLevelTitle(supportLevel)}
-        <TextList>{featureList}</TextList>
-      </TextListItem>
+        <Content component="ul">{featureList}</Content>
+      </Content>
     </>
   );
 };
@@ -83,21 +87,21 @@ export const LimitedSupportedCluster = ({
   clusterFeatureSupportLevels: FeatureIdToSupportLevel;
   showVersionWarning: boolean;
 }) => (
-  <TextContent>
+  <>
     {showVersionWarning && (
-      <Text>
-        <UiIcon size="sm" icon={<InfoCircleIcon color="var(--pf-v5-global--info-color--100)" />} />
+      <Content component="p">
+        <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.var} />} />
         &nbsp;The installed OpenShift version is not production-ready
-      </Text>
+      </Content>
     )}
     {Object.keys(clusterFeatureSupportLevels).length > 0 && (
       <>
-        <UiIcon size="sm" icon={<InfoCircleIcon color="var(--pf-v5-global--info-color--100)" />} />
+        <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.var} />} />
         &nbsp;Your cluster will be subject to support limitations because it includes:
-        <TextList>{getPreviewFeatureList(clusterFeatureSupportLevels)}</TextList>
+        <Content component="ul">{getPreviewFeatureList(clusterFeatureSupportLevels)}</Content>
       </>
     )}
-  </TextContent>
+  </>
 );
 
 export const FullySupportedCluster = () => (
@@ -124,6 +128,7 @@ export const getSupportLevelInfo = (
   featureSupportLevelData: NewFeatureSupportLevelData,
   isSupportedOpenShiftVersion: (version?: string) => boolean,
   t: TFunction,
+  isSingleClusterFeatureEnabled?: boolean,
 ) => {
   const limitedClusterFeatures = getLimitedFeatureSupportLevels(
     cluster,
@@ -134,7 +139,10 @@ export const getSupportLevelInfo = (
   return {
     limitedClusterFeatures,
     hasSupportedVersion,
-    isFullySupported: hasSupportedVersion && Object.keys(limitedClusterFeatures || {}).length === 0,
+    isFullySupported:
+      hasSupportedVersion &&
+      Object.keys(limitedClusterFeatures || {}).length === 0 &&
+      !isSingleClusterFeatureEnabled,
   };
 };
 
@@ -142,11 +150,25 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
   const { isSupportedOpenShiftVersion } = useOpenShiftVersionsContext();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
     React.useMemo<SupportLevelMemo>(
-      () => getSupportLevelInfo(cluster, featureSupportLevelData, isSupportedOpenShiftVersion, t),
-      [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion],
+      () =>
+        getSupportLevelInfo(
+          cluster,
+          featureSupportLevelData,
+          isSupportedOpenShiftVersion,
+          t,
+          isSingleClusterFeatureEnabled,
+        ),
+      [
+        cluster,
+        featureSupportLevelData,
+        t,
+        isSupportedOpenShiftVersion,
+        isSingleClusterFeatureEnabled,
+      ],
     );
 
   if (!limitedClusterFeatures) {
@@ -162,11 +184,11 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
         ) : (
           <LimitedSupportedCluster
             clusterFeatureSupportLevels={limitedClusterFeatures}
-            showVersionWarning={!hasSupportedVersion}
+            showVersionWarning={!hasSupportedVersion || isSingleClusterFeatureEnabled}
           />
         )
       }
-      classNameValue={'pf-v5-u-mb-md'}
+      classNameValue={'pf-v6-u-mb-md'}
       testId="feature-support-levels"
     />
   );

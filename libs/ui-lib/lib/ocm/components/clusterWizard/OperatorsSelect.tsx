@@ -37,7 +37,6 @@ const OperatorsSelect = ({
   const [supportedOperators, setSupportedOperators] = useStateSafely<string[]>([]);
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { values } = useFormikContext<OperatorsValues>();
-
   React.useEffect(() => {
     const fetchSupportedOperators = async () => {
       try {

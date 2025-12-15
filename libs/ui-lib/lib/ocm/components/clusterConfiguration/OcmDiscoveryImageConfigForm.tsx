@@ -3,12 +3,14 @@ import * as Yup from 'yup';
 import {
   Button,
   Form,
-  ModalBoxBody,
-  ModalBoxFooter,
   AlertVariant,
   Alert,
   Stack,
   StackItem,
+  ModalBody,
+  ModalFooter,
+  Flex,
+  FlexItem,
 } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -141,7 +143,7 @@ export const OcmDiscoveryImageConfigForm = ({
       {({ submitForm, isSubmitting, status, setStatus }) => {
         return (
           <>
-            <ModalBoxBody>
+            <ModalBody>
               <Stack hasGutter>
                 <StackItem>
                   <Alert variant={AlertVariant.info} isInline title={alertDiscoveryText} />
@@ -166,31 +168,40 @@ export const OcmDiscoveryImageConfigForm = ({
                   </Form>
                 </StackItem>
               </Stack>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Stack hasGutter style={{ width: '100%' }}>
+                {(status as StatusErrorType)?.error && (
+                  <StackItem>
+                    <AlertFormikError
+                      status={status as StatusErrorType}
+                      onClose={() => setStatus(undefined)}
+                    />
+                  </StackItem>
+                )}
                 <StackItem>
-                  <AlertFormikError
-                    status={status as StatusErrorType}
-                    onClose={() => setStatus(undefined)}
-                  />
-                </StackItem>
-                <StackItem>
-                  <Button
-                    onClick={() => {
-                      void submitForm();
-                    }}
-                    isDisabled={isSubmitting}
-                    isLoading={isSubmitting}
-                  >
-                    {isSubmitting ? t('ai:Generating') : buttonText}
-                  </Button>
-                  <Button key="cancel" variant="link" onClick={onCancel}>
-                    {t('ai:Cancel')}
-                  </Button>
+                  <Flex>
+                    <FlexItem>
+                      <Button
+                        onClick={() => {
+                          void submitForm();
+                        }}
+                        isDisabled={isSubmitting}
+                        isLoading={isSubmitting}
+                        data-testid="generate-discovery-iso-button"
+                      >
+                        {isSubmitting ? t('ai:Generating') : buttonText}
+                      </Button>
+                    </FlexItem>
+                    <FlexItem>
+                      <Button key="cancel" variant="link" onClick={onCancel}>
+                        {t('ai:Cancel')}
+                      </Button>
+                    </FlexItem>
+                  </Flex>
                 </StackItem>
               </Stack>
-            </ModalBoxFooter>
+            </ModalFooter>
           </>
         );
       }}

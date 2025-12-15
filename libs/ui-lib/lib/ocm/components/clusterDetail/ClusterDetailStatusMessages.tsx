@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from '@patternfly/react-core';
+import { Alert, Stack, StackItem } from '@patternfly/react-core';
 import {
   REDHAT_CONSOLE_OPENSHIFT,
   canDownloadKubeconfig,
@@ -43,41 +43,49 @@ const ClusterDetailStatusMessages = ({
     : '';
 
   return (
-    <>
+    <Stack hasGutter>
       {!isSingleClusterFeatureEnabled &&
         typeof inactiveDeletionHours === 'number' &&
         canDownloadKubeconfig(cluster.status) && (
+          <StackItem>
+            <Alert
+              variant="info"
+              isInline
+              title={
+                dateDifference > 0
+                  ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
+                    `deleted from Assisted Installer's service in ${dateDifference} days.`
+                  : `Kubeconfig file was automatically deleted ${inactiveDeletionDays} days after installation.`
+              }
+            />
+          </StackItem>
+        )}
+      {showAddHostsAlert && (
+        <StackItem>
           <Alert
             variant="info"
             isInline
+            data-testid="alert-add-hosts"
             title={
-              dateDifference > 0
-                ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
-                  `deleted from Assisted Installer's service in ${dateDifference} days.`
-                : `Kubeconfig file was automatically deleted ${inactiveDeletionDays} days after installation.`
+              <p>
+                {isClusterPlatformTypeVM(cluster)
+                  ? 'Add new hosts by using the platform auto-scale feature or manually generating a new Discovery ISO under the "Add hosts" tab on '
+                  : 'Add new hosts by generating a new Discovery ISO under your cluster\'s "Add hosts" tab on '}
+                <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
+                  console.redhat.com/openshift <ExternalLinkAltIcon />
+                </a>
+                .
+              </p>
             }
           />
-        )}
-      {showAddHostsAlert && (
-        <Alert
-          variant="info"
-          isInline
-          data-testid="alert-add-hosts"
-          title={
-            <p>
-              {isClusterPlatformTypeVM(cluster)
-                ? 'Add new hosts by using the platform auto-scale feature or manually generating a new Discovery ISO under the "Add hosts" tab on '
-                : 'Add new hosts by generating a new Discovery ISO under your cluster\'s "Add hosts" tab on '}
-              <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
-                console.redhat.com/openshift <ExternalLinkAltIcon />
-              </a>
-              .
-            </p>
-          }
-        />
+        </StackItem>
       )}
-      {platformLink && <PostInstallAlert link={platformLink} />}
-    </>
+      {platformLink && (
+        <StackItem>
+          <PostInstallAlert link={platformLink} />
+        </StackItem>
+      )}
+    </Stack>
   );
 };
 

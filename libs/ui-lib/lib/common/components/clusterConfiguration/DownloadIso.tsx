@@ -1,13 +1,12 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import {
   Alert,
   Button,
   ButtonVariant,
   ClipboardCopy,
   clipboardCopyFunc,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -49,7 +48,7 @@ const DownloadIso = ({
 
   return (
     <>
-      <ModalBoxBody>
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             <Alert
@@ -104,6 +103,8 @@ const DownloadIso = ({
                 }
               />
             </DetailList>
+          </StackItem>
+          <StackItem>
             <Alert
               variant="info"
               isInline
@@ -113,13 +114,17 @@ const DownloadIso = ({
             />
           </StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           variant={ButtonVariant.primary}
-          onClick={() => downloadUrl && saveAs(downloadUrl)}
           data-testid="download-iso-btn"
           isDisabled={!downloadUrl}
+          component={'a'}
+          target="_blank"
+          href={downloadUrl}
+          download
+          rel="noopener noreferrer"
         >
           {t('ai:Download Discovery ISO')}
         </Button>
@@ -131,7 +136,7 @@ const DownloadIso = ({
             {t('ai:Edit ISO configuration')}
           </Button>
         )}
-      </ModalBoxFooter>
+      </ModalFooter>
     </>
   );
 };

@@ -1,21 +1,43 @@
-FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.19 AS ui-build
-USER root
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.21 AS ui-build
+USER 0
 
 WORKDIR /app
-COPY --chown=1001:0 / /app
-RUN ls /app
+COPY --chown=1001:0 . /app
 ENV NODE_OPTIONS='--max-old-space-size=8192'
 RUN git config --global --add safe.directory /app
-RUN npm install -g corepack@0.24.1
-RUN yarn install --immutable && yarn build:all
 
-FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.23-openshift-4.19 as proxy-build
+# The REMOTE_SOURCES value is set by the build system to indicate the location of the cachito-backed artifacts cache.
+ARG REMOTE_SOURCES
+ARG REMOTE_SOURCES_DIR=/remote-sources
+COPY ${REMOTE_SOURCES} ${REMOTE_SOURCES_DIR}
+
+ARG YARN_VERSION=3.4.1
+
+# bootstrap yarn so we can install and run the other tools.
+RUN CACHED_YARN=./artifacts/${YARN_VERSION}.tar.gz; \
+    if [ -f ${CACHED_YARN} ]; then \
+      # use dependencies provided by Cachito
+      npm install -g ${CACHED_YARN}; \
+      yarn install --immutable && yarn build:all; \
+    else \
+      # For local builds
+      npm install -g corepack@0.24.1; \
+      corepack enable; \
+      corepack prepare yarn@${YARN_VERSION} --activate; \
+      yarn install --immutable && yarn build:all; \
+    fi
+
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.24-openshift-4.21 AS proxy-build
 WORKDIR /app
 COPY apps/assisted-disconnected-ui/proxy /app
 USER 0
-RUN go build
+# Build using vendored deps as build system does not have internet access
+RUN export GOFLAGS="-mod=vendor"; go build
 
-FROM registry.ci.openshift.org/ocp/ubi-micro:9
+FROM registry.ci.openshift.org/ocp/4.21:base-rhel9
+
+LABEL io.openshift.release.operator=true
+
 COPY --from=ui-build /app/apps/assisted-disconnected-ui/build /app/proxy/dist
 COPY --from=proxy-build /app/assisted-disconnected-ui /app/proxy
 WORKDIR /app/proxy

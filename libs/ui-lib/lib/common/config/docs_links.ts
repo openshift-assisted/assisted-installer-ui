@@ -76,6 +76,8 @@ export const NUTANIX_CONFIG_LINK = `https://docs.redhat.com/en/documentation/ass
 
 export const VSPHERE_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#adding-hosts-on-vsphere_installing-on-vsphere`;
 
+export const VSPHERE_LIMITATIONS_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/installing-on-vsphere`;
+
 export const OCI_CONFIG_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html-single/installing_openshift_container_platform_with_the_assisted_installer/index#installing-on-oci`;
 
 export const HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/expanding-the-cluster#checking-for-multiple-architectures_expanding-the-cluster`;
@@ -171,10 +173,12 @@ export const getLsoLink = (ocpVersion?: string) => {
     : `https://docs.openshift.com/container-platform/${version}/storage/persistent_storage/persistent_storage_local/ways-to-provision-local-storage.html`;
 };
 
-export const getNmstateLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
-    ocpVersion,
-  )}/html/networking/networking-operators#k8s-nmstate-about-the-k8s-nmstate-operator`;
+export const getNmstateLink = (ocpVersion?: string) => {
+  const version = getDocsOpenshiftVersion(ocpVersion);
+  return isMajorMinorVersionEqualOrGreater(ocpVersion, '4.17')
+    ? `https://docs.redhat.com/en/documentation/openshift_container_platform/${version}/html/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator`
+    : `https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/networking_operators/k8s-nmstate-about-the-k8s-nmstate-operator`;
+};
 
 export const getNodeFeatureDiscoveryLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
@@ -214,6 +218,16 @@ export const getClusterObservabilityLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/cluster_observability_operator/cluster-observability-operator-overview`;
+
+export const getLokiLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/network_observability/network-observability-overview`;
+
+export const getOpenShiftLoggingLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/logging`;
 
 export const getNumaResourcesLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(

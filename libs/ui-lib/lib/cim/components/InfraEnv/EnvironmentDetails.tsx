@@ -8,17 +8,16 @@ import {
   Grid,
   GridItem,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   Title,
   TitleSizes,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-icon';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 
 import { architectureData, LabelValue } from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
@@ -48,9 +47,7 @@ const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning
   const btn = (
     <>
       {title}&nbsp;
-      <Button variant="plain" onClick={onEdit}>
-        <PencilAltIcon />
-      </Button>
+      <Button icon={<PencilAltIcon />} variant="plain" onClick={onEdit} />
     </>
   );
   return noIcon ? (
@@ -66,11 +63,7 @@ const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning
 
 const NotConfigured = () => {
   const { t } = useTranslation();
-  return (
-    <TextContent>
-      <Text component={TextVariants.small}>{t('ai:Not configured')}</Text>
-    </TextContent>
-  );
+  return <Content component={ContentVariants.small}>{t('ai:Not configured')}</Content>;
 };
 
 type EnvironmentDetailsProps = {

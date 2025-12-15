@@ -2,14 +2,12 @@ import * as React from 'react';
 import { TFunction } from 'i18next';
 import { getHostRole, getInventory, RoleCell, UiIcon } from '../../index';
 import { TableRow } from '../hosts/AITable';
-import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { Popover, Content, ContentVariants } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const SkipFormattingDisks = () => (
-  <TextContent>
-    <Text component={TextVariants.p}>Some bootable disks will skip formatting</Text>
-  </TextContent>
+  <Content component={ContentVariants.p}>Some bootable disks will skip formatting</Content>
 );
 
 export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<Host> => {
@@ -76,7 +74,13 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
       const isExcluded = excludeMasters && isMaster;
       return {
         title: isExcluded ? (
-          <div style={{ color: 'var(--pf-v5-global--disabled-color--100)' }}>Excluded for ODF</div>
+          <div
+            style={{
+              color: 'var(--pf-t--global--icon--color--disabled)',
+            }}
+          >
+            Excluded for ODF
+          </div>
         ) : (
           'Use ODF'
         ),

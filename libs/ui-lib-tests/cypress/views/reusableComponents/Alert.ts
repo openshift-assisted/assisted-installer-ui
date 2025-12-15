@@ -1,6 +1,6 @@
 export class Alert {
   static readonly alias = `@${Alert.name}`;
-  static readonly selector = '.pf-v5-c-alert';
+  static readonly selector = '.pf-v6-c-alert';
 
   constructor(parentAlias: string, id: string = Alert.selector) {
     cy.findWithinOrGet(id, parentAlias).as(Alert.name);
@@ -11,10 +11,10 @@ export class Alert {
   }
 
   get title() {
-    return this.body.find('.pf-v5-c-alert__title');
+    return this.body.find('.pf-v6-c-alert__title');
   }
 
   get description() {
-    return this.body.find('.pf-v5-c-alert__description');
+    return this.body.find('.pf-v6-c-alert__description');
   }
 }

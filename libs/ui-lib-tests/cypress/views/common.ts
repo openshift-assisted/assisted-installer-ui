@@ -44,7 +44,7 @@ export const commonActions = {
     return cy.get('button[name="next"]');
   },
   getWizardStepNav: (stepName: string) => {
-    return cy.get('.pf-v5-c-wizard__nav-item').contains(stepName);
+    return cy.get('.pf-v6-c-wizard__nav-item').contains(stepName);
   },
   startAtWizardStep: (step: Steps) => {
     commonActions.getWizardStepNav(step).click();
@@ -70,7 +70,7 @@ export const commonActions = {
     const currentIndex = day2WizardSteps.findIndex((step) => step === fromStep);
 
     commonActions.getNextButton().should('be.enabled').click();
-    cy.get('.pf-v5-c-wizard__main-body').within(() => {
+    cy.get('.pf-v6-c-wizard__main-body').within(() => {
       commonActions.verifyIsAtStep(day2WizardSteps[currentIndex + 1]);
     });
   },
@@ -87,13 +87,13 @@ export const commonActions = {
     commonActions.getNextButton().should('be.disabled');
   },
   getInfoAlert: () => {
-    return cy.get('.pf-v5-c-alert.pf-m-inline.pf-m-info');
+    return cy.get('.pf-v6-c-alert.pf-m-inline.pf-m-info');
   },
   getWarningAlert: () => {
-    return cy.get('.pf-v5-c-alert.pf-m-inline.pf-m-warning');
+    return cy.get('.pf-v6-c-alert.pf-m-inline.pf-m-warning');
   },
   getDangerAlert: () => {
-    return cy.get('.pf-v5-c-alert.pf-m-inline.pf-m-danger');
+    return cy.get('.pf-v6-c-alert.pf-m-inline.pf-m-danger');
   },
   getDNSErrorMessage: () => {
     return cy.get('#form-input-dns-field-helper-error');

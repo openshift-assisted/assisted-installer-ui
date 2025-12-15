@@ -93,12 +93,14 @@ export const DiscoveryImageTypeDropdown = ({
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       id={fieldId}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
       ref={toggleRef}
       isFullWidth
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
       isDisabled={isDisabled}
+      style={{ minWidth: '510px' }}
+      data-testid="discovery-image-type-dropdown-toggle"
     >
       {current || value}
     </MenuToggle>

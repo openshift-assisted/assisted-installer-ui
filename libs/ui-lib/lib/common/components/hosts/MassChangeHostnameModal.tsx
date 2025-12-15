@@ -7,8 +7,9 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Popover,
   Split,
   SplitItem,
@@ -17,7 +18,7 @@ import {
 } from '@patternfly/react-core';
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
+import { t_global_icon_color_status_info_default as blueInfoColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_info_default';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TFunction } from 'i18next';
 
@@ -177,7 +178,7 @@ const MassChangeHostnameForm = ({
   const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
-      <ModalBoxBody>
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             <div>{t('ai:Rename hostnames using the custom template:')}</div>
@@ -193,7 +194,10 @@ const MassChangeHostnameForm = ({
               richValidationMessages={hostnameValidationMessages(t)}
             />
             <HelperText>
-              <HelperTextItem variant="indeterminate">
+              <HelperTextItem
+                variant="indeterminate"
+                data-testid="mass-change-hostname-helper-text"
+              >
                 {t('ai:For example: host-{{n}}', {
                   interpolation: { suffix: '###', prefix: '###' },
                 })}
@@ -249,8 +253,8 @@ const MassChangeHostnameForm = ({
             />
           </StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           key="submit"
           type={ButtonType.submit}
@@ -261,7 +265,7 @@ const MassChangeHostnameForm = ({
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={isSubmitting}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </Form>
   );
 };
@@ -295,13 +299,12 @@ const MassChangeHostnameModal = ({
   return (
     <Modal
       aria-label={t('ai:Change hostnames dialog')}
-      title={t('ai:Change hostnames')}
       isOpen={isOpen}
       onClose={onClose}
-      hasNoBodyWrapper
       id="mass-change-hostname-modal"
       variant="small"
     >
+      <ModalHeader title={t('ai:Change hostnames')} />
       <Formik
         initialValues={initialValues}
         validate={withTemplate(

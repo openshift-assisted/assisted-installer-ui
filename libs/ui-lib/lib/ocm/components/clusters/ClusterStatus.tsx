@@ -1,5 +1,5 @@
 import React from 'react';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { FileAltIcon } from '@patternfly/react-icons/dist/js/icons/file-alt-icon';

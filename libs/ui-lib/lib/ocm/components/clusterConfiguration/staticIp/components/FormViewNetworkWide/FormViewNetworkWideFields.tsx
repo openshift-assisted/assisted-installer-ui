@@ -1,13 +1,12 @@
 import React from 'react';
 import {
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   Grid,
   FormGroup,
   TextInputTypes,
   Alert,
   AlertVariant,
-  TextContent,
   Flex,
   FlexItem,
   ButtonVariant,
@@ -79,7 +78,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
   const fieldId = getFieldId(`${fieldName}`, 'input');
   return (
     <FormGroup
-      labelIcon={
+      labelHelp={
         <PopoverIcon noVerticalAlign bodyContent="The range of IP addresses of the hosts." />
       }
       label="Subnet"
@@ -120,6 +119,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
               icon={errorMessage ? <ExclamationCircleIcon /> : null}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-machine-network-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : machineNetworkHelptext}
             </HelperTextItem>
@@ -253,12 +253,12 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
   return (
     <>
-      <TextContent>
-        <Text component={TextVariants.h3}>Network-wide configurations</Text>
-        <Text component={TextVariants.small}>
+      <Content>
+        <Content component={ContentVariants.h3}>Network-wide configurations</Content>
+        <Content component={ContentVariants.small}>
           The following configurations are applicable to all the hosts.
-        </Text>
-      </TextContent>
+        </Content>
+      </Content>
 
       {hosts.length > 0 && hostsConfiguredAlert}
 

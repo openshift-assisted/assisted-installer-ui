@@ -60,6 +60,12 @@ export const dualStackNetworkingRequest = {
     },
   ],
   user_managed_networking: false,
-  api_vips: [{ ip: '192.168.122.10', cluster_id: fakeClusterId }],
-  ingress_vips: [{ ip: '192.168.122.110', cluster_id: fakeClusterId }],
+  api_vips: [
+    { ip: '192.168.122.10', cluster_id: fakeClusterId },
+    { ip: '1001:db9::1', cluster_id: fakeClusterId },
+  ],
+  ingress_vips: [
+    { ip: '192.168.122.110', cluster_id: fakeClusterId },
+    { ip: '1001:db9::2', cluster_id: fakeClusterId },
+  ],
 };

@@ -1,10 +1,8 @@
 import React from 'react';
-import { Text, TextContent } from '@patternfly/react-core';
+import { Content } from '@patternfly/react-core';
 
 const ClusterWizardStepHeader: React.FC = ({ children }) => (
-  <TextContent>
-    <Text component="h2">{children}</Text>
-  </TextContent>
+  <Content component="h2">{children}</Content>
 );
 
 export default ClusterWizardStepHeader;

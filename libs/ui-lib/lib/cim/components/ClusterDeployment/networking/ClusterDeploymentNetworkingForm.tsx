@@ -5,9 +5,8 @@ import {
   Grid,
   GridItem,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   Checkbox,
   Split,
   SplitItem,
@@ -96,16 +95,14 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
     if (!sameProxies) {
       proxyConfig = (
         <>
-          <TextContent>
-            <Text component="h2">{t('ai:Cluster-wide proxy')}</Text>
-            <Text component={TextVariants.p}>
-              <Trans
-                t={t}
-                components={{ bold: <strong /> }}
-                i18nKey="ai:The hosts you selected are using different proxy settings. Configure a proxy that will be applied for these hosts. <bold>Configure at least one of the proxy settings below.</bold>"
-              />
-            </Text>
-          </TextContent>
+          <Content component="h2">{t('ai:Cluster-wide proxy')}</Content>
+          <Content component={ContentVariants.p}>
+            <Trans
+              t={t}
+              components={{ bold: <strong /> }}
+              i18nKey="ai:The hosts you selected are using different proxy settings. Configure a proxy that will be applied for these hosts. <bold>Configure at least one of the proxy settings below.</bold>"
+            />
+          </Content>
           <ProxyInputFields />
         </>
       );
@@ -160,9 +157,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           <SecurityFields clusterSshKey={cluster.sshPublicKey} allowMultipleKeys={true} />
         </StackItem>
         <StackItem>
-          <TextContent>
-            <Text component="h2">{t('ai:Host inventory')}</Text>
-          </TextContent>
+          <Content component="h2">{t('ai:Host inventory')}</Content>
           <ClusterDeploymentHostsNetworkTable
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}

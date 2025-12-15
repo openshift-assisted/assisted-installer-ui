@@ -1,0 +1,10 @@
+#app-outer-div {
+  overflow-y: auto !important;
+  /* Hide scrollbar while maintaining scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+#app-outer-div::-webkit-scrollbar {
+  display: none; /* Webkit browsers (Chrome, Safari, newer Edge) */
+}

@@ -6,8 +6,8 @@ import {
   ButtonVariant,
   ClipboardCopy,
   clipboardCopyFunc,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -33,7 +33,7 @@ const DownloadIpxeScript = ({
   const { t } = useTranslation();
   return (
     <>
-      <ModalBoxBody>
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             <Alert
@@ -74,8 +74,8 @@ const DownloadIpxeScript = ({
             </DetailList>
           </StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           variant={ButtonVariant.primary}
           onClick={() => downloadUrl && saveAs(downloadUrl)}
@@ -92,7 +92,7 @@ const DownloadIpxeScript = ({
         <Button variant={ButtonVariant.link} onClick={onClose} data-testid="edit-ipxe-btn">
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </>
   );
 };

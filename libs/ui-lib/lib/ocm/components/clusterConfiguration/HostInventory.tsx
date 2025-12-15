@@ -1,14 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Text,
-  TextContent,
-  Button,
-  Stack,
-  StackItem,
-  Split,
-  SplitItem,
-} from '@patternfly/react-core';
+import { Content, Button, Stack, StackItem, Split, SplitItem } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import {
   HostDiscoveryValues,
@@ -39,24 +31,22 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   }, [cluster, mastersMustRunWorkloads, setFieldValue]); // Schedulable masters need to be recalculated only when forced status changes
 
   return (
-    <Stack hasGutter>
-      <StackItem>
+    <Stack hasGutter data-testid="host-inventory">
+      <StackItem data-testid="host-discovery-header">
         <ClusterWizardStepHeader>Host discovery</ClusterWizardStepHeader>
       </StackItem>
-      <StackItem>
+      <StackItem data-testid="discovery-image-modal-section">
         {!isViewerMode && !isSingleClusterFeatureEnabled && (
-          <TextContent>
-            <Text component="p">
-              <DiscoveryImageModalButton
-                ButtonComponent={Button}
-                cluster={cluster}
-                idPrefix="host-inventory"
-              />
-            </Text>
-          </TextContent>
+          <Content component="p">
+            <DiscoveryImageModalButton
+              ButtonComponent={Button}
+              cluster={cluster}
+              idPrefix="host-inventory"
+            />
+          </Content>
         )}
       </StackItem>
-      <StackItem>
+      <StackItem data-testid="schedulable-masters-section">
         <Split>
           <SplitItem>
             <OcmSwitchField
@@ -67,6 +57,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
               isDisabled={mastersMustRunWorkloads}
               name={'schedulableMasters'}
               label="Run workloads on control plane nodes&nbsp;"
+              data-testid="schedulable-masters-switch"
             />
           </SplitItem>
           <SplitItem>
@@ -75,20 +66,19 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
                 <p>Enables your control plane nodes to be used for running applications.</p>
               }
               buttonStyle={{ marginTop: '4px' }}
+              data-testid="schedulable-masters-popover"
             />
           </SplitItem>
         </Split>
       </StackItem>
-      <StackItem>
+      <StackItem data-testid="information-and-alerts">
         <InformationAndAlerts cluster={cluster} />
       </StackItem>
-      <StackItem>
-        <TextContent>
-          <Text component="h3">Host Inventory</Text>
-        </TextContent>
+      <StackItem data-testid="host-inventory-title">
+        <Content component="h3">Host Inventory</Content>
       </StackItem>
-      <StackItem>
-        <HostsDiscoveryTable cluster={cluster} />
+      <StackItem data-testid="hosts-discovery-table-wrapper">
+        <HostsDiscoveryTable cluster={cluster} hosts={cluster.hosts || []} />
       </StackItem>
     </Stack>
   );

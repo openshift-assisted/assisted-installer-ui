@@ -14,13 +14,14 @@ const OcpConsoleNodesSectionLink: React.FC<{
   }
   return (
     <Button
+      icon={<ExternalLinkAltIcon />}
       variant={ButtonVariant.link}
       onClick={() =>
         window.open(getOcpConsoleNodesPage(ocpConsoleUrl), '_blank', 'noopener noreferrer')
       }
       id={id}
     >
-      {title} <ExternalLinkAltIcon />
+      {title}
     </Button>
   );
 };

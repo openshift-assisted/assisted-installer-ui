@@ -41,7 +41,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       fieldId={fieldId}
       label={label}
       isRequired={isRequired}
-      labelIcon={labelIcon}
+      labelHelp={labelIcon}
       className={groupClassName}
       id={`form-control__${fieldId}`}
     >
@@ -60,18 +60,21 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       {(errorMessage || helperText) && (
         <FormHelperText>
           <HelperText>
+            <HelperTextItem
+              variant={'default'}
+              id={`${fieldId}-helper`}
+              data-testid={`input-textarea-${fieldId}-helper-text`}
+            >
+              {helperText}
+            </HelperTextItem>
             {errorMessage && (
               <HelperTextItem
                 icon={<ExclamationCircleIcon />}
                 variant={'error'}
                 id={`${fieldId}-helper-error`}
+                data-testid={`input-textarea-${fieldId}-helper-text`}
               >
                 {errorMessage}
-              </HelperTextItem>
-            )}
-            {helperText && (
-              <HelperTextItem variant={'default'} id={`${fieldId}-helper`}>
-                {helperText}
               </HelperTextItem>
             )}
           </HelperText>

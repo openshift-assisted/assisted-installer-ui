@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 
 const defaultTitle = 'Unable to fetch the latest data';
 
@@ -14,23 +22,18 @@ const ClusterPollingErrorModal = ({
   content?: string;
 }) => {
   return (
-    <Modal
-      title={title}
-      isOpen
-      variant={ModalVariant.small}
-      showClose={false}
-      titleIconVariant="danger"
-      actions={[
+    <Modal isOpen variant={ModalVariant.small} onClose={undefined}>
+      <ModalHeader title={title} titleIconVariant="danger" />
+      <ModalBody>{content}</ModalBody>
+      <ModalFooter>
         <Button
           key="refresh"
           variant={ButtonVariant.primary}
           onClick={() => window.location.reload()}
         >
           Refresh page
-        </Button>,
-      ]}
-    >
-      {content}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

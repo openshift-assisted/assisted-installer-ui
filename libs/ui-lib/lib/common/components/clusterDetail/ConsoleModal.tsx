@@ -1,11 +1,14 @@
 import React from 'react';
 import {
-  Modal,
   Button,
   ButtonVariant,
-  Text,
-  ModalVariant,
+  Content,
   ExpandableSection,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { removeProtocolFromURL } from '../../api';
@@ -77,21 +80,21 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const { t } = useTranslation();
   return (
     <>
-      <Text component="p">
+      <Content component="p">
         {t(
           'ai:In order to access the OpenShift Web Console, use external DNS server or local configuration to resolve its hostname. To do so, either:',
         )}
-      </Text>
+      </Content>
       <ModalExpandableSection
         toggleText={t('ai:Option 1: Add the following records to your DNS server (recommended)')}
-        className="pf-v5-u-pb-md"
+        className="pf-v6-u-pb-md"
         isExpanded={isDNSExpanded}
         onToggle={handleToggle}
         requiredList={aRecords}
       />
       <ModalExpandableSection
         toggleText={t('ai:Option 2: Update your local /etc/hosts or /etc/resolv.conf files')}
-        className="pf-v5-u-pb-md"
+        className="pf-v6-u-pb-md"
         isExpanded={!isDNSExpanded}
         onToggle={handleToggle}
         requiredList={etcHosts}
@@ -180,14 +183,12 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
     </Button>,
   ];
   return (
-    <Modal
-      title={t('ai:OpenShift Web Console troubleshooting')}
-      isOpen={isOpen}
-      onClose={closeModal}
-      actions={actions}
-      variant={ModalVariant.large}
-    >
-      <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
+    <Modal isOpen={isOpen} onClose={closeModal} variant={ModalVariant.large}>
+      <ModalHeader title={t('ai:OpenShift Web Console troubleshooting')} />
+      <ModalBody>
+        <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
+      </ModalBody>
+      <ModalFooter>{actions}</ModalFooter>
     </Modal>
   );
 };

@@ -5,10 +5,10 @@ import {
   ButtonVariant,
   ButtonType,
   Form,
-  ModalBoxBody,
-  ModalBoxFooter,
   AlertVariant,
   Alert,
+  ModalBody,
+  ModalFooter,
 } from '@patternfly/react-core';
 
 import { Formik } from 'formik';
@@ -105,7 +105,7 @@ const EditHostForm = ({
     >
       {({ handleSubmit, status, isSubmitting, isValid, setStatus, dirty }) => (
         <Form onSubmit={handleSubmit}>
-          <ModalBoxBody>
+          <ModalBody>
             <GridGap>
               <AlertFormikError
                 status={status as StatusErrorType}
@@ -136,8 +136,8 @@ const EditHostForm = ({
                 richValidationMessages={hostnameValidationMessages(t)}
               />
             </GridGap>
-          </ModalBoxBody>
-          <ModalBoxFooter>
+          </ModalBody>
+          <ModalFooter>
             <Button
               key="submit"
               data-testid="change-hostname-form__button-change"
@@ -155,7 +155,7 @@ const EditHostForm = ({
             >
               {t('ai:Cancel')}
             </Button>
-          </ModalBoxFooter>
+          </ModalFooter>
         </Form>
       )}
     </Formik>

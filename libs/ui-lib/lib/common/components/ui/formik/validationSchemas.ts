@@ -28,6 +28,7 @@ import {
   nameValidationMessages,
 } from './constants';
 import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { isMajorMinorVersionEqualOrGreater } from '../../../utils';
 import { selectApiVip, selectIngressVip } from '../../../selectors';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
 
@@ -170,6 +171,17 @@ export const ipValidationSchema = Yup.string().test(
   (value?: string) => Address4.isValid(value || '') || Address6.isValid(value || ''),
 );
 
+// Helpers to classify literal IPs more robustly
+const isIPv4Address = (ip?: string) => {
+  if (!ip) return false;
+  return ip.includes('.') && Address4.isValid(ip);
+};
+
+const isIPv6Address = (ip?: string) => {
+  if (!ip) return false;
+  return ip.includes(':') && Address6.isValid(ip);
+};
+
 export const ipNoSuffixValidationSchema = Yup.string().test(
   'ip-validation-no-suffix',
   'Not a valid IP address',
@@ -199,7 +211,6 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return true;
     }
-
     const foundHostSubnets = [];
     if (machineNetworks) {
       const cidrs = machineNetworks?.map((network) => network.cidr);
@@ -300,12 +311,51 @@ export const vipNoSuffixValidationSchema = (
       vipDhcpAllocation: NetworkConfigurationValues['vipDhcpAllocation'],
       managedNetworkingType: NetworkConfigurationValues['managedNetworkingType'],
     ) => !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: () =>
-      requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
+    then: () => {
+      // Per-item schema for VIPs (apiVips[*].ip / ingressVips[*].ip)
+      // 1) Require value once set
+      // 2) Validate IP without suffix
+      // 3) Ensure VIP family matches machineNetworks[idx] family
+      // 4) Validate range vs selected subnets
+      // 5) No broadcast/network address
+      // 6) Uniqueness across API/Ingress
+      const vipFamilyMatchSchema = Yup.string().test(
+        'vip-family-match-machine-network',
+        'IP family must match the corresponding machine network family.',
+        function (value?: string) {
+          if (!value) {
+            return true;
+          }
+          // this.path looks like: "apiVips[0].ip" or "ingressVips[1].ip"
+          const path = this.path || '';
+          const match = path.match(/\[(\d+)\]/);
+          const index = match ? parseInt(match[1], 10) : NaN;
+          if (Number.isNaN(index)) {
+            return true;
+          }
+          const cidr = values.machineNetworks?.[index]?.cidr || '';
+          const mnIsV4 = isCIDR.v4(cidr);
+          const mnIsV6 = isCIDR.v6(cidr);
+          // If machine network at index is not selected/valid, don't block validation here
+          if (!mnIsV4 && !mnIsV6) {
+            return true;
+          }
+          const ipIsV4 = isIPv4Address(value);
+          const ipIsV6 = isIPv6Address(value);
+          if (!ipIsV4 && !ipIsV6) {
+            return true;
+          }
+          return mnIsV4 ? ipIsV4 : ipIsV6;
+        },
+      );
+
+      return requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
         .concat(ipNoSuffixValidationSchema)
+        .concat(vipFamilyMatchSchema)
         .concat(vipRangeValidationSchema(hostSubnets, values, false))
         .concat(vipBroadcastValidationSchema(values))
-        .concat(vipUniqueValidationSchema(values, true)),
+        .concat(vipUniqueValidationSchema(values, true));
+    },
   });
 
 export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
@@ -321,11 +371,39 @@ export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
         }),
       )
     : Yup.array<T>()
-  ).test(
-    'vips-length',
-    'Both API and ingress APIs must be provided.',
-    (_value) => values.apiVips?.length === values.ingressVips?.length,
-  );
+  )
+    .test(
+      'vips-length',
+      'Both API and ingress APIs must be provided.',
+      (_value) => values.apiVips?.length === values.ingressVips?.length,
+    )
+    .test(
+      'vips-match-machine-networks',
+      'Primary API and Ingress IPs must match the primary machine network family; secondary must match the secondary machine network family.',
+      (_vips?: { ip?: string }[]) => {
+        const machineNetworks = values.machineNetworks || [];
+        const validateIndex = (idx: number) => {
+          const cidr = machineNetworks[idx]?.cidr || '';
+          const mIsIpv4 = isCIDR.v4(cidr);
+          const mIsIpv6 = isCIDR.v6(cidr);
+          if (!mIsIpv4 && !mIsIpv6) {
+            return true;
+          }
+          const api = values.apiVips?.[idx]?.ip || '';
+          const ing = values.ingressVips?.[idx]?.ip || '';
+          if (!api || !ing) {
+            return true;
+          }
+          const apiOk = mIsIpv4 ? isIPv4Address(api) : isIPv6Address(api);
+          const ingOk = mIsIpv4 ? isIPv4Address(ing) : isIPv6Address(ing);
+          return apiOk && ingOk;
+        };
+
+        const primaryOk = validateIndex(0);
+        const secondaryOk = validateIndex(1);
+        return primaryOk && secondaryOk;
+      },
+    );
 
 export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undefined) =>
   Yup.string()
@@ -437,11 +515,11 @@ export const hostPrefixValidationSchema = (
   const errorMsgIPv4 = `${errorMsgPrefix} (${netBlockNumber}) and 25.`;
   const errorMsgIPv6 = `${errorMsgPrefix} (8) and 128.`;
 
-  if (Address6.isValid(clusterNetworkCidr || '')) {
+  if (isCIDR.v6(clusterNetworkCidr || '')) {
     return Yup.number().required(requiredText).min(8, errorMsgIPv6).max(128, errorMsgIPv6);
   }
 
-  if (Address4.isValid(clusterNetworkCidr || '')) {
+  if (isCIDR.v4(clusterNetworkCidr || '')) {
     return Yup.number()
       .required(requiredText)
       .min(netBlockNumber, errorMsgIPv4)
@@ -701,20 +779,64 @@ export const serviceNetworkValidationSchema = Yup.array().of(
   }),
 );
 
-export const dualStackValidationSchema = (field: string) =>
+export const dualStackValidationSchema = (field: string, openshiftVersion?: string) =>
   Yup.array()
     .max(2, `Maximum number of ${field} subnets in dual stack is 2.`)
     .test(
       'dual-stack-ipv4',
-      'First network has to be IPv4 subnet.',
-      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean =>
-        !!values?.[0].cidr && Address4.isValid(values[0].cidr),
+      openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')
+        ? 'First network has to be a valid IPv4 or IPv6 subnet.'
+        : 'First network has to be IPv4 subnet.',
+      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean => {
+        // For OCP versions > 4.11, allow IPv6 as primary network
+        if (openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')) {
+          return !!values?.[0].cidr && (isCIDR.v4(values[0].cidr) || isCIDR.v6(values[0].cidr));
+        }
+        // For older versions, require IPv4 as primary network
+        return !!values?.[0].cidr && isCIDR.v4(values[0].cidr);
+      },
     )
     .test(
-      'dual-stack-ipv6',
-      'Second network has to be IPv6 subnet.',
-      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean =>
-        !!values?.[1].cidr && Address6.isValid(values[1].cidr),
+      'dual-stack-unique-cidrs',
+      `Provided ${field} subnets must be unique.`,
+      (values?: { cidr?: MachineNetwork['cidr'] }[]) => {
+        if (!values || values.length < 2) {
+          return true;
+        }
+        const first = values[0]?.cidr || '';
+        const second = values[1]?.cidr || '';
+        if (!first || !second) {
+          return true;
+        }
+        const firstIsCidr = isCIDR.v4(first) || isCIDR.v6(first);
+        const secondIsCidr = isCIDR.v4(second) || isCIDR.v6(second);
+        if (!firstIsCidr || !secondIsCidr) {
+          return true;
+        }
+        return first !== second;
+      },
+    )
+    .test(
+      'dual-stack-opposite-families',
+      `When two ${field} are provided, one must be IPv4 and the other IPv6.`,
+      (values?: { cidr?: MachineNetwork['cidr'] }[]) => {
+        if (!values || values.length < 2) {
+          return true;
+        }
+        const a = values[0]?.cidr || '';
+        const b = values[1]?.cidr || '';
+        if (!a || !b) {
+          return true;
+        }
+        const a4 = isCIDR.v4(a);
+        const a6 = isCIDR.v6(a);
+        const b4 = isCIDR.v4(b);
+        const b6 = isCIDR.v6(b);
+        if (!((a4 || a6) && (b4 || b6))) {
+          return true;
+        }
+        return (a4 && b6) || (a6 && b4);
+      },
     );
 
 export const IPv4ValidationSchema = Yup.array().test(

@@ -6,6 +6,7 @@ export type AlertPayload = {
   title: string;
   message?: string;
   variant?: AlertVariant;
+  key?: string;
 };
 
 export type AlertProps = {
@@ -22,7 +23,7 @@ export const alertsSlice = createSlice({
   name: 'alerts',
   reducers: {
     addAlert: (state, action: PayloadAction<AlertPayload>) => [
-      { key: uuidv4(), variant: AlertVariant.danger, ...action.payload },
+      { key: action.payload.key || uuidv4(), variant: AlertVariant.danger, ...action.payload },
       ...state,
     ],
     removeAlert: (state, action: PayloadAction<string>) =>

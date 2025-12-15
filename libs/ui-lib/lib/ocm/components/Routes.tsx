@@ -13,6 +13,7 @@ import type { FeatureListType } from '../../common/features/featureGate';
 import { AssistedUILibVersion } from './ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
+import './Routes.css';
 
 type UILibRoutesProps = {
   allEnabledFeatures: FeatureListType;
@@ -35,7 +36,9 @@ export const UILibRoutes = ({
     <>
       <Routes>
         <Route path="assisted-installer/clusters" element={<Outlet />}>
-          <Route path="~new" element={<NewClusterPage />} />
+          <Route path="~new" element={<NewClusterPage />}>
+            <Route path=":clusterId" element={<NewClusterPage />} />
+          </Route>
           <Route path=":clusterId" element={<ClusterPage />} />
           <Route index element={<Clusters />} />
         </Route>

@@ -37,7 +37,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   if (vipDhcpAllocation && machineNetworkCidr) {
     return (
       <>
-        <Spinner size="md" />
+        <Spinner size="md" data-testid="vip-static-value-spinner" />
         <i>{t('ai:This IP is being allocated by the DHCP server')}</i>
       </>
     );

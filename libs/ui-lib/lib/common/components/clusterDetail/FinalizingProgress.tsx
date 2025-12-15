@@ -2,13 +2,13 @@ import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types';
 import React from 'react';
 import { EventsModal } from '../ui';
-import { Button, ButtonVariant, Popover, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Popover, Content } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
 import ClusterProgressItem from './ClusterProgressItem';
 import capitalize from 'lodash-es/capitalize.js';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -87,13 +87,11 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
               zIndex={300} // set the zIndex below Cluster Events Modal
               headerContent={<>{t('ai:Initialization')}</>}
               bodyContent={
-                <TextContent>
-                  <Text>
-                    {t(
-                      'ai:This stage may take a while to finish. To view detailed information, click the events log link below.',
-                    )}
-                  </Text>
-                </TextContent>
+                <Content component="p">
+                  {t(
+                    'ai:This stage may take a while to finish. To view detailed information, click the events log link below.',
+                  )}
+                </Content>
               }
               footerContent={
                 <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>

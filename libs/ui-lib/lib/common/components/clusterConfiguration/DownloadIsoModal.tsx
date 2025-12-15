@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core';
 import DownloadIso, { DownloadISOProps } from './DownloadIso';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Modal, ModalHeader, ModalVariant } from '@patternfly/react-core';
 
 type DownloadIsoModalProps = DownloadISOProps & {
   isOpen: boolean;
@@ -12,13 +12,12 @@ const DownloadIsoModal: React.FC<DownloadIsoModalProps> = ({ isOpen, ...props })
   return (
     <Modal
       aria-label={t('ai:Download host discovery ISO dialog')}
-      title={t('ai:Add host')}
       isOpen={isOpen}
       onClose={props.onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="download-discovery-iso-modal"
     >
+      <ModalHeader title={t('ai:Add host')} />
       <DownloadIso {...props} />
     </Modal>
   );

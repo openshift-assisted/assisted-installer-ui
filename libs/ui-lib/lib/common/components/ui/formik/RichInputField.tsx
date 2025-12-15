@@ -14,15 +14,16 @@ import {
   InputGroupItem,
   FormHelperText,
   HelperText,
+  ButtonVariant,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TimesIcon } from '@patternfly/react-icons/dist/js/icons/times-icon';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/js/global_danger_color_100';
-import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
+import { t_global_icon_color_status_info_default as blueInfoColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_info_default';
 
 import { InputFieldProps as BaseInputProps } from './types';
 import { getFieldId } from './utils';
@@ -50,19 +51,26 @@ type RichValidationProps = {
   value: any;
   error: string | undefined;
   richValidationMessages: { [key: string]: string };
+  fieldId: string;
 };
 
 export const RichValidation: React.FC<RichValidationProps> = ({
   value,
   error,
   richValidationMessages,
+  fieldId,
 }) => {
   return (
     <PFHelperText component="ul" className="rich-input__rules">
       {Object.keys(richValidationMessages).map((key) => {
         const variant = getHelperTextVariant(richValidationMessages[key], value, error);
         return (
-          <HelperTextItem key={key} isDynamic component="li" {...variant}>
+          <HelperTextItem
+            key={key}
+            component="li"
+            {...variant}
+            data-testid={`input-richinputvalidation-${fieldId}-helper-text`}
+          >
             {richValidationMessages[key]}
           </HelperTextItem>
         );
@@ -108,7 +116,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
         fieldId={fieldId}
         label={label}
         isRequired={isRequired}
-        labelIcon={labelIcon}
+        labelHelp={labelIcon}
       >
         <InputGroup
           className={classNames('rich-input__group', { 'rich_input__group--invalid': !isValid })}
@@ -148,19 +156,24 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                   value={value}
                   error={error}
                   richValidationMessages={richValidationMessages as Record<string, string>}
+                  fieldId={fieldId}
                 />
               }
               withFocusTrap={false}
             >
-              <Button variant="plain" aria-label="Validation">
-                {!isValid ? (
-                  <ExclamationCircleIcon color={dangerColor.value} />
-                ) : value ? (
-                  <CheckCircleIcon color={okColor.value} />
-                ) : (
-                  <InfoCircleIcon color={blueInfoColor.value} />
-                )}
-              </Button>
+              <Button
+                icon={
+                  !isValid ? (
+                    <ExclamationCircleIcon color={dangerColor.value} />
+                  ) : value ? (
+                    <CheckCircleIcon color={okColor.value} />
+                  ) : (
+                    <InfoCircleIcon color={blueInfoColor.value} />
+                  )
+                }
+                variant={ButtonVariant.control}
+                aria-label="Validation"
+              />
             </Popover>
           </InputGroupItem>
         </InputGroup>
@@ -171,6 +184,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
                 icon={errorMessage && <ExclamationCircleIcon />}
                 variant={isValid ? 'default' : 'error'}
                 id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
+                data-testid={`input-richinput-${fieldId}-helper-text`}
               >
                 {errorMessage ? errorMessage : helperText}
               </HelperTextItem>

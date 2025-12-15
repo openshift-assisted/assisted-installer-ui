@@ -26,13 +26,12 @@ export const RemoveItemButton = ({
   dataTestId: string;
 }) => (
   <Button
+    icon={<MinusCircleIcon onClick={onRemove} />}
     data-testid={dataTestId}
     aria-label="remove manifest"
     style={{ visibility: showRemoveButton ? 'visible' : 'hidden' }}
     variant="plain"
-  >
-    <MinusCircleIcon onClick={onRemove} />
-  </Button>
+  />
 );
 
 export const CustomManifest = ({

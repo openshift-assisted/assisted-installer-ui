@@ -1,15 +1,16 @@
 import React from 'react';
 import {
   Button,
-  Modal,
   ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-  ModalBoxBody,
   Spinner,
-  Title,
 } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+import { t_global_icon_color_status_warning_default as globalIconColorWarning } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
@@ -89,25 +90,21 @@ export const EventsModal = ({
 
   return (
     <Modal
-      header={
-        <Title headingLevel={'h1'}>
-          {title} {isLoading && <Spinner size="lg" />}
-        </Title>
-      }
       isOpen={isOpen}
       aria-label={t('ai:Displays events')}
-      hasNoBodyWrapper
-      actions={[
-        <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
-          {t('ai:Close')}
-        </Button>,
-      ]}
       onClose={onClose}
       variant={ModalVariant.large}
       className="events-modal"
       id={'events-modal'}
     >
-      <ModalBoxBody className="events-modal__body">
+      <ModalHeader
+        title={
+          <>
+            {title} {isLoading && <Spinner size="lg" data-testid="events-modal-spinner" />}
+          </>
+        }
+      />
+      <ModalBody className="events-modal__body">
         {fallbackEventsURL ? (
           <ErrorState
             title={t('ai:Could not load events')}
@@ -120,12 +117,22 @@ export const EventsModal = ({
               </>
             }
             icon={ExclamationTriangleIcon}
-            iconColor={globalWarningColor100.value}
+            iconColor={globalIconColorWarning.value}
           />
         ) : (
           <EventListFetch className="events-modal__event-list" setLoading={setLoading} {...rest} />
         )}
-      </ModalBoxBody>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          key="close"
+          variant={ButtonVariant.primary}
+          onClick={onClose}
+          data-testid="close-events-modal"
+        >
+          {t('ai:Close')}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

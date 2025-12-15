@@ -1,5 +1,4 @@
 import React from 'react';
-import { ExpandableSection } from '@patternfly/react-core';
 import {
   DetailItem,
   DetailList,
@@ -46,7 +45,7 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
                   </>
                 }
                 testId="platform-integration-note"
-                classNameValue={'pf-v5-u-mt-sm'}
+                classNameValue={'pf-v6-u-mt-sm'}
               />
             </DetailList>
           </RenderIf>
@@ -68,14 +67,9 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
 
 const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   return (
-    <ExpandableSection
-      toggleText={'Cluster summary'}
-      className={'summary-expandable'}
-      isIndented
-      isExpanded
-    >
+    <TableSummaryExpandable title={'Cluster summary'} id={'summary-expandable'}>
       <ReviewSummaryContent cluster={cluster} />
-    </ExpandableSection>
+    </TableSummaryExpandable>
   );
 };
 

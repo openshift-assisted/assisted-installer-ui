@@ -1,16 +1,11 @@
 import * as React from 'react';
+import { Alert, Button, ButtonVariant, Form, Stack, StackItem } from '@patternfly/react-core';
 import {
-  Alert,
-  Button,
-  ButtonVariant,
-  Form,
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { Formik, FormikProps } from 'formik';
 import { InfraEnvK8sResource } from '../../types';
 import { RadioField, AdditionalNTPSourcesField } from '../../../common';

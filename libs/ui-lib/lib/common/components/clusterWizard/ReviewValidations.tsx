@@ -4,7 +4,7 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/js/global_success_color_100';
+import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 
 import {
   ValidationsInfo as ClusterValidationsInfo,
@@ -108,7 +108,10 @@ const FailingValidation = <S extends string>({
       </>
     );
   } else {
-    if (validation.id === 'platform-requirements-satisfied') {
+    if (
+      validation.id === 'platform-requirements-satisfied' ||
+      validation.id === 'openshift-ai-gpu-requirements-satisfied'
+    ) {
       fix = validation.message;
     }
     // console.error(

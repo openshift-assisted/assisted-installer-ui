@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, ModalHeader, ModalVariant } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
 import {
   AI_CISCO_INTERSIGHT_TAG,
@@ -104,14 +104,17 @@ export const DiscoveryImageModal = () => {
   return (
     <Modal
       aria-label="Add hosts dialog"
-      title={`Add ${pluralize(+isSNOCluster, 'host')}`}
       isOpen={isOpen}
       onClose={close}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="generate-discovery-iso-modal"
+      ouiaId="discovery-image-modal"
       tabIndex={0}
     >
+      <ModalHeader
+        data-testid="discovery-modal-title"
+        title={`Add ${pluralize(+isSNOCluster, 'host')}`}
+      />
       {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
       {isoDownloadUrl ? (
         <DownloadIso

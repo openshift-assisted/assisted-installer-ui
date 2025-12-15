@@ -43,8 +43,8 @@
     "@patternfly/react-icons": "6.3.1",
     "@patternfly/react-styles": "6.3.1",
     "@patternfly/react-tokens": "6.3.1",
-    "@redhat-cloud-services/ai-client-state": "^0.14.0",
-    "@redhat-cloud-services/lightspeed-client": "^0.14.0",
+    "@redhat-cloud-services/ai-client-state": "^0.15.0",
+    "@redhat-cloud-services/lightspeed-client": "^0.15.0",
     "file-saver": "^2.0.2",
     "lodash-es": "^4.17.21",
     "uuid": "^8.1"

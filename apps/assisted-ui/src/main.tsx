@@ -10,7 +10,7 @@ declare global {
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
-  rootElement.classList.add('pf-v5-u-h-100vh');
+  rootElement.classList.add('pf-v6-u-h-100vh');
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>

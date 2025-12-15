@@ -72,12 +72,14 @@ const CodeField = ({
       fieldId={fieldId}
       label={label}
       isRequired={isRequired}
-      labelIcon={labelIcon}
+      labelHelp={labelIcon}
       data-testid={dataTestid ? dataTestid : `${fieldId}-testid`}
     >
       {description && (
         <HelperText>
-          <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+          <HelperTextItem variant="indeterminate" data-testid="code-field-description-helper-text">
+            {description}
+          </HelperTextItem>
         </HelperText>
       )}
       <CodeEditor
@@ -103,6 +105,7 @@ const CodeField = ({
               icon={errorMessage && <ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid="code-field-helper-text"
             >
               {errorMessage ? errorMessage : helperText}
             </HelperTextItem>

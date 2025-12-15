@@ -46,7 +46,7 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
         openshiftVersion={cluster.openshiftVersion}
         platformType={cluster.platform?.type}
       >
-        <Grid className="pf-v5-u-mt-md">
+        <Grid className="pf-v6-u-mt-md">
           <ClusterProperties cluster={cluster} externalMode />
         </Grid>
       </NewFeatureSupportLevelProvider>

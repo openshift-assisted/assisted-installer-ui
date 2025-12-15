@@ -14,9 +14,9 @@ import {
   NetworkConfigurationValues,
   FormikStaticField,
   NETWORK_TYPE_SDN,
+  DUAL_STACK,
   selectMachineNetworkCIDR,
   getVipValidationsById,
-  DUAL_STACK,
   PopoverIcon,
   selectApiVip,
   selectIngressVip,
@@ -25,7 +25,12 @@ import { selectCurrentClusterPermissionsState } from '../../../store/slices/curr
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { Cluster, Ip, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  ApiVip,
+  Cluster,
+  Ip,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
 
 interface VipStaticValueProps {
   id?: string;
@@ -61,7 +66,7 @@ const VipStaticValue = ({
   if (vipDhcpAllocation && machineNetworkCidr) {
     return (
       <>
-        <Spinner size="md" id={`${id}-allocating`} />
+        <Spinner size="md" id={`${id}-allocating`} data-testid={`vip-static-${id}-value-spinner`} />
         <i> This IP is being allocated by the DHCP server</i>
       </>
     );
@@ -97,6 +102,7 @@ export const VirtualIPControlGroup = ({
   );
 
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
+  const isDualStack = values.stackType === DUAL_STACK;
 
   React.useEffect(() => {
     if (!isViewerMode && !enableAllocation) {
@@ -113,11 +119,22 @@ export const VirtualIPControlGroup = ({
     [cluster.apiVips, cluster.ingressVips, setFieldValue],
   );
 
-  const setVipValue = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    setFieldValue(field, [{ ip: e.target.value, clusterId: cluster.id }], true);
+  const setVipValueAtIndex = (
+    field: 'apiVips' | 'ingressVips',
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const fieldArray: ApiVip[] =
+      field === 'apiVips' ? values.apiVips || [] : values.ingressVips || [];
+    const next: ApiVip[] = Array.isArray(fieldArray) ? [...fieldArray] : [];
+    // Ensure array has the desired length
+    while (next.length <= index) {
+      next.push({ ip: '', clusterId: cluster.id });
+    }
+    next[index] = { ip: e.target.value, clusterId: cluster.id };
+    setFieldValue(field, next, true);
   };
 
-  const ipFieldsSuffix = values.stackType === DUAL_STACK ? ' (IPv4)' : '';
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
@@ -145,7 +162,7 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>API IP{ipFieldsSuffix}</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
               </>
             }
             name="apiVip"
@@ -164,8 +181,7 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
               </>
             }
             name="ingressVip"
@@ -191,34 +207,72 @@ export const VirtualIPControlGroup = ({
                   <OcmInputField
                     label={
                       <>
-                        <span>API IP{ipFieldsSuffix}</span>{' '}
-                        <PopoverIcon bodyContent={ipPopoverContent} />
+                        <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
                       </>
                     }
                     name="apiVips.0.ip"
                     helperText={ipHelperText}
                     isRequired
+                    labelInfo={isDualStack ? 'Primary' : undefined}
                     onChange={(e) =>
-                      setVipValue('apiVips', e as React.ChangeEvent<HTMLInputElement>)
+                      setVipValueAtIndex('apiVips', 0, e as React.ChangeEvent<HTMLInputElement>)
                     }
                   />
                 </StackItem>
+                {isDualStack && (
+                  <StackItem>
+                    <OcmInputField
+                      label={
+                        <>
+                          <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                        </>
+                      }
+                      name="apiVips.1.ip"
+                      helperText={ipHelperText}
+                      labelInfo={'Secondary'}
+                      onChange={(e) =>
+                        setVipValueAtIndex('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
+                      }
+                    />
+                  </StackItem>
+                )}
                 <StackItem>
                   <OcmInputField
                     name="ingressVips.0.ip"
                     label={
                       <>
-                        <span>Ingress IP{ipFieldsSuffix}</span>{' '}
-                        <PopoverIcon bodyContent={ipPopoverContent} />
+                        <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
                       </>
                     }
                     helperText={ipHelperText}
                     isRequired
+                    labelInfo={isDualStack ? 'Primary' : undefined}
                     onChange={(e) =>
-                      setVipValue('ingressVips', e as React.ChangeEvent<HTMLInputElement>)
+                      setVipValueAtIndex('ingressVips', 0, e as React.ChangeEvent<HTMLInputElement>)
                     }
                   />
                 </StackItem>
+                {isDualStack && (
+                  <StackItem>
+                    <OcmInputField
+                      name="ingressVips.1.ip"
+                      label={
+                        <>
+                          <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                        </>
+                      }
+                      helperText={ipHelperText}
+                      labelInfo={'Secondary'}
+                      onChange={(e) =>
+                        setVipValueAtIndex(
+                          'ingressVips',
+                          1,
+                          e as React.ChangeEvent<HTMLInputElement>,
+                        )
+                      }
+                    />
+                  </StackItem>
+                )}
               </Stack>
             )}
           </FieldArray>

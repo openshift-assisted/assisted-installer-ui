@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Content } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -92,7 +92,7 @@ const NetworkConfigurationForm: React.FC<{
           JSON.stringify(
             JSON.stringify({
               featureSet: 'CustomNoUpgrade',
-              featureGates: ['NoRegistryClusterOperations=true'],
+              featureGates: ['NoRegistryClusterInstall=true'],
             }),
           ),
         );
@@ -153,9 +153,7 @@ const NetworkConfigurationForm: React.FC<{
             </Grid>
           </GridItem>
           <GridItem>
-            <TextContent>
-              <Text component="h2">Host inventory</Text>
-            </TextContent>
+            <Content component="h2">Host inventory</Content>
             <NetworkConfigurationTable cluster={cluster} />
           </GridItem>
         </Grid>
@@ -202,8 +200,9 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   );
 
   const memoizedValidationSchema = React.useMemo(
-    () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
-    [hostSubnets, initialValues],
+    () =>
+      getNetworkConfigurationValidationSchema(initialValues, hostSubnets, cluster.openshiftVersion),
+    [hostSubnets, initialValues, cluster.openshiftVersion],
   );
 
   React.useEffect(() => {

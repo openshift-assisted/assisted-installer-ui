@@ -1,5 +1,14 @@
 import React from 'react';
-import { Button, ButtonVariant, FormGroup, Modal, ModalVariant } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { OpenShiftSelectWithSearch } from './OpenShiftSelectWithSearch';
 import { HelperTextType } from './OpenShiftVersionDropdown';
 import { useFormikContext } from 'formik';
@@ -26,25 +35,14 @@ export const OpenShiftVersionModal = ({
 
   return (
     <Modal
-      title="Available OpenShift Versions"
       id="available-openshift-versions-modal"
       isOpen
-      actions={[
-        <Button
-          key="select-custom-ocp"
-          variant={ButtonVariant.primary}
-          onClick={() => setOpenshiftVersionModalOpen(false)}
-        >
-          Select
-        </Button>,
-        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onCancel}>
-          Cancel
-        </Button>,
-      ]}
-      onClose={onCancel}
+      onClose={() => setOpenshiftVersionModalOpen(false)}
       variant={ModalVariant.small}
     >
-      <FormGroup
+      <ModalHeader title="Available OpenShift Versions" />
+      <ModalBody>
+        <FormGroup
         id={`form-control__customOpenshiftSelect`}
         fieldId={'customOpenshiftSelect'}
         label={'OpenShift version'}
@@ -52,6 +50,15 @@ export const OpenShiftVersionModal = ({
       >
         <OpenShiftSelectWithSearch versions={allVersions} getHelperText={getHelperText} />
       </FormGroup>
+      </ModalBody>
+      <ModalFooter>
+        <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={() => setOpenshiftVersionModalOpen(false)}>
+          Select
+        </Button>
+        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onCancel}>
+          Cancel
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

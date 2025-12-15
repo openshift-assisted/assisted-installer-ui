@@ -30,12 +30,11 @@ const RemovableField: React.FC<RemovableFieldProps & Omit<TooltipProps, 'content
       distance={0}
       content={
         <Button
+          icon={<UiIcon size="sm" icon={<MinusCircleIcon />} />}
           variant={ButtonVariant.plain}
           onClick={onRemove}
           data-testid={removeButtonDataTestId}
-        >
-          <UiIcon size="sm" icon={<MinusCircleIcon />} />
-        </Button>
+        />
       }
       className={classnames('ai-remove-button__tooltip ', className)}
       {...props}

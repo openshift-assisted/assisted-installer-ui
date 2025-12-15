@@ -46,20 +46,36 @@ export const getAddHostsTabState = (cluster: OcmClusterType): AddHostsTabState =
   // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
   const day1ClusterHostCount = cluster.metrics?.nodes?.total || 0;
 
-  if (isClusterStateReady && wasInstalledUsingAssistedInstaller) {
-    let tabState = makeState('visible');
-    if (day1ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
-      // The cluster has metrics etc., but it's an SNO with an OpenshiftVersion that doesn't support Day2 flow
-      tabState = makeState(
-        'disabled',
-        'OpenShift version not supported for SNO expansion. Hosts cannot be added to an existing SNO cluster that was installed with any OpenShift version older than 4.11. Upgrade to a newer OpenShift version and try again.',
-      );
-    }
-
-    return tabState;
-  } else {
-    // The cluster is not ready or was not installed using Assisted Installer.
-    // (see: https://issues.redhat.com/browse/HAC-3989)
-    return makeState('hidden');
+  // Disable Add Hosts with the following priority:
+  // 1) Cluster is not ready
+  // 2) Cluster was not installed using Assisted Installer
+  // 3) Cluster has no metrics
+  if (!isClusterStateReady) {
+    return makeState(
+      'disabled',
+      'Cluster is not ready. Please wait for the cluster to be ready and try again.',
+    );
+  } else if (!wasInstalledUsingAssistedInstaller) {
+    return makeState(
+      'disabled',
+      'Hosts cannot be added to an existing cluster that was not installed using Assisted Installer. Install a new cluster and try again.',
+    );
+  } else if (!cluster.metrics) {
+    return makeState(
+      'disabled',
+      'Cluster has no metrics. Please wait for the cluster to have metrics and try again.',
+    );
   }
+
+  // At this point the cluster is ready, installed using Assisted Installer, and has metrics
+  let tabState = makeState('visible');
+  if (day1ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
+    // The cluster has metrics etc., but it's an SNO with an OpenshiftVersion that doesn't support Day2 flow
+    tabState = makeState(
+      'disabled',
+      'OpenShift version not supported for SNO expansion. Hosts cannot be added to an existing SNO cluster that was installed with any OpenShift version older than 4.11. Upgrade to a newer OpenShift version and try again.',
+    );
+  }
+
+  return tabState;
 };

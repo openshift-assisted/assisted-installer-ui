@@ -14,6 +14,7 @@ export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   'credentials-download': 'Download credentials',
   'disconnected-review': 'Review and download ISO',
   'disconnected-basic': 'Basic information',
+  'disconnected-optional-configurations': 'Optional configurations',
 };
 
 export const defaultWizardSteps: ClusterWizardStepsType[] = [
