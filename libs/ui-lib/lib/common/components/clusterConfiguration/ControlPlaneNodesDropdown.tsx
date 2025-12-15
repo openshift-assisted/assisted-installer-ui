@@ -10,9 +10,10 @@ import {
 } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { getFieldId, StaticField } from '../..';
-import { useField } from 'formik';
 import toNumber from 'lodash-es/toNumber';
 import OcmTNADisclaimer from './OcmTNADisclaimer';
+import { ClusterDetailsValues } from '../clusterWizard';
+import { useField, useFormikContext } from 'formik';
 
 const isItemEnabled = (value: number, allowHighlyAvailable?: boolean, allowTNA?: boolean) => {
   switch (value) {
@@ -44,6 +45,7 @@ const ControlPlaneNodesDropdown = ({
 }) => {
   const { t } = useTranslation();
   const [{ name, value: selectedValue }, , { setValue }] = useField<number>('controlPlaneCount');
+  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const [controlPlanelOpen, setControlPlanelOpen] = React.useState(false);
   const fieldId = getFieldId(name, 'input');
 
@@ -85,6 +87,13 @@ const ControlPlaneNodesDropdown = ({
     e?: React.MouseEvent<Element, MouseEvent>,
     value?: string | number,
   ) => {
+    if (value === 1) {
+      setFieldValue('userManagedNetworking', true);
+      setFieldValue('platform', 'none');
+    } else {
+      setFieldValue('userManagedNetworking', false);
+      setFieldValue('platform', 'baremetal');
+    }
     setValue(toNumber(value));
     setControlPlanelOpen(false);
   };

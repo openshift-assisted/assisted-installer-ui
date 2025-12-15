@@ -58,6 +58,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     };
     holdInstallation?: boolean;
     platformType: string;
+    manifestsConfigMapRefs?: { name: string }[];
   };
   status?: {
     apiVIP?: string;

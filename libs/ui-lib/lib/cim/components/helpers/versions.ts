@@ -8,7 +8,7 @@ import {
 } from '../../types';
 import { CpuArchitecture, OpenshiftVersionOptionType } from '../../../common';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
-import { isMajorMinorVersionEqualOrGreater } from '../../../common/utils';
+import { getComparableVersionInt } from '../../../common/utils';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
   const match = /.+:(\d+\.\d+(?:\.\d+)?(?:-\w+)?)/gm.exec(releaseImage);
@@ -123,5 +123,9 @@ export const getCurrentClusterVersion = (cv?: ClusterVersionK8sResource): string
 
 export const getNetworkType = (
   ocpVersion: OpenshiftVersionOptionType | undefined,
-): 'OVNKubernetes' | 'OpenShiftSDN' =>
-  isMajorMinorVersionEqualOrGreater(ocpVersion?.version, '4.12') ? 'OVNKubernetes' : 'OpenShiftSDN';
+): 'OVNKubernetes' | 'OpenShiftSDN' => {
+  const checkVersionNum = getComparableVersionInt(ocpVersion?.version || '');
+  const toVersionNum = getComparableVersionInt('4.12');
+
+  return !checkVersionNum || checkVersionNum >= toVersionNum ? 'OVNKubernetes' : 'OpenShiftSDN';
+};

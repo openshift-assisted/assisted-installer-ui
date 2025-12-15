@@ -1,15 +1,15 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { CheckboxField, NumberInputField } from '../../../common';
-import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
+import { CheckboxField, NumberInputField } from '../../../../common';
+import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from '../constants';
 import { useFormikContext } from 'formik';
-import { ClusterDeploymentHostsSelectionValues } from './types';
-import LocationsSelector from './LocationsSelector';
-import { AgentK8sResource } from '../../types';
-import AgentsSelectionHostCountAlerts from '../Agent/AgentsSelectionHostCountAlerts';
-import AgentsSelectionHostCountLabelIcon from '../Agent/AgentsSelectionHostCountLabelIcon';
-import { useAgentsAutoSelection } from '../Agent/AgentsSelectionUtils';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { ClusterDeploymentHostsSelectionValues } from '../types';
+import LocationsSelector from '../LocationsSelector';
+import { AgentK8sResource } from '../../../types';
+import AgentsSelectionHostCountAlerts from '../../Agent/AgentsSelectionHostCountAlerts';
+import AgentsSelectionHostCountLabelIcon from '../../Agent/AgentsSelectionHostCountLabelIcon';
+import { useAgentsAutoSelection } from '../../Agent/AgentsSelectionUtils';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentHostsSelectionBasicProps = {
   availableAgents: AgentK8sResource[];

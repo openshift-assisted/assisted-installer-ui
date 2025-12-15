@@ -9,3 +9,4 @@ export { default as SecurityFields } from './SecurityFields';
 export * from './utils';
 export * from './DiscoveryTroubleshootingModal';
 export * from './DiscoveryImageConfigForm';
+export * from './ExternalPlatformsDropdown';

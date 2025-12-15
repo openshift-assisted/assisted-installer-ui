@@ -11,17 +11,17 @@ import {
   InfraEnvK8sResource,
 } from '../../types';
 import { getAICluster } from '../helpers';
-import { defaultNetworkSettings } from './ClusterDeploymentNetworkingForm';
 import { useDeepCompareMemoize } from '../../../common/hooks';
 import {
   HostSubnets,
   hostPrefixValidationSchema,
   ipBlockValidationSchema,
   vipArrayValidationSchema,
-  sshPublicKeyValidationSchema,
+  sshPublicKeyListValidationSchema,
   hostSubnetValidationSchema,
   httpProxyValidationSchema,
   noProxyValidationSchema,
+  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -52,7 +52,7 @@ const getNetworkConfigurationValidationSchema = (
       serviceNetworkCidr: ipBlockValidationSchema(values.clusterNetworkCidr),
       apiVips: vipArrayValidationSchema(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema(hostSubnets, values, initialValues.ingressVips),
-      sshPublicKey: sshPublicKeyValidationSchema,
+      sshPublicKey: sshPublicKeyListValidationSchema,
       hostSubnet: hostSubnetValidationSchema,
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
       httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
@@ -79,7 +79,7 @@ export const useNetworkingFormik = ({
         agents,
       });
       return {
-        ...getNetworkInitialValues(cluster, defaultNetworkSettings),
+        ...getNetworkInitialValues(cluster, CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4),
         enableProxy: false,
         editProxy: false,
       };

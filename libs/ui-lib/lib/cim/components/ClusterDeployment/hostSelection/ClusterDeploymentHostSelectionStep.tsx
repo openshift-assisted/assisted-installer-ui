@@ -10,28 +10,28 @@ import {
   useWizardFooter,
   WizardFooter,
 } from '@patternfly/react-core';
-import { Alerts, ClusterWizardStepHeader, useAlerts } from '../../../common';
+import { Alerts, ClusterWizardStepHeader, useAlerts } from '../../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
-} from '../../types';
+} from '../../../types';
 import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
 import {
   ClusterDeploymentHostSelectionStepProps,
   ClusterDeploymentHostsSelectionValues,
-} from './types';
-import { hostCountValidationSchema } from './validationSchemas';
+} from '../types';
+import { hostCountValidationSchema } from '../validationSchemas';
 import {
   getAgentSelectorFieldsFromAnnotations,
   getIsSNOCluster,
   getWizardStepAgentStatus,
-} from '../helpers';
-import { canNextFromHostSelectionStep } from './wizardTransition';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+} from '../../helpers';
+import { canNextFromHostSelectionStep } from '../wizardTransition';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
-import { ValidationSection } from './components/ValidationSection';
-import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
+import { ValidationSection } from '../components/ValidationSection';
+import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
 
 const getInitialValues = ({
   agents,
@@ -45,9 +45,12 @@ const getInitialValues = ({
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
+
   let hostCount =
     (agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents || 0) +
+    (agentClusterInstall?.spec?.provisionRequirements?.arbiterAgents || 0) +
     (agentClusterInstall?.spec?.provisionRequirements?.workerAgents || 0);
+
   if (isSNOCluster) {
     hostCount = 1;
   } else if (hostCount === 2 || hostCount === 0) {
@@ -255,7 +258,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   const errorsSection = (
     <ValidationSection currentStepId={'cluster-details'} hosts={[]}>
       {syncError && (
-        <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+        <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
           {syncError}
         </Alert>
       )}
@@ -310,6 +313,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
           onAutoSelectChange={onAutoSelectChange}
           onHostSelect={onHostSelect}
           isNutanix={isNutanix}
+          hostsBinding={nextRequested && !showClusterErrors}
         />
       </GridItem>
       {(showClusterErrors || showFormErrors) && !!alerts.length && (
@@ -334,10 +338,9 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   );
 };
 
-const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
-  onSaveHostsSelection,
-  ...rest
-}) => {
+export const ClusterDeploymentHostSelectionStep: React.FC<
+  ClusterDeploymentHostSelectionStepProps
+> = ({ onSaveHostsSelection, ...rest }) => {
   const { t } = useTranslation();
 
   const { addAlert } = useAlerts();
@@ -377,5 +380,3 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     </Formik>
   );
 };
-
-export default ClusterDeploymentHostSelectionStep;

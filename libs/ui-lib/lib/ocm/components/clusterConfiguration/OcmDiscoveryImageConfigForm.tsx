@@ -23,7 +23,7 @@ import {
   AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
-  sshPublicKeyListValidationSchema,
+  sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
 import {
   DiscoveryImageType,
@@ -56,7 +56,7 @@ export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
 
 const validationSchema = Yup.lazy((values: OcmDiscoveryImageFormValues) =>
   Yup.object<OcmDiscoveryImageFormValues>().shape({
-    sshPublicKey: sshPublicKeyListValidationSchema,
+    sshPublicKey: sshPublicKeyValidationSchema,
     httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
     httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,

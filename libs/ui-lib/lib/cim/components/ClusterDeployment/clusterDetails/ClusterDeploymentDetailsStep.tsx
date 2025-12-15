@@ -11,21 +11,22 @@ import {
   ClusterDetailsValues,
   getRichTextValidation,
   OpenshiftVersionOptionType,
-} from '../../../common';
+} from '../../../../common';
 
-import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
-import { getAICluster, getNetworkType, getOCPVersions } from '../helpers';
+import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from '../types';
+import { getAICluster, getNetworkType, getOCPVersions } from '../../helpers';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   InfraEnvK8sResource,
-} from '../../types';
-import ClusterDeploymentDetailsForm, {
+} from '../../../types';
+import {
+  ClusterDeploymentDetailsForm,
   ClusterDeploymentDetailsFormWrapper,
 } from './ClusterDeploymentDetailsForm';
-import { getGridSpans } from './helpers';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getGridSpans } from '../helpers';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 type UseDetailsFormikArgs = {
   usedClusterNames: string[];
@@ -96,7 +97,7 @@ export const useDetailsFormik = ({
   return [initialValues, validationSchema];
 };
 
-const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> = ({
+export const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> = ({
   clusterImages,
   clusterDeployment,
   agentClusterInstall,
@@ -159,5 +160,3 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     </Formik>
   );
 };
-
-export default ClusterDeploymentDetailsStep;
