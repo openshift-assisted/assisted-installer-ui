@@ -182,7 +182,7 @@ const OperatorsBundle = ({
     <Stack hasGutter>
       <StackItem>
         <Title headingLevel="h2" size="lg">
-          {bundles.length > 0 ? 'Bundles' : ''}
+          {allBundles.length > 0 ? 'Bundles' : ''}
         </Title>
       </StackItem>
       <StackItem>
@@ -193,7 +193,7 @@ const OperatorsBundle = ({
           ).map((bundle) => (
             <GalleryItem key={bundle.id}>
               <BundleCard
-                bundle={bundle}
+                bundle={bundles.find((b) => b.id === bundle.id) || bundle}
                 bundles={bundles}
                 preflightRequirements={preflightRequirements}
                 searchTerm={searchTerm}
