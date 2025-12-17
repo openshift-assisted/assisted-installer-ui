@@ -8,14 +8,14 @@ import {
   WizardFooter,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import { canNextFromReviewStep } from './wizardTransition';
+import { canNextFromReviewStep } from '../wizardTransition';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   ClusterImageSetK8sResource,
   InfraEnvK8sResource,
-} from '../../types';
+} from '../../../types';
 import {
   ClusterWizardStepHeader,
   DetailList,
@@ -24,18 +24,25 @@ import {
   ClusterValidations,
   HostsValidations,
   useAlerts,
-} from '../../../common';
-import { getSelectedVersion, getAICluster, getClusterDeploymentCpuArchitecture } from '../helpers';
-import { isAgentOfCluster } from './helpers';
-import { wizardStepNames } from './constants';
+  getPlatforms,
+} from '../../../../common';
+import {
+  getSelectedVersion,
+  getAICluster,
+  getClusterDeploymentCpuArchitecture,
+} from '../../helpers';
+import { isAgentOfCluster } from '../helpers';
+import { wizardStepNames } from '../constants';
 import {
   wizardStepsValidationsMap,
   ClusterWizardStepsType,
   allClusterWizardSoftValidationIds,
-} from './wizardTransition';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
-import { ValidationSection } from './components/ValidationSection';
+} from '../wizardTransition';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
+import { ReviewConfigMapsTable } from './ReviewConfigMapsTable';
+import { ValidationSection } from '../components/ValidationSection';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDeploymentReviewStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -47,7 +54,7 @@ type ClusterDeploymentReviewStepProps = {
   infraEnv?: InfraEnvK8sResource;
 };
 
-const ClusterDeploymentReviewStep = ({
+export const ClusterDeploymentReviewStep = ({
   agentClusterInstall,
   agents,
   onFinish,
@@ -77,7 +84,7 @@ const ClusterDeploymentReviewStep = ({
       await onFinish();
     } catch (err) {
       const error = err as Error;
-      addAlert({ title: error.message || t('ai:An error occured while starting installation.') });
+      addAlert({ title: error.message || t('ai:An error occurred while starting installation.') });
     } finally {
       setSubmitting(false);
     }
@@ -97,6 +104,10 @@ const ClusterDeploymentReviewStep = ({
   useWizardFooter(footer);
 
   const openShiftVersion = getSelectedVersion(clusterImages, agentClusterInstall);
+  const platform =
+    getPlatforms(t)[
+      (agentClusterInstall?.spec?.platformType?.toLowerCase() || 'baremetal') as PlatformType
+    ];
 
   const cluster = React.useMemo(
     () => getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents }),
@@ -128,6 +139,11 @@ const ClusterDeploymentReviewStep = ({
             testId="cpu-architecture"
           />
           <DetailItem
+            title={t('ai:External partner platform')}
+            value={platform}
+            testId="platform-type"
+          />
+          <DetailItem
             title={t('ai:API IP')}
             value={agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP}
             testId="api-vip"
@@ -142,6 +158,13 @@ const ClusterDeploymentReviewStep = ({
             testId="cluster-summary"
             value={<ReviewHostsInventory hosts={cluster.hosts} />}
           />
+
+          {!!agentClusterInstall.spec?.manifestsConfigMapRefs?.length ? (
+            <DetailItem
+              title={t('ai:Custom manifests')}
+              value={<ReviewConfigMapsTable agentClusterInstall={agentClusterInstall} />}
+            />
+          ) : undefined}
 
           <DetailItem
             title={t('ai:Cluster validations')}
@@ -173,7 +196,7 @@ const ClusterDeploymentReviewStep = ({
       {syncError && (
         <GridItem>
           <ValidationSection currentStepId={'review'} hosts={[]}>
-            <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+            <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
               {syncError}
             </Alert>
           </ValidationSection>
@@ -182,5 +205,3 @@ const ClusterDeploymentReviewStep = ({
     </Grid>
   );
 };
-
-export default ClusterDeploymentReviewStep;

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom-v5-compat';
+import countBy from 'lodash-es/countBy';
 
 import {
   HostsTableActions,
@@ -25,7 +26,7 @@ import {
   getBMHStatusKey,
   getWizardStepAgentStatus,
 } from '../helpers/status';
-import { filterByHostname } from '../../../common/components/hosts/utils';
+import { filterByHostname, getHostLabels } from '../../../common/components/hosts/utils';
 import { agentStatus } from '../helpers/agentStatus';
 import noop from 'lodash-es/noop.js';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -318,17 +319,6 @@ export const canUnbindAgent = (
   }
 
   const statusKey = getAgentStatusKey(agent);
-  if (
-    [
-      'preparing-for-installation',
-      'installing',
-      'installing-in-progress',
-      'installing-pending-user-action',
-      'resetting-pending-user-action',
-    ].includes(statusKey)
-  ) {
-    return [false, t('ai:It is not possible to remove a host which is being installed.')];
-  }
 
   if (
     ['installed', 'error', 'cancelled'].includes(statusKey) &&
@@ -401,6 +391,7 @@ export const useAgentsTable = (
   } = tableActions || {};
   const { t } = useTranslation();
   const agentStatuses = agentStatus(t);
+
   const [hosts, actions] = React.useMemo(
     (): [Host[], HostsTableActions] => [
       getAIHosts(agents, bmhs, infraEnv),
@@ -548,6 +539,22 @@ const filterByStatus = (
   });
 };
 
+const filterByLabels = (hosts: Host[], labelFilter: string[]) => {
+  if (!labelFilter.length) {
+    return hosts;
+  }
+
+  return hosts.filter((h) => {
+    const labels = getHostLabels(h);
+
+    return labelFilter.some((l) =>
+      Object.entries(labels)
+        .map(([key, value]) => `${key} = ${value}`)
+        .includes(l),
+    );
+  });
+};
+
 export const filterHosts = (
   hosts: Host[],
   agents: AgentK8sResource[],
@@ -555,11 +562,26 @@ export const filterHosts = (
   bareMetalHosts: BareMetalHostK8sResource[],
   hostnameFilter: string | undefined,
   statusFilter: string[],
+  labelFilter: string[],
 ) => {
   const { hosts: byHostname, sorted } = filterByHostname(hosts, hostnameFilter);
   const byStatus = filterByStatus(byHostname, agents, agentStatuses, bareMetalHosts, statusFilter);
+  const byLabels = filterByLabels(byStatus, labelFilter);
 
-  return { hosts: byStatus, sorted };
+  return { hosts: byLabels, sorted };
+};
+
+const getAllLabels = (hosts: Host[]) => {
+  const labelArray = hosts
+    .map((host) => {
+      const labels = getHostLabels(host);
+
+      return Object.entries(labels).map(([key, val]) => `${key} = ${val}`);
+    })
+    .flat()
+    .sort();
+
+  return countBy(labelArray);
 };
 
 type UseAgentsFilterArgs = {
@@ -581,10 +603,12 @@ export const useAgentsFilter = ({
 }: UseAgentsFilterArgs) => {
   const [hostnameFilter, setHostnameFilter] = React.useState<string>();
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
+  const [labelFilter, setLabelFilter] = React.useState<string[]>([]);
   const statusCount = Object.keys(agentStatuses).reduce((acc, curr) => {
     acc[agentStatuses[curr].title] = 0;
     return acc;
   }, {} as StatusCount);
+
   hosts.forEach((host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     const bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);
@@ -597,6 +621,8 @@ export const useAgentsFilter = ({
     }
   });
 
+  const hostLabels = getAllLabels(hosts);
+
   const { hosts: filteredHosts, sorted } = filterHosts(
     hosts,
     agents,
@@ -604,6 +630,7 @@ export const useAgentsFilter = ({
     bmhs,
     hostnameFilter,
     statusFilter,
+    labelFilter,
   );
 
   return {
@@ -612,6 +639,9 @@ export const useAgentsFilter = ({
     setHostnameFilter,
     statusFilter,
     setStatusFilter,
+    hostLabels,
+    labelFilter,
+    setLabelFilter,
     filteredHosts,
     sorted,
   };

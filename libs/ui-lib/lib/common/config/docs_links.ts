@@ -47,12 +47,11 @@ export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string)
 
 //Networking page
 export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) => {
-  const variant = isMajorMinorVersionEqualOrGreater(ocpVersion, '4.18')
+  const validOcpVersion = getDocsOpenshiftVersion(ocpVersion);
+  const variant = isMajorMinorVersionEqualOrGreater(validOcpVersion, '4.18')
     ? 'user-provisioned-infrastructure'
     : 'installing-bare-metal';
-  return `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
-    ocpVersion,
-  )}/html/installing_on_bare_metal/${variant}#installation-network-user-infra_installing-bare-metal`;
+  return `https://docs.redhat.com/en/documentation/openshift_container_platform/${validOcpVersion}/html/installing_on_bare_metal/${variant}#installation-network-user-infra_installing-bare-metal`;
 };
 
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';

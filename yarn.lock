@@ -782,7 +782,7 @@ __metadata:
   dependencies:
     "@openshift-assisted/locales": "workspace:*"
     "@openshift-assisted/types": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 0.0.3
+    "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.2.3
     "@patternfly/react-code-editor": 6.2.2
     "@patternfly/react-core": 6.2.2
@@ -858,6 +858,28 @@ __metadata:
     react-router: 5.2.0
     react-router-dom: 5.2.0
   checksum: 6e75abd895d5f105c58fc51aab4a2b320dd214a6d9ae46f6ea114a05c32771599f9432790c263e678990ad53906aeb7846fdec742bce4b9e52fd74b191aee42e
+  languageName: node
+  linkType: hard
+
+"@openshift-console/dynamic-plugin-sdk@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@openshift-console/dynamic-plugin-sdk@npm:1.0.0"
+  dependencies:
+    classnames: 2.x
+    immutable: 3.x
+    lodash: ^4.17.21
+    react: ^17.0.1
+    react-i18next: ^11.7.3
+    react-redux: 7.2.2
+    react-router: 5.3.x
+    react-router-dom: 5.3.x
+    react-router-dom-v5-compat: ^6.11.2
+    redux: 4.0.1
+    redux-thunk: 2.4.0
+    reselect: 4.x
+    typesafe-actions: ^4.2.1
+    whatwg-fetch: 2.x
+  checksum: 3472d8109a550e7c42b43b67bf041dd739f502c4016ee999c2f9634d6dc203eb713273a8a391065b096b95313e43eace6fac317a302d2f65d1f0624c329e9fb4
   languageName: node
   linkType: hard
 
@@ -1164,6 +1186,13 @@ __metadata:
   version: 1.15.3
   resolution: "@remix-run/router@npm:1.15.3"
   checksum: 9e70bd334d99fdf9285f0885c10353d7e25f66369080f551d997e3ce204e1af3a12d6f12b091f94a2dc9a54c80598bbe3c5194b57cbae17b7b40ab815dcd49a0
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.23.0":
+  version: 1.23.0
+  resolution: "@remix-run/router@npm:1.23.0"
+  checksum: 6a403b7bc740f15185f3b68f90f98d4976fe231e819b44a0f0628783c4f31ca1072e3370c24b98488be3e4f68ecf51b20cb9463f20a5a6cf4c21929fc7721964
   languageName: node
   linkType: hard
 
@@ -3202,7 +3231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.1":
+"classnames@npm:2.x, classnames@npm:^2.3.1":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: da424a8a6f3a96a2e87d01a432ba19315503294ac7e025f9fece656db6b6a0f7b5003bb1fbb51cbb0d9624d964f1b9bb35a51c73af9b2434c7b292c42231c1e5
@@ -6006,6 +6035,13 @@ __metadata:
   version: 9.0.21
   resolution: "immer@npm:9.0.21"
   checksum: 70e3c274165995352f6936695f0ef4723c52c92c92dd0e9afdfe008175af39fa28e76aafb3a2ca9d57d1fb8f796efc4dd1e1cc36f18d33fa5b74f3dfb0375432
+  languageName: node
+  linkType: hard
+
+"immutable@npm:3.x":
+  version: 3.8.2
+  resolution: "immutable@npm:3.8.2"
+  checksum: 41909b386950ff84ca3cfca77c74cfc87d225a914e98e6c57996fa81a328da61a7c32216d6d5abad40f54747ffdc5c4b02b102e6ad1a504c1752efde8041f964
   languageName: node
   linkType: hard
 
@@ -9075,6 +9111,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-redux@npm:7.2.2":
+  version: 7.2.2
+  resolution: "react-redux@npm:7.2.2"
+  dependencies:
+    "@babel/runtime": ^7.12.1
+    hoist-non-react-statics: ^3.3.2
+    loose-envify: ^1.4.0
+    prop-types: ^15.7.2
+    react-is: ^16.13.1
+  peerDependencies:
+    react: ^16.8.3 || ^17
+    redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: c421df8a888a261aaecd9dab92b6d2c92712a7d4e4eab15a9ed5a47bafd0cac44d66cff6cfd6ef6563820887053af7641ba872012f41a415067274430e860e98
+  languageName: node
+  linkType: hard
+
 "react-redux@npm:^8.0.5":
   version: 8.1.3
   resolution: "react-redux@npm:8.1.3"
@@ -9104,6 +9161,21 @@ __metadata:
     redux:
       optional: true
   checksum: 192ea6f6053148ec80a4148ec607bc259403b937e515f616a1104ca5ab357e97e98b8245ed505a17afee67a72341d4a559eaca9607968b4a422aa9b44ba7eb89
+  languageName: node
+  linkType: hard
+
+"react-router-dom-v5-compat@npm:^6.11.2":
+  version: 6.30.1
+  resolution: "react-router-dom-v5-compat@npm:6.30.1"
+  dependencies:
+    "@remix-run/router": 1.23.0
+    history: ^5.3.0
+    react-router: 6.30.1
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+    react-router-dom: 4 || 5
+  checksum: 4cb99e7199c16e646ab95d4c05e709f3dbcdcf9054ed92d98bb92ac6247ee715879183371555e39c109c2e549f7fd28feb5637ed75daa924a559d00297d85474
   languageName: node
   linkType: hard
 
@@ -9138,7 +9210,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^5.3.3":
+"react-router-dom@npm:5.3.x, react-router-dom@npm:^5.3.3":
   version: 5.3.4
   resolution: "react-router-dom@npm:5.3.4"
   dependencies:
@@ -9175,7 +9247,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:5.3.4":
+"react-router@npm:5.3.4, react-router@npm:5.3.x":
   version: 5.3.4
   resolution: "react-router@npm:5.3.4"
   dependencies:
@@ -9202,6 +9274,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 1f7d9a5a849761ff69ef8f3d3131b4c1c25d18b76317ba5ad6f0d9421192c0b8b71ab0cc818c57aad7b81ada725559e513307d0ab43296a460262f0358602672
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.30.1":
+  version: 6.30.1
+  resolution: "react-router@npm:6.30.1"
+  dependencies:
+    "@remix-run/router": 1.23.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: cab6c2ef3e4bc2b7d92c17f9de30d56f169ffe10a082de52a5842a335289d798aec91ff7bc39dfe7d73f6c50ae56e9e5d1597e8edfcdd80910b93383138a7525
   languageName: node
   linkType: hard
 
@@ -9277,12 +9360,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redux-thunk@npm:2.4.0":
+  version: 2.4.0
+  resolution: "redux-thunk@npm:2.4.0"
+  peerDependencies:
+    redux: ^4
+  checksum: 250cd88087bb4614052a5175fd6bd4c70b6a4479c357af8628b3a1d5f75d5b0a6c01645acc3257d3ed147a949708dd748a50b00402d548c3331038ed4f296edc
+  languageName: node
+  linkType: hard
+
 "redux-thunk@npm:^2.4.2":
   version: 2.4.2
   resolution: "redux-thunk@npm:2.4.2"
   peerDependencies:
     redux: ^4
   checksum: c7f757f6c383b8ec26152c113e20087818d18ed3edf438aaad43539e9a6b77b427ade755c9595c4a163b6ad3063adf3497e5fe6a36c68884eb1f1cfb6f049a5c
+  languageName: node
+  linkType: hard
+
+"redux@npm:4.0.1":
+  version: 4.0.1
+  resolution: "redux@npm:4.0.1"
+  dependencies:
+    loose-envify: ^1.4.0
+    symbol-observable: ^1.2.0
+  checksum: f3a4e19b0413cc73ccdbe9f71977292dca9760606ab783aed516c90ca04e931fa1af573c6c55bc506580a2805d4ec0d50edde0b14d7d854f0a66da40f36184b2
   languageName: node
   linkType: hard
 
@@ -9480,7 +9582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^4.1.8":
+"reselect@npm:4.x, reselect@npm:^4.1.8":
   version: 4.1.8
   resolution: "reselect@npm:4.1.8"
   checksum: a4ac87cedab198769a29be92bc221c32da76cfdad6911eda67b4d3e7136dca86208c3b210e31632eae31ebd2cded18596f0dd230d3ccc9e978df22f233b5583e
@@ -10407,6 +10509,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"symbol-observable@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "symbol-observable@npm:1.2.0"
+  checksum: 48ffbc22e3d75f9853b3ff2ae94a44d84f386415110aea5effc24d84c502e03a4a6b7a8f75ebaf7b585780bda34eb5d6da3121f826a6f93398429d30032971b6
+  languageName: node
+  linkType: hard
+
 "symlink-or-copy@npm:^1.1.8, symlink-or-copy@npm:^1.2.0, symlink-or-copy@npm:^1.3.1":
   version: 1.3.1
   resolution: "symlink-or-copy@npm:1.3.1"
@@ -10805,6 +10914,13 @@ __metadata:
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
   checksum: 33b39f3d0e8463985eeaeeacc3cb2e28bc3dfaf2a5ed219628c0b629d5d7b810b0eb2165f9f607c34871d5daa92ba1dc69f49051cf7d578b4cbd26c340b9d1b1
+  languageName: node
+  linkType: hard
+
+"typesafe-actions@npm:^4.2.1":
+  version: 4.4.2
+  resolution: "typesafe-actions@npm:4.4.2"
+  checksum: 43b3a91af74172b42e27098150d84eaa9f02f74a8f9c81225e560d48872f6a3174482651d6e6278f380ed25870edb2b949b4776382cf0393b8299a3723c56d9b
   languageName: node
   linkType: hard
 
@@ -11479,7 +11595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"whatwg-fetch@npm:^2.0.4":
+"whatwg-fetch@npm:2.x, whatwg-fetch@npm:^2.0.4":
   version: 2.0.4
   resolution: "whatwg-fetch@npm:2.0.4"
   checksum: de7c65a68d7d62e2f144a6b30293370b3ad82b65ebcd68f2ac8e8bbe7ede90febd98ba9486b78c1cbc950e0e8838fa5c2727f939899ab3fc7b71a04be52d33a5

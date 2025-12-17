@@ -17,21 +17,21 @@ import {
   getFormikErrorFields,
   clusterFieldLabels,
   Alerts,
-} from '../../../common';
+} from '../../../../common';
 
 import {
   ClusterDeploymentDetailsNetworkingProps,
   AgentTableActions,
   ClusterDeploymentNetworkingValues,
-} from './types';
+} from '../types';
 import ClusterDeploymentNetworkingForm from './ClusterDeploymentNetworkingForm';
-import { isAgentOfCluster } from './helpers';
-import { useInfraEnvProxies, useNetworkingFormik } from './use-networking-formik';
-import { canNextFromNetworkingStep } from './wizardTransition';
-import { AgentK8sResource } from '../../types';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { ValidationSection } from './components/ValidationSection';
-import { ClusterDeploymentWizardContext } from './ClusterDeploymentWizardContext';
+import { isAgentOfCluster } from '../helpers';
+import { useInfraEnvProxies, useNetworkingFormik } from '../use-networking-formik';
+import { canNextFromNetworkingStep } from '../wizardTransition';
+import { AgentK8sResource } from '../../../types';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { ValidationSection } from '../components/ValidationSection';
+import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
 
 type NetworkingFormProps = {
   clusterDeployment: ClusterDeploymentDetailsNetworkingProps['clusterDeployment'];
@@ -200,7 +200,7 @@ export const NetworkingForm = ({
         {syncError && (
           <GridItem>
             <ValidationSection currentStepId={'networking'} hosts={[]}>
-              <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
+              <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
                 {syncError}
               </Alert>
             </ValidationSection>
@@ -212,7 +212,7 @@ export const NetworkingForm = ({
   );
 };
 
-const ClusterDeploymentNetworkingStep = ({
+export const ClusterDeploymentNetworkingStep = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
@@ -261,5 +261,3 @@ const ClusterDeploymentNetworkingStep = ({
     </Formik>
   );
 };
-
-export default ClusterDeploymentNetworkingStep;
