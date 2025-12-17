@@ -11,6 +11,7 @@ import {
   handleApiError,
   LoadingState,
   OperatorsValues,
+  selectOlmOperators,
   singleClusterOperators,
   useAlerts,
   useStateSafely,
@@ -36,7 +37,23 @@ const OperatorsSelect = ({
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [supportedOperators, setSupportedOperators] = useStateSafely<string[]>([]);
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const { values } = useFormikContext<OperatorsValues>();
+  const { values, setFieldValue } = useFormikContext<OperatorsValues>();
+
+  // Sync selected operators with monitored operators from the cluster
+  // If there's more than 1 monitored OLM operator, it means the user has previously selected operators
+  // and we should restore their selection. If there's 0 or 1, it's a fresh page visit.
+  React.useEffect(() => {
+    const olmOperators = selectOlmOperators(cluster);
+    if (olmOperators.length > 0) {
+      const monitoredOperatorNames = olmOperators
+        .map((op) => op.name)
+        .filter((name): name is string => !!name);
+      void setFieldValue('selectedOperators', monitoredOperatorNames);
+    }
+    // Only run on initial mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   React.useEffect(() => {
     const fetchSupportedOperators = async () => {
       try {

@@ -140,7 +140,7 @@ const OperatorCheckbox = ({
     (sb) => !!bundles.find((b) => b.id === sb)?.operators?.includes(operatorId),
   );
 
-  const isChecked = values.selectedOperators.includes(operatorId) || isInBundle;
+  const isChecked = values.selectedOperators.includes(operatorId);
 
   const parentOperator = preflightRequirements?.operators?.find((op) =>
     op.dependencies?.includes(operatorId),
