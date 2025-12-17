@@ -43,16 +43,20 @@ export const OpenShiftVersionModal = ({
       <ModalHeader title="Available OpenShift Versions" />
       <ModalBody>
         <FormGroup
-        id={`form-control__customOpenshiftSelect`}
-        fieldId={'customOpenshiftSelect'}
-        label={'OpenShift version'}
-        isRequired
-      >
-        <OpenShiftSelectWithSearch versions={allVersions} getHelperText={getHelperText} />
-      </FormGroup>
+          id={`form-control__customOpenshiftSelect`}
+          fieldId={'customOpenshiftSelect'}
+          label={'OpenShift version'}
+          isRequired
+        >
+          <OpenShiftSelectWithSearch versions={allVersions} getHelperText={getHelperText} />
+        </FormGroup>
       </ModalBody>
       <ModalFooter>
-        <Button key="select-custom-ocp" variant={ButtonVariant.primary} onClick={() => setOpenshiftVersionModalOpen(false)}>
+        <Button
+          key="select-custom-ocp"
+          variant={ButtonVariant.primary}
+          onClick={() => setOpenshiftVersionModalOpen(false)}
+        >
           Select
         </Button>
         <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onCancel}>

@@ -204,7 +204,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
       <ToolbarItem>
         <ToolbarFilter
           labels={labelFilter}
-          deleteLabel={(_, chip) => setLabelFilter(labelFilter.filter((f) => f !== chip))}
+          deleteLabel={(_, label) => setLabelFilter(labelFilter.filter((f) => f !== label))}
           deleteLabelGroup={() => setLabelFilter([])}
           categoryName={'Labels'}
         >

@@ -1,8 +1,18 @@
 import BundleAPI from '../../common/api/assisted-service/BundleAPI';
 
 const BundleService = {
-  async listBundles() {
-    const { data: bundles } = await BundleAPI.list();
+  async listBundles(
+    openshiftVersion?: string,
+    cpuArchitecture?: string,
+    platformType?: string,
+    featureIds?: string,
+  ) {
+    const { data: bundles } = await BundleAPI.list(
+      openshiftVersion,
+      cpuArchitecture,
+      platformType,
+      featureIds,
+    );
     return bundles;
   },
   async listOperatorsByBundle(bundleName: string) {
