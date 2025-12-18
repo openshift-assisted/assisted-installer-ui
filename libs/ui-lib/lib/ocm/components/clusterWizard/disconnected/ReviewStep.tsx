@@ -25,7 +25,6 @@ import {
   Content,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import { saveAs } from 'file-saver';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
@@ -55,7 +54,26 @@ const ReviewStep = () => {
             onNext={() => {
               void (async () => {
                 if (disconnectedInfraEnv?.downloadUrl) {
-                  saveAs(disconnectedInfraEnv.downloadUrl);
+                  // Open download in new tab - we need the window reference to detect when download starts
+                  const downloadWindow = window.open(disconnectedInfraEnv.downloadUrl, '_blank');
+
+                  // Wait for the download tab to close (indicates download has started)
+                  // The tab closes automatically when browser initiates the file download
+                  if (downloadWindow) {
+                    await new Promise<void>((resolve) => {
+                      const checkClosed = setInterval(() => {
+                        if (downloadWindow.closed) {
+                          clearInterval(checkClosed);
+                          resolve();
+                        }
+                      }, 200);
+                      // Fallback timeout in case the window doesn't close (e.g., popup blocker)
+                      setTimeout(() => {
+                        clearInterval(checkClosed);
+                        resolve();
+                      }, 10000);
+                    });
+                  }
                 }
                 if (clusterId) {
                   try {
@@ -128,9 +146,17 @@ const ReviewStep = () => {
               </List>
             </Alert>
             <DescriptionList isHorizontal>
+              {disconnectedInfraEnv?.rendezvousIp && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Controller Ip</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {disconnectedInfraEnv?.rendezvousIp}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.20</DescriptionListDescription>
+                <DescriptionListDescription>4.22</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
