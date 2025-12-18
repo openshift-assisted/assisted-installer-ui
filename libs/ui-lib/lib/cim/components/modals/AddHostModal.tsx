@@ -8,6 +8,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
 import { InfraEnvK8sResource } from '../../types';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
+import { useAgentServiceConfig } from '../../hooks';
 
 type AddHostModalStepType = 'config' | 'download';
 
@@ -20,12 +21,19 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   docVersion,
   isIPXE,
 }) => {
+  const { t } = useTranslation();
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
   const imageType = infraEnv.spec?.imageType || 'minimal-iso';
   const [dialogType, setDialogType] = React.useState<AddHostModalStepType>('config');
-  const { t } = useTranslation();
+  const [agentServiceConfig, loaded, error] = useAgentServiceConfig({ name: 'agent' });
+
+  const ciscoUrl =
+    loaded && !error
+      ? agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL']
+      : undefined;
+
   const handleIsoConfigSubmit = async (
     values: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
@@ -85,6 +93,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
                 onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
                 hasDHCP={hasDHCP}
                 docVersion={docVersion}
+                ciscoUrl={ciscoUrl}
               />
             )}
           </>
@@ -100,12 +109,14 @@ const GeneratingIsoDownload = ({
   onReset,
   hasDHCP,
   docVersion,
+  ciscoUrl,
 }: {
   infraEnv: InfraEnvK8sResource;
   onClose: VoidFunction;
   onReset?: VoidFunction;
   hasDHCP: boolean;
   docVersion: string;
+  ciscoUrl?: string;
 }) => {
   const { t } = useTranslation();
   return infraEnv.status?.isoDownloadURL ? (
@@ -115,6 +126,7 @@ const GeneratingIsoDownload = ({
       onReset={onReset}
       hasDHCP={hasDHCP}
       docVersion={docVersion}
+      ciscoUrl={ciscoUrl}
     />
   ) : (
     <EmptyState icon={Spinner}>

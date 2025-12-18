@@ -1,20 +1,29 @@
 import * as React from 'react';
-import { Alert, AlertVariant, Button, ButtonVariant } from '@patternfly/react-core';
+import * as Yup from 'yup';
+import {
+  Alert,
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  StackItem,
+  Stack,
+  Content,
+} from '@patternfly/react-core';
 import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import { Formik, FormikHelpers } from 'formik';
+import parseUrl from 'parse-url';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getStorageSizeGiB } from '../../helpers';
 import { AlertPayload } from '../../../../common';
 
-import { CimConfigurationModalProps, CimConfiguratioProps } from './types';
-import { CimConfigurationForm } from './CimConfigurationForm';
-import { isIngressController, onEnableCIM } from './persist';
+import { CimConfigurationModalProps, CimConfigurationValues } from './types';
+import { onEnableCIM } from './persist';
 import { CimConfigDisconnectedAlert } from './CimConfigDisconnectedAlert';
 import { MIN_DB_VOL_SIZE, MIN_FS_VOL_SIZE, MIN_IMG_VOL_SIZE } from './constants';
 import { isCIMConfigProgressing } from './utils';
 import { resetCimConfigProgressAlertSuccessStatus } from './CimConfigProgressAlert';
-
-import './CimConfigurationModal.css';
+import { CimConfigurationFormFields } from './CimConfigurationFormFields';
 
 export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   isOpen,
@@ -24,136 +33,41 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   docDisconnectedUrl,
   docConfigUrl,
   docConfigAwsUrl,
-
-  getResource,
-  listResources,
-  patchResource,
-  createResource,
 }) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState<AlertPayload>();
-  const [isSaving, setSaving] = React.useState(false);
 
-  const [dbVolSize, _setDbVolSize] = React.useState<number>(() =>
-    getStorageSizeGiB(10, agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage),
-  );
-  const [dbVolSizeValidation, setDbVolSizeValidation] = React.useState<string>();
-
-  const [fsVolSize, _setFsVolSize] = React.useState<number>(() =>
-    getStorageSizeGiB(
-      100,
-      agentServiceConfig?.spec?.filesystemStorage?.resources?.requests?.storage,
-    ),
-  );
-  const [fsVolSizeValidation, setFsVolSizeValidation] = React.useState<string>();
-
-  const [imgVolSize, _setImgVolSize] = React.useState<number>(() =>
-    getStorageSizeGiB(50, agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage),
-  );
-  const [imgVolSizeValidation, setImgVolSizeValidation] = React.useState<string>();
-
-  const [configureLoadBalancer, setConfigureLoadBalancer] = React.useState<boolean>(
-    platform === 'AWS',
-  );
   const [configureLoadBalancerInitial, setConfigureLoadBalancerInitial] = React.useState(true);
-
-  const setDbVolSize = (v: number): void => {
-    if (v < MIN_DB_VOL_SIZE) {
-      setDbVolSizeValidation(t('ai:Minimal value is 1Gi'));
-    } else {
-      setDbVolSizeValidation(undefined);
-    }
-    _setDbVolSize(v);
-  };
-  const setFsVolSize = (v: number): void => {
-    if (v < MIN_FS_VOL_SIZE) {
-      setFsVolSizeValidation(t('ai:Minimal value is 1Gi'));
-    } else {
-      setFsVolSizeValidation(undefined);
-    }
-    _setFsVolSize(v);
-  };
-  const setImgVolSize = (v: number): void => {
-    if (v < MIN_IMG_VOL_SIZE) {
-      setImgVolSizeValidation(t('ai:Minimal value is 10Gi'));
-    } else {
-      setImgVolSizeValidation(undefined);
-    }
-    _setImgVolSize(v);
-  };
-
   const isEdit = !!agentServiceConfig;
 
-  React.useEffect(
-    () => {
-      const doItAsync = async (): Promise<void> => {
-        if (platform === 'AWS') {
-          if (!isEdit || (await isIngressController(getResource))) {
-            setConfigureLoadBalancer(true);
-            setConfigureLoadBalancerInitial(true);
-            return;
-          }
-        }
+  const onConfigure = async (
+    values: CimConfigurationValues,
+    helpers: FormikHelpers<CimConfigurationValues>,
+  ) => {
+    setError(undefined);
+    helpers.setSubmitting(true);
+    resetCimConfigProgressAlertSuccessStatus();
 
-        setConfigureLoadBalancer(false);
-        setConfigureLoadBalancerInitial(false);
-      };
-
-      void doItAsync();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [platform],
-  );
-
-  const formProps: CimConfiguratioProps = {
-    dbVolSize,
-    dbVolSizeValidation,
-    setDbVolSize,
-    fsVolSize,
-    fsVolSizeValidation,
-    setFsVolSize,
-    imgVolSize,
-    imgVolSizeValidation,
-    setImgVolSize,
-
-    configureLoadBalancer,
-    configureLoadBalancerInitial,
-    setConfigureLoadBalancer,
-  };
-
-  const onConfigure = () => {
-    const doItAsync = async (): Promise<void> => {
-      setSaving(true);
-      setError(undefined);
-      resetCimConfigProgressAlertSuccessStatus();
-
-      if (
-        await onEnableCIM({
-          t,
-          setError,
-          getResource,
-          listResources,
-          patchResource,
-          createResource,
-          agentServiceConfig,
-
-          platform,
-          dbVolSizeGiB: dbVolSize,
-          fsVolSizeGiB: fsVolSize,
-          imgVolSizeGiB: imgVolSize,
-          configureLoadBalancer,
-        })
-      ) {
-        // successfuly persisted
-        onClose();
-      }
-
+    if (
+      await onEnableCIM({
+        t,
+        setError,
+        agentServiceConfig,
+        platform,
+        dbVolSizeGiB: values.dbVolSize,
+        fsVolSizeGiB: values.fsVolSize,
+        imgVolSizeGiB: values.imgVolSize,
+        configureLoadBalancer: values.configureLoadBalancer,
+        ciscoIntersightURL: values.addCiscoIntersightUrl ? values.ciscoIntersightURL : undefined,
+      })
+    ) {
+      // successfully persisted
+      onClose();
+    } else {
       // keep modal open and show error
-      setConfigureLoadBalancerInitial(configureLoadBalancer);
-      setSaving(false);
-    };
-
-    void doItAsync();
+      setConfigureLoadBalancerInitial(values.configureLoadBalancer);
+      helpers.setSubmitting(false);
+    }
   };
 
   const isError = !!error?.title; // this is a communication error only (not the one from agentServiceConfig)
@@ -161,75 +75,138 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   const isConfigure =
     !isEdit || !configureLoadBalancerInitial; /* The only possible change for the Edit flow */
 
-  const isConfigureDisabled = !!(
-    isSaving ||
-    dbVolSizeValidation ||
-    fsVolSizeValidation ||
-    imgVolSizeValidation ||
-    (isEdit && configureLoadBalancerInitial === configureLoadBalancer)
-  );
-
   const isInProgressPeriod = isCIMConfigProgressing({ agentServiceConfig });
-  // const isConfiguring = isSaving || isInProgressPeriod;
 
-  let actions: React.ReactNode[];
-  if (isConfigure) {
-    actions = [
-      <Button
-        key="configure"
-        variant={ButtonVariant.primary}
-        isDisabled={isConfigureDisabled}
-        onClick={onConfigure}
-      >
-        {t('ai:Configure')}
-      </Button>,
-      <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
-        {t('ai:Cancel')}
-      </Button>,
-    ];
-  } else {
-    actions = [
-      <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
-        {t('ai:Close')}
-      </Button>,
-    ];
-  }
+  const initialValues: CimConfigurationValues = {
+    dbVolSize: getStorageSizeGiB(
+      10,
+      agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage,
+    ),
+    fsVolSize: getStorageSizeGiB(
+      100,
+      agentServiceConfig?.spec?.filesystemStorage?.resources?.requests?.storage,
+    ),
+    imgVolSize: getStorageSizeGiB(
+      50,
+      agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage,
+    ),
+    configureLoadBalancer: platform === 'AWS',
+    addCiscoIntersightUrl: !!agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'],
+    ciscoIntersightURL: agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'] || '',
+  };
+
+  const validationSchema = Yup.object<CimConfigurationValues>({
+    dbVolSize: Yup.number().min(MIN_DB_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
+    fsVolSize: Yup.number().min(MIN_FS_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
+    imgVolSize: Yup.number().min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi')).required(),
+    configureLoadBalancer: Yup.boolean(),
+    ciscoIntersightURL: Yup.string().when('addCiscoIntersightUrl', {
+      is: true,
+      then: (schema) =>
+        schema
+          .required(t('ai:Cisco Intersight URL is required'))
+          .test(
+            'url-valid',
+            t('ai:Cisco Intersight URL must be a valid URL starting with "http://" or "https://"'),
+            (val) => {
+              try {
+                const url = parseUrl(val);
+                return url.protocol === 'http' || url.protocol === 'https';
+              } catch (error) {
+                return false;
+              }
+            },
+          ),
+    }),
+  });
 
   return (
-    <Modal
-      aria-label={t('ai:Configure host inventory settings')}
-      title={t('ai:Configure host inventory settings')}
-      isOpen={isOpen}
-      onClose={onClose}
-      actions={actions}
-      variant={ModalVariant.medium}
-      id="cim-config-modal"
-      className="cim-config-modal"
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onConfigure}
     >
-      {t(
-        'ai:Configuring the host inventory settings will enable the Central Infrastructure Management.',
+      {({ values, handleSubmit, isValid, isSubmitting }) => (
+        <Modal
+          aria-label={t('ai:Configure host inventory settings')}
+          title={t('ai:Configure host inventory settings')}
+          isOpen={isOpen}
+          onClose={onClose}
+          actions={
+            isConfigure
+              ? [
+                  <Button
+                    key="configure"
+                    variant={ButtonVariant.primary}
+                    isDisabled={
+                      !!(
+                        isSubmitting ||
+                        !isValid ||
+                        (isEdit && configureLoadBalancerInitial === values.configureLoadBalancer)
+                      )
+                    }
+                    onClick={() => void handleSubmit()}
+                  >
+                    {t('ai:Configure')}
+                  </Button>,
+                  <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
+                    {t('ai:Cancel')}
+                  </Button>,
+                ]
+              : [
+                  <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
+                    {t('ai:Close')}
+                  </Button>,
+                ]
+          }
+          variant={ModalVariant.medium}
+          id="cim-config-modal"
+        >
+          <Stack hasGutter>
+            <StackItem>
+              <Content>
+                {t(
+                  'ai:Configuring the host inventory settings will enable the Central Infrastructure Management.',
+                )}
+              </Content>
+            </StackItem>
+
+            {isError && (
+              <StackItem>
+                <Alert title={error.title} variant={error.variant || AlertVariant.danger} isInline>
+                  {error.message}
+                </Alert>
+              </StackItem>
+            )}
+
+            <StackItem>
+              <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
+            </StackItem>
+
+            <StackItem>
+              <CimConfigurationFormFields
+                isEdit={isEdit}
+                platform={platform}
+                isInProgressPeriod={isInProgressPeriod}
+                docConfigUrl={docConfigUrl}
+                docConfigAwsUrl={docConfigAwsUrl}
+                configureLoadBalancerInitial={configureLoadBalancerInitial}
+                setConfigureLoadBalancerInitial={setConfigureLoadBalancerInitial}
+              />
+            </StackItem>
+
+            {isConfigure && (
+              <StackItem>
+                <Alert
+                  variant={AlertVariant.warning}
+                  title={t('ai:Storage sizes cannot be changed once you configure.')}
+                  isInline
+                />
+              </StackItem>
+            )}
+          </Stack>
+        </Modal>
       )}
-      {isError && (
-        <Alert title={error.title} variant={error.variant || AlertVariant.danger} isInline>
-          {error.message}
-        </Alert>
-      )}
-      <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
-      <CimConfigurationForm
-        isEdit={isEdit}
-        isInProgressPeriod={isInProgressPeriod}
-        onClose={onClose}
-        docConfigUrl={docConfigUrl}
-        docConfigAwsUrl={docConfigAwsUrl}
-        {...formProps}
-      />
-      {isConfigure && (
-        <Alert
-          variant={AlertVariant.warning}
-          title={t('ai:Storage sizes cannot be changed once you configure.')}
-          isInline
-        />
-      )}
-    </Modal>
+    </Formik>
   );
 };
