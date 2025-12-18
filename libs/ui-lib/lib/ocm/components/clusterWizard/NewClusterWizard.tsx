@@ -6,6 +6,7 @@ import ReviewStep from './disconnected/ReviewStep';
 import BasicStep from './disconnected/BasicStep';
 import OptionalConfigurationsStep from './disconnected/OptionalConfigurationsStep';
 import { ClusterWizardStepsType } from './wizardTransition';
+import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 
 const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
   switch (currentStepId) {
@@ -23,9 +24,11 @@ const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
 const NewClusterWizard: React.FC = () => {
   const { currentStepId } = useClusterWizardContext();
   return (
-    <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
-      {getCurrentStep(currentStepId)}
-    </div>
+    <ModalDialogsContextProvider>
+      <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
+        {getCurrentStep(currentStepId)}
+      </div>
+    </ModalDialogsContextProvider>
   );
 };
 

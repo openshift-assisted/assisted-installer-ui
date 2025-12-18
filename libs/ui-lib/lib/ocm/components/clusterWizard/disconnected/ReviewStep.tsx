@@ -128,6 +128,14 @@ const ReviewStep = () => {
               </List>
             </Alert>
             <DescriptionList isHorizontal>
+              (disconnectedInfraEnv?.rendezvousIp && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Controller Ip</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.rendezvousIp}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+              ))
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
                 <DescriptionListDescription>4.20</DescriptionListDescription>
