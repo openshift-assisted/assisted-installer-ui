@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
-import { Grid, GridItem, Split, SplitItem } from '@patternfly/react-core';
+import { Flex, Grid, GridItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
@@ -11,7 +11,7 @@ import {
   getRichTextValidation,
   CpuArchitecture,
   useAlerts,
-  DeveloperPreview,
+  TechnologyPreview,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -167,14 +167,13 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               </GridItem>
               {!isSingleClusterFeatureEnabled && (
                 <GridItem>
-                  <Split>
-                    <SplitItem>
-                      <InstallDisconnectedSwitch isDisabled={!!cluster} />
-                    </SplitItem>
-                    <SplitItem>
-                      <DeveloperPreview />
-                    </SplitItem>
-                  </Split>
+                  <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
+                    <TechnologyPreview />
+                    <InstallDisconnectedSwitch isDisabled={!!cluster} />
+                    <span>
+                      {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
+                    </span>
+                  </Flex>
                 </GridItem>
               )}
               <GridItem span={12} lg={10} xl={9} xl2={7}>
