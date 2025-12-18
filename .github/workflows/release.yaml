@@ -8,10 +8,6 @@ on:
 env:
   NODE_OPTIONS: '--max-old-space-size=8192'
 
-permissions:
-  id-token: write # Required for OIDC
-  contents: read
-
 jobs:
   publish-to-npm:
     runs-on: ubuntu-latest
@@ -25,7 +21,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.release.target_commitish }}
           fetch-depth: 0
@@ -46,12 +42,15 @@ jobs:
           echo "LIBS=${LIBS[@]}" >> $GITHUB_ENV
           (IFS=,; printf 'The following workspaces will be published: [%s]\n' "${LIBS[*]}")
 
-      - uses: actions/setup-node@v4
+      - name: Configuring git
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor }}@users.noreply.github.com'
+
+      - uses: actions/setup-node@v3
         with:
           cache: yarn
           node-version: ${{ vars.NODEJS_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-          always-auth: true
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -70,17 +69,14 @@ jobs:
       - name: Build
         run: yarn build:all
 
-      - name: Configure Yarn for npm registry
-        run: |
-          yarn config set npmRegistryServer https://registry.npmjs.org
-          yarn config set npmAlwaysAuth true
-          yarn config set npmAuthToken "${NODE_AUTH_TOKEN}"
-
       - name: Publish workspaces to NPM
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
+          yarn config set npmScopes.openshift-assisted.npmAuthToken $NPM_AUTH_TOKEN
           for LIB in $(echo ${LIBS}); do
             printf 'Publishing @openshift-assisted/%s\n' "${LIB}"
-            yarn workspace @openshift-assisted/${LIB} npm publish --access public
+            yarn workspace @openshift-assisted/${LIB} npm publish
             # Verify the package has been published before publishing another one.
             until [[ "$(yarn npm info @openshift-assisted/${LIB} --fields version --json | jq -r '.version')" = "${GITHUB_REF_NAME:1}" ]]; do
               printf '@openshift-assisted/%s has not ben published yet\n' "${LIB}"
