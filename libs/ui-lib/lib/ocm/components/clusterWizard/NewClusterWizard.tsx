@@ -4,7 +4,6 @@ import ClusterDetails from './ClusterDetails';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ReviewStep from './disconnected/ReviewStep';
 import BasicStep from './disconnected/BasicStep';
-import OptionalConfigurationsStep from './disconnected/OptionalConfigurationsStep';
 import { ClusterWizardStepsType } from './wizardTransition';
 
 const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
@@ -13,8 +12,6 @@ const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
       return <ReviewStep />;
     case 'disconnected-basic':
       return <BasicStep />;
-    case 'disconnected-optional-configurations':
-      return <OptionalConfigurationsStep />;
     default:
       return <ClusterDetails />;
   }

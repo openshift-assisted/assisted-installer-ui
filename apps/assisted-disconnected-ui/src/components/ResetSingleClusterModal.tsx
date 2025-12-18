@@ -41,8 +41,6 @@ const ResetSingleClusterModal: React.FC = () => {
           await HostsService.unbind(host);
         }
       }
-
-      // Remove the regular cluster
       await ClustersService.remove(cluster.id);
       navigate(`/`);
     } catch (e) {

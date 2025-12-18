@@ -171,11 +171,5 @@ const ClustersService = {
       this.getUpdateManifestParams(existingManifest, updatedManifest),
     );
   },
-  registerDisconnected(params: { name: string; openshiftVersion: string }) {
-    return ClustersAPI.registerDisconnected({
-      name: params.name,
-      openshiftVersion: params.openshiftVersion,
-    });
-  },
 };
 export default ClustersService;

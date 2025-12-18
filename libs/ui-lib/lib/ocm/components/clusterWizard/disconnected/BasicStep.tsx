@@ -15,53 +15,10 @@ import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
 import { Formik } from 'formik';
-import ClustersService from '../../../services/ClustersService';
-import { handleApiError, getApiErrorMessage } from '../../../../common/api';
-import { useAlerts } from '../../../../common/components/AlertsContextProvider';
-import { AlertVariant } from '@patternfly/react-core';
-import { ClusterWizardFlowStateNew } from '../wizardTransition';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
-import { AxiosResponse } from 'axios';
-import { Cluster } from '@openshift-assisted/types//assisted-installer-service';
 
 const BasicStep = () => {
   const { t } = useTranslation();
   const { moveNext } = useClusterWizardContext();
-  const { addAlert } = useAlerts();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const currentPath = location.pathname;
-  let disconnectedClusterId: string | undefined;
-
-  const onNext = async () => {
-    try {
-      setIsSubmitting(true);
-      // Create cluster only - infraEnv will be created in OptionalConfigurationsStep
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const { data: disconnectedCluster }: AxiosResponse<Cluster> =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        await ClustersService.registerDisconnected({
-          name: 'disconnected-cluster',
-          openshiftVersion: '4.19',
-        });
-      disconnectedClusterId = disconnectedCluster.id;
-      navigate(`${currentPath}/${disconnectedClusterId}`, {
-        state: ClusterWizardFlowStateNew,
-      });
-      moveNext();
-    } catch (error: unknown) {
-      handleApiError(error, () => {
-        addAlert({
-          title: 'Failed to create disconnected cluster',
-          message: getApiErrorMessage(error),
-          variant: AlertVariant.danger,
-        });
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <Formik
@@ -72,15 +29,7 @@ const BasicStep = () => {
     >
       <ClusterWizardStep
         navigation={<ClusterWizardNavigation />}
-        footer={
-          <ClusterWizardFooter
-            onNext={() => {
-              void onNext();
-            }}
-            isSubmitting={isSubmitting}
-            disconnectedClusterId={disconnectedClusterId}
-          />
-        }
+        footer={<ClusterWizardFooter onNext={moveNext} />}
       >
         <WithErrorBoundary title="Failed to load Basic step">
           <Grid hasGutter>
