@@ -3,7 +3,7 @@ import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import {
   ClusterWizardStep,
-  TechnologyPreview,
+  DeveloperPreview,
   getRichTextValidation,
   sshPublicKeyValidationSchema,
   pullSecretValidationSchema,
@@ -24,7 +24,6 @@ import { InfraEnvsAPI } from '../../../services/apis';
 import usePullSecret from '../../../hooks/usePullSecret';
 import { useParams } from 'react-router-dom-v5-compat';
 import ClustersService from '../../../services/ClustersService';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type OptionalConfigurationsFormValues = {
   sshPublicKey?: string;
@@ -46,7 +45,7 @@ const PullSecretSync: React.FC<{ pullSecret?: string }> = ({ pullSecret }) => {
 const OptionalConfigurationsStep = () => {
   const pullSecret = usePullSecret() || '';
   const { clusterId } = useParams<{ clusterId: string }>();
-  const [cluster, setCluster] = React.useState<Cluster | null>(null);
+  const [cluster, setCluster] = React.useState<{ id: string } | null>(null);
 
   const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
     useClusterWizardContext();
@@ -122,7 +121,7 @@ const OptionalConfigurationsStep = () => {
               name: `disconnected-cluster_infra-env`,
               pullSecret: values.pullSecret || pullSecret,
               clusterId: cluster.id,
-              openshiftVersion: cluster.openshiftVersion,
+              openshiftVersion: '4.19',
               cpuArchitecture: 'x86_64' as const,
               ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
             };
@@ -173,7 +172,7 @@ const OptionalConfigurationsStep = () => {
                       <Content component="h2">Optional configurations</Content>
                     </SplitItem>
                     <SplitItem>
-                      <TechnologyPreview />
+                      <DeveloperPreview />
                     </SplitItem>
                   </Split>
                 </GridItem>

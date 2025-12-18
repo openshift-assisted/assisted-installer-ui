@@ -3,7 +3,7 @@ import ClusterWizardFooter from '../ClusterWizardFooter';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import {
   ClusterWizardStep,
-  TechnologyPreview,
+  DeveloperPreview,
   PULL_SECRET_INFO_LINK,
   singleClusterOperators,
 } from '../../../../common';
@@ -97,7 +97,7 @@ const ReviewStep = () => {
                 <Content component="h2">Review and download ISO</Content>
               </SplitItem>
               <SplitItem>
-                <TechnologyPreview />
+                <DeveloperPreview />
               </SplitItem>
             </Split>
             <Alert isInline variant="info" title="Discovery ISO boot instructions">
@@ -130,7 +130,7 @@ const ReviewStep = () => {
             <DescriptionList isHorizontal>
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.20</DescriptionListDescription>
+                <DescriptionListDescription>4.19</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>

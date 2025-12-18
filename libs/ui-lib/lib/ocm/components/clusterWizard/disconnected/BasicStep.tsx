@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {
   ClusterWizardStep,
-  TechnologyPreview,
+  DeveloperPreview,
   ExternalLink,
   OCP_RELEASES_PAGE,
   StaticTextField,
   useTranslation,
 } from '../../../../common';
-import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
+import { Split, SplitItem, Grid, GridItem, Form, Content } from '@patternfly/react-core';
 import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
@@ -43,7 +43,7 @@ const BasicStep = () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         await ClustersService.registerDisconnected({
           name: 'disconnected-cluster',
-          openshiftVersion: '4.20',
+          openshiftVersion: '4.19',
         });
       disconnectedClusterId = disconnectedCluster.id;
       navigate(`${currentPath}/${disconnectedClusterId}`, {
@@ -85,20 +85,21 @@ const BasicStep = () => {
         <WithErrorBoundary title="Failed to load Basic step">
           <Grid hasGutter>
             <GridItem>
-              <Content component="h2">Basic information</Content>
+              <Split>
+                <SplitItem>
+                  <Content component="h2">Basic information</Content>
+                </SplitItem>
+                <SplitItem>
+                  <DeveloperPreview />
+                </SplitItem>
+              </Split>
             </GridItem>
             <GridItem>
-              <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
-                <TechnologyPreview />
-                <InstallDisconnectedSwitch />
-                <span>
-                  {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
-                </span>
-              </Flex>
+              <InstallDisconnectedSwitch />
             </GridItem>
             <GridItem>
               <Form id="wizard-cluster-basic-info__form">
-                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
+                <OcmOpenShiftVersion openshiftVersion="4.19" withPreviewText withMultiText>
                   <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
                     <span data-ouia-id="openshift-releases-link">
                       {t('ai:Learn more about OpenShift releases')}
