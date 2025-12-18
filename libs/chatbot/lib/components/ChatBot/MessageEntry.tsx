@@ -21,21 +21,29 @@ export type MessageEntryProps = {
   message: MessageType<LightSpeedCoreAdditionalProperties>;
   avatar: string;
   onApiCall: typeof fetch;
+  conversationId: string | undefined;
 };
 
-const MessageEntry = ({ message, avatar, openClusterDetails, onApiCall }: MessageEntryProps) => {
+const MessageEntry = ({
+  message,
+  avatar,
+  openClusterDetails,
+  onApiCall,
+  conversationId,
+}: MessageEntryProps) => {
   const [openFeedback, setOpenFeedback] = React.useState(false);
+
   const onFeedbackSubmit = React.useCallback(
     async (req: FeedbackRequest): Promise<void> => {
       const resp = await onApiCall('/v1/feedback', {
         method: 'POST',
         body: JSON.stringify({
-          conversation_id: message.additionalAttributes?.conversationId,
-          user_question: 'TODO',
+          conversation_id: conversationId,
+          user_question: '',
           user_feedback: req.userFeedback,
           llm_response: message.answer,
           sentiment: req.sentiment,
-          category: req.category,
+          categories: req.category ? [req.category] : undefined,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +53,7 @@ const MessageEntry = ({ message, avatar, openClusterDetails, onApiCall }: Messag
         throw new Error(`${resp.status} ${resp.statusText}`);
       }
     },
-    [onApiCall, message],
+    [onApiCall, message, conversationId],
   );
 
   const messageDate = `${message.date?.toLocaleDateString()} ${message.date?.toLocaleTimeString()}`;
