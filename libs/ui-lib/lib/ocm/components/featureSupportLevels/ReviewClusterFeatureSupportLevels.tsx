@@ -23,7 +23,6 @@ import {
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
-import { useFeature } from '../../hooks/use-feature';
 
 const getFeatureReviewText = (featureId: FeatureId): string => {
   switch (featureId) {
@@ -128,7 +127,6 @@ export const getSupportLevelInfo = (
   featureSupportLevelData: NewFeatureSupportLevelData,
   isSupportedOpenShiftVersion: (version?: string) => boolean,
   t: TFunction,
-  isSingleClusterFeatureEnabled?: boolean,
 ) => {
   const limitedClusterFeatures = getLimitedFeatureSupportLevels(
     cluster,
@@ -139,10 +137,7 @@ export const getSupportLevelInfo = (
   return {
     limitedClusterFeatures,
     hasSupportedVersion,
-    isFullySupported:
-      hasSupportedVersion &&
-      Object.keys(limitedClusterFeatures || {}).length === 0 &&
-      !isSingleClusterFeatureEnabled,
+    isFullySupported: hasSupportedVersion && Object.keys(limitedClusterFeatures || {}).length === 0,
   };
 };
 
@@ -150,25 +145,11 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
   const { isSupportedOpenShiftVersion } = useOpenShiftVersionsContext();
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
     React.useMemo<SupportLevelMemo>(
-      () =>
-        getSupportLevelInfo(
-          cluster,
-          featureSupportLevelData,
-          isSupportedOpenShiftVersion,
-          t,
-          isSingleClusterFeatureEnabled,
-        ),
-      [
-        cluster,
-        featureSupportLevelData,
-        t,
-        isSupportedOpenShiftVersion,
-        isSingleClusterFeatureEnabled,
-      ],
+      () => getSupportLevelInfo(cluster, featureSupportLevelData, isSupportedOpenShiftVersion, t),
+      [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion],
     );
 
   if (!limitedClusterFeatures) {
@@ -184,7 +165,7 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
         ) : (
           <LimitedSupportedCluster
             clusterFeatureSupportLevels={limitedClusterFeatures}
-            showVersionWarning={!hasSupportedVersion || isSingleClusterFeatureEnabled}
+            showVersionWarning={!hasSupportedVersion}
           />
         )
       }
