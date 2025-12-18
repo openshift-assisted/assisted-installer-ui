@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {
   ClusterWizardStep,
-  DeveloperPreview,
   ExternalLink,
   OCP_RELEASES_PAGE,
   StaticTextField,
+  TechnologyPreview,
   useTranslation,
 } from '../../../../common';
-import { Split, SplitItem, Grid, GridItem, Form, Content } from '@patternfly/react-core';
+import { Grid, GridItem, Form, Flex, Content } from '@patternfly/react-core';
 import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
@@ -34,21 +34,18 @@ const BasicStep = () => {
         <WithErrorBoundary title="Failed to load Basic step">
           <Grid hasGutter>
             <GridItem>
-              <Split>
-                <SplitItem>
-                  <Content component="h2">Basic information</Content>
-                </SplitItem>
-                <SplitItem>
-                  <DeveloperPreview />
-                </SplitItem>
-              </Split>
-            </GridItem>
-            <GridItem>
-              <InstallDisconnectedSwitch />
+              <Content component="h2">Basic information</Content>
+              <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
+                <TechnologyPreview />
+                <InstallDisconnectedSwitch />
+                <span>
+                  {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
+                </span>
+              </Flex>
             </GridItem>
             <GridItem>
               <Form id="wizard-cluster-basic-info__form">
-                <OcmOpenShiftVersion openshiftVersion="4.19" withPreviewText withMultiText>
+                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
                   <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
                     <span data-ouia-id="openshift-releases-link">
                       {t('ai:Learn more about OpenShift releases')}

@@ -3,9 +3,9 @@ import ClusterWizardFooter from '../ClusterWizardFooter';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import {
   ClusterWizardStep,
-  DeveloperPreview,
   PULL_SECRET_INFO_LINK,
   singleClusterOperators,
+  TechnologyPreview,
 } from '../../../../common';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
@@ -31,7 +31,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
 const downloadUrl =
-  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
+  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/4.20.8/agent-ove.x86_64.iso';
 
 const ReviewStep = () => {
   const { moveBack } = useClusterWizardContext();
@@ -65,7 +65,7 @@ const ReviewStep = () => {
                 <Content component="h2">Review and download ISO</Content>
               </SplitItem>
               <SplitItem>
-                <DeveloperPreview />
+                <TechnologyPreview />
               </SplitItem>
             </Split>
             <Alert isInline variant="info" title="Discovery ISO boot instructions">
@@ -98,7 +98,7 @@ const ReviewStep = () => {
             <DescriptionList isHorizontal>
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.19</DescriptionListDescription>
+                <DescriptionListDescription>4.20</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
