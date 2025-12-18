@@ -17,6 +17,8 @@ import { onFetchEvents } from '../fetching/fetchEvents';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeature } from '../../hooks/use-feature';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import ClustersService from '../../services/ClustersService';
+import { handleApiError, getApiErrorMessage } from '../../../common/api';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -71,6 +73,7 @@ type ClusterWizardFooterProps = WizardFooterGenericProps & {
   errorFields?: string[];
   alertTitle?: string;
   alertContent?: string | null;
+  disconnectedClusterId?: string;
 };
 
 const ClusterWizardFooter = ({
@@ -80,19 +83,37 @@ const ClusterWizardFooter = ({
   alertTitle,
   alertContent,
   onCancel,
+  disconnectedClusterId,
   ...rest
 }: ClusterWizardFooterProps) => {
-  const { alerts } = useAlerts();
+  const { alerts, addAlert } = useAlerts();
   const navigate = useNavigate();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { currentStepId } = useClusterWizardContext();
   const { resetSingleClusterDialog } = useModalDialogsContext();
+  const { setDisconnectedInfraEnv } = useClusterWizardContext();
 
-  const handleCancel = React.useCallback(() => navigate('/cluster-list'), [navigate]);
+  const handleCancel = React.useCallback(async () => {
+    if (disconnectedClusterId) {
+      try {
+        await ClustersService.remove(disconnectedClusterId);
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({
+            title: 'Failed to remove cluster',
+            message: getApiErrorMessage(e),
+          }),
+        );
+      }
+    }
+    setDisconnectedInfraEnv(undefined);
+    navigate('/cluster-list');
+  }, [navigate, setDisconnectedInfraEnv, addAlert, disconnectedClusterId]);
 
-  const handleReset = React.useCallback(() => {
-    resetSingleClusterDialog.open({ cluster });
-  }, [resetSingleClusterDialog, cluster]);
+  const handleReset = React.useCallback(
+    () => resetSingleClusterDialog.open({ cluster }),
+    [resetSingleClusterDialog, cluster],
+  );
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
 
@@ -119,6 +140,7 @@ const ClusterWizardFooter = ({
       cluster={cluster}
       onFetchEvents={onFetchEvents}
       {...rest}
+      data-testid="cluster-wizard-footer"
     />
   );
 };

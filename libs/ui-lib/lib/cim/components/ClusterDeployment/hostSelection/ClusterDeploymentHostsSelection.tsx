@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Grid, GridItem, TextContent, Form } from '@patternfly/react-core';
+import { Grid, GridItem, Content, Form } from '@patternfly/react-core';
 import { SwitchField } from '../../../../common';
 import {
   ClusterDeploymentHostsSelectionProps,
@@ -74,7 +74,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   return (
     <Grid hasGutter>
       <GridItem>
-        <TextContent>{hostRequirementText}</TextContent>
+        <Content>{hostRequirementText}</Content>
       </GridItem>
 
       {aiConfigMap && (

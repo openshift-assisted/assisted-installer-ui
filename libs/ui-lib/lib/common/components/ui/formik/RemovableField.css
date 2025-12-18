@@ -1,11 +1,11 @@
 .ai-remove-button__tooltip {
-  --pf-v5-c-tooltip__content--BackgroundColor: rgba(0, 0, 0, 0) !important;
-  --pf-v5-c-tooltip__arrow--BackgroundColor: rgba(0, 0, 0, 0) !important;
-  --pf-v5-c-tooltip__arrow--BoxShadow: rgba(0, 0, 0, 0) !important;
-  --pf-v5-c-tooltip--BoxShadow: rgba(0, 0, 0, 0) !important;
-  --pf-v5-c-tooltip__content--PaddingTop: 2.25em !important;
+  --pf-v6-c-tooltip__content--BackgroundColor: rgba(0, 0, 0, 0) !important;
+  --pf-v6-c-tooltip__arrow--BackgroundColor: rgba(0, 0, 0, 0) !important;
+  --pf-v6-c-tooltip__arrow--BoxShadow: rgba(0, 0, 0, 0) !important;
+  --pf-v6-c-tooltip--BoxShadow: rgba(0, 0, 0, 0) !important;
+  --pf-v6-c-tooltip__content--PaddingTop: 2.25em !important;
 }
 
 .ai-remove-button__tooltip--padding-none {
-  --pf-v5-c-tooltip__content--PaddingTop: 0 !important;
+  --pf-v6-c-tooltip__content--PaddingTop: 0 !important;
 }

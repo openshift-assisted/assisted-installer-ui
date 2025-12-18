@@ -3,8 +3,9 @@ import {
   Button,
   ButtonVariant,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -23,27 +24,25 @@ const BondDeleteModalModal = ({ isOpen, onConfirm, onCancel }: BondDeleteModalMo
   return (
     <Modal
       aria-label={t('ai:Remove bond dialog')}
-      title={t('ai:Remove bond?')}
       isOpen={isOpen}
       onClose={onCancel}
-      hasNoBodyWrapper
       id="remove-bond-modal"
       variant="medium"
-      titleIconVariant="warning"
     >
-      <ModalBoxBody>
+      <ModalHeader title={t('ai:Remove bond?')} titleIconVariant="warning" />
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>{t('ai:The bond associated with the host will be removed.')}</StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button onClick={onConfirm} variant={ButtonVariant.danger}>
           {t('ai:Remove bond')}
         </Button>
         <Button onClick={onCancel} variant={ButtonVariant.secondary}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </Modal>
   );
 };

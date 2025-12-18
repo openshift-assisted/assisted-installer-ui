@@ -1,24 +1,29 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 
 const ClusterUpdateErrorModal = () => (
-  <Modal
-    title="Unable to update cluster"
-    isOpen
-    variant={ModalVariant.small}
-    showClose={false}
-    titleIconVariant="danger"
-    actions={[
+  <Modal isOpen variant={ModalVariant.small} onClose={undefined}>
+    <ModalHeader title="Unable to update cluster" titleIconVariant="danger" />
+    <ModalBody>
+      The service is down, undergoing maintenance, or experiencing another issue.
+    </ModalBody>
+    <ModalFooter>
       <Button
         key="refresh"
         variant={ButtonVariant.primary}
         onClick={() => window.location.reload()}
       >
         Refresh page
-      </Button>,
-    ]}
-  >
-    The service is down, undergoing maintenance, or experiencing another issue.
+      </Button>
+    </ModalFooter>
   </Modal>
 );
 

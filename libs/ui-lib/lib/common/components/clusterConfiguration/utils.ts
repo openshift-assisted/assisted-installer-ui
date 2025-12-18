@@ -10,6 +10,7 @@ import {
   ServiceNetwork,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { NO_SUBNET_SET } from '../../config';
+import { isMajorMinorVersionEqualOrGreater } from '../../utils';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
@@ -179,20 +180,36 @@ export const canBeDualStack = (subnets: HostSubnets) =>
 
 const areNetworksDualStack = (
   networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
-) =>
-  networks &&
-  networks.length > 1 &&
-  Address4.isValid(networks[0].cidr || '') &&
-  Address6.isValid(networks[1].cidr || '');
+  openshiftVersion?: string,
+) => {
+  if (!networks || networks.length < 2) {
+    return false;
+  }
+
+  const firstCidr = networks[0].cidr || '';
+  const secondCidr = networks[1].cidr || '';
+
+  // For OCP >= 4.12, allow either IPv4 or IPv6 as primary, with opposite as secondary
+  if (openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')) {
+    return (
+      (Address4.isValid(firstCidr) && Address6.isValid(secondCidr)) ||
+      (Address6.isValid(firstCidr) && Address4.isValid(secondCidr))
+    );
+  }
+
+  // For older versions, require IPv4 as primary and IPv6 as secondary
+  return Address4.isValid(firstCidr) && Address6.isValid(secondCidr);
+};
 
 export const isDualStack = ({
   machineNetworks,
   clusterNetworks,
   serviceNetworks,
-}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>) =>
-  areNetworksDualStack(machineNetworks) &&
-  areNetworksDualStack(clusterNetworks) &&
-  areNetworksDualStack(serviceNetworks);
+  openshiftVersion,
+}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks' | 'openshiftVersion'>) =>
+  areNetworksDualStack(machineNetworks, openshiftVersion) &&
+  areNetworksDualStack(clusterNetworks, openshiftVersion) &&
+  areNetworksDualStack(serviceNetworks, openshiftVersion);
 
 export const isSubnetInIPv6 = ({
   clusterNetworkCidr,

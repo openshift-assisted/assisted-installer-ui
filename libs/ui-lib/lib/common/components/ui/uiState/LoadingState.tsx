@@ -17,7 +17,7 @@ type Props = {
 const LoadingState: React.FC<Props> = ({ content, primaryAction, secondaryActions }) => (
   <Bullseye>
     <EmptyState variant={EmptyStateVariant.sm}>
-      <Spinner size="xl" />
+      <Spinner size="xl" data-testid="loading-state-spinner" />
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
       {primaryAction}
       {secondaryActions && <EmptyStateActions>{secondaryActions}</EmptyStateActions>}

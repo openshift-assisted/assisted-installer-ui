@@ -85,7 +85,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     onSelect('status', isSelectEventChecked(event), value);
   };
 
-  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, id) => {
+  const onDeleteLabel: ToolbarFilterProps['deleteLabel'] = (type, id) => {
     if (type) {
       setFilters({
         ...filters,
@@ -96,7 +96,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     }
   };
 
-  const onDeleteChipGroup: ToolbarFilterProps['deleteChipGroup'] = (type) => {
+  const onDeleteLabelGroup: ToolbarFilterProps['deleteLabelGroup'] = (type) => {
     setFilters({
       ...filters,
       [type as string]: [],
@@ -135,9 +135,9 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
           </InputGroup>
         </ToolbarItem>
         <CustomToolbarFilter
-          chips={filters.status}
-          deleteChip={onDeleteChip}
-          deleteChipGroup={onDeleteChipGroup}
+          labels={filters.status}
+          deleteLabel={onDeleteLabel}
+          deleteLabelGroup={onDeleteLabelGroup}
           categoryName="status"
         >
           <Dropdown
@@ -180,8 +180,10 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         >
           Create Cluster
         </ToolbarButton>
-        {clustersUIState === ResourceUIState.RELOADING && <Spinner size="lg" />}
-        <ToolbarGroup align={{ lg: 'alignRight' }}>
+        {clustersUIState === ResourceUIState.RELOADING && (
+          <Spinner size="lg" data-testid="clusters-list-toolbar-spinner" />
+        )}
+        <ToolbarGroup align={{ lg: 'alignEnd' }}>
           <ToolbarButton
             variant={ButtonVariant.plain}
             onClick={() => fetchClusters()}

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Modal, ModalVariant, Button, ButtonVariant } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 
 type ResetHostModalProps = {
   hostname?: string;
@@ -9,12 +17,10 @@ type ResetHostModalProps = {
 };
 
 const ResetHostModal: React.FC<ResetHostModalProps> = ({ isOpen, hostname, onClose, onReset }) => (
-  <Modal
-    title="Reset Host"
-    isOpen={isOpen}
-    onClose={onClose}
-    variant={ModalVariant.small}
-    actions={[
+  <Modal isOpen={isOpen} onClose={onClose} variant={ModalVariant.small}>
+    <ModalHeader title="Reset Host" />
+    <ModalBody>Are you sure you want to reset host{` ${hostname || ''}`} ?</ModalBody>
+    <ModalFooter>
       <Button
         data-testid="reset-host-submit"
         key="confirm"
@@ -22,13 +28,11 @@ const ResetHostModal: React.FC<ResetHostModalProps> = ({ isOpen, hostname, onClo
         onClick={onReset}
       >
         Reset
-      </Button>,
+      </Button>
       <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
         Cancel
-      </Button>,
-    ]}
-  >
-    Are you sure you want to reset host{` ${hostname || ''}`} ?
+      </Button>
+    </ModalFooter>
   </Modal>
 );
 

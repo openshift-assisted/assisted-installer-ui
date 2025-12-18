@@ -1,8 +1,8 @@
 import React from 'react';
-import { TextContent, Text, Split, SplitItem } from '@patternfly/react-core';
+import { Content, Split, SplitItem } from '@patternfly/react-core';
 import {
   ASSISTED_INSTALLER_DOCUMENTATION_LINK,
-  DeveloperPreview,
+  TechnologyPreview,
   ExternalLink,
   isInOcm,
 } from '../../../common';
@@ -11,11 +11,11 @@ import { useFeature } from '../../hooks/use-feature';
 export const AssistedInstallerHeader = () => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   return (
-    <TextContent>
-      <Text component="h1" className="pf-v5-u-display-inline">
+    <>
+      <Content component="h1" className="pf-v6-u-display-inline">
         Install OpenShift with the Assisted Installer
-      </Text>
-      {isSingleClusterFeatureEnabled && <DeveloperPreview />}
+      </Content>
+      {isSingleClusterFeatureEnabled && <TechnologyPreview />}
       <Split hasGutter>
         <SplitItem>
           <ExternalLink href={ASSISTED_INSTALLER_DOCUMENTATION_LINK}>
@@ -24,12 +24,12 @@ export const AssistedInstallerHeader = () => {
         </SplitItem>
         {isInOcm && (
           <SplitItem>
-            <Text component="a" data-testid="whats-new-link">
+            <Content component="a" data-testid="whats-new-link" hidden={true}>
               What's new in Assisted Installer?
-            </Text>
+            </Content>
           </SplitItem>
         )}
       </Split>
-    </TextContent>
+    </>
   );
 };

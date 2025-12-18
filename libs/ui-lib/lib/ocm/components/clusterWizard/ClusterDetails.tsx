@@ -24,6 +24,8 @@ import {
   UISettingService,
 } from '../../services';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import BundleService from '../../services/BundleService';
+import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -44,6 +46,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     latestVersions: versions,
   } = useOpenShiftVersionsContext();
   const location = useLocation();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const handleClusterUpdate = React.useCallback(
     async (
@@ -81,11 +84,27 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       try {
         const searchParams = new URLSearchParams(location.search);
         const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
-        //For Assisted Migration we need to LVMs operator
+        //For Assisted Migration we need the LVMs operator and also the virtualization bundle operators
         if (isAssistedMigration) {
           params.olmOperators = [{ name: 'lvm' }];
+          const selectedBundle = (
+            await BundleService.listBundles(
+              params.openshiftVersion,
+              params.cpuArchitecture,
+              params.platform?.type,
+            )
+          ).find((b) => b.id === 'virtualization');
+          const virtOperators = selectedBundle?.operators;
+          params.olmOperators = [
+            ...params.olmOperators,
+            ...(virtOperators ? virtOperators.map((op) => ({ name: op })) : []),
+          ];
         }
-        const cluster = await ClustersService.create(params, isAssistedMigration);
+        const cluster = await ClustersService.create(
+          params,
+          isAssistedMigration,
+          isSingleClusterFeatureEnabled,
+        );
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
         const uiPatch: UISettingsValues = { addCustomManifests };
@@ -105,7 +124,15 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, location.search, navigate, clusterWizardContext, addAlert, dispatch],
+    [
+      clearAlerts,
+      location.search,
+      isSingleClusterFeatureEnabled,
+      navigate,
+      clusterWizardContext,
+      addAlert,
+      dispatch,
+    ],
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;

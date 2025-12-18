@@ -41,7 +41,10 @@ const TextAreaSecretField: React.FC<TextAreaSecretProps> = ({
       {helperTextHidden && (
         <FormHelperText>
           <HelperText>
-            <HelperTextItem>{helperTextHidden}</HelperTextItem>
+            <HelperTextItem data-testid={`input-textareasecret-${fieldId}-helper-text`}>
+              {' '}
+              {helperTextHidden}
+            </HelperTextItem>
           </HelperText>
         </FormHelperText>
       )}

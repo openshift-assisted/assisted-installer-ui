@@ -11,6 +11,24 @@ import 'cypress-fill-command';
 import '@testing-library/cypress/add-commands';
 import 'cypress-file-upload';
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      scrollAndCheckVisible(): Chainable<JQuery<HTMLElement>>;
+    }
+  }
+}
+
+// This command scrolls the element into view and checks if it is visible. Should work even in cases where elements were getting scrolled away by the browser.
+Cypress.Commands.add('scrollAndCheckVisible', { prevSubject: 'element' }, (subject) => {
+  cy.wrap(subject).should(($el: JQuery<HTMLElement>) => {
+    $el.get(0).scrollIntoView();
+    if (!$el.is(':visible')) {
+      throw new Error('Element not visible yet');
+    }
+  });
+});
+
 Cypress.Commands.add('pasteText', (selector, text) => {
   cy.get(selector).then((elem) => {
     elem.text(text);

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Modal, ModalVariant, Button, ButtonVariant } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type DeleteHostModalProps = {
@@ -17,8 +25,12 @@ const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModa
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      titleIconVariant="warning"
-      actions={[
+    >
+      <ModalHeader title={t('ai:Remove host?')} titleIconVariant="warning" />
+      <ModalBody>
+        {t('ai:Host {{hostname}} will be removed', { hostname: hostname || '' })}
+      </ModalBody>
+      <ModalFooter>
         <Button
           data-testid="delete-host-submit"
           key="confirm"
@@ -26,13 +38,11 @@ const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModa
           onClick={onDelete}
         >
           {t('ai:Remove host')}
-        </Button>,
+        </Button>
         <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
           {t('ai:Cancel')}
-        </Button>,
-      ]}
-    >
-      {t('ai:Host {{hostname}} will be removed', { hostname: hostname || '' })}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

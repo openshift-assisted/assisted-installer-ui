@@ -5,6 +5,8 @@ import {
   Button,
   CodeBlock,
   CodeBlockCode,
+  Content,
+  ContentVariants,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
@@ -17,8 +19,6 @@ import {
   GridItem,
   Label,
   Spinner,
-  Text,
-  TextVariants,
 } from '@patternfly/react-core';
 import { ExternalLink, useTranslation } from '../../../../common';
 import { MinusCircleIcon } from '@patternfly/react-icons/dist/js/icons/minus-circle-icon';
@@ -75,7 +75,7 @@ const ExpandedConfigMap = ({
 
                 {Object.entries(configMap?.data || {}).map(([key, val]) => (
                   <GridItem key={key}>
-                    <Text component={TextVariants.h4}>{key}</Text>
+                    <Content component={ContentVariants.h4}>{key}</Content>
                     <CodeBlock>
                       <CodeBlockCode>{val}</CodeBlockCode>
                     </CodeBlock>

@@ -7,6 +7,7 @@ import {
   InfraEnv,
   InfraEnvCreateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useFeature } from './use-feature';
 
 export default function useInfraEnvId(
   clusterId: Cluster['id'],
@@ -17,10 +18,15 @@ export default function useInfraEnvId(
 ) {
   const [infraEnvId, setInfraEnv] = React.useState<InfraEnv['id']>();
   const [error, setError] = React.useState('');
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const findInfraEnvId = React.useCallback(async () => {
     try {
-      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
+      const infraEnvId = await InfraEnvsService.getInfraEnvId(
+        clusterId,
+        cpuArchitecture,
+        isSingleClusterFeatureEnabled,
+      );
       if (infraEnvId && !(infraEnvId instanceof Error)) {
         setInfraEnv(infraEnvId);
       } else {
@@ -39,7 +45,14 @@ export default function useInfraEnvId(
     } catch (e) {
       setError(getErrorMessage(e));
     }
-  }, [clusterId, cpuArchitecture, clusterName, pullSecret, openshiftVersion]);
+  }, [
+    clusterId,
+    cpuArchitecture,
+    isSingleClusterFeatureEnabled,
+    pullSecret,
+    clusterName,
+    openshiftVersion,
+  ]);
 
   React.useEffect(() => {
     if (!clusterId) {

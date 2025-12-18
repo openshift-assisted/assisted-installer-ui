@@ -3,7 +3,7 @@ import ClusterWizardFooter from '../ClusterWizardFooter';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import {
   ClusterWizardStep,
-  DeveloperPreview,
+  TechnologyPreview,
   PULL_SECRET_INFO_LINK,
   singleClusterOperators,
 } from '../../../../common';
@@ -14,9 +14,6 @@ import {
   SplitItem,
   Alert,
   Grid,
-  Text,
-  TextContent,
-  TextVariants,
   DescriptionList,
   DescriptionListGroup,
   DescriptionListTerm,
@@ -25,18 +22,22 @@ import {
   ListItem,
   ListComponent,
   OrderType,
+  Content,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
-
-const downloadUrl =
-  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
+import ClustersService from '../../../services/ClustersService';
+import { handleApiError, getApiErrorMessage } from '../../../../common/api';
+import { useAlerts } from '../../../../common/components/AlertsContextProvider';
+import { AlertVariant } from '@patternfly/react-core';
 
 const ReviewStep = () => {
-  const { moveBack } = useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv, setDisconnectedInfraEnv } = useClusterWizardContext();
+  const { clusterId } = useParams<{ clusterId: string }>();
+  const { addAlert } = useAlerts();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -52,11 +53,40 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              downloadUrl && saveAs(downloadUrl);
-              navigate('/cluster-list');
+              void (async () => {
+                if (disconnectedInfraEnv?.downloadUrl) {
+                  saveAs(disconnectedInfraEnv.downloadUrl);
+                }
+                if (clusterId) {
+                  try {
+                    await ClustersService.remove(clusterId);
+                    // Remove infraEnv from wizard context after successful deregistration
+                    setDisconnectedInfraEnv(undefined);
+                    // Navigate to cluster-list only after successful deregistration
+                    navigate('/cluster-list');
+                  } catch (error) {
+                    handleApiError(error, () => {
+                      addAlert({
+                        title: 'Failed to deregister cluster',
+                        message: getApiErrorMessage(error),
+                        variant: AlertVariant.danger,
+                      });
+                    });
+                    // Error handling: continue with navigation even if deregistration fails
+                    // Still clear the context to avoid stale data
+                    setDisconnectedInfraEnv(undefined);
+                    // Navigate even on error to avoid getting stuck
+                    navigate('/cluster-list');
+                  }
+                } else {
+                  // If there's no cluster to deregister, navigate immediately
+                  navigate('/cluster-list');
+                }
+              })();
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"
+            disconnectedClusterId={clusterId}
           />
         }
       >
@@ -64,12 +94,10 @@ const ReviewStep = () => {
           <Grid hasGutter>
             <Split>
               <SplitItem>
-                <TextContent>
-                  <Text component={TextVariants.h2}>Review and download ISO</Text>
-                </TextContent>
+                <Content component="h2">Review and download ISO</Content>
               </SplitItem>
               <SplitItem>
-                <DeveloperPreview />
+                <TechnologyPreview />
               </SplitItem>
             </Split>
             <Alert isInline variant="info" title="Discovery ISO boot instructions">
@@ -102,7 +130,7 @@ const ReviewStep = () => {
             <DescriptionList isHorizontal>
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.19</DescriptionListDescription>
+                <DescriptionListDescription>4.20</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
@@ -110,7 +138,7 @@ const ReviewStep = () => {
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>ISO size</DescriptionListTerm>
-                <DescriptionListDescription>approx. 35GB</DescriptionListDescription>
+                <DescriptionListDescription>approx. 43.5GB</DescriptionListDescription>
               </DescriptionListGroup>
             </DescriptionList>
           </Grid>

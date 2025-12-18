@@ -95,6 +95,9 @@ const supported_operators = [
   'servicemesh',
   'serverless',
   'lso',
+  'cluster-observability',
+  'loki',
+  'openshift-logging',
 ];
 
 export { fakeClusterId, fakeClusterInfraEnvId, baseCluster, bundles, supported_operators };

@@ -2,7 +2,14 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { k8sPatch, Patch } from '@openshift-console/dynamic-plugin-sdk';
-import { Alert, AlertActionLink, Grid, GridItem, Text, TextVariants } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertActionLink,
+  Content,
+  ContentVariants,
+  Grid,
+  GridItem,
+} from '@patternfly/react-core';
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { ClusterWizardStepHeader, useTranslation } from '../../../../common';
 import { AgentClusterInstallK8sResource, AgentClusterInstallModel } from '../../../types';
@@ -95,16 +102,16 @@ export const ClusterDeploymentCustomManifestsStep = ({
             </AlertActionLink>,
           ]}
         >
-          <Text component={TextVariants.p}>
+          <Content component={ContentVariants.p}>
             {t(
               'ai:Define a config map with your custom manifests and select it in the form below.',
             )}
-          </Text>
-          <Text component={TextVariants.p}>
+          </Content>
+          <Content component={ContentVariants.p}>
             {t(
               'ai:Manifest names in each config map should be unique across all referenced config maps.',
             )}
-          </Text>
+          </Content>
         </Alert>
       </GridItem>
       <GridItem>

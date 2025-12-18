@@ -1,17 +1,12 @@
 import * as React from 'react';
 import * as Yup from 'yup';
+import { Alert, Button, ButtonVariant, Form, Stack, StackItem } from '@patternfly/react-core';
 import {
-  Alert,
-  Button,
-  ButtonVariant,
-  Form,
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { EditProxyModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ProxyInputFields } from '../../../common/components/clusterConfiguration/ProxyFields';

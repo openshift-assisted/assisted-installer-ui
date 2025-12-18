@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
-import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
+import { PageSection, Content } from '@patternfly/react-core';
 import {
   AddHostsContextProvider,
   AlertsContextProvider,
@@ -90,12 +90,10 @@ const ClusterPageGeneric = ({
       return (
         <>
           {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
-          <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-              <Text component="h1">{cluster.name}</Text>
-            </TextContent>
+          <PageSection hasBodyWrapper={false}>
+            <Content component="h1">{cluster.name}</Content>
           </PageSection>
-          <PageSection variant={PageSectionVariants.light} isFilled>
+          <PageSection hasBodyWrapper={false} isFilled>
             <ClusterDetail cluster={cluster} />
           </PageSection>
         </>
@@ -105,12 +103,12 @@ const ClusterPageGeneric = ({
         <>
           {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
           {showBreadcrumbs && (
-            <PageSection variant={PageSectionVariants.light}>
+            <PageSection hasBodyWrapper={false}>
               <AssistedInstallerHeader />
             </PageSection>
           )}
 
-          <PageSection variant={PageSectionVariants.light}>
+          <PageSection hasBodyWrapper={false}>
             <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
               <ClusterWizard
                 cluster={cluster}
@@ -133,7 +131,7 @@ const ClusterPageGeneric = ({
       return <Navigate to={`${routeBasePath}/clusters`} />;
     }
     return (
-      <PageSection variant={PageSectionVariants.light} isFilled>
+      <PageSection hasBodyWrapper={false} isFilled>
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={
@@ -147,7 +145,7 @@ const ClusterPageGeneric = ({
 
   if (infraEnvError) {
     return (
-      <PageSection variant={PageSectionVariants.light} isFilled>
+      <PageSection hasBodyWrapper={false} isFilled>
         <ErrorState
           title="Cluster details not found"
           actions={[<BackButton key={'cancel'} to={`..`} />]}
@@ -205,7 +203,7 @@ export const SingleClusterPage = ({
   resetModal: React.ReactNode;
 }) => (
   <AlertsContextProvider>
-    <PageSection variant={PageSectionVariants.light}>
+    <PageSection hasBodyWrapper={false} isFilled>
       <AssistedInstallerHeader />
     </PageSection>
     <ClusterPageGeneric clusterId={clusterId} resetModal={resetModal} />

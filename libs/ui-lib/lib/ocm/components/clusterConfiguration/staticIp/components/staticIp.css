@@ -1,29 +1,29 @@
-.pf-v5-c-form.pf-m-horizontal .static-config-type-label .pf-v5-c-form__group-label {
+.pf-v6-c-form.pf-m-horizontal .static-config-type-label .pf-v6-c-form__group-label {
   padding-top: unset;
 }
 
-.pf-v5-c-form.pf-m-horizontal .static-config-type-label .pf-v5-c-form__label {
+.pf-v6-c-form.pf-m-horizontal .static-config-type-label .pf-v6-c-form__label {
   vertical-align: text-top;
 }
 
 .vlan-id {
-  margin-left: var(--pf-v5-global--spacer--md);
+  margin-left: var(--pf-v6-global--spacer--md);
 }
 
-.mac-ip-mapping .pf-v5-c-form__label-text {
-  color: var(--pf-v5-global--Color--200);
-  font-size: var(--pf-v5-global--FontSize--md);
+.mac-ip-mapping .pf-v6-c-form__label-text {
+  color: var(--pf-v6-global--Color--200);
+  font-size: var(--pf-v6-global--FontSize--md);
   font-weight: unset;
 }
 
-.subnet .pf-l-flex > div:nth-child(1) {
+.machine-network .pf-v6-l-flex > div:nth-child(1) {
   flex: 0 0 24rem;
 }
 
-.subnet .pf-l-flex > div:nth-child(3) {
+.machine-network .pf-v6-l-flex > div:nth-child(3) {
   flex: 0 0 6rem;
 }
 
-.subnet .pf-v5-c-form__helper-text.pf-m-error {
+.machine-network .pf-v6-c-form__helper-text.pf-m-error {
   margin-top: unset;
 }

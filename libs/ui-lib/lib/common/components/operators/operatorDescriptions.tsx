@@ -60,6 +60,12 @@ export const DESCRIPTION_LVM =
 export const DESCRIPTION_CLUSTER_OBSERVABILITY =
   'Provides observability and monitoring capabilities for your OpenShift cluster.';
 
+export const DESCRIPTION_LOKI =
+  'Provides a log aggregation system designed to store and query logs from all applications and infrastructure components.';
+
+export const DESCRIPTION_OPENSHIFT_LOGGING =
+  'Collects, stores, and visualizes logs from OpenShift Container Platform components and applications.';
+
 export const DESCRIPTION_NUMA_RESOURCES =
   'Provides NUMA-aware scheduling to improve workload performance on NUMA systems.';
 

@@ -1,15 +1,11 @@
 import * as React from 'react';
+import { Alert, Button, Spinner, Stack, StackItem } from '@patternfly/react-core';
 import {
-  Alert,
-  Button,
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
-  Spinner,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { NodePoolK8sResource } from '../types';
 import { getErrorMessage } from '../../../../common/utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';

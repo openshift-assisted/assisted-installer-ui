@@ -32,7 +32,7 @@ export const BaseDnsHelperText = ({
 }) => (
   <FormHelperText>
     <HelperText id={fieldId}>
-      <HelperTextItem>
+      <HelperTextItem data-testid={`input-basednshelpertext-${fieldId}-helper-text`}>
         Enter the name of your domain [domainname] or [domainname.com]. This cannot be changed after
         cluster installed. All DNS records must include the cluster name and be subdomains of the
         base you enter. The full cluster address will be: <br />
@@ -71,7 +71,8 @@ export const OcmBaseDomainField = ({
         ref={toggleRef}
         onClick={() => setOpen(!isOpen)}
         isExpanded={isOpen}
-        className="pf-v5-u-w-100"
+        className="pf-v6-u-w-100"
+        data-testid="base-domain-dropdown-toggle"
       >
         {selectedDomain ? getManagedDomainLabel(selectedDomain) : 'Base domain'}
       </MenuToggle>

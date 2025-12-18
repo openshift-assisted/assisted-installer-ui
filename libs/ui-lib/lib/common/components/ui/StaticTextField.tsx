@@ -2,8 +2,7 @@ import * as React from 'react';
 import { useField } from 'formik';
 import {
   FormGroup,
-  TextContent,
-  Text,
+  Content,
   FormHelperText,
   HelperText,
   HelperTextItem,
@@ -46,6 +45,7 @@ export const StaticField: React.FC<StaticFieldProps> = ({
               icon={<ExclamationCircleIcon />}
               variant={isValid ? 'default' : 'error'}
               id={isValid ? `${fieldId}-helper` : `${fieldId}-helper-error`}
+              data-testid="static-text-field-helper-text"
             >
               {isValid ? helperText : helperTextInvalid}
             </HelperTextItem>
@@ -82,11 +82,9 @@ export const StaticTextField: React.FC<StaticFieldProps> = ({ children, ...props
 
   return (
     <StaticField {...props}>
-      <TextContent>
-        <Text component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
-          {children}
-        </Text>
-      </TextContent>
+      <Content component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
+        {children}
+      </Content>
     </StaticField>
   );
 };

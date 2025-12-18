@@ -50,7 +50,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   };
 
   return (
-    <FormGroup fieldId={fieldId} isRequired={isRequired} labelIcon={labelIcon}>
+    <FormGroup fieldId={fieldId} isRequired={isRequired} labelHelp={labelIcon}>
       {tooltipProps ? (
         <Tooltip {...tooltipProps}>
           <Switch {...switchFields} />
@@ -65,6 +65,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
               icon={<ExclamationCircleIcon />}
               variant={errorMessage ? 'error' : 'default'}
               id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-switchfield-${fieldId}-helper-text`}
             >
               {errorMessage ? errorMessage : hText}
             </HelperTextItem>

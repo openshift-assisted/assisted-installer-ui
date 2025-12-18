@@ -7,7 +7,6 @@ const { day2FlowIds } = fixtures;
 
 const allInfraEnvsApiPath = '/api/assisted-install/v2/infra-envs/';
 const allClustersApiPath = '/api/assisted-install/v2/clusters/';
-const allOperatorsApiPath = '/api/assisted-install/v2/operators/';
 
 const x86 = 'x86_64';
 const arm = 'arm64';
@@ -146,7 +145,6 @@ const mockUISettingsResponse: HttpRequestInterceptor = (req) => {
 
 const mockBundlesResponse: HttpRequestInterceptor = (req) => {
   const fixtureMapping = getScenarioFixtureMapping();
-  console.log(fixtureMapping);
   req.reply(fixtureMapping?.bundles || []);
 };
 
@@ -436,7 +434,9 @@ const addAdditionalIntercepts = () => {
   cy.intercept('GET', '/api/accounts_mgmt/v1/current_account', (req) => {
     req.reply(fixtures.ocmUserAccount);
   });
-  cy.intercept('GET', `${allOperatorsApiPath}/bundles`, mockBundlesResponse).as('bundles');
+  cy.intercept('GET', '/api/assisted-install/v2/operators/bundles*', mockBundlesResponse).as(
+    'bundles',
+  );
   cy.intercept('GET', '/api/assisted-install/v2/supported-operators', mockSupportedOperators).as(
     'supported-operators',
   );

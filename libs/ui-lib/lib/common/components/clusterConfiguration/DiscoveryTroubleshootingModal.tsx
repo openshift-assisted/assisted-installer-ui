@@ -1,17 +1,19 @@
 import React from 'react';
 import {
   Button,
-  Modal,
   ButtonVariant,
-  ModalVariant,
-  Text,
-  TextVariants,
+  Content,
   List,
   ListComponent,
   ListItem,
   OrderType,
   HelperText,
   HelperTextItem,
+  Modal,
+  ModalVariant,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
@@ -38,9 +40,9 @@ export const DiscoveryTroubleshootingModalContent = () => {
   return (
     <List component={ListComponent.ol} type={OrderType.number}>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:The host machine is powered on')}</Text>
+        <Content component="p">{t('ai:The host machine is powered on')}</Content>
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-boot-time-helper">
             {t(
               'ai:Boot time depends on several factors such as your hardware and network configuration, and if you are booting from an ISO.',
             )}
@@ -48,21 +50,21 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </HelperText>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component="p">
           {t('ai:If you used DHCP networking, verify that your DHCP server is enabled')}
-        </Text>
+        </Content>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component="p">
           {t(
             'ai:If you used static IP, bridges, and bonds networking, verify that your configurations are correct',
           )}
-        </Text>
+        </Content>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:SSH into your machine')}</Text>
+        <Content component="p">{t('ai:SSH into your machine')}</Content>
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-ssh-access-helper">
             {t(
               'ai:Verify that you can access your host machine using SSH, or a console such as BMC or virtual machine console. In the CLI, enter the following command:',
             )}
@@ -70,7 +72,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </HelperText>
         <PrismCode theme={SimpleAIPrismTheme} code="ssh -i <identity_file> core@<machine-ip>" />
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-ssh-auth-helper">
             {t(
               'ai:Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.',
             )}
@@ -78,11 +80,11 @@ export const DiscoveryTroubleshootingModalContent = () => {
         </HelperText>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component="p">
           {t('ai:Unable to SSH into your hosts through the network?')}
-        </Text>
+        </Content>
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-ssh-alternative-helper">
             {t(
               'ai:Try logging into the machine directly through physical access, out-of-band management, or a virtual machine console. To generate a new bootable image file with password-based login enabled, download the full image file and patch it locally with a login password of your choice using',
             )}{' '}
@@ -99,7 +101,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
           </HelperTextItem>
         </HelperText>
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-script-usage-helper">
             {t('ai:Run these commands to use the script:')}
           </HelperTextItem>
         </HelperText>
@@ -110,12 +112,12 @@ export const DiscoveryTroubleshootingModalContent = () => {
         />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>
+        <Content component="p">
           {t('ai:The discovery agent is running with the correct parameters')}
-        </Text>
+        </Content>
         <PrismCode theme={SimpleAIPrismTheme} code={`ps -ef | grep agent`} />
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-agent-output-helper">
             {t('ai:The output displays the following:')}
           </HelperTextItem>
         </HelperText>
@@ -126,15 +128,15 @@ core        2362    2311  0 08:04 pts/0    00:00:00 grep --color=auto agent`}
         />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:The agent ran successfully')}</Text>
+        <Content component="p">{t('ai:The agent ran successfully')}</Content>
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-agent-logs-helper">
             {t('ai:To verify that the agent ran successfully, check the logs:')}
           </HelperTextItem>
         </HelperText>
         <PrismCode theme={SimpleAIPrismTheme} code="sudo journalctl -u agent.service" />
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-network-error-helper">
             {t('ai:In the following example, the errors indicate there is a network issue:')}
           </HelperTextItem>
         </HelperText>
@@ -152,7 +154,7 @@ Oct 15 11:26:35 localhost systemd[1]: agent.service: Failed with result 'exit-co
 Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         />
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-proxy-network-helper">
             <Trans
               t={t}
               components={{ code: <code /> }}
@@ -162,16 +164,16 @@ Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         </HelperText>
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:Check agent logs')}</Text>
+        <Content component="p">{t('ai:Check agent logs')}</Content>
         <HelperText>
-          <HelperTextItem variant="indeterminate">
+          <HelperTextItem data-testid="discovery-troubleshooting-detailed-logs-helper">
             {t('ai:To view detailed agent logs and communication use following command:')}
           </HelperTextItem>
         </HelperText>
         <PrismCode theme={SimpleAIPrismTheme} code="sudo journalctl TAG=agent | less" />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:Check assisted-installer logs')}</Text>
+        <Content component="p">{t('ai:Check assisted-installer logs')}</Content>
         <PrismCode
           theme={SimpleAIPrismTheme}
           code={`sudo su
@@ -180,7 +182,7 @@ podman logs <container id>`}
         />
       </ListItem>
       <ListItem>
-        <Text component={TextVariants.p}>{t('ai:Check bootkube logs')}</Text>
+        <Content component="p">{t('ai:Check bootkube logs')}</Content>
         <PrismCode theme={SimpleAIPrismTheme} code={`sudo journalctl -u bootkube`} />
       </ListItem>
     </List>
@@ -221,24 +223,23 @@ export const DiscoveryTroubleshootingModal = ({
   setDiscoveryHintModalOpen,
   isOpen,
 }: DiscoveryTroubleshootingModalProps) => {
+  const { t } = useTranslation();
   const onClose = React.useCallback(
     () => setDiscoveryHintModalOpen(false),
     [setDiscoveryHintModalOpen],
   );
-  const { t } = useTranslation();
+
   return (
-    <Modal
-      title={t('ai:Hosts not showing up troubleshooter')}
-      isOpen={isOpen}
-      actions={[
+    <Modal isOpen={isOpen} onClose={onClose} variant={ModalVariant.large}>
+      <ModalHeader title={t('ai:Hosts not showing up troubleshooter')} />
+      <ModalBody>
+        <DiscoveryTroubleshootingModalContent />
+      </ModalBody>
+      <ModalFooter>
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
           {t('ai:Close')}
-        </Button>,
-      ]}
-      onClose={onClose}
-      variant={ModalVariant.large}
-    >
-      <DiscoveryTroubleshootingModalContent />
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -46,7 +46,7 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
                   </>
                 }
                 testId="platform-integration-note"
-                classNameValue={'pf-v5-u-mt-sm'}
+                classNameValue={'pf-v6-u-mt-sm'}
               />
             </DetailList>
           </RenderIf>
@@ -69,10 +69,10 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
 const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   return (
     <ExpandableSection
-      toggleText={'Cluster summary'}
-      className={'summary-expandable'}
+      toggleContent={'Cluster summary'}
+      id={'summary-expandable'}
+      isExpanded={true}
       isIndented
-      isExpanded
     >
       <ReviewSummaryContent cluster={cluster} />
     </ExpandableSection>

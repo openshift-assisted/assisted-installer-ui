@@ -3,6 +3,6 @@ export const navbar = {
     cy.get('.wizard-nav-item-warning-icon', { timeout }).should('not.exist');
   },
   clickOnNavItem: (title) => {
-    cy.get('.pf-v5-c-wizard__nav-list').contains(title).click();
+    cy.get('.pf-v6-c-wizard__nav-list').contains(title).click();
   },
 };

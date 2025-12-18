@@ -14,10 +14,13 @@ const InfraEnvsService = {
   async getInfraEnvId(
     clusterId: Cluster['id'],
     cpuArchitecture: CpuArchitecture,
+    isSingleClusterFeatureEnabled?: boolean,
   ): Promise<string | Error> {
     let infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId instanceof Error) {
-      const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+      const { data: infraEnvs } = await InfraEnvsAPI.list(
+        !isSingleClusterFeatureEnabled ? clusterId : '',
+      );
       if (infraEnvs.length > 0) {
         InfraEnvCache.updateInfraEnvs(clusterId, infraEnvs);
         infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);

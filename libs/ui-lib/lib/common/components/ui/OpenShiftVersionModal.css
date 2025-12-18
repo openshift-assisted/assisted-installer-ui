@@ -2,6 +2,6 @@
   height: 44vh;
   display: flex;
 }
-#customOpenshiftSelect .pf-v5-c-menu__content {
+#customOpenshiftSelect .pf-v6-c-menu__content {
   max-height: 22vh;
 }

@@ -29,7 +29,7 @@ export class ExternalPartnerIntegrationsField {
 
   static findDropdownItems() {
     ExternalPartnerIntegrationsField.findExternalPartnerIntegrationsField().click();
-    return ExternalPartnerIntegrationsField.findDropdown().find('.pf-v5-c-menu__item');
+    return ExternalPartnerIntegrationsField.findDropdown().find('.pf-v6-c-menu__item');
   }
 
   static findDropdownItem(platform: string) {

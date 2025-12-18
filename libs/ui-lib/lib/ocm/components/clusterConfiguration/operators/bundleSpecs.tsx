@@ -2,7 +2,6 @@ import * as React from 'react';
 import { List, ListItem } from '@patternfly/react-core';
 
 export type BundleSpec = {
-  noSNO?: boolean;
   incompatibleBundles?: string[];
   Description: React.ComponentType;
   docsLink?: string;
@@ -10,7 +9,6 @@ export type BundleSpec = {
 
 export const bundleSpecs: { [key: string]: BundleSpec } = {
   virtualization: {
-    noSNO: true,
     Description: () => (
       <List>
         <ListItem>
@@ -29,7 +27,6 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
     ),
   },
   'openshift-ai': {
-    noSNO: true,
     incompatibleBundles: [],
     Description: () => (
       <List>
