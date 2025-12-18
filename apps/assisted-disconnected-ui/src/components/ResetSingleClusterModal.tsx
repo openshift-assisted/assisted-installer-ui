@@ -1,7 +1,11 @@
 import React from 'react';
 import { Button, ButtonVariant, Content, Stack, StackItem, Alert } from '@patternfly/react-core';
 import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
-import { useModalDialogsContext, ClustersService } from '@openshift-assisted/ui-lib/ocm';
+import {
+  useModalDialogsContext,
+  ClustersService,
+  HostsService,
+} from '@openshift-assisted/ui-lib/ocm';
 import {
   getApiErrorMessage,
   handleApiError,
@@ -31,6 +35,14 @@ const ResetSingleClusterModal: React.FC = () => {
     try {
       setError(undefined);
       setIsLoading(true);
+      const hosts = cluster?.hosts;
+      if (hosts) {
+        for (const host of hosts) {
+          await HostsService.unbind(host);
+        }
+      }
+
+      // Remove the regular cluster
       await ClustersService.remove(cluster.id);
       navigate(`/`);
     } catch (e) {
