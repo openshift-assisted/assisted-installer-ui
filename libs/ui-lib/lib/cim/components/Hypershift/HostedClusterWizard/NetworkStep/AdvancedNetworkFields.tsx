@@ -1,10 +1,10 @@
 import React from 'react';
 import { Grid, TextInputTypes } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { InputField } from '../../components/ui';
-import { NetworkConfigurationValues } from '../../types/clusters';
-import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { InputField } from '../../../../../common/components/ui';
+import { NetworkConfigurationValues } from '../../../../../common/types/clusters';
+import { PREFIX_MAX_RESTRICTION } from '../../../../../common/config/constants';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 type AdvancedNetworkFieldsProps = {
   isClusterCIDRIPv6: boolean;
@@ -61,3 +61,4 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isCluster
 };
 
 export default AdvancedNetworkFields;
+
