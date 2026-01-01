@@ -5,6 +5,7 @@ import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
+  StackTypeControlGroup,
 } from '../../../common/components/clusterWizard/networkingSteps';
 import { AvailableSubnetsControl } from '../../../ocm/components/clusterConfiguration/networkConfiguration/AvailableSubnetsControl';
 import {
@@ -21,7 +22,6 @@ import {
   NETWORK_TYPE_OVN,
   NO_SUBNET_SET,
 } from '../../../common';
-import { StackTypeControlGroup } from '../../../ocm/components/clusterConfiguration/networkConfiguration/StackTypeControl';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { NetworkTypeControlGroup } from '../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';

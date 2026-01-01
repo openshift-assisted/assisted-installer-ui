@@ -3,18 +3,11 @@ import { ButtonVariant, FormGroup, Split, SplitItem, Tooltip } from '@patternfly
 import { useFormikContext } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
-import {
-  HostSubnets,
-  NetworkConfigurationValues,
-  getFieldId,
-  DUAL_STACK,
-  IPV4_STACK,
-  NETWORK_TYPE_OVN,
-  NETWORK_TYPE_SDN,
-  NO_SUBNET_SET,
-  RadioField,
-} from '../../../../common';
-import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
+import { HostSubnets, NetworkConfigurationValues } from '../../../types';
+import { getFieldId } from '../../ui';
+import { DUAL_STACK, IPV4_STACK, NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../../config';
+import { RadioField } from '../../ui/formik';
+import { ConfirmationModal, PopoverIcon } from '../../ui';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
 import {
   Cluster,
@@ -312,3 +305,4 @@ export const StackTypeControlGroup = ({
     </>
   );
 };
+
