@@ -278,9 +278,33 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
-  clusterNetworkCidr: '2002:db8::/53',
+  clusterNetworkCidr: 'fd01::/48',
   clusterNetworkHostPrefix: 64,
-  serviceNetworkCidr: '2003:db8::/112',
+  serviceNetworkCidr: 'fd02::/112',
+};
+
+export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
+  clusterNetworksIpv4: [
+    {
+      cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr,
+      hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkHostPrefix,
+    },
+  ],
+  clusterNetworksDualstack: [
+    {
+      cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr,
+      hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkHostPrefix,
+    },
+    {
+      cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkCidr,
+      hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkHostPrefix,
+    },
+  ],
+  serviceNetworksIpv4: [{ cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr }],
+  serviceNetworksDualstack: [
+    { cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr },
+    { cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr },
+  ],
 };
 
 /**

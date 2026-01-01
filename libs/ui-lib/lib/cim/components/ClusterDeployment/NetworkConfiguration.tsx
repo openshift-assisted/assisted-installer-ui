@@ -1,24 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useFormikContext } from 'formik';
 import { Checkbox, Grid } from '@patternfly/react-core';
-import AdvancedNetworkFields from '../../../common/components/clusterConfiguration/AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
-import { Address6 } from 'ip-address';
 import {
-  AvailableSubnetsControl,
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
+} from '../../../common/components/clusterWizard/networkingSteps';
+import { AvailableSubnetsControl } from '../../../ocm/components/clusterConfiguration/networkConfiguration/AvailableSubnetsControl';
+import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
-} from '../../../common/components/clusterWizard/networkingSteps';
+} from '../../../ocm/components/clusterConfiguration/networkConfiguration/VirtualIPControlGroup';
+import AdvancedNetworkFields from '../../../ocm/components/clusterConfiguration/networkConfiguration/AdvancedNetworkFields';
 import {
+  canBeDualStack,
   canSelectNetworkTypeSDN,
+  DUAL_STACK,
   isAdvNetworkConf,
   isSNO,
-  isSubnetInIPv6,
   NETWORK_TYPE_OVN,
   NO_SUBNET_SET,
 } from '../../../common';
+import { StackTypeControlGroup } from '../../../ocm/components/clusterConfiguration/networkConfiguration/StackTypeControl';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { NetworkTypeControlGroup } from '../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
@@ -39,38 +42,38 @@ const NetworkConfiguration = ({
   const { setFieldValue, values, touched, validateField } =
     useFormikContext<NetworkConfigurationValues>();
 
-  const isMultiNodeCluster = !isSNO(cluster);
-  const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
-  const { isIPv6, isSDNSelectable } = React.useMemo(() => {
-    const isIPv6 = isSubnetInIPv6({
-      machineNetworkCidr: cluster.machineNetworkCidr,
-      clusterNetworkCidr: values.clusterNetworkCidr,
-      serviceNetworkCidr: values.serviceNetworkCidr,
-    });
-    return {
-      isIPv6,
-      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, isIPv6),
-    };
-  }, [
-    isMultiNodeCluster,
-    values.clusterNetworkCidr,
-    cluster.machineNetworkCidr,
-    values.serviceNetworkCidr,
-  ]);
-
-  const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings),
+  const isSNOCluster = isSNO(cluster);
+  const isMultiNodeCluster = !isSNOCluster;
+  const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
+  
+  const isDualStack = values.stackType === DUAL_STACK;
+  const isSDNSelectable = React.useMemo(
+    () => canSelectNetworkTypeSDN(!isMultiNodeCluster),
+    [isMultiNodeCluster],
   );
 
-  const toggleAdvConfiguration = (checked: boolean) => {
-    setAdvanced(checked);
+  const [isAdvanced, setAdvanced] = React.useState(
+    isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings),
+  );
 
-    if (!checked) {
-      setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
-      setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
-      setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
+  const toggleAdvConfiguration = useCallback(
+    (checked: boolean) => {
+      setAdvanced(checked);
+
+      if (!checked) {
+        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworksIpv4);
+        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworksIpv4);
+      }
+    },
+    [setFieldValue, defaultNetworkSettings],
+  );
+
+  // Auto-enable advanced networking when switching to dual-stack
+  useEffect(() => {
+    if (isDualStack) {
+      toggleAdvConfiguration(true);
     }
-  };
+  }, [isDualStack, toggleAdvConfiguration]);
 
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const firstSubnet = hostSubnets[0]?.subnet;
@@ -89,7 +92,7 @@ const NetworkConfiguration = ({
     }
     // Skipping "cluster.networkType" as it's ultimately the value we are setting in the form
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isIPv6, isMultiNodeCluster, setFieldValue]);
+  }, [isDualStack, isMultiNodeCluster, setFieldValue]);
 
   useEffect(() => {
     if (isUserManagedNetworking) {
@@ -124,13 +127,25 @@ const NetworkConfiguration = ({
         />
       )}
 
+      {(isSNOCluster || !isUserManagedNetworking) && (
+        <StackTypeControlGroup
+          clusterId={cluster.id}
+          isDualStackSelectable={isDualStackSelectable}
+          hostSubnets={hostSubnets}
+          defaultNetworkValues={defaultNetworkSettings}
+        />
+      )}
+
       <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
+          clusterId={cluster.id}
           hostSubnets={hostSubnets}
-          hosts={cluster.hosts || []}
           isRequired={!isUserManagedNetworking}
+          isDisabled={hostSubnets.length === 0}
+          openshiftVersion={cluster.openshiftVersion}
+          hosts={cluster.hosts || []}
           isMultiNodeCluster={isMultiNodeCluster}
         />
       )}
@@ -149,7 +164,8 @@ const NetworkConfiguration = ({
         description={t('ai:Configure advanced networking properties (e.g. CIDR ranges).')}
         isChecked={isAdvanced}
         onChange={(_event, checked: boolean) => toggleAdvConfiguration(checked)}
-        body={isAdvanced && <AdvancedNetworkFields isClusterCIDRIPv6={isClusterCIDRIPv6} />}
+        isDisabled={isDualStack}
+        body={isAdvanced && <AdvancedNetworkFields />}
       />
     </Grid>
   );

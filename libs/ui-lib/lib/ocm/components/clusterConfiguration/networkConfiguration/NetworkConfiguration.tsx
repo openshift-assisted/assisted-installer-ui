@@ -270,6 +270,8 @@ const NetworkConfiguration = ({
             clusterId={cluster.id}
             isDualStackSelectable={isDualStackSelectable}
             hostSubnets={hostSubnets}
+            defaultNetworkValues={defaultNetworkSettings}
+            isViewerMode={isViewerMode}
           />
         </StackItem>
       )}
@@ -293,6 +295,7 @@ const NetworkConfiguration = ({
               false
             }
             openshiftVersion={cluster.openshiftVersion}
+            isViewerMode={isViewerMode}
           />
         </StackItem>
       )}
@@ -301,8 +304,10 @@ const NetworkConfiguration = ({
         <StackItem>
           <VirtualIPControlGroup
             cluster={cluster}
+            hostSubnets={hostSubnets}
             isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled || !isSDNSupported}
             supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
+            isViewerMode={isViewerMode}
           />
         </StackItem>
       )}
@@ -324,7 +329,7 @@ const NetworkConfiguration = ({
       </StackItem>
       {isAdvanced && (
         <StackItem>
-          <AdvancedNetworkFields />
+          <AdvancedNetworkFields isDisabled={isViewerMode} />
         </StackItem>
       )}
     </Stack>
