@@ -19,8 +19,8 @@ import {
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
+  StackTypeControlGroup,
 } from '../../../../common/components/clusterWizard/networkingSteps';
-import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';

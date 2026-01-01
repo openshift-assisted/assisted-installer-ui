@@ -12,7 +12,7 @@ export {
   StackTypeControlGroup,
   type StackTypeControlGroupProps,
   type StackTypeDefaultNetworkValues,
-} from './clusterConfiguration/networkConfiguration/StackTypeControl';
+} from '../../common/components/clusterWizard/networkingSteps';
 export {
   AvailableSubnetsControl,
   type AvailableSubnetsControlProps,
