@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertActionLink,
+  AlertVariant,
+  FormGroup,
+  Popover,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
@@ -11,10 +18,10 @@ import {
   NO_SUBNET_SET,
   isMajorMinorVersionEqualOrGreater,
 } from '../../../../common';
-import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { SubnetsDropdown } from './SubnetsDropdown';
 import { reorderNetworksForPrimary } from './reorderNetworks';
-import { Cluster, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, Host, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
@@ -38,6 +45,9 @@ export interface AvailableSubnetsControlProps {
   isRequired: boolean;
   isDisabled: boolean;
   openshiftVersion?: string;
+  isViewerMode?: boolean;
+  hosts?: Host[];
+  isMultiNodeCluster?: boolean;
 }
 
 export const AvailableSubnetsControl = ({
@@ -46,10 +56,13 @@ export const AvailableSubnetsControl = ({
   isRequired = false,
   isDisabled,
   openshiftVersion,
+  isViewerMode = false,
+  hosts,
+  isMultiNodeCluster = true,
 }: AvailableSubnetsControlProps) => {
+  const { t } = useTranslation();
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const isDualStack = values.stackType === DUAL_STACK;
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   // Check if OCP version supports IPv6 as primary network
   const supportsIPv6Primary =
@@ -108,6 +121,72 @@ export const AvailableSubnetsControl = ({
     }
   }, [isDualStack, values.machineNetworks, IPv4Subnets, IPv6Subnets, setFieldValue]);
 
+  // Helper text showing excluded hosts
+  const getExcludedHostsAlert = React.useCallback(
+    (subnetCidr: string | undefined) => {
+      if (!hosts || !isMultiNodeCluster || !subnetCidr) {
+        return null;
+      }
+      const matchingSubnet = hostSubnets.find((hn) => hn.subnet === subnetCidr);
+      if (!matchingSubnet) {
+        return null;
+      }
+
+      const excludedHosts =
+        hosts.filter(
+          (host) =>
+            !['disabled', 'disconnected'].includes(host.status) &&
+            !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
+        ) || [];
+
+      // Workaround for bug in CIM backend. hostIDs are empty
+      if (excludedHosts.length === 0 || !matchingSubnet.hostIDs.length) {
+        return null;
+      }
+
+      const actionLinks = (
+        <Popover
+          position="right"
+          bodyContent={
+            <ul>
+              {excludedHosts
+                .sort(
+                  (hostA, hostB) =>
+                    hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
+                )
+                .map((host) => (
+                  <li key={host.id}>{host.requestedHostname || host.id}</li>
+                ))}
+            </ul>
+          }
+          minWidth="30rem"
+          maxWidth="50rem"
+        >
+          <AlertActionLink id="form-input-hostSubnet-field-helper-view-excluded">
+            {t('ai:View {{count}} affected host', {
+              count: excludedHosts.length,
+            })}
+          </AlertActionLink>
+        </Popover>
+      );
+
+      return (
+        <Alert
+          title={t('ai:This subnet range is not available on all hosts')}
+          variant={AlertVariant.warning}
+          actionLinks={actionLinks}
+          isInline
+        >
+          {t('ai:Hosts outside of this range will not be included in the new cluster.')}
+        </Alert>
+      );
+    },
+    [hosts, isMultiNodeCluster, hostSubnets, t],
+  );
+
+  const primaryNetworkCidr = values.machineNetworks?.[0]?.cidr;
+  const excludedHostsAlert = getExcludedHostsAlert(primaryNetworkCidr);
+
   return (
     <>
       <FormGroup
@@ -159,6 +238,8 @@ export const AvailableSubnetsControl = ({
         {typeof errors.machineNetworks === 'string' && (
           <Alert variant={AlertVariant.warning} title={errors.machineNetworks} isInline />
         )}
+
+        {excludedHostsAlert}
       </FormGroup>
 
       {isDualStack && values.machineNetworks && values.machineNetworks.length > 1 && (

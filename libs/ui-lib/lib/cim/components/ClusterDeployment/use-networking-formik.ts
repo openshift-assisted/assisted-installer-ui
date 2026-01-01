@@ -14,14 +14,18 @@ import { getAICluster } from '../helpers';
 import { useDeepCompareMemoize } from '../../../common/hooks';
 import {
   HostSubnets,
-  hostPrefixValidationSchema,
-  ipBlockValidationSchema,
   vipArrayValidationSchema,
   sshPublicKeyListValidationSchema,
   hostSubnetValidationSchema,
   httpProxyValidationSchema,
   noProxyValidationSchema,
-  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
+  CLUSTER_DEFAULT_NETWORK_SETTINGS,
+  clusterNetworksValidationSchema,
+  serviceNetworkValidationSchema,
+  dualStackValidationSchema,
+  IPv4ValidationSchema,
+  IPV4_STACK,
+  NetworkConfigurationValues,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -44,12 +48,30 @@ const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
 const getNetworkConfigurationValidationSchema = (
   initialValues: ClusterDeploymentNetworkingValues,
   hostSubnets: HostSubnets,
+  openshiftVersion?: string,
 ) =>
   Yup.lazy((values: ClusterDeploymentNetworkingValues) =>
     Yup.object<ClusterDeploymentNetworkingValues>().shape({
-      clusterNetworkHostPrefix: hostPrefixValidationSchema(values.clusterNetworkCidr),
-      clusterNetworkCidr: ipBlockValidationSchema(values.serviceNetworkCidr),
-      serviceNetworkCidr: ipBlockValidationSchema(values.clusterNetworkCidr),
+      clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
+        otherwise: () =>
+          values.clusterNetworks && values.clusterNetworks?.length >= 2
+            ? clusterNetworksValidationSchema.concat(
+                dualStackValidationSchema('cluster network', openshiftVersion),
+              )
+            : Yup.array(),
+      }),
+      serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
+        otherwise: () =>
+          values.serviceNetworks && values.serviceNetworks?.length >= 2
+            ? serviceNetworkValidationSchema.concat(
+                dualStackValidationSchema('service network', openshiftVersion),
+              )
+            : Yup.array(),
+      }),
       apiVips: vipArrayValidationSchema(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema(hostSubnets, values, initialValues.ingressVips),
       sshPublicKey: sshPublicKeyListValidationSchema,
@@ -79,7 +101,7 @@ export const useNetworkingFormik = ({
         agents,
       });
       return {
-        ...getNetworkInitialValues(cluster, CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4),
+        ...getNetworkInitialValues(cluster, CLUSTER_DEFAULT_NETWORK_SETTINGS),
         enableProxy: false,
         editProxy: false,
       };
@@ -93,7 +115,11 @@ export const useNetworkingFormik = ({
       agents,
     });
     const hostSubnets = getHostSubnets(cluster);
-    return getNetworkConfigurationValidationSchema(initialValues, hostSubnets);
+    return getNetworkConfigurationValidationSchema(
+      initialValues,
+      hostSubnets,
+      cluster.openshiftVersion,
+    );
   }, [initialValues, clusterDeployment, agentClusterInstall, agents]);
 
   return {
