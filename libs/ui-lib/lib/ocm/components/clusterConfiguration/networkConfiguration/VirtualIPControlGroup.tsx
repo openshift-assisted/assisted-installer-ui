@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { FieldArray, useFormikContext } from 'formik';
 import {
   Spinner,
@@ -20,9 +19,11 @@ import {
   PopoverIcon,
   selectApiVip,
   selectIngressVip,
+  HostSubnets,
+  NO_SUBNET_SET,
+  CheckboxField,
+  InputField,
 } from '../../../../common';
-import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
-import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import {
@@ -31,6 +32,24 @@ import {
   Ip,
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { TFunction } from 'i18next';
+
+const getVipHelperSuffix = (
+  t: TFunction,
+  vip?: string,
+  vipDhcpAllocation?: boolean,
+  vipDhcpAllocationFormValue?: boolean,
+): string => {
+  if (!vipDhcpAllocationFormValue) {
+    return t(
+      'ai:Make sure that the VIP is unique and not used by any other device on your network.',
+    );
+  }
+  if (vipDhcpAllocation && vip) {
+    return t('ai:This IP was allocated by the DHCP server.');
+  }
+  return '';
+};
 
 interface VipStaticValueProps {
   id?: string;
@@ -47,6 +66,7 @@ const VipStaticValue = ({
 }: VipStaticValueProps) => {
   const { vipDhcpAllocation } = cluster;
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+  const { t } = useTranslation();
 
   if (vipDhcpAllocation && !!vipValue) {
     return <span id={`${id}-allocated`}>{vipValue}</span>;
@@ -56,7 +76,7 @@ const VipStaticValue = ({
       <Alert
         id={`${id}-alert-allocation-failed`}
         variant={AlertVariant.danger}
-        title="The DHCP server failed to allocate the IP"
+        title={t('ai:The DHCP server failed to allocate the IP')}
         isInline
       >
         {validationErrorMessage}
@@ -67,31 +87,51 @@ const VipStaticValue = ({
     return (
       <>
         <Spinner size="md" id={`${id}-allocating`} data-testid={`vip-static-${id}-value-spinner`} />
-        <i> This IP is being allocated by the DHCP server</i>
+        <i>{t('ai:This IP is being allocated by the DHCP server')}</i>
       </>
     );
   }
-  return <i>This IP will be allocated by the DHCP server</i>;
+  return <i>{t('ai:This IP will be allocated by the DHCP server')}</i>;
 };
 
 export type VirtualIPControlGroupProps = {
   cluster: Cluster;
+  hostSubnets: HostSubnets;
   isVipDhcpAllocationDisabled?: boolean;
   supportLevel?: SupportLevel;
+  isViewerMode?: boolean;
 };
 
 export const VirtualIPControlGroup = ({
   cluster,
+  hostSubnets,
   isVipDhcpAllocationDisabled,
   supportLevel,
+  isViewerMode = false,
 }: VirtualIPControlGroupProps) => {
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { t } = useTranslation();
 
-  const ipHelperText = 'Make sure the IP is not used by any other device on your network.';
-  const ipPopoverContent =
-    'Provides an endpoint for users, both human and machine, to interact with and configure the platform.';
+  const vipHelperSuffix = getVipHelperSuffix(
+    t,
+    selectApiVip(cluster),
+    cluster.vipDhcpAllocation,
+    values.vipDhcpAllocation,
+  );
+  const apiVipHelperText = t(
+    'ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
+    { vipHelperSuffix },
+  );
+  const ingressVipHelperText = t(
+    'ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
+    { vipHelperSuffix },
+  );
+  const apiVipPopoverContent = t(
+    'ai:Provides an endpoint for users, both human and machine, to interact with and configure the platform.',
+  );
+  const ingressVipPopoverContent = t(
+    'ai:Provides an endpoint for application traffic flowing in from outside the cluster.',
+  );
 
   const {
     'api-vips-defined': apiVipFailedValidationMessage,
@@ -103,6 +143,7 @@ export const VirtualIPControlGroup = ({
 
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
   const isDualStack = values.stackType === DUAL_STACK;
+  const isVipInputDisabled = !hostSubnets.length || values.hostSubnet === NO_SUBNET_SET;
 
   React.useEffect(() => {
     if (!isViewerMode && !enableAllocation) {
@@ -138,23 +179,23 @@ export const VirtualIPControlGroup = ({
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
-        <OcmCheckboxField
+        <CheckboxField
           onChange={onChangeDhcp}
           label={
             <>
               <Tooltip
                 hidden={enableAllocation}
-                content={
-                  "A cluster with OVN networking type cannot use 'allocate IPs via DHCP server'"
-                }
+                content={t(
+                  "ai:A cluster with OVN networking type cannot use 'allocate IPs via DHCP server'",
+                )}
               >
-                <span>Allocate IPs via DHCP server</span>
+                <span>{t('ai:Allocate IPs via DHCP server')}</span>
               </Tooltip>
               <NewFeatureSupportLevelBadge featureId="VIP_AUTO_ALLOC" supportLevel={supportLevel} />
             </>
           }
           name="vipDhcpAllocation"
-          isDisabled={!enableAllocation}
+          isDisabled={!enableAllocation || isViewerMode}
         />
       )}
       {values.vipDhcpAllocation ? (
@@ -162,11 +203,11 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>{t('ai:API IP')}</span> <PopoverIcon bodyContent={apiVipPopoverContent} />
               </>
             }
-            name="apiVip"
-            helperText={ipHelperText}
+            name="apiVips.0.ip"
+            helperText={apiVipHelperText}
             value={selectApiVip(values)}
             isValid={!apiVipFailedValidationMessage}
             isRequired
@@ -181,11 +222,11 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                <span>{t('ai:Ingress IP')}</span> <PopoverIcon bodyContent={ingressVipPopoverContent} />
               </>
             }
-            name="ingressVip"
-            helperText={ipHelperText}
+            name="ingressVips.0.ip"
+            helperText={ingressVipHelperText}
             value={selectIngressVip(values)}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
@@ -204,17 +245,18 @@ export const VirtualIPControlGroup = ({
             {() => (
               <Stack>
                 <StackItem>
-                  <OcmInputField
+                  <InputField
                     label={
                       <>
-                        <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                        <span>{t('ai:API IP')}</span> <PopoverIcon bodyContent={apiVipPopoverContent} />
                       </>
                     }
                     name="apiVips.0.ip"
-                    helperText={ipHelperText}
+                    helperText={apiVipHelperText}
                     isRequired
                     maxLength={45}
-                    labelInfo={isDualStack ? 'Primary' : undefined}
+                    isDisabled={isVipInputDisabled || isViewerMode}
+                    labelInfo={isDualStack ? t('ai:Primary') : undefined}
                     onChange={(e) =>
                       setVipValueAtIndex('apiVips', 0, e as React.ChangeEvent<HTMLInputElement>)
                     }
@@ -222,16 +264,17 @@ export const VirtualIPControlGroup = ({
                 </StackItem>
                 {isDualStack && (
                   <StackItem>
-                    <OcmInputField
+                    <InputField
                       label={
                         <>
-                          <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                          <span>{t('ai:API IP')}</span> <PopoverIcon bodyContent={apiVipPopoverContent} />
                         </>
                       }
                       name="apiVips.1.ip"
-                      helperText={ipHelperText}
                       maxLength={45}
-                      labelInfo={'Secondary'}
+                      //helperText={apiVipHelperText}
+                      isDisabled={isVipInputDisabled || isViewerMode}
+                      labelInfo={t('ai:Secondary')}
                       onChange={(e) =>
                         setVipValueAtIndex('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
                       }
@@ -239,17 +282,18 @@ export const VirtualIPControlGroup = ({
                   </StackItem>
                 )}
                 <StackItem>
-                  <OcmInputField
+                  <InputField
                     name="ingressVips.0.ip"
                     label={
                       <>
-                        <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                        <span>{t('ai:Ingress IP')}</span> <PopoverIcon bodyContent={ingressVipPopoverContent} />
                       </>
                     }
-                    helperText={ipHelperText}
+                    helperText={ingressVipHelperText}
                     isRequired
                     maxLength={45}
-                    labelInfo={isDualStack ? 'Primary' : undefined}
+                    isDisabled={isVipInputDisabled || isViewerMode}
+                    labelInfo={isDualStack ? t('ai:Primary') : undefined}
                     onChange={(e) =>
                       setVipValueAtIndex('ingressVips', 0, e as React.ChangeEvent<HTMLInputElement>)
                     }
@@ -257,16 +301,19 @@ export const VirtualIPControlGroup = ({
                 </StackItem>
                 {isDualStack && (
                   <StackItem>
-                    <OcmInputField
+                    <InputField
                       name="ingressVips.1.ip"
                       label={
                         <>
-                          <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                          <span>{t('ai:Ingress IP')}</span> <PopoverIcon bodyContent={ingressVipPopoverContent} />
                         </>
                       }
-                      helperText={ipHelperText}
+             
                       maxLength={45}
-                      labelInfo={'Secondary'}
+           
+                      helperText={ingressVipHelperText}
+                      isDisabled={isVipInputDisabled || isViewerMode}
+                      labelInfo={t('ai:Secondary')}
                       onChange={(e) =>
                         setVipValueAtIndex(
                           'ingressVips',

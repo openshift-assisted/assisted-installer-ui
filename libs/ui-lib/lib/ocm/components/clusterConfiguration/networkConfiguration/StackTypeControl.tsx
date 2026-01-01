@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { ButtonVariant, FormGroup, Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Address4, Address6 } from 'ip-address';
@@ -13,23 +12,29 @@ import {
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_SDN,
   NO_SUBNET_SET,
+  RadioField,
 } from '../../../../common';
 import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
-import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
-import { OcmRadioField } from '../../ui/OcmFormFields';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
 import {
   Cluster,
+  ClusterDefaultConfig,
   ClusterNetwork,
   MachineNetwork,
   ServiceNetwork,
 } from '@openshift-assisted/types/assisted-installer-service';
 
-type StackTypeControlGroupProps = {
+export type StackTypeDefaultNetworkValues = Pick<
+  ClusterDefaultConfig,
+  'clusterNetworksDualstack' | 'clusterNetworksIpv4' | 'serviceNetworksDualstack' | 'serviceNetworksIpv4'
+>;
+
+export type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
   isDualStackSelectable: boolean;
   hostSubnets: HostSubnets;
+  defaultNetworkValues: StackTypeDefaultNetworkValues;
+  isViewerMode?: boolean;
 };
 
 const hasDualStackConfigurationChanged = (
@@ -50,19 +55,14 @@ export const StackTypeControlGroup = ({
   clusterId,
   isDualStackSelectable,
   hostSubnets,
+  defaultNetworkValues,
+  isViewerMode = false,
 }: StackTypeControlGroupProps) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
-  const defaultNetworkValues = useDefaultConfiguration([
-    'clusterNetworksDualstack',
-    'clusterNetworksIpv4',
-    'serviceNetworksDualstack',
-    'serviceNetworksIpv4',
-  ]);
 
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const shouldSetSingleStack =
     !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
@@ -253,10 +253,10 @@ export const StackTypeControlGroup = ({
       >
         <Split>
           <SplitItem>
-            <OcmRadioField
+            <RadioField
               name={'stackType'}
               value={IPV4_STACK}
-              isDisabled={!isDualStackSelectable}
+              isDisabled={!isDualStackSelectable || isViewerMode}
               label="IPv4&nbsp;"
             />
           </SplitItem>
@@ -275,10 +275,10 @@ export const StackTypeControlGroup = ({
               }
               hidden={isDualStackSelectable}
             >
-              <OcmRadioField
+              <RadioField
                 name={'stackType'}
                 value={DUAL_STACK}
-                isDisabled={!isDualStackSelectable}
+                isDisabled={!isDualStackSelectable || isViewerMode}
                 label="Dual-stack&nbsp;"
               />
             </Tooltip>
