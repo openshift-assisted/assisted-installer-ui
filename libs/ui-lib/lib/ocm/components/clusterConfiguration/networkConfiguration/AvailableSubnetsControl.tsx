@@ -20,7 +20,7 @@ import {
 } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { SubnetsDropdown } from './SubnetsDropdown';
-import { reorderNetworksForPrimary } from './reorderNetworks';
+import { reorderNetworksForPrimary } from '../../../../common/components/clusterWizard/networkingSteps/reorderNetworks';
 import { Cluster, Host, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
