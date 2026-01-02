@@ -1,11 +1,17 @@
 import * as React from 'react';
-import { Alert, Button, ButtonVariant, Form, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
+  ButtonVariant,
+  Form,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { Formik, FormikProps } from 'formik';
 import { InfraEnvK8sResource } from '../../types';
 import { RadioField, AdditionalNTPSourcesField } from '../../../common';
@@ -34,13 +40,12 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Edit Ntp sources dialog')}
-      title={t('ai:Edit NTP sources')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="edit-ntp-sources-modal"
     >
+      <ModalHeader title={t('ai:Edit NTP sources')} />
       <Formik<EditNtpSourcesFormikValues>
         initialValues={{
           enableNtpSources: infraEnv.spec?.additionalNTPSources ? 'additional' : 'auto',
@@ -64,7 +69,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
         }: FormikProps<EditNtpSourcesFormikValues>) => {
           return (
             <>
-              <ModalBoxBody>
+              <ModalBody>
                 <Form>
                   <Stack hasGutter>
                     <StackItem>
@@ -106,8 +111,8 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                     )}
                   </Stack>
                 </Form>
-              </ModalBoxBody>
-              <ModalBoxFooter>
+              </ModalBody>
+              <ModalFooter>
                 {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                 <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
                   {t('ai:Save')}
@@ -115,7 +120,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                 <Button onClick={onClose} variant={ButtonVariant.secondary}>
                   {t('ai:Cancel')}
                 </Button>
-              </ModalBoxFooter>
+              </ModalFooter>
             </>
           );
         }}

@@ -8,11 +8,12 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
+  ModalBody,
+  ModalFooter,
   Spinner,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { ErrorCircleOIcon } from '@patternfly/react-icons/dist/js/icons/error-circle-o-icon';
 import { UploadIcon } from '@patternfly/react-icons/dist/js/icons/upload-icon';
 import jsYaml from 'js-yaml';
@@ -126,7 +127,7 @@ const AddBmcHostYamlForm: React.FC<
 
   return (
     <>
-      <ModalBoxBody>
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             <EmptyState
@@ -211,8 +212,8 @@ const AddBmcHostYamlForm: React.FC<
             </StackItem>
           )}
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           onClick={() => {
             void handleSubmit();
@@ -224,7 +225,7 @@ const AddBmcHostYamlForm: React.FC<
         <Button onClick={onClose} variant={ButtonVariant.secondary}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </>
   );
 };

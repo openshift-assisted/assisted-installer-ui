@@ -1,6 +1,13 @@
 import * as React from 'react';
-import { Button, ButtonVariant } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 
 import { ConfigMapK8sResource } from '../../types';
@@ -100,18 +107,16 @@ export const MinimalHWRequirementsModal = ({
 }: MinimalHWRequirementsModalProps) => {
   const { t } = useTranslation();
   return (
-    <Modal
-      title={t('ai:Minimum hardware requirements')}
-      isOpen={isOpen}
-      actions={[
+    <Modal isOpen={isOpen} onClose={onClose} variant={ModalVariant.medium}>
+      <ModalHeader title={t('ai:Minimum hardware requirements')} />
+      <ModalBody>
+        <HostRequirements {...getHWRequirements(aiConfigMap)} isSNOCluster={isSNOCluster} />
+      </ModalBody>
+      <ModalFooter>
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
           {t('ai:Close')}
-        </Button>,
-      ]}
-      onClose={onClose}
-      variant={ModalVariant.medium}
-    >
-      <HostRequirements {...getHWRequirements(aiConfigMap)} isSNOCluster={isSNOCluster} />
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };
