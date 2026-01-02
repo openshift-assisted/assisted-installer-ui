@@ -3,14 +3,12 @@ import { getFailingResourceConditions } from '../helpers';
 import { InfraEnvK8sResource } from '../../types';
 import { SingleResourceAlerts } from '../common/ResourceAlerts';
 import { Alert, AlertVariant } from '@patternfly/react-core';
-import { ModalBoxBody } from '@patternfly/react-core/deprecated';
 import { getInfraEnvDocs } from '../common/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type EnvironmentErrorsProps = {
   infraEnv: InfraEnvK8sResource;
   docVersion: string;
-  inModal?: boolean;
   children?: React.ReactNode;
 };
 
@@ -18,7 +16,6 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
   infraEnv,
   docVersion,
   children,
-  inModal,
 }) => {
   const infraEnvAlerts = getFailingResourceConditions(infraEnv, ['ImageCreated']);
   const { t } = useTranslation();
@@ -27,7 +24,7 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
     return <>{children}</>;
   }
 
-  const errors = (
+  return (
     <>
       {!infraEnv.status && (
         <Alert
@@ -52,6 +49,4 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
       />
     </>
   );
-
-  return inModal ? <ModalBoxBody>{errors}</ModalBoxBody> : errors;
 };

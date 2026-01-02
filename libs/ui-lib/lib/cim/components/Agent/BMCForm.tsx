@@ -13,8 +13,9 @@ import {
   Content,
   TextInputTypes,
   ContentVariants,
+  ModalBody,
+  ModalFooter,
 } from '@patternfly/react-core';
-import { ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import {
   Formik,
   FormikProps,
@@ -274,7 +275,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
     >
       {({ isSubmitting, isValid, submitForm }: FormikProps<AddBmcValues>) => (
         <>
-          <ModalBoxBody>
+          <ModalBody>
             <Form id="add-bmc-form">
               <InputField
                 label={t('ai:Name')}
@@ -300,7 +301,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 label={t('ai:Boot NIC MAC Address')}
                 name="bootMACAddress"
                 placeholder={t('ai:Enter an address')}
-                description={t(
+                helperText={t(
                   "ai:The MAC address of the host's network connected NIC that will be used to provision the host.",
                 )}
                 isRequired
@@ -324,7 +325,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                     label={t('ai:NMState')}
                     name="nmState"
                     language={Language.yaml}
-                    description={t(
+                    helperText={t(
                       'ai:Upload a YAML file in NMstate format (not the entire NMstate config CR) that includes your network configuration (static IPs, bonds, etc.).',
                     )}
                   />
@@ -342,8 +343,8 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 {error}
               </Alert>
             )}
-          </ModalBoxBody>
-          <ModalBoxFooter>
+          </ModalBody>
+          <ModalFooter>
             {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
               {isEdit ? t('ai:Submit') : t('ai:Create')}
@@ -351,7 +352,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
             <Button onClick={onClose} variant={ButtonVariant.secondary}>
               {t('ai:Cancel')}
             </Button>
-          </ModalBoxFooter>
+          </ModalFooter>
         </>
       )}
     </Formik>

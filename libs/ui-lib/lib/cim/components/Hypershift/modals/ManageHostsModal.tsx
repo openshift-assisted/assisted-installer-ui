@@ -1,10 +1,15 @@
-import { Alert, Button, Spinner, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Spinner,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { Formik, FormikConfig } from 'formik';
 import * as React from 'react';
 import { AgentK8sResource } from '../../../types';
@@ -109,14 +114,8 @@ const ManageHostsModal = ({
   };
 
   return (
-    <Modal
-      aria-label="Manage hosts dialog"
-      title={t('ai:Manage hosts')}
-      isOpen
-      onClose={onClose}
-      variant={ModalVariant.medium}
-      hasNoBodyWrapper
-    >
+    <Modal aria-label="Manage hosts dialog" isOpen onClose={onClose} variant={ModalVariant.medium}>
+      <ModalHeader title={t('ai:Manage hosts')} />
       <Formik<NodePoolFormValues>
         initialValues={{
           nodePoolName: nodePool.metadata?.name || '',
@@ -135,7 +134,7 @@ const ManageHostsModal = ({
       >
         {({ isSubmitting, isValid, submitForm }) => (
           <>
-            <ModalBoxBody>
+            <ModalBody>
               <Stack hasGutter>
                 <StackItem>
                   <NodePoolForm
@@ -151,8 +150,8 @@ const ManageHostsModal = ({
                   </StackItem>
                 )}
               </Stack>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Button
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={submitForm}
@@ -164,7 +163,7 @@ const ManageHostsModal = ({
               <Button variant="link" onClick={onClose}>
                 {t('ai:Cancel')}
               </Button>
-            </ModalBoxFooter>
+            </ModalFooter>
           </>
         )}
       </Formik>

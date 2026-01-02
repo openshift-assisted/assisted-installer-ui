@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { Alert, Button, Spinner, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Spinner,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { NodePoolK8sResource } from '../types';
 import { getErrorMessage } from '../../../../common/utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -23,14 +28,12 @@ const RemoveNodePoolModal = ({ onClose, onRemove, nodePool }: RemoveNodePoolModa
   return (
     <Modal
       aria-label="remove node pool dialog"
-      title={t('ai:Remove nodepool')}
       isOpen
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
-      titleIconVariant="warning"
     >
-      <ModalBoxBody>
+      <ModalHeader titleIconVariant="warning" title={t('ai:Remove nodepool')} />
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             {t(
@@ -44,8 +47,8 @@ const RemoveNodePoolModal = ({ onClose, onRemove, nodePool }: RemoveNodePoolModa
             </StackItem>
           )}
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           onClick={() => {
             const remove = async () => {
@@ -71,7 +74,7 @@ const RemoveNodePoolModal = ({ onClose, onRemove, nodePool }: RemoveNodePoolModa
         <Button variant="link" onClick={onClose}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </Modal>
   );
 };

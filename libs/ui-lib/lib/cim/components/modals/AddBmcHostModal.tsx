@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import { Modal, ModalBody, ModalHeader, ModalVariant } from '@patternfly/react-core';
 import BMCForm from '../Agent/BMCForm';
 import { AddBmcHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -20,23 +20,24 @@ const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Add BMC host dialog')}
-      title={t('ai:Add host using Baseboard Management Controller (BMC)')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.medium}
-      hasNoBodyWrapper
       id="add-host-modal"
     >
-      <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        <ProvisioningConfigErrorAlert error={provisioningConfigError} />
-        <BMCForm
-          onCreateBMH={onCreateBMH}
-          onClose={onClose}
-          hasDHCP={hasDHCP}
-          infraEnv={infraEnv}
-          usedHostnames={usedHostnames}
-        />
-      </EnvironmentErrors>
+      <ModalHeader title={t('ai:Add host using Baseboard Management Controller (BMC)')} />
+      <ModalBody>
+        <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion}>
+          <ProvisioningConfigErrorAlert error={provisioningConfigError} />
+          <BMCForm
+            onCreateBMH={onCreateBMH}
+            onClose={onClose}
+            hasDHCP={hasDHCP}
+            infraEnv={infraEnv}
+            usedHostnames={usedHostnames}
+          />
+        </EnvironmentErrors>
+      </ModalBody>
     </Modal>
   );
 };
