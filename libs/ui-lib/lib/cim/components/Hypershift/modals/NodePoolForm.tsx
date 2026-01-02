@@ -94,7 +94,7 @@ const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePo
           />
         </GridItem>
         <GridItem>
-          <DescriptionList isHorizontal>
+          <DescriptionList isHorizontal horizontalTermWidthModifier={{ default: '17ch' }}>
             <DescriptionListGroup>
               <DescriptionListTerm>{t('ai:OpenShift version')}</DescriptionListTerm>
               <DescriptionListDescription>

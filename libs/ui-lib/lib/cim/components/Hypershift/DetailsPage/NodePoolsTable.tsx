@@ -174,7 +174,7 @@ const NodePoolsTable = ({
                             onClick: () => setManageHostsOpen(np.metadata?.uid),
                           },
                           {
-                            title: t('ai:Remove Nodepool'),
+                            title: t('ai:Remove nodepool'),
                             onClick: () => setRemoveNodePoolOpen(np.metadata?.uid),
                           },
                         ],
@@ -228,7 +228,7 @@ const NodePoolsTable = ({
             iconPosition="right"
             onClick={() => setAddNodePool(true)}
           >
-            {t('ai:Add Nodepool')}
+            {t('ai:Add nodepool')}
           </Button>
         </StackItem>
       </Stack>

@@ -1,13 +1,18 @@
 import * as React from 'react';
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
-import { Alert, Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
+  ButtonVariant,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { Formik, useFormikContext } from 'formik';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { LoadingState, PullSecretField, pullSecretValidationSchema } from '../../../common';
@@ -72,7 +77,7 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
   }
   return (
     <>
-      <ModalBoxBody>
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>{body}</StackItem>
         </Stack>
@@ -81,8 +86,8 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
             <Alert title={submitError} variant="danger" isInline />
           </StackItem>
         )}
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         <Button
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={submitForm}
@@ -93,7 +98,7 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
         <Button onClick={onClose} variant={ButtonVariant.secondary}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </>
   );
 };
@@ -119,13 +124,12 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Edit pull secret dialog')}
-      title={t('ai:Edit pull secret')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="edit-pull-secret-modal"
     >
+      <ModalHeader title={t('ai:Edit pull secret')} />
       <Formik<EditPullSecretFormikValues>
         initialValues={{
           pullSecret: undefined,

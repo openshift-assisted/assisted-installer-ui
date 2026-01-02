@@ -1,6 +1,15 @@
 import * as React from 'react';
-import { Alert, Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
-import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
+import {
+  Alert,
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';
@@ -132,14 +141,13 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Approve hosts dialog')}
-      title={t('ai:Approve hosts to join infrastructure environment')}
       isOpen={isOpen}
       onClose={onClose}
-      hasNoBodyWrapper
       id="mass-approve-modal"
       variant="medium"
     >
-      <ModalBoxBody>
+      <ModalHeader title={t('ai:Approve hosts to join infrastructure environment')} />
+      <ModalBody>
         <Stack hasGutter>
           <StackItem>
             <Alert
@@ -159,8 +167,8 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
             <ModalProgress error={error} progress={progress} />
           </StackItem>
         </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
+      </ModalBody>
+      <ModalFooter>
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <Button onClick={onClick} isDisabled={progress !== null}>
           {t('ai:Approve all hosts')}
@@ -168,7 +176,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
           {t('ai:Cancel')}
         </Button>
-      </ModalBoxFooter>
+      </ModalFooter>
     </Modal>
   );
 };

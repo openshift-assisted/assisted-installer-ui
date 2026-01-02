@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
-import { EmptyState, EmptyStateBody, Spinner } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  EmptyState,
+  EmptyStateBody,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalVariant,
+  Spinner,
+} from '@patternfly/react-core';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import { AddHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -54,14 +61,13 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Add host dialog')}
-      title={t('ai:Add host')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="add-host-modal"
     >
-      <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
+      <ModalHeader title={t('ai:Add hosts')} />
+      <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion}>
         {dialogType === 'config' && (
           <DiscoveryImageConfigForm
             onCancel={onClose}
@@ -78,6 +84,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
             docVersion={docVersion}
           />
         )}
+
         {dialogType === 'download' && (
           <>
             {isIPXE ? (
@@ -129,9 +136,11 @@ const GeneratingIsoDownload = ({
       ciscoUrl={ciscoUrl}
     />
   ) : (
-    <EmptyState icon={Spinner}>
-      <EmptyStateBody>{t('ai:Generating discovery ISO')}</EmptyStateBody>
-    </EmptyState>
+    <ModalBody>
+      <EmptyState icon={Spinner}>
+        <EmptyStateBody>{t('ai:Generating discovery ISO')}</EmptyStateBody>
+      </EmptyState>
+    </ModalBody>
   );
 };
 
@@ -152,9 +161,11 @@ const GeneratingIPXEDownload = ({
       onReset={onReset}
     />
   ) : (
-    <EmptyState icon={Spinner}>
-      <EmptyStateBody>{t('ai:Generating iPXE script')}</EmptyStateBody>
-    </EmptyState>
+    <ModalBody>
+      <EmptyState icon={Spinner}>
+        <EmptyStateBody>{t('ai:Generating iPXE script')}</EmptyStateBody>
+      </EmptyState>
+    </ModalBody>
   );
 };
 

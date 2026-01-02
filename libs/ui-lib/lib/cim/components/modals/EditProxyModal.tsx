@@ -1,12 +1,18 @@
 import * as React from 'react';
 import * as Yup from 'yup';
-import { Alert, Button, ButtonVariant, Form, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
+  ButtonVariant,
+  Form,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { EditProxyModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ProxyInputFields } from '../../../common/components/clusterConfiguration/ProxyFields';
@@ -40,7 +46,7 @@ const Footer = ({ onClose }: { onClose: VoidFunction }) => {
   const { t } = useTranslation();
   const { isSubmitting, submitForm, isValid } = useFormikContext();
   return (
-    <ModalBoxFooter>
+    <ModalFooter>
       <Button
         onClick={() => void submitForm()}
         isDisabled={isSubmitting || !isValid}
@@ -51,7 +57,7 @@ const Footer = ({ onClose }: { onClose: VoidFunction }) => {
       <Button onClick={onClose} variant={ButtonVariant.secondary}>
         {t('ai:Cancel')}
       </Button>
-    </ModalBoxFooter>
+    </ModalFooter>
   );
 };
 
@@ -69,15 +75,15 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
     !!infraEnv.spec?.proxy?.httpProxy ||
     !!infraEnv.spec?.proxy?.httpsProxy ||
     !!infraEnv.spec?.proxy?.noProxy;
+
   return (
     <Modal
       aria-label={t('ai:Edit proxy settings')}
-      title={t('ai:Edit proxy settings')}
       isOpen
       onClose={onClose}
       variant={ModalVariant.medium}
-      hasNoBodyWrapper
     >
+      <ModalHeader title={t('ai:Edit proxy settings')} />
       <Formik<ProxyFieldsType>
         initialValues={{
           httpProxy: infraEnv.spec?.proxy?.httpProxy,
@@ -97,7 +103,7 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
         }}
       >
         <>
-          <ModalBoxBody>
+          <ModalBody>
             <Stack hasGutter>
               <StackItem>
                 <Alert isInline variant="warning" title={warningMsg} />
@@ -113,7 +119,7 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
                 </Form>
               </StackItem>
             </Stack>
-          </ModalBoxBody>
+          </ModalBody>
           <Footer onClose={onClose} />
         </>
       </Formik>

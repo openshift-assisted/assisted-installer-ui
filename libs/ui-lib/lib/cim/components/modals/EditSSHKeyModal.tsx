@@ -1,12 +1,17 @@
 import * as React from 'react';
 import * as Yup from 'yup';
-import { Alert, Button, ButtonVariant, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
+  ButtonVariant,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { Formik, FormikProps } from 'formik';
 
 import { InfraEnvK8sResource } from '../../types';
@@ -46,13 +51,12 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Edit SSH public key dialog')}
-      title={t('ai:Edit SSH public key')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="edit-ssh-key-modal"
     >
+      <ModalHeader title={t('ai:Edit SSH public key')} />
       <Formik<EditSSHKeyFormikValues>
         initialValues={{
           sshPublicKey: infraEnv.spec?.sshAuthorizedKey || '',
@@ -71,7 +75,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
       >
         {({ isSubmitting, isValid, submitForm }: FormikProps<EditSSHKeyFormikValues>) => (
           <>
-            <ModalBoxBody>
+            <ModalBody>
               <Stack hasGutter>
                 <StackItem>
                   <Alert isInline variant="warning" title={warningMsg} />
@@ -85,15 +89,15 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
                   </StackItem>
                 )}
               </Stack>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Button onClick={() => void submitForm()} isDisabled={isSubmitting || !isValid}>
                 {t('ai:Save')}
               </Button>
               <Button onClick={onClose} variant={ButtonVariant.secondary}>
                 {t('ai:Cancel')}
               </Button>
-            </ModalBoxFooter>
+            </ModalFooter>
           </>
         )}
       </Formik>

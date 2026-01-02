@@ -8,8 +8,12 @@ import {
   StackItem,
   Stack,
   Content,
+  Modal,
+  ModalVariant,
+  ModalFooter,
+  ModalBody,
+  ModalHeader,
 } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { Formik, FormikHelpers } from 'formik';
 import parseUrl from 'parse-url';
 
@@ -130,76 +134,82 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       {({ handleSubmit, isValid, isSubmitting }) => (
         <Modal
           aria-label={t('ai:Configure host inventory settings')}
-          title={t('ai:Configure host inventory settings')}
           isOpen={isOpen}
           onClose={onClose}
-          actions={
-            isConfigure
-              ? [
-                  <Button
-                    key="configure"
-                    variant={ButtonVariant.primary}
-                    isDisabled={!!(isSubmitting || !isValid)}
-                    onClick={() => void handleSubmit()}
-                  >
-                    {t('ai:Configure')}
-                  </Button>,
-                  <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
-                    {t('ai:Cancel')}
-                  </Button>,
-                ]
-              : [
-                  <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
-                    {t('ai:Close')}
-                  </Button>,
-                ]
-          }
           variant={ModalVariant.medium}
           id="cim-config-modal"
         >
-          <Stack hasGutter>
-            <StackItem>
-              <Content>
-                {t(
-                  'ai:Configuring the host inventory settings will enable the Central Infrastructure Management.',
-                )}
-              </Content>
-            </StackItem>
-
-            {isError && (
+          <ModalHeader title={t('ai:Configure host inventory settings')} />
+          <ModalBody>
+            <Stack hasGutter>
               <StackItem>
-                <Alert title={error.title} variant={error.variant || AlertVariant.danger} isInline>
-                  {error.message}
-                </Alert>
+                <Content>
+                  {t(
+                    'ai:Configuring the host inventory settings will enable the Central Infrastructure Management.',
+                  )}
+                </Content>
               </StackItem>
-            )}
 
-            <StackItem>
-              <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
-            </StackItem>
+              {isError && (
+                <StackItem>
+                  <Alert
+                    title={error.title}
+                    variant={error.variant || AlertVariant.danger}
+                    isInline
+                  >
+                    {error.message}
+                  </Alert>
+                </StackItem>
+              )}
 
-            <StackItem>
-              <CimConfigurationFormFields
-                isEdit={isEdit}
-                platform={platform}
-                isInProgressPeriod={isInProgressPeriod}
-                docConfigUrl={docConfigUrl}
-                docConfigAwsUrl={docConfigAwsUrl}
-                configureLoadBalancerInitial={configureLoadBalancerInitial}
-                setConfigureLoadBalancerInitial={setConfigureLoadBalancerInitial}
-              />
-            </StackItem>
-
-            {isConfigure && (
               <StackItem>
-                <Alert
-                  variant={AlertVariant.warning}
-                  title={t('ai:Storage sizes cannot be changed once you configure.')}
-                  isInline
+                <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
+              </StackItem>
+
+              <StackItem>
+                <CimConfigurationFormFields
+                  isEdit={isEdit}
+                  platform={platform}
+                  isInProgressPeriod={isInProgressPeriod}
+                  docConfigUrl={docConfigUrl}
+                  docConfigAwsUrl={docConfigAwsUrl}
+                  configureLoadBalancerInitial={configureLoadBalancerInitial}
+                  setConfigureLoadBalancerInitial={setConfigureLoadBalancerInitial}
                 />
               </StackItem>
+
+              {isConfigure && (
+                <StackItem>
+                  <Alert
+                    variant={AlertVariant.warning}
+                    title={t('ai:Storage sizes cannot be changed once you configure.')}
+                    isInline
+                  />
+                </StackItem>
+              )}
+            </Stack>
+          </ModalBody>
+          <ModalFooter>
+            {isConfigure ? (
+              <>
+                <Button
+                  key="configure"
+                  variant={ButtonVariant.primary}
+                  isDisabled={!!(isSubmitting || !isValid)}
+                  onClick={() => void handleSubmit()}
+                >
+                  {t('ai:Configure')}
+                </Button>
+                <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
+                  {t('ai:Cancel')}
+                </Button>
+              </>
+            ) : (
+              <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
+                {t('ai:Close')}
+              </Button>
             )}
-          </Stack>
+          </ModalFooter>
         </Modal>
       )}
     </Formik>
