@@ -8,14 +8,11 @@ import {
   Grid,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import {
-  DUAL_STACK,
-  PREFIX_MAX_RESTRICTION,
-  NetworkConfigurationValues,
-  PopoverIcon,
-  InputField,
-} from '../../../../common';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { NetworkConfigurationValues } from '../../../types';
+import { DUAL_STACK, PREFIX_MAX_RESTRICTION } from '../../../config';
+import { PopoverIcon } from '../../ui';
+import { InputField } from '../../ui/formik';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 export type AdvancedNetworkFieldsProps = {
   isDisabled?: boolean;

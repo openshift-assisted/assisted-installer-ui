@@ -12,3 +12,5 @@ export { AvailableSubnetsControl } from './AvailableSubnetsControl';
 export type { AvailableSubnetsControlProps } from './AvailableSubnetsControl';
 export { VirtualIPControlGroup } from './VirtualIPControlGroup';
 export type { VirtualIPControlGroupProps } from './VirtualIPControlGroup';
+export { default as AdvancedNetworkFields } from './AdvancedNetworkFields';
+export type { AdvancedNetworkFieldsProps } from './AdvancedNetworkFields';
