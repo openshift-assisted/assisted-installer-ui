@@ -10,3 +10,5 @@ export type {
 export { reorderNetworksForPrimary, reorderNetworksByCurrentPrimary } from './reorderNetworks';
 export { AvailableSubnetsControl } from './AvailableSubnetsControl';
 export type { AvailableSubnetsControlProps } from './AvailableSubnetsControl';
+export { VirtualIPControlGroup } from './VirtualIPControlGroup';
+export type { VirtualIPControlGroupProps } from './VirtualIPControlGroup';

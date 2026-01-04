@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
 import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
-import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
@@ -21,6 +20,8 @@ import {
   UserManagedNetworkingTextContent,
   StackTypeControlGroup,
   AvailableSubnetsControl,
+  VirtualIPControlGroup,
+  VirtualIPControlGroupProps,
 } from '../../../../common/components/clusterWizard/networkingSteps';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';

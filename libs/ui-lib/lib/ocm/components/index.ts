@@ -14,11 +14,9 @@ export {
   type StackTypeDefaultNetworkValues,
   AvailableSubnetsControl,
   type AvailableSubnetsControlProps,
-} from '../../common/components/clusterWizard/networkingSteps';
-export {
   VirtualIPControlGroup,
   type VirtualIPControlGroupProps,
-} from './clusterConfiguration/networkConfiguration/VirtualIPControlGroup';
+} from '../../common/components/clusterWizard/networkingSteps';
 export {
   default as AdvancedNetworkFields,
   type AdvancedNetworkFieldsProps,
