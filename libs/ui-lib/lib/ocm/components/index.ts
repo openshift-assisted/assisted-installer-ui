@@ -12,11 +12,9 @@ export {
   StackTypeControlGroup,
   type StackTypeControlGroupProps,
   type StackTypeDefaultNetworkValues,
-} from '../../common/components/clusterWizard/networkingSteps';
-export {
   AvailableSubnetsControl,
   type AvailableSubnetsControlProps,
-} from './clusterConfiguration/networkConfiguration/AvailableSubnetsControl';
+} from '../../common/components/clusterWizard/networkingSteps';
 export {
   VirtualIPControlGroup,
   type VirtualIPControlGroupProps,

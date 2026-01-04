@@ -6,8 +6,8 @@ import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
   StackTypeControlGroup,
+  AvailableSubnetsControl,
 } from '../../../common/components/clusterWizard/networkingSteps';
-import { AvailableSubnetsControl } from '../../../ocm/components/clusterConfiguration/networkConfiguration/AvailableSubnetsControl';
 import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
