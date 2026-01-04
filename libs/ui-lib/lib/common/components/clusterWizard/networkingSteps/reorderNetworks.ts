@@ -71,4 +71,3 @@ export const reorderNetworksByCurrentPrimary = (
   if (!primaryCidr) return;
   reorderByPrimaryCidr(primaryCidr, values, setFieldValue);
 };
-

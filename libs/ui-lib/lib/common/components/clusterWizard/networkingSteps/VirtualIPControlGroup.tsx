@@ -9,20 +9,9 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import {
-  NetworkConfigurationValues,
-  HostSubnets,
-} from '../../../types';
-import {
-  NETWORK_TYPE_SDN,
-  DUAL_STACK,
-  NO_SUBNET_SET,
-} from '../../../config';
-import {
-  selectMachineNetworkCIDR,
-  selectApiVip,
-  selectIngressVip,
-} from '../../../selectors';
+import { NetworkConfigurationValues, HostSubnets } from '../../../types';
+import { NETWORK_TYPE_SDN, DUAL_STACK, NO_SUBNET_SET } from '../../../config';
+import { selectMachineNetworkCIDR, selectApiVip, selectIngressVip } from '../../../selectors';
 import { getVipValidationsById } from '../../clusterConfiguration';
 import { FormikStaticField, PopoverIcon } from '../../ui';
 import { CheckboxField, InputField } from '../../ui/formik';
@@ -224,7 +213,8 @@ export const VirtualIPControlGroup = ({
           <FormikStaticField
             label={
               <>
-                <span>{t('ai:Ingress IP')}</span> <PopoverIcon bodyContent={ingressVipPopoverContent} />
+                <span>{t('ai:Ingress IP')}</span>{' '}
+                <PopoverIcon bodyContent={ingressVipPopoverContent} />
               </>
             }
             name="ingressVips.0.ip"
@@ -250,7 +240,8 @@ export const VirtualIPControlGroup = ({
                   <InputField
                     label={
                       <>
-                        <span>{t('ai:API IP')}</span> <PopoverIcon bodyContent={apiVipPopoverContent} />
+                        <span>{t('ai:API IP')}</span>{' '}
+                        <PopoverIcon bodyContent={apiVipPopoverContent} />
                       </>
                     }
                     name="apiVips.0.ip"
@@ -269,7 +260,8 @@ export const VirtualIPControlGroup = ({
                     <InputField
                       label={
                         <>
-                          <span>{t('ai:API IP')}</span> <PopoverIcon bodyContent={apiVipPopoverContent} />
+                          <span>{t('ai:API IP')}</span>{' '}
+                          <PopoverIcon bodyContent={apiVipPopoverContent} />
                         </>
                       }
                       name="apiVips.1.ip"
@@ -288,7 +280,8 @@ export const VirtualIPControlGroup = ({
                     name="ingressVips.0.ip"
                     label={
                       <>
-                        <span>{t('ai:Ingress IP')}</span> <PopoverIcon bodyContent={ingressVipPopoverContent} />
+                        <span>{t('ai:Ingress IP')}</span>{' '}
+                        <PopoverIcon bodyContent={ingressVipPopoverContent} />
                       </>
                     }
                     helperText={ingressVipHelperText}
@@ -307,7 +300,8 @@ export const VirtualIPControlGroup = ({
                       name="ingressVips.1.ip"
                       label={
                         <>
-                          <span>{t('ai:Ingress IP')}</span> <PopoverIcon bodyContent={ingressVipPopoverContent} />
+                          <span>{t('ai:Ingress IP')}</span>{' '}
+                          <PopoverIcon bodyContent={ingressVipPopoverContent} />
                         </>
                       }
              
