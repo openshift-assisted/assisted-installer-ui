@@ -7,11 +7,9 @@ import {
   UserManagedNetworkingTextContent,
   StackTypeControlGroup,
   AvailableSubnetsControl,
-} from '../../../common/components/clusterWizard/networkingSteps';
-import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
-} from '../../../ocm/components/clusterConfiguration/networkConfiguration/VirtualIPControlGroup';
+} from '../../../common/components/clusterWizard/networkingSteps';
 import AdvancedNetworkFields from '../../../ocm/components/clusterConfiguration/networkConfiguration/AdvancedNetworkFields';
 import {
   canBeDualStack,
