@@ -8,3 +8,5 @@ export type {
   StackTypeDefaultNetworkValues,
 } from './StackTypeControlGroup';
 export { reorderNetworksForPrimary, reorderNetworksByCurrentPrimary } from './reorderNetworks';
+export { AvailableSubnetsControl } from './AvailableSubnetsControl';
+export type { AvailableSubnetsControlProps } from './AvailableSubnetsControl';

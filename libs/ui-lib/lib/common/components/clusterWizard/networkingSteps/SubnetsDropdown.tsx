@@ -9,14 +9,11 @@ import {
   Divider,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
-import {
-  getFieldId,
-  HostSubnet,
-  NO_SUBNET_SET,
-  TechnologyPreview,
-  PreviewBadgePosition,
-} from '../../../../common';
 import { Address4, Address6 } from 'ip-address';
+import { getFieldId } from '../../ui';
+import { HostSubnet } from '../../../types';
+import { NO_SUBNET_SET } from '../../../config';
+import { TechnologyPreview, PreviewBadgePosition } from '../../ui';
 
 type SubnetsDropdownProps = {
   name: string;
@@ -191,3 +188,5 @@ export const SubnetsDropdown = ({
     </Dropdown>
   );
 };
+
+

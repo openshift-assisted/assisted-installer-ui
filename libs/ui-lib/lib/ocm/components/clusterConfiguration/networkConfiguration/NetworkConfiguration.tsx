@@ -20,8 +20,8 @@ import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
   StackTypeControlGroup,
+  AvailableSubnetsControl,
 } from '../../../../common/components/clusterWizard/networkingSteps';
-import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';

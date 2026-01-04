@@ -11,16 +11,12 @@ import {
 import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
-import {
-  HostSubnet,
-  NetworkConfigurationValues,
-  DUAL_STACK,
-  NO_SUBNET_SET,
-  isMajorMinorVersionEqualOrGreater,
-} from '../../../../common';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { HostSubnet, NetworkConfigurationValues } from '../../../types';
+import { DUAL_STACK, NO_SUBNET_SET } from '../../../config';
+import { isMajorMinorVersionEqualOrGreater } from '../../../utils';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { SubnetsDropdown } from './SubnetsDropdown';
-import { reorderNetworksForPrimary } from '../../../../common/components/clusterWizard/networkingSteps/reorderNetworks';
+import { reorderNetworksForPrimary } from './reorderNetworks';
 import { Cluster, Host, MachineNetwork } from '@openshift-assisted/types/assisted-installer-service';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
@@ -287,3 +283,5 @@ export const AvailableSubnetsControl = ({
     </>
   );
 };
+
+
