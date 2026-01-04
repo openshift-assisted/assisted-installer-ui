@@ -22,8 +22,8 @@ import {
   AvailableSubnetsControl,
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
+  AdvancedNetworkFields,
 } from '../../../../common/components/clusterWizard/networkingSteps';
-import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';

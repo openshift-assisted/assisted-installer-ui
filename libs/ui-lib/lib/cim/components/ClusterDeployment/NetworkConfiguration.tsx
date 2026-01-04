@@ -9,8 +9,8 @@ import {
   AvailableSubnetsControl,
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
+  AdvancedNetworkFields,
 } from '../../../common/components/clusterWizard/networkingSteps';
-import AdvancedNetworkFields from '../../../ocm/components/clusterConfiguration/networkConfiguration/AdvancedNetworkFields';
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
