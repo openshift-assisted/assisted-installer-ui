@@ -1,49 +1,29 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
-import { Spinner, Alert, AlertVariant } from '@patternfly/react-core';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { HostSubnets, NetworkConfigurationValues } from '../../../types';
-import { CheckboxField, FormikStaticField, InputField } from '../../ui';
-import { NO_SUBNET_SET } from '../../../config';
-import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
-import { useTranslation } from '../../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
+import { FieldArray, useFormikContext } from 'formik';
+import {
+  Spinner,
+  Alert,
+  AlertVariant,
+  Tooltip,
+  FormGroup,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
+import { NetworkConfigurationValues, HostSubnets } from '../../../types';
+import { NETWORK_TYPE_SDN, DUAL_STACK, NO_SUBNET_SET } from '../../../config';
+import { selectMachineNetworkCIDR, selectApiVip, selectIngressVip } from '../../../selectors';
 import { getVipValidationsById } from '../../clusterConfiguration';
-import { selectApiVip, selectIngressVip } from '../../../selectors';
-
-interface VipStaticValueProps {
-  vipName: 'apiVips' | 'ingressVips';
-  cluster: Cluster;
-  validationErrorMessage?: string;
-}
-
-const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticValueProps) => {
-  const { vipDhcpAllocation, machineNetworkCidr } = cluster;
-  const { t } = useTranslation();
-  if (vipDhcpAllocation && cluster[vipName]) {
-    return <>{cluster[vipName]}</>;
-  }
-  if (vipDhcpAllocation && validationErrorMessage) {
-    return (
-      <Alert
-        variant={AlertVariant.danger}
-        title={t('ai:The DHCP server failed to allocate the IP')}
-        isInline
-      >
-        {validationErrorMessage}
-      </Alert>
-    );
-  }
-  if (vipDhcpAllocation && machineNetworkCidr) {
-    return (
-      <>
-        <Spinner size="md" data-testid="vip-static-value-spinner" />
-        <i>{t('ai:This IP is being allocated by the DHCP server')}</i>
-      </>
-    );
-  }
-  return <>{t('ai:<i>This IP will be allocated by the DHCP server</i>')}</>;
-};
+import { FormikStaticField, PopoverIcon } from '../../ui';
+import { CheckboxField, InputField } from '../../ui/formik';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import NewFeatureSupportLevelBadge from '../../newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import {
+  ApiVip,
+  Cluster,
+  Ip,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
+import { TFunction } from 'i18next';
 
 const getVipHelperSuffix = (
   t: TFunction,
@@ -62,19 +42,67 @@ const getVipHelperSuffix = (
   return '';
 };
 
+interface VipStaticValueProps {
+  id?: string;
+  vipValue: Ip;
+  cluster: Cluster;
+  validationErrorMessage?: string;
+}
+
+const VipStaticValue = ({
+  vipValue,
+  cluster,
+  validationErrorMessage,
+  id = 'vip-static',
+}: VipStaticValueProps) => {
+  const { vipDhcpAllocation } = cluster;
+  const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+  const { t } = useTranslation();
+
+  if (vipDhcpAllocation && !!vipValue) {
+    return <span id={`${id}-allocated`}>{vipValue}</span>;
+  }
+  if (vipDhcpAllocation && validationErrorMessage) {
+    return (
+      <Alert
+        id={`${id}-alert-allocation-failed`}
+        variant={AlertVariant.danger}
+        title={t('ai:The DHCP server failed to allocate the IP')}
+        isInline
+      >
+        {validationErrorMessage}
+      </Alert>
+    );
+  }
+  if (vipDhcpAllocation && machineNetworkCidr) {
+    return (
+      <>
+        <Spinner size="md" id={`${id}-allocating`} data-testid={`vip-static-${id}-value-spinner`} />
+        <i>{t('ai:This IP is being allocated by the DHCP server')}</i>
+      </>
+    );
+  }
+  return <i>{t('ai:This IP will be allocated by the DHCP server')}</i>;
+};
+
 export type VirtualIPControlGroupProps = {
   cluster: Cluster;
   hostSubnets: HostSubnets;
   isVipDhcpAllocationDisabled?: boolean;
+  supportLevel?: SupportLevel;
+  isViewerMode?: boolean;
 };
 
 export const VirtualIPControlGroup = ({
   cluster,
   hostSubnets,
   isVipDhcpAllocationDisabled,
+  supportLevel,
+  isViewerMode = false,
 }: VirtualIPControlGroupProps) => {
-  const { values } = useFormikContext<NetworkConfigurationValues>();
+  const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const { t } = useTranslation();
+
   const vipHelperSuffix = getVipHelperSuffix(
     t,
     selectApiVip(cluster),
@@ -83,15 +111,17 @@ export const VirtualIPControlGroup = ({
   );
   const apiVipHelperText = t(
     'ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
-    {
-      vipHelperSuffix: vipHelperSuffix,
-    },
+    { vipHelperSuffix },
   );
   const ingressVipHelperText = t(
     'ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
-    {
-      vipHelperSuffix: vipHelperSuffix,
-    },
+    { vipHelperSuffix },
+  );
+  const apiVipPopoverContent = t(
+    'ai:Provides an endpoint for users, both human and machine, to interact with and configure the platform.',
+  );
+  const ingressVipPopoverContent = t(
+    'ai:Provides an endpoint for application traffic flowing in from outside the cluster.',
   );
 
   const {
@@ -102,70 +132,192 @@ export const VirtualIPControlGroup = ({
     [t, cluster.validationsInfo],
   );
 
+  const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
+  const isDualStack = values.stackType === DUAL_STACK;
+  const isVipInputDisabled = !hostSubnets.length || values.hostSubnet === NO_SUBNET_SET;
+
+  React.useEffect(() => {
+    if (!isViewerMode && !enableAllocation) {
+      setFieldValue('vipDhcpAllocation', false);
+    }
+  }, [enableAllocation, isViewerMode, setFieldValue]);
+
+  const onChangeDhcp = React.useCallback(
+    (hasDhcp: boolean) => {
+      // We need to sync the values back to the form
+      setFieldValue('apiVips', hasDhcp ? [] : cluster.apiVips, true);
+      setFieldValue('ingressVips', hasDhcp ? [] : cluster.ingressVips, true);
+    },
+    [cluster.apiVips, cluster.ingressVips, setFieldValue],
+  );
+
+  const setVipValueAtIndex = (
+    field: 'apiVips' | 'ingressVips',
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const fieldArray: ApiVip[] =
+      field === 'apiVips' ? values.apiVips || [] : values.ingressVips || [];
+    const next: ApiVip[] = Array.isArray(fieldArray) ? [...fieldArray] : [];
+    // Ensure array has the desired length
+    while (next.length <= index) {
+      next.push({ ip: '', clusterId: cluster.id });
+    }
+    next[index] = { ip: e.target.value, clusterId: cluster.id };
+    setFieldValue(field, next, true);
+  };
+
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
         <CheckboxField
+          onChange={onChangeDhcp}
           label={
             <>
-              {t('ai:Allocate IPs via DHCP server')}
-              <FeatureSupportLevelBadge
-                featureId="VIP_AUTO_ALLOC"
-                openshiftVersion={cluster.openshiftVersion}
-              />
+              <Tooltip
+                hidden={enableAllocation}
+                content={t(
+                  "ai:A cluster with OVN networking type cannot use 'allocate IPs via DHCP server'",
+                )}
+              >
+                <span>{t('ai:Allocate IPs via DHCP server')}</span>
+              </Tooltip>
+              <NewFeatureSupportLevelBadge featureId="VIP_AUTO_ALLOC" supportLevel={supportLevel} />
             </>
           }
           name="vipDhcpAllocation"
+          isDisabled={!enableAllocation || isViewerMode}
         />
       )}
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField
-            label={t('ai:API IP')}
+            label={
+              <>
+                <span>{t('ai:API IP')}</span> <PopoverIcon bodyContent={apiVipPopoverContent} />
+              </>
+            }
             name="apiVips.0.ip"
             helperText={apiVipHelperText}
-            value={selectApiVip(cluster)}
+            value={selectApiVip(values)}
             isValid={!apiVipFailedValidationMessage}
             isRequired
           >
             <VipStaticValue
-              vipName="apiVips"
+              id="vip-api"
+              vipValue={selectApiVip(cluster)}
               cluster={cluster}
               validationErrorMessage={apiVipFailedValidationMessage}
             />
           </FormikStaticField>
           <FormikStaticField
-            label={t('ai:Ingress IP')}
+            label={
+              <>
+                <span>{t('ai:Ingress IP')}</span>{' '}
+                <PopoverIcon bodyContent={ingressVipPopoverContent} />
+              </>
+            }
             name="ingressVips.0.ip"
             helperText={ingressVipHelperText}
-            value={selectIngressVip(cluster)}
+            value={selectIngressVip(values)}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
           >
             <VipStaticValue
-              vipName="ingressVips"
+              id="vip-ingress"
+              vipValue={selectIngressVip(cluster)}
               cluster={cluster}
               validationErrorMessage={ingressVipFailedValidationMessage}
             />
           </FormikStaticField>
         </>
       ) : (
-        <>
-          <InputField
-            label={t('ai:API IP')}
-            name="apiVips.0.ip"
-            helperText={apiVipHelperText}
-            isRequired
-            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
-          />
-          <InputField
-            name="ingressVips.0.ip"
-            label={t('ai:Ingress IP')}
-            helperText={ingressVipHelperText}
-            isRequired
-            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
-          />
-        </>
+        <FormGroup>
+          <FieldArray name="vips">
+            {() => (
+              <Stack>
+                <StackItem>
+                  <InputField
+                    label={
+                      <>
+                        <span>{t('ai:API IP')}</span>{' '}
+                        <PopoverIcon bodyContent={apiVipPopoverContent} />
+                      </>
+                    }
+                    name="apiVips.0.ip"
+                    helperText={apiVipHelperText}
+                    isRequired
+                    isDisabled={isVipInputDisabled || isViewerMode}
+                    labelInfo={isDualStack ? t('ai:Primary') : undefined}
+                    onChange={(e) =>
+                      setVipValueAtIndex('apiVips', 0, e as React.ChangeEvent<HTMLInputElement>)
+                    }
+                  />
+                </StackItem>
+                {isDualStack && (
+                  <StackItem>
+                    <InputField
+                      label={
+                        <>
+                          <span>{t('ai:API IP')}</span>{' '}
+                          <PopoverIcon bodyContent={apiVipPopoverContent} />
+                        </>
+                      }
+                      name="apiVips.1.ip"
+                      helperText={apiVipHelperText}
+                      isDisabled={isVipInputDisabled || isViewerMode}
+                      labelInfo={t('ai:Secondary')}
+                      onChange={(e) =>
+                        setVipValueAtIndex('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
+                      }
+                    />
+                  </StackItem>
+                )}
+                <StackItem>
+                  <InputField
+                    name="ingressVips.0.ip"
+                    label={
+                      <>
+                        <span>{t('ai:Ingress IP')}</span>{' '}
+                        <PopoverIcon bodyContent={ingressVipPopoverContent} />
+                      </>
+                    }
+                    helperText={ingressVipHelperText}
+                    isRequired
+                    isDisabled={isVipInputDisabled || isViewerMode}
+                    labelInfo={isDualStack ? t('ai:Primary') : undefined}
+                    onChange={(e) =>
+                      setVipValueAtIndex('ingressVips', 0, e as React.ChangeEvent<HTMLInputElement>)
+                    }
+                  />
+                </StackItem>
+                {isDualStack && (
+                  <StackItem>
+                    <InputField
+                      name="ingressVips.1.ip"
+                      label={
+                        <>
+                          <span>{t('ai:Ingress IP')}</span>{' '}
+                          <PopoverIcon bodyContent={ingressVipPopoverContent} />
+                        </>
+                      }
+                      helperText={ingressVipHelperText}
+                      isDisabled={isVipInputDisabled || isViewerMode}
+                      labelInfo={t('ai:Secondary')}
+                      onChange={(e) =>
+                        setVipValueAtIndex(
+                          'ingressVips',
+                          1,
+                          e as React.ChangeEvent<HTMLInputElement>,
+                        )
+                      }
+                    />
+                  </StackItem>
+                )}
+              </Stack>
+            )}
+          </FieldArray>
+        </FormGroup>
       )}
     </>
   );

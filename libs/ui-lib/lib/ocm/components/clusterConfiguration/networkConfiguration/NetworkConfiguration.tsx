@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
 import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
-import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
@@ -19,10 +18,12 @@ import {
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
+  StackTypeControlGroup,
+  AvailableSubnetsControl,
+  VirtualIPControlGroup,
+  VirtualIPControlGroupProps,
+  AdvancedNetworkFields,
 } from '../../../../common/components/clusterWizard/networkingSteps';
-import { StackTypeControlGroup } from './StackTypeControl';
-import { AvailableSubnetsControl } from './AvailableSubnetsControl';
-import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
@@ -270,6 +271,8 @@ const NetworkConfiguration = ({
             clusterId={cluster.id}
             isDualStackSelectable={isDualStackSelectable}
             hostSubnets={hostSubnets}
+            defaultNetworkValues={defaultNetworkSettings}
+            isViewerMode={isViewerMode}
           />
         </StackItem>
       )}
@@ -293,6 +296,7 @@ const NetworkConfiguration = ({
               false
             }
             openshiftVersion={cluster.openshiftVersion}
+            isViewerMode={isViewerMode}
           />
         </StackItem>
       )}
@@ -301,8 +305,10 @@ const NetworkConfiguration = ({
         <StackItem>
           <VirtualIPControlGroup
             cluster={cluster}
+            hostSubnets={hostSubnets}
             isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled || !isSDNSupported}
             supportLevel={featureSupportLevelContext.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
+            isViewerMode={isViewerMode}
           />
         </StackItem>
       )}
@@ -324,7 +330,7 @@ const NetworkConfiguration = ({
       </StackItem>
       {isAdvanced && (
         <StackItem>
-          <AdvancedNetworkFields />
+          <AdvancedNetworkFields isDisabled={isViewerMode} />
         </StackItem>
       )}
     </Stack>

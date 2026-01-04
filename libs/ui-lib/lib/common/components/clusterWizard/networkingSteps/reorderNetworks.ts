@@ -1,5 +1,6 @@
 import { Address6 } from 'ip-address';
-import { DUAL_STACK, NetworkConfigurationValues } from '../../../../common';
+import { DUAL_STACK } from '../../../config';
+import { NetworkConfigurationValues } from '../../../types';
 import type { FormikHelpers } from 'formik';
 
 const reorderByPrimaryCidr = (
