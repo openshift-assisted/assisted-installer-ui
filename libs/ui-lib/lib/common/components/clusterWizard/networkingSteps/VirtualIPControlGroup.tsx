@@ -11,21 +11,23 @@ import {
 } from '@patternfly/react-core';
 import {
   NetworkConfigurationValues,
-  FormikStaticField,
+  HostSubnets,
+} from '../../../types';
+import {
   NETWORK_TYPE_SDN,
   DUAL_STACK,
+  NO_SUBNET_SET,
+} from '../../../config';
+import {
   selectMachineNetworkCIDR,
-  getVipValidationsById,
-  PopoverIcon,
   selectApiVip,
   selectIngressVip,
-  HostSubnets,
-  NO_SUBNET_SET,
-  CheckboxField,
-  InputField,
-} from '../../../../common';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+} from '../../../selectors';
+import { getVipValidationsById } from '../../clusterConfiguration';
+import { FormikStaticField, PopoverIcon } from '../../ui';
+import { CheckboxField, InputField } from '../../ui/formik';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import NewFeatureSupportLevelBadge from '../../newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import {
   ApiVip,
   Cluster,
