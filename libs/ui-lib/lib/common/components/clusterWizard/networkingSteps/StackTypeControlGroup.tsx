@@ -5,7 +5,13 @@ import { Address4, Address6 } from 'ip-address';
 
 import { HostSubnets, NetworkConfigurationValues } from '../../../types';
 import { getFieldId } from '../../ui';
-import { DUAL_STACK, IPV4_STACK, NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../../config';
+import {
+  DUAL_STACK,
+  IPV4_STACK,
+  NETWORK_TYPE_OVN,
+  NETWORK_TYPE_SDN,
+  NO_SUBNET_SET,
+} from '../../../config';
 import { RadioField } from '../../ui/formik';
 import { ConfirmationModal, PopoverIcon } from '../../ui';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
@@ -19,7 +25,10 @@ import {
 
 export type StackTypeDefaultNetworkValues = Pick<
   ClusterDefaultConfig,
-  'clusterNetworksDualstack' | 'clusterNetworksIpv4' | 'serviceNetworksDualstack' | 'serviceNetworksIpv4'
+  | 'clusterNetworksDualstack'
+  | 'clusterNetworksIpv4'
+  | 'serviceNetworksDualstack'
+  | 'serviceNetworksIpv4'
 >;
 
 export type StackTypeControlGroupProps = {
@@ -305,4 +314,3 @@ export const StackTypeControlGroup = ({
     </>
   );
 };
-

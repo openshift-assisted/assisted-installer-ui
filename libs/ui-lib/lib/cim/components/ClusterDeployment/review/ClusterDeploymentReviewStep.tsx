@@ -148,12 +148,18 @@ export const ClusterDeploymentReviewStep = ({
             <>
               <DetailItem
                 title={t('ai:API IP (Primary)')}
-                value={agentClusterInstall?.status?.apiVIPs?.[0] || agentClusterInstall?.spec?.apiVIPs?.[0]}
+                value={
+                  agentClusterInstall?.status?.apiVIPs?.[0] ||
+                  agentClusterInstall?.spec?.apiVIPs?.[0]
+                }
                 testId="api-vip-primary"
               />
               <DetailItem
                 title={t('ai:API IP (Secondary)')}
-                value={agentClusterInstall?.status?.apiVIPs?.[1] || agentClusterInstall?.spec?.apiVIPs?.[1]}
+                value={
+                  agentClusterInstall?.status?.apiVIPs?.[1] ||
+                  agentClusterInstall?.spec?.apiVIPs?.[1]
+                }
                 testId="api-vip-secondary"
               />
             </>
@@ -169,19 +175,27 @@ export const ClusterDeploymentReviewStep = ({
             <>
               <DetailItem
                 title={t('ai:Ingress IP (Primary)')}
-                value={agentClusterInstall?.status?.ingressVIPs?.[0] || agentClusterInstall?.spec?.ingressVIPs?.[0]}
+                value={
+                  agentClusterInstall?.status?.ingressVIPs?.[0] ||
+                  agentClusterInstall?.spec?.ingressVIPs?.[0]
+                }
                 testId="ingress-vip-primary"
               />
               <DetailItem
                 title={t('ai:Ingress IP (Secondary)')}
-                value={agentClusterInstall?.status?.ingressVIPs?.[1] || agentClusterInstall?.spec?.ingressVIPs?.[1]}
+                value={
+                  agentClusterInstall?.status?.ingressVIPs?.[1] ||
+                  agentClusterInstall?.spec?.ingressVIPs?.[1]
+                }
                 testId="ingress-vip-secondary"
               />
             </>
           ) : (
             <DetailItem
               title={t('ai:Ingress IP')}
-              value={agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP}
+              value={
+                agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP
+              }
               testId="ingress-vip"
             />
           )}
