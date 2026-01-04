@@ -80,14 +80,18 @@ const AdvancedNetworkFields = ({ isDisabled = false }: AdvancedNetworkFieldsProp
                         <>
                           <span>{t('ai:Cluster network CIDR')} </span>
                           <PopoverIcon
-                            bodyContent={t('ai:IP address blocks from which Pod IPs are allocated.')}
+                            bodyContent={t(
+                              'ai:IP address blocks from which Pod IPs are allocated.',
+                            )}
                           />
                         </>
                       }
                       helperText={clusterCidrHelperText}
                       isRequired
                       isDisabled={isDisabled}
-                      labelInfo={isDualStack ? (index === 0 ? t('ai:Primary') : t('ai:Secondary')) : ''}
+                      labelInfo={
+                        isDualStack ? (index === 0 ? t('ai:Primary') : t('ai:Secondary')) : ''
+                      }
                     />
                   </GridItem>
                   <GridItem className={'network-field-group'}>

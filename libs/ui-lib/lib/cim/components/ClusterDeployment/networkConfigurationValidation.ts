@@ -35,14 +35,14 @@ export const getNetworkInitialValues = (
   const isDualStackCluster = isDualStack(cluster);
 
   let clusterNetworks = cluster.clusterNetworks;
-  if (clusterNetworks == null || clusterNetworks.length === 0) {
+  if (clusterNetworks === null || clusterNetworks === undefined || clusterNetworks.length === 0) {
     clusterNetworks = isDualStackCluster
       ? defaultNetworkSettings.clusterNetworksDualstack
       : defaultNetworkSettings.clusterNetworksIpv4;
   }
 
   let serviceNetworks = cluster.serviceNetworks;
-  if (serviceNetworks == null || serviceNetworks.length === 0) {
+  if (serviceNetworks === null || serviceNetworks === undefined || serviceNetworks.length === 0) {
     serviceNetworks = isDualStackCluster
       ? defaultNetworkSettings.serviceNetworksDualstack
       : defaultNetworkSettings.serviceNetworksIpv4;

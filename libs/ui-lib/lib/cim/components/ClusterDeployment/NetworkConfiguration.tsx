@@ -43,7 +43,7 @@ const NetworkConfiguration = ({
   const isSNOCluster = isSNO(cluster);
   const isMultiNodeCluster = !isSNOCluster;
   const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
-  
+
   const isDualStack = values.stackType === DUAL_STACK;
   const isSDNSelectable = React.useMemo(
     () => canSelectNetworkTypeSDN(!isMultiNodeCluster),
