@@ -3,42 +3,55 @@ import Highlight, { defaultProps, Language, PrismTheme } from 'prism-react-rende
 import { Content, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
 import { t_global_color_nonstatus_purple_300 } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_purple_300';
 import { t_global_color_nonstatus_blue_default as globalBlue } from '@patternfly/react-tokens/dist/js/t_global_color_nonstatus_blue_default';
-import defaultTheme from 'prism-react-renderer/themes/github';
+import lightTheme from 'prism-react-renderer/themes/github';
+import darkTheme from 'prism-react-renderer/themes/okaidia';
 import './PrismCode.css';
-export const SimpleAIPrismTheme = {
-  plain: {
-    color: '#333333',
-    backgroundColor: defaultTheme.plain.backgroundColor,
-    fontSize: '.93em',
-  },
-  styles: [
-    {
-      types: ['variable'],
-      style: {
-        color: globalBlue.value,
-      },
+
+export const getTheme = (styles?: PrismTheme['styles']) => {
+  let prefersTheme = window.localStorage.getItem('bridge/theme');
+  if (prefersTheme === 'systemDefault') {
+    prefersTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  const theme = prefersTheme === 'dark' ? darkTheme : lightTheme;
+
+  return {
+    plain: {
+      color: theme.plain.color,
+      backgroundColor: theme.plain.backgroundColor,
+      fontSize: '.93em',
     },
-    {
-      types: ['class-name', 'function', 'tag', 'attr-name'],
-      style: {
-        color: t_global_color_nonstatus_purple_300.value,
+    styles: styles || [
+      {
+        types: ['variable'],
+        style: {
+          color: globalBlue.value,
+        },
       },
-    },
-  ],
+      {
+        types: ['class-name', 'function', 'tag', 'attr-name'],
+        style: {
+          color: t_global_color_nonstatus_purple_300.value,
+        },
+      },
+    ],
+  };
 };
+
 type PrismCodeProps = {
   code: string;
   language?: Language;
-  theme?: PrismTheme;
+  styles?: PrismTheme['styles'];
   copiable?: boolean;
 };
+
 const PrismCode: React.FC<PrismCodeProps> = ({
   code,
+  styles,
   language = 'bash',
-  theme = defaultTheme,
   copiable = false,
 }) => (
-  <Highlight {...defaultProps} code={code} language={language} theme={theme}>
+  <Highlight {...defaultProps} code={code} language={language} theme={getTheme(styles)}>
     {({ className, style, tokens, getLineProps, getTokenProps }) => (
       <Content component="pre" className={className} style={style}>
         {copiable && (

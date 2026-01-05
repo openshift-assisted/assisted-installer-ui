@@ -16,7 +16,7 @@ import {
   ModalBody,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { PrismCode, SimpleAIPrismTheme, UiIcon } from '../ui';
+import { PrismCode, UiIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
@@ -70,7 +70,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
             )}
           </HelperTextItem>
         </HelperText>
-        <PrismCode theme={SimpleAIPrismTheme} code="ssh -i <identity_file> core@<machine-ip>" />
+        <PrismCode code="ssh -i <identity_file> core@<machine-ip>" />
         <HelperText>
           <HelperTextItem data-testid="discovery-troubleshooting-ssh-auth-helper">
             {t(
@@ -106,7 +106,6 @@ export const DiscoveryTroubleshootingModalContent = () => {
           </HelperTextItem>
         </HelperText>
         <PrismCode
-          theme={SimpleAIPrismTheme}
           code={`chmod +x ./change-iso-password.sh
 ./change-iso-password.sh <path_to_your_iso_file>`}
         />
@@ -115,14 +114,13 @@ export const DiscoveryTroubleshootingModalContent = () => {
         <Content component="p">
           {t('ai:The discovery agent is running with the correct parameters')}
         </Content>
-        <PrismCode theme={SimpleAIPrismTheme} code={`ps -ef | grep agent`} />
+        <PrismCode code={`ps -ef | grep agent`} />
         <HelperText>
           <HelperTextItem data-testid="discovery-troubleshooting-agent-output-helper">
             {t('ai:The output displays the following:')}
           </HelperTextItem>
         </HelperText>
         <PrismCode
-          theme={SimpleAIPrismTheme}
           code={`root        1786       1  0 08:03 ?        00:00:00 /usr/local/bin/agent --url https://api.openshift.com --cluster-id e4c85fbe-77c7-411e-b107-5120f615c4fb --agent-version registry.redhat.io/openshift4/assisted-installer-agent-rhel8:v4.6.0-17 --insecure=false
 core        2362    2311  0 08:04 pts/0    00:00:00 grep --color=auto agent`}
         />
@@ -134,14 +132,14 @@ core        2362    2311  0 08:04 pts/0    00:00:00 grep --color=auto agent`}
             {t('ai:To verify that the agent ran successfully, check the logs:')}
           </HelperTextItem>
         </HelperText>
-        <PrismCode theme={SimpleAIPrismTheme} code="sudo journalctl -u agent.service" />
+        <PrismCode code="sudo journalctl -u agent.service" />
         <HelperText>
           <HelperTextItem data-testid="discovery-troubleshooting-network-error-helper">
             {t('ai:In the following example, the errors indicate there is a network issue:')}
           </HelperTextItem>
         </HelperText>
         <PrismCode
-          theme={{ ...SimpleAIPrismTheme, styles: [] }}
+          styles={[]}
           code={`Oct 15 11:26:35 localhost systemd[1]: agent.service: Service RestartSec=3s expired, scheduling restart.
 Oct 15 11:26:35 localhost systemd[1]: agent.service: Scheduled restart job, restart counter is at 9.
 Oct 15 11:26:35 localhost systemd[1]: Stopped agent.service.
@@ -170,12 +168,11 @@ Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
             {t('ai:To view detailed agent logs and communication use following command:')}
           </HelperTextItem>
         </HelperText>
-        <PrismCode theme={SimpleAIPrismTheme} code="sudo journalctl TAG=agent | less" />
+        <PrismCode code="sudo journalctl TAG=agent | less" />
       </ListItem>
       <ListItem>
         <Content component="p">{t('ai:Check assisted-installer logs')}</Content>
         <PrismCode
-          theme={SimpleAIPrismTheme}
           code={`sudo su
 podman ps -a | grep assisted-installer
 podman logs <container id>`}
@@ -183,7 +180,7 @@ podman logs <container id>`}
       </ListItem>
       <ListItem>
         <Content component="p">{t('ai:Check bootkube logs')}</Content>
-        <PrismCode theme={SimpleAIPrismTheme} code={`sudo journalctl -u bootkube`} />
+        <PrismCode code={`sudo journalctl -u bootkube`} />
       </ListItem>
     </List>
   );
