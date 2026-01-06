@@ -3,6 +3,7 @@ import {
   Button,
   ButtonType,
   ButtonVariant,
+  Content,
   Form,
   HelperText,
   HelperTextItem,
@@ -56,6 +57,7 @@ const getNewHostnames = (
     const [changeEnabled, reason] = canChangeHostname(h);
     const hostnameRes = {
       newHostname: changeEnabled ? templateToHostname(index, values) : undefined,
+      oldHostname: getHostname(h),
       reason: changeEnabled ? undefined : reason,
     };
     if (changeEnabled) {
@@ -176,6 +178,7 @@ const MassChangeHostnameForm = ({
 
   const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname);
   const { t } = useTranslation();
+
   return (
     <Form onSubmit={handleSubmit}>
       <ModalBody>
@@ -206,44 +209,47 @@ const MassChangeHostnameForm = ({
           </StackItem>
           <StackItem>
             {t('ai:Preview')}
-            <div className="hostname-preview">
-              {selectedHosts.map((h, index) => {
-                const { newHostname, reason } = newHostnames[index];
-                return (
-                  <Split key={h.id || index} hasGutter>
-                    <SplitItem className="hostname-column">
-                      <div className="hostname-column__text">
-                        <strong>{getHostname(h)}</strong>
-                      </div>
-                    </SplitItem>
-                    <SplitItem>
-                      <div>
-                        <strong>{'>'}</strong>
-                      </div>
-                    </SplitItem>
-                    <SplitItem isFilled>
-                      {reason ? (
-                        <Popover
-                          aria-label={t('ai:Cannot change hostname popover')}
-                          headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
-                          bodyContent={<div>{reason}</div>}
+            <Split className="hostname-preview" hasGutter>
+              <SplitItem className="hostname-column">
+                {newHostnames.map((host, i) => (
+                  <div className="hostname-column__text" key={`old-hostname-${i}`}>
+                    <strong>{host.oldHostname}</strong>
+                  </div>
+                ))}
+              </SplitItem>
+              <SplitItem>
+                {newHostnames.map((_, i) => (
+                  <div key={`divider-${i}`}>
+                    <strong>{'>'}</strong>
+                  </div>
+                ))}
+              </SplitItem>
+              <SplitItem>
+                {newHostnames.map((host, i) => (
+                  <div key={`new-hostname-${i}`}>
+                    {host.reason ? (
+                      <Popover
+                        aria-label={t('ai:Cannot change hostname popover')}
+                        headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
+                        bodyContent={<div>{host.reason}</div>}
+                      >
+                        <Button
+                          variant="link"
+                          icon={<InfoCircleIcon color={blueInfoColor.value} />}
+                          isInline
                         >
-                          <Button
-                            variant="link"
-                            icon={<InfoCircleIcon color={blueInfoColor.value} />}
-                            isInline
-                          >
-                            {t('ai:Not changeable')}
-                          </Button>
-                        </Popover>
-                      ) : (
-                        newHostname || t('ai:New hostname will appear here...')
-                      )}
-                    </SplitItem>
-                  </Split>
-                );
-              })}
-            </div>
+                          {t('ai:Not changeable')}
+                        </Button>
+                      </Popover>
+                    ) : (
+                      <Content>
+                        {host.newHostname || t('ai:New hostname will appear here...')}
+                      </Content>
+                    )}
+                  </div>
+                ))}
+              </SplitItem>
+            </Split>
           </StackItem>
           <StackItem>
             <ModalProgress
