@@ -3,8 +3,8 @@ import { Message as MessageType } from '@redhat-cloud-services/ai-client-state';
 import { LightSpeedCoreAdditionalProperties } from '@redhat-cloud-services/lightspeed-client';
 import { Message } from '@patternfly/chatbot';
 import { saveAs } from 'file-saver';
-import { Button, Stack, StackItem } from '@patternfly-6/react-core';
-import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly-6/react-icons';
+import { Button, Stack, StackItem } from '@patternfly/react-core';
+import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import {
   isOldToolResponseStreamEvent,

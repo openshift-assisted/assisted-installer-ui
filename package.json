@@ -21,8 +21,7 @@
   "packageManager": "yarn@3.4.1",
   "private": true,
   "resolutions": {
-    "@types/react": "17.0.x",
-    "@patternfly/chatbot/@patternfly/react-icons": "6.3.1"
+    "tabbable": "^6.2.0"
   },
   "scripts": {
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
@@ -42,6 +41,8 @@
     "test:unit": "yarn workspaces foreach -v run test",
     "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
     "start:assisted_disconnected_ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui serve",
+    "start:assisted_chatbot": "yarn workspace @openshift-assisted/assisted-installer-ui-chatbot start",
+    "start:assisted_chatbot:static": "yarn workspace @openshift-assisted/assisted-installer-ui-chatbot start:static",
     "start:watch_mode": "yarn build:all && yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales --dir=libs/chatbot 'yarn _build:lib' 'yarn _yalc:push'",
     "start:vitest-ui": "vitest --ui"
   },

@@ -4,9 +4,9 @@ import {
   ChatbotDisplayMode,
   Conversation,
 } from '@patternfly/chatbot';
-import { Alert, MenuItemAction } from '@patternfly-6/react-core';
+import { Alert, MenuItemAction } from '@patternfly/react-core';
 import { getErrorMessage } from './helpers';
-import { TrashAltIcon } from '@patternfly-6/react-icons';
+import { TrashAltIcon } from '@patternfly/react-icons';
 import DeleteConversationModal from './DeleteConversationModal';
 
 type ConversationHistory = { conversations: { conversation_id: string; created_at: string }[] };
