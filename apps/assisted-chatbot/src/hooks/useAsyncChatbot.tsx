@@ -68,23 +68,27 @@ const useIsAuthenticated = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   React.useEffect(() => {
-    (async () => {
+    void (async () => {
       const api = new URL(getBaseUrl());
       const token = await chrome.auth.getToken();
       try {
         const response = await fetch(`https://assisted-chat.${api.hostname}/v1/conversations`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: token
+            ? {
+                Authorization: `Bearer ${token}`,
+              }
+            : {},
         });
         setIsAuthenticated(response.ok);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error checking authentication:', error);
       } finally {
         setIsLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -106,7 +110,7 @@ const useStateManager = (): UseManagerHook => {
           ...init,
           headers: {
             ...init?.headers,
-            Authorization: `Bearer ${token}`,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         });
       },
@@ -124,6 +128,7 @@ const useStateManager = (): UseManagerHook => {
       selectionDescription:
         'Create, configure, and install OpenShift Container Platform clusters using the Assisted Installer.',
       MessageEntryComponent: LSCMessageEntry,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       handleNewChat: async (toggleDrawer) => {
         // can't use hooks here, we are not yet within the correct React context
         await stateManager.createNewConversation();
@@ -150,6 +155,7 @@ const useStateManager = (): UseManagerHook => {
     };
 
     return config;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {

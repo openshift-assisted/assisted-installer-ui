@@ -26,10 +26,4 @@ module.exports = {
   routes: {
     '/apps/assisted-installer-ui-chatbot': { host: 'http://localhost:8003' },
   },
-  resolve: {
-    modules: [path.resolve(__dirname, '../../node_modules')],
-    alias: {
-      '@openshift-assisted/chatbot': path.resolve(__dirname, '../../libs/chatbot/lib'),
-    },
-  },
 };

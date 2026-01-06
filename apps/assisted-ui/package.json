@@ -1,18 +1,14 @@
 {
   "dependencies": {
-    "@openshift-assisted/chatbot": "workspace:*",
     "@openshift-assisted/ui-lib": "workspace:*",
-    "@openshift-console/dynamic-plugin-sdk": "0.0.3",
-    "@patternfly-6/patternfly": "npm:@patternfly/patternfly@6.3.1",
-    "@patternfly-6/react-core": "npm:@patternfly/react-core@6.3.1",
-    "@patternfly/chatbot": "6.4.0-prerelease.4",
-    "@patternfly/patternfly": "6.2.3",
-    "@patternfly/react-code-editor": "6.2.2",
-    "@patternfly/react-core": "6.2.2",
-    "@patternfly/react-icons": "6.2.2",
-    "@patternfly/react-styles": "6.2.2",
-    "@patternfly/react-table": "6.2.2",
-    "@patternfly/react-tokens": "6.2.2",
+    "@openshift-console/dynamic-plugin-sdk": "1.0.0",
+    "@patternfly/patternfly": "6.4.0",
+    "@patternfly/react-code-editor": "6.4.0",
+    "@patternfly/react-core": "6.4.0",
+    "@patternfly/react-icons": "6.4.0",
+    "@patternfly/react-styles": "6.4.0",
+    "@patternfly/react-table": "6.4.0",
+    "@patternfly/react-tokens": "6.4.0",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^7.119",
     "axios": ">=0.22.0 <2.0.0",
@@ -25,7 +21,7 @@
     "react-i18next": "^11.11.4",
     "react-monaco-editor": "^0.55.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^5.3.3",
+    "react-router-dom": "5.3.x",
     "react-router-dom-v5-compat": "^6.21.2",
     "react-tagsinput": "^3.20",
     "redux": "^4",
@@ -35,15 +31,13 @@
   "description": "A stand-alone web UI for the Assisted Installer",
   "devDependencies": {
     "@tsconfig/vite-react": "^1.0.1",
-    "@types/react": "17.0.x",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "^18.2.0",
+    "@types/react-router": "^5.1.x",
+    "@types/react-router-dom": "5.3.x",
     "@vitejs/plugin-react-swc": "^3.0.1",
     "vite": "^5.4.21",
     "vite-plugin-environment": "^1.1.3"
-  },
-  "overrides": {
-    "@patternfly/react-core": {
-      "attr-accept": "2.2.2"
-    }
   },
   "engines": {
     "node": ">=14"

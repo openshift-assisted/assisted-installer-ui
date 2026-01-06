@@ -11,13 +11,15 @@ const ChatbotMessageEntry = (
   const onApiCall = React.useCallback<MessageEntryProps['onApiCall']>(async (input, init) => {
     const userToken = await chrome.auth.getToken();
     const api = new URL(getBaseUrl());
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return fetch(`https://assisted-chat.${api.hostname}${input}`, {
       ...(init || {}),
       headers: {
         ...(init?.headers || {}),
-        Authorization: `Bearer ${userToken}`,
+        ...(userToken ? { Authorization: `Bearer ${userToken}` } : {}),
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const openClusterDetails = React.useCallback<MessageEntryProps['openClusterDetails']>(
