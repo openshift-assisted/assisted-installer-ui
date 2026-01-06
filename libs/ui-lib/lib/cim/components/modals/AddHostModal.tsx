@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
-import { EmptyState, EmptyStateBody, Spinner } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  EmptyState,
+  EmptyStateBody,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalVariant,
+  Spinner,
+} from '@patternfly/react-core';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import { AddHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -54,51 +61,53 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Add host dialog')}
-      title={t('ai:Add host')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="add-host-modal"
     >
-      <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        {dialogType === 'config' && (
-          <DiscoveryImageConfigForm
-            onCancel={onClose}
-            handleSubmit={handleIsoConfigSubmit}
-            hideDiscoveryImageType={isIPXE}
-            imageType={imageType}
-            sshPublicKey={sshPublicKey}
-            httpProxy={httpProxy}
-            httpsProxy={httpsProxy}
-            noProxy={noProxy}
-            hasDHCP={hasDHCP}
-            isIPXE={isIPXE}
-            allowEmpty
-            docVersion={docVersion}
-          />
-        )}
-        {dialogType === 'download' && (
-          <>
-            {isIPXE ? (
-              <GeneratingIPXEDownload
-                onClose={onClose}
-                infraEnv={infraEnv}
-                onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
-              />
-            ) : (
-              <GeneratingIsoDownload
-                onClose={onClose}
-                infraEnv={infraEnv}
-                onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
-                hasDHCP={hasDHCP}
-                docVersion={docVersion}
-                ciscoUrl={ciscoUrl}
-              />
-            )}
-          </>
-        )}
-      </EnvironmentErrors>
+      <ModalHeader title={t('ai:Add hosts')} />
+      <ModalBody>
+        <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion}>
+          {dialogType === 'config' && (
+            <DiscoveryImageConfigForm
+              onCancel={onClose}
+              handleSubmit={handleIsoConfigSubmit}
+              hideDiscoveryImageType={isIPXE}
+              imageType={imageType}
+              sshPublicKey={sshPublicKey}
+              httpProxy={httpProxy}
+              httpsProxy={httpsProxy}
+              noProxy={noProxy}
+              hasDHCP={hasDHCP}
+              isIPXE={isIPXE}
+              allowEmpty
+              docVersion={docVersion}
+            />
+          )}
+
+          {dialogType === 'download' && (
+            <>
+              {isIPXE ? (
+                <GeneratingIPXEDownload
+                  onClose={onClose}
+                  infraEnv={infraEnv}
+                  onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
+                />
+              ) : (
+                <GeneratingIsoDownload
+                  onClose={onClose}
+                  infraEnv={infraEnv}
+                  onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
+                  hasDHCP={hasDHCP}
+                  docVersion={docVersion}
+                  ciscoUrl={ciscoUrl}
+                />
+              )}
+            </>
+          )}
+        </EnvironmentErrors>
+      </ModalBody>
     </Modal>
   );
 };
