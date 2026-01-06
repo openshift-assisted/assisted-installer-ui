@@ -13,10 +13,21 @@ const parseEnvQueryParam = (): string | undefined => {
 };
 
 export const getBaseUrl = (): string => {
-  const queryEnv =
-    parseEnvQueryParam() || localStorage.getItem(ENV_OVERRIDE_LOCALSTORAGE_KEY);
+  let envOverrideStorageItem: string | null = null;
+  try {
+    envOverrideStorageItem = localStorage.getItem(ENV_OVERRIDE_LOCALSTORAGE_KEY);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('failed to get override item', e);
+  }
+  const queryEnv = parseEnvQueryParam() || envOverrideStorageItem;
   if (queryEnv && envs[queryEnv]) {
-    localStorage.setItem(ENV_OVERRIDE_LOCALSTORAGE_KEY, queryEnv);
+    try {
+      localStorage.setItem(ENV_OVERRIDE_LOCALSTORAGE_KEY, queryEnv);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('failed to store override item', e);
+    }
     return envs[queryEnv];
   }
   const defaultEnv =

@@ -16,6 +16,7 @@ import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardCon
 import { FormViewHosts } from './FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from './FormViewNetworkWide/FormViewNetworkWide';
 import './staticIp.css';
+import { ClusterWizardStepHeader } from '../../../../../common';
 
 const isoRegenerationAlert = (
   <Alert
@@ -85,7 +86,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   return (
     <Grid hasGutter>
       <GridItem>
-        <Content component={ContentVariants.h2}>Static network configurations</Content>
+        <ClusterWizardStepHeader>Static network configurations</ClusterWizardStepHeader>
         <Content component={ContentVariants.small}>
           Network configuration can be done using either the form view or YAML view. Configurations
           done in this step are for discovering hosts.

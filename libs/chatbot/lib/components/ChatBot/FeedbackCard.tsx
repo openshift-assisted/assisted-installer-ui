@@ -91,7 +91,7 @@ const FeedbackForm = ({
                   id="select-category"
                   isOpen={categoryOpen}
                   selected={category}
-                  onSelect={(_, val) => {
+                  onSelect={(_, val: string) => {
                     setCategory(`${val || ''}`);
                     setCategoryOpen(false);
                   }}
