@@ -12,6 +12,9 @@ import { getFieldId } from './utils';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
+const MAX_FILE_SIZE = 2048;
+const ACCEPTED_FILES = { 'application/x-ssh-key': ['.pub'] };
+
 const UploadField: React.FC<UploadFieldProps> = ({
   label,
   labelIcon,
@@ -41,8 +44,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
     return '';
   };
   const errorMessage = getErrorMessage();
-  const acceptedFiles = { 'application/x-ssh-key': ['.pub'] };
-  const maxFileSize = 2048;
+
   return (
     <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelHelp={labelIcon}>
       {children}
@@ -70,7 +72,6 @@ const UploadField: React.FC<UploadFieldProps> = ({
         onFileInputChange={(_event, file) => {
           setFilename(file.name);
           setTouched(true);
-          setValue(file);
         }}
         onBlur={(e) => {
           const file: File | string = field.value;
@@ -96,8 +97,8 @@ const UploadField: React.FC<UploadFieldProps> = ({
         disabled={isDisabled}
         allowEditingUploadedText={allowEdittingUploadedText}
         dropzoneProps={{
-          accept: acceptedFiles,
-          maxSize: maxFileSize,
+          accept: ACCEPTED_FILES,
+          maxSize: MAX_FILE_SIZE,
         }}
         onClearClick={() => {
           setFilename('');
