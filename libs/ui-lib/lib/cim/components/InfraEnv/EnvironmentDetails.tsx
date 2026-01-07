@@ -12,6 +12,7 @@ import {
   ContentVariants,
   Title,
   TitleSizes,
+  Label,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
@@ -19,7 +20,7 @@ import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-
 import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 
-import { architectureData, LabelValue } from '../../../common';
+import { architectureData } from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
@@ -173,7 +174,9 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
               <DescriptionListTerm>{t('ai:Labels')}</DescriptionListTerm>
               <DescriptionListDescription>
                 {Object.keys(infraEnv.metadata?.labels || {}).map((k) => (
-                  <LabelValue key={k} value={`${k}=${infraEnv.metadata?.labels?.[k] || ''}`} />
+                  <Label key={k}>
+                    {k}={infraEnv.metadata?.labels?.[k] || ''}
+                  </Label>
                 ))}
               </DescriptionListDescription>
             </DescriptionListGroup>
@@ -209,7 +212,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
                   <DescriptionListDescription>
                     {infraEnv.spec?.proxy?.noProxy
                       ?.split(',')
-                      .map((k) => <LabelValue key={k} value={`${k}`} />) || <NotConfigured />}
+                      .map((k) => <Label key={k}>{k}</Label>) || <NotConfigured />}
                   </DescriptionListDescription>
                 </>
               )}
