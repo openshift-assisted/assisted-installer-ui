@@ -73,7 +73,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.2.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.9.2":
   version: 7.26.10
   resolution: "@babel/runtime@npm:7.26.10"
   dependencies:
@@ -829,7 +829,6 @@ __metadata:
     react-redux: ^8.0.5
     react-router-dom: 5.3.x
     react-router-dom-v5-compat: ^6.21.2
-    react-tagsinput: ^3.20
     redux: ^4
     uuid: ^8.1
     vite: ^5.4.21
@@ -904,7 +903,6 @@ __metadata:
     react-redux: ^8.0.5
     react-router-dom: 5.3.x
     react-router-dom-v5-compat: ^6.21.2
-    react-tagsinput: ^3.20
     redux: ^4
     uuid: ^8.1
     vite: ^5.4.21
@@ -1024,6 +1022,7 @@ __metadata:
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-table": 6.4.0
     "@patternfly/react-tokens": 6.4.0
+    "@react-hook/resize-observer": ^2.0.2
     "@tsconfig/recommended": ^1.0.2
     "@types/file-saver": ^2.0.1
     "@types/human-date": ^1.4.0
@@ -1033,10 +1032,8 @@ __metadata:
     "@types/node": ^18.14.6
     "@types/react": 18.2.37
     "@types/react-autosuggest": ^10.1.5
-    "@types/react-dom": ^18.2.0
-    "@types/react-measure": ^2.0.8
+    "@types/react-dom": 18.2.15
     "@types/react-redux": ^7.1.7
-    "@types/react-tagsinput": ^3.19.7
     "@types/uuid": ^8.0.0
     axios-case-converter: ^0.11.1
     camel-case: ^4.1.2
@@ -1056,7 +1053,6 @@ __metadata:
     parse-url: ^9.2.0
     prism-react-renderer: ^1.1.1
     react-error-boundary: ^3.1.4
-    react-measure: ^2.5.2
     swr: ^2
     tslib: ^2.6.1
     unique-names-generator: ^4.2.0
@@ -1072,7 +1068,6 @@ __metadata:
     react-monaco-editor: ^0.55.0
     react-redux: ^8.0.5
     react-router-dom-v5-compat: ^6.21.2
-    react-tagsinput: ^3.20
     redux: ^4
     uuid: ^8.1
     yup: ^1.4.0
@@ -1519,6 +1514,36 @@ __metadata:
   version: 1.0.0-next.25
   resolution: "@polka/url@npm:1.0.0-next.25"
   checksum: 4ab1d7a37163139c0e7bfc9d1e3f6a2a0db91a78b9f0a21f571d6aec2cdaeaacced744d47886c117aa7579aa5694b303fe3e0bd1922bb9cb3ce6bf7c2dc09801
+  languageName: node
+  linkType: hard
+
+"@react-hook/latest@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "@react-hook/latest@npm:1.0.3"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 2408c9cd35c5cfa7697b6da3bc5eebef254a932ade70955074c474f23be7dd3e2f81bbba12edcc9208bd0f89c6ed366d6b11d4f6d7b1052877a0bac8f74afad4
+  languageName: node
+  linkType: hard
+
+"@react-hook/passive-layout-effect@npm:^1.2.0":
+  version: 1.2.1
+  resolution: "@react-hook/passive-layout-effect@npm:1.2.1"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 217cb8aa90fb8e677672319a9a466d7752890cf4357c76df000b207696e9cc717cf2ee88080671cc9dae238a82f92093ab4f61ab2f6032d2a8db958fc7d99b5d
+  languageName: node
+  linkType: hard
+
+"@react-hook/resize-observer@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@react-hook/resize-observer@npm:2.0.2"
+  dependencies:
+    "@react-hook/latest": ^1.0.2
+    "@react-hook/passive-layout-effect": ^1.2.0
+  peerDependencies:
+    react: ">=18"
+  checksum: 30a8d423f94af26a868347d38281344fe92b8cd5ae1235d6cb8cc0e64e7e330c3fda345e7ce12e31e3c4753a4a8e3edfd3879d794e1b3f81736ae6b0c9e35a33
   languageName: node
   linkType: hard
 
@@ -2966,21 +2991,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:18.2.15":
+  version: 18.2.15
+  resolution: "@types/react-dom@npm:18.2.15"
+  dependencies:
+    "@types/react": "*"
+  checksum: 8e9631600c21ff561328e38a951d1991b3b3b20f538af4c0efbd1327c883a5573a63f50e1b945c34fa51b114b30e1ca5e62317bd54f21e063d6697b4be843a03
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^18.2.0":
   version: 18.3.7
   resolution: "@types/react-dom@npm:18.3.7"
   peerDependencies:
     "@types/react": ^18.0.0
   checksum: c8b63ec944d2a68992b4dba474003fe55ee1d949c4b9c8fe97eecb2290de23f76acfb670b2f7ceb46a5fc8e46808d1745369b03edda48a7a0cf730eff4c5d315
-  languageName: node
-  linkType: hard
-
-"@types/react-measure@npm:^2.0.8":
-  version: 2.0.12
-  resolution: "@types/react-measure@npm:2.0.12"
-  dependencies:
-    "@types/react": "*"
-  checksum: c04ab0835bc4732383a9c7cf90aabab1155e3834fc4ee8470e173964aaa301963057a1905db51c208d5bc833df345720565ae430ac4f41e34e6aff6d9671cc61
   languageName: node
   linkType: hard
 
@@ -3017,23 +3042,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-tagsinput@npm:^3.19.7":
-  version: 3.20.6
-  resolution: "@types/react-tagsinput@npm:3.20.6"
+"@types/react@npm:*":
+  version: 19.2.7
+  resolution: "@types/react@npm:19.2.7"
   dependencies:
-    "@types/react": "*"
-  checksum: acff54bd7a6b48ed2fe615fb767cfbea2518c2c10dff1732c814fdecc285dc46c8f47a9c86dd71937fa6f34c577646b910d8af9afb934b3856d54ec5989c59f9
+    csstype: ^3.2.2
+  checksum: b1f4c9a45862ea392b9ead060a5b5730b4c41b21fde097db35e639a8a0978460468d8da87f47226230bd4681d6de48ffee695595540084a8a849dde027c66a46
   languageName: node
   linkType: hard
 
-"@types/react@npm:17.0.x":
-  version: 17.0.90
-  resolution: "@types/react@npm:17.0.90"
+"@types/react@npm:18.2.37":
+  version: 18.2.37
+  resolution: "@types/react@npm:18.2.37"
   dependencies:
     "@types/prop-types": "*"
-    "@types/scheduler": ^0.16
-    csstype: ^3.2.2
-  checksum: 96de8ae4ecb49263de1a3adb405ab929fcb6577af4080b6aa17757c3ccc00a3163c0fab66e0938265888020bf7f31aefead2622385da81a8c562d01f60343b91
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 2d2599f1a09e4f678509161fea8baeaf76d21deee460f4f3ccc1ca431ebe85f896d7d0b906127de17e97ed57240cec61955eb97d0b5d9cbf4e97fd6620b1acdb
   languageName: node
   linkType: hard
 
@@ -3044,10 +3069,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/scheduler@npm:^0.16":
-  version: 0.16.8
-  resolution: "@types/scheduler@npm:0.16.8"
-  checksum: 6c091b096daa490093bf30dd7947cd28e5b2cd612ec93448432b33f724b162587fed9309a0acc104d97b69b1d49a0f3fc755a62282054d62975d53d7fd13472d
+"@types/scheduler@npm:*":
+  version: 0.26.0
+  resolution: "@types/scheduler@npm:0.26.0"
+  checksum: 295ede5e7f991c7c52f9ed8e58d3076526be9a560e59ae11bf1c1414f9755a17bd750f3bfed4657b118283d1eb082bb27dcbe2eadf335a982b0c3b6a562771c2
   languageName: node
   linkType: hard
 
@@ -7953,13 +7978,6 @@ __metadata:
     hasown: ^2.0.2
     math-intrinsics: ^1.1.0
   checksum: 301008e4482bb9a9cb49e132b88fee093bff373b4e6def8ba219b1e96b60158a6084f273ef5cafe832e42cd93462f4accb46a618d35fe59a2b507f2388c5b79d
-  languageName: node
-  linkType: hard
-
-"get-node-dimensions@npm:^1.2.1":
-  version: 1.2.2
-  resolution: "get-node-dimensions@npm:1.2.2"
-  checksum: 1018db4004ead28c92c02cf5471c3b13572be67cc4dff763c0c7714b8edc370d8020806d3db0400aad87e7e9d3e99635e8582e81636b735a6013051c8e3a4b13
   languageName: node
   linkType: hard
 
@@ -13182,21 +13200,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-measure@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "react-measure@npm:2.5.2"
-  dependencies:
-    "@babel/runtime": ^7.2.0
-    get-node-dimensions: ^1.2.1
-    prop-types: ^15.6.2
-    resize-observer-polyfill: ^1.5.0
-  peerDependencies:
-    react: ">0.13.0"
-    react-dom: ">0.13.0"
-  checksum: 75bd3cd74d96f3e83f0a42b8f59e8764e6a5eec994492e077c49a4fea0d0b27775a5154502aff2eee3f6af40650ce2e58ed18ac927a64013b14c9942cc9c4872
-  languageName: node
-  linkType: hard
-
 "react-monaco-editor@npm:^0.55.0":
   version: 0.55.0
   resolution: "react-monaco-editor@npm:0.55.0"
@@ -13355,15 +13358,6 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 680705e386a4356f4c4faaee3cc517fcebb0dc467a8dfeb7f34f5b6df1ca6572807f8e20061db30a4dc32a1a9c44fe3541366aeb9912defbeab25fffadb603f7
-  languageName: node
-  linkType: hard
-
-"react-tagsinput@npm:^3.20":
-  version: 3.20.3
-  resolution: "react-tagsinput@npm:3.20.3"
-  peerDependencies:
-    react: ^18.0.0 || ^17.0.0 || ^16.0.0 || ^15.0.0
-  checksum: a5debb0db588153a4a5e745252f3b694deab6472cc225dee51e49ad63a7c08c266ce8c5e5a5bf983d796386f8a43d49a0b9e07a71f39f966ca853d80a4e147e7
   languageName: node
   linkType: hard
 
@@ -13720,13 +13714,6 @@ __metadata:
   version: 4.1.8
   resolution: "reselect@npm:4.1.8"
   checksum: a4ac87cedab198769a29be92bc221c32da76cfdad6911eda67b4d3e7136dca86208c3b210e31632eae31ebd2cded18596f0dd230d3ccc9e978df22f233b5583e
-  languageName: node
-  linkType: hard
-
-"resize-observer-polyfill@npm:^1.5.0":
-  version: 1.5.1
-  resolution: "resize-observer-polyfill@npm:1.5.1"
-  checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
   languageName: node
   linkType: hard
 

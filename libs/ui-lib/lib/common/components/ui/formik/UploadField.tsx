@@ -15,7 +15,7 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exc
 const MAX_FILE_SIZE = 2048;
 const ACCEPTED_FILES = { 'application/x-ssh-key': ['.pub'] };
 
-const UploadField: React.FC<UploadFieldProps> = ({
+const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
   label,
   labelIcon,
   helperText,

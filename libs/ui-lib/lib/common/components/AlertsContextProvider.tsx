@@ -18,7 +18,7 @@ export type AlertsContextType = {
 
 const AlertsContext = React.createContext<AlertsContextType | null>(null);
 
-export const AlertsContextProvider: React.FC = ({ children }) => {
+export const AlertsContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [alerts, dispatch] = React.useReducer(alertsReducer, []);
   const context = {
     alerts,

@@ -11,7 +11,7 @@ import { TextAreaFieldProps } from './types';
 import { getFieldId } from './utils';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
-const TextAreaField: React.FC<TextAreaFieldProps> = ({
+const TextAreaField: React.FC<React.PropsWithChildren<TextAreaFieldProps>> = ({
   label,
   helperText,
   getErrorText,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ToolbarGroup } from '@patternfly/react-core';
 
-const ToolbarSecondaryGroup: React.FC = ({ children }) => (
+const ToolbarSecondaryGroup: React.FC<React.PropsWithChildren> = ({ children }) => (
   <ToolbarGroup align={{ md: 'alignEnd' }}>{children}</ToolbarGroup>
 );
 

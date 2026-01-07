@@ -30,7 +30,7 @@ import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Hostname'),
+      title: t<string>('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -63,7 +63,7 @@ const statusColumn = (
   const bmhStatuses = bmhStatus(t);
   return {
     header: {
-      title: t('ai:Status'),
+      title: t<string>('ai:Status'),
       props: {
         id: 'col-header-status',
       },
@@ -85,22 +85,22 @@ const statusColumn = (
             <FlexItem align={{ default: 'alignRight' }}>
               <Popover
                 aria-label={t('ai:Cluster popover')}
-                headerContent={<div>{t('ai:Cannot be deleted')}</div>}
+                headerContent={<div>{t<string>('ai:Cannot be deleted')}</div>}
                 bodyContent={
                   <div>
-                    {t(
+                    {t<string>(
                       'ai:Hosts that are bound to a cluster cannot be deleted. Remove the host from the cluster and try again.',
                     )}
                   </div>
                 }
                 footerContent={
                   <Link to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}>
-                    {t('ai:Go to cluster {{clusterName}}', { clusterName })}
+                    {t<string>('ai:Go to cluster {{clusterName}}', { clusterName })}
                   </Link>
                 }
               >
                 <Button variant="link" icon={<InfoCircleIcon color={blueInfoColor.value} />}>
-                  {t('ai:Cannot be deleted')}
+                  {t<string>('ai:Cannot be deleted')}
                 </Button>
               </Popover>
             </FlexItem>

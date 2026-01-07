@@ -12,12 +12,9 @@ const HostsTableDetailContext = React.createContext<HostsTableDetailContextValue
   undefined,
 );
 
-const HostsTableDetailContextProvider: React.FC<HostsTableDetailContextValue> = ({
-  canEditDisks,
-  onDiskRole,
-  updateDiskSkipFormatting,
-  children,
-}) => {
+const HostsTableDetailContextProvider: React.FC<
+  React.PropsWithChildren<HostsTableDetailContextValue>
+> = ({ canEditDisks, onDiskRole, updateDiskSkipFormatting, children }) => {
   const context = {
     canEditDisks,
     onDiskRole,

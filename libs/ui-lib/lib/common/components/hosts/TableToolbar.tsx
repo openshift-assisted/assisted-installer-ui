@@ -35,7 +35,7 @@ type TableToolbarProps = {
   clearAllFilters?: ToolbarProps['clearAllFilters'];
 };
 
-const TableToolbar: React.FC<TableToolbarProps> = ({
+const TableToolbar: React.FC<React.PropsWithChildren<TableToolbarProps>> = ({
   itemIDs,
   selectedIDs,
   setSelectedIDs,

@@ -1,105 +1,89 @@
 import * as React from 'react';
 import { useField } from 'formik';
 import {
+  Button,
   FormGroup,
   FormHelperText,
   HelperText,
   HelperTextItem,
   Label,
+  LabelGroup,
   TextInput,
 } from '@patternfly/react-core';
-import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import TagsInput from 'react-tagsinput';
-import { InputFieldProps } from './types';
-import { getFieldId } from './utils';
-import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
-export const LabelField = ({
-  label,
-  labelIcon,
-  helperText,
-  isRequired,
-  onChange,
-  validate,
-  idPostfix,
-  ...props
-}: InputFieldProps & {
-  // eslint-disable-next-line
-  onChange?: (tags: any[]) => void;
-}) => {
+import { useTranslation } from '../../../hooks';
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { getFieldId } from './utils';
+
+type LabelsFieldProps = {
+  name: string;
+  label: string;
+  idPostfix?: string;
+};
+
+export const LabelField = ({ name, label, idPostfix }: LabelsFieldProps) => {
   const { t } = useTranslation();
-  const [input, setInput] = React.useState('');
-  const [field, { touched, error }, { setValue, setTouched }] = useField({
-    name: props.name,
-    validate,
-  });
-  const fieldId = getFieldId(props.name, 'input', idPostfix);
+  const [{ value: labels }, { touched, error }, { setValue: setLabels, setTouched }] =
+    useField<string[]>(name);
+  const fieldId = getFieldId(name, 'input', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
 
-  return (
-    <FormGroup fieldId={fieldId} label={label} isRequired={isRequired} labelHelp={labelIcon}>
-      <TagsInput
-        {...field}
-        onChange={(tags) => {
-          setValue(tags);
-          setInput('');
-          onChange && onChange(tags);
-          !touched && setTouched(true);
-        }}
-        addKeys={[13, 32, 188]}
-        renderTag={({ tag, key, onRemove, getTagDisplayValue }) => (
-          <Label key={key} style={{ margin: 2 }} onClose={() => onRemove(key)}>
-            {getTagDisplayValue(tag)}
-          </Label>
-        )}
-        renderInput={({ value, onChange, ...rest }) => (
-          <TextInput
-            onChange={onChange as (e: unknown) => void}
-            value={value as string}
-            {...rest}
-          />
-        )}
-        renderLayout={(tagElements, inputElement) => (
-          <div
-            className="pf-v6-c-form-control"
-            style={{
-              padding: 0,
-              paddingTop: '1px',
-              display: 'flex',
-              alignItems: 'start',
-              flexWrap: 'wrap',
-              height: 'unset',
-              minHeight: '36px',
-            }}
-          >
-            <div>{tagElements}</div>
-            {inputElement}
-          </div>
-        )}
-        addOnBlur
-        inputProps={{
-          autoFocus: false,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          placeholder: field.value?.length ? '' : 'app=frontend',
-          spellCheck: 'false',
-          value: input,
-          // eslint-disable-next-line
-          onChange: (e: any) => setInput(e.target.value),
-          ['data-test']: fieldId,
-        }}
-      />
+  const onDelete = (_ev: React.MouseEvent<Element, MouseEvent>, index: number) => {
+    const newLabels = [...labels];
+    newLabels.splice(index, 1);
+    setTouched(true);
+    setLabels(newLabels, true);
+  };
 
+  const onAdd = (text: string) => {
+    if (!text) {
+      return;
+    }
+    const newLabels = [...labels, text];
+
+    setTouched(true);
+    setLabels(newLabels, true);
+  };
+
+  const onEdit = (index: number, nextText: string) => {
+    const newLabels = [...labels];
+    newLabels.splice(index, 1, nextText);
+
+    setTouched(true);
+    setLabels(newLabels, true);
+  };
+
+  return (
+    <FormGroup label={label}>
+      <LabelGroup
+        numLabels={5}
+        addLabelControl={<EditableLabelControl defaultLabel="key=value" onAddLabel={onAdd} />}
+      >
+        {labels.map((label, index) => {
+          return (
+            <Label
+              key={index}
+              textMaxWidth="16ch"
+              onClose={(e) => onDelete(e, index)}
+              onEditCancel={(_, prevText) => onEdit(index, prevText)}
+              onEditComplete={(_, newText) => onEdit(index, newText)}
+              /* Add a basic tooltip as the PF tooltip doesn't work for editable labels */
+              title={label}
+              isEditable
+            >
+              {label}
+            </Label>
+          );
+        })}
+      </LabelGroup>
       <FormHelperText>
         <HelperText>
           <HelperTextItem
             id={`${fieldId}-helper-text`}
             data-testid={`input-label-${fieldId}-helper-text`}
           >
-            {helperText ||
-              t(
-                "ai:Enter a key=value and then press 'enter' or 'space' or use a ',' to input the label.",
-              )}
+            {t("ai:Enter a key=value and then press 'enter' to input the label.")}
           </HelperTextItem>
           {errorMessage && (
             <HelperTextItem
@@ -114,5 +98,61 @@ export const LabelField = ({
         </HelperText>
       </FormHelperText>
     </FormGroup>
+  );
+};
+
+type EditableLabelControlProps = {
+  defaultLabel: string;
+  onAddLabel: (text: string) => void;
+};
+
+const EditableLabelControl = ({ defaultLabel, onAddLabel }: EditableLabelControlProps) => {
+  const [isEditing, setIsEditing] = React.useState<boolean>(false);
+  const [label, setLabel] = React.useState<string>('');
+  const { t } = useTranslation();
+
+  const onConfirmAdd = () => {
+    onAddLabel(label);
+    setIsEditing(false);
+    setLabel('');
+  };
+
+  const onDiscardAdd = () => {
+    setIsEditing(false);
+    setLabel('');
+  };
+
+  return isEditing ? (
+    <TextInput
+      aria-label={t('ai:New label')}
+      autoFocus
+      value={label}
+      onChange={(_, value) => {
+        setLabel(value);
+      }}
+      onBlur={onConfirmAdd}
+      onKeyDown={(e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          onConfirmAdd();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          onDiscardAdd();
+        }
+      }}
+    />
+  ) : (
+    <Button
+      aria-label={t('ai:Add label')}
+      variant="link"
+      className="pf-v6-u-ml-xs"
+      isInline
+      onClick={() => {
+        setIsEditing(true);
+        setLabel(defaultLabel);
+      }}
+    >
+      {t('ai:Add label')}
+    </Button>
   );
 };

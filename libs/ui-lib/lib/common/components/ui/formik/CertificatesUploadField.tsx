@@ -14,7 +14,7 @@ import { useField } from 'formik';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { FileRejection } from 'react-dropzone';
 
-const CertificatesUploadField: React.FC<UploadFieldProps> = ({
+const CertificatesUploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
   label,
   labelIcon,
   helperText,

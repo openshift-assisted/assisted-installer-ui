@@ -164,7 +164,7 @@ const SelectFieldWithSearch = ({
   };
 
   const onSelect = React.useCallback(
-    (val) => {
+    (val: unknown) => {
       if (val && val !== NO_RESULTS) {
         if (isMultiSelect && Array.isArray(value)) {
           setValue(

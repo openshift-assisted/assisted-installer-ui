@@ -1,6 +1,7 @@
 import * as React from 'react';
-import MonacoEditor from 'react-monaco-editor';
-import Measure from 'react-measure';
+import MonacoEditor, { EditorDidMount, EditorWillMount } from 'react-monaco-editor';
+import { editor } from 'monaco-editor';
+import useResizeObserver from '@react-hook/resize-observer';
 import {
   Alert,
   AlertActionCloseButton,
@@ -13,11 +14,11 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const options = { readOnly: true, scrollBeyondLastLine: false };
 
-const theme = {
+const theme: editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: true,
   rules: [
-    { background: 'e0e0e0' },
+    { token: '', background: 'e0e0e0' },
     { token: 'number', foreground: '000000' },
     { token: 'type', foreground: '000000' },
     { token: 'string', foreground: '000000' },
@@ -37,19 +38,27 @@ type YamlPreviewProps = {
   loading: boolean;
 };
 
-const YamlPreview: React.FC<YamlPreviewProps> = ({ children, code, setPreviewOpen, loading }) => {
-  const editorDidMount = React.useCallback((editor) => {
-    /* eslint-disable */
+const YamlPreview: React.FC<React.PropsWithChildren<YamlPreviewProps>> = ({
+  children,
+  code,
+  setPreviewOpen,
+  loading,
+}) => {
+  const editorDidMount = React.useCallback<EditorDidMount>((editor) => {
     editor.layout();
     editor.focus();
-    /* eslint-enable */
   }, []);
 
-  const editorWillMount = React.useCallback((monaco) => {
-    // eslint-disable-next-line
+  const editorWillMount = React.useCallback<EditorWillMount>((monaco) => {
     monaco.editor.defineTheme('acm-console', theme);
   }, []);
   const { t } = useTranslation();
+  const editorRef = React.useRef<HTMLDivElement>(null);
+  const [editorHeight, setEditorHeight] = React.useState<number>();
+  useResizeObserver(editorRef, (entry) => {
+    setEditorHeight(entry.contentRect.height);
+  });
+
   return loading ? (
     <LoadingState content="Loading resources" />
   ) : (
@@ -76,23 +85,19 @@ const YamlPreview: React.FC<YamlPreviewProps> = ({ children, code, setPreviewOpe
         </div>
       </StackItem>
       <StackItem isFilled>
-        <Measure bounds>
-          {({ measureRef, contentRect }) => (
-            <div ref={measureRef} style={{ height: '100%' }}>
-              {!!contentRect.bounds?.height && (
-                <MonacoEditor
-                  language="yaml"
-                  theme="acm-console"
-                  height={contentRect.bounds?.height}
-                  value={code}
-                  options={options}
-                  editorDidMount={editorDidMount}
-                  editorWillMount={editorWillMount}
-                />
-              )}
-            </div>
+        <div ref={editorRef} style={{ height: '100%' }}>
+          {!!editorHeight && (
+            <MonacoEditor
+              language="yaml"
+              theme="acm-console"
+              height={editorHeight}
+              value={code}
+              options={options}
+              editorDidMount={editorDidMount}
+              editorWillMount={editorWillMount}
+            />
           )}
-        </Measure>
+        </div>
       </StackItem>
     </Stack>
   );

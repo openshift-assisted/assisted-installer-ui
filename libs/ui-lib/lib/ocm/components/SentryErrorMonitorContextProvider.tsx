@@ -8,7 +8,9 @@ import { handleApiError } from '../../common/api';
 import { isApiError } from '../../common/api/utils';
 import { captureException } from '../sentry';
 
-export const SentryErrorMonitorContextProvider: React.FC = ({ children }) => {
+export const SentryErrorMonitorContextProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const exceptionReporter: ExceptionReporter = (
     error: unknown,
     message?: string,

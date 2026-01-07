@@ -18,14 +18,15 @@ type ApproveTableRowProps = {
   agent?: AgentK8sResource;
 };
 
-const ApproveTableRow: React.FC<ApproveTableRowProps> = ({ agent, children }) => (
-  <div className={agent?.spec.approved ? 'pf-v6-u-color-200' : undefined}>{children}</div>
-);
+const ApproveTableRow: React.FC<React.PropsWithChildren<ApproveTableRowProps>> = ({
+  agent,
+  children,
+}) => <div className={agent?.spec.approved ? 'pf-v6-u-color-200' : undefined}>{children}</div>;
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Hostname'),
+      title: t<string>('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -50,7 +51,7 @@ const statusColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Status'),
+      title: t<string>('ai:Status'),
       props: {
         id: 'col-header-status', // ACM jest tests require id over testId
       },

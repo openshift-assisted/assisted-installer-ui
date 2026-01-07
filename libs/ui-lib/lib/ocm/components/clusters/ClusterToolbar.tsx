@@ -6,7 +6,10 @@ interface Props {
   validationSection?: React.ReactNode;
 }
 
-const ClusterToolbar: React.FC<Props> = ({ children, validationSection }) => (
+const ClusterToolbar: React.FC<React.PropsWithChildren<Props>> = ({
+  children,
+  validationSection,
+}) => (
   <>
     {validationSection}
     <ActionGroup>

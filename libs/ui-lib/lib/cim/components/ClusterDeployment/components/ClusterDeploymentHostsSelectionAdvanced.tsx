@@ -1,8 +1,8 @@
 import React from 'react';
-import Measure from 'react-measure';
 import isMatch from 'lodash-es/isMatch.js';
 import { useFormikContext } from 'formik';
 import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
+import useResizeObserver from '@react-hook/resize-observer';
 
 import { AgentK8sResource } from '../../../types';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../../common';
@@ -58,6 +58,12 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
     [availableAgents, locations, agentLabels],
   );
 
+  const tableRef = React.useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = React.useState<number>();
+  useResizeObserver(tableRef, (entry) => {
+    setTableWidth(entry.contentRect.width);
+  });
+
   return (
     <>
       <Grid hasGutter>
@@ -84,20 +90,16 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
           />
         )}
         <GridItem>
-          <Measure bounds>
-            {({ measureRef, contentRect }) => (
-              <div ref={measureRef}>
-                <AgentsSelectionTable
-                  matchingAgents={matchingAgents}
-                  onEditRole={onEditRole}
-                  onSetInstallationDiskId={onSetInstallationDiskId}
-                  width={contentRect.bounds?.width}
-                  onEditHost={onEditHost}
-                  onHostSelect={onHostSelect}
-                />
-              </div>
-            )}
-          </Measure>
+          <div ref={tableRef}>
+            <AgentsSelectionTable
+              matchingAgents={matchingAgents}
+              onEditRole={onEditRole}
+              onSetInstallationDiskId={onSetInstallationDiskId}
+              width={tableWidth}
+              onEditHost={onEditHost}
+              onHostSelect={onHostSelect}
+            />
+          </div>
         </GridItem>
       </Grid>
     </>

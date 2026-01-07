@@ -63,12 +63,12 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
         title: baseDnsDomain || DASH,
         props: { 'data-testid': `cluster-base-domain-${name}` },
         sortableValue: baseDnsDomain,
-      },
+      } as HumanizedSortable,
       {
         title: versionText,
         props: { 'data-testid': `cluster-version-${name}` },
         sortableValue: versionText,
-      },
+      } as HumanizedSortable,
       {
         title: <ClusterStatus status={cluster.status} />,
         props: { 'data-testid': `cluster-status-${name}` },
