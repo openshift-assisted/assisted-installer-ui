@@ -16,19 +16,22 @@ import {
   Bundle,
   Cluster,
   PreflightHardwareRequirements,
+  OperatorProperties,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   selectCurrentClusterPermissionsState,
   selectIsCurrentClusterSNO,
 } from '../../../store/slices/current-cluster/selectors';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { getFieldId, OperatorsValues, PopoverIcon } from '../../../../common';
+import { getFieldId, OperatorsValues, PopoverIcon, getApiErrorMessage, handleApiError, useAlerts } from '../../../../common';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import {
   highlightMatch,
   OperatorSpec,
   useOperatorSpecs,
 } from '../../../../common/components/operators/operatorSpecs';
+import OperatorsService from '../../../services/OperatorsService';
+import OperatorPropertiesForm from './OperatorPropertiesForm';
 
 const OperatorRequirements = ({
   operatorId,
@@ -133,11 +136,15 @@ const OperatorCheckbox = ({
 } & OperatorSpec) => {
   const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();
   const { byKey: opSpecs } = useOperatorSpecs();
+  const { addAlert } = useAlerts();
 
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(operatorId, 'input');
   const supportLevel = getFeatureSupportLevel(featureId);
+  const [operatorProperties, setOperatorProperties] = React.useState<OperatorProperties>([]);
+  const [propertiesLoading, setPropertiesLoading] = React.useState(false);
+
   const getDisabledReason = (): string | undefined => {
     const featureDisabledReason = getFeatureDisabledReason(featureId);
     if (featureDisabledReason) {
@@ -187,6 +194,28 @@ const OperatorCheckbox = ({
     setFieldValue('selectedOperators', next);
   };
 
+  // Fetch operator properties when operator is selected
+  React.useEffect(() => {
+    if (isChecked && operatorProperties.length === 0 && !propertiesLoading) {
+      setPropertiesLoading(true);
+      OperatorsService.getOperatorProperties(operatorId)
+        .then((properties) => {
+          setOperatorProperties(properties);
+        })
+        .catch((error) => {
+          handleApiError(error, () =>
+            addAlert({
+              title: 'Failed to fetch operator properties',
+              message: getApiErrorMessage(error),
+            }),
+          );
+        })
+        .finally(() => {
+          setPropertiesLoading(false);
+        });
+    }
+  }, [isChecked, operatorId, operatorProperties.length, propertiesLoading, addAlert]);
+
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>
       <Checkbox
@@ -220,6 +249,14 @@ const OperatorCheckbox = ({
         }
         data-testid={`operator-checkbox-${operatorId}`}
       />
+      {isChecked && operatorProperties.length > 0 && (
+        <OperatorPropertiesForm
+          operatorId={operatorId}
+          operatorName={operatorId}
+          properties={operatorProperties}
+          isDisabled={isViewerMode || !!disabledReason}
+        />
+      )}
     </FormGroup>
   );
 };

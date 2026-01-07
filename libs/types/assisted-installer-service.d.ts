@@ -366,15 +366,15 @@ export interface Cluster {
    * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   hyperthreading?:
-    | 'none'
-    | 'masters'
-    | 'arbiters'
-    | 'workers'
-    | 'masters,arbiters'
-    | 'masters,workers'
-    | 'arbiters,workers'
-    | 'masters,arbiters,workers'
-    | 'all';
+  | 'none'
+  | 'masters'
+  | 'arbiters'
+  | 'workers'
+  | 'masters,arbiters'
+  | 'masters,workers'
+  | 'arbiters,workers'
+  | 'masters,arbiters,workers'
+  | 'all';
   /**
    * JSON-formatted string containing the usage information by feature name
    */
@@ -536,15 +536,15 @@ export interface ClusterCreateParams {
    * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   hyperthreading?:
-    | 'none'
-    | 'masters'
-    | 'arbiters'
-    | 'workers'
-    | 'masters,arbiters'
-    | 'masters,workers'
-    | 'arbiters,workers'
-    | 'masters,arbiters,workers'
-    | 'all';
+  | 'none'
+  | 'masters'
+  | 'arbiters'
+  | 'workers'
+  | 'masters,arbiters'
+  | 'masters,workers'
+  | 'arbiters,workers'
+  | 'masters,arbiters,workers'
+  | 'all';
   /**
    * The desired network type used.
    * - OVNKubernetes: Default CNI for OpenShift (recommended)
@@ -742,7 +742,9 @@ export type ClusterValidationId =
   | 'oadp-requirements-satisfied'
   | 'metallb-requirements-satisfied'
   | 'loki-requirements-satisfied'
-  | 'openshift-logging-requirements-satisfied';
+  | 'openshift-logging-requirements-satisfied'
+  | 'network-observability-requirements-satisfied'
+  | 'network-observability-host-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -944,15 +946,15 @@ export interface DiskEncryption {
    * Enable/disable disk encryption on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   enableOn?:
-    | 'none'
-    | 'masters'
-    | 'arbiters'
-    | 'workers'
-    | 'masters,arbiters'
-    | 'masters,workers'
-    | 'arbiters,workers'
-    | 'masters,arbiters,workers'
-    | 'all';
+  | 'none'
+  | 'masters'
+  | 'arbiters'
+  | 'workers'
+  | 'masters,arbiters'
+  | 'masters,workers'
+  | 'arbiters,workers'
+  | 'masters,arbiters,workers'
+  | 'all';
   /**
    * The disk encryption mode to use.
    */
@@ -1179,7 +1181,8 @@ export type FeatureSupportLevelId =
   | 'METALLB'
   | 'DUAL_STACK_PRIMARY_IPV6'
   | 'LOKI'
-  | 'OPENSHIFT_LOGGING';
+  | 'OPENSHIFT_LOGGING'
+  | 'NETWORK_OBSERVABILITY';
 export interface FencingCredentialsParams {
   /**
    * The URL of the host's BMC, for example https://bmc1.example.com.
@@ -1263,34 +1266,34 @@ export interface Host {
    */
   infraEnvId?: string; // uuid
   status:
-    | 'discovering'
-    | 'known'
-    | 'disconnected'
-    | 'insufficient'
-    | 'disabled'
-    | 'preparing-for-installation'
-    | 'preparing-failed'
-    | 'preparing-successful'
-    | 'pending-for-input'
-    | 'installing'
-    | 'installing-in-progress'
-    | 'installing-pending-user-action'
-    | 'resetting-pending-user-action'
-    | 'installed'
-    | 'error'
-    | 'resetting'
-    | 'added-to-existing-cluster'
-    | 'cancelled'
-    | 'binding'
-    | 'unbinding'
-    | 'unbinding-pending-user-action'
-    | 'known-unbound'
-    | 'disconnected-unbound'
-    | 'insufficient-unbound'
-    | 'disabled-unbound'
-    | 'discovering-unbound'
-    | 'reclaiming'
-    | 'reclaiming-rebooting';
+  | 'discovering'
+  | 'known'
+  | 'disconnected'
+  | 'insufficient'
+  | 'disabled'
+  | 'preparing-for-installation'
+  | 'preparing-failed'
+  | 'preparing-successful'
+  | 'pending-for-input'
+  | 'installing'
+  | 'installing-in-progress'
+  | 'installing-pending-user-action'
+  | 'resetting-pending-user-action'
+  | 'installed'
+  | 'error'
+  | 'resetting'
+  | 'added-to-existing-cluster'
+  | 'cancelled'
+  | 'binding'
+  | 'unbinding'
+  | 'unbinding-pending-user-action'
+  | 'known-unbound'
+  | 'disconnected-unbound'
+  | 'insufficient-unbound'
+  | 'disabled-unbound'
+  | 'discovering-unbound'
+  | 'reclaiming'
+  | 'reclaiming-rebooting';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -1474,34 +1477,34 @@ export interface HostRegistrationResponse {
    */
   infraEnvId?: string; // uuid
   status:
-    | 'discovering'
-    | 'known'
-    | 'disconnected'
-    | 'insufficient'
-    | 'disabled'
-    | 'preparing-for-installation'
-    | 'preparing-failed'
-    | 'preparing-successful'
-    | 'pending-for-input'
-    | 'installing'
-    | 'installing-in-progress'
-    | 'installing-pending-user-action'
-    | 'resetting-pending-user-action'
-    | 'installed'
-    | 'error'
-    | 'resetting'
-    | 'added-to-existing-cluster'
-    | 'cancelled'
-    | 'binding'
-    | 'unbinding'
-    | 'unbinding-pending-user-action'
-    | 'known-unbound'
-    | 'disconnected-unbound'
-    | 'insufficient-unbound'
-    | 'disabled-unbound'
-    | 'discovering-unbound'
-    | 'reclaiming'
-    | 'reclaiming-rebooting';
+  | 'discovering'
+  | 'known'
+  | 'disconnected'
+  | 'insufficient'
+  | 'disabled'
+  | 'preparing-for-installation'
+  | 'preparing-failed'
+  | 'preparing-successful'
+  | 'pending-for-input'
+  | 'installing'
+  | 'installing-in-progress'
+  | 'installing-pending-user-action'
+  | 'resetting-pending-user-action'
+  | 'installed'
+  | 'error'
+  | 'resetting'
+  | 'added-to-existing-cluster'
+  | 'cancelled'
+  | 'binding'
+  | 'unbinding'
+  | 'unbinding-pending-user-action'
+  | 'known-unbound'
+  | 'disconnected-unbound'
+  | 'insufficient-unbound'
+  | 'disabled-unbound'
+  | 'discovering-unbound'
+  | 'reclaiming'
+  | 'reclaiming-rebooting';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -1779,7 +1782,9 @@ export type HostValidationId =
   | 'oadp-requirements-satisfied'
   | 'metallb-requirements-satisfied'
   | 'loki-requirements-satisfied'
-  | 'openshift-logging-requirements-satisfied';
+  | 'openshift-logging-requirements-satisfied'
+  | 'network-observability-requirements-satisfied'
+  | 'network-observability-host-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -3001,15 +3006,15 @@ export interface V2ClusterUpdateParams {
    * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   hyperthreading?:
-    | 'none'
-    | 'masters'
-    | 'arbiters'
-    | 'workers'
-    | 'masters,arbiters'
-    | 'masters,workers'
-    | 'arbiters,workers'
-    | 'masters,arbiters,workers'
-    | 'all';
+  | 'none'
+  | 'masters'
+  | 'arbiters'
+  | 'workers'
+  | 'masters,arbiters'
+  | 'masters,workers'
+  | 'arbiters,workers'
+  | 'masters,arbiters,workers'
+  | 'all';
   /**
    * The desired network type used.
    * - OVNKubernetes: Default CNI for OpenShift (recommended)

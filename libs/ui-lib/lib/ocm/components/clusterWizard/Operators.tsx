@@ -34,6 +34,13 @@ const getOperatorsInitialValues = (
     .filter((operator) => operator.name && !operator.sourceBundles?.length)
     .map(({ name }) => name as string);
 
+  const operatorProperties: Record<string, string> = {};
+  olmOperators.forEach((op) => {
+    if (op.name && op.properties) {
+      operatorProperties[op.name] = op.properties;
+    }
+  });
+
   const selectedBundlesFromOperatorBundles = (cluster.operatorBundles || []).map(
     ({ id, optionalOperators }) => ({
       id,
@@ -54,6 +61,7 @@ const getOperatorsInitialValues = (
   return {
     selectedBundles,
     selectedOperators,
+    operatorProperties,
   };
 };
 
@@ -111,10 +119,18 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
+    const enabledOperators = values.selectedOperators.map((so) => {
+      const operator: { name: string; properties?: string } = { name: so };
+      if (values.operatorProperties[so]) {
+        operator.properties = values.operatorProperties[so];
+      }
+      return operator;
+    });
+
     try {
       const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
         operatorBundles: values.selectedBundles,
-        olmOperators: values.selectedOperators.map((name) => ({ name })),
+        olmOperators: enabledOperators,
       });
 
       dispatch(updateCluster(updatedCluster));
