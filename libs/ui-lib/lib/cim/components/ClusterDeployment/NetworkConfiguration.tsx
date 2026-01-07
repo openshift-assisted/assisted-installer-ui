@@ -18,7 +18,6 @@ import {
   isAdvNetworkConf,
   isSNO,
   NETWORK_TYPE_OVN,
-  NO_SUBNET_SET,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { NetworkTypeControlGroup } from '../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
@@ -74,16 +73,14 @@ const NetworkConfiguration = ({
   }, [isDualStack, toggleAdvConfiguration]);
 
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
-  const firstSubnet = hostSubnets[0]?.subnet;
+  const primaryMachineNetwork = values.machineNetworks?.[0]?.cidr;
 
+  // Clear machine networks when switching to user-managed networking for multi-node clusters
   useEffect(() => {
-    if (isUserManagedNetworking && isMultiNodeCluster) {
-      values.hostSubnet !== NO_SUBNET_SET && setFieldValue('hostSubnet', NO_SUBNET_SET, false);
-    } else if (values.hostSubnet === NO_SUBNET_SET && firstSubnet) {
-      setFieldValue('hostSubnet', firstSubnet, false);
+    if (isUserManagedNetworking && isMultiNodeCluster && values.machineNetworks?.length) {
+      setFieldValue('machineNetworks', [], false);
     }
-  }, [isUserManagedNetworking, isMultiNodeCluster, values.hostSubnet, setFieldValue, firstSubnet]);
-
+  }, [isUserManagedNetworking, isMultiNodeCluster, values.machineNetworks?.length, setFieldValue]);
   useEffect(() => {
     if (!cluster.networkType) {
       setFieldValue('networkType', NETWORK_TYPE_OVN);
@@ -94,7 +91,7 @@ const NetworkConfiguration = ({
 
   useEffect(() => {
     if (isUserManagedNetworking) {
-      const shouldValidate = !!touched.hostSubnet;
+      const shouldValidate = !!touched.machineNetworks;
 
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
@@ -107,12 +104,13 @@ const NetworkConfiguration = ({
       }
     }
   }, [
-    touched.hostSubnet,
+    touched.machineNetworks,
     isMultiNodeCluster,
     isUserManagedNetworking,
     setFieldValue,
     values.vipDhcpAllocation,
     validateField,
+    primaryMachineNetwork,
   ]);
   return (
     <Grid hasGutter>

@@ -197,7 +197,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  { machineNetworks, hostSubnet }: NetworkConfigurationValues,
+  { machineNetworks }: NetworkConfigurationValues,
   allowSuffix: boolean,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', (value) => {
@@ -211,17 +211,11 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return true;
     }
-    const foundHostSubnets = [];
-    if (machineNetworks) {
-      const cidrs = machineNetworks?.map((network) => network.cidr);
-      foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
-    } else {
-      const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-      if (subnet) {
-        foundHostSubnets.push(subnet);
-      }
-    }
-    for (const hostSubnet of foundHostSubnets) {
+    // Find host subnets that match the selected machine networks
+    const cidrs = machineNetworks?.map((network) => network.cidr) ?? [];
+    const matchingSubnets = hostSubnets.filter((hostSubnet) => cidrs.includes(hostSubnet.subnet));
+
+    for (const hostSubnet of matchingSubnets) {
       if (hostSubnet?.subnet) {
         // Workaround for bug in CIM backend. hostIDs are empty
         if (!hostSubnet.hostIDs.length) {
@@ -284,22 +278,6 @@ export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingT
     managedNetworkingType === 'clusterManaged',
   then: () => Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
 });
-
-export const vipValidationSchema = (
-  hostSubnets: HostSubnets,
-  values: NetworkConfigurationValues,
-  initialValue?: string,
-) =>
-  Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
-    is: (
-      vipDhcpAllocation: NetworkConfigurationValues['vipDhcpAllocation'],
-      managedNetworkingType: NetworkConfigurationValues['managedNetworkingType'],
-    ) => !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: () =>
-      requiredOnceSet(initialValue, 'Required. Please provide an IP address')
-        .concat(vipRangeValidationSchema(hostSubnets, values, true))
-        .concat(vipUniqueValidationSchema(values, false)),
-  });
 
 export const vipNoSuffixValidationSchema = (
   hostSubnets: HostSubnets,

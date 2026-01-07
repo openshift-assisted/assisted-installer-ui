@@ -10,7 +10,7 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { NetworkConfigurationValues, HostSubnets } from '../../../types';
-import { NETWORK_TYPE_SDN, DUAL_STACK, NO_SUBNET_SET } from '../../../config';
+import { NETWORK_TYPE_SDN, DUAL_STACK } from '../../../config';
 import { selectMachineNetworkCIDR, selectApiVip, selectIngressVip } from '../../../selectors';
 import { getVipValidationsById } from '../../clusterConfiguration';
 import { FormikStaticField, PopoverIcon } from '../../ui';
@@ -134,7 +134,7 @@ export const VirtualIPControlGroup = ({
 
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
   const isDualStack = values.stackType === DUAL_STACK;
-  const isVipInputDisabled = !hostSubnets.length || values.hostSubnet === NO_SUBNET_SET;
+  const isVipInputDisabled = !hostSubnets.length || !values.machineNetworks?.[0]?.cidr;
 
   React.useEffect(() => {
     if (!isViewerMode && !enableAllocation) {
