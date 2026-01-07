@@ -74,3 +74,6 @@ export const DESCRIPTION_OADP =
 
 export const DESCRIPTION_METALLB =
   'Provides load balancer services for bare metal OpenShift clusters.';
+
+export const DESCRIPTION_NETWORK_OBSERVABILITY =
+  'Provides network flow monitoring and observability capabilities using eBPF-based flow collection.';

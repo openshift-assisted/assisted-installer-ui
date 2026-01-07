@@ -29,6 +29,7 @@ import {
   OPERATOR_NAME_NUMA_RESOURCES,
   OPERATOR_NAME_OADP,
   OPERATOR_NAME_METALLB,
+  OPERATOR_NAME_NETWORK_OBSERVABILITY,
 } from '../../config/constants';
 import { ExternalLink } from '../ui';
 import {
@@ -49,6 +50,7 @@ import {
   getNvidiaGpuLink,
   getOadpLink,
   getOpenShiftLoggingLink,
+  getNetworkObservabilityLink,
   MTV_LINK,
   NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
@@ -92,6 +94,7 @@ import {
   DESCRIPTION_NUMA_RESOURCES,
   DESCRIPTION_OADP,
   DESCRIPTION_METALLB,
+  DESCRIPTION_NETWORK_OBSERVABILITY,
 } from './operatorDescriptions';
 
 // TODO check if it's unused and it can be deleted in favor of "isMajorMinorVersionEqualOrGreater"
@@ -347,6 +350,19 @@ export const getOperatorSpecs = (
         ),
         notStandalone: true,
         supportLevel: getFeatureSupportLevel('METALLB'),
+      },
+      {
+        operatorKey: OPERATOR_NAME_NETWORK_OBSERVABILITY,
+        title: 'Network Observability',
+        featureId: 'NETWORK_OBSERVABILITY',
+        descriptionText: DESCRIPTION_NETWORK_OBSERVABILITY,
+        Description: ({ openshiftVersion, searchTerm }) => (
+          <>
+            <HighlightedText text={DESCRIPTION_NETWORK_OBSERVABILITY} searchTerm={searchTerm} />{' '}
+            <ExternalLink href={getNetworkObservabilityLink(openshiftVersion)}>Learn more</ExternalLink>
+          </>
+        ),
+        supportLevel: getFeatureSupportLevel('NETWORK_OBSERVABILITY'),
       },
     ],
     [categories[Category.REMEDIATION]]: [
