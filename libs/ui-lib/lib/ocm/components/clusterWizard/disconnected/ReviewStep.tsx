@@ -31,7 +31,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
 const downloadUrl =
-  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
+  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/4.20.8/agent-ove.x86_64.iso';
 
 const ReviewStep = () => {
   const { moveBack } = useClusterWizardContext();
