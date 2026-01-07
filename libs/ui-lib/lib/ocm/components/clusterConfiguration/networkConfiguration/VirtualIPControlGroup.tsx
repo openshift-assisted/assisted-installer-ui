@@ -213,7 +213,6 @@ export const VirtualIPControlGroup = ({
                     name="apiVips.0.ip"
                     helperText={ipHelperText}
                     isRequired
-                    maxLength={45}
                     labelInfo={isDualStack ? 'Primary' : undefined}
                     onChange={(e) =>
                       setVipValueAtIndex('apiVips', 0, e as React.ChangeEvent<HTMLInputElement>)
@@ -230,7 +229,6 @@ export const VirtualIPControlGroup = ({
                       }
                       name="apiVips.1.ip"
                       helperText={ipHelperText}
-                      maxLength={45}
                       labelInfo={'Secondary'}
                       onChange={(e) =>
                         setVipValueAtIndex('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
@@ -248,7 +246,6 @@ export const VirtualIPControlGroup = ({
                     }
                     helperText={ipHelperText}
                     isRequired
-                    maxLength={45}
                     labelInfo={isDualStack ? 'Primary' : undefined}
                     onChange={(e) =>
                       setVipValueAtIndex('ingressVips', 0, e as React.ChangeEvent<HTMLInputElement>)
@@ -265,7 +262,6 @@ export const VirtualIPControlGroup = ({
                         </>
                       }
                       helperText={ipHelperText}
-                      maxLength={45}
                       labelInfo={'Secondary'}
                       onChange={(e) =>
                         setVipValueAtIndex(
