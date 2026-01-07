@@ -346,20 +346,14 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
                     id={fieldId}
                     value={computeNumberInputValue(currentValue, defaultValue)}
                     onMinus={() => {
-                      const numValue =
-                        typeof currentValue === 'number'
-                          ? currentValue
-                          : parseInt(String(currentValue ?? defaultValue ?? 0), 10);
+                      const numValue = computeNumberInputValue(currentValue, defaultValue);
                       // Note: Currently enforces minimum of 0, but no maximum limit.
                       // If the API adds optional min/max metadata to property definitions,
                       // this could be enhanced to use property.minValue and property.maxValue.
                       updateProperty(property.name || '', Math.max(0, numValue - 1));
                     }}
                     onPlus={() => {
-                      const numValue =
-                        typeof currentValue === 'number'
-                          ? currentValue
-                          : parseInt(String(currentValue ?? defaultValue ?? 0), 10);
+                      const numValue = computeNumberInputValue(currentValue, defaultValue);
                       // Note: No upper limit currently enforced. If the API adds optional min/max
                       // metadata to property definitions, this could be enhanced to use property.maxValue.
                       updateProperty(property.name || '', numValue + 1);
