@@ -15,10 +15,33 @@ import { OperatorProperty } from '@openshift-assisted/types/assisted-installer-s
 import { OperatorsValues } from '../../../../common/types/clusters';
 import { getFieldId } from '../../../../common';
 
+// API response type: matches the actual OpenAPI spec with snake_case fields
+// The API returns data_type and default_value (snake_case)
+interface ApiOperatorProperty {
+  name?: string;
+  data_type?: string;
+  default_value?: string;
+  description?: string;
+  mandatory?: boolean;
+  options?: string[];
+}
+
+// Normalized internal type with camelCase fields
+interface NormalizedOperatorProperty {
+  name?: string;
+  dataType?: string;
+  defaultValue?: string;
+  description?: string;
+  mandatory?: boolean;
+  options?: string[];
+}
+
 interface OperatorPropertiesFormProps {
   operatorId: string;
   operatorName: string;
-  properties: OperatorProperty[];
+  // Accept API response type - may be snake_case (API contract) or camelCase (if axios-case-converter converted it)
+  // Will be normalized internally via normalizeOperatorProperty
+  properties: (ApiOperatorProperty | OperatorProperty)[];
   isDisabled?: boolean;
 }
 
@@ -100,17 +123,25 @@ const cleanProperties = (props: Record<string, unknown>): Record<string, string 
   return cleaned;
 };
 
-// Helper function to normalize API response (snake_case) to match type definition (camelCase)
-const normalizeOperatorProperty = (prop: OperatorProperty): {
-  dataType?: string;
-  defaultValue?: string;
-} => {
-  // API returns snake_case, but type definition uses camelCase
-  // Handle both formats for compatibility
-  const apiProp = prop as any;
+// Deserialization layer: maps API fields (snake_case) to internal camelCase fields
+// The API returns snake_case (data_type, default_value) per the OpenAPI spec.
+// Note: axios-case-converter may convert responses to camelCase at runtime,
+// but the type reflects the actual API contract (snake_case).
+// This function normalizes the API response to camelCase for internal use.
+const normalizeOperatorProperty = (prop: ApiOperatorProperty | OperatorProperty): NormalizedOperatorProperty => {
+  // Handle both snake_case (API contract) and camelCase (if axios-case-converter converted it)
+  // Prefer snake_case as the source of truth per the OpenAPI spec
+  const apiProp = prop as ApiOperatorProperty;
+  const camelProp = prop as OperatorProperty;
+
   return {
-    dataType: prop.dataType ?? apiProp.data_type,
-    defaultValue: prop.defaultValue ?? apiProp.default_value,
+    name: prop.name,
+    // Prefer snake_case from API, fallback to camelCase if converter was applied
+    dataType: apiProp.data_type ?? camelProp.dataType,
+    defaultValue: apiProp.default_value ?? camelProp.defaultValue,
+    description: prop.description,
+    mandatory: prop.mandatory,
+    options: prop.options,
   };
 };
 
