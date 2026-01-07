@@ -16,7 +16,6 @@ import {
   HostSubnets,
   vipArrayValidationSchema,
   sshPublicKeyListValidationSchema,
-  hostSubnetValidationSchema,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   CLUSTER_DEFAULT_NETWORK_SETTINGS,
@@ -75,7 +74,6 @@ const getNetworkConfigurationValidationSchema = (
       apiVips: vipArrayValidationSchema(hostSubnets, values, initialValues.apiVips),
       ingressVips: vipArrayValidationSchema(hostSubnets, values, initialValues.ingressVips),
       sshPublicKey: sshPublicKeyListValidationSchema,
-      hostSubnet: hostSubnetValidationSchema,
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
       httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema,

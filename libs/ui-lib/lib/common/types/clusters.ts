@@ -45,7 +45,6 @@ export type NetworkConfigurationValues = Pick<
   | 'clusterNetworks'
   | 'serviceNetworks'
 > & {
-  hostSubnet?: string;
   managedNetworkingType: 'userManaged' | 'clusterManaged';
   stackType?: 'singleStack' | 'dualStack';
   apiVip?: string;
