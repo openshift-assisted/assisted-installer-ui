@@ -89,16 +89,16 @@ const sanitizeValue = (value: unknown): string | number | boolean => {
   return '';
 };
 
-// Helper function to clean properties object, removing any non-serializable values
+// Shared helper to filter and sanitize a properties object
 // This ensures we ONLY have primitive values (string, number, boolean) - NO objects, NO functions
-const cleanProperties = (props: Record<string, unknown>): Record<string, string | number | boolean> => {
-  const cleaned: Record<string, string | number | boolean> = {};
-  try {
-    for (const [key, value] of Object.entries(props)) {
-      // Skip if key is not a string (shouldn't happen, but be defensive)
-      if (typeof key !== 'string') {
-        continue;
-      }
+// Used by both cleanProperties and updateProperty to maintain consistency
+const filterToSerializableProperties = (
+  props: Record<string, unknown>,
+): Record<string, string | number | boolean> => {
+  const filtered: Record<string, string | number | boolean> = {};
+  for (const key in props) {
+    if (Object.prototype.hasOwnProperty.call(props, key) && typeof key === 'string') {
+      const value = props[key];
 
       // CRITICAL: Skip functions explicitly (including methods like isDefaultPrevented, preventDefault, etc.)
       if (typeof value === 'function') {
@@ -110,22 +110,30 @@ const cleanProperties = (props: Record<string, unknown>): Record<string, string 
       // This handles event objects with nested properties like:
       // - createFlowCollector: { isDefaultPrevented: function, nativeEvent: object, currentTarget: DOM element, etc. }
       if (typeof value === 'object' && value !== null) {
-        // Skip this property - we don't want objects, only primitives
+        // Skip objects entirely - we only want primitives
         continue;
       }
 
       // Sanitize the value (should be primitive now: string, number, boolean, null, or undefined)
-      const sanitized = sanitizeValue(value);
-      cleaned[key] = sanitized;
+      filtered[key] = sanitizeValue(value);
     }
+  }
+  return filtered;
+};
+
+// Helper function to clean properties object, removing any non-serializable values
+// This ensures we ONLY have primitive values (string, number, boolean) - NO objects, NO functions
+const cleanProperties = (props: Record<string, unknown>): Record<string, string | number | boolean> => {
+  try {
+    const cleaned = filterToSerializableProperties(props);
     // Verify the cleaned object can be stringified
     JSON.stringify(cleaned);
+    return cleaned;
   } catch (error) {
     // If cleaning fails, return empty object
     console.warn('Failed to clean properties:', error);
     return {};
   }
-  return cleaned;
 };
 
 // Deserialization layer: maps API fields (snake_case) to internal camelCase fields
@@ -216,6 +224,12 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
   }, [values.operatorProperties, operatorId]);
 
   // Initialize with default values if not set
+  // Note: initializationRef prevents re-initialization after the first render, which works for the typical
+  // use case (operator checked → component mounts → defaults initialized → operator unchecked → component
+  // unmounts → operator checked again → component remounts with fresh ref). However, there's an edge case:
+  // if values.operatorProperties[operatorId] is cleared by an external action while the component remains
+  // mounted, re-initialization won't occur because initializationRef.current stays true. This seems unlikely
+  // in practice but worth noting for future maintenance.
   React.useEffect(() => {
     if (!initializationRef.current && (!values.operatorProperties || !values.operatorProperties[operatorId])) {
       initializationRef.current = true;
@@ -252,33 +266,10 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
       const sanitizedValue = sanitizeValue(value);
 
       // Create a completely new object from scratch to avoid any reference issues
-      const newProperties: Record<string, string | number | boolean> = {};
-
-      // Safely copy existing properties by iterating and sanitizing each one
-      // This ensures we only have primitives, no objects (including event objects), no functions
-      for (const key in currentProperties) {
-        if (Object.prototype.hasOwnProperty.call(currentProperties, key) && typeof key === 'string') {
-          const existingValue = currentProperties[key];
-
-          // Explicitly skip functions (including methods like isDefaultPrevented, preventDefault, etc.)
-          if (typeof existingValue === 'function') {
-            continue;
-          }
-
-          // Double-check: if the existing value is an object, skip it entirely
-          // This handles cases where event objects (with nested properties like nativeEvent, currentTarget, etc.)
-          // or HTML elements were accidentally stored
-          if (typeof existingValue === 'object' && existingValue !== null) {
-            // Skip objects entirely - we only want primitives
-            // This prevents event objects like:
-            // { isDefaultPrevented: function, nativeEvent: object, currentTarget: DOM element, target: DOM element, ... }
-            continue;
-          }
-
-          // Sanitize the value (should already be primitive, but be safe)
-          newProperties[key] = sanitizeValue(existingValue);
-        }
-      }
+      // Use shared filtering logic to ensure consistency with cleanProperties
+      // Note: currentProperties is already cleaned in the memo, but we re-filter here defensively
+      // to guard against race conditions or unexpected mutations
+      const newProperties = filterToSerializableProperties(currentProperties);
 
       // Set the new property value (which is already sanitized to a primitive)
       newProperties[propertyName] = sanitizedValue;
@@ -359,6 +350,9 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
                         typeof currentValue === 'number'
                           ? currentValue
                           : parseInt(String(currentValue ?? defaultValue ?? 0), 10);
+                      // Note: Currently enforces minimum of 0, but no maximum limit.
+                      // If the API adds optional min/max metadata to property definitions,
+                      // this could be enhanced to use property.minValue and property.maxValue.
                       updateProperty(property.name || '', Math.max(0, numValue - 1));
                     }}
                     onPlus={() => {
@@ -366,11 +360,14 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
                         typeof currentValue === 'number'
                           ? currentValue
                           : parseInt(String(currentValue ?? defaultValue ?? 0), 10);
+                      // Note: No upper limit currently enforced. If the API adds optional min/max
+                      // metadata to property definitions, this could be enhanced to use property.maxValue.
                       updateProperty(property.name || '', numValue + 1);
                     }}
                     onChange={(event) => {
                       const value = parseInt((event.target as HTMLInputElement).value, 10);
                       if (!isNaN(value)) {
+                        // Note: Could validate against property.minValue/property.maxValue if API adds this metadata
                         updateProperty(property.name || '', value);
                       }
                     }}
