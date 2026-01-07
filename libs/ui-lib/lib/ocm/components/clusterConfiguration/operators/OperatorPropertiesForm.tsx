@@ -38,7 +38,6 @@ interface NormalizedOperatorProperty {
 
 interface OperatorPropertiesFormProps {
   operatorId: string;
-  operatorName: string;
   // Accept API response type - may be snake_case (API contract) or camelCase (if axios-case-converter converted it)
   // Will be normalized internally via normalizeOperatorProperty
   properties: (ApiOperatorProperty | OperatorProperty)[];
@@ -48,6 +47,12 @@ interface OperatorPropertiesFormProps {
 // Helper function to sanitize a value to ensure it's JSON-serializable
 // This function ALWAYS returns a primitive (string, number, or boolean)
 // It rejects: objects, arrays, functions, symbols, bigint, and any other non-primitive types
+//
+// Note: The extensive defensive checks here serve multiple purposes:
+// 1. Safety against corrupted state from previous versions or edge cases
+// 2. Ensuring JSON serialization always succeeds (operatorProperties must be JSON-serializable)
+// 3. Future-proofing against unexpected input types from form state or component callbacks
+// While callers should pass primitives directly, this layer provides a safety net.
 const sanitizeValue = (value: unknown): string | number | boolean => {
   // Handle null and undefined - convert to empty string
   if (value === null || value === undefined) {
@@ -175,7 +180,6 @@ const computeNumberInputValue = (
 
 const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
   operatorId,
-  operatorName,
   properties,
   isDisabled = false,
 }) => {
@@ -185,7 +189,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 
   // Parse current properties JSON or use defaults
   const currentProperties = React.useMemo(() => {
-    const propertiesJson = values.operatorProperties?.[operatorName] || '{}';
+    const propertiesJson = values.operatorProperties?.[operatorId] || '{}';
     try {
       // First, verify the JSON string is valid
       if (typeof propertiesJson !== 'string') {
@@ -209,11 +213,11 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
     } catch {
       return {};
     }
-  }, [values.operatorProperties, operatorName]);
+  }, [values.operatorProperties, operatorId]);
 
   // Initialize with default values if not set
   React.useEffect(() => {
-    if (!initializationRef.current && (!values.operatorProperties || !values.operatorProperties[operatorName])) {
+    if (!initializationRef.current && (!values.operatorProperties || !values.operatorProperties[operatorId])) {
       initializationRef.current = true;
       const defaults: Record<string, unknown> = {};
       properties.forEach((prop) => {
@@ -236,11 +240,11 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
         const currentProps = values.operatorProperties || {};
         setFieldValue('operatorProperties', {
           ...currentProps,
-          [operatorName]: JSON.stringify(defaults),
+          [operatorId]: JSON.stringify(defaults),
         });
       }
     }
-  }, [operatorName, properties, setFieldValue, values.operatorProperties]);
+  }, [operatorId, properties, setFieldValue, values.operatorProperties]);
 
   const updateProperty = (propertyName: string, value: unknown) => {
     try {
@@ -292,7 +296,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
       // Safely update the operatorProperties
       const currentProps = values.operatorProperties || {};
       const updatedProps = { ...currentProps };
-      updatedProps[operatorName] = propertiesJson;
+      updatedProps[operatorId] = propertiesJson;
 
       setFieldValue('operatorProperties', updatedProps);
     } catch (error) {
@@ -307,7 +311,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 
   return (
     <ExpandableSection
-      toggleText={`Configure ${operatorName} properties`}
+      toggleText={`Configure ${operatorId} properties`}
       onToggle={(_, expanded) => setIsExpanded(expanded)}
       isExpanded={isExpanded}
       data-testid={`operator-properties-${operatorId}`}

@@ -144,6 +144,7 @@ const OperatorCheckbox = ({
   const supportLevel = getFeatureSupportLevel(featureId);
   const [operatorProperties, setOperatorProperties] = React.useState<OperatorProperties>([]);
   const [propertiesLoading, setPropertiesLoading] = React.useState(false);
+  const [propertiesFetched, setPropertiesFetched] = React.useState(false);
 
   const getDisabledReason = (): string | undefined => {
     const featureDisabledReason = getFeatureDisabledReason(featureId);
@@ -196,13 +197,14 @@ const OperatorCheckbox = ({
 
   // Fetch operator properties when operator is selected
   React.useEffect(() => {
-    if (isChecked && operatorProperties.length === 0 && !propertiesLoading) {
+    if (isChecked && !propertiesFetched && !propertiesLoading) {
       setPropertiesLoading(true);
       let cancelled = false;
       OperatorsService.getOperatorProperties(operatorId)
         .then((properties) => {
           if (!cancelled) {
             setOperatorProperties(properties);
+            setPropertiesFetched(true);
           }
         })
         .catch((error) => {
@@ -226,8 +228,9 @@ const OperatorCheckbox = ({
     } else if (!isChecked) {
       // Clear properties when operator is unchecked to allow refetch on re-check
       setOperatorProperties([]);
+      setPropertiesFetched(false);
     }
-  }, [isChecked, operatorId, operatorProperties.length, propertiesLoading, addAlert]);
+  }, [isChecked, operatorId, propertiesFetched, propertiesLoading, addAlert]);
 
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>
@@ -265,7 +268,6 @@ const OperatorCheckbox = ({
       {isChecked && operatorProperties.length > 0 && (
         <OperatorPropertiesForm
           operatorId={operatorId}
-          operatorName={operatorId}
           properties={operatorProperties}
           isDisabled={isViewerMode || !!disabledReason}
         />
