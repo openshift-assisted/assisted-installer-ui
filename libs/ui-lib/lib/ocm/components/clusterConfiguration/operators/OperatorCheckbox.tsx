@@ -173,21 +173,34 @@ const OperatorCheckbox = ({
   React.useEffect(() => {
     if (isChecked && operatorProperties.length === 0 && !propertiesLoading) {
       setPropertiesLoading(true);
+      let cancelled = false;
       OperatorsService.getOperatorProperties(operatorId)
         .then((properties) => {
-          setOperatorProperties(properties);
+          if (!cancelled) {
+            setOperatorProperties(properties);
+          }
         })
         .catch((error) => {
-          handleApiError(error, () =>
-            addAlert({
-              title: 'Failed to fetch operator properties',
-              message: getApiErrorMessage(error),
-            }),
-          );
+          if (!cancelled) {
+            handleApiError(error, () =>
+              addAlert({
+                title: 'Failed to fetch operator properties',
+                message: getApiErrorMessage(error),
+              }),
+            );
+          }
         })
         .finally(() => {
-          setPropertiesLoading(false);
+          if (!cancelled) {
+            setPropertiesLoading(false);
+          }
         });
+      return () => {
+        cancelled = true;
+      };
+    } else if (!isChecked) {
+      // Clear properties when operator is unchecked to allow refetch on re-check
+      setOperatorProperties([]);
     }
   }, [isChecked, operatorId, operatorProperties.length, propertiesLoading, addAlert]);
 

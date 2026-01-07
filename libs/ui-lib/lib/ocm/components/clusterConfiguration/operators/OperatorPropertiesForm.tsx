@@ -100,6 +100,48 @@ const cleanProperties = (props: Record<string, unknown>): Record<string, string 
   return cleaned;
 };
 
+// Helper function to normalize API response (snake_case) to match type definition (camelCase)
+const normalizeOperatorProperty = (prop: OperatorProperty): {
+  dataType?: string;
+  defaultValue?: string;
+} => {
+  // API returns snake_case, but type definition uses camelCase
+  // Handle both formats for compatibility
+  const apiProp = prop as any;
+  return {
+    dataType: prop.dataType ?? apiProp.data_type,
+    defaultValue: prop.defaultValue ?? apiProp.default_value,
+  };
+};
+
+// Helper function to compute NumberInput value from currentValue and defaultValue
+const computeNumberInputValue = (
+  currentValue: unknown,
+  defaultValue: unknown,
+): number => {
+  // Ensure we always return a number for NumberInput
+  if (typeof currentValue === 'number') {
+    return currentValue;
+  }
+  if (typeof currentValue === 'string') {
+    const parsed = parseInt(currentValue, 10);
+    if (!isNaN(parsed)) {
+      return parsed;
+    }
+  }
+  // Fall back to defaultValue
+  if (typeof defaultValue === 'number') {
+    return defaultValue;
+  }
+  if (typeof defaultValue === 'string') {
+    const parsed = parseInt(defaultValue, 10);
+    if (!isNaN(parsed)) {
+      return parsed;
+    }
+  }
+  return 0;
+};
+
 const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
   operatorId,
   operatorName,
@@ -108,6 +150,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 }) => {
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const initializationRef = React.useRef(false);
 
   // Parse current properties JSON or use defaults
   const currentProperties = React.useMemo(() => {
@@ -139,16 +182,18 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 
   // Initialize with default values if not set
   React.useEffect(() => {
-    if (!values.operatorProperties || !values.operatorProperties[operatorName]) {
+    if (!initializationRef.current && (!values.operatorProperties || !values.operatorProperties[operatorName])) {
+      initializationRef.current = true;
       const defaults: Record<string, unknown> = {};
       properties.forEach((prop) => {
-        // Handle both snake_case and camelCase property names
-        const defaultValue = (prop as any).default_value ?? (prop as any).defaultValue;
-        const dataType = (prop as any).data_type ?? (prop as any).dataType;
+        // Normalize API response to match type definition
+        const normalized = normalizeOperatorProperty(prop);
+        const defaultValue = normalized.defaultValue;
+        const dataType = normalized.dataType;
 
         if (defaultValue !== undefined && prop.name) {
           if (dataType === 'boolean' || dataType === 'Boolean') {
-            defaults[prop.name] = defaultValue === 'true' || defaultValue === true;
+            defaults[prop.name] = defaultValue === 'true' || String(defaultValue).toLowerCase() === 'true';
           } else if (dataType === 'integer' || dataType === 'Integer') {
             defaults[prop.name] = parseInt(String(defaultValue), 10);
           } else {
@@ -232,7 +277,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
   return (
     <ExpandableSection
       toggleText={`Configure ${operatorName} properties`}
-      onToggle={() => setIsExpanded(!isExpanded)}
+      onToggle={(_, expanded) => setIsExpanded(expanded)}
       isExpanded={isExpanded}
       data-testid={`operator-properties-${operatorId}`}
     >
@@ -244,9 +289,10 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
           const currentValue = currentProperties[property.name];
           const isRequired = property.mandatory || false;
 
-          // Handle both snake_case and camelCase property names
-          const dataType = (property as any).data_type ?? (property as any).dataType;
-          const defaultValue = (property as any).default_value ?? (property as any).defaultValue;
+          // Normalize API response to match type definition
+          const normalized = normalizeOperatorProperty(property);
+          const dataType = normalized.dataType;
+          const defaultValue = normalized.defaultValue;
 
           return (
             <StackItem key={property.name}>
@@ -272,29 +318,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
                 ) : dataType === 'integer' || dataType === 'Integer' ? (
                   <NumberInput
                     id={fieldId}
-                    value={(() => {
-                      // Ensure we always return a number for NumberInput
-                      if (typeof currentValue === 'number') {
-                        return currentValue;
-                      }
-                      if (typeof currentValue === 'string') {
-                        const parsed = parseInt(currentValue, 10);
-                        if (!isNaN(parsed)) {
-                          return parsed;
-                        }
-                      }
-                      // Fall back to defaultValue
-                      if (typeof defaultValue === 'number') {
-                        return defaultValue;
-                      }
-                      if (typeof defaultValue === 'string') {
-                        const parsed = parseInt(defaultValue, 10);
-                        if (!isNaN(parsed)) {
-                          return parsed;
-                        }
-                      }
-                      return 0;
-                    })()}
+                    value={computeNumberInputValue(currentValue, defaultValue)}
                     onMinus={() => {
                       const numValue =
                         typeof currentValue === 'number'
@@ -323,20 +347,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
                     id={fieldId}
                     type="text"
                     value={String(currentValue ?? defaultValue ?? '')}
-                    onChange={(_, value) => {
-                      // Extract value from event object if needed
-                      // PatternFly TextInput onChange can pass either a string or an event object
-                      let stringValue = '';
-                      if (value && typeof value === 'object' && 'currentTarget' in value) {
-                        const event = value as React.FormEvent<HTMLInputElement>;
-                        stringValue = event.currentTarget.value;
-                      } else if (typeof value === 'string') {
-                        stringValue = value;
-                      } else {
-                        stringValue = String(value ?? '');
-                      }
-                      updateProperty(property.name || '', stringValue);
-                    }}
+                    onChange={(_, value) => updateProperty(property.name || '', value)}
                     isDisabled={isDisabled}
                     data-testid={`operator-property-${operatorId}-${property.name}`}
                   />
