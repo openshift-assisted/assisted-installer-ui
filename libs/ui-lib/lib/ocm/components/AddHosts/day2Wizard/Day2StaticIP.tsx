@@ -7,7 +7,12 @@ import {
   Button,
   ButtonVariant,
 } from '@patternfly/react-core';
-import { ClusterWizardStep, ErrorState, LoadingState } from '../../../../common';
+import {
+  ClusterWizardStep,
+  ClusterWizardStepHeader,
+  ErrorState,
+  LoadingState,
+} from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
@@ -164,7 +169,7 @@ const Day2StaticIP = () => {
     >
       <Grid hasGutter>
         <Content>
-          <Content component={ContentVariants.h2}>Static network configurations</Content>
+          <ClusterWizardStepHeader>Static network configurations</ClusterWizardStepHeader>
           <Content component={ContentVariants.small}>
             Network configuration can be done using either the form view or YAML view.
             Configurations done in this step are for discovering hosts.

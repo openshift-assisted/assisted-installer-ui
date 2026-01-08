@@ -7,7 +7,7 @@ import {
   ModalHeader,
   Stack,
   StackItem,
-} from '@patternfly-6/react-core';
+} from '@patternfly/react-core';
 import * as React from 'react';
 import { getErrorMessage } from './helpers';
 import { Conversation } from '@patternfly/chatbot';

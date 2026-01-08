@@ -16,10 +16,10 @@ import {
   Stack,
   StackItem,
   TextArea,
-} from '@patternfly-6/react-core';
+} from '@patternfly/react-core';
 import * as React from 'react';
 import { FeedbackRequest } from './BotMessage';
-import { TimesIcon } from '@patternfly-6/react-icons';
+import { TimesIcon } from '@patternfly/react-icons';
 import { getErrorMessage } from './helpers';
 
 const categories: { [key: string]: string } = {
@@ -91,7 +91,7 @@ const FeedbackForm = ({
                   id="select-category"
                   isOpen={categoryOpen}
                   selected={category}
-                  onSelect={(_, val) => {
+                  onSelect={(_, val: string) => {
                     setCategory(`${val || ''}`);
                     setCategoryOpen(false);
                   }}

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Label, Popover } from '@patternfly-6/react-core';
-import { InfoCircleIcon } from '@patternfly-6/react-icons';
+import { Label, Popover } from '@patternfly/react-core';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 
 const PreviewBadge = () => (
   <Popover

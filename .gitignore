@@ -43,3 +43,4 @@ package-lock.json
 apps/*
 !apps/assisted-ui
 !apps/assisted-disconnected-ui
+!apps/assisted-chatbot

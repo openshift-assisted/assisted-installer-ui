@@ -1,4 +1,4 @@
-import { Alert, AlertActionCloseButton, Stack, StackItem } from '@patternfly-6/react-core';
+import { Alert, AlertActionCloseButton, Stack, StackItem } from '@patternfly/react-core';
 import * as React from 'react';
 import ExternalLink from './ExternalLink';
 

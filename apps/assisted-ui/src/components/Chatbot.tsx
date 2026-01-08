@@ -2,9 +2,9 @@ import * as React from 'react';
 import { ChatBot as AIChatBot, ChatBotWindowProps } from '@openshift-assisted/chatbot';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
-import '@patternfly-6/react-core/dist/styles/base.css';
+import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/chatbot/dist/css/main.css';
-import '@patternfly-6/patternfly/patternfly-addons.css';
+import '@patternfly/patternfly/patternfly-addons.css';
 
 export const refreshToken =
   (import.meta.env.AIUI_OCM_REFRESH_TOKEN as string | undefined) || window.OCM_REFRESH_TOKEN;
