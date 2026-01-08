@@ -58,7 +58,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         fsVolSizeGiB: values.fsVolSize,
         imgVolSizeGiB: values.imgVolSize,
         configureLoadBalancer: values.configureLoadBalancer,
-        ciscoIntersightURL: values.addCiscoIntersightUrl ? values.ciscoIntersightURL : undefined,
+        ciscoIntersightURL: values.addCiscoIntersightURL ? values.ciscoIntersightURL : undefined,
       })
     ) {
       // successfully persisted
@@ -91,7 +91,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage,
     ),
     configureLoadBalancer: platform === 'AWS',
-    addCiscoIntersightUrl: !!agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'],
+    addCiscoIntersightURL: !!agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'],
     ciscoIntersightURL: agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'] || '',
   };
 
@@ -100,7 +100,8 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     fsVolSize: Yup.number().min(MIN_FS_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
     imgVolSize: Yup.number().min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi')).required(),
     configureLoadBalancer: Yup.boolean(),
-    ciscoIntersightURL: Yup.string().when('addCiscoIntersightUrl', {
+    addCiscoIntersightURL: Yup.boolean(),
+    ciscoIntersightURL: Yup.string().when('addCiscoIntersightURL', {
       is: true,
       then: (schema) =>
         schema
@@ -126,7 +127,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       validationSchema={validationSchema}
       onSubmit={onConfigure}
     >
-      {({ values, handleSubmit, isValid, isSubmitting }) => (
+      {({ handleSubmit, isValid, isSubmitting }) => (
         <Modal
           aria-label={t('ai:Configure host inventory settings')}
           title={t('ai:Configure host inventory settings')}
@@ -138,13 +139,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
                   <Button
                     key="configure"
                     variant={ButtonVariant.primary}
-                    isDisabled={
-                      !!(
-                        isSubmitting ||
-                        !isValid ||
-                        (isEdit && configureLoadBalancerInitial === values.configureLoadBalancer)
-                      )
-                    }
+                    isDisabled={!!(isSubmitting || !isValid)}
                     onClick={() => void handleSubmit()}
                   >
                     {t('ai:Configure')}

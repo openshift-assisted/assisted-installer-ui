@@ -33,7 +33,6 @@ export const CimConfigurationFormFields = ({
   setConfigureLoadBalancerInitial,
 }: CimConfigurationFormFieldsProps) => {
   const { t } = useTranslation();
-
   const { setFieldValue, values } = useFormikContext<CimConfigurationValues>();
 
   React.useEffect(
@@ -223,8 +222,7 @@ export const CimConfigurationFormFields = ({
 
         <StackItem>
           <CheckboxField
-            name={'addCiscoIntersightUrl'}
-            isDisabled={isEdit}
+            name={'addCiscoIntersightURL'}
             label={
               <>
                 {t('ai:Configure custom URL for Cisco Intersight')}{' '}
@@ -240,14 +238,18 @@ export const CimConfigurationFormFields = ({
                 </PopoverIcon>
               </>
             }
+            onChange={(checked) => {
+              if (!checked) {
+                setFieldValue('ciscoIntersightURL', '', false);
+              }
+            }}
           />
 
-          {values.addCiscoIntersightUrl && (
+          {values.addCiscoIntersightURL && (
             <InputField
               name={'ciscoIntersightURL'}
               label={t('ai:Cisco Intersight URL')}
               isRequired
-              isDisabled={isEdit}
               placeholder="https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO"
               helperText={t('ai:Provide the complete URL, including the protocol and parameters.')}
             />
