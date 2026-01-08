@@ -5,7 +5,7 @@ export type CimConfigurationValues = {
   fsVolSize: number;
   imgVolSize: number;
   configureLoadBalancer: boolean;
-  addCiscoIntersightUrl: boolean;
+  addCiscoIntersightURL: boolean;
   ciscoIntersightURL: string;
 };
 
