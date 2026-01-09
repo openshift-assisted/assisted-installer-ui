@@ -260,6 +260,7 @@
   "ai:Define the quantity of worker nodes and nodepools to create for your cluster. Additional worker nodes and nodepools can be added after the cluster is created.": "Define the quantity of worker nodes and nodepools to create for your cluster. Additional worker nodes and nodepools can be added after the cluster is created.",
   "ai:Defines how big the subnets for each individual node are out of the given CIDR. Must enter a whole number.": "Defines how big the subnets for each individual node are out of the given CIDR. Must enter a whole number.",
   "ai:Deleted hosts": "Deleted hosts",
+  "ai:Deleting": "Deleting",
   "ai:Deprovisioning": "Deprovisioning",
   "ai:Details": "Details",
   "ai:Developer Preview": "Developer Preview",
