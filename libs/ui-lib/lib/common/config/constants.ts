@@ -2,6 +2,7 @@ import { TFunction } from 'i18next';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import {
   Cluster,
+  ClusterDefaultConfig,
   ClusterValidationId,
   DiskRole,
   Event,
@@ -283,7 +284,13 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
   serviceNetworkCidr: 'fd02::/112',
 };
 
-export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
+export const CLUSTER_DEFAULT_NETWORK_SETTINGS: Pick<
+  ClusterDefaultConfig,
+  | 'clusterNetworksIpv4'
+  | 'clusterNetworksDualstack'
+  | 'serviceNetworksIpv4'
+  | 'serviceNetworksDualstack'
+> = {
   clusterNetworksIpv4: [
     {
       cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr,

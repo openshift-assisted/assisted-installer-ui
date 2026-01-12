@@ -5,15 +5,14 @@ import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
-  clusterNetworksEqual,
   CpuArchitecture,
   DUAL_STACK,
   HostSubnets,
+  isAdvNetworkConf,
   isSNO,
   NetworkConfigurationValues,
   selectApiVip,
   selectIngressVip,
-  serviceNetworksEqual,
 } from '../../../../common';
 import {
   ManagedNetworkingControlGroup,
@@ -33,7 +32,6 @@ import {
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
 import {
-  Cluster,
   ClusterDefaultConfig,
   PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
@@ -50,21 +48,6 @@ export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
     | 'serviceNetworksDualstack'
   >;
 };
-
-const isAdvNetworkConf = (
-  cluster: Cluster,
-  defaultNetworkValues: Pick<ClusterDefaultConfig, 'clusterNetworksIpv4' | 'serviceNetworksIpv4'>,
-) =>
-  !(
-    serviceNetworksEqual(
-      cluster.serviceNetworks || [],
-      defaultNetworkValues.serviceNetworksIpv4 || [],
-    ) &&
-    clusterNetworksEqual(
-      cluster.clusterNetworks || [],
-      defaultNetworkValues.clusterNetworksIpv4 || [],
-    )
-  );
 
 const getManagedNetworkingDisabledReason = (
   isDualStack: boolean,

@@ -187,6 +187,29 @@ export const AvailableSubnetsControl = ({
   const primaryNetworkCidr = values.machineNetworks?.[0]?.cidr;
   const excludedHostsAlert = getExcludedHostsAlert(primaryNetworkCidr);
 
+  // Determine available subnets for primary dropdown
+  const primaryMachineSubnets = isDualStack && supportsIPv6Primary ? allSubnets : IPv4Subnets;
+
+  // Determine available subnets for secondary dropdown
+  const secondaryMachineSubnets = React.useMemo(() => {
+    if (supportsIPv6Primary) {
+      // For OCP >= 4.12, smart filtering based on the other network's selection
+      if (primaryNetworkCidr && Address6.isValid(primaryNetworkCidr)) {
+        // If first is IPv6, second should be IPv4
+        return IPv4Subnets;
+      } else if (primaryNetworkCidr && Address4.isValid(primaryNetworkCidr)) {
+        // If first is IPv4, second should be IPv6
+        return IPv6Subnets;
+      } else {
+        // If first is not selected yet, show all subnets
+        return allSubnets;
+      }
+    } else {
+      // For older versions, second network is IPv6
+      return IPv6Subnets;
+    }
+  }, [supportsIPv6Primary, primaryNetworkCidr, IPv4Subnets, IPv6Subnets, allSubnets]);
+
   return (
     <>
       <FormGroup
@@ -198,39 +221,17 @@ export const AvailableSubnetsControl = ({
         <FieldArray name="machineNetworks">
           {() => (
             <Stack>
-              {isDualStack ? (
-                values.machineNetworks?.map((machineNetwork, index) => {
-                  if (index > 0) return null;
-
-                  const machineSubnets = supportsIPv6Primary ? allSubnets : IPv4Subnets;
-
-                  return (
-                    <StackItem key={index}>
-                      <SubnetsDropdown
-                        name={`machineNetworks.${index}.cidr`}
-                        machineSubnets={machineSubnets}
-                        isDisabled={isDisabled}
-                        onAfterSelect={(newSelection) =>
-                          reorderNetworksForPrimary(newSelection, values, setFieldValue)
-                        }
-                        data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
-                      />
-                    </StackItem>
-                  );
-                })
-              ) : (
-                <StackItem>
-                  <SubnetsDropdown
-                    name={`machineNetworks.0.cidr`}
-                    machineSubnets={IPv4Subnets}
-                    isDisabled={isDisabled}
-                    onAfterSelect={(newSelection) =>
-                      reorderNetworksForPrimary(newSelection, values, setFieldValue)
-                    }
-                    data-testid={'subnets-dropdown-toggle-primary'}
-                  />
-                </StackItem>
-              )}
+              <StackItem>
+                <SubnetsDropdown
+                  name="machineNetworks.0.cidr"
+                  machineSubnets={primaryMachineSubnets}
+                  isDisabled={isDisabled}
+                  onAfterSelect={(newSelection) =>
+                    reorderNetworksForPrimary(newSelection, values, setFieldValue)
+                  }
+                  data-testid="subnets-dropdown-toggle-primary"
+                />
+              </StackItem>
             </Stack>
           )}
         </FieldArray>
@@ -242,6 +243,7 @@ export const AvailableSubnetsControl = ({
         {excludedHostsAlert}
       </FormGroup>
 
+      {/* Secondary machine network */}
       {isDualStack && values.machineNetworks && values.machineNetworks.length > 1 && (
         <FormGroup
           label="Machine network"
@@ -249,39 +251,12 @@ export const AvailableSubnetsControl = ({
           fieldId="machine-networks-secondary"
           isRequired={isRequired}
         >
-          <FieldArray name="machineNetworks">
-            {() => {
-              const index = 1;
-              let machineSubnets;
-
-              if (supportsIPv6Primary) {
-                // For OCP >= 4.12, smart filtering based on the other network's selection
-                const firstNetworkCidr = values.machineNetworks?.[0]?.cidr;
-                if (firstNetworkCidr && Address6.isValid(firstNetworkCidr)) {
-                  // If first is IPv6, second should be IPv4
-                  machineSubnets = IPv4Subnets;
-                } else if (firstNetworkCidr && Address4.isValid(firstNetworkCidr)) {
-                  // If first is IPv4, second should be IPv6
-                  machineSubnets = IPv6Subnets;
-                } else {
-                  // If first is not selected yet, show all subnets
-                  machineSubnets = allSubnets;
-                }
-              } else {
-                // For older versions, second network is IPv6
-                machineSubnets = IPv6Subnets;
-              }
-
-              return (
-                <SubnetsDropdown
-                  name={`machineNetworks.${index}.cidr`}
-                  machineSubnets={machineSubnets}
-                  isDisabled={isDisabled}
-                  data-testid={`subnets-dropdown-toggle-${index ? 'ipv6' : 'ipv4'}`}
-                />
-              );
-            }}
-          </FieldArray>
+          <SubnetsDropdown
+            name="machineNetworks.1.cidr"
+            machineSubnets={secondaryMachineSubnets}
+            isDisabled={isDisabled}
+            data-testid="subnets-dropdown-toggle-secondary"
+          />
         </FormGroup>
       )}
     </>

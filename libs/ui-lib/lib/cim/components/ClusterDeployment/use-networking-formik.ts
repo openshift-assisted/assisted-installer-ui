@@ -55,24 +55,20 @@ const getNetworkConfigurationValidationSchema = (
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
         then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
         otherwise: () =>
-          values.clusterNetworks && values.clusterNetworks?.length >= 2
-            ? clusterNetworksValidationSchema.concat(
-                dualStackValidationSchema('cluster network', openshiftVersion),
-              )
-            : Yup.array(),
+          clusterNetworksValidationSchema.concat(
+            dualStackValidationSchema('cluster network', openshiftVersion),
+          ),
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
         then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
         otherwise: () =>
-          values.serviceNetworks && values.serviceNetworks?.length >= 2
-            ? serviceNetworkValidationSchema.concat(
-                dualStackValidationSchema('service network', openshiftVersion),
-              )
-            : Yup.array(),
+          serviceNetworkValidationSchema.concat(
+            dualStackValidationSchema('service network', openshiftVersion),
+          ),
       }),
-      apiVips: vipArrayValidationSchema(hostSubnets, values, initialValues.apiVips),
-      ingressVips: vipArrayValidationSchema(hostSubnets, values, initialValues.ingressVips),
+      apiVips: vipArrayValidationSchema(hostSubnets, values),
+      ingressVips: vipArrayValidationSchema(hostSubnets, values),
       sshPublicKey: sshPublicKeyListValidationSchema,
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
       httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported

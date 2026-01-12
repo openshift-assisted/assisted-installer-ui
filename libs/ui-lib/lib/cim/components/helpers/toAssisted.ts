@@ -156,25 +156,16 @@ export const getAICluster = ({
     name: clusterDeployment.spec?.clusterName,
     baseDnsDomain: clusterDeployment.spec?.baseDomain,
     openshiftVersion: installVersion,
-    apiVips:
-      agentClusterInstall?.status?.apiVIPs?.length || agentClusterInstall?.spec?.apiVIPs?.length
-        ? (agentClusterInstall?.status?.apiVIPs || agentClusterInstall?.spec?.apiVIPs || []).map(
-            (ip) => ({ ip }),
-          )
-        : agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP
-        ? [{ ip: agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP }]
-        : [],
-    ingressVips:
-      agentClusterInstall?.status?.ingressVIPs?.length ||
-      agentClusterInstall?.spec?.ingressVIPs?.length
-        ? (
-            agentClusterInstall?.status?.ingressVIPs ||
-            agentClusterInstall?.spec?.ingressVIPs ||
-            []
-          ).map((ip) => ({ ip }))
-        : agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP
-        ? [{ ip: agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP }]
-        : [],
+    apiVips: agentClusterInstall?.spec?.apiVIPs?.length
+      ? (agentClusterInstall?.spec?.apiVIPs || []).map((ip) => ({ ip }))
+      : agentClusterInstall?.spec?.apiVIP
+      ? [{ ip: agentClusterInstall?.spec?.apiVIP }]
+      : [],
+    ingressVips: agentClusterInstall?.spec?.ingressVIPs?.length
+      ? (agentClusterInstall?.spec?.ingressVIPs || []).map((ip) => ({ ip }))
+      : agentClusterInstall?.spec?.ingressVIP
+      ? [{ ip: agentClusterInstall?.spec?.ingressVIP }]
+      : [],
     highAvailabilityMode:
       agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
     status,
@@ -185,16 +176,11 @@ export const getAICluster = ({
     sshPublicKey: agentClusterInstall?.spec?.sshPublicKey,
     clusterNetworkHostPrefix:
       agentClusterInstall?.spec?.networking?.clusterNetwork?.[0]?.hostPrefix,
-    clusterNetworks: agentClusterInstall?.spec?.networking?.clusterNetwork?.map((net) => ({
-      cidr: net.cidr,
-      hostPrefix: net.hostPrefix,
-    })),
+    clusterNetworks: agentClusterInstall?.spec?.networking?.clusterNetwork,
     serviceNetworks: agentClusterInstall?.spec?.networking?.serviceNetwork?.map((cidr) => ({
       cidr,
     })),
-    machineNetworks: agentClusterInstall?.spec?.networking?.machineNetwork?.map((net) => ({
-      cidr: net.cidr,
-    })),
+    machineNetworks: agentClusterInstall?.spec?.networking?.machineNetwork,
     monitoredOperators: [],
     vipDhcpAllocation: false,
     userManagedNetworking: Boolean(

@@ -24,7 +24,13 @@ import { NetworkTypeControlGroup } from '../../../common/components/clusterWizar
 import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
-  defaultNetworkSettings: ClusterDefaultConfig;
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >;
   hideManagedNetworking?: boolean;
 };
 
@@ -39,14 +45,13 @@ const NetworkConfiguration = ({
   const { setFieldValue, values, touched, validateField } =
     useFormikContext<NetworkConfigurationValues>();
 
-  const isSNOCluster = isSNO(cluster);
-  const isMultiNodeCluster = !isSNOCluster;
+  const isMultiNodeCluster = !isSNO(cluster);
   const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
   const isDualStack = values.stackType === DUAL_STACK;
   const isSDNSelectable = React.useMemo(
-    () => canSelectNetworkTypeSDN(!isMultiNodeCluster),
-    [isMultiNodeCluster],
+    () => canSelectNetworkTypeSDN(!isMultiNodeCluster, isDualStack),
+    [isMultiNodeCluster, isDualStack],
   );
 
   const [isAdvanced, setAdvanced] = React.useState(
@@ -123,7 +128,7 @@ const NetworkConfiguration = ({
         />
       )}
 
-      {(isSNOCluster || !isUserManagedNetworking) && (
+      {(!isMultiNodeCluster || !isUserManagedNetworking) && (
         <StackTypeControlGroup
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
