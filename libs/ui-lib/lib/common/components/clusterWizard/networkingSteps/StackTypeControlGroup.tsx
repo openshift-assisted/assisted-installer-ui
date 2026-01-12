@@ -47,11 +47,13 @@ const hasDualStackConfigurationChanged = (
 ) =>
   clusterNetworks &&
   serviceNetworks &&
-  ((values.machineNetworks && values.machineNetworks[1].cidr !== cidrIPv6) ||
-    (values.clusterNetworks && values.clusterNetworks[1].cidr !== clusterNetworks[1].cidr) ||
-    (values.clusterNetworks &&
-      values.clusterNetworks[1].hostPrefix !== clusterNetworks[1].hostPrefix) ||
-    (values.serviceNetworks && values.serviceNetworks[1].cidr !== serviceNetworks[1].cidr));
+  ((values.machineNetworks?.[1] && values.machineNetworks[1].cidr !== cidrIPv6) ||
+    (values.clusterNetworks?.[1] && values.clusterNetworks[1].cidr !== clusterNetworks[1]?.cidr) ||
+    (values.clusterNetworks?.[1] &&
+      values.clusterNetworks[1].hostPrefix !== clusterNetworks[1]?.hostPrefix) ||
+    (values.serviceNetworks?.[1] && values.serviceNetworks[1].cidr !== serviceNetworks[1]?.cidr) ||
+    values.apiVips?.[1]?.ip ||
+    values.ingressVips?.[1]?.ip);
 
 export const StackTypeControlGroup = ({
   clusterId,
@@ -218,9 +220,27 @@ export const StackTypeControlGroup = ({
         false,
       );
     }
-    // Ensure cluster/service networks ordering matches the new primary family
-    reorderNetworksByCurrentPrimary(values, setFieldValue);
+    // Initialize VIPs for dual-stack
+    if (values.apiVips && values.apiVips.length < 2) {
+      setFieldValue(
+        'apiVips',
+        [values.apiVips[0] || { ip: '', clusterId: clusterId }, { ip: '', clusterId: clusterId }],
+        false,
+      );
+    }
+    if (values.ingressVips && values.ingressVips.length < 2) {
+      setFieldValue(
+        'ingressVips',
+        [
+          values.ingressVips[0] || { ip: '', clusterId: clusterId },
+          { ip: '', clusterId: clusterId },
+        ],
+        false,
+      );
+    }
   };
+  // Ensure cluster/service networks ordering matches the new primary family
+  reorderNetworksByCurrentPrimary(values, setFieldValue);
 
   const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === DUAL_STACK) {

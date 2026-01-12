@@ -143,62 +143,30 @@ export const ClusterDeploymentReviewStep = ({
             value={platform}
             testId="platform-type"
           />
-          {(agentClusterInstall?.status?.apiVIPs?.length ?? 0) > 1 ||
-          (agentClusterInstall?.spec?.apiVIPs?.length ?? 0) > 1 ? (
-            <>
-              <DetailItem
-                title={t('ai:API IP (Primary)')}
-                value={
-                  agentClusterInstall?.status?.apiVIPs?.[0] ||
-                  agentClusterInstall?.spec?.apiVIPs?.[0]
-                }
-                testId="api-vip-primary"
-              />
-              <DetailItem
-                title={t('ai:API IP (Secondary)')}
-                value={
-                  agentClusterInstall?.status?.apiVIPs?.[1] ||
-                  agentClusterInstall?.spec?.apiVIPs?.[1]
-                }
-                testId="api-vip-secondary"
-              />
-            </>
-          ) : (
+          <DetailItem
+            title={t('ai:API IP (Primary)')}
+            value={agentClusterInstall?.status?.apiVIPs?.[0]}
+            testId="api-vip-primary"
+          />
+          {(agentClusterInstall?.status?.apiVIPs?.length ?? 0) > 1 ? (
             <DetailItem
-              title={t('ai:API IP')}
-              value={agentClusterInstall?.status?.apiVIP || agentClusterInstall?.spec?.apiVIP}
-              testId="api-vip"
+              title={t('ai:API IP (Secondary)')}
+              value={agentClusterInstall?.status?.apiVIPs?.[1]}
+              testId="api-vip-secondary"
             />
-          )}
-          {(agentClusterInstall?.status?.ingressVIPs?.length ?? 0) > 1 ||
-          (agentClusterInstall?.spec?.ingressVIPs?.length ?? 0) > 1 ? (
-            <>
-              <DetailItem
-                title={t('ai:Ingress IP (Primary)')}
-                value={
-                  agentClusterInstall?.status?.ingressVIPs?.[0] ||
-                  agentClusterInstall?.spec?.ingressVIPs?.[0]
-                }
-                testId="ingress-vip-primary"
-              />
-              <DetailItem
-                title={t('ai:Ingress IP (Secondary)')}
-                value={
-                  agentClusterInstall?.status?.ingressVIPs?.[1] ||
-                  agentClusterInstall?.spec?.ingressVIPs?.[1]
-                }
-                testId="ingress-vip-secondary"
-              />
-            </>
-          ) : (
+          ) : undefined}
+          <DetailItem
+            title={t('ai:Ingress IP (Primary)')}
+            value={agentClusterInstall?.status?.ingressVIPs?.[0]}
+            testId="ingress-vip-primary"
+          />
+          {(agentClusterInstall?.status?.ingressVIPs?.length ?? 0) > 1 ? (
             <DetailItem
-              title={t('ai:Ingress IP')}
-              value={
-                agentClusterInstall?.status?.ingressVIP || agentClusterInstall?.spec?.ingressVIP
-              }
-              testId="ingress-vip"
+              title={t('ai:Ingress IP (Secondary)')}
+              value={agentClusterInstall?.status?.ingressVIPs?.[1]}
+              testId="ingress-vip-secondary"
             />
-          )}
+          ) : undefined}
           <DetailItem
             title={t('ai:Cluster summary')}
             testId="cluster-summary"

@@ -23,24 +23,6 @@ import {
   Ip,
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { TFunction } from 'i18next';
-
-const getVipHelperSuffix = (
-  t: TFunction,
-  vip?: string,
-  vipDhcpAllocation?: boolean,
-  vipDhcpAllocationFormValue?: boolean,
-): string => {
-  if (!vipDhcpAllocationFormValue) {
-    return t(
-      'ai:Make sure that the VIP is unique and not used by any other device on your network.',
-    );
-  }
-  if (vipDhcpAllocation && vip) {
-    return t('ai:This IP was allocated by the DHCP server.');
-  }
-  return '';
-};
 
 interface VipStaticValueProps {
   id?: string;
@@ -103,25 +85,11 @@ export const VirtualIPControlGroup = ({
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const { t } = useTranslation();
 
-  const vipHelperSuffix = getVipHelperSuffix(
-    t,
-    selectApiVip(cluster),
-    cluster.vipDhcpAllocation,
-    values.vipDhcpAllocation,
-  );
-  const apiVipHelperText = t(
-    'ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
-    { vipHelperSuffix },
-  );
-  const ingressVipHelperText = t(
-    'ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSuffix}}',
-    { vipHelperSuffix },
-  );
   const apiVipPopoverContent = t(
-    'ai:Provides an endpoint for users, both human and machine, to interact with and configure the platform.',
+    'ai:Provides an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information.',
   );
   const ingressVipPopoverContent = t(
-    'ai:Provides an endpoint for application traffic flowing in from outside the cluster.',
+    'ai:Provides an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information.',
   );
 
   const {
@@ -161,9 +129,9 @@ export const VirtualIPControlGroup = ({
     const next: ApiVip[] = Array.isArray(fieldArray) ? [...fieldArray] : [];
     // Ensure array has the desired length
     while (next.length <= index) {
-      next.push({ ip: '', clusterId: cluster.id });
+      next.push({ ip: '', clusterId: cluster?.id });
     }
-    next[index] = { ip: e.target.value, clusterId: cluster.id };
+    next[index] = { ip: e.target.value, clusterId: cluster?.id };
     setFieldValue(field, next, true);
   };
 
@@ -198,7 +166,6 @@ export const VirtualIPControlGroup = ({
               </>
             }
             name="apiVips.0.ip"
-            helperText={apiVipHelperText}
             value={selectApiVip(values)}
             isValid={!apiVipFailedValidationMessage}
             isRequired
@@ -218,7 +185,6 @@ export const VirtualIPControlGroup = ({
               </>
             }
             name="ingressVips.0.ip"
-            helperText={ingressVipHelperText}
             value={selectIngressVip(values)}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
@@ -245,7 +211,6 @@ export const VirtualIPControlGroup = ({
                       </>
                     }
                     name="apiVips.0.ip"
-                    helperText={apiVipHelperText}
                     isRequired
                     maxLength={45}
                     isDisabled={isVipInputDisabled || isViewerMode}
@@ -266,7 +231,7 @@ export const VirtualIPControlGroup = ({
                       }
                       name="apiVips.1.ip"
                       maxLength={45}
-                      //helperText={apiVipHelperText}
+                      isRequired
                       isDisabled={isVipInputDisabled || isViewerMode}
                       labelInfo={t('ai:Secondary')}
                       onChange={(e) =>
@@ -284,7 +249,6 @@ export const VirtualIPControlGroup = ({
                         <PopoverIcon bodyContent={ingressVipPopoverContent} />
                       </>
                     }
-                    helperText={ingressVipHelperText}
                     isRequired
                     maxLength={45}
                     isDisabled={isVipInputDisabled || isViewerMode}
@@ -304,10 +268,8 @@ export const VirtualIPControlGroup = ({
                           <PopoverIcon bodyContent={ingressVipPopoverContent} />
                         </>
                       }
-             
                       maxLength={45}
-           
-                      helperText={ingressVipHelperText}
+                      isRequired
                       isDisabled={isVipInputDisabled || isViewerMode}
                       labelInfo={t('ai:Secondary')}
                       onChange={(e) =>
