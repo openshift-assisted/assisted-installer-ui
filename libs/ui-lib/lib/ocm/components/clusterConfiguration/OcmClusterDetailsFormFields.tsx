@@ -189,23 +189,22 @@ export const OcmClusterDetailsFormFields = ({
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
-      {!isSingleClusterFeatureEnabled &&
-        (clusterExists ? (
-          <StaticTextField
-            name="platform"
-            label="Integrate with external partner platforms"
-            isRequired
-          >
-            {ExternalPlatformLabels[values.platform]}
-          </StaticTextField>
-        ) : (
-          <ExternalPlatformDropdown
-            onChange={handleExternalPartnerIntegrationsChange}
-            cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
-            featureSupportLevelData={featureSupportLevelData}
-            isSNO={values.controlPlaneCount === 1}
-          />
-        ))}
+      {clusterExists ? (
+        <StaticTextField
+          name="platform"
+          label="Integrate with external partner platforms"
+          isRequired
+        >
+          {ExternalPlatformLabels[values.platform]}
+        </StaticTextField>
+      ) : (
+        <ExternalPlatformDropdown
+          onChange={handleExternalPartnerIntegrationsChange}
+          cpuArchitecture={values.cpuArchitecture as SupportedCpuArchitecture}
+          featureSupportLevelData={featureSupportLevelData}
+          isSNO={values.controlPlaneCount === 1}
+        />
+      )}
 
       {clusterExists ? (
         <StaticTextField name="controlPlaneCount" label={<ControlPlaneNodesLabel />}>
