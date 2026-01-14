@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import { Modal, ModalBody, ModalHeader, ModalVariant } from '@patternfly/react-core';
 import { UploadActionModalProps } from './types';
 import AddBmcHostYamlForm from './AddBmcHostYamlForm';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -18,16 +18,17 @@ const AddBmcHostYamlModal: React.FC<UploadActionModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Add host dialog')}
-      title={t('ai:Add hosts by uploading YAML (BMC)')}
       variant={ModalVariant.medium}
       isOpen={isOpen}
       onClose={onClose}
-      hasNoBodyWrapper
     >
-      <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        <ProvisioningConfigErrorAlert error={provisioningConfigError} />
-        <AddBmcHostYamlForm onClose={onClose} onCreateBmcByYaml={onCreateBmcByYaml} />
-      </EnvironmentErrors>
+      <ModalHeader title={t('ai:Add hosts by uploading YAML (BMC)')} />
+      <ModalBody>
+        <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion}>
+          <ProvisioningConfigErrorAlert error={provisioningConfigError} />
+          <AddBmcHostYamlForm onClose={onClose} onCreateBmcByYaml={onCreateBmcByYaml} />
+        </EnvironmentErrors>
+      </ModalBody>
     </Modal>
   );
 };

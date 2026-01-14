@@ -228,7 +228,7 @@ const NodePoolsTable = ({
             iconPosition="right"
             onClick={() => setAddNodePool(true)}
           >
-            {t('ai:Add Nodepool')}
+            {t('ai:Add nodepool')}
           </Button>
         </StackItem>
       </Stack>

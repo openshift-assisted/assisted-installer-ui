@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { Alert, Button, Spinner, Stack, StackItem } from '@patternfly/react-core';
 import {
+  Alert,
+  Button,
   Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-} from '@patternfly/react-core/deprecated';
+  Spinner,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { Formik } from 'formik';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -72,14 +77,8 @@ const AddNodePoolModal = ({
   };
 
   return (
-    <Modal
-      aria-label="add node pool dialog"
-      title={t('ai:Add Nodepool')}
-      isOpen
-      onClose={onClose}
-      variant={ModalVariant.medium}
-      hasNoBodyWrapper
-    >
+    <Modal aria-label="add node pool dialog" isOpen onClose={onClose} variant={ModalVariant.medium}>
+      <ModalHeader title={t('ai:Add nodepool')} />
       <Formik<NodePoolFormValues>
         initialValues={{
           nodePoolName: `nodepool-${hostedCluster.metadata?.name || ''}-${Math.floor(
@@ -97,7 +96,7 @@ const AddNodePoolModal = ({
       >
         {({ isSubmitting, isValid, submitForm }) => (
           <>
-            <ModalBoxBody>
+            <ModalBody>
               <Stack hasGutter>
                 <StackItem>
                   <NodePoolForm agents={namespaceAgents} hostedCluster={hostedCluster} />
@@ -108,8 +107,8 @@ const AddNodePoolModal = ({
                   </StackItem>
                 )}
               </Stack>
-            </ModalBoxBody>
-            <ModalBoxFooter>
+            </ModalBody>
+            <ModalFooter>
               <Button
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={submitForm}
@@ -121,7 +120,7 @@ const AddNodePoolModal = ({
               <Button variant="link" onClick={onClose}>
                 {t('ai:Cancel')}
               </Button>
-            </ModalBoxFooter>
+            </ModalFooter>
           </>
         )}
       </Formik>

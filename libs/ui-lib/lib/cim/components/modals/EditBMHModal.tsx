@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import { Modal, ModalHeader, ModalVariant } from '@patternfly/react-core';
 import BMCForm from '../Agent/BMCForm';
 import { SecretK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
@@ -52,13 +52,12 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Edit BMH dialog')}
-      title={t('ai:Edit BMH')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
-      hasNoBodyWrapper
       id="edit-bmh-modal"
     >
+      <ModalHeader title={t('ai:Edit BMH')} />
       {isLoading ? (
         <LoadingState />
       ) : (
