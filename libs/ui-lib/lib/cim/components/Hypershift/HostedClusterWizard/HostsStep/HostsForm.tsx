@@ -1,10 +1,22 @@
 import * as React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
-import { Alert, Button, Form, FormGroup, Grid, GridItem } from '@patternfly/react-core';
+import {
+  Alert,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  Form,
+  FormGroup,
+  Grid,
+  GridItem,
+  MenuToggle,
+  MenuToggleElement,
+} from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { PopoverIcon, RadioField, SelectField } from '../../../../../common';
+import { PopoverIcon, RadioField } from '../../../../../common';
 import { getRandomString } from '../../../../../common/utils';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 
@@ -18,21 +30,15 @@ const HostsForm: React.FC<HostsFormProps> = ({
   clusterName,
   initReleaseImage,
 }) => {
-  const { values } = useFormikContext<HostsFormValues>();
+  const { t } = useTranslation();
+  const { values, setFieldValue } = useFormikContext<HostsFormValues>();
+  const [namespaceDropdownOpen, setNamespaceDropdownOpen] = React.useState(false);
   useTemptiflySync({ values, onValuesChanged });
 
-  const { t } = useTranslation();
-  const infraEnvOptions = infraEnvs.length
-    ? infraEnvs.map((ie) => ({
-        label: ie.metadata?.namespace || '',
-        value: ie.metadata?.namespace || '',
-      }))
-    : [
-        {
-          label: t('ai:No namespace with hosts is available'),
-          value: 'NOT_AVAILABLE',
-        },
-      ];
+  const infraEnvOptions = infraEnvs.map((ie) => ({
+    label: ie.metadata?.namespace || '',
+    value: ie.metadata?.namespace || '',
+  }));
 
   const totalHosts = values.nodePools.reduce((acc, nodePool) => {
     acc += nodePool.useAutoscaling ? nodePool.autoscaling.maxReplicas : nodePool.count;
@@ -142,13 +148,9 @@ const HostsForm: React.FC<HostsFormProps> = ({
         </GridItem>
 
         <GridItem>
-          <SelectField
+          <FormGroup
             label={t('ai:Namespace')}
-            name="agentNamespace"
-            options={infraEnvOptions}
-            isRequired
-            isDisabled={!infraEnvs.length}
-            labelIcon={
+            labelHelp={
               <PopoverIcon
                 position="right"
                 bodyContent={t(
@@ -156,7 +158,39 @@ const HostsForm: React.FC<HostsFormProps> = ({
                 )}
               />
             }
-          />
+            isRequired
+            isInline
+          >
+            <Dropdown
+              isOpen={namespaceDropdownOpen}
+              onSelect={(_, value) => {
+                setFieldValue('agentNamespace', value);
+                setNamespaceDropdownOpen(false);
+              }}
+              onOpenChange={(isOpen: boolean) => setNamespaceDropdownOpen(isOpen)}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  ref={toggleRef}
+                  onClick={() => setNamespaceDropdownOpen(!namespaceDropdownOpen)}
+                  isExpanded={namespaceDropdownOpen}
+                  isFullWidth
+                  isDisabled={!infraEnvs.length}
+                  aria-disabled={!infraEnvs.length}
+                >
+                  {values.agentNamespace || t('ai:No namespace with hosts is available')}
+                </MenuToggle>
+              )}
+              shouldFocusToggleOnSelect
+            >
+              <DropdownList>
+                {infraEnvOptions.map((option, i) => (
+                  <DropdownItem key={`infra-env-option-${i}`} value={option.value}>
+                    {option.label}
+                  </DropdownItem>
+                ))}
+              </DropdownList>
+            </Dropdown>
+          </FormGroup>
         </GridItem>
         {totalHosts === 0 && (
           <GridItem>
