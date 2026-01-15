@@ -1,4 +1,4 @@
-FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.21 AS ui-build
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-nodejs-openshift-4.22 AS ui-build
 USER 0
 
 WORKDIR /app
@@ -27,14 +27,14 @@ RUN CACHED_YARN=./artifacts/${YARN_VERSION}.tar.gz; \
       yarn install --immutable && yarn build:all; \
     fi
 
-FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.24-openshift-4.21 AS proxy-build
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.24-openshift-4.22 AS proxy-build
 WORKDIR /app
 COPY apps/assisted-disconnected-ui/proxy /app
 USER 0
 # Build using vendored deps as build system does not have internet access
 RUN export GOFLAGS="-mod=vendor"; go build
 
-FROM registry.ci.openshift.org/ocp/4.21:base-rhel9
+FROM registry.ci.openshift.org/ocp/4.22:base-rhel9-minimal
 
 LABEL io.openshift.release.operator=true
 
