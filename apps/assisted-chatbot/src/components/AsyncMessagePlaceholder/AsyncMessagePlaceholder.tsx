@@ -1,5 +1,5 @@
 import { Skeleton } from '@patternfly/react-core';
-import './AsyncMessagePlaceholder.scss';
+import './AsyncMessagePlaceholder.css';
 
 export const AsyncMessagePlaceholder = () => (
   <div className="pf-v6-u-display-flex pf-v6-u-align-items-flex-start pf-v6-u-p-md">
