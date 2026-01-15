@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Button } from '@patternfly-6/react-core';
-import { ExternalLinkAltIcon } from '@patternfly-6/react-icons';
+import { Button } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 const ExternalLink = ({ href, children }: React.PropsWithChildren<{ href: string }>) => (
   <Button

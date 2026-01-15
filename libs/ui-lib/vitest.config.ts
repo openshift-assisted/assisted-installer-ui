@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 import * as path from 'path';
 
 export default defineConfig({
@@ -11,6 +11,6 @@ export default defineConfig({
         inline: [/@patternfly/],
       },
     },
-    exclude: ['build/**'],
+    exclude: [...configDefaults.exclude, 'build/**'],
   },
 });

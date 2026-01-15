@@ -38,8 +38,3 @@ package-lock.json
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-
-# Ignored apps
-apps/*
-!apps/assisted-ui
-!apps/assisted-disconnected-ui

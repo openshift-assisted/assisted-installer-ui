@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Message } from '@patternfly/chatbot';
 import MessageLoading from '@patternfly/chatbot/dist/cjs/Message/MessageLoading';
 import { MsgProps } from './helpers';
-import { Button, Stack, StackItem } from '@patternfly-6/react-core';
+import { Button, Stack, StackItem } from '@patternfly/react-core';
 import { saveAs } from 'file-saver';
-import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly-6/react-icons';
+import { DownloadIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import FeedbackForm from './FeedbackCard';
 
 import AIAvatar from '../../assets/lightspeed-logo.svg';

@@ -4,6 +4,7 @@ import { Content, ContentVariants, Alert, Grid } from '@patternfly/react-core';
 import { CustomManifests } from './components/CustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CustomManifestFormState } from './components/propTypes';
+import { ClusterWizardStepHeader } from '../../../../common';
 
 export const CustomManifestsPage = ({
   cluster,
@@ -14,7 +15,7 @@ export const CustomManifestsPage = ({
 }) => (
   <Grid hasGutter>
     <Content>
-      <Content component={ContentVariants.h2}>Custom manifests</Content>
+      <ClusterWizardStepHeader>Custom manifests</ClusterWizardStepHeader>
       <Content component={ContentVariants.small}>
         Upload additional manifests that will be applied at the install time for advanced
         configuration of the cluster.

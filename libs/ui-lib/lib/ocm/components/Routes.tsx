@@ -20,7 +20,6 @@ type UILibRoutesProps = {
   children?: React.ReactNode;
   history?: HistoryRouterProps['history'];
   basename?: string;
-  additionalComponents?: React.ReactNode;
 };
 
 export const UILibRoutes = ({
@@ -28,7 +27,6 @@ export const UILibRoutes = ({
   children,
   history,
   basename,
-  additionalComponents,
 }: UILibRoutesProps) => {
   useFeatureDetection(allEnabledFeatures);
 
@@ -45,7 +43,6 @@ export const UILibRoutes = ({
         {children}
         <Route path="*" element={<Navigate to="assisted-installer/clusters" />} />
       </Routes>
-      {additionalComponents}
     </>
   );
 

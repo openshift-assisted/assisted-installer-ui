@@ -1,0 +1,55 @@
+{
+  "name": "@openshift-assisted/assisted-installer-ui-chatbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "scripts": {
+    "build": "fec build",
+    "check_types": "yarn run -T tsc --noEmit",
+    "clean": "yarn run -T rimraf node_modules dist .cache",
+    "patch:hosts": "fec patch-etc-hosts",
+    "format": "yarn run -T prettier --cache --check . \"!dist\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache .",
+    "start": "HOT=true fec dev --clouddotEnv=prod --uiEnv=stable",
+    "start:static": "fec static --port=7003 --config ../../node_modules/@redhat-cloud-services/frontend-components-config/bin/prod.webpack.config.js",
+    "static": "fec static",
+    "postinstall": "ts-patch install"
+  },
+  "dependencies": {
+    "@openshift-assisted/chatbot": "workspace:*",
+    "@patternfly/chatbot": "6.4.1",
+    "@patternfly/patternfly": "6.4.0",
+    "@patternfly/react-core": "6.4.0",
+    "@patternfly/react-icons": "6.4.0",
+    "@patternfly/react-styles": "6.4.0",
+    "@patternfly/react-tokens": "6.4.0",
+    "@redhat-cloud-services/ai-client-common": "^0.13.0",
+    "@redhat-cloud-services/ai-client-state": "^0.15.0",
+    "@redhat-cloud-services/frontend-components": "^7.0.0",
+    "axios": ">=0.22.0 <2.0.0",
+    "i18next": "^20.4.0",
+    "parse-url": "^9.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^11.11.4",
+    "react-router-dom-v5-compat": "^6.21.2"
+  },
+  "devDependencies": {
+    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.3",
+    "@redhat-cloud-services/frontend-components-config": "^6.0.17",
+    "@redhat-cloud-services/tsc-transform-imports": "^1.0.4",
+    "@tsconfig/vite-react": "^1.0.1",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "ts-patch": "^3.0.2",
+    "typescript": "^5.2.2"
+  },
+  "insights": {
+    "appname": "assisted-installer-ui-chatbot"
+  }
+}

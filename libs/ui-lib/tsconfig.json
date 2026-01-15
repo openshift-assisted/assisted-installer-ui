@@ -17,6 +17,7 @@
     "outDir": "build/cjs",
     "resolveJsonModule": true,
     "rootDir": "lib",
+    "skipLibCheck": true,
     "sourceMap": true,
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Button, Icon, Popover } from '@patternfly-6/react-core';
-import { InfoCircleIcon } from '@patternfly-6/react-icons';
+import { Button, Icon, Popover } from '@patternfly/react-core';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 
 import LightSpeedLogo from '../../assets/lightspeed-logo.svg';
 

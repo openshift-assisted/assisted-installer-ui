@@ -91,14 +91,6 @@ You can build the container image by running:
 $ podman build -t quay.io/edge-infrastructure/assisted-installer-ui:latest . --build-arg AIUI_APP_GIT_SHA="$(git rev-parse HEAD)" --build-arg AIUI_APP_VERSION=latest
 ```
 
-## ChatBot
-
-You can run the standalone UI with chatbot enabled. You need to be logged in via `ocm`.
-
-```
-$ AIUI_CHAT_API_URL=<chatbot_url> OCM_REFRESH_TOKEN=$(ocm token --refresh) AIUI_SSO_API_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token yarn start:assisted_ui
-```
-
 ## Available Scripts
 
 In the project directory, you can run:

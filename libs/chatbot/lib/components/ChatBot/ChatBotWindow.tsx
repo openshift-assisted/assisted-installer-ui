@@ -18,7 +18,7 @@ import {
   MessageBox,
   MessageBoxHandle,
 } from '@patternfly/chatbot';
-import { Brand, EmptyState, Spinner } from '@patternfly-6/react-core';
+import { Brand, EmptyState, Spinner } from '@patternfly/react-core';
 
 import BotMessage from './BotMessage';
 import { MESSAGE_BAR_ID, botRole, userRole, MsgProps } from './helpers';

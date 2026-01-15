@@ -48,11 +48,6 @@ export default defineConfig(async ({ mode }) => {
           target: env.AIUI_APP_API_URL,
           changeOrigin: true,
         },
-        '/chatbot': {
-          target: env.AIUI_CHAT_API_URL,
-          changeOrigin: true,
-          rewrite: (path: string) => path.replace(/^\/chatbot/, ''),
-        },
         '/token': {
           target: env.AIUI_SSO_API_URL,
           changeOrigin: true,
