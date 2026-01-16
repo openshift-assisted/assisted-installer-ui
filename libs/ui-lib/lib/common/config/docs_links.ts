@@ -237,3 +237,8 @@ export const getNumaResourcesLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/scalability_and_performance/cnf-numa-aware-scheduling`;
+
+export const getNetworkObservabilityLink = (ocpVersion?: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
+    ocpVersion,
+  )}/html/network_observability`;
