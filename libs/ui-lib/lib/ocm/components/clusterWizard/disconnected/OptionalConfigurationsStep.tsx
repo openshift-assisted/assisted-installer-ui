@@ -1,13 +1,20 @@
 import * as React from 'react';
-import { Formik, useFormikContext } from 'formik';
+import { Formik, useFormikContext, yupToFormErrors } from 'formik';
 import * as Yup from 'yup';
 import {
   ClusterWizardStep,
   TechnologyPreview,
-  getRichTextValidation,
   sshPublicKeyValidationSchema,
   pullSecretValidationSchema,
   getFormikErrorFields,
+  httpProxyValidationSchema,
+  noProxyValidationSchema,
+  ntpSourceValidationSchema,
+  ipValidationSchema,
+  InputField,
+  CheckboxField,
+  AdditionalNTPSourcesField,
+  ProxyFieldsType,
 } from '../../../../common';
 import { Split, SplitItem, Grid, GridItem, Form, Content, Checkbox } from '@patternfly/react-core';
 import { useClusterWizardContext } from '../ClusterWizardContext';
@@ -16,6 +23,7 @@ import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import UploadSSH from '../../../../common/components/clusterConfiguration/UploadSSH';
 import PullSecretField from '../../../../common/components/ui/formik/PullSecretField';
+import { ProxyInputFields } from '../../../../common/components/clusterConfiguration/ProxyFields';
 import { isInOcm, handleApiError, getApiErrorMessage } from '../../../../common/api';
 import { useAlerts } from '../../../../common/components/AlertsContextProvider';
 import { AlertVariant } from '@patternfly/react-core';
@@ -24,11 +32,93 @@ import { InfraEnvsAPI } from '../../../services/apis';
 import usePullSecret from '../../../hooks/usePullSecret';
 import { useParams } from 'react-router-dom-v5-compat';
 import ClustersService from '../../../services/ClustersService';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  InfraEnvCreateParams,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
+import { HostsNetworkConfigurationControlGroup } from '../../clusterConfiguration/HostsNetworkConfigurationControlGroup';
+import { HostsNetworkConfigurationType } from '../../../services/types';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
 
-type OptionalConfigurationsFormValues = {
+const DEFAULT_CPU_ARCHITECTURE = 'x86_64' as const;
+const DISCONNECTED_IMAGE_TYPE = 'disconnected-iso' as const;
+
+type OptionalConfigurationsFormValues = ProxyFieldsType & {
   sshPublicKey?: string;
-  pullSecret?: string;
+  pullSecret: string;
+  enableNtpSources: boolean;
+  additionalNtpSources?: string;
+  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
+  rendezvousIp?: string;
+};
+
+/**
+ * Builds common infrastructure environment params from form values
+ */
+const buildInfraEnvParams = (values: OptionalConfigurationsFormValues) => {
+  // Build proxy object - only include fields that have values
+  const proxy = {
+    ...(values.httpProxy && { httpProxy: values.httpProxy }),
+    ...(values.httpsProxy && { httpsProxy: values.httpsProxy }),
+    ...(values.noProxy && { noProxy: values.noProxy }),
+  };
+  const hasProxy = Object.keys(proxy).length > 0;
+
+  return {
+    pullSecret: values.pullSecret,
+    ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
+    ...(hasProxy && { proxy }),
+    ...(values.additionalNtpSources && {
+      additionalNtpSources: values.additionalNtpSources,
+    }),
+    ...(values.rendezvousIp && { rendezvousIp: values.rendezvousIp }),
+    // Initialize with dummy static network config when static IP is selected
+    // This is required for the StaticIpPage to render properly
+    ...(values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC && {
+      staticNetworkConfig: getDummyInfraEnvField(),
+    }),
+  };
+};
+
+const getValidationSchema = (values: OptionalConfigurationsFormValues) =>
+  Yup.object().shape({
+    sshPublicKey: sshPublicKeyValidationSchema,
+    pullSecret: pullSecretValidationSchema.required('Pull secret is required'),
+    enableProxy: Yup.boolean().required(),
+    httpProxy: httpProxyValidationSchema({
+      values,
+      pairValueName: 'httpsProxy',
+      allowEmpty: true,
+    }),
+    httpsProxy: httpProxyValidationSchema({
+      values,
+      pairValueName: 'httpProxy',
+      allowEmpty: true,
+    }),
+    noProxy: noProxyValidationSchema,
+    enableNtpSources: Yup.boolean().required(),
+    additionalNtpSources: ntpSourceValidationSchema,
+    hostsNetworkConfigurationType: Yup.string()
+      .oneOf(Object.values(HostsNetworkConfigurationType))
+      .required(),
+    rendezvousIp: Yup.string()
+      .max(45, 'IP address must be at most 45 characters')
+      .test(
+        'ip-validation',
+        'Not a valid IP address',
+        (value) => !value || ipValidationSchema.isValidSync(value),
+      ),
+  });
+
+const validate = (values: OptionalConfigurationsFormValues) => {
+  try {
+    getValidationSchema(values).validateSync(values, { abortEarly: false });
+    return {};
+  } catch (error) {
+    return yupToFormErrors(error);
+  }
 };
 
 const PullSecretSync: React.FC<{ pullSecret?: string }> = ({ pullSecret }) => {
@@ -47,11 +137,13 @@ const OptionalConfigurationsStep = () => {
   const pullSecret = usePullSecret() || '';
   const { clusterId } = useParams<{ clusterId: string }>();
   const [cluster, setCluster] = React.useState<Cluster | null>(null);
+  const { t } = useTranslation();
 
   const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
     useClusterWizardContext();
   const { addAlert } = useAlerts();
-  const [editPullSecret, setEditPullSecret] = React.useState(false);
+  // If no pull secret is available, default the checkbox to checked so the field is expanded
+  const [editPullSecret, setEditPullSecret] = React.useState(!pullSecret);
 
   React.useEffect(() => {
     const fetchCluster = async () => {
@@ -64,7 +156,7 @@ const OptionalConfigurationsStep = () => {
       } catch (error) {
         handleApiError(error, () => {
           addAlert({
-            title: 'Failed to fetch cluster',
+            title: t('ai:Failed to fetch cluster'),
             message: getApiErrorMessage(error),
             variant: AlertVariant.danger,
           });
@@ -72,71 +164,70 @@ const OptionalConfigurationsStep = () => {
       }
     };
     void fetchCluster();
-  }, [clusterId, addAlert]);
-
-  const validationSchema = React.useMemo(
-    () =>
-      Yup.object<OptionalConfigurationsFormValues>().shape({
-        sshPublicKey: sshPublicKeyValidationSchema,
-        pullSecret: pullSecretValidationSchema,
-      }),
-    [],
-  );
+  }, [clusterId, addAlert, t]);
 
   const initialValues: OptionalConfigurationsFormValues = {
     sshPublicKey: '',
     pullSecret: pullSecret,
+    enableProxy: false,
+    httpProxy: '',
+    httpsProxy: '',
+    noProxy: '',
+    enableNtpSources: false,
+    additionalNtpSources: '',
+    hostsNetworkConfigurationType: HostsNetworkConfigurationType.DHCP,
+    rendezvousIp: '',
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      validate={getRichTextValidation<OptionalConfigurationsFormValues>(validationSchema)}
+      validateOnMount
+      validate={validate}
       onSubmit={async (values) => {
-        if (!cluster || !cluster.id) {
+        if (!cluster?.id) {
           addAlert({
-            title: 'Missing cluster',
-            message: 'Cluster must be created before configuring infrastructure environment',
+            title: t('ai:Missing cluster'),
+            message: t('ai:Cluster must be created before configuring infrastructure environment'),
             variant: AlertVariant.danger,
           });
           return;
         }
 
+        const commonParams = buildInfraEnvParams(values);
+
         try {
-          // Check if infraEnv already exists
-          if (disconnectedInfraEnv && disconnectedInfraEnv.id) {
+          if (disconnectedInfraEnv?.id) {
             // Update existing infraEnv
-            const updateParams = {
-              pullSecret: values.pullSecret || pullSecret,
-              ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
+            const updateParams: InfraEnvUpdateParams = {
+              ...commonParams,
+              imageType: DISCONNECTED_IMAGE_TYPE,
             };
             const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
               disconnectedInfraEnv.id,
               updateParams,
             );
             setDisconnectedInfraEnv(updatedInfraEnv);
-            moveNext();
           } else {
-            // Create infraEnv with all params
-            const createParams = {
-              name: `disconnected-cluster_infra-env`,
-              pullSecret: values.pullSecret || pullSecret,
+            // Create new infraEnv
+            const createParams: InfraEnvCreateParams = {
+              name: InfraEnvsService.makeInfraEnvName(DEFAULT_CPU_ARCHITECTURE, cluster.name),
               clusterId: cluster.id,
               openshiftVersion: cluster.openshiftVersion,
-              cpuArchitecture: 'x86_64' as const,
-              ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
+              cpuArchitecture: DEFAULT_CPU_ARCHITECTURE,
+              imageType: DISCONNECTED_IMAGE_TYPE,
+              ...commonParams,
             };
             const createdInfraEnv = await InfraEnvsService.create(createParams);
             setDisconnectedInfraEnv(createdInfraEnv);
-            moveNext();
           }
+          moveNext();
         } catch (error) {
           handleApiError(error, () => {
             addAlert({
-              title:
-                disconnectedInfraEnv && disconnectedInfraEnv.id
-                  ? 'Failed to update infrastructure environment'
-                  : 'Failed to create infrastructure environment',
+              title: disconnectedInfraEnv?.id
+                ? t('ai:Failed to update infrastructure environment')
+                : t('ai:Failed to create infrastructure environment'),
               message: getApiErrorMessage(error),
               variant: AlertVariant.danger,
             });
@@ -144,7 +235,7 @@ const OptionalConfigurationsStep = () => {
         }
       }}
     >
-      {({ submitForm, isValid, errors, touched, isSubmitting }) => {
+      {({ submitForm, isValid, errors, touched, isSubmitting, values }) => {
         const errorFields = getFormikErrorFields(errors, touched);
         const handleNext = () => {
           void submitForm(); // This will trigger onSubmit
@@ -170,7 +261,7 @@ const OptionalConfigurationsStep = () => {
                 <GridItem>
                   <Split>
                     <SplitItem>
-                      <Content component="h2">Optional configurations</Content>
+                      <Content component="h2">{t('ai:Optional configurations')}</Content>
                     </SplitItem>
                     <SplitItem>
                       <TechnologyPreview />
@@ -179,14 +270,70 @@ const OptionalConfigurationsStep = () => {
                 </GridItem>
                 <GridItem>
                   <Form id="wizard-cluster-optional-configurations__form">
+                    {/* Rendezvous IP */}
+                    <InputField
+                      label={t('ai:Rendezvous IP')}
+                      name="rendezvousIp"
+                      helperText={t(
+                        'ai:The IP address that hosts will use to communicate with the bootstrap node during installation.',
+                      )}
+                      placeholder="e.g., 192.168.1.10"
+                      maxLength={45}
+                    />
+
                     <UploadSSH />
                     <Checkbox
-                      label="Edit pull secret"
+                      label={t('ai:Edit pull secret')}
                       isChecked={editPullSecret}
                       onChange={(_, checked) => setEditPullSecret(checked)}
                       id="edit-pull-secret-checkbox"
                     />
                     {(editPullSecret || !pullSecret) && <PullSecretField isOcm={isInOcm} />}
+
+                    {/* Proxy Settings */}
+                    <CheckboxField
+                      label={t('ai:Configure proxy settings')}
+                      name="enableProxy"
+                      helperText={
+                        <p>
+                          {t(
+                            'ai:If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy.',
+                          )}
+                        </p>
+                      }
+                      body={values.enableProxy && <ProxyInputFields />}
+                    />
+
+                    {/* NTP Configuration */}
+                    <CheckboxField
+                      label={t('ai:Add your own NTP (Network Time Protocol) sources')}
+                      name="enableNtpSources"
+                      helperText={
+                        <p>
+                          {t(
+                            'ai:Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.',
+                          )}
+                        </p>
+                      }
+                      body={
+                        values.enableNtpSources && (
+                          <Grid hasGutter>
+                            <AdditionalNTPSourcesField
+                              name="additionalNtpSources"
+                              helperText={t(
+                                'ai:A comma separated list of IP or domain names of the NTP pools or servers.',
+                              )}
+                            />
+                          </Grid>
+                        )
+                      }
+                    />
+
+                    {/* Network Configuration */}
+                    <HostsNetworkConfigurationControlGroup
+                      clusterExists={false}
+                      isDisabled={false}
+                    />
                   </Form>
                 </GridItem>
               </Grid>
