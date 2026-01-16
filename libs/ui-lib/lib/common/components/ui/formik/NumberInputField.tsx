@@ -15,7 +15,7 @@ import { getFieldId } from './utils';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 // eslint-disable-next-line react/display-name
-const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
+const NumberInputField: React.FC<React.PropsWithChildren<NumberInputFieldProps>> = React.forwardRef(
   (
     {
       label,

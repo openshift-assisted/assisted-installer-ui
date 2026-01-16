@@ -19,7 +19,7 @@ export interface StaticFieldProps {
   isValid?: boolean;
 }
 
-export const StaticField: React.FC<StaticFieldProps> = ({
+export const StaticField: React.FC<React.PropsWithChildren<StaticFieldProps>> = ({
   label,
   name,
   children,
@@ -63,7 +63,10 @@ type FormikStaticFieldProps = {
   value: string;
 } & StaticFieldProps;
 
-export const FormikStaticField: React.FC<FormikStaticFieldProps> = ({ value, ...props }) => {
+export const FormikStaticField: React.FC<React.PropsWithChildren<FormikStaticFieldProps>> = ({
+  value,
+  ...props
+}) => {
   const [, , helpers] = useField({ name: props.name });
 
   React.useEffect(() => {
@@ -77,7 +80,10 @@ export const FormikStaticField: React.FC<FormikStaticFieldProps> = ({ value, ...
  * Simplified form component for rendering static text.
  * Does not reflect field value from formik.
  */
-export const StaticTextField: React.FC<StaticFieldProps> = ({ children, ...props }) => {
+export const StaticTextField: React.FC<React.PropsWithChildren<StaticFieldProps>> = ({
+  children,
+  ...props
+}) => {
   const fieldId = getFieldId(props.name, 'static');
 
   return (

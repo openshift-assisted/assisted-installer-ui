@@ -10,7 +10,7 @@ export type AddHostsContextType = {
 
 export const AddHostsContext = React.createContext<AddHostsContextType>({});
 
-export const AddHostsContextProvider: React.FC<AddHostsContextType> = ({
+export const AddHostsContextProvider: React.FC<React.PropsWithChildren<AddHostsContextType>> = ({
   cluster,
   resetCluster,
   ocpConsoleUrl,

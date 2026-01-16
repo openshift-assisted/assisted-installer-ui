@@ -34,9 +34,11 @@ export const FeatureGateContext = React.createContext<FeatureGateContextType>({
   isFeatureEnabled: () => false,
 });
 
-export const FeatureGateContextProvider: React.FC<{
-  features: FeatureListType;
-}> = ({ features, children }) => {
+export const FeatureGateContextProvider: React.FC<
+  React.PropsWithChildren<{
+    features: FeatureListType;
+  }>
+> = ({ features, children }) => {
   const featuresWithDefaults: FeatureListType = {
     ...features,
   };

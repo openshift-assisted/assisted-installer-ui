@@ -92,14 +92,11 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
       noProxy: noProxyValidationSchema,
       labels: Yup.array()
         .of(Yup.string())
-        .test(
-          'label-equals-validation',
-          'Label selector needs to be in a `key=value` form',
-          (values) =>
-            (values as string[]).every((value) => {
-              const parts = value.split('=');
-              return parts.length === 2;
-            }),
+        .test('label-equals-validation', 'Label needs to be in a `key=value` form', (values) =>
+          (values as string[]).every((value) => {
+            const parts = value.split('=');
+            return parts.length === 2;
+          }),
         ),
       additionalNtpSources: ntpSourceValidationSchema,
     }),
@@ -130,7 +127,7 @@ type InfraEnvFormProps = {
   osImages?: OsImage[];
 };
 
-const InfraEnvForm: React.FC<InfraEnvFormProps> = ({
+const InfraEnvForm: React.FC<React.PropsWithChildren<InfraEnvFormProps>> = ({
   onValuesChanged,
   children,
   pullSecret,
@@ -286,7 +283,7 @@ type InfraEnvFormPageProps = InfraEnvFormProps & {
   osImages?: OsImage[];
 };
 
-export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
+export const InfraEnvFormPage: React.FC<React.PropsWithChildren<InfraEnvFormPageProps>> = ({
   usedNames,
   onSubmit,
   onClose,

@@ -217,7 +217,7 @@ export const ConfigMapForm = ({ namespace }: { namespace: string }) => {
 
       {!isValid && errorAlert}
 
-      {isError && (
+      {!!isError && (
         <GridItem>
           <Alert
             variant={AlertVariant.danger}

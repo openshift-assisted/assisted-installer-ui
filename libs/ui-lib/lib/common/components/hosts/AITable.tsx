@@ -226,7 +226,7 @@ const AITable = <R extends any>({
   }, [hostRows, columns, children]);
 
   const onCollapse = React.useCallback(
-    (_event, rowKey: number) => {
+    (_event: unknown, rowKey: number) => {
       const id = hostRows[rowKey].id as string;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));

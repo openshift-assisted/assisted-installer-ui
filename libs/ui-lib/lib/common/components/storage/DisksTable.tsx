@@ -39,7 +39,9 @@ const diskColumns = (t: TFunction, showFormat: boolean) =>
       title: (
         <>
           WWN{' '}
-          <PopoverIcon bodyContent={t('ai:World Wide Name (WWN) is a unique disk identifier.')} />
+          <PopoverIcon
+            bodyContent={t<string>('ai:World Wide Name (WWN) is a unique disk identifier.')}
+          />
         </>
       ),
     },

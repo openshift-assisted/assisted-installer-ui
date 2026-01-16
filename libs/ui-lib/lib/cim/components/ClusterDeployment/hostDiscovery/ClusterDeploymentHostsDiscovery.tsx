@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, GridItem, Content, OrderType } from '@patternfly/react-core';
-import Measure from 'react-measure';
+import useResizeObserver from '@react-hook/resize-observer';
 import {
   DiscoveryTroubleshootingModal,
   FormatDiskWarning,
@@ -67,6 +67,12 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
 
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const { t } = useTranslation();
+
+  const tableRef = React.useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = React.useState<number>();
+  useResizeObserver(tableRef, (entry) => {
+    setTableWidth(entry.contentRect.width);
+  });
   return (
     <Grid hasGutter>
       <GridItem>
@@ -100,26 +106,22 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
       </GridItem>
 
       <GridItem>
-        <Measure bounds>
-          {({ measureRef, contentRect }) => (
-            <div ref={measureRef}>
-              <ClusterDeploymentHostDiscoveryTable
-                agents={agents}
-                bareMetalHosts={bareMetalHosts}
-                infraEnv={infraEnv}
-                onEditHost={setEditAgent}
-                onEditRole={onEditRole}
-                onSetInstallationDiskId={onSetInstallationDiskId}
-                onEditBMH={setEditBMH}
-                onChangeHostname={onChangeHostname}
-                onChangeBMHHostname={onChangeBMHHostname}
-                onApprove={onApproveAgent}
-                width={contentRect.bounds?.width}
-                onDeleteHost={onDeleteHost}
-              />
-            </div>
-          )}
-        </Measure>
+        <div ref={tableRef}>
+          <ClusterDeploymentHostDiscoveryTable
+            agents={agents}
+            bareMetalHosts={bareMetalHosts}
+            infraEnv={infraEnv}
+            onEditHost={setEditAgent}
+            onEditRole={onEditRole}
+            onSetInstallationDiskId={onSetInstallationDiskId}
+            onEditBMH={setEditBMH}
+            onChangeHostname={onChangeHostname}
+            onChangeBMHHostname={onChangeBMHHostname}
+            onApprove={onApproveAgent}
+            width={tableWidth}
+            onDeleteHost={onDeleteHost}
+          />
+        </div>
         <EditBMHModal
           infraEnv={infraEnv}
           bmh={editBMH}

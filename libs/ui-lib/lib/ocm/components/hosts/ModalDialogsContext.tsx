@@ -104,7 +104,7 @@ const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefi
 
 type DialogStoreType = Partial<Record<DialogId, unknown>>;
 
-const ModalDialogsContextProvider: React.FC = ({ children }) => {
+const ModalDialogsContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [dialogsState, dispatchDialogsAction] = React.useReducer(
     dialogsReducer,
     {} as DialogStoreType,

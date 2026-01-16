@@ -15,7 +15,11 @@ type ValidationPopoverProps = {
   actions?: React.ReactNode[];
 };
 
-const ValidationPopover: React.FC<ValidationPopoverProps> = ({ validation, actions, children }) => {
+const ValidationPopover: React.FC<React.PropsWithChildren<ValidationPopoverProps>> = ({
+  validation,
+  actions,
+  children,
+}) => {
   const { t } = useTranslation();
   const failedValidationHint = hostValidationFailureHints(t)[validation.id];
 
@@ -47,7 +51,9 @@ type HostPropertyValidationPopoverProps = {
   showSuccess?: boolean;
 };
 
-const HostPropertyValidationPopover: React.FC<HostPropertyValidationPopoverProps> = ({
+const HostPropertyValidationPopover: React.FC<
+  React.PropsWithChildren<HostPropertyValidationPopoverProps>
+> = ({
   validation,
   failureActions,
   pendingActions,

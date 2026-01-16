@@ -15,7 +15,9 @@ import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
 const InputField: React.FC<
-  InputFieldProps & { inputError?: string; description?: React.ReactNode; labelInfo?: string }
+  React.PropsWithChildren<
+    InputFieldProps & { inputError?: string; description?: React.ReactNode; labelInfo?: string }
+  >
   // eslint-disable-next-line react/display-name
 > = React.forwardRef(
   (

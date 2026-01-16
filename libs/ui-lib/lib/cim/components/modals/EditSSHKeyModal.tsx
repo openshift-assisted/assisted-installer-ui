@@ -69,7 +69,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
         }}
         validateOnMount
       >
-        {({ isSubmitting, isValid, submitForm }: FormikProps<EditSSHKeyModalProps>) => (
+        {({ isSubmitting, isValid, submitForm }: FormikProps<EditSSHKeyFormikValues>) => (
           <>
             <ModalBoxBody>
               <Stack hasGutter>
@@ -87,8 +87,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-              <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
+              <Button onClick={() => void submitForm()} isDisabled={isSubmitting || !isValid}>
                 {t('ai:Save')}
               </Button>
               <Button onClick={onClose} variant={ButtonVariant.secondary}>

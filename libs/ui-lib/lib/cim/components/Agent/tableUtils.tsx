@@ -45,7 +45,7 @@ export const agentHostnameColumn = (
   canEditBMH?: HostsTableActions['canEditBMH'],
 ): TableRow<Host> => ({
   header: {
-    title: t('ai:Hostname'),
+    title: t<string>('ai:Hostname'),
     props: {
       id: 'col-header-hostname', // ACM jest tests require id over testId
       modifier: 'breakWord',
@@ -92,7 +92,7 @@ export const discoveryTypeColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Discovery type'),
+      title: t<string>('ai:Discovery type'),
       props: {
         id: 'col-header-discovery-type',
       },
@@ -146,7 +146,7 @@ export const agentStatusColumn = ({
 }: AgentStatusColumnProps): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Status'),
+      title: t<string>('ai:Status'),
       props: {
         id: 'col-header-infraenvstatus',
       },
@@ -194,7 +194,7 @@ export const clusterColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Cluster'),
+      title: t<string>('ai:Cluster'),
       props: {
         id: 'col-header-cluster',
       },
@@ -234,7 +234,7 @@ export const clusterColumn = (
 export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Infrastructure env'),
+      title: t<string>('ai:Infrastructure env'),
       props: {
         id: 'col-header-infraenv',
       },

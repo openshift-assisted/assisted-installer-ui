@@ -64,7 +64,7 @@ export const hostnameColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Hostname'),
+      title: t<string>('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -100,7 +100,7 @@ export const roleColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Role'),
+      title: t<string>('ai:Role'),
       props: {
         id: 'col-header-role',
       },
@@ -132,7 +132,7 @@ export const statusColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t('ai:Status'),
+      title: t<string>('ai:Status'),
       props: {
         id: 'col-header-status',
       },
@@ -169,7 +169,7 @@ export const statusColumn = (
 
 export const discoveredAtColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:Discovered on'),
+    title: t<string>('ai:Discovered on'),
     props: {
       id: 'col-header-discoveredat',
     },
@@ -188,7 +188,7 @@ export const discoveredAtColumn = (t: TFunction): TableRow<Host> => ({
 
 export const cpuArchitectureColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:CPU Architecture'),
+    title: t<string>('ai:CPU Architecture'),
     props: {
       id: 'col-header-cpuarchitecture',
     },
@@ -206,7 +206,7 @@ export const cpuArchitectureColumn = (t: TFunction): TableRow<Host> => ({
 
 export const cpuCoresColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:CPU Cores'),
+    title: t<string>('ai:CPU Cores'),
     props: {
       id: 'col-header-cpucores',
     },
@@ -233,7 +233,7 @@ export const cpuCoresColumn = (t: TFunction): TableRow<Host> => ({
 
 export const memoryColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:Memory'),
+    title: t<string>('ai:Memory'),
     props: {
       id: 'col-header-memory',
     },
@@ -258,7 +258,7 @@ export const memoryColumn = (t: TFunction): TableRow<Host> => ({
 
 export const disksColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:Total storage'),
+    title: t<string>('ai:Total storage'),
     props: {
       id: 'col-header-disk',
     },
@@ -283,7 +283,7 @@ export const disksColumn = (t: TFunction): TableRow<Host> => ({
 
 export const gpusColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:GPUs'),
+    title: t<string>('ai:GPUs'),
     props: {
       id: 'col-header-gpus',
     },
@@ -305,7 +305,7 @@ export const countColumn = (cluster: Cluster): TableRow<Host> => ({
 
 export const activeNICColumn = (cluster: Cluster, t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:Active NIC'),
+    title: t<string>('ai:Active NIC'),
     sort: true,
   },
   cell: (host) => {
@@ -384,7 +384,7 @@ export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
 
 export const labelsColumn = (t: TFunction): TableRow<Host> => ({
   header: {
-    title: t('ai:Labels'),
+    title: t<string>('ai:Labels'),
     props: {
       id: 'col-header-labels',
     },

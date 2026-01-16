@@ -183,7 +183,9 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     openshiftVersion?: string;
   };
 
-const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
+const WithHostStatusPopover: React.FC<React.PropsWithChildren<WithHostStatusPopoverProps>> = (
+  props,
+) => (
   <Popover
     headerContent={<div>{props.title}</div>}
     bodyContent={
@@ -226,7 +228,7 @@ const getHostStatusIcon = (
   } else return icon;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({
+const HostStatus: React.FC<React.PropsWithChildren<HostStatusProps>> = ({
   host,
   validationsInfo,
   status,
