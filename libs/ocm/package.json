@@ -1,0 +1,73 @@
+{
+  "name": "@openshift-assisted/ocm",
+  "license": "Apache-2.0",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    "./*": {
+      "source": "./src/*",
+      "types": "./build/*.d.ts",
+      "default": "./build/*"
+    },
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    }
+  },
+  "scripts": {
+    "build": "yarn run -T tsc --build --verbose && yarn copy:css && yarn copy:svg",
+    "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./src/index.ts",
+    "check_types": "yarn run -T tsc --noEmit",
+    "clean": "yarn run -T rimraf node_modules build",
+    "copy:svg": "rsync -Ruv src/./**/*.svg build || true",
+    "copy:css": "rsync -Ruv src/./**/*.css build || true",
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
+  },
+  "dependencies": {
+    "@openshift-assisted/common": "workspace:*",
+    "@openshift-assisted/types": "workspace:*",
+    "axios": "^1.13.2",
+    "classnames": "^2.3.1",
+    "file-saver": "^2.0.2",
+    "formik": "2.2.6",
+    "humanize-plus": "^1.8.2",
+    "ip-address": "^7.1.0",
+    "is-in-subnet": "^4",
+    "js-yaml": "^4.1.1",
+    "lodash-es": "^4.17.21",
+    "uuid": "^8.1"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/humanize-plus": "^1.8.0",
+    "@types/js-yaml": "^4.0.1",
+    "@types/lodash-es": "^4.17.6",
+    "@types/node": "^18.14.6",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "^18.2.0",
+    "@types/uuid": "^8.0.0"
+  },
+  "peerDependencies": {
+    "@patternfly/patternfly": "^6.4.0",
+    "@patternfly/react-code-editor": "^6.4.0",
+    "@patternfly/react-core": "^6.4.0",
+    "@patternfly/react-icons": "^6.4.0",
+    "@patternfly/react-styles": "^6.4.0",
+    "@patternfly/react-table": "^6.4.0",
+    "@patternfly/react-tokens": "^6.4.0",
+    "@reduxjs/toolkit": "^1.9.1",
+    "@sentry/browser": "^5.9 || ^6",
+    "i18next": "^20.4 || ^21",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-i18next": ">11.7.3",
+    "react-redux": "^8.0.5",
+    "react-router-dom-v5-compat": "^6.21.2",
+    "yup": "^1.4.0"
+  }
+}

@@ -1,5 +1,5 @@
 import { useCluster } from '../hooks/useCluster';
-import { AlertsContextProvider } from '@openshift-assisted/ui-lib/common';
+import { AlertsContextProvider } from '@openshift-assisted/common';
 import {
   ClusterLoading,
   ClusterWizardContextProvider,
@@ -7,7 +7,7 @@ import {
   NewFeatureSupportLevelProvider,
   NewClusterWizard,
   ModalDialogsContextProvider,
-} from '@openshift-assisted/ui-lib/ocm';
+} from '@openshift-assisted/ocm';
 import { Alert, PageSection } from '@patternfly/react-core';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import ResetSingleClusterModal from './ResetSingleClusterModal';

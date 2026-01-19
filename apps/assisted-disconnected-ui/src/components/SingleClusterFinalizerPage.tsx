@@ -7,10 +7,7 @@ import {
   EmptyStateVariant,
 } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  TroubleshootingOpenshiftConsoleButton,
-  useTranslation,
-} from '@openshift-assisted/ui-lib/common';
+import { TroubleshootingOpenshiftConsoleButton, useTranslation } from '@openshift-assisted/common';
 
 const SingleClusterFinalizerPage = ({
   cluster,

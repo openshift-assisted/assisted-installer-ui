@@ -1,0 +1,110 @@
+import React from 'react';
+import * as Yup from 'yup';
+import {
+  Button,
+  ButtonVariant,
+  ButtonType,
+  Form,
+  ModalBody,
+  ModalFooter,
+} from '@patternfly/react-core';
+import { Formik } from 'formik';
+import { day2ApiVipValidationSchema } from '@openshift-assisted/common/components/ui/formik/validationSchemas';
+import InputField from '@openshift-assisted/common/components/ui/formik/InputField';
+import { AlertFormikError } from '@openshift-assisted/common/components/ui/formik/AlertFormikError';
+import GridGap from '@openshift-assisted/common/components/ui/GridGap';
+import { StatusErrorType } from '@openshift-assisted/common';
+import { useTranslation } from '@openshift-assisted/common/hooks/use-translation-wrapper';
+
+export type UpdateDay2ApiVipFormProps = {
+  onClose: () => void;
+  onUpdateDay2ApiVip: (apiVip: string, onError: (message: string) => void) => Promise<void>;
+  currentApiVip?: string;
+};
+
+export type UpdateDay2ApiVipValues = {
+  apiVip?: string;
+};
+
+const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
+  onUpdateDay2ApiVip,
+  onClose,
+  currentApiVip: originApiVip,
+}) => {
+  const { t } = useTranslation();
+
+  const apiVipInputRef = React.useRef<HTMLInputElement>();
+  React.useEffect(() => {
+    apiVipInputRef.current?.focus();
+    apiVipInputRef.current?.select();
+  }, []);
+  const initialValues = {
+    apiVip: originApiVip,
+  };
+  const validationSchema = React.useMemo(
+    () =>
+      Yup.object().shape({
+        apiVip: day2ApiVipValidationSchema.required(t('ai:Required field')),
+      }),
+    [t],
+  );
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      initialStatus={{ error: null }}
+      onSubmit={async (values, formikHelpers) => {
+        if (values.apiVip) {
+          const onError = (message: string) => {
+            const error: StatusErrorType = {
+              error: {
+                title: 'Failed to update API IP',
+                message,
+              },
+            };
+            formikHelpers.setStatus(error);
+          };
+          await onUpdateDay2ApiVip(values.apiVip, onError);
+          onClose();
+        }
+      }}
+    >
+      {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => {
+        return (
+          <Form onSubmit={handleSubmit}>
+            <ModalBody>
+              <GridGap>
+                <AlertFormikError
+                  status={status as StatusErrorType}
+                  onClose={() => setStatus({ error: null })}
+                />
+
+                <InputField
+                  label="Set the IP or domain used to reach the cluster"
+                  name="apiVip"
+                  ref={apiVipInputRef}
+                  isRequired
+                />
+              </GridGap>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                key="submit"
+                type={ButtonType.submit}
+                isDisabled={isSubmitting || !isValid || !dirty}
+              >
+                Update
+              </Button>
+              <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+};
+
+export default UpdateDay2ApiVipForm;

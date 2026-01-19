@@ -33,10 +33,6 @@ module.exports = {
                   'Import `useTranslation` from `lib/common/hooks/use-translation-wrapper.ts` instead',
               },
               {
-                name: '@openshift-assisted/ui-lib',
-                message: 'Import from `@openshift-assisted/ui-lib/ocm` instead',
-              },
-              {
                 name: '@patternfly/react-icons',
                 message:
                   'Import using full path `@patternfly/react-icons/dist/js/icons/<icon>` instead',

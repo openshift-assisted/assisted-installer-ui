@@ -1,0 +1,26 @@
+{
+  "extends": "@tsconfig/recommended",
+  "compilerOptions": {
+    "allowJs": false,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "importHelpers": true,
+    "incremental": true,
+    "jsx": "react",
+    "lib": ["DOM", "DOM.Iterable", "ES2015"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": false,
+    "noEmitOnError": true,
+    "outDir": "build",
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
+  },
+  "include": ["src"],
+  "exclude": ["**/_*"],
+  "references": [{ "path": "../common" }, { "path": "../types" }]
+}

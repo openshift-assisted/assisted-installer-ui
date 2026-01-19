@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClustersAPI } from '@openshift-assisted/ui-lib/common';
+import { ClustersAPI } from '@openshift-assisted/common';
 
 export const useCluster = (): [string | undefined, boolean, boolean] => {
   const [isLoading, setIsLoading] = React.useState(true);

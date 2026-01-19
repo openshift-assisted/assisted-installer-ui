@@ -2,7 +2,7 @@ import type React from 'react';
 import { BrowserRouter, BrowserRouterProps } from 'react-router-dom';
 import { CompatRouter, Route } from 'react-router-dom-v5-compat';
 import { Page } from '@patternfly/react-core';
-import * as OCM from '@openshift-assisted/ui-lib/ocm';
+import * as OCM from '@openshift-assisted/ocm';
 import { Header } from './Header';
 import '../i18n';
 

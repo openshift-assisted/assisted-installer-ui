@@ -800,8 +800,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/assisted-disconnected-ui@workspace:apps/assisted-disconnected-ui"
   dependencies:
-    "@openshift-assisted/ui-lib": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 1.0.0
+    "@openshift-assisted/common": "workspace:*"
+    "@openshift-assisted/ocm": "workspace:*"
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.0
     "@patternfly/react-core": 6.4.0
@@ -815,7 +815,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ">=0.22.0 <2.0.0"
+    axios: ^1.13.2
     concurrently: ^8.2.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
@@ -857,7 +857,7 @@ __metadata:
     "@tsconfig/vite-react": ^1.0.1
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
-    axios: ">=0.22.0 <2.0.0"
+    axios: ^1.13.2
     i18next: ^20.4.0
     parse-url: ^9.2.0
     react: ^18.2.0
@@ -874,8 +874,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/assisted-ui@workspace:apps/assisted-ui"
   dependencies:
-    "@openshift-assisted/ui-lib": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 1.0.0
+    "@openshift-assisted/common": "workspace:*"
+    "@openshift-assisted/ocm": "workspace:*"
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.0
     "@patternfly/react-core": 6.4.0
@@ -891,7 +891,7 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ">=0.22.0 <2.0.0"
+    axios: ^1.13.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4
@@ -936,6 +936,105 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@openshift-assisted/cim@workspace:libs/cim":
+  version: 0.0.0-use.local
+  resolution: "@openshift-assisted/cim@workspace:libs/cim"
+  dependencies:
+    "@openshift-assisted/common": "workspace:*"
+    "@openshift-assisted/types": "workspace:*"
+    "@openshift-console/dynamic-plugin-sdk": ^1.0.0
+    "@react-hook/resize-observer": ^2.0.2
+    "@tsconfig/recommended": ^1.0.2
+    "@types/js-yaml": ^4.0.1
+    "@types/lodash-es": ^4.17.6
+    "@types/node": ^18.14.6
+    "@types/react": 18.2.37
+    "@types/react-dom": ^18.2.0
+    "@types/uuid": ^8.0.0
+    classnames: ^2.3.1
+    file-saver: ^2.0.2
+    formik: 2.2.6
+    fuse.js: ^6.4.6
+    ip-address: ^7.1.0
+    js-yaml: ^4.1.1
+    lodash-es: ^4.17.21
+    parse-url: ^9.2.0
+    uuid: ^8.1
+  peerDependencies:
+    "@openshift-console/dynamic-plugin-sdk": ^1.0.0
+    "@patternfly/patternfly": ^6.4.0
+    "@patternfly/react-code-editor": ^6.4.0
+    "@patternfly/react-core": ^6.4.0
+    "@patternfly/react-icons": ^6.4.0
+    "@patternfly/react-styles": ^6.4.0
+    "@patternfly/react-table": ^6.4.0
+    "@patternfly/react-tokens": ^6.4.0
+    i18next: ^20.4 || ^21
+    monaco-editor: ^0.44.0
+    react: ^18
+    react-dom: ^18
+    react-i18next: ">11.7.3"
+    react-monaco-editor: ^0.55.0
+    react-router-dom-v5-compat: ^6.21.2
+    yup: ^1.4.0
+  languageName: unknown
+  linkType: soft
+
+"@openshift-assisted/common@workspace:*, @openshift-assisted/common@workspace:libs/common":
+  version: 0.0.0-use.local
+  resolution: "@openshift-assisted/common@workspace:libs/common"
+  dependencies:
+    "@openshift-assisted/types": "workspace:*"
+    "@tsconfig/recommended": ^1.0.2
+    "@types/file-saver": ^2.0.1
+    "@types/human-date": ^1.4.0
+    "@types/humanize-plus": ^1.8.0
+    "@types/js-yaml": ^4.0.1
+    "@types/lodash-es": ^4.17.6
+    "@types/node": ^18.14.6
+    "@types/react": 18.2.37
+    "@types/react-dom": ^18.2.0
+    "@types/uuid": ^8.0.0
+    axios: ^1.13.2
+    axios-case-converter: ^0.11.1
+    camel-case: ^4.1.2
+    cidr-tools: ^4.3.0
+    classnames: ^2.3.1
+    file-saver: ^2.0.2
+    filesize.js: ^2.0.0
+    formik: 2.2.6
+    fuse.js: ^6.4.6
+    human-date: ^1.4.0
+    humanize-plus: ^1.8.2
+    ip-address: ^7.1.0
+    is-cidr: ^4.0.2
+    is-in-subnet: ^4
+    js-yaml: ^4.1.1
+    lodash-es: ^4.17.21
+    parse-url: ^9.2.0
+    prism-react-renderer: ^1.1.1
+    react-dropzone: ^14.2.3
+    react-error-boundary: ^3.1.4
+    uuid: ^8.1
+  peerDependencies:
+    "@patternfly/patternfly": ^6.4.0
+    "@patternfly/react-code-editor": ^6.4.0
+    "@patternfly/react-core": ^6.4.0
+    "@patternfly/react-icons": ^6.4.0
+    "@patternfly/react-styles": ^6.4.0
+    "@patternfly/react-table": ^6.4.0
+    "@patternfly/react-tokens": ^6.4.0
+    "@reduxjs/toolkit": ^1.9.1
+    "@sentry/browser": ^5.9 || ^6
+    i18next: ^20.4 || ^21
+    react: ^18
+    react-dom: ^18
+    react-i18next: ">11.7.3"
+    react-redux: ^8.0.5
+    yup: ^1.4.0
+  languageName: unknown
+  linkType: soft
+
 "@openshift-assisted/eslint-config@workspace:tools/eslint-config":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/eslint-config@workspace:tools/eslint-config"
@@ -951,11 +1050,55 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/locales@workspace:*, @openshift-assisted/locales@workspace:libs/locales":
+"@openshift-assisted/locales@workspace:libs/locales":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/locales@workspace:libs/locales"
   dependencies:
     i18next-parser: ^3.3.0
+  languageName: unknown
+  linkType: soft
+
+"@openshift-assisted/ocm@workspace:*, @openshift-assisted/ocm@workspace:libs/ocm":
+  version: 0.0.0-use.local
+  resolution: "@openshift-assisted/ocm@workspace:libs/ocm"
+  dependencies:
+    "@openshift-assisted/common": "workspace:*"
+    "@openshift-assisted/types": "workspace:*"
+    "@tsconfig/recommended": ^1.0.2
+    "@types/humanize-plus": ^1.8.0
+    "@types/js-yaml": ^4.0.1
+    "@types/lodash-es": ^4.17.6
+    "@types/node": ^18.14.6
+    "@types/react": 18.2.37
+    "@types/react-dom": ^18.2.0
+    "@types/uuid": ^8.0.0
+    axios: ^1.13.2
+    classnames: ^2.3.1
+    file-saver: ^2.0.2
+    formik: 2.2.6
+    humanize-plus: ^1.8.2
+    ip-address: ^7.1.0
+    is-in-subnet: ^4
+    js-yaml: ^4.1.1
+    lodash-es: ^4.17.21
+    uuid: ^8.1
+  peerDependencies:
+    "@patternfly/patternfly": ^6.4.0
+    "@patternfly/react-code-editor": ^6.4.0
+    "@patternfly/react-core": ^6.4.0
+    "@patternfly/react-icons": ^6.4.0
+    "@patternfly/react-styles": ^6.4.0
+    "@patternfly/react-table": ^6.4.0
+    "@patternfly/react-tokens": ^6.4.0
+    "@reduxjs/toolkit": ^1.9.1
+    "@sentry/browser": ^5.9 || ^6
+    i18next: ^20.4 || ^21
+    react: ^18
+    react-dom: ^18
+    react-i18next: ">11.7.3"
+    react-redux: ^8.0.5
+    react-router-dom-v5-compat: ^6.21.2
+    yup: ^1.4.0
   languageName: unknown
   linkType: soft
 
@@ -964,7 +1107,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.12.0
+    axios: ^1.13.2
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
@@ -997,7 +1140,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/ui-lib-tests@workspace:libs/ui-lib-tests"
   dependencies:
-    "@openshift-assisted/ui-lib": "workspace:*"
+    "@openshift-assisted/common": "workspace:*"
+    "@openshift-assisted/ocm": "workspace:*"
     "@testing-library/cypress": ^9.0.0
     "@types/lodash": ^4.14.121
     cypress: 13.6.2
@@ -1008,75 +1152,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-assisted/ui-lib@workspace:*, @openshift-assisted/ui-lib@workspace:libs/ui-lib":
-  version: 0.0.0-use.local
-  resolution: "@openshift-assisted/ui-lib@workspace:libs/ui-lib"
-  dependencies:
-    "@openshift-assisted/locales": "workspace:*"
-    "@openshift-assisted/types": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 1.0.0
-    "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-code-editor": 6.4.0
-    "@patternfly/react-core": 6.4.0
-    "@patternfly/react-icons": 6.4.0
-    "@patternfly/react-styles": 6.4.0
-    "@patternfly/react-table": 6.4.0
-    "@patternfly/react-tokens": 6.4.0
-    "@react-hook/resize-observer": ^2.0.2
-    "@tsconfig/recommended": ^1.0.2
-    "@types/file-saver": ^2.0.1
-    "@types/human-date": ^1.4.0
-    "@types/humanize-plus": ^1.8.0
-    "@types/js-yaml": ^4.0.1
-    "@types/lodash-es": ^4.17.6
-    "@types/node": ^18.14.6
-    "@types/react": 18.2.37
-    "@types/react-autosuggest": ^10.1.5
-    "@types/react-dom": 18.2.15
-    "@types/react-redux": ^7.1.7
-    "@types/uuid": ^8.0.0
-    axios-case-converter: ^0.11.1
-    camel-case: ^4.1.2
-    cidr-tools: ^4.3.0
-    classnames: ^2.3.1
-    file-saver: ^2.0.2
-    filesize.js: ^2.0.0
-    formik: 2.2.6
-    fuse.js: ^6.4.6
-    human-date: ^1.4.0
-    humanize-plus: ^1.8.2
-    ip-address: ^7.1.0
-    is-cidr: ^4.0.2
-    is-in-subnet: ^4
-    js-yaml: ^4.1.1
-    lodash-es: ^4.17.21
-    parse-url: ^9.2.0
-    prism-react-renderer: ^1.1.1
-    react-error-boundary: ^3.1.4
-    swr: ^2
-    tslib: ^2.6.1
-    unique-names-generator: ^4.2.0
-  peerDependencies:
-    "@reduxjs/toolkit": ^1.9.1
-    "@sentry/browser": ^5.9 || ^6
-    axios: ">=0.22.0 <1.0.0"
-    i18next: ^20.4 || ^21
-    monaco-editor: ^0.44.0
-    react: ^18
-    react-dom: ^18
-    react-i18next: ">11.7.3"
-    react-monaco-editor: ^0.55.0
-    react-redux: ^8.0.5
-    react-router-dom-v5-compat: ^6.21.2
-    redux: ^4
-    uuid: ^8.1
-    yup: ^1.4.0
-  languageName: unknown
-  linkType: soft
-
-"@openshift-console/dynamic-plugin-sdk@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@openshift-console/dynamic-plugin-sdk@npm:1.0.0"
+"@openshift-console/dynamic-plugin-sdk@npm:^1.0.0":
+  version: 1.8.0
+  resolution: "@openshift-console/dynamic-plugin-sdk@npm:1.8.0"
   dependencies:
     classnames: 2.x
     immutable: 3.x
@@ -1092,7 +1170,7 @@ __metadata:
     reselect: 4.x
     typesafe-actions: ^4.2.1
     whatwg-fetch: 2.x
-  checksum: 3472d8109a550e7c42b43b67bf041dd739f502c4016ee999c2f9634d6dc203eb713273a8a391065b096b95313e43eace6fac317a302d2f65d1f0624c329e9fb4
+  checksum: c9c7f8162930eeead1ed821a0c480f236a4c22172be3978c7c4c676b6d56a0dd89e11c91c174e700e09dd13f134a2c122db7a44934be6c6a66df5e7613becb41
   languageName: node
   linkType: hard
 
@@ -1766,17 +1844,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.0":
-  version: 1.23.0
-  resolution: "@remix-run/router@npm:1.23.0"
-  checksum: 6a403b7bc740f15185f3b68f90f98d4976fe231e819b44a0f0628783c4f31ca1072e3370c24b98488be3e4f68ecf51b20cb9463f20a5a6cf4c21929fc7721964
-  languageName: node
-  linkType: hard
-
 "@remix-run/router@npm:1.23.1":
   version: 1.23.1
   resolution: "@remix-run/router@npm:1.23.1"
   checksum: 776f821f54331331c61261df291765b4a99b1e127fb650180868885bea766fd5e65a7ed1bedf732d981ace593f73b00c4af29deda3d89769c193a476be542e2c
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.23.2":
+  version: 1.23.2
+  resolution: "@remix-run/router@npm:1.23.2"
+  checksum: 0f046e480372be17d14f88684435cd6af4c05ce842bd6094a549605dd5b8f0ab1e9a1e9d9e2faec9e4d5cd370d02179b456189192f06415e461bce44c28295d8
   languageName: node
   linkType: hard
 
@@ -2783,7 +2861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.5
   resolution: "@types/hoist-non-react-statics@npm:3.3.5"
   dependencies:
@@ -2982,42 +3060,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-autosuggest@npm:^10.1.5":
-  version: 10.1.11
-  resolution: "@types/react-autosuggest@npm:10.1.11"
-  dependencies:
-    "@types/react": "*"
-  checksum: 2556dfc2409b510020aa4179258827c64d22d81234259cc7ce9e46bae9a64811dce0b29450121be1ccee1b2cb3a35e5950df540452c9c610cf878d7a4d6f82bc
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:18.2.15":
-  version: 18.2.15
-  resolution: "@types/react-dom@npm:18.2.15"
-  dependencies:
-    "@types/react": "*"
-  checksum: 8e9631600c21ff561328e38a951d1991b3b3b20f538af4c0efbd1327c883a5573a63f50e1b945c34fa51b114b30e1ca5e62317bd54f21e063d6697b4be843a03
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:^18.2.0":
   version: 18.3.7
   resolution: "@types/react-dom@npm:18.3.7"
   peerDependencies:
     "@types/react": ^18.0.0
   checksum: c8b63ec944d2a68992b4dba474003fe55ee1d949c4b9c8fe97eecb2290de23f76acfb670b2f7ceb46a5fc8e46808d1745369b03edda48a7a0cf730eff4c5d315
-  languageName: node
-  linkType: hard
-
-"@types/react-redux@npm:^7.1.7":
-  version: 7.1.33
-  resolution: "@types/react-redux@npm:7.1.33"
-  dependencies:
-    "@types/hoist-non-react-statics": ^3.3.0
-    "@types/react": "*"
-    hoist-non-react-statics: ^3.3.0
-    redux: ^4.0.0
-  checksum: 063e98c0d8cdc7cc2da1663716260ffb8d504b2f8be2d92cabb630cae31eb05aa0e389175265caa9a160bb7c4b66646d4a4171d4aa2dc292722088dcf593cdc3
   languageName: node
   linkType: hard
 
@@ -4352,18 +4400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:>=0.22.0 <2.0.0, axios@npm:^1.12.0, axios@npm:^1.6.1":
-  version: 1.12.2
-  resolution: "axios@npm:1.12.2"
-  dependencies:
-    follow-redirects: ^1.15.6
-    form-data: ^4.0.4
-    proxy-from-env: ^1.1.0
-  checksum: f0331594fe053a4bbff04104edb073973a3aabfad2e56b0aa18de82428aa63f6f0839ca3d837258ec739cb4528014121793b1649a21e5115ffb2bf8237eadca3
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.12.2":
+"axios@npm:^1.12.2, axios@npm:^1.13.2":
   version: 1.13.2
   resolution: "axios@npm:1.13.2"
   dependencies:
@@ -4371,6 +4408,17 @@ __metadata:
     form-data: ^4.0.4
     proxy-from-env: ^1.1.0
   checksum: 057d0204d5930e2969f0bccb9f0752745b1524a36994667833195e7e1a82f245d660752ba8517b2dbea17e9e4ed0479f10b80c5fe45edd0b5a0df645c0060386
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.6.1":
+  version: 1.12.2
+  resolution: "axios@npm:1.12.2"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.4
+    proxy-from-env: ^1.1.0
+  checksum: f0331594fe053a4bbff04104edb073973a3aabfad2e56b0aa18de82428aa63f6f0839ca3d837258ec739cb4528014121793b1649a21e5115ffb2bf8237eadca3
   languageName: node
   linkType: hard
 
@@ -5062,13 +5110,6 @@ __metadata:
   version: 3.0.0
   resolution: "cli-width@npm:3.0.0"
   checksum: 4c94af3769367a70e11ed69aa6095f1c600c0ff510f3921ab4045af961820d57c0233acfa8b6396037391f31b4c397e1f614d234294f979ff61430a6c166c3f6
-  languageName: node
-  linkType: hard
-
-"client-only@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "client-only@npm:0.0.1"
-  checksum: 0c16bf660dadb90610553c1d8946a7fdfb81d624adea073b8440b7d795d5b5b08beb3c950c6a2cf16279365a3265158a236876d92bce16423c485c322d7dfaf8
   languageName: node
   linkType: hard
 
@@ -13087,7 +13128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dropzone@npm:^14.3.5":
+"react-dropzone@npm:^14.2.3, react-dropzone@npm:^14.3.5":
   version: 14.3.8
   resolution: "react-dropzone@npm:14.3.8"
   dependencies:
@@ -13274,17 +13315,17 @@ __metadata:
   linkType: hard
 
 "react-router-dom-v5-compat@npm:^6.11.2":
-  version: 6.30.1
-  resolution: "react-router-dom-v5-compat@npm:6.30.1"
+  version: 6.30.3
+  resolution: "react-router-dom-v5-compat@npm:6.30.3"
   dependencies:
-    "@remix-run/router": 1.23.0
+    "@remix-run/router": 1.23.2
     history: ^5.3.0
-    react-router: 6.30.1
+    react-router: 6.30.3
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
     react-router-dom: 4 || 5
-  checksum: 4cb99e7199c16e646ab95d4c05e709f3dbcdcf9054ed92d98bb92ac6247ee715879183371555e39c109c2e549f7fd28feb5637ed75daa924a559d00297d85474
+  checksum: 86947fa1887b47571ae653348dbd3f4d9db9c549b9cc6381a1d09e83c9de9e70f3e220ac52559b89d90c55a848a5caaffb9ce845e11f26c17b26917160ba37d1
   languageName: node
   linkType: hard
 
@@ -13339,17 +13380,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.30.1":
-  version: 6.30.1
-  resolution: "react-router@npm:6.30.1"
-  dependencies:
-    "@remix-run/router": 1.23.0
-  peerDependencies:
-    react: ">=16.8"
-  checksum: cab6c2ef3e4bc2b7d92c17f9de30d56f169ffe10a082de52a5842a335289d798aec91ff7bc39dfe7d73f6c50ae56e9e5d1597e8edfcdd80910b93383138a7525
-  languageName: node
-  linkType: hard
-
 "react-router@npm:6.30.2":
   version: 6.30.2
   resolution: "react-router@npm:6.30.2"
@@ -13358,6 +13388,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 680705e386a4356f4c4faaee3cc517fcebb0dc467a8dfeb7f34f5b6df1ca6572807f8e20061db30a4dc32a1a9c44fe3541366aeb9912defbeab25fffadb603f7
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.30.3":
+  version: 6.30.3
+  resolution: "react-router@npm:6.30.3"
+  dependencies:
+    "@remix-run/router": 1.23.2
+  peerDependencies:
+    react: ">=16.8"
+  checksum: b61e1a456b72ed35907dadc261d8572a65dd4caae008f7a85a6b09b437b1a4b90034fc7df0e418f1f01b73c2b8a8f6755d7fc0108b1ec3f2ed37f03a1e248513
   languageName: node
   linkType: hard
 
@@ -13459,7 +13500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4, redux@npm:^4.0.0, redux@npm:^4.2.1":
+"redux@npm:^4, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
   dependencies:
@@ -15180,18 +15221,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^2":
-  version: 2.2.5
-  resolution: "swr@npm:2.2.5"
-  dependencies:
-    client-only: ^0.0.1
-    use-sync-external-store: ^1.2.0
-  peerDependencies:
-    react: ^16.11.0 || ^17.0.0 || ^18.0.0
-  checksum: c6e6a5bd254951b22e5fd0930a95c7f79b5d0657f803c41ba1542cd6376623fb70b1895049d54ddde26da63b91951ae9d62a06772f82be28c1014d421e5b7aa9
-  languageName: node
-  linkType: hard
-
 "symbol-observable@npm:^1.2.0":
   version: 1.2.0
   resolution: "symbol-observable@npm:1.2.0"
@@ -15562,7 +15591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.6.2, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2":
+"tslib@npm:2.6.2, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.6.2":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
@@ -15941,13 +15970,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unique-names-generator@npm:^4.2.0":
-  version: 4.7.1
-  resolution: "unique-names-generator@npm:4.7.1"
-  checksum: 81b58efee72458fd0c84f54a89d731b2570305d331ce62c4156273e54ece77b6488fc6c607169f4b8f6644fa48b42aef8689dbe7e310ae2c4bafbd5c0a625354
-  languageName: node
-  linkType: hard
-
 "unique-slug@npm:^4.0.0":
   version: 4.0.0
   resolution: "unique-slug@npm:4.0.0"
@@ -16109,7 +16131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.2.0":
+"use-sync-external-store@npm:^1.0.0":
   version: 1.2.1
   resolution: "use-sync-external-store@npm:1.2.1"
   peerDependencies:

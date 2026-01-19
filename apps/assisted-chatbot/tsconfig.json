@@ -2,7 +2,6 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "sourceMap": true,
-    "moduleResolution": "node",
     "target": "es5",
     "allowSyntheticDefaultImports": true,
     "noErrorTruncation": true,
@@ -11,9 +10,11 @@
     "skipLibCheck": true,
     "lib": ["dom", "esnext"],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../../libs/chatbot" }]
 }

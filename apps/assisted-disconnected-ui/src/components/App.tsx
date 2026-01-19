@@ -9,8 +9,8 @@ import {
   Page,
 } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
-import { Store, useFeatureDetection } from '@openshift-assisted/ui-lib/ocm';
-import { FeatureListType } from '@openshift-assisted/ui-lib/lib/common';
+import { Store, useFeatureDetection } from '@openshift-assisted/ocm';
+import { FeatureListType } from '@openshift-assisted/common';
 
 import CreateClusterWizard from './CreateClusterWizard';
 import ClusterPage from './ClusterPage';

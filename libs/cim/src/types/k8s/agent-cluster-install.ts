@@ -1,0 +1,82 @@
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { ValidationsInfo } from '@openshift-assisted/common/types/clusters';
+import { StatusCondition } from './shared';
+
+export type AgentClusterInstallStatusConditionType =
+  | 'SpecSynced'
+  | 'Validated'
+  | 'RequirementsMet'
+  | 'Completed'
+  | 'Failed'
+  | 'Stopped';
+
+export type AgentClusterInstallStatusCondition =
+  StatusCondition<AgentClusterInstallStatusConditionType>;
+
+export type AgentClusterInstallK8sResource = K8sResourceCommon & {
+  spec?: {
+    clusterDeploymentRef?: {
+      name: string;
+    };
+    clusterMetadata?: {
+      adminKubeconfigSecretRef?: {
+        name: string;
+      };
+      adminPasswordSecretRef?: {
+        name: string;
+      };
+      clusterID?: string;
+    };
+    apiVIP?: string;
+    ingressVIP?: string;
+    sshPublicKey?: string;
+    imageSetRef?: {
+      name?: string;
+    };
+    proxy?: {
+      httpProxy?: string;
+      httpsProxy?: string;
+      noProxy?: string;
+    };
+    provisionRequirements: {
+      controlPlaneAgents: number;
+      workerAgents?: number;
+      arbiterAgents?: number;
+    };
+    networking: {
+      clusterNetwork?: {
+        cidr: string;
+        hostPrefix: number;
+      }[];
+      serviceNetwork?: string[];
+      machineNetwork?: {
+        cidr: string;
+      }[];
+      userManagedNetworking?: boolean;
+      networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+    };
+    holdInstallation?: boolean;
+    platformType: string;
+    manifestsConfigMapRefs?: { name: string }[];
+  };
+  status?: {
+    apiVIP?: string;
+    ingressVIP?: string;
+    connectivityMajorityGroups?: string;
+    conditions?: AgentClusterInstallStatusCondition[];
+    progress?: {
+      totalPercentage: number;
+    };
+    debugInfo?: {
+      eventsURL?: string;
+      logsURL?: string;
+      state?: Cluster['status'];
+      stateInfo?: Cluster['statusInfo'];
+    };
+    validationsInfo?: ValidationsInfo;
+    machineNetwork?: {
+      cidr: string;
+    }[];
+  };
+};

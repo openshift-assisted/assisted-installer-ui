@@ -1,0 +1,73 @@
+{
+  "name": "@openshift-assisted/cim",
+  "license": "Apache-2.0",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    "./*": {
+      "source": "./src/*",
+      "types": "./build/*.d.ts",
+      "default": "./build/*"
+    },
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    }
+  },
+  "scripts": {
+    "build": "yarn run -T tsc --build --verbose && yarn copy:css && yarn copy:svg",
+    "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./src/index.ts",
+    "check_types": "yarn run -T tsc --noEmit",
+    "clean": "yarn run -T rimraf node_modules build",
+    "copy:svg": "rsync -Ruv src/./**/*.svg build || true",
+    "copy:css": "rsync -Ruv src/./**/*.css build || true",
+    "format": "yarn run -T prettier --cache --check . \"!build\"",
+    "fix-code-style": "yarn lint --fix && yarn format --write",
+    "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
+  },
+  "dependencies": {
+    "@openshift-assisted/common": "workspace:*",
+    "@openshift-assisted/types": "workspace:*",
+    "@react-hook/resize-observer": "^2.0.2",
+    "classnames": "^2.3.1",
+    "file-saver": "^2.0.2",
+    "formik": "2.2.6",
+    "fuse.js": "^6.4.6",
+    "ip-address": "^7.1.0",
+    "js-yaml": "^4.1.1",
+    "lodash-es": "^4.17.21",
+    "parse-url": "^9.2.0",
+    "uuid": "^8.1"
+  },
+  "devDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "^1.0.0",
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/js-yaml": "^4.0.1",
+    "@types/lodash-es": "^4.17.6",
+    "@types/node": "^18.14.6",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "^18.2.0",
+    "@types/uuid": "^8.0.0"
+  },
+  "peerDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "^1.0.0",
+    "@patternfly/patternfly": "^6.4.0",
+    "@patternfly/react-code-editor": "^6.4.0",
+    "@patternfly/react-core": "^6.4.0",
+    "@patternfly/react-icons": "^6.4.0",
+    "@patternfly/react-styles": "^6.4.0",
+    "@patternfly/react-table": "^6.4.0",
+    "@patternfly/react-tokens": "^6.4.0",
+    "i18next": "^20.4 || ^21",
+    "monaco-editor": "^0.44.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-i18next": ">11.7.3",
+    "react-monaco-editor": "^0.55.0",
+    "react-router-dom-v5-compat": "^6.21.2",
+    "yup": "^1.4.0"
+  }
+}
