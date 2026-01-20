@@ -26,17 +26,28 @@ import {
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
 
-const useAutoSelectSingleAvailableSubnet = (
+const useAutoSelectDefaultMachineNetworks = (
   autoSelectNetwork: boolean,
   setFieldValue: FormikHelpers<NetworkConfigurationValues>['setFieldValue'],
-  cidr: MachineNetwork['cidr'],
+  cidrV4: MachineNetwork['cidr'],
+  cidrV6: MachineNetwork['cidr'],
   clusterId: string,
+  isDualStack: boolean,
 ) => {
   useEffect(() => {
     if (autoSelectNetwork) {
-      setFieldValue('machineNetworks', [{ cidr, clusterId }], false);
+      setFieldValue(
+        'machineNetworks',
+        isDualStack
+          ? [
+              { cidr: cidrV4, clusterId },
+              { cidr: cidrV6, clusterId },
+            ]
+          : [{ cidr: cidrV4, clusterId }],
+        false,
+      );
     }
-  }, [autoSelectNetwork, cidr, clusterId, setFieldValue]);
+  }, [autoSelectNetwork, cidrV4, cidrV6, clusterId, isDualStack, setFieldValue]);
 };
 
 export interface AvailableSubnetsControlProps {
@@ -80,14 +91,23 @@ export const AvailableSubnetsControl = ({
     ? [...IPv4Subnets, ...IPv6Subnets].sort(subnetSort)
     : IPv4Subnets;
 
-  // For auto-selection, always use IPv4 subnets for single-stack
-  const cidr = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
+  // For auto-selection, prefer IPv4 as primary (even for dual-stack)
+  const cidrV4 = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
+  const cidrV6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
   const hasEmptySelection = (values.machineNetworks ?? []).length === 0;
   const autoSelectNetwork = !isViewerMode && hasEmptySelection;
-  useAutoSelectSingleAvailableSubnet(autoSelectNetwork, setFieldValue, cidr, clusterId);
+  useAutoSelectDefaultMachineNetworks(
+    autoSelectNetwork,
+    setFieldValue,
+    cidrV4,
+    cidrV6,
+    clusterId,
+    isDualStack,
+  );
 
-  // Ensure primary and secondary machine networks are not duplicated.
-  // If the user switches primary to the same CIDR as secondary, adjust secondary to the opposite family or clear it.
+  // Ensure primary and secondary machine networks are not in the same stack (IPv4/IPv6).
+  // If the user switches primary to the same address family as secondary, adjust secondary to the opposite family
+  // (or clear it if no subnet is available).
   React.useEffect(() => {
     if (!isDualStack) {
       return;
@@ -100,23 +120,20 @@ export const AvailableSubnetsControl = ({
     if (!first || !second) {
       return;
     }
-    if (first === second) {
-      if (Address6.isValid(first)) {
-        const nextIPv4 = IPv4Subnets[0]?.subnet || NO_SUBNET_SET;
-        const replacement = nextIPv4 !== first ? nextIPv4 : NO_SUBNET_SET;
-        if (replacement !== second) {
-          setFieldValue('machineNetworks.1.cidr', replacement, false);
-        }
-      } else if (Address4.isValid(first)) {
-        const nextIPv6 = IPv6Subnets[0]?.subnet || NO_SUBNET_SET;
-        const replacement = nextIPv6 !== first ? nextIPv6 : NO_SUBNET_SET;
-        if (replacement !== second) {
-          setFieldValue('machineNetworks.1.cidr', replacement, false);
-        }
-      } else {
-        if (second !== NO_SUBNET_SET) {
-          setFieldValue('machineNetworks.1.cidr', NO_SUBNET_SET, false);
-        }
+
+    const firstIsV4 = Address4.isValid(first);
+    const firstIsV6 = Address6.isValid(first);
+    const secondIsV4 = Address4.isValid(second);
+    const secondIsV6 = Address6.isValid(second);
+
+    // If both are the same family, force the secondary to the opposite family.
+    if ((firstIsV4 && secondIsV4) || (firstIsV6 && secondIsV6)) {
+      const replacement = firstIsV4
+        ? IPv6Subnets[0]?.subnet ?? NO_SUBNET_SET
+        : IPv4Subnets[0]?.subnet ?? NO_SUBNET_SET;
+
+      if (replacement !== second) {
+        setFieldValue('machineNetworks.1.cidr', replacement, false);
       }
     }
   }, [isDualStack, values.machineNetworks, IPv4Subnets, IPv6Subnets, setFieldValue]);
@@ -186,6 +203,8 @@ export const AvailableSubnetsControl = ({
 
   const primaryNetworkCidr = values.machineNetworks?.[0]?.cidr;
   const excludedHostsAlert = getExcludedHostsAlert(primaryNetworkCidr);
+  const showSecondaryMachineNetwork =
+    isDualStack && values.machineNetworks && values.machineNetworks.length > 1;
 
   // Determine available subnets for primary dropdown
   const primaryMachineSubnets = isDualStack && supportsIPv6Primary ? allSubnets : IPv4Subnets;
@@ -235,16 +254,10 @@ export const AvailableSubnetsControl = ({
             </Stack>
           )}
         </FieldArray>
-
-        {typeof errors.machineNetworks === 'string' && (
-          <Alert variant={AlertVariant.warning} title={errors.machineNetworks} isInline />
-        )}
-
-        {excludedHostsAlert}
       </FormGroup>
 
       {/* Secondary machine network */}
-      {isDualStack && values.machineNetworks && values.machineNetworks.length > 1 && (
+      {showSecondaryMachineNetwork && (
         <FormGroup
           label="Machine network"
           labelInfo="Secondary"
@@ -259,6 +272,12 @@ export const AvailableSubnetsControl = ({
           />
         </FormGroup>
       )}
+      <>
+        {typeof errors.machineNetworks === 'string' && (
+          <Alert variant={AlertVariant.warning} title={errors.machineNetworks} isInline />
+        )}
+        {excludedHostsAlert}
+      </>
     </>
   );
 };

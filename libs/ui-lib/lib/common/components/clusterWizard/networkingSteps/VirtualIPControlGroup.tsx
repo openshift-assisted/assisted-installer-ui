@@ -17,12 +17,7 @@ import { FormikStaticField, PopoverIcon } from '../../ui';
 import { CheckboxField, InputField } from '../../ui/formik';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import NewFeatureSupportLevelBadge from '../../newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import {
-  ApiVip,
-  Cluster,
-  Ip,
-  SupportLevel,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, Ip, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 interface VipStaticValueProps {
   id?: string;
@@ -110,6 +105,42 @@ export const VirtualIPControlGroup = ({
     }
   }, [enableAllocation, isViewerMode, setFieldValue]);
 
+  // Ensure VIP arrays exist when (re-)entering cluster-managed networking.
+  React.useEffect(() => {
+    if (
+      isViewerMode ||
+      values.managedNetworkingType !== 'clusterManaged' ||
+      values.vipDhcpAllocation
+    ) {
+      return;
+    }
+
+    const vipCount = values.stackType === DUAL_STACK ? 2 : 1;
+    const blankVipEntriesArray = Array.from({ length: vipCount }, () => ({
+      ip: '',
+      clusterId: cluster.id,
+    }));
+
+    const apiVipsEmpty = !values.apiVips || values.apiVips.length === 0;
+    const ingressVipsEmpty = !values.ingressVips || values.ingressVips.length === 0;
+
+    if (apiVipsEmpty) {
+      setFieldValue('apiVips', blankVipEntriesArray, false);
+    }
+    if (ingressVipsEmpty) {
+      setFieldValue('ingressVips', blankVipEntriesArray, false);
+    }
+  }, [
+    cluster.id,
+    isViewerMode,
+    setFieldValue,
+    values.apiVips,
+    values.ingressVips,
+    values.managedNetworkingType,
+    values.stackType,
+    values.vipDhcpAllocation,
+  ]);
+
   const onChangeDhcp = React.useCallback(
     (hasDhcp: boolean) => {
       // We need to sync the values back to the form
@@ -118,22 +149,6 @@ export const VirtualIPControlGroup = ({
     },
     [cluster.apiVips, cluster.ingressVips, setFieldValue],
   );
-
-  const setVipValueAtIndex = (
-    field: 'apiVips' | 'ingressVips',
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const fieldArray: ApiVip[] =
-      field === 'apiVips' ? values.apiVips || [] : values.ingressVips || [];
-    const next: ApiVip[] = Array.isArray(fieldArray) ? [...fieldArray] : [];
-    // Ensure array has the desired length
-    while (next.length <= index) {
-      next.push({ ip: '', clusterId: cluster?.id });
-    }
-    next[index] = { ip: e.target.value, clusterId: cluster?.id };
-    setFieldValue(field, next, true);
-  };
 
   return (
     <>
@@ -215,9 +230,6 @@ export const VirtualIPControlGroup = ({
                     maxLength={45}
                     isDisabled={isVipInputDisabled || isViewerMode}
                     labelInfo={isDualStack ? t('ai:Primary') : undefined}
-                    onChange={(e) =>
-                      setVipValueAtIndex('apiVips', 0, e as React.ChangeEvent<HTMLInputElement>)
-                    }
                   />
                 </StackItem>
                 {isDualStack && (
@@ -234,9 +246,6 @@ export const VirtualIPControlGroup = ({
                       isRequired
                       isDisabled={isVipInputDisabled || isViewerMode}
                       labelInfo={t('ai:Secondary')}
-                      onChange={(e) =>
-                        setVipValueAtIndex('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
-                      }
                     />
                   </StackItem>
                 )}
@@ -253,9 +262,6 @@ export const VirtualIPControlGroup = ({
                     maxLength={45}
                     isDisabled={isVipInputDisabled || isViewerMode}
                     labelInfo={isDualStack ? t('ai:Primary') : undefined}
-                    onChange={(e) =>
-                      setVipValueAtIndex('ingressVips', 0, e as React.ChangeEvent<HTMLInputElement>)
-                    }
                   />
                 </StackItem>
                 {isDualStack && (
@@ -272,13 +278,6 @@ export const VirtualIPControlGroup = ({
                       isRequired
                       isDisabled={isVipInputDisabled || isViewerMode}
                       labelInfo={t('ai:Secondary')}
-                      onChange={(e) =>
-                        setVipValueAtIndex(
-                          'ingressVips',
-                          1,
-                          e as React.ChangeEvent<HTMLInputElement>,
-                        )
-                      }
                     />
                   </StackItem>
                 )}

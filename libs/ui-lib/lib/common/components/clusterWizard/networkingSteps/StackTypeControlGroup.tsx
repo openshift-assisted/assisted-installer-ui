@@ -240,7 +240,21 @@ export const StackTypeControlGroup = ({
     }
   };
   // Ensure cluster/service networks ordering matches the new primary family
-  reorderNetworksByCurrentPrimary(values, setFieldValue);
+  const primaryCidr = values.machineNetworks?.[0]?.cidr;
+  React.useEffect(() => {
+    if (isViewerMode) {
+      return;
+    }
+    reorderNetworksByCurrentPrimary(values, setFieldValue);
+  }, [
+    isViewerMode,
+    setFieldValue,
+    values,
+    values.stackType,
+    primaryCidr,
+    values.clusterNetworks,
+    values.serviceNetworks,
+  ]);
 
   const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === DUAL_STACK) {
