@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { List, ListItem } from '@patternfly/react-core';
+import { getYearForAssistedInstallerDocumentationLink } from '../../../../common/config/docs_links';
 
 export type BundleSpec = {
   incompatibleBundles?: string[];
@@ -30,11 +31,13 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
     incompatibleBundles: [],
     Description: () => (
       <List>
+        <ListItem>GPUs are recommended for optimal AI/ML workload performance.</ListItem>
         <ListItem>
           NVIDIA GPU, AMD GPU and Kernel Module Management may or may not be installed based on the
           GPU discovered on your hosts.
         </ListItem>
       </List>
     ),
+    docsLink: `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/customizing-with-bundles-and-operators#openshift-ai-bundle_customizing-with-bundles-and-operators`,
   },
 };
