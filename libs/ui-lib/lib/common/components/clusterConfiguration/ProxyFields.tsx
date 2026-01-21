@@ -35,7 +35,7 @@ export const ProxyInputFields = () => {
           <div>
             <Trans
               t={t}
-              components={{ bold: <strong /> }}
+              components={{ bold: <span className="pf-v6-u-font-weight-bold" /> }}
               i18nKey="ai:URL must start with <bold>http</bold>."
             />
           </div>
@@ -58,7 +58,7 @@ export const ProxyInputFields = () => {
           <div>
             <Trans
               t={t}
-              components={{ bold: <strong /> }}
+              components={{ bold: <span className="pf-v6-u-font-weight-bold" /> }}
               i18nKey="ai:URL must start with <bold>http</bold> (https schemes are not currently supported)."
             />
           </div>
@@ -81,7 +81,7 @@ export const ProxyInputFields = () => {
           <div>
             <Trans
               t={t}
-              components={{ bold: <strong /> }}
+              components={{ bold: <span className="pf-v6-u-font-weight-bold" /> }}
               i18nKey="ai:Use a comma to separate each listed domain. Preface a domain with <bold>.</bold> to include its subdomains. Use <bold>*</bold> to bypass the proxy for all destinations."
             />
           </div>

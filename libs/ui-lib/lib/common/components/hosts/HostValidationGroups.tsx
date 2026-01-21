@@ -67,7 +67,10 @@ const ValidationsAlert = ({
       <ul>
         {validations.map((v) => (
           <li key={v.id}>
-            <strong>{hostValidationLabels(t)[v.id] || v.id}:</strong>&nbsp;
+            <span className="pf-v6-u-font-weight-bold">
+              {hostValidationLabels(t)[v.id] || v.id}:
+            </span>
+            &nbsp;
             {toSentence(v.message.replace(/\\n/, ' '))}{' '}
             {v.status === 'failure' && hostValidationFailureHints(t)[v.id]}
           </li>
@@ -310,9 +313,7 @@ export const HostValidationGroups = ({
         return (
           <Fragment key={groupName}>
             <Level className="host-validation-groups__validation-group">
-              <LevelItem>
-                <strong>{groupLabel}</strong>
-              </LevelItem>
+              <LevelItem className="pf-v6-u-font-weight-bold">{groupLabel}</LevelItem>
               <LevelItem>{getValidationGroupState()}</LevelItem>
             </Level>
             {

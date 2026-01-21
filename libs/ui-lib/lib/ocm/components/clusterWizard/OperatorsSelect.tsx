@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ExpandableSection, Stack, StackItem } from '@patternfly/react-core';
+import { Content, ExpandableSection, Stack, StackItem } from '@patternfly/react-core';
 import {
   Bundle,
   Cluster,
@@ -106,7 +106,7 @@ const OperatorsSelect = ({
             return (
               <React.Fragment key={categoryName}>
                 <StackItem>
-                  <strong>{categoryName}</strong>
+                  <Content className="pf-v6-u-font-weight-bold">{categoryName}</Content>
                 </StackItem>
                 {categoryOperators.map((spec) => (
                   <StackItem key={spec.operatorKey}>

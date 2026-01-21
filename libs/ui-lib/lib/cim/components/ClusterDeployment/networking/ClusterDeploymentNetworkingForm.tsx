@@ -99,7 +99,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           <Content component={ContentVariants.p}>
             <Trans
               t={t}
-              components={{ bold: <strong /> }}
+              components={{ bold: <span className="pf-v6-u-font-weight-bold" /> }}
               i18nKey="ai:The hosts you selected are using different proxy settings. Configure a proxy that will be applied for these hosts. <bold>Configure at least one of the proxy settings below.</bold>"
             />
           </Content>

@@ -186,7 +186,7 @@ const MassChangeHostnameForm = ({
           <StackItem>
             <div>{t('ai:Rename hostnames using the custom template:')}</div>
             <div>
-              <strong>{`{{n}}`}</strong> {t('ai:to add a number.')}
+              <span className="pf-v6-u-font-weight-bold">{`{{n}}`}</span> {t('ai:to add a number.')}
             </div>
           </StackItem>
           <StackItem>
@@ -212,16 +212,19 @@ const MassChangeHostnameForm = ({
             <Split className="hostname-preview" hasGutter>
               <SplitItem className="hostname-column">
                 {newHostnames.map((host, i) => (
-                  <div className="hostname-column__text" key={`old-hostname-${i}`}>
-                    <strong>{host.oldHostname}</strong>
-                  </div>
+                  <Content
+                    className="hostname-column__text pf-v6-u-font-weight-bold"
+                    key={`old-hostname-${i}`}
+                  >
+                    {host.oldHostname}
+                  </Content>
                 ))}
               </SplitItem>
               <SplitItem>
                 {newHostnames.map((_, i) => (
-                  <div key={`divider-${i}`}>
-                    <strong>{'>'}</strong>
-                  </div>
+                  <Content key={`divider-${i}`} className="pf-v6-u-font-weight-bold">
+                    {'>'}
+                  </Content>
                 ))}
               </SplitItem>
               <SplitItem>
