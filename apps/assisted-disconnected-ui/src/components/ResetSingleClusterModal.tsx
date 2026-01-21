@@ -1,12 +1,8 @@
 import React from 'react';
 import { Button, ButtonVariant, Content, Stack, StackItem, Alert } from '@patternfly/react-core';
 import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
-import { useModalDialogsContext, ClustersService } from '@openshift-assisted/ui-lib/ocm';
-import {
-  getApiErrorMessage,
-  handleApiError,
-  useTranslation,
-} from '@openshift-assisted/ui-lib/common';
+import { useModalDialogsContext, ClustersService } from '@openshift-assisted/ocm';
+import { getApiErrorMessage, handleApiError, useTranslation } from '@openshift-assisted/common';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
 const ResetSingleClusterModal: React.FC = () => {

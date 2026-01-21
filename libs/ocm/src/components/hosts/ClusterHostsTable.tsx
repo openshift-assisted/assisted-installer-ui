@@ -1,0 +1,112 @@
+import * as React from 'react';
+import { selectSchedulableMasters, isSNO } from '@openshift-assisted/common';
+import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+import {
+  discoveredAtColumn,
+  disksColumn,
+  hostnameColumn,
+  memoryColumn,
+  roleColumn,
+  statusColumn,
+  cpuCoresColumn,
+} from '@openshift-assisted/common/components/hosts/tableUtils';
+import { usePagination } from '@openshift-assisted/common/components/hosts/usePagination';
+import { useHostsTable, HostsTableModals } from './use-hosts-table';
+import HostsTable from '@openshift-assisted/common/components/hosts/HostsTable';
+import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { HostDetail } from '@openshift-assisted/common/components/hosts/HostRowDetail';
+import { ExpandComponentProps } from '@openshift-assisted/common/components/hosts/AITable';
+import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
+import { useTranslation } from '@openshift-assisted/common/hooks/use-translation-wrapper';
+import {
+  HostsTableDetailContextProvider,
+  useHostsTableDetailContext,
+} from '@openshift-assisted/common/components/hosts/HostsTableDetailContext';
+import { TableVariant } from '@patternfly/react-table';
+import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+
+export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+  const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
+  return (
+    <HostDetail
+      host={host}
+      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      hideNTPStatus
+      onDiskRole={onDiskRole}
+      canEditDisks={canEditDisks}
+      updateDiskSkipFormatting={updateDiskSkipFormatting}
+    />
+  );
+}
+
+export interface ClusterHostsTableProps {
+  cluster: Cluster;
+  skipDisabled?: boolean;
+}
+
+const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
+  const { wizardPerPage, setWizardPerPage } = React.useContext(ClusterWizardContext) || {};
+  const {
+    onEditHost,
+    onEditRole,
+    actionChecks,
+    onDiskRole,
+    actionResolver,
+    updateDiskSkipFormatting,
+    ...modalProps
+  } = useHostsTable(cluster);
+  const { t } = useTranslation();
+  const content = React.useMemo(
+    () => [
+      hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+      roleColumn(
+        t,
+        actionChecks.canEditRole,
+        onEditRole,
+        selectSchedulableMasters(cluster),
+        cluster.kind,
+      ),
+      statusColumn(
+        t,
+        cluster.status,
+        AdditionalNTPSourcesDialogToggle,
+        onEditHost,
+        UpdateDay2ApiVipDialogToggle,
+      ),
+      discoveredAtColumn(t),
+      cpuCoresColumn(t),
+      memoryColumn(t),
+      disksColumn(t),
+    ],
+    [t, onEditHost, actionChecks, onEditRole, cluster],
+  );
+
+  const hosts = cluster.hosts || [];
+  const paginationProps = usePagination(hosts.length, wizardPerPage, setWizardPerPage);
+
+  return (
+    <>
+      <HostsTableDetailContextProvider
+        canEditDisks={actionChecks.canEditDisks}
+        onDiskRole={onDiskRole}
+        updateDiskSkipFormatting={updateDiskSkipFormatting}
+      >
+        <HostsTable
+          hosts={hosts}
+          skipDisabled={skipDisabled}
+          ExpandComponent={ExpandComponent}
+          content={content}
+          actionResolver={actionResolver}
+          variant={TableVariant.compact}
+          {...paginationProps}
+        >
+          <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
+        </HostsTable>
+      </HostsTableDetailContextProvider>
+      <HostsTableModals cluster={cluster} {...modalProps} />
+    </>
+  );
+};
+
+export default ClusterHostsTable;

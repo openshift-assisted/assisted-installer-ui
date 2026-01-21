@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { hostIds } from './index';
+import { hostIds } from '.';
 import { getHostInventory } from '../cluster/host-inventory';
 import { fakeClusterId, fakeClusterInfraEnvId } from '../cluster/base-cluster';
 

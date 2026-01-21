@@ -1,9 +1,9 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
   "include": ["src", "vite.config.ts"],
-  "references": [
-    {
-      "path": "../../libs/ui-lib"
-    }
-  ]
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler"
+  },
+  "references": [{ "path": "../../libs/common" }, { "path": "../../libs/ocm" }]
 }

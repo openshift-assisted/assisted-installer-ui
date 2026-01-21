@@ -28,7 +28,7 @@ module.exports = {
               {
                 name: 'react-i18next',
                 importNames: ['useTranslation'],
-                message: 'Import `useTranslation` from `@openshift-assisted/ui-lib/common` instead',
+                message: 'Import `useTranslation` from `@openshift-assisted/common` instead',
               },
             ],
           },

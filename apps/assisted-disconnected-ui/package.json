@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@openshift-assisted/ui-lib": "workspace:*",
-    "@openshift-console/dynamic-plugin-sdk": "1.0.0",
+    "@openshift-assisted/common": "workspace:*",
+    "@openshift-assisted/ocm": "workspace:*",
     "@patternfly/patternfly": "6.4.0",
     "@patternfly/react-code-editor": "6.4.0",
     "@patternfly/react-core": "6.4.0",
@@ -11,7 +11,7 @@
     "@patternfly/react-tokens": "6.4.0",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^7.119",
-    "axios": ">=0.22.0 <2.0.0",
+    "axios": "^1.13.2",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "lodash": "^4",

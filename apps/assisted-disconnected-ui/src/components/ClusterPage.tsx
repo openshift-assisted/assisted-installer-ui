@@ -1,11 +1,7 @@
 import * as React from 'react';
-import { SingleClusterPage, Store } from '@openshift-assisted/ui-lib/ocm';
+import { SingleClusterPage, Store } from '@openshift-assisted/ocm';
 import { useParams } from 'react-router-dom-v5-compat';
-import {
-  ClustersAPI,
-  getHostProgressStages,
-  ResourceUIState,
-} from '@openshift-assisted/ui-lib/common';
+import { ClustersAPI, getHostProgressStages, ResourceUIState } from '@openshift-assisted/common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 import ResetSingleClusterModal from './ResetSingleClusterModal';

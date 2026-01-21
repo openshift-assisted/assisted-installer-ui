@@ -2,11 +2,10 @@
   "compilerOptions": {
     "incremental": true,
     "composite": true,
-    "tsBuildInfoFile": "./node_modules/.cache/tsc/tsconfig.tsbuildinfo",
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "rootDir": "./lib",
     "outDir": "./build",
     "resolveJsonModule": true,
@@ -20,6 +19,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   }
 }

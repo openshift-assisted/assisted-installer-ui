@@ -21,7 +21,6 @@
   "packageManager": "yarn@3.4.1",
   "private": true,
   "scripts": {
-    "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
     "_yalc:push": "bash -c \"for lib in ui-lib types locales chatbot; do yalc push --changed libs/\\${lib}; done\"",
     "build:all": "yarn workspaces foreach -v --topological-dev run build",
     "check:circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
@@ -40,7 +39,7 @@
     "start:assisted_disconnected_ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui serve",
     "start:assisted_chatbot": "yarn workspace @openshift-assisted/assisted-installer-ui-chatbot start",
     "start:assisted_chatbot:static": "yarn workspace @openshift-assisted/assisted-installer-ui-chatbot start:static",
-    "start:watch_mode": "yarn build:all && yarn run -T toolbox watch --dir=libs/ui-lib --dir=libs/types --dir=libs/locales --dir=libs/chatbot 'yarn _build:lib' 'yarn _yalc:push'",
+    "start:watch_mode": "yarn build:all && yarn run -T toolbox watch --dir=libs/common --dir=libs/cim--dir=libs/ocm --dir=libs/types --dir=libs/locales --dir=libs/chatbot 'yarn build:all' 'yarn _yalc:push'",
     "start:vitest-ui": "vitest --ui"
   },
   "type": "module",

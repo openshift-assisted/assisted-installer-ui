@@ -4,7 +4,8 @@
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
-    "@openshift-assisted/ui-lib": "workspace:*",
+    "@openshift-assisted/common": "workspace:*",
+    "@openshift-assisted/ocm": "workspace:*",
     "@testing-library/cypress": "^9.0.0",
     "@types/lodash": "^4.14.121",
     "cypress": "13.6.2",

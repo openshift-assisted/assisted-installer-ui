@@ -5,6 +5,8 @@
     "noEmit": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "tsBuildInfoFile": "node_modules/.cache/tsc/tsconfig.tsbuildinfo"
   },
   "include": ["*.d.ts"]

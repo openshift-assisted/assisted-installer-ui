@@ -1,7 +1,7 @@
 import './commands';
 import './interceptors';
 import './selectors';
-import './variables/index';
+import './variables';
 import * as utils from './utils';
 
 // eslint-disable-next-line consistent-return

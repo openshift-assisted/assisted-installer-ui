@@ -1,7 +1,6 @@
 {
   "name": "@openshift-assisted/types",
   "packageManager": "yarn@3.4.1",
-  "type": "module",
   "exports": {
     "./assisted-installer-service": "./assisted-installer-service.d.ts",
     "./authorization-service": "./authorization-service.d.ts",
