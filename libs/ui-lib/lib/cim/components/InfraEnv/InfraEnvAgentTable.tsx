@@ -4,16 +4,18 @@ import { DropdownItem } from '@patternfly/react-core';
 
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  discoveryTypeColumn,
-  agentStatusColumn,
-  clusterColumn,
   useAgentsTable,
   useAgentsFilter,
-  agentHostnameColumn,
   canEditBMH,
   canEditAgent,
   canChangeHostname,
 } from '../Agent/tableUtils';
+import {
+  discoveryTypeColumn,
+  agentStatusColumn,
+  clusterColumn,
+  agentHostnameColumn,
+} from '../Agent/tableColumns';
 import HostsTable, {
   DefaultExpandComponent,
   HostsTableEmptyState,
@@ -25,8 +27,6 @@ import {
   gpusColumn,
   memoryColumn,
   labelsColumn,
-} from '../../../common/components/hosts/tableUtils';
-import {
   DiscoveryTroubleshootingModal,
   MassChangeHostnameModal,
   DeleteHostAction,

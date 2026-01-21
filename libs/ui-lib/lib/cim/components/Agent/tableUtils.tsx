@@ -1,267 +1,28 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom-v5-compat';
 import countBy from 'lodash-es/countBy';
 
-import {
-  HostsTableActions,
-  getInventory,
-  getHostname,
-  Hostname,
-  ActionCheck,
-} from '../../../common';
+import { HostsTableActions, ActionCheck } from '../../../common';
 import { AgentClusterInstallK8sResource, AgentK8sResource, InfraEnvK8sResource } from '../../types';
-import AgentStatus from './AgentStatus';
-import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
-import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterDeployment/types';
+import { ActionsResolver } from '../../../common/components/hosts/AITable';
+import { AgentTableActions } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
-import { getAgentClusterInstallOfAgent, getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
+import { getAgentClusterInstallOfAgent, getAIHosts } from '../helpers';
 import { isInstallationInProgress } from '../ClusterDeployment/helpers';
 import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_GENERATED_AI_FLOW } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
-import BMHStatus from './BMHStatus';
 import {
   getAgentStatus,
   getAgentStatusKey,
   getBMHStatus,
   getBMHStatusKey,
-  getWizardStepAgentStatus,
 } from '../helpers/status';
 import { filterByHostname, getHostLabels } from '../../../common/components/hosts/utils';
 import { agentStatus } from '../helpers/agentStatus';
 import noop from 'lodash-es/noop.js';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
-import { AgentMachineK8sResource } from '../Hypershift/types';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostStatus } from '../../../common/components/hosts/types';
-
-export const agentHostnameColumn = (
-  t: TFunction,
-  hosts: Host[],
-  agents: AgentK8sResource[],
-  bareMetalHosts: BareMetalHostK8sResource[],
-  onEditHostname?: HostsTableActions['onEditHost'],
-  canEditHostname?: HostsTableActions['canEditHostname'],
-  canEditBMH?: HostsTableActions['canEditBMH'],
-): TableRow<Host> => ({
-  header: {
-    title: t<string>('ai:Hostname'),
-    props: {
-      id: 'col-header-hostname', // ACM jest tests require id over testId
-      modifier: 'breakWord',
-    },
-    sort: true,
-  },
-  cell: (host) => {
-    const inventory = getInventory(host);
-    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
-    const computedHostname = getHostname(host, inventory);
-
-    let readonly = true;
-
-    const agent = agents.find((a) => a.metadata?.uid === host.id);
-    if (agent) {
-      readonly = canEditHostname ? !canEditHostname(host) : false;
-    } else {
-      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
-      if (bmh && canEditBMH) {
-        readonly = !canEditBMH(host);
-      }
-    }
-
-    return {
-      title: (
-        <Hostname
-          host={host}
-          inventory={inventory}
-          onEditHostname={editHostname}
-          hosts={hosts}
-          readonly={readonly}
-        />
-      ),
-      props: { 'data-testid': 'host-name' },
-      sortableValue: computedHostname || '',
-    };
-  },
-});
-
-export const discoveryTypeColumn = (
-  agents: AgentK8sResource[],
-  bareMetalHosts: BareMetalHostK8sResource[],
-  t: TFunction,
-): TableRow<Host> => {
-  return {
-    header: {
-      title: t<string>('ai:Discovery type'),
-      props: {
-        id: 'col-header-discovery-type',
-      },
-      sort: true,
-    },
-    cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let discoveryType = t('ai:Unknown');
-      if (agent) {
-        // eslint-disable-next-line no-prototype-builtins
-        discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-          ? t('ai:BMC')
-          : t('ai:Discovery ISO');
-      } else {
-        const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
-        if (bmh) {
-          discoveryType = t('ai:BMC');
-        }
-      }
-      return {
-        title: discoveryType,
-        props: { 'data-testid': 'discovery-type' },
-        sortableValue: discoveryType,
-      };
-    },
-  };
-};
-
-type AgentStatusColumnProps = {
-  agents: AgentK8sResource[];
-  agentStatuses: HostStatus<string>;
-  bareMetalHosts?: BareMetalHostK8sResource[];
-  bmhStatuses?: HostStatus<string>;
-  onEditHostname?: AgentTableActions['onEditHost'];
-  onApprove?: AgentTableActions['onApprove'];
-  wizardStepId?: ClusterDeploymentWizardStepsType;
-  t: TFunction;
-  isDay2?: boolean;
-};
-
-export const agentStatusColumn = ({
-  agents,
-  agentStatuses,
-  bareMetalHosts,
-  bmhStatuses,
-  onEditHostname,
-  onApprove,
-  wizardStepId,
-  t,
-  isDay2,
-}: AgentStatusColumnProps): TableRow<Host> => {
-  return {
-    header: {
-      title: t<string>('ai:Status'),
-      props: {
-        id: 'col-header-infraenvstatus',
-      },
-      sort: true,
-    },
-    cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id);
-      const bmh = bareMetalHosts?.find((b) => b.metadata?.uid === host.id);
-      let bmhStatus;
-      let title: React.ReactNode = '--';
-      if (agent) {
-        const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
-        title = (
-          <AgentStatus
-            agent={agent}
-            onApprove={onApprove}
-            onEditHostname={editHostname}
-            wizardStepId={wizardStepId}
-            isDay2={isDay2}
-          />
-        );
-      } else if (bmh && bmhStatuses) {
-        bmhStatus = getBMHStatus(bmh, bmhStatuses);
-        title = <BMHStatus bmhStatus={bmhStatus} />;
-      }
-
-      return {
-        title,
-        props: { 'data-testid': 'host-status' },
-        sortableValue: agent
-          ? wizardStepId
-            ? getWizardStepAgentStatus(agent, wizardStepId, t).status.title
-            : getAgentStatus(agent, agentStatuses).status.title
-          : bmhStatus?.state.title || '',
-      };
-    },
-  };
-};
-
-export const clusterColumn = (
-  agents: AgentK8sResource[],
-  agentMachines: AgentMachineK8sResource[],
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
-  t: TFunction,
-): TableRow<Host> => {
-  return {
-    header: {
-      title: t<string>('ai:Cluster'),
-      props: {
-        id: 'col-header-cluster',
-      },
-      sort: true,
-    },
-    cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let cdLink: string | undefined = undefined;
-      if (agent?.spec?.clusterDeploymentName) {
-        //hypershift
-        const amNamespace = agent.metadata?.annotations?.['agentMachineRefNamespace'];
-        if (amNamespace) {
-          const am = agentMachines.find(
-            (am) =>
-              am.status?.agentRef?.name === agent.metadata?.name &&
-              am.status?.agentRef?.namespace === agent.metadata?.namespace,
-          );
-          const nodePool = am?.metadata?.annotations?.['hypershift.openshift.io/nodePool'];
-          if (nodePool) {
-            const hcNamespace = nodePool.split('/')[0];
-            const hcName = agent.spec.clusterDeploymentName.name;
-            cdLink = getClusterDeploymentLink({ name: hcName, namespace: hcNamespace });
-          }
-        } else {
-          cdLink = getClusterDeploymentLink(agent.spec.clusterDeploymentName);
-        }
-      }
-      return {
-        title: cdLink ? <Link to={cdLink}>{agent?.spec?.clusterDeploymentName?.name}</Link> : '--',
-        props: { 'data-testid': 'cluster' },
-        sortableValue: agent?.spec?.clusterDeploymentName?.name ?? '--',
-      };
-    },
-  };
-};
-
-export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
-  return {
-    header: {
-      title: t<string>('ai:Infrastructure env'),
-      props: {
-        id: 'col-header-infraenv',
-      },
-      sort: true,
-    },
-    cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-      const infraEnvName = getInfraEnvNameOfAgent(agent);
-      const title = infraEnvName ? (
-        <Link
-          to={`/multicloud/infrastructure/environments/details/${
-            agent.metadata?.namespace || ''
-          }/${infraEnvName}/overview`}
-        >
-          {infraEnvName}
-        </Link>
-      ) : (
-        'N/A'
-      );
-      return {
-        title,
-        props: { 'data-testid': 'infra-env' },
-        sortableValue: infraEnvName,
-      };
-    },
-  };
-};
 
 export const canEditBMH = (bmh: BareMetalHostK8sResource, t: TFunction): ActionCheck => {
   const canEdit = ['deprovisioning', 'pending', 'registering'].includes(getBMHStatusKey(bmh) || '');

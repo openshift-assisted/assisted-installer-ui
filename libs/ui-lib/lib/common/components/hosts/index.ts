@@ -1,6 +1,8 @@
 export * from './utils';
 export * from './types';
 export * from './HostValidationGroups';
+export * from './tableColumns';
+export * from './tableUtils';
 
 export { default as RoleCell } from './RoleCell';
 export { default as RoleDropdown } from './RoleDropdown';
