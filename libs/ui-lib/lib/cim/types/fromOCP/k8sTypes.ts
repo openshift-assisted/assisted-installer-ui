@@ -43,3 +43,16 @@ export type RouteK8sResource = {
     wildcardPolicy?: string;
   };
 } & K8sResourceCommon;
+
+export type EventK8sResource = {
+  type?: string;
+  message?: string;
+  eventTime?: string;
+  involvedObject?: {
+    apiVersion?: string;
+    kind?: string;
+    name?: string;
+    namespace?: string;
+    uid?: string;
+  };
+} & K8sResourceCommon;

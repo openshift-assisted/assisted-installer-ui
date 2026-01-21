@@ -110,7 +110,7 @@ const statusColumn = (
         );
       } else if (bmh) {
         bmhStatus = getBMHStatus(bmh, bmhStatuses);
-        title = <BMHStatus bmhStatus={bmhStatus} />;
+        title = <BMHStatus bmhStatus={bmhStatus} bmh={bmh} />;
       }
 
       return {

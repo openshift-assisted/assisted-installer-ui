@@ -20,6 +20,7 @@ export type AgentStatusProps = {
   zIndex?: number;
   wizardStepId?: ClusterDeploymentWizardStepsType;
   isDay2?: boolean;
+  additionalBMHInfo?: React.ReactNode;
 };
 
 const AgentStatus: React.FC<AgentStatusProps> = ({
@@ -29,6 +30,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   zIndex,
   wizardStepId,
   isDay2,
+  additionalBMHInfo,
 }) => {
   const { t } = useTranslation();
   const [host] = getAIHosts([agent]);
@@ -65,6 +67,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
           </StackItem>
         ) : undefined
       }
+      additionalBMHInfo={additionalBMHInfo}
       {...status}
     >
       {pendingApproval && onApprove && (

@@ -17,6 +17,7 @@ import {
 import { AgentMachineK8sResource } from '../Hypershift';
 import AgentStatus from './AgentStatus';
 import BMHStatus from './BMHStatus';
+import { BMHStatusInfo } from './BMHStatusInfo';
 
 export const agentHostnameColumn = (
   t: TFunction,
@@ -137,7 +138,12 @@ export const agentStatusColumn = ({
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      const bmh = bareMetalHosts?.find((b) => b.metadata?.uid === host.id);
+      const bmh = bareMetalHosts?.find(
+        (b) =>
+          b.metadata?.annotations?.['bmac.agent-install.openshift.io/hostname'] ===
+          host.requestedHostname,
+      );
+
       let bmhStatus;
       let title: React.ReactNode = '--';
       if (agent) {
@@ -149,11 +155,15 @@ export const agentStatusColumn = ({
             onEditHostname={editHostname}
             wizardStepId={wizardStepId}
             isDay2={isDay2}
+            additionalBMHInfo={
+              bmh &&
+              bmhStatuses && <BMHStatusInfo bmhStatus={getBMHStatus(bmh, bmhStatuses)} bmh={bmh} />
+            }
           />
         );
       } else if (bmh && bmhStatuses) {
         bmhStatus = getBMHStatus(bmh, bmhStatuses);
-        title = <BMHStatus bmhStatus={bmhStatus} />;
+        title = <BMHStatus bmhStatus={bmhStatus} bmh={bmh} />;
       }
 
       return {
@@ -224,18 +234,18 @@ export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableR
       sort: true,
     },
     cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
+      const agent = agents.find((a) => a.metadata?.uid === host.id);
       const infraEnvName = getInfraEnvNameOfAgent(agent);
       const title = infraEnvName ? (
         <Link
           to={`/multicloud/infrastructure/environments/details/${
-            agent.metadata?.namespace || ''
+            agent?.metadata?.namespace || ''
           }/${infraEnvName}/overview`}
         >
           {infraEnvName}
         </Link>
       ) : (
-        'N/A'
+        '--'
       );
       return {
         title,
