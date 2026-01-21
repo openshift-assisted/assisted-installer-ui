@@ -3,7 +3,8 @@ import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
 import { AgentTableActions } from '../ClusterDeployment/types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
+import { useAgentsTable } from './tableUtils';
+import { infraEnvColumn, agentStatusColumn } from './tableColumns';
 import {
   cpuArchitectureColumn,
   cpuCoresColumn,
@@ -11,7 +12,7 @@ import {
   hostnameColumn,
   memoryColumn,
   roleColumn,
-} from '../../../common/components/hosts/tableUtils';
+} from '../../../common';
 import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';

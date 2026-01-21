@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  discoveryTypeColumn,
-  agentStatusColumn,
   useAgentsTable,
   canChangeHostname,
-} from '../../Agent/tableUtils';
+  discoveryTypeColumn,
+  agentStatusColumn,
+} from '../../Agent';
 import HostsTable, {
   DefaultExpandComponent,
   HostsTableEmptyState,
@@ -20,8 +20,6 @@ import {
   labelsColumn,
   memoryColumn,
   roleColumn,
-} from '../../../../common/components/hosts/tableUtils';
-import {
   DiscoveryTroubleshootingModal,
   ChangeHostnameAction,
   MassChangeHostnameModal,

@@ -6,9 +6,6 @@ import {
   isSNO,
   DeleteHostAction,
   TableToolbar,
-} from '../../../common';
-import { HostsTableModals, useHostsTable } from './use-hosts-table';
-import {
   countColumn,
   cpuCoresColumn,
   discoveredAtColumn,
@@ -16,7 +13,8 @@ import {
   hostnameColumn,
   memoryColumn,
   roleColumn,
-} from '../../../common/components/hosts/tableUtils';
+} from '../../../common';
+import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';

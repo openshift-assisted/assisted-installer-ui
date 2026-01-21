@@ -2,14 +2,14 @@ import * as React from 'react';
 import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { infraEnvColumn, agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';
+import { useAgentsTable, infraEnvColumn, agentStatusColumn } from '../Agent';
 import {
   cpuCoresColumn,
   disksColumn,
   hostnameColumn,
   memoryColumn,
   roleColumn,
-} from '../../../common/components/hosts/tableUtils';
+} from '../../../common';
 import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';

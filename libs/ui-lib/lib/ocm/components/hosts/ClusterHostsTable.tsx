@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { selectSchedulableMasters, isSNO } from '../../../common';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import {
+  selectSchedulableMasters,
+  isSNO,
   discoveredAtColumn,
   disksColumn,
   hostnameColumn,
@@ -9,7 +9,8 @@ import {
   roleColumn,
   statusColumn,
   cpuCoresColumn,
-} from '../../../common/components/hosts/tableUtils';
+} from '../../../common';
+import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useHostsTable, HostsTableModals } from './use-hosts-table';
 import HostsTable from '../../../common/components/hosts/HostsTable';
