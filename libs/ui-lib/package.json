@@ -25,7 +25,7 @@
     "is-cidr": "^4.0.2",
     "is-in-subnet": "^4",
     "js-yaml": "^4.1.1",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "parse-url": "^9.2.0",
     "prism-react-renderer": "^1.1.1",
     "react-error-boundary": "^3.1.4",
