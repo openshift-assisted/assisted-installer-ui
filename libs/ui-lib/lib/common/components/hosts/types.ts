@@ -91,5 +91,6 @@ export type HostStatusProps = AdditionNtpSourcePropsType &
     zIndex?: number;
     autoCSR?: boolean;
     additionalPopoverContent?: React.ReactNode;
+    additionalBMHInfo?: React.ReactNode;
     openshiftVersion?: string;
   };
