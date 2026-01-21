@@ -43,7 +43,7 @@ const BasicStep = () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         await ClustersService.registerDisconnected({
           name: 'disconnected-cluster',
-          openshiftVersion: '4.20',
+          openshiftVersion: '4.22',
         });
       disconnectedClusterId = disconnectedCluster.id;
       navigate(`${currentPath}/${disconnectedClusterId}`, {
@@ -98,7 +98,7 @@ const BasicStep = () => {
             </GridItem>
             <GridItem>
               <Form id="wizard-cluster-basic-info__form">
-                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
+                <OcmOpenShiftVersion openshiftVersion="4.22" withPreviewText withMultiText>
                   <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
                     <span data-ouia-id="openshift-releases-link">
                       {t('ai:Learn more about OpenShift releases')}
