@@ -36,9 +36,9 @@ export const BaseDnsHelperText = ({
         Enter the name of your domain [domainname] or [domainname.com]. This cannot be changed after
         cluster installed. All DNS records must include the cluster name and be subdomains of the
         base you enter. The full cluster address will be: <br />
-        <strong>
+        <span className="pf-v6-u-font-weight-bold">
           {name || '[Cluster Name]'}.{baseDnsDomain || '[domainname.com]'}
-        </strong>
+        </span>
       </HelperTextItem>
     </HelperText>
   </FormHelperText>

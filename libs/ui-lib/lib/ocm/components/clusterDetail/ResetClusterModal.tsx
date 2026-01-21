@@ -79,7 +79,8 @@ const ResetClusterModal: React.FC = () => {
         </Content>
 
         <Content component="p">
-          <strong>Download the installation logs</strong> to troubleshoot or report a bug.
+          <span className="pf-v6-u-font-weight-bold">Download the installation logs</span> to
+          troubleshoot or report a bug.
           <br />
           Currently, {collectedLogsPercentage}% of the installation logs were collected and are
           ready for download.

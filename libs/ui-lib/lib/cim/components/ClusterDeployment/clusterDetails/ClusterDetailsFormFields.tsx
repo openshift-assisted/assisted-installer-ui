@@ -44,9 +44,9 @@ export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string
         'ai:All DNS records must be subdomains of this base and include the cluster name. This cannot be changed after cluster installation. The full cluster address will be:',
       )}{' '}
       <br />
-      <strong>
+      <span className="pf-v6-u-font-weight-bold">
         {name || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
-      </strong>
+      </span>
     </>
   );
 };
