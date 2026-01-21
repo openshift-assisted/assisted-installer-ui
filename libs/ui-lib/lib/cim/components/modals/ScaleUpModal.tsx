@@ -8,8 +8,11 @@ import {
   AlertActionCloseButton,
   Stack,
   StackItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from '@patternfly/react-core';
-import { Modal, ModalBoxBody, ModalBoxFooter } from '@patternfly/react-core/deprecated';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
@@ -124,12 +127,11 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
     <>
       <Modal
         aria-label={t('ai:Add host dialog')}
-        title={t('ai:Add hosts')}
         isOpen={isOpen}
         onClose={onClose}
-        hasNoBodyWrapper
         id="scale-up-modal"
       >
+        <ModalHeader title={t('ai:Add hosts')} />
         <Formik
           initialValues={getInitialValues()}
           validationSchema={validationSchema}
@@ -139,7 +141,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
           {({ isSubmitting, isValid, submitForm }: FormikProps<ScaleUpFormValues>) => {
             return (
               <>
-                <ModalBoxBody>
+                <ModalBody>
                   <Stack hasGutter>
                     <StackItem>
                       <ScaleUpForm
@@ -165,8 +167,8 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                       </StackItem>
                     )}
                   </Stack>
-                </ModalBoxBody>
-                <ModalBoxFooter>
+                </ModalBody>
+                <ModalFooter>
                   {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                   <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
                     {t('ai:Submit')}
@@ -174,7 +176,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                   <Button onClick={onClose} variant={ButtonVariant.secondary}>
                     {t('ai:Cancel')}
                   </Button>
-                </ModalBoxFooter>
+                </ModalFooter>
               </>
             );
           }}

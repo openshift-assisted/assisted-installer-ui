@@ -1,6 +1,17 @@
 import React from 'react';
-import { Button, ButtonVariant, Content, Stack, StackItem, Alert } from '@patternfly/react-core';
-import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Stack,
+  StackItem,
+  Alert,
+  Modal,
+  ModalVariant,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '@patternfly/react-core';
 import { useModalDialogsContext, ClustersService } from '@openshift-assisted/ui-lib/ocm';
 import {
   getApiErrorMessage,
@@ -45,48 +56,50 @@ const ResetSingleClusterModal: React.FC = () => {
     }
   };
 
-  const actions = [
-    <Button
-      key="reset"
-      variant={ButtonVariant.danger}
-      onClick={() => void handleResetAsync()}
-      isDisabled={isLoading}
-      isLoading={isLoading}
-    >
-      {t('ai:Reset')}
-    </Button>,
-    <Button key="cancel" variant={ButtonVariant.link} onClick={handleClose} isDisabled={isLoading}>
-      {t('ai:Cancel')}
-    </Button>,
-  ];
-
   return (
-    <Modal
-      title={t('ai:Reset cluster')}
-      titleIconVariant="warning"
-      isOpen={isOpen}
-      variant={ModalVariant.small}
-      actions={actions}
-      onClose={handleClose}
-    >
-      <Stack hasGutter>
-        <StackItem>
-          <Content>
-            <Content component="p">
-              {t('ai:This will remove all current configurations and will revert to the defaults.')}
-            </Content>
-
-            <Content component="p">{t('ai:Are you sure you want to reset the cluster?')}</Content>
-          </Content>
-        </StackItem>
-        {error && (
+    <Modal isOpen={isOpen} variant={ModalVariant.small} onClose={handleClose}>
+      <ModalHeader title={t('ai:Reset cluster')} titleIconVariant="warning" />
+      <ModalBody>
+        <Stack hasGutter>
           <StackItem>
-            <Alert isInline variant="danger" title={error.title}>
-              {error.message}
-            </Alert>
+            <Content>
+              <Content component="p">
+                {t(
+                  'ai:This will remove all current configurations and will revert to the defaults.',
+                )}
+              </Content>
+
+              <Content component="p">{t('ai:Are you sure you want to reset the cluster?')}</Content>
+            </Content>
           </StackItem>
-        )}
-      </Stack>
+          {error && (
+            <StackItem>
+              <Alert isInline variant="danger" title={error.title}>
+                {error.message}
+              </Alert>
+            </StackItem>
+          )}
+        </Stack>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          key="reset"
+          variant={ButtonVariant.danger}
+          onClick={() => void handleResetAsync()}
+          isDisabled={isLoading}
+          isLoading={isLoading}
+        >
+          {t('ai:Reset')}
+        </Button>
+        <Button
+          key="cancel"
+          variant={ButtonVariant.link}
+          onClick={handleClose}
+          isDisabled={isLoading}
+        >
+          {t('ai:Cancel')}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };
