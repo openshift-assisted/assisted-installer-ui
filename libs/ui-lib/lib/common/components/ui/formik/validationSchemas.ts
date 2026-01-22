@@ -228,12 +228,29 @@ const vipBroadcastValidationSchema = ({ machineNetworks }: NetworkConfigurationV
   Yup.string().test(
     'vip-no-broadcast',
     'The IP address cannot be a network or broadcast address',
-    (value?: string) => {
-      const vipAddress = getAddress(value || '')?.address;
-      const machineNetwork = getAddress((machineNetworks?.length && machineNetworks[0].cidr) || '');
+    function (value?: string) {
+      if (!value) {
+        return true;
+      }
 
-      const machineNetworkBroadcast = machineNetwork?.endAddress().address;
-      const machineNetworkAddress = machineNetwork?.startAddress().address;
+      const vipAddress = getAddress(value)?.address;
+      if (!vipAddress) {
+        return true;
+      }
+
+      const index = getArrayIndexFromPath(this.path || '');
+      const machineNetworkCidr = machineNetworks?.[index]?.cidr ?? machineNetworks?.[0]?.cidr ?? '';
+      if (!machineNetworkCidr) {
+        return true;
+      }
+
+      const machineNetwork = getAddress(machineNetworkCidr);
+      if (!machineNetwork) {
+        return true;
+      }
+
+      const machineNetworkBroadcast = machineNetwork.endAddress().address;
+      const machineNetworkAddress = machineNetwork.startAddress().address;
 
       return vipAddress !== machineNetworkBroadcast && vipAddress !== machineNetworkAddress;
     },
@@ -247,7 +264,7 @@ const alwaysRequired = (message?: string) =>
   );
 
 const getArrayIndexFromPath = (path: string): number => {
-  const match = path.match(/\[(\d+)\]/);
+  const match = path.match(/\[(\d+)\][^\[]*$/); // Prefer the last [...] occurrence for nested array paths like "foo[0].bar[1].ip"
   return match ? parseInt(match[1], 10) : NaN;
 };
 
