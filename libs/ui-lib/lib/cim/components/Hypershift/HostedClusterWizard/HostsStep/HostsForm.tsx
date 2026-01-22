@@ -201,7 +201,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
                     } as NodePoolFormValue);
                   }}
                 >
-                  {t('ai:Add Nodepool')}
+                  {t('ai:Add nodepool')}
                 </Button>
               </GridItem>
             </>
