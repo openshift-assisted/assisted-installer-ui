@@ -2,7 +2,7 @@
   "bin": "./build/main.js",
   "dependencies": {
     "chokidar": "^3.5.3",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "zx": "^8.8.5"
   },
   "devDependencies": {

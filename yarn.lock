@@ -976,7 +976,7 @@ __metadata:
     "@tsconfig/recommended": ^1.0.2
     "@types/node": ^18.14.6
     chokidar: ^3.5.3
-    lodash: ^4.17.21
+    lodash: ^4.17.23
     zx: ^8.8.5
   bin:
     toolbox: ./build/main.js
@@ -1003,7 +1003,7 @@ __metadata:
     cypress: 13.6.2
     cypress-file-upload: 5.0.8
     cypress-fill-command: ^1.0.2
-    lodash: ^4.17.15
+    lodash: ^4.17.23
     start-server-and-test: ^2.0.0
   languageName: unknown
   linkType: soft
@@ -10586,10 +10586,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.21, lodash@npm:^4, lodash@npm:^4.17.0, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
+"lodash@npm:4.17.21, lodash@npm:^4, lodash@npm:^4.17.0, lodash@npm:^4.17.14, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^4.17.23":
+  version: 4.17.23
+  resolution: "lodash@npm:4.17.23"
+  checksum: 7daad39758a72872e94651630fbb54ba76868f904211089721a64516ce865506a759d9ad3d8ff22a2a49a50a09db5d27c36f22762d21766e47e3ba918d6d7bab
   languageName: node
   linkType: hard
 
