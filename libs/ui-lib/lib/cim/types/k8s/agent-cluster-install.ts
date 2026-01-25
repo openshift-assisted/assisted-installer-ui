@@ -30,6 +30,8 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     };
     apiVIP?: string;
     ingressVIP?: string;
+    apiVIPs?: string[];
+    ingressVIPs?: string[];
     sshPublicKey?: string;
     imageSetRef?: {
       name?: string;
@@ -63,6 +65,8 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   status?: {
     apiVIP?: string;
     ingressVIP?: string;
+    apiVIPs?: string[];
+    ingressVIPs?: string[];
     connectivityMajorityGroups?: string;
     conditions?: AgentClusterInstallStatusCondition[];
     progress?: {

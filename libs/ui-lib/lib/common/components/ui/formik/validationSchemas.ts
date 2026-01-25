@@ -3,14 +3,11 @@ import { Address4, Address6 } from 'ip-address';
 import isCIDR from 'is-cidr';
 import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
-import { head } from 'lodash-es';
 import parseUrl from 'parse-url';
 
 import { TFunction } from 'i18next';
 import {
-  ApiVip,
   ClusterNetwork,
-  IngressVip,
   MachineNetwork,
   ServiceNetwork,
 } from '@openshift-assisted/types/assisted-installer-service';
@@ -29,7 +26,6 @@ import {
 } from './constants';
 import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { isMajorMinorVersionEqualOrGreater } from '../../../utils';
-import { selectApiVip, selectIngressVip } from '../../../selectors';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
@@ -197,7 +193,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  { machineNetworks, hostSubnet }: NetworkConfigurationValues,
+  { machineNetworks }: NetworkConfigurationValues,
   allowSuffix: boolean,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', (value) => {
@@ -211,17 +207,11 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return true;
     }
-    const foundHostSubnets = [];
-    if (machineNetworks) {
-      const cidrs = machineNetworks?.map((network) => network.cidr);
-      foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
-    } else {
-      const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-      if (subnet) {
-        foundHostSubnets.push(subnet);
-      }
-    }
-    for (const hostSubnet of foundHostSubnets) {
+    // Find host subnets that match the selected machine networks
+    const cidrs = machineNetworks?.map((network) => network.cidr) ?? [];
+    const matchingSubnets = hostSubnets.filter((hostSubnet) => cidrs.includes(hostSubnet.subnet));
+
+    for (const hostSubnet of matchingSubnets) {
       if (hostSubnet?.subnet) {
         // Workaround for bug in CIM backend. hostIDs are empty
         if (!hostSubnet.hostIDs.length) {
@@ -234,50 +224,49 @@ export const vipRangeValidationSchema = (
     return false;
   });
 
-const vipUniqueValidationSchema = (
-  { ingressVips, apiVips, apiVip, ingressVip }: NetworkConfigurationValues,
-  useIPArray: boolean,
-) =>
-  Yup.string().test(
-    'vip-uniqueness-validation',
-    'The Ingress and API IP addresses cannot be the same.',
-    (value) => {
-      if (useIPArray) {
-        if (!value || ingressVips?.length === 0 || apiVips?.length === 0) {
-          return true;
-        }
-        return selectApiVip({ apiVips }) !== selectIngressVip({ ingressVips });
-      } else {
-        if (!value) {
-          return true;
-        }
-        return apiVip !== ingressVip;
-      }
-    },
-  );
-
 const vipBroadcastValidationSchema = ({ machineNetworks }: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-no-broadcast',
     'The IP address cannot be a network or broadcast address',
-    (value?: string) => {
-      const vipAddress = getAddress(value || '')?.address;
-      const machineNetwork = getAddress((machineNetworks?.length && machineNetworks[0].cidr) || '');
+    function (value?: string) {
+      if (!value) {
+        return true;
+      }
 
-      const machineNetworkBroadcast = machineNetwork?.endAddress().address;
-      const machineNetworkAddress = machineNetwork?.startAddress().address;
+      const vipAddress = getAddress(value)?.address;
+      if (!vipAddress) {
+        return true;
+      }
+
+      const index = getArrayIndexFromPath(this.path || '');
+      const machineNetworkCidr = machineNetworks?.[index]?.cidr ?? machineNetworks?.[0]?.cidr ?? '';
+      if (!machineNetworkCidr) {
+        return true;
+      }
+
+      const machineNetwork = getAddress(machineNetworkCidr);
+      if (!machineNetwork) {
+        return true;
+      }
+
+      const machineNetworkBroadcast = machineNetwork.endAddress().address;
+      const machineNetworkAddress = machineNetwork.startAddress().address;
 
       return vipAddress !== machineNetworkBroadcast && vipAddress !== machineNetworkAddress;
     },
   );
 
-// like .required() but passes for initially empty field
-const requiredOnceSet = (initialValue?: string, message?: string) =>
+const alwaysRequired = (message?: string) =>
   Yup.string().test(
-    'required-once-set',
+    'always-required',
     message || 'The value is required.',
-    (value?: string): boolean => !!value || !initialValue,
+    (value?: string): boolean => !!value,
   );
+
+const getArrayIndexFromPath = (path: string): number => {
+  const match = path.match(/\[(\d+)\][^\[]*$/); // Prefer the last [...] occurrence for nested array paths like "foo[0].bar[1].ip"
+  return match ? parseInt(match[1], 10) : NaN;
+};
 
 export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingType'], {
   is: (managedNetworkingType: NetworkConfigurationValues['managedNetworkingType']) =>
@@ -285,26 +274,9 @@ export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingT
   then: () => Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
 });
 
-export const vipValidationSchema = (
-  hostSubnets: HostSubnets,
-  values: NetworkConfigurationValues,
-  initialValue?: string,
-) =>
-  Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
-    is: (
-      vipDhcpAllocation: NetworkConfigurationValues['vipDhcpAllocation'],
-      managedNetworkingType: NetworkConfigurationValues['managedNetworkingType'],
-    ) => !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: () =>
-      requiredOnceSet(initialValue, 'Required. Please provide an IP address')
-        .concat(vipRangeValidationSchema(hostSubnets, values, true))
-        .concat(vipUniqueValidationSchema(values, false)),
-  });
-
 export const vipNoSuffixValidationSchema = (
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
-  initialValues?: ApiVip[] | IngressVip[],
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (
@@ -326,10 +298,7 @@ export const vipNoSuffixValidationSchema = (
           if (!value) {
             return true;
           }
-          // this.path looks like: "apiVips[0].ip" or "ingressVips[1].ip"
-          const path = this.path || '';
-          const match = path.match(/\[(\d+)\]/);
-          const index = match ? parseInt(match[1], 10) : NaN;
+          const index = getArrayIndexFromPath(this.path || '');
           if (Number.isNaN(index)) {
             return true;
           }
@@ -348,62 +317,50 @@ export const vipNoSuffixValidationSchema = (
           return mnIsV4 ? ipIsV4 : ipIsV6;
         },
       );
+      // Ensure API and Ingress VIPs at the same index are not the same
+      const vipUniqueSchema = Yup.string().test('vip-uniqueness', function (value?: string) {
+        if (!value) {
+          return true;
+        }
+        const index = getArrayIndexFromPath(this.path || '');
+        if (Number.isNaN(index)) {
+          return true;
+        }
+        const apiVip = values.apiVips?.[index]?.ip;
+        const ingressVip = values.ingressVips?.[index]?.ip;
+        if (!apiVip || !ingressVip) {
+          return true;
+        }
+        if (apiVip === ingressVip) {
+          const label = index === 0 ? 'primary' : 'secondary';
+          return this.createError({
+            message: `The ${label} Ingress and API IP addresses cannot be the same.`,
+          });
+        }
+        return true;
+      });
 
-      return requiredOnceSet(head(initialValues)?.ip, 'Required. Please provide an IP address')
+      return alwaysRequired('Required. Please provide an IP address')
         .concat(ipNoSuffixValidationSchema)
         .concat(vipFamilyMatchSchema)
         .concat(vipRangeValidationSchema(hostSubnets, values, false))
         .concat(vipBroadcastValidationSchema(values))
-        .concat(vipUniqueValidationSchema(values, true));
+        .concat(vipUniqueSchema);
     },
   });
 
 export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
-  initialValues?: ApiVip[] | IngressVip[],
 ) =>
-  (values.managedNetworkingType === 'clusterManaged'
+  values.managedNetworkingType === 'clusterManaged'
     ? Yup.array<T>().of(
         Yup.object({
           clusterId: Yup.string(),
-          ip: vipNoSuffixValidationSchema(hostSubnets, values, initialValues),
+          ip: vipNoSuffixValidationSchema(hostSubnets, values),
         }),
       )
-    : Yup.array<T>()
-  )
-    .test(
-      'vips-length',
-      'Both API and ingress APIs must be provided.',
-      (_value) => values.apiVips?.length === values.ingressVips?.length,
-    )
-    .test(
-      'vips-match-machine-networks',
-      'Primary API and Ingress IPs must match the primary machine network family; secondary must match the secondary machine network family.',
-      (_vips?: { ip?: string }[]) => {
-        const machineNetworks = values.machineNetworks || [];
-        const validateIndex = (idx: number) => {
-          const cidr = machineNetworks[idx]?.cidr || '';
-          const mIsIpv4 = isCIDR.v4(cidr);
-          const mIsIpv6 = isCIDR.v6(cidr);
-          if (!mIsIpv4 && !mIsIpv6) {
-            return true;
-          }
-          const api = values.apiVips?.[idx]?.ip || '';
-          const ing = values.ingressVips?.[idx]?.ip || '';
-          if (!api || !ing) {
-            return true;
-          }
-          const apiOk = mIsIpv4 ? isIPv4Address(api) : isIPv6Address(api);
-          const ingOk = mIsIpv4 ? isIPv4Address(ing) : isIPv6Address(ing);
-          return apiOk && ingOk;
-        };
-
-        const primaryOk = validateIndex(0);
-        const secondaryOk = validateIndex(1);
-        return primaryOk && secondaryOk;
-      },
-    );
+    : Yup.array<T>();
 
 export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undefined) =>
   Yup.string()

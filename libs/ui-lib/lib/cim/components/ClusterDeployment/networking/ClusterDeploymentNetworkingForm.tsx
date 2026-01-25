@@ -14,7 +14,7 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import {
-  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
+  CLUSTER_DEFAULT_NETWORK_SETTINGS,
   getHostSubnets,
   SecurityFields,
   ProxyFields,
@@ -133,7 +133,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
                 cluster={cluster}
                 hostSubnets={hostSubnets}
                 isVipDhcpAllocationDisabled
-                defaultNetworkSettings={CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4}
+                defaultNetworkSettings={CLUSTER_DEFAULT_NETWORK_SETTINGS}
                 hideManagedNetworking={getIsSNOCluster(agentClusterInstall) || isNutanix}
               />
             </GridItem>
