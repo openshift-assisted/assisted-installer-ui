@@ -60,7 +60,7 @@ export const NetworkingForm = ({
   const { activeStep, goToPrevStep, goToNextStep, close } = useWizardContext();
   const { syncError } = React.useContext(ClusterDeploymentWizardContext);
   const { alerts } = useAlerts();
-  const [showFormErrors, setShowFormErrors] = React.useState(false);
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = React.useState(false);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
   const [nextRequested, setNextRequested] = React.useState(false);
   const { infraEnvWithProxy, infraEnvsError, infraEnvsLoading, sameProxies } = useInfraEnvProxies({
@@ -76,7 +76,7 @@ export const NetworkingForm = ({
   );
 
   const onNext = React.useCallback(async () => {
-    if (!showFormErrors) {
+    if (!hasAttemptedSubmit) {
       const errors = await validateForm();
       setTouched(
         Object.keys(errors).reduce((acc, curr) => {
@@ -84,13 +84,13 @@ export const NetworkingForm = ({
           return acc;
         }, {} as Record<string, boolean>),
       );
-      setShowFormErrors(true);
+      setHasAttemptedSubmit(true);
       if (Object.keys(errors).length) {
         return;
       }
     }
     setNextRequested(true);
-  }, [setTouched, showFormErrors, validateForm]);
+  }, [setTouched, hasAttemptedSubmit, validateForm]);
 
   React.useEffect(() => {
     setNextRequested(false);
@@ -123,34 +123,34 @@ export const NetworkingForm = ({
     return undefined;
   }, [isSubmitting, isValidating, nextRequested, t]);
 
-  const footer = React.useMemo(
-    () => (
+  const footer = React.useMemo(() => {
+    const hasValidationErrors = hasAttemptedSubmit && (!isValid || isValidating);
+    const isNextDisabled = nextRequested || isSubmitting || hasValidationErrors;
+
+    return (
       <WizardFooter
         activeStep={activeStep}
         onNext={onNext}
-        isNextDisabled={
-          nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
-        }
+        isNextDisabled={isNextDisabled}
         nextButtonProps={{ isLoading: !!submittingText }}
         nextButtonText={submittingText || t('ai:Next')}
         onBack={goToPrevStep}
         onClose={close}
       />
-    ),
-    [
-      activeStep,
-      onNext,
-      nextRequested,
-      isSubmitting,
-      showFormErrors,
-      isValid,
-      isValidating,
-      submittingText,
-      goToPrevStep,
-      close,
-      t,
-    ],
-  );
+    );
+  }, [
+    activeStep,
+    onNext,
+    nextRequested,
+    isSubmitting,
+    hasAttemptedSubmit,
+    isValid,
+    isValidating,
+    submittingText,
+    goToPrevStep,
+    close,
+    t,
+  ]);
 
   useWizardFooter(footer);
 
@@ -177,7 +177,7 @@ export const NetworkingForm = ({
           />
         </GridItem>
 
-        {showFormErrors && !!errorFields.length && (
+        {hasAttemptedSubmit && !!errorFields.length && (
           <GridItem>
             <Alert
               variant={AlertVariant.danger}
@@ -191,7 +191,7 @@ export const NetworkingForm = ({
           </GridItem>
         )}
 
-        {(showClusterErrors || showFormErrors) && !!alerts.length && (
+        {(showClusterErrors || hasAttemptedSubmit) && !!alerts.length && (
           <GridItem>
             <Alerts />
           </GridItem>

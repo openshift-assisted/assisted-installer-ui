@@ -16,7 +16,7 @@ import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 import './NetworkForm.css';
-import AdvancedNetworkFields from '../../../../../common/components/clusterConfiguration/AdvancedNetworkFields';
+import AdvancedNetworkFields from './AdvancedNetworkFields';
 
 const NetworkForm: React.FC<NetworkFormProps> = ({ onValuesChanged }) => {
   const { values } = useFormikContext<NetworkFormValues>();
