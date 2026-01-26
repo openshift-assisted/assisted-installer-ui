@@ -141,7 +141,7 @@ const OptionalConfigurationsStep = () => {
 
   const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
     useClusterWizardContext();
-  const { addAlert } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   // If no pull secret is available, default the checkbox to checked so the field is expanded
   const [editPullSecret, setEditPullSecret] = React.useState(!pullSecret);
 
@@ -185,6 +185,7 @@ const OptionalConfigurationsStep = () => {
       validateOnMount
       validate={validate}
       onSubmit={async (values) => {
+        clearAlerts();
         if (!cluster?.id) {
           addAlert({
             title: t('ai:Missing cluster'),

@@ -17,7 +17,8 @@ import ClusterStatus, { getClusterStatusText } from '../../../components/cluster
 import { RootStateDay1 } from '../../store-day1';
 import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
-const selectClusters = (state: RootStateDay1) => state.clusters.data;
+const selectClusters = (state: RootStateDay1) =>
+  state.clusters.data.filter((c) => c.kind !== 'DisconnectedCluster');
 const clustersUIState = (state: RootStateDay1) => state.clusters.uiState;
 
 export const selectClustersUIState = createSelector(
