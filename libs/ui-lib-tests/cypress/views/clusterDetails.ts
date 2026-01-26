@@ -139,11 +139,7 @@ export const clusterDetailsPage = {
     return cy.get('#form-static-platform-field');
   },
   clickClusterDetailsBody: () => {
-    // <<<<<<< HEAD DJN TODO:
     cy.get('#wizard-cluster-details__form').click();
-    // =======
-    //     cy.get('.pf-v6-l-grid').click();
-    // >>>>>>> 82e76326 (pf6 deps and codemods updates)
   },
   validateInputDnsDomainFieldHelper: (msg) => {
     cy.get(Cypress.env('baseDnsDomainFieldHelperErrorId')).should('contain', msg);
