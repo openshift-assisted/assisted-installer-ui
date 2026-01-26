@@ -56,7 +56,7 @@ export const getNetworkInitialValues = (
         ? defaultNetworkValues.clusterNetworksDualstack
         : defaultNetworkValues.clusterNetworksIpv4?.map((network) => ({
             ...network,
-            clusterId: cluster.id,
+            clusterId: cluster?.id,
           }))),
     serviceNetworks:
       cluster.serviceNetworks ||
@@ -64,7 +64,7 @@ export const getNetworkInitialValues = (
         ? defaultNetworkValues.serviceNetworksDualstack
         : defaultNetworkValues.serviceNetworksIpv4?.map((network) => ({
             ...network,
-            clusterId: cluster.id,
+            clusterId: cluster?.id,
           }))),
   };
 };
@@ -76,12 +76,8 @@ export const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy((values: NetworkConfigurationValues) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, initialValues.apiVips),
-      ingressVips: vipArrayValidationSchema<IngressVip>(
-        hostSubnets,
-        values,
-        initialValues.ingressVips,
-      ),
+      apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values),
+      ingressVips: vipArrayValidationSchema<IngressVip>(hostSubnets, values),
       sshPublicKey: sshPublicKeyValidationSchema,
       machineNetworks:
         values.managedNetworkingType === 'userManaged'
@@ -100,21 +96,17 @@ export const getNetworkConfigurationValidationSchema = (
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
         then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
         otherwise: () =>
-          values.clusterNetworks && values.clusterNetworks?.length >= 2
-            ? clusterNetworksValidationSchema.concat(
-                dualStackValidationSchema('cluster network', openshiftVersion),
-              )
-            : Yup.array(),
+          clusterNetworksValidationSchema.concat(
+            dualStackValidationSchema('cluster network', openshiftVersion),
+          ),
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
         then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
         otherwise: () =>
-          values.serviceNetworks && values.serviceNetworks?.length >= 2
-            ? serviceNetworkValidationSchema.concat(
-                dualStackValidationSchema('service network', openshiftVersion),
-              )
-            : Yup.array(),
+          serviceNetworkValidationSchema.concat(
+            dualStackValidationSchema('service network', openshiftVersion),
+          ),
       }),
     }),
   );

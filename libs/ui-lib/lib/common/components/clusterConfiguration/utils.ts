@@ -11,13 +11,7 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import { NO_SUBNET_SET } from '../../config';
 import { isMajorMinorVersionEqualOrGreater } from '../../utils';
-import {
-  selectClusterNetworkCIDR,
-  selectClusterNetworkHostPrefix,
-  selectServiceNetworkCIDR,
-  selectSchedulableMasters,
-  isClusterPlatformTypeVM,
-} from '../../selectors';
+import { selectSchedulableMasters, isClusterPlatformTypeVM } from '../../selectors';
 import {
   ClusterCpuArchitecture,
   CpuArchitecture,
@@ -165,12 +159,28 @@ export const clusterNetworksEqual = (array1: ClusterNetwork[], array2: ClusterNe
     ),
   );
 
-export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
-  selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
-  selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
-  selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr;
+export const isAdvNetworkConf = (
+  cluster: Cluster,
+  defaultNetworkValues: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >,
+) =>
+  !(
+    serviceNetworksEqual(
+      cluster.serviceNetworks || [],
+      defaultNetworkValues.serviceNetworksIpv4 || [],
+    ) &&
+    clusterNetworksEqual(
+      cluster.clusterNetworks || [],
+      defaultNetworkValues.clusterNetworksIpv4 || [],
+    )
+  );
 
-export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6 = false) => {
+export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6: boolean) => {
   return !(isSNO || isIPv6);
 };
 

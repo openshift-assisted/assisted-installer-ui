@@ -171,7 +171,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     setSubmitting,
   } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const [nextRequested, setNextRequested] = React.useState(false);
-  const [showFormErrors, setShowFormErrors] = React.useState(false);
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = React.useState(false);
   const selectedAgents = getSelectedAgents(agents, values);
   const { t } = useTranslation();
   const onEditRole = React.useCallback(
@@ -189,7 +189,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   const onAutoSelectChange = React.useCallback(() => {
     setNextRequested(false);
     setShowClusterErrors(false);
-    setShowFormErrors(false);
+    setHasAttemptedSubmit(false);
   }, []);
 
   const onHostSelect = React.useCallback(() => {
@@ -198,8 +198,8 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   }, []);
 
   const onNext = React.useCallback(async () => {
-    if (!showFormErrors) {
-      setShowFormErrors(true);
+    if (!hasAttemptedSubmit) {
+      setHasAttemptedSubmit(true);
       const errors = await validateForm();
       setTouched(
         Object.keys(errors).reduce((acc, curr) => {
@@ -213,7 +213,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     }
     void submitForm();
     setNextRequested(true);
-  }, [setTouched, showFormErrors, submitForm, validateForm]);
+  }, [setTouched, hasAttemptedSubmit, submitForm, validateForm]);
 
   React.useEffect(() => {
     if (nextRequested && !isSubmitting) {
@@ -265,35 +265,34 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     </ValidationSection>
   );
 
-  const footer = React.useMemo(
-    () => (
+  const footer = React.useMemo(() => {
+    const hasValidationErrors = hasAttemptedSubmit && (!isValid || isValidating);
+    const isNextDisabled = nextRequested || isSubmitting || hasValidationErrors; // || !!syncError
+
+    return (
       <WizardFooter
         activeStep={activeStep}
         onNext={onNext}
-        isNextDisabled={
-          nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false) // ||
-          // !!syncError
-        }
+        isNextDisabled={isNextDisabled}
         nextButtonText={submittingText || t('ai:Next')}
         nextButtonProps={{ isLoading: !!submittingText }}
         onBack={goToPrevStep}
         onClose={close}
       />
-    ),
-    [
-      activeStep,
-      onNext,
-      nextRequested,
-      isSubmitting,
-      showFormErrors,
-      isValid,
-      isValidating,
-      submittingText,
-      t,
-      goToPrevStep,
-      close,
-    ],
-  );
+    );
+  }, [
+    activeStep,
+    onNext,
+    nextRequested,
+    isSubmitting,
+    hasAttemptedSubmit,
+    isValid,
+    isValidating,
+    submittingText,
+    t,
+    goToPrevStep,
+    close,
+  ]);
 
   useWizardFooter(footer);
 
@@ -316,14 +315,14 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
           hostsBinding={nextRequested && !showClusterErrors}
         />
       </GridItem>
-      {(showClusterErrors || showFormErrors) && !!alerts.length && (
+      {(showClusterErrors || hasAttemptedSubmit) && !!alerts.length && (
         <GridItem>
           <Alerts />
         </GridItem>
       )}
 
       {syncError && <GridItem>{errorsSection}</GridItem>}
-      {showFormErrors && errors.selectedHostIds && touched.selectedHostIds && (
+      {hasAttemptedSubmit && errors.selectedHostIds && touched.selectedHostIds && (
         <GridItem>
           <Alert
             variant={AlertVariant.danger}

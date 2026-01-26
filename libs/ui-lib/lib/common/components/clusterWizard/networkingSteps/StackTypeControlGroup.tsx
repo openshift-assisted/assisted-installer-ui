@@ -1,35 +1,42 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { ButtonVariant, FormGroup, Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
+import { HostSubnets, NetworkConfigurationValues } from '../../../types';
+import { getFieldId } from '../../ui';
 import {
-  HostSubnets,
-  NetworkConfigurationValues,
-  getFieldId,
   DUAL_STACK,
   IPV4_STACK,
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_SDN,
   NO_SUBNET_SET,
-} from '../../../../common';
-import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
-import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
-import { OcmRadioField } from '../../ui/OcmFormFields';
+} from '../../../config';
+import { RadioField } from '../../ui/formik';
+import { ConfirmationModal, PopoverIcon } from '../../ui';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
 import {
   Cluster,
+  ClusterDefaultConfig,
   ClusterNetwork,
   MachineNetwork,
   ServiceNetwork,
 } from '@openshift-assisted/types/assisted-installer-service';
 
-type StackTypeControlGroupProps = {
+export type StackTypeDefaultNetworkValues = Pick<
+  ClusterDefaultConfig,
+  | 'clusterNetworksDualstack'
+  | 'clusterNetworksIpv4'
+  | 'serviceNetworksDualstack'
+  | 'serviceNetworksIpv4'
+>;
+
+export type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
   isDualStackSelectable: boolean;
   hostSubnets: HostSubnets;
+  defaultNetworkValues: StackTypeDefaultNetworkValues;
+  isViewerMode?: boolean;
 };
 
 const hasDualStackConfigurationChanged = (
@@ -40,29 +47,26 @@ const hasDualStackConfigurationChanged = (
 ) =>
   clusterNetworks &&
   serviceNetworks &&
-  ((values.machineNetworks && values.machineNetworks[1].cidr !== cidrIPv6) ||
-    (values.clusterNetworks && values.clusterNetworks[1].cidr !== clusterNetworks[1].cidr) ||
-    (values.clusterNetworks &&
-      values.clusterNetworks[1].hostPrefix !== clusterNetworks[1].hostPrefix) ||
-    (values.serviceNetworks && values.serviceNetworks[1].cidr !== serviceNetworks[1].cidr));
+  ((values.machineNetworks?.[1] && values.machineNetworks[1].cidr !== cidrIPv6) ||
+    (values.clusterNetworks?.[1] && values.clusterNetworks[1].cidr !== clusterNetworks[1]?.cidr) ||
+    (values.clusterNetworks?.[1] &&
+      values.clusterNetworks[1].hostPrefix !== clusterNetworks[1]?.hostPrefix) ||
+    (values.serviceNetworks?.[1] && values.serviceNetworks[1].cidr !== serviceNetworks[1]?.cidr) ||
+    values.apiVips?.[1]?.ip ||
+    values.ingressVips?.[1]?.ip);
 
 export const StackTypeControlGroup = ({
   clusterId,
   isDualStackSelectable,
   hostSubnets,
+  defaultNetworkValues,
+  isViewerMode = false,
 }: StackTypeControlGroupProps) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
-  const defaultNetworkValues = useDefaultConfiguration([
-    'clusterNetworksDualstack',
-    'clusterNetworksIpv4',
-    'serviceNetworksDualstack',
-    'serviceNetworksIpv4',
-  ]);
 
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const shouldSetSingleStack =
     !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
@@ -216,9 +220,41 @@ export const StackTypeControlGroup = ({
         false,
       );
     }
-    // Ensure cluster/service networks ordering matches the new primary family
-    reorderNetworksByCurrentPrimary(values, setFieldValue);
+    // Initialize VIPs for dual-stack
+    if (values.apiVips && values.apiVips.length < 2) {
+      setFieldValue(
+        'apiVips',
+        [values.apiVips[0] || { ip: '', clusterId: clusterId }, { ip: '', clusterId: clusterId }],
+        false,
+      );
+    }
+    if (values.ingressVips && values.ingressVips.length < 2) {
+      setFieldValue(
+        'ingressVips',
+        [
+          values.ingressVips[0] || { ip: '', clusterId: clusterId },
+          { ip: '', clusterId: clusterId },
+        ],
+        false,
+      );
+    }
   };
+  // Ensure cluster/service networks ordering matches the new primary family
+  const primaryCidr = values.machineNetworks?.[0]?.cidr;
+  React.useEffect(() => {
+    if (isViewerMode) {
+      return;
+    }
+    reorderNetworksByCurrentPrimary(values, setFieldValue);
+  }, [
+    isViewerMode,
+    setFieldValue,
+    values,
+    values.stackType,
+    primaryCidr,
+    values.clusterNetworks,
+    values.serviceNetworks,
+  ]);
 
   const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === DUAL_STACK) {
@@ -253,10 +289,10 @@ export const StackTypeControlGroup = ({
       >
         <Split>
           <SplitItem>
-            <OcmRadioField
+            <RadioField
               name={'stackType'}
               value={IPV4_STACK}
-              isDisabled={!isDualStackSelectable}
+              isDisabled={!isDualStackSelectable || isViewerMode}
               label="IPv4&nbsp;"
             />
           </SplitItem>
@@ -275,10 +311,10 @@ export const StackTypeControlGroup = ({
               }
               hidden={isDualStackSelectable}
             >
-              <OcmRadioField
+              <RadioField
                 name={'stackType'}
                 value={DUAL_STACK}
-                isDisabled={!isDualStackSelectable}
+                isDisabled={!isDualStackSelectable || isViewerMode}
                 label="Dual-stack&nbsp;"
               />
             </Tooltip>

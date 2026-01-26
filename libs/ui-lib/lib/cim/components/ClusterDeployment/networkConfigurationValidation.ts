@@ -3,54 +3,48 @@ import {
   ClusterDefaultConfig,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
-import {
-  getSubnetFromMachineNetworkCidr,
-  getHostSubnets,
-} from '../../../common/components/clusterConfiguration/utils';
-import {
-  isSNO,
-  selectClusterNetworkCIDR,
-  selectClusterNetworkHostPrefix,
-  selectMachineNetworkCIDR,
-  selectServiceNetworkCIDR,
-} from '../../../common/selectors/clusterSelectors';
-import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../../common/config';
-
-const getInitHostSubnet = (
-  cluster: Cluster,
-  managedNetworkingType: 'userManaged' | 'clusterManaged',
-) => {
-  if (!isSNO(cluster) && managedNetworkingType === 'userManaged') {
-    return NO_SUBNET_SET;
-  }
-  const machineNetworkCIDR = selectMachineNetworkCIDR(cluster);
-  if (machineNetworkCIDR) {
-    return getSubnetFromMachineNetworkCidr(machineNetworkCIDR);
-  }
-  if (managedNetworkingType === 'clusterManaged') {
-    return getHostSubnets(cluster)?.[0]?.subnet;
-  }
-};
+import { isDualStack } from '../../../common/components/clusterConfiguration/utils';
+import { DUAL_STACK, IPV4_STACK, NETWORK_TYPE_OVN } from '../../../common/config';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
-  defaultNetworkSettings: ClusterDefaultConfig,
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >,
 ): NetworkConfigurationValues => {
   const managedNetworkingType = cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged';
+  const isDualStackCluster = isDualStack(cluster);
+
+  let clusterNetworks = cluster.clusterNetworks;
+  if (!cluster.clusterNetworks?.length) {
+    clusterNetworks = isDualStackCluster
+      ? defaultNetworkSettings.clusterNetworksDualstack
+      : defaultNetworkSettings.clusterNetworksIpv4;
+  }
+
+  let serviceNetworks = cluster.serviceNetworks;
+  if (!serviceNetworks?.length) {
+    serviceNetworks = isDualStackCluster
+      ? defaultNetworkSettings.serviceNetworksDualstack
+      : defaultNetworkSettings.serviceNetworksIpv4;
+  }
+
+  const machineNetworks = cluster.machineNetworks || [];
 
   return {
-    clusterNetworkCidr:
-      selectClusterNetworkCIDR(cluster) || defaultNetworkSettings.clusterNetworkCidr,
-    clusterNetworkHostPrefix:
-      selectClusterNetworkHostPrefix(cluster) || defaultNetworkSettings.clusterNetworkHostPrefix,
-    serviceNetworkCidr:
-      selectServiceNetworkCIDR(cluster) || defaultNetworkSettings.serviceNetworkCidr,
+    clusterNetworks,
+    serviceNetworks,
+    machineNetworks,
     apiVips: cluster.apiVips,
     ingressVips: cluster.ingressVips,
     sshPublicKey: cluster.sshPublicKey || '',
-    hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType,
     networkType: cluster.networkType || NETWORK_TYPE_OVN,
+    stackType: isDualStackCluster ? DUAL_STACK : IPV4_STACK,
   };
 };
