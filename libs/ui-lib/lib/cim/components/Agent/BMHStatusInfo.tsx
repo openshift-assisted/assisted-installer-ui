@@ -15,7 +15,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 
-import { useTranslation } from '../../../common';
+import { getHumanizedDateTime, useTranslation } from '../../../common';
 import { BareMetalHostK8sResource } from '../../types';
 import { getBMHStatus } from '../helpers';
 import { BMHEventsModal } from './BMHEventsModal';
@@ -75,7 +75,7 @@ export const BMHStatusInfo = ({
           </LevelItem>
           <LevelItem>
             <Content component={ContentVariants.small}>
-              {t('ai:Last updated:')} {bmh.status?.lastUpdated}
+              {t('ai:Last updated:')} {getHumanizedDateTime(bmh.status?.lastUpdated)}
             </Content>
           </LevelItem>
         </Level>

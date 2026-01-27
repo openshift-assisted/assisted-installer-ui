@@ -49,7 +49,7 @@ export const BMHEventsModal = ({
           >
             <Thead>
               <Tr>
-                <Th>{t('ai:Time')}</Th>
+                <Th width={25}>{t('ai:Time')}</Th>
                 <Th>{t('ai:Type')}</Th>
                 <Th>{t('ai:Message')}</Th>
               </Tr>
@@ -58,8 +58,8 @@ export const BMHEventsModal = ({
               {events
                 .sort(
                   (a, b) =>
-                    a.metadata?.creationTimestamp?.localeCompare(
-                      b.metadata?.creationTimestamp || '',
+                    b.metadata?.creationTimestamp?.localeCompare(
+                      a.metadata?.creationTimestamp || '',
                     ) || 0,
                 )
                 .map((e, i) => (
