@@ -1,23 +1,14 @@
 import React from 'react';
 import { useField } from 'formik';
 import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
-import {
-  cpuCoresColumn,
-  disksColumn,
-  memoryColumn,
-  roleColumn,
-} from '../../../common/components/hosts/tableUtils';
+import { cpuCoresColumn, disksColumn, memoryColumn, roleColumn } from '../../../common';
+import { agentHostnameColumn, infraEnvColumn, agentStatusColumn } from './tableColumns';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import {
   ClusterDeploymentHostsSelectionValues,
   AgentTableActions,
 } from '../ClusterDeployment/types';
-import {
-  infraEnvColumn,
-  agentStatusColumn,
-  useAgentsTable,
-  agentHostnameColumn,
-} from './tableUtils';
+import { useAgentsTable } from './tableUtils';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';

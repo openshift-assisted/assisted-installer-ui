@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { HostsTableActions, selectSchedulableMasters } from '../../../../common';
 import NetworkingStatus from '../../hosts/NetworkingStatus';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import {
+  HostsTableActions,
+  selectSchedulableMasters,
   hostnameColumn,
   roleColumn,
   activeNICColumn,
@@ -10,7 +11,7 @@ import {
   ipv6Column,
   macAddressColumn,
   countColumn,
-} from '../../../../common/components/hosts/tableUtils';
+} from '../../../../common';
 import { ActionsResolver, TableRow } from '../../../../common/components/hosts/AITable';
 import { usePagination } from '../../../../common/components/hosts/usePagination';
 import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';

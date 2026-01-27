@@ -5,18 +5,16 @@ import {
   disksColumn,
   hostnameColumn,
   roleColumn,
-} from '../../../common/components/hosts/tableUtils';
-import {
-  numberOfDisksColumn,
-  odfUsageColumn,
-} from '../../../common/components/storage/StorageUtils';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import {
   hasEnabledOperators,
   isCompact,
   selectSchedulableMasters,
   OPERATOR_NAME_ODF,
 } from '../../../common';
+import {
+  numberOfDisksColumn,
+  odfUsageColumn,
+} from '../../../common/components/storage/StorageUtils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import CommonStorageTable from '../../../common/components/storage/StorageTable';

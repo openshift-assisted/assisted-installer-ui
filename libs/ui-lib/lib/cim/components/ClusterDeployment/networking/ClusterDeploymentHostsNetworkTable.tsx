@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { EmptyState } from '../../../../common';
+import { EmptyState, activeNICColumn, hostnameColumn, roleColumn } from '../../../../common';
 import { AgentTableActions } from '../types';
 import {
   AgentClusterInstallK8sResource,
@@ -9,14 +9,9 @@ import {
 } from '../../../types';
 import { getAICluster, getIsSNOCluster } from '../../helpers';
 import { AdditionalNTPSourcesDialogToggle } from '../components/AdditionalNTPSourcesDialogToggle';
-import { agentStatusColumn, useAgentsTable } from '../../Agent/tableUtils';
+import { agentStatusColumn, useAgentsTable } from '../../Agent';
 import HostsTable from '../../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
-import {
-  activeNICColumn,
-  hostnameColumn,
-  roleColumn,
-} from '../../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';

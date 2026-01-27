@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Label } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Label } from '@patternfly/react-core';
 import { Table, TableText, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
@@ -71,7 +71,9 @@ const EventsList = ({ events, resetFilters }: EventsListProps) => {
       {
         title: (
           <TableText wrapModifier="fitContent" cellPadding={0}>
-            <strong>{getHumanizedDateTime(event.eventTime)}</strong>
+            <Content className="pf-v6-u-font-weight-bold">
+              {getHumanizedDateTime(event.eventTime)}
+            </Content>
           </TableText>
         ),
       },

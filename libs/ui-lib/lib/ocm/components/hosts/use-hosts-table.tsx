@@ -9,6 +9,8 @@ import {
   MassDeleteHostModal,
   isSNO,
   ResourceUIState,
+  hostnameColumn,
+  hostActionResolver,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
@@ -38,7 +40,6 @@ import {
   EditHostFormValues,
 } from '../../../common/components/hosts';
 import HostsTable from '../../../common/components/hosts/HostsTable';
-import { hostActionResolver, hostnameColumn } from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
