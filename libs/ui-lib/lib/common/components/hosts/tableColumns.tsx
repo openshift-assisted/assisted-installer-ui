@@ -32,7 +32,7 @@ import {
   getHostLabels,
 } from './utils';
 
-export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
+const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
     const ipv4Addresses = (nic.ipv4Addresses || []).reduce<Address4[]>((addresses, address) => {
       if (Address4.isValid(address)) {
