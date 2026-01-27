@@ -5,4 +5,7 @@ export type K8sWatchHookListProps = Omit<
   'groupVersionKind' | 'name' | 'isList'
 > | null;
 
-export type K8sWatchHookProps = Pick<WatchK8sResource, 'name' | 'namespace' | 'isList'> | null;
+export type K8sWatchHookProps = Pick<
+  WatchK8sResource,
+  'name' | 'namespace' | 'isList' | 'fieldSelector'
+> | null;

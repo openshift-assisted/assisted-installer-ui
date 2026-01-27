@@ -3,6 +3,7 @@ import {
   Button,
   ButtonType,
   ButtonVariant,
+  Content,
   Form,
   HelperText,
   HelperTextItem,
@@ -57,6 +58,7 @@ const getNewHostnames = (
     const hostnameRes = {
       newHostname: changeEnabled ? templateToHostname(index, values) : undefined,
       reason: changeEnabled ? undefined : reason,
+      oldHostname: h.requestedHostname,
     };
     if (changeEnabled) {
       index++;
@@ -183,7 +185,7 @@ const MassChangeHostnameForm = ({
           <StackItem>
             <div>{t('ai:Rename hostnames using the custom template:')}</div>
             <div>
-              <strong>{`{{n}}`}</strong> {t('ai:to add a number.')}
+              <span className="pf-v6-u-font-weight-bold">{`{{n}}`}</span> {t('ai:to add a number.')}
             </div>
           </StackItem>
           <StackItem>
@@ -206,44 +208,48 @@ const MassChangeHostnameForm = ({
           </StackItem>
           <StackItem>
             {t('ai:Preview')}
-            <div className="hostname-preview">
-              {selectedHosts.map((h, index) => {
-                const { newHostname, reason } = newHostnames[index];
-                return (
-                  <Split key={h.id || index} hasGutter>
-                    <SplitItem className="hostname-column">
-                      <div className="hostname-column__text">
-                        <strong>{getHostname(h)}</strong>
-                      </div>
-                    </SplitItem>
-                    <SplitItem>
-                      <div>
-                        <strong>{'>'}</strong>
-                      </div>
-                    </SplitItem>
-                    <SplitItem isFilled>
-                      {reason ? (
-                        <Popover
-                          aria-label={t('ai:Cannot change hostname popover')}
-                          headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
-                          bodyContent={<div>{reason}</div>}
+            <Split className="hostname-preview" hasGutter>
+              <SplitItem className="hostname-column">
+                {newHostnames.map((host, i) => (
+                  <Content
+                    className="hostname-column__text pf-v6-u-font-weight-bold"
+                    key={`old-hostname-${i}`}
+                  >
+                    {host.oldHostname}
+                  </Content>
+                ))}
+              </SplitItem>
+              <SplitItem>
+                {newHostnames.map((_, i) => (
+                  <Content key={`divider-${i}`} className="pf-v6-u-font-weight-bold">
+                    {'>'}
+                  </Content>
+                ))}
+              </SplitItem>
+              <SplitItem>
+                {newHostnames.map((host, i) => (
+                  <div key={`new-hostname-${i}`}>
+                    {host.reason ? (
+                      <Popover
+                        aria-label={t('ai:Cannot change hostname popover')}
+                        headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
+                        bodyContent={<div>{host.reason}</div>}
+                      >
+                        <Button
+                          variant="link"
+                          icon={<InfoCircleIcon color={blueInfoColor.value} />}
+                          isInline
                         >
-                          <Button
-                            variant="link"
-                            icon={<InfoCircleIcon color={blueInfoColor.value} />}
-                            isInline
-                          >
-                            {t('ai:Not changeable')}
-                          </Button>
-                        </Popover>
-                      ) : (
-                        newHostname || t('ai:New hostname will appear here...')
-                      )}
-                    </SplitItem>
-                  </Split>
-                );
-              })}
-            </div>
+                          {t('ai:Not changeable')}
+                        </Button>
+                      </Popover>
+                    ) : (
+                      host.newHostname || t('ai:New hostname will appear here...')
+                    )}
+                  </div>
+                ))}
+              </SplitItem>
+            </Split>
           </StackItem>
           <StackItem>
             <ModalProgress

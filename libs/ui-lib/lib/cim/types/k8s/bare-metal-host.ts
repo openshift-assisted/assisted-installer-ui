@@ -28,5 +28,25 @@ export type BareMetalHostK8sResource = K8sResourceCommon & {
     };
     errorMessage?: string;
     errorType?: string;
+    operationalStatus?: 'OK' | 'discovered' | 'error' | 'delayed' | 'detached';
+    operationHistory?: {
+      register?: {
+        start?: string;
+        end?: string;
+      };
+      provision?: {
+        start?: string;
+        end?: string;
+      };
+      inspect?: {
+        start?: string;
+        end?: string;
+      };
+      deprovision?: {
+        start?: string;
+        end?: string;
+      };
+    };
+    lastUpdated?: string;
   };
 };

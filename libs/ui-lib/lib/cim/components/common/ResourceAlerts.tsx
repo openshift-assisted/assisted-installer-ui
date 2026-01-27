@@ -25,8 +25,8 @@ export const SingleResourceAlerts: React.FC<{
             const [title, ...messages] = c.message.split(/:|\.,/);
             return (
               <React.Fragment key={c.type}>
-                <Content component={ContentVariants.li}>
-                  <strong>{title}</strong>
+                <Content component={ContentVariants.li} className="pf-v6-u-font-weight-bold">
+                  {title}
                 </Content>
                 {messages.map((m) => (
                   <Content key={m} component={ContentVariants.li}>
@@ -38,8 +38,8 @@ export const SingleResourceAlerts: React.FC<{
           } else {
             return (
               <React.Fragment key={c.type}>
-                <Content component={ContentVariants.li}>
-                  <strong>{c.type}</strong>
+                <Content component={ContentVariants.li} className="pf-v6-u-font-weight-bold">
+                  {c.type}
                 </Content>
                 <Content component={ContentVariants.li}>{c.reason || ''}</Content>
               </React.Fragment>

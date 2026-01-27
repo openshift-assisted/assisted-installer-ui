@@ -1,6 +1,9 @@
 import React from 'react';
 import { Popover, Button, Content, FlexItem, Flex, Stack, StackItem } from '@patternfly/react-core';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
+
 import hdate from 'human-date';
 
 import { Host, HostProgressInfo } from '@openshift-assisted/types/assisted-installer-service';
@@ -18,11 +21,9 @@ import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
-import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { hostStatus } from './status';
 import { getApproveNodesInClLink } from '../../config';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -35,6 +36,7 @@ type HostStatusPopoverContentProps = ValidationInfoActionProps & {
   validationsInfo: ValidationsInfo;
   autoCSR?: boolean;
   additionalPopoverContent?: React.ReactNode;
+  additionalBMHInfo?: React.ReactNode;
   openshiftVersion?: string;
 };
 
@@ -42,6 +44,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   details,
   autoCSR,
   additionalPopoverContent,
+  additionalBMHInfo,
   openshiftVersion,
   ...props
 }) => {
@@ -132,6 +135,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       )}
       <StackItem>
         <HostValidationGroups openshiftVersion={openshiftVersion} {...props} />
+        {additionalBMHInfo}
       </StackItem>
     </Stack>
   );
@@ -180,6 +184,7 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     zIndex?: number;
     autoCSR?: boolean;
     additionalPopoverContent?: React.ReactNode;
+    additionalBMHInfo?: React.ReactNode;
     openshiftVersion?: string;
   };
 
@@ -237,6 +242,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   zIndex,
   autoCSR,
   additionalPopoverContent,
+  additionalBMHInfo,
   openshiftVersion,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
@@ -262,12 +268,17 @@ const HostStatus: React.FC<HostStatusProps> = ({
     zIndex,
     autoCSR,
     additionalPopoverContent,
+    additionalBMHInfo,
     openshiftVersion,
   };
 
   const hostIcon = getHostStatusIcon(icon, host.progress, status);
   return (
-    <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
+    <Flex
+      alignItems={{ default: 'alignItemsCenter' }}
+      spaceItems={{ default: 'spaceItemsXs' }}
+      flexWrap={{ default: 'nowrap' }}
+    >
       {
         <FlexItem>
           {(autoCSR && status.key === 'added-to-existing-cluster'

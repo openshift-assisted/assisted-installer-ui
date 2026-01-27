@@ -22,6 +22,11 @@ export const bmhStatus = (t: TFunction): HostStatus<string> => ({
     title: t('ai:Provisioning'),
     category: 'Bare Metal Host related',
   },
+  deleting: {
+    key: 'deleting',
+    title: t('ai:Deleting'),
+    category: 'Bare Metal Host related',
+  },
   provisioned: {
     key: 'provisioned',
     title: t('ai:Provisioned'),
