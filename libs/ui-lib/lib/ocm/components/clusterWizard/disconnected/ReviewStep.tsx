@@ -28,15 +28,10 @@ import { Formik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
-import ClustersService from '../../../services/ClustersService';
-import { handleApiError, getApiErrorMessage } from '../../../../common/api';
-import { useAlerts } from '../../../../common/components/AlertsContextProvider';
-import { AlertVariant } from '@patternfly/react-core';
 
 const ReviewStep = () => {
-  const { moveBack, disconnectedInfraEnv, setDisconnectedInfraEnv } = useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const { clusterId } = useParams<{ clusterId: string }>();
-  const { addAlert } = useAlerts();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -52,55 +47,10 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              void (async () => {
-                if (disconnectedInfraEnv?.downloadUrl) {
-                  // Open download in new tab - we need the window reference to detect when download starts
-                  const downloadWindow = window.open(disconnectedInfraEnv.downloadUrl, '_blank');
-
-                  // Wait for the download tab to close (indicates download has started)
-                  // The tab closes automatically when browser initiates the file download
-                  if (downloadWindow) {
-                    await new Promise<void>((resolve) => {
-                      const checkClosed = setInterval(() => {
-                        if (downloadWindow.closed) {
-                          clearInterval(checkClosed);
-                          resolve();
-                        }
-                      }, 200);
-                      // Fallback timeout in case the window doesn't close (e.g., popup blocker)
-                      setTimeout(() => {
-                        clearInterval(checkClosed);
-                        resolve();
-                      }, 10000);
-                    });
-                  }
-                }
-                if (clusterId) {
-                  try {
-                    await ClustersService.remove(clusterId);
-                    // Remove infraEnv from wizard context after successful deregistration
-                    setDisconnectedInfraEnv(undefined);
-                    // Navigate to cluster-list only after successful deregistration
-                    navigate('/cluster-list');
-                  } catch (error) {
-                    handleApiError(error, () => {
-                      addAlert({
-                        title: 'Failed to deregister cluster',
-                        message: getApiErrorMessage(error),
-                        variant: AlertVariant.danger,
-                      });
-                    });
-                    // Error handling: continue with navigation even if deregistration fails
-                    // Still clear the context to avoid stale data
-                    setDisconnectedInfraEnv(undefined);
-                    // Navigate even on error to avoid getting stuck
-                    navigate('/cluster-list');
-                  }
-                } else {
-                  // If there's no cluster to deregister, navigate immediately
-                  navigate('/cluster-list');
-                }
-              })();
+              if (disconnectedInfraEnv?.downloadUrl) {
+                window.open(disconnectedInfraEnv.downloadUrl, '_blank');
+              }
+              navigate('/cluster-list');
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"

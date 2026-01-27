@@ -113,7 +113,7 @@ export interface Cluster {
    * 'AddHostsCluster' for cluster that add hosts to existing OCP cluster,
    *
    */
-  kind: 'Cluster' | 'AddHostsCluster';
+  kind: 'Cluster' | 'AddHostsCluster' | 'DisconnectedCluster';
   /**
    * (DEPRECATED) Please use 'controlPlaneCount' instead. Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
