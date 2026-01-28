@@ -121,20 +121,23 @@ const validate = (values: OptionalConfigurationsFormValues) => {
   }
 };
 
-const PullSecretSync: React.FC<{ pullSecret?: string }> = ({ pullSecret }) => {
-  const { setFieldValue } = useFormikContext<OptionalConfigurationsFormValues>();
+const PullSecretSync = () => {
+  const defaultPullSecret = usePullSecret();
+  const {
+    setFieldValue,
+    values: { pullSecret },
+  } = useFormikContext<OptionalConfigurationsFormValues>();
 
   React.useEffect(() => {
-    if (pullSecret !== undefined) {
-      setFieldValue('pullSecret', pullSecret);
+    if (defaultPullSecret !== undefined && pullSecret === '') {
+      setFieldValue('pullSecret', defaultPullSecret);
     }
-  }, [pullSecret, setFieldValue]);
+  }, [defaultPullSecret, pullSecret, setFieldValue]);
 
   return null;
 };
 
 const OptionalConfigurationsStep = () => {
-  const pullSecret = usePullSecret() || '';
   const { clusterId } = useParams<{ clusterId: string }>();
   const [cluster, setCluster] = React.useState<Cluster | null>(null);
   const { t } = useTranslation();
@@ -142,8 +145,7 @@ const OptionalConfigurationsStep = () => {
   const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
     useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
-  // If no pull secret is available, default the checkbox to checked so the field is expanded
-  const [editPullSecret, setEditPullSecret] = React.useState(!pullSecret);
+  const [editPullSecret, setEditPullSecret] = React.useState(false);
 
   React.useEffect(() => {
     const fetchCluster = async () => {
@@ -168,7 +170,7 @@ const OptionalConfigurationsStep = () => {
 
   const initialValues: OptionalConfigurationsFormValues = {
     sshPublicKey: '',
-    pullSecret: pullSecret,
+    pullSecret: '',
     enableProxy: false,
     httpProxy: '',
     httpsProxy: '',
@@ -208,7 +210,11 @@ const OptionalConfigurationsStep = () => {
               disconnectedInfraEnv.id,
               updateParams,
             );
-            setDisconnectedInfraEnv(updatedInfraEnv);
+            setDisconnectedInfraEnv({
+              ...updatedInfraEnv,
+              // infraEnv does not return the whole OCP version
+              openshiftVersion: cluster.openshiftVersion,
+            });
           } else {
             // Create new infraEnv
             const createParams: InfraEnvCreateParams = {
@@ -220,7 +226,11 @@ const OptionalConfigurationsStep = () => {
               ...commonParams,
             };
             const createdInfraEnv = await InfraEnvsService.create(createParams);
-            setDisconnectedInfraEnv(createdInfraEnv);
+            setDisconnectedInfraEnv({
+              ...createdInfraEnv,
+              // infraEnv does not return the whole OCP version
+              openshiftVersion: cluster.openshiftVersion,
+            });
           }
           moveNext();
         } catch (error) {
@@ -250,14 +260,14 @@ const OptionalConfigurationsStep = () => {
                 disconnectedClusterId={clusterId}
                 onNext={handleNext} // Changed from moveNext
                 onBack={moveBack}
-                isNextDisabled={!isValid}
+                isNextDisabled={!isValid || !cluster}
                 errorFields={errorFields}
                 isSubmitting={isSubmitting}
               />
             }
           >
             <WithErrorBoundary title="Failed to load Optional Configurations step">
-              <PullSecretSync pullSecret={pullSecret} />
+              <PullSecretSync />
               <Grid hasGutter>
                 <GridItem>
                   <Split>
@@ -289,7 +299,7 @@ const OptionalConfigurationsStep = () => {
                       onChange={(_, checked) => setEditPullSecret(checked)}
                       id="edit-pull-secret-checkbox"
                     />
-                    {(editPullSecret || !pullSecret) && <PullSecretField isOcm={isInOcm} />}
+                    {editPullSecret && <PullSecretField isOcm={isInOcm} />}
 
                     {/* Proxy Settings */}
                     <CheckboxField

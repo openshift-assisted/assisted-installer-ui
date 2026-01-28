@@ -106,7 +106,9 @@ const ReviewStep = () => {
               )}
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.22</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.openshiftVersion || ''}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
