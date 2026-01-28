@@ -17,27 +17,22 @@ import './OpenShiftVersionModal.css';
 
 type OpenShiftVersionModalProps = {
   allVersions: OpenshiftVersionOptionType[];
-  setOpenshiftVersionModalOpen: (isOpen: boolean) => void;
+  onClose: VoidFunction;
   getHelperText?: HelperTextType;
 };
 
 export const OpenShiftVersionModal = ({
   allVersions,
-  setOpenshiftVersionModalOpen,
+  onClose,
   getHelperText,
 }: OpenShiftVersionModalProps) => {
-  const { setFieldValue } = useFormikContext<ClusterDetailsValues>();
-
-  const onCancel = () => {
-    setFieldValue('customOpenshiftSelect', null);
-    setOpenshiftVersionModalOpen(false);
-  };
+  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
 
   return (
     <Modal
       id="available-openshift-versions-modal"
       isOpen
-      onClose={() => setOpenshiftVersionModalOpen(false)}
+      onClose={onClose}
       variant={ModalVariant.small}
     >
       <ModalHeader title="Available OpenShift Versions" />
@@ -55,11 +50,14 @@ export const OpenShiftVersionModal = ({
         <Button
           key="select-custom-ocp"
           variant={ButtonVariant.primary}
-          onClick={() => setOpenshiftVersionModalOpen(false)}
+          onClick={() => {
+            setFieldValue('openshiftVersion', values.customOpenshiftSelect);
+            onClose();
+          }}
         >
           Select
         </Button>
-        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onCancel}>
+        <Button key="close-custom-ocp" variant={ButtonVariant.link} onClick={onClose}>
           Cancel
         </Button>
       </ModalFooter>

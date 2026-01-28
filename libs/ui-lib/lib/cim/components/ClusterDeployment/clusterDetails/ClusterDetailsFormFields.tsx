@@ -81,15 +81,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     nameInputRef.current?.focus();
   }, []);
 
-  const selectOptions = React.useMemo(
-    () =>
-      versions.map((version) => ({
-        label: version.label,
-        value: version.value,
-      })),
-    [versions],
-  );
-
   const additionalSelectOption = React.useMemo(() => {
     if (
       values.customOpenshiftSelect &&
@@ -151,16 +142,15 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         <>
           <OpenShiftVersionDropdown
             name="openshiftVersion"
-            items={selectOptions}
             versions={versions}
             showReleasesLink={false}
             showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
-            customItem={additionalSelectOption}
+            customVersion={additionalSelectOption}
           />
           {openshiftVersionModalOpen && (
             <OpenShiftVersionModal
               allVersions={allVersions}
-              setOpenshiftVersionModalOpen={setOpenshiftVersionModalOpen}
+              onClose={() => setOpenshiftVersionModalOpen(false)}
             />
           )}
         </>

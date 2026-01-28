@@ -28,24 +28,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
     nameInputRef.current?.focus();
   }, []);
 
-  const selectOptions = React.useMemo(
-    () =>
-      ocpVersions.map((version) => ({
-        label: version.label,
-        value: version.value,
-      })),
-    [ocpVersions],
-  );
-
   const additionalSelectOption = React.useMemo(() => {
     if (
       values.customOpenshiftSelect &&
-      !selectOptions.some((option) => option.value === values.customOpenshiftSelect)
+      !ocpVersions.some((option) => option.value === values.customOpenshiftSelect)
     ) {
       return allVersions.find((version) => version.value === values.customOpenshiftSelect);
     }
     return undefined;
-  }, [allVersions, selectOptions, values.customOpenshiftSelect]);
+  }, [allVersions, ocpVersions, values.customOpenshiftSelect]);
 
   return (
     <Form>
@@ -66,16 +57,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
       />
       <OpenShiftVersionDropdown
         name="openshiftVersion"
-        items={selectOptions}
         versions={ocpVersions}
         showReleasesLink={false}
         showOpenshiftVersionModal={() => setOpenshiftVersionModalOpen(true)}
-        customItem={additionalSelectOption}
+        customVersion={additionalSelectOption}
       />
       {openshiftVersionModalOpen && (
         <OpenShiftVersionModal
           allVersions={allVersions}
-          setOpenshiftVersionModalOpen={setOpenshiftVersionModalOpen}
+          onClose={() => setOpenshiftVersionModalOpen(false)}
         />
       )}
 
