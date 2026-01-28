@@ -10,7 +10,7 @@
     "cypress": "13.6.2",
     "cypress-file-upload": "5.0.8",
     "cypress-fill-command": "^1.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "start-server-and-test": "^2.0.0"
   },
   "scripts": {
