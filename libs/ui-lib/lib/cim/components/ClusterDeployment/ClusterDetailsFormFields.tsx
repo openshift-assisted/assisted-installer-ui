@@ -19,7 +19,6 @@ import { getNetworkType } from '../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
-  forceOpenshiftVersion?: string;
   extensionAfter?: { [key: string]: React.ReactElement };
   versions: OpenshiftVersionOptionType[];
   allVersions: OpenshiftVersionOptionType[];
@@ -50,7 +49,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   isEditFlow,
   versions,
   allVersions,
-  forceOpenshiftVersion,
   extensionAfter,
   isNutanix,
   cpuArchitectures,
@@ -63,7 +61,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const { name, baseDnsDomain } = values;
 
   React.useEffect(() => {
-    if (!versions.length && !values.openshiftVersion) {
+    if (!versions.length && !values.openshiftVersion && !isEditFlow) {
       const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
       setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion);
       setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
@@ -138,9 +136,11 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           isRequired
         />
       )}
-      {forceOpenshiftVersion ? (
+      {isEditFlow ? (
         <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-          {t('ai:OpenShift')} {forceOpenshiftVersion}
+          {t('ai:OpenShift')}{' '}
+          {allVersions.find((v) => v.value === values.openshiftVersion)?.version ||
+            values.openshiftVersion}
         </StaticTextField>
       ) : (
         <>
