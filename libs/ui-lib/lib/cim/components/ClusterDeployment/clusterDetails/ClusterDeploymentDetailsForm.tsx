@@ -14,7 +14,7 @@ import {
   OsImage,
 } from '../../../types';
 import { ClusterImageSetK8sResource } from '../../../types/k8s/cluster-image-set';
-import { getOCPVersions, getSelectedVersion } from '../../helpers';
+import { getOCPVersions } from '../../helpers';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import {
   ClusterDetailsFormFields,
@@ -46,17 +46,14 @@ export const ClusterDeploymentDetailsFormWrapper = ({
 }) => {
   const { activeStep, goToPrevStep, goToNextStep, close } = useWizardContext();
   const { syncError } = React.useContext(ClusterDeploymentWizardContext);
-  const { submitForm, isSubmitting, isValid, isValidating, dirty } =
-    useFormikContext<ClusterDetailsValues>();
+  const { isSubmitting, isValid, isValidating } = useFormikContext<ClusterDetailsValues>();
   const { t } = useTranslation();
 
+  // ClusterDeploymentDetailsFormWrapper is exclusively used by ClusterDeploymentWizard (edit flow).
+  // No form submission needed here—just navigate to the next step.
   const handleOnNext = React.useCallback(() => {
-    if (dirty) {
-      void submitForm();
-    } else {
-      void goToNextStep();
-    }
-  }, [dirty, goToNextStep, submitForm]);
+    void goToNextStep();
+  }, [goToNextStep]);
 
   const footer = React.useMemo(
     () => (
@@ -93,7 +90,6 @@ export const ClusterDeploymentDetailsFormWrapper = ({
 };
 
 export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
-  agentClusterInstall,
   clusterDeployment,
   clusterImages,
   extensionAfter,
@@ -111,18 +107,13 @@ export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsForm
     [clusterImages, isNutanix, osImages],
   );
 
-  const forceOpenshiftVersion = agentClusterInstall
-    ? getSelectedVersion(clusterImages, agentClusterInstall)
-    : undefined;
   const isEditFlow = !!clusterDeployment;
 
   const { values } = useFormikContext<ClusterDetailsValues>();
 
   const [cpuArchitectures, allowHighlyAvailable] = React.useMemo(() => {
     const cpuArchitectures = [CpuArchitecture.x86, CpuArchitecture.ARM, CpuArchitecture.s390x];
-    const version = allVersions.find(
-      (ver) => ver.value === values.openshiftVersion || ver.version === forceOpenshiftVersion,
-    );
+    const version = allVersions.find((ver) => ver.value === values.openshiftVersion);
     const isMulti = version?.cpuArchitectures?.[0] === CpuArchitecture.MULTI;
 
     const highlyAvailableSupported = toNumber(version?.version?.split('.')?.[1]) >= 18;
@@ -130,7 +121,7 @@ export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsForm
       (isMulti ? cpuArchitectures : version?.cpuArchitectures) as SupportedCpuArchitecture[],
       highlyAvailableSupported && !isMulti,
     ];
-  }, [allVersions, forceOpenshiftVersion, values.openshiftVersion]);
+  }, [allVersions, values.openshiftVersion]);
 
   return (
     <>
@@ -148,7 +139,6 @@ export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsForm
           versions={versions}
           allVersions={allVersions}
           isEditFlow={isEditFlow}
-          forceOpenshiftVersion={forceOpenshiftVersion}
           extensionAfter={extensionAfter}
           isNutanix={isNutanix}
           cpuArchitectures={cpuArchitectures}
