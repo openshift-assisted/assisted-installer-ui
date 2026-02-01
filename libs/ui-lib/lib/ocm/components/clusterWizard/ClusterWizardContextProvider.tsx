@@ -160,10 +160,14 @@ const ClusterWizardContextProvider = ({
         isSingleClusterFeatureEnabled,
       );
 
-      // Only move step if there is still none, or the user is at a forbidden step
+      // Only move step if there is still none, or the user is at a forbidden step.
+      // Never force the user off the custom-manifests step when they are actively filling it
+      // (e.g. after pasting content triggers auto-save and uiSettings can update).
       if (
         !currentStepId ||
-        (customManifestsStepNeedsToBeFilled && isStepAfter(currentStepId, requiredStepId))
+        (currentStepId !== 'custom-manifests' &&
+          customManifestsStepNeedsToBeFilled &&
+          isStepAfter(currentStepId, requiredStepId))
       ) {
         setCurrentStepId(requiredStepId);
       }
