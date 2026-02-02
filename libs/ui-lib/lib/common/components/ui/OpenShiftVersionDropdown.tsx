@@ -12,7 +12,6 @@ import {
   Divider,
   DropdownProps,
 } from '@patternfly/react-core';
-import { t_global_text_color_link_default } from '@patternfly/react-tokens/dist/js/t_global_text_color_link_default';
 
 import { OpenshiftVersionOptionType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -103,9 +102,7 @@ export const OpenShiftVersionDropdown = ({
     ),
     <DropdownGroup key="all-available-versions">
       <DropdownItem key="all-versions" id="all-versions" value="all-versions">
-        <div style={{ color: t_global_text_color_link_default.value }}>
-          {t('ai:Show all available versions')}
-        </div>
+        <div className="pf-v6-u-text-color-link">{t('ai:Show all available versions')}</div>
       </DropdownItem>
     </DropdownGroup>,
   ].filter(Boolean);

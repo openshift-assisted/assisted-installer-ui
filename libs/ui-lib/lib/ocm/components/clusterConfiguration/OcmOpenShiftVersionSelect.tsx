@@ -23,14 +23,14 @@ const OcmOpenShiftVersionSelect = ({ minVersionAllowed }: OcmOpenShiftVersionSel
   const {
     values: { customOpenshiftSelect },
   } = useFormikContext<ClusterDetailsValues>();
-  const versionsCtx = useOpenShiftVersionsContext();
+  const { allVersions: allVersionsCtx, latestVersions } = useOpenShiftVersionsContext();
 
   const allVersions = minVersionAllowed
-    ? filterMinVersions(versionsCtx.allVersions, minVersionAllowed)
-    : versionsCtx.allVersions;
+    ? filterMinVersions(allVersionsCtx, minVersionAllowed)
+    : allVersionsCtx;
   const versions = minVersionAllowed
-    ? filterMinVersions(versionsCtx.latestVersions, minVersionAllowed)
-    : versionsCtx.latestVersions;
+    ? filterMinVersions(latestVersions, minVersionAllowed)
+    : latestVersions;
 
   const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
 
