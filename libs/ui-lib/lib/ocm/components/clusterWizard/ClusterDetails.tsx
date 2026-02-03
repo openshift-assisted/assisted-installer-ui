@@ -147,7 +147,10 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   if (!cluster && errorOCPVersions) {
     return (
       <ClusterWizardStep navigation={navigation}>
-        <ErrorState title="Failed to retrieve OpenShift versions" />
+        <ErrorState
+          title={errorOCPVersions.title || 'Failed to retrieve OpenShift versions'}
+          content={errorOCPVersions.message || 'No OpenShift versions available.'}
+        />
       </ClusterWizardStep>
     );
   }
