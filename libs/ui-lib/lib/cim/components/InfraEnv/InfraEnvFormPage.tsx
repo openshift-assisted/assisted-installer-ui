@@ -77,31 +77,33 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: richNameValidationSchema(t, usedNames),
       location: locationValidationSchema(t),
-      pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
-      sshPublicKey: sshPublicKeyValidationSchema,
+      pullSecret: pullSecretValidationSchema(t).required(t('ai:Required field')),
+      sshPublicKey: sshPublicKeyValidationSchema(t),
       httpProxy: httpProxyValidationSchema({
         values,
         pairValueName: 'httpsProxy',
         allowEmpty: true,
+        t,
       }),
       httpsProxy: httpProxyValidationSchema({
         values,
         pairValueName: 'httpProxy',
         allowEmpty: true,
+        t,
       }), // share the schema, httpS is currently not supported
-      noProxy: noProxyValidationSchema,
+      noProxy: noProxyValidationSchema(t),
       labels: Yup.array()
         .of(Yup.string())
         .test(
           'label-equals-validation',
-          'Label selector needs to be in a `key=value` form',
+          t('ai:Label needs to be in a `key=value` form'),
           (values) =>
             (values as string[]).every((value) => {
               const parts = value.split('=');
               return parts.length === 2;
             }),
         ),
-      additionalNtpSources: ntpSourceValidationSchema,
+      additionalNtpSources: ntpSourceValidationSchema(t),
     }),
   );
 

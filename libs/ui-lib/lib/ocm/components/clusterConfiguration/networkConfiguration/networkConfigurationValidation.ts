@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
@@ -72,13 +73,14 @@ export const getNetworkInitialValues = (
 export const getNetworkConfigurationValidationSchema = (
   initialValues: NetworkConfigurationValues,
   hostSubnets: HostSubnets,
+  t: TFunction,
   openshiftVersion?: string,
 ) =>
   Yup.lazy((values: NetworkConfigurationValues) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values),
-      ingressVips: vipArrayValidationSchema<IngressVip>(hostSubnets, values),
-      sshPublicKey: sshPublicKeyValidationSchema,
+      apiVips: vipArrayValidationSchema<ApiVip>(hostSubnets, values, t),
+      ingressVips: vipArrayValidationSchema<IngressVip>(hostSubnets, values, t),
+      sshPublicKey: sshPublicKeyValidationSchema(t),
       machineNetworks:
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
@@ -88,25 +90,21 @@ export const getNetworkConfigurationValidationSchema = (
               otherwise: () =>
                 values.machineNetworks && values.machineNetworks?.length >= 2
                   ? machineNetworksValidationSchema.concat(
-                      dualStackValidationSchema('machine networks', openshiftVersion),
+                      dualStackValidationSchema('machine networks', t, openshiftVersion),
                     )
                   : Yup.array(),
             }),
-      clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
+      clusterNetworks: clusterNetworksValidationSchema(t).when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
-        otherwise: () =>
-          clusterNetworksValidationSchema.concat(
-            dualStackValidationSchema('cluster network', openshiftVersion),
-          ),
+        then: (schema) => schema.concat(IPv4ValidationSchema),
+        otherwise: (schema) =>
+          schema.concat(dualStackValidationSchema('cluster network', t, openshiftVersion)),
       }),
-      serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
+      serviceNetworks: serviceNetworkValidationSchema(t).when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
-        otherwise: () =>
-          serviceNetworkValidationSchema.concat(
-            dualStackValidationSchema('service network', openshiftVersion),
-          ),
+        then: (schema) => schema.concat(IPv4ValidationSchema),
+        otherwise: (schema) =>
+          schema.concat(dualStackValidationSchema('service network', t, openshiftVersion)),
       }),
     }),
   );

@@ -8,6 +8,7 @@ import {
   sshPublicKeyValidationSchema,
   pullSecretValidationSchema,
   getFormikErrorFields,
+  useTranslation,
 } from '../../../../common';
 import { Split, SplitItem, Grid, GridItem, Form, Content, Checkbox } from '@patternfly/react-core';
 import { useClusterWizardContext } from '../ClusterWizardContext';
@@ -44,6 +45,7 @@ const PullSecretSync: React.FC<{ pullSecret?: string }> = ({ pullSecret }) => {
 };
 
 const OptionalConfigurationsStep = () => {
+  const { t } = useTranslation();
   const pullSecret = usePullSecret() || '';
   const { clusterId } = useParams<{ clusterId: string }>();
   const [cluster, setCluster] = React.useState<Cluster | null>(null);
@@ -77,10 +79,10 @@ const OptionalConfigurationsStep = () => {
   const validationSchema = React.useMemo(
     () =>
       Yup.object<OptionalConfigurationsFormValues>().shape({
-        sshPublicKey: sshPublicKeyValidationSchema,
-        pullSecret: pullSecretValidationSchema,
+        sshPublicKey: sshPublicKeyValidationSchema(t),
+        pullSecret: pullSecretValidationSchema(t),
       }),
-    [],
+    [t],
   );
 
   const initialValues: OptionalConfigurationsFormValues = {

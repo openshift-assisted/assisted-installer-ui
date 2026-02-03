@@ -98,22 +98,32 @@ export const getClusterDetailsValidationSchema = ({
   t: TFunction;
 }) =>
   Yup.lazy((values: { baseDnsDomain: string; isSNODevPreview: boolean }) => {
-    const validateName = () =>
-      nameValidationSchema(t, usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
     if (pullSecretSet) {
       return Yup.object({
-        name: validateName(),
+        name: nameValidationSchema(
+          t,
+          usedClusterNames,
+          values.baseDnsDomain,
+          validateUniqueName,
+          isOcm,
+        ),
         baseDnsDomain: isOcm
-          ? baseDomainValidationSchema.required(t('ai:Required field'))
-          : dnsNameValidationSchema.required(t('ai:Required field')),
+          ? baseDomainValidationSchema(t).required(t('ai:Required field'))
+          : dnsNameValidationSchema(t).required(t('ai:Required field')),
       });
     }
     return Yup.object({
-      name: validateName(),
+      name: nameValidationSchema(
+        t,
+        usedClusterNames,
+        values.baseDnsDomain,
+        validateUniqueName,
+        isOcm,
+      ),
       baseDnsDomain: isOcm
-        ? baseDomainValidationSchema.required(t('ai:Required field'))
-        : dnsNameValidationSchema.required(t('ai:Required field')),
-      pullSecret: pullSecretValidationSchema.required(t('ai:Required field')),
+        ? baseDomainValidationSchema(t).required(t('ai:Required field'))
+        : dnsNameValidationSchema(t).required(t('ai:Required field')),
+      pullSecret: pullSecretValidationSchema(t).required(t('ai:Required field')),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode: DiskEncryption['mode']) => {
           return diskEncryptionMode === 'tang';

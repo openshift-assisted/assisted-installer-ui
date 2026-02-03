@@ -42,7 +42,7 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   const validationSchema = React.useMemo(
     () =>
       Yup.object().shape({
-        apiVip: day2ApiVipValidationSchema.required(t('ai:Required field')),
+        apiVip: day2ApiVipValidationSchema(t).required(t('ai:Required field')),
       }),
     [t],
   );

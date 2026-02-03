@@ -65,3 +65,6 @@ export const FORBIDDEN_HOSTNAMES = [
   'localhost6',
   'localhost6.localdomain6',
 ];
+
+export const getIncorrectFileTypeMessage = (t: TFunction) =>
+  t('ai:File type is not supported. File type must be yaml, yml, json, yaml.patch. or yml.patch.');

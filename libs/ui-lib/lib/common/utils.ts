@@ -2,13 +2,12 @@ import filesize from 'filesize.js';
 import camelCase from 'lodash-es/camelCase.js';
 import isString from 'lodash-es/isString.js';
 import { loadAll } from 'js-yaml';
+import { TFunction } from 'i18next';
 import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_OFFSET_FACTOR } from './configurations';
 
 export const FILENAME_REGEX = /^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$/;
 
 export const FILE_TYPE_MESSAGE = 'Unsupported file type. Please provide a valid YAML file.';
-export const INCORRECT_TYPE_FILE_MESSAGE =
-  'File type is not supported. File type must be yaml, yml ,json , yaml.patch. or yml.patch.';
 
 export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
@@ -60,11 +59,10 @@ export const fileSize: typeof filesize = (...args) =>
     .toUpperCase()
     .replace(/I/, 'i');
 
-export const getMaxFileSizeMessage = `File size is too big. The file size must be less than ${fileSize(
-  MAX_FILE_SIZE_BYTES,
-  0,
-  'si',
-)}.`;
+export const getMaxFileSizeMessage = (t: TFunction) =>
+  t('ai:File size is too big. The file size must be less than {{value}}.', {
+    value: fileSize(MAX_FILE_SIZE_BYTES, 0, 'si'),
+  });
 
 export const validateFileName = (fileName: string) => {
   return new RegExp(FILENAME_REGEX).test(fileName || '');
