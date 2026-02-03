@@ -18,22 +18,22 @@ import { useTranslation } from '../../../../../common/hooks/use-translation-wrap
 const getValidationSchema = (t: TFunction) =>
   Yup.lazy((values: NetworkFormValues) =>
     Yup.object<NetworkFormValues>().shape({
-      sshPublicKey: sshPublicKeyValidationSchema.required(t('ai:Required field')),
+      sshPublicKey: sshPublicKeyValidationSchema(t).required(t('ai:Required field')),
       clusterNetworkCidr: values.isAdvanced
-        ? ipBlockValidationSchema(values.serviceNetworkCidr)
+        ? ipBlockValidationSchema(values.serviceNetworkCidr, t)
         : Yup.string(),
       serviceNetworkCidr: values.isAdvanced
-        ? ipBlockValidationSchema(values.clusterNetworkCidr)
+        ? ipBlockValidationSchema(values.clusterNetworkCidr, t)
         : Yup.string(),
       clusterNetworkHostPrefix: values.isAdvanced
-        ? hostPrefixValidationSchema(values.clusterNetworkCidr)
+        ? hostPrefixValidationSchema(values.clusterNetworkCidr, t)
         : Yup.number(),
-      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
-      noProxy: noProxyValidationSchema,
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      noProxy: noProxyValidationSchema(t),
       nodePortAddress:
         values.apiPublishingStrategy === 'NodePort'
-          ? day2ApiVipValidationSchema.required(t('ai:Required field'))
+          ? day2ApiVipValidationSchema(t).required(t('ai:Required field'))
           : Yup.string(),
     }),
   );

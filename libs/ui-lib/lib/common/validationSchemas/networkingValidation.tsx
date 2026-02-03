@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import isCIDR from 'is-cidr';
+import { TFunction } from 'i18next';
 
 import {
   ClusterNetwork,
@@ -18,35 +19,39 @@ export const machineNetworksValidationSchema = Yup.array().of(
   Yup.object({ cidr: hostSubnetValidationSchema, clusterId: Yup.string() }),
 );
 
-export const clusterNetworksValidationSchema = Yup.array().of(
-  Yup.lazy((values: ClusterNetwork) =>
+export const clusterNetworksValidationSchema = (t: TFunction) =>
+  Yup.array().of(
+    Yup.lazy((values: ClusterNetwork) =>
+      Yup.object({
+        cidr: ipBlockValidationSchema(
+          undefined /* So far used in OCM only and so validated by backend */,
+          t,
+        ),
+        hostPrefix: hostPrefixValidationSchema(values.cidr, t),
+        clusterId: Yup.string(),
+      }),
+    ),
+  );
+
+export const serviceNetworkValidationSchema = (t: TFunction) =>
+  Yup.array().of(
     Yup.object({
       cidr: ipBlockValidationSchema(
         undefined /* So far used in OCM only and so validated by backend */,
+        t,
       ),
-      hostPrefix: hostPrefixValidationSchema(values.cidr),
       clusterId: Yup.string(),
     }),
-  ),
-);
+  );
 
-export const serviceNetworkValidationSchema = Yup.array().of(
-  Yup.object({
-    cidr: ipBlockValidationSchema(
-      undefined /* So far used in OCM only and so validated by backend */,
-    ),
-    clusterId: Yup.string(),
-  }),
-);
-
-export const dualStackValidationSchema = (field: string, openshiftVersion?: string) =>
+export const dualStackValidationSchema = (field: string, t: TFunction, openshiftVersion?: string) =>
   Yup.array()
-    .max(2, `Maximum number of ${field} subnets in dual stack is 2.`)
+    .max(2, t('ai:Maximum number of {{field}} subnets in dual stack is 2.', { field }))
     .test(
       'dual-stack-ipv4',
       openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')
-        ? 'First network has to be a valid IPv4 or IPv6 subnet.'
-        : 'First network has to be IPv4 subnet.',
+        ? t('ai:First network has to be a valid IPv4 or IPv6 subnet.')
+        : t('ai:First network has to be IPv4 subnet.'),
       (values?: { cidr: MachineNetwork['cidr'] }[]): boolean => {
         // For OCP versions > 4.11, allow IPv6 as primary network
         if (openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12')) {
@@ -58,7 +63,7 @@ export const dualStackValidationSchema = (field: string, openshiftVersion?: stri
     )
     .test(
       'dual-stack-unique-cidrs',
-      `Provided ${field} subnets must be unique.`,
+      t('ai:Provided {{field}} subnets must be unique.', { field }),
       (values?: { cidr?: MachineNetwork['cidr'] }[]) => {
         if (!values || values.length < 2) {
           return true;
@@ -78,7 +83,9 @@ export const dualStackValidationSchema = (field: string, openshiftVersion?: stri
     )
     .test(
       'dual-stack-opposite-families',
-      `When two ${field} are provided, one must be IPv4 and the other IPv6.`,
+      t('ai:When two {{field}} values are provided, one must be IPv4 and the other IPv6.', {
+        field,
+      }),
       (values?: { cidr?: MachineNetwork['cidr'] }[]) => {
         if (!values || values.length < 2) {
           return true;

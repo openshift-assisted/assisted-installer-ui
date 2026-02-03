@@ -13,6 +13,7 @@ import {
   FlexItem,
 } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
+import { TFunction } from 'i18next';
 import {
   HostStaticNetworkConfig,
   InfraEnv,
@@ -53,14 +54,15 @@ export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
   ProxyFieldsType &
   TrustedCertificateFieldsType;
 
-const validationSchema = Yup.lazy((values: OcmDiscoveryImageFormValues) =>
-  Yup.object<OcmDiscoveryImageFormValues>().shape({
-    sshPublicKey: sshPublicKeyValidationSchema,
-    httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
-    httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
-    noProxy: noProxyValidationSchema,
-  }),
-);
+const validationSchema = (t: TFunction) =>
+  Yup.lazy((values: OcmDiscoveryImageFormValues) =>
+    Yup.object<OcmDiscoveryImageFormValues>().shape({
+      sshPublicKey: sshPublicKeyValidationSchema(t),
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      noProxy: noProxyValidationSchema(t),
+    }),
+  );
 
 type OcmDiscoveryImageConfigFormProps = Proxy & {
   onCancel: () => void;
@@ -136,7 +138,7 @@ export const OcmDiscoveryImageConfigForm = ({
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchema(t)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status, setStatus }) => {

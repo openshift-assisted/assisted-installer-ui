@@ -5,6 +5,7 @@ import { getFormViewManifestsValidationSchema } from './customManifestsValidatio
 import { CustomManifestsForm } from './CustomManifestsForm';
 import { getEmptyManifestsValues, getManifestValues } from './utils';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../../../../common';
 
 export const CustomManifests = ({
   cluster,
@@ -13,12 +14,13 @@ export const CustomManifests = ({
   cluster: Cluster;
   onFormStateChange: (formState: CustomManifestFormState) => void;
 }) => {
+  const { t } = useTranslation();
   const [formProps, setFormProps] = React.useState<CustomManifestsFormProps>();
 
   React.useEffect(() => {
     setFormProps({
       onFormStateChange: onFormStateChange,
-      validationSchema: getFormViewManifestsValidationSchema,
+      validationSchema: getFormViewManifestsValidationSchema(t),
 
       getInitialValues: (customManifests: ListManifestsExtended) => {
         return getManifestValues(customManifests);
@@ -27,7 +29,7 @@ export const CustomManifests = ({
       showEmptyValues: true,
       cluster: cluster,
     });
-  }, [cluster, onFormStateChange]);
+  }, [cluster, onFormStateChange, t]);
 
   if (!formProps) {
     return null;

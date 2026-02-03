@@ -23,7 +23,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const validationSchema = (t: TFunction) =>
   Yup.object({
-    pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
+    pullSecret: pullSecretValidationSchema(t).required(t('ai:Pull secret is a required field.')),
   });
 
 type EditPullSecretFormProps = {

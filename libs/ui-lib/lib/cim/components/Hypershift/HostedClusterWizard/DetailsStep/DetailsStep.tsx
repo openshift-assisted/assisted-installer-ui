@@ -34,8 +34,8 @@ const useDetailsFormik: UseDetailsFormik = ({
     () =>
       Yup.object({
         name: nameValidationSchema(t, usedClusterNames),
-        baseDnsDomain: dnsNameValidationSchema.required('Required'),
-        pullSecret: pullSecretValidationSchema.required('Required.'),
+        baseDnsDomain: dnsNameValidationSchema(t).required(t('ai:Required field')),
+        pullSecret: pullSecretValidationSchema(t).required(t('ai:Required field')),
       }),
     [usedClusterNames, t],
   );

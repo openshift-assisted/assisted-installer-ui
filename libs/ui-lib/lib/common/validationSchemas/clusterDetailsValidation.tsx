@@ -110,31 +110,36 @@ export const richNameValidationSchema = (t: TFunction, usedNames: string[], orig
     .notOneOf(FORBIDDEN_HOSTNAMES, hostnameValidationMessages(t).LOCALHOST_ERR);
 };
 
-export const dnsNameValidationSchema = Yup.string()
-  .test(
+export const dnsNameValidationSchema = (t: TFunction) =>
+  Yup.string()
+    .test(
+      'dns-name-label-length',
+      t('ai:Single label of the DNS name can not be longer than 63 characters.'),
+      (value?: string) => (value || '').split('.').every((label: string) => label.length <= 63),
+    )
+    .matches(DNS_NAME_REGEX, {
+      message: (value) =>
+        t('ai:Value "{{value}}" is not valid DNS name. Example: basedomain.example.com', { value }),
+      excludeEmptyString: true,
+    });
+
+export const baseDomainValidationSchema = (t: TFunction) =>
+  Yup.string().test(
     'dns-name-label-length',
-    'Single label of the DNS name can not be longer than 63 characters.',
-    (value?: string) => (value || '').split('.').every((label: string) => label.length <= 63),
-  )
-  .matches(DNS_NAME_REGEX, {
-    message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
-    excludeEmptyString: true,
-  });
+    t(
+      'ai:Every single host component in the base domain name cannot contain more than 63 characters and must not contain spaces.',
+    ),
+    (value?: string) => {
+      // Check if the value contains any spaces
+      if (/\s/.test(value as string)) {
+        return false; // Value contains spaces, validation fails
+      }
 
-export const baseDomainValidationSchema = Yup.string().test(
-  'dns-name-label-length',
-  'Every single host component in the base domain name cannot contain more than 63 characters and must not contain spaces.',
-  (value?: string) => {
-    // Check if the value contains any spaces
-    if (/\s/.test(value as string)) {
-      return false; // Value contains spaces, validation fails
-    }
-
-    // Check the label lengths
-    const labels = (value || '').split('.');
-    return labels.every((label: string) => label.length <= 63);
-  },
-);
+      // Check the label lengths
+      const labels = (value || '').split('.');
+      return labels.every((label: string) => label.length <= 63);
+    },
+  );
 
 export const locationValidationSchema = (t: TFunction) =>
   Yup.string()

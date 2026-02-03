@@ -32,7 +32,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        noProxyValidationSchema
+        noProxyValidationSchema(t)
           .validate(value)
           .catch(() => expect(value).toBe('was rejected but is valid')),
       ),
@@ -45,10 +45,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        noProxyValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        noProxyValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 
@@ -106,7 +108,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        pullSecretValidationSchema
+        pullSecretValidationSchema(t)
           .validate(value)
           .catch((msg: string) => expect(value).toBe(`was rejected but is valid: ${msg}`)),
       ),
@@ -115,10 +117,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        pullSecretValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        pullSecretValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 
@@ -147,7 +151,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        ipValidationSchema
+        ipValidationSchema(t)
           .validate(value)
           .catch((msg: string) => expect(value).toBe(`was rejected but is valid: ${msg}`)),
       ),
@@ -156,10 +160,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        ipValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        ipValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 
@@ -182,7 +188,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .validate(value)
           .catch((msg: string) => expect(value).toBe(`was rejected but is valid: ${msg}`)),
       ),
@@ -191,10 +197,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        macAddressValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        macAddressValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 
@@ -211,7 +219,7 @@ describe('validationSchemas', () => {
       '192.0.0.0/8' /* Overlap */,
     ];
 
-    const validationSchema = ipBlockValidationSchema(['192.168.1.0']);
+    const validationSchema = ipBlockValidationSchema(['192.168.1.0'], t);
     await Promise.all(
       valid.map((value) =>
         validationSchema
@@ -249,7 +257,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        dnsNameValidationSchema
+        dnsNameValidationSchema(t)
           .validate(value)
           .catch((msg: string) => expect(value).toBe(`was rejected but is valid: ${msg}`)),
       ),
@@ -258,10 +266,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        dnsNameValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        dnsNameValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 
@@ -272,7 +282,7 @@ describe('validationSchemas', () => {
     const valid = [16, 25];
     const invalid = ['', 'a', 0, 1, 33, 15, 26];
 
-    const validationSchema = hostPrefixValidationSchema('192.168.0.0/16');
+    const validationSchema = hostPrefixValidationSchema('192.168.0.0/16', t);
     await Promise.all(
       valid.map((value) =>
         validationSchema
@@ -298,7 +308,7 @@ describe('validationSchemas', () => {
     const valid = [8, 32, 128];
     const invalid = ['', 'a', 0, 1, 7, 129];
 
-    const validationSchema = hostPrefixValidationSchema('2002::1234:abcd:ffff:c0a8:101/64');
+    const validationSchema = hostPrefixValidationSchema('2002::1234:abcd:ffff:c0a8:101/64', t);
     await Promise.all(
       valid.map((value) =>
         validationSchema
@@ -330,7 +340,7 @@ describe('validationSchemas', () => {
 
     await Promise.all(
       valid.map((value) =>
-        baseDomainValidationSchema
+        baseDomainValidationSchema(t)
           .validate(value)
           .catch(() => expect(value).toBe(`was rejected but is valid`)),
       ),
@@ -339,10 +349,12 @@ describe('validationSchemas', () => {
     let counter = 0;
     await Promise.all(
       invalid.map((value) =>
-        baseDomainValidationSchema.validate(value).then(
-          () => expect(value).toBe('should be rejected since it is invalid'),
-          () => counter++,
-        ),
+        baseDomainValidationSchema(t)
+          .validate(value)
+          .then(
+            () => expect(value).toBe('should be rejected since it is invalid'),
+            () => counter++,
+          ),
       ),
     );
 
@@ -351,7 +363,7 @@ describe('validationSchemas', () => {
 
   describe('dualStackValidationSchema', () => {
     describe('OCP < 4.12 (legacy behavior)', () => {
-      const schema = dualStackValidationSchema('machine networks', '4.11');
+      const schema = dualStackValidationSchema('machine networks', t, '4.11');
 
       test('validates IPv4 as primary and IPv6 as secondary', async () => {
         const validValues = [[{ cidr: '192.168.1.0/24' }, { cidr: '2001:db8::/64' }]];
@@ -373,7 +385,7 @@ describe('validationSchemas', () => {
     });
 
     describe('OCP >= 4.12 (new behavior)', () => {
-      const schema = dualStackValidationSchema('machine networks', '4.12');
+      const schema = dualStackValidationSchema('machine networks', t, '4.12');
 
       test('validates IPv4 as primary and IPv6 as secondary', async () => {
         const validValues = [[{ cidr: '192.168.1.0/24' }, { cidr: '2001:db8::/64' }]];
@@ -393,7 +405,7 @@ describe('validationSchemas', () => {
     });
 
     describe('no version specified (defaults to legacy behavior)', () => {
-      const schema = dualStackValidationSchema('machine networks');
+      const schema = dualStackValidationSchema('machine networks', t);
 
       test('validates IPv4 as primary and IPv6 as secondary', async () => {
         const validValues = [[{ cidr: '192.168.1.0/24' }, { cidr: '2001:db8::/64' }]];
@@ -416,7 +428,7 @@ describe('validationSchemas', () => {
 
     describe('edge cases', () => {
       test('validates maximum 2 networks', async () => {
-        const schema = dualStackValidationSchema('machine networks', '4.12');
+        const schema = dualStackValidationSchema('machine networks', t, '4.12');
         const invalidValue = [
           { cidr: '192.168.1.0/24' },
           { cidr: '2001:db8::/64' },
@@ -424,7 +436,7 @@ describe('validationSchemas', () => {
         ];
 
         await expect(schema.validate(invalidValue)).rejects.toThrow(
-          'Maximum number of machine networks subnets in dual stack is 2',
+          'ai:Maximum number of {{field}} subnets in dual stack is 2',
         );
       });
     });

@@ -19,39 +19,39 @@ import { overlap } from 'cidr-tools';
 import parseUrl from 'parse-url';
 import { TFunction } from 'i18next';
 
-export const ipValidationSchema = Yup.string().test(
-  'ip-validation',
-  'Not a valid IP address',
-  (value?: string) => Address4.isValid(value || '') || Address6.isValid(value || ''),
-);
+export const ipValidationSchema = (t: TFunction) =>
+  Yup.string().test(
+    'ip-validation',
+    t('ai:Not a valid IP address'),
+    (value?: string) => Address4.isValid(value || '') || Address6.isValid(value || ''),
+  );
 
-export const ipNoSuffixValidationSchema = Yup.string().test(
-  'ip-validation-no-suffix',
-  'Not a valid IP address',
-  (value?: string) => {
+export const ipNoSuffixValidationSchema = (t: TFunction) =>
+  Yup.string().test('ip-validation-no-suffix', t('ai:Not a valid IP address'), (value?: string) => {
     const address = getAddress(value || '');
     return !!address && address.address === address.addressMinusSuffix;
-  },
-);
+  });
 
-export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
-  message: 'Value "${value}" is not valid MAC address.', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const macAddressValidationSchema = (t: TFunction) =>
+  Yup.string().matches(MAC_REGEX, {
+    message: (value) => t('ai:Value "{{value}}" is not valid MAC address.', { value }),
+    excludeEmptyString: true,
+  });
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
   { machineNetworks }: NetworkConfigurationValues,
   allowSuffix: boolean,
+  t: TFunction,
 ) =>
-  Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', (value) => {
+  Yup.string().test('vip-validation', t('ai:IP Address is outside of selected subnet'), (value) => {
     if (!value) {
       return true;
     }
 
     try {
       const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
-      validator.validateSync(value);
+      validator(t).validateSync(value);
     } catch (err) {
       return true;
     }
@@ -72,10 +72,13 @@ export const vipRangeValidationSchema = (
     return false;
   });
 
-const vipBroadcastValidationSchema = ({ machineNetworks }: NetworkConfigurationValues) =>
+const vipBroadcastValidationSchema = (
+  { machineNetworks }: NetworkConfigurationValues,
+  t: TFunction,
+) =>
   Yup.string().test(
     'vip-no-broadcast',
-    'The IP address cannot be a network or broadcast address',
+    t('ai:The IP address cannot be a network or broadcast address'),
     function (value?: string) {
       if (!value) {
         return true;
@@ -113,6 +116,7 @@ export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingT
 export const vipNoSuffixValidationSchema = (
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
+  t: TFunction,
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (
@@ -129,7 +133,7 @@ export const vipNoSuffixValidationSchema = (
       // 6) Uniqueness across API/Ingress
       const vipFamilyMatchSchema = Yup.string().test(
         'vip-family-match-machine-network',
-        'IP family must match the corresponding machine network family.',
+        t('ai:IP family must match the corresponding machine network family.'),
         function (value?: string) {
           if (!value) {
             return true;
@@ -168,19 +172,20 @@ export const vipNoSuffixValidationSchema = (
           return true;
         }
         if (apiVip === ingressVip) {
-          const label = index === 0 ? 'primary' : 'secondary';
           return this.createError({
-            message: `The ${label} Ingress and API IP addresses cannot be the same.`,
+            message: t('ai:The {{label}} Ingress and API IP addresses cannot be the same.', {
+              label: index === 0 ? t('ai:primary') : t('ai:secondary'),
+            }),
           });
         }
         return true;
       });
 
-      return alwaysRequired('Required. Please provide an IP address')
-        .concat(ipNoSuffixValidationSchema)
+      return alwaysRequired(t('ai:Required field'))
+        .concat(ipNoSuffixValidationSchema(t))
         .concat(vipFamilyMatchSchema)
-        .concat(vipRangeValidationSchema(hostSubnets, values, false))
-        .concat(vipBroadcastValidationSchema(values))
+        .concat(vipRangeValidationSchema(hostSubnets, values, false, t))
+        .concat(vipBroadcastValidationSchema(values, t))
         .concat(vipUniqueSchema);
     },
   });
@@ -188,27 +193,35 @@ export const vipNoSuffixValidationSchema = (
 export const vipArrayValidationSchema = <T extends Yup.Maybe<Yup.AnyObject>>(
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,
+  t: TFunction,
 ) =>
   values.managedNetworkingType === 'clusterManaged'
     ? Yup.array<T>().of(
         Yup.object({
           clusterId: Yup.string(),
-          ip: vipNoSuffixValidationSchema(hostSubnets, values),
+          ip: vipNoSuffixValidationSchema(hostSubnets, values, t),
         }),
       )
     : Yup.array<T>();
 
-export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undefined) =>
+export const ipBlockValidationSchema = (
+  reservedCidrs: string | string[] | undefined,
+  t: TFunction,
+) =>
   Yup.string()
     .required('A value is required.')
     .test(
       'valid-ip-address',
-      'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
+      t(
+        'ai:Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
+      ),
       (value?: string): boolean => !!value && (isCIDR.v4(value) || isCIDR.v6(value)),
     )
     .test(
       'valid-netmask',
-      'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
+      t(
+        'ai:IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
+      ),
       (value?: string) => {
         const suffix = parseInt((value || '').split('/')[1]);
 
@@ -220,7 +233,9 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     )
     .test(
       'cidr-is-not-unspecified',
-      'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
+      t(
+        'ai:The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
+      ),
       (cidr: string) => {
         const ip = getSubnet(cidr);
         if (ip === null) {
@@ -235,7 +250,7 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     )
     .test(
       'valid-cidr-base-address',
-      ({ value }) => `${value as string} is not a valid CIDR`,
+      ({ value }) => t('ai:{{value}} is not a valid CIDR', { value: value as string }),
       (cidr: string) => {
         const ip = getSubnet(cidr);
         if (ip === null) {
@@ -249,7 +264,7 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
         return result;
       },
     )
-    .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr: string) => {
+    .test('cidrs-can-not-overlap', t('ai:Provided CIDRs can not overlap.'), (cidr: string) => {
       try {
         if (cidr && reservedCidrs && reservedCidrs.length > 0) {
           return !overlap(cidr, reservedCidrs);
@@ -263,10 +278,12 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
 
 export const hostPrefixValidationSchema = (
   clusterNetworkCidr: NetworkConfigurationValues['clusterNetworkCidr'],
+  t: TFunction,
 ) => {
-  const requiredText = 'The host prefix is required.';
-  const minMaxText =
-    'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
+  const requiredText = t('ai:Required field');
+  const minMaxText = t(
+    'ai:The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.',
+  );
   const netBlock = (clusterNetworkCidr || '').split('/')[1];
   if (!netBlock) {
     return Yup.number().required(requiredText).min(1, minMaxText).max(32, minMaxText);
@@ -277,10 +294,14 @@ export const hostPrefixValidationSchema = (
     netBlockNumber = 1;
   }
 
-  const errorMsgPrefix =
-    'The host prefix is a number between size of the cluster network CIDR range';
-  const errorMsgIPv4 = `${errorMsgPrefix} (${netBlockNumber}) and 25.`;
-  const errorMsgIPv6 = `${errorMsgPrefix} (8) and 128.`;
+  const errorMsgPrefix = t(
+    'ai:The host prefix is a number between size of the cluster network CIDR range',
+  );
+  const errorMsgIPv4 = t('ai:{{errorMsgPrefix}} ({{netBlockNumber}}) and 25.', {
+    errorMsgPrefix,
+    netBlockNumber,
+  });
+  const errorMsgIPv6 = t('ai:{{errorMsgPrefix}} (8) and 128.', { errorMsgPrefix });
 
   if (isCIDR.v6(clusterNetworkCidr || '')) {
     return Yup.number().required(requiredText).min(8, errorMsgIPv6).max(128, errorMsgIPv6);
@@ -296,16 +317,17 @@ export const hostPrefixValidationSchema = (
   return Yup.number().required(requiredText);
 };
 
-export const day2ApiVipValidationSchema = Yup.string().test(
-  'day2-api-vip',
-  'Provide a valid DNS name or IP Address',
-  (value?: string) => {
-    if (!value) {
-      return true;
-    }
-    return isIPorDN(value);
-  },
-);
+export const day2ApiVipValidationSchema = (t: TFunction) =>
+  Yup.string().test(
+    'day2-api-vip',
+    t('ai:Provide a valid DNS name or IP Address'),
+    (value?: string) => {
+      if (!value) {
+        return true;
+      }
+      return isIPorDN(value);
+    },
+  );
 
 export const bmcAddressValidationSchema = (t: TFunction) => {
   return Yup.string()

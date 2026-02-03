@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
   Alert,
   Button,
@@ -25,20 +26,22 @@ import {
 import { getErrorMessage } from '../../../common/utils';
 import { getWarningMessage } from './utils';
 
-const validationSchema = () =>
+const validationSchema = (t: TFunction) =>
   Yup.lazy((values: ProxyFieldsType) =>
     Yup.object<ProxyFieldsType>().shape({
       httpProxy: httpProxyValidationSchema({
         values,
         pairValueName: 'httpsProxy',
         allowEmpty: true,
+        t,
       }),
       httpsProxy: httpProxyValidationSchema({
         values,
         pairValueName: 'httpProxy',
         allowEmpty: true,
+        t,
       }),
-      noProxy: noProxyValidationSchema,
+      noProxy: noProxyValidationSchema(t),
     }),
   );
 
@@ -91,7 +94,7 @@ const EditProxyModal: React.FC<EditProxyModalProps> = ({
           noProxy: infraEnv.spec?.proxy?.noProxy,
           enableProxy,
         }}
-        validationSchema={validationSchema}
+        validationSchema={validationSchema(t)}
         onSubmit={async (values: ProxyFieldsType) => {
           setError(undefined);
           try {

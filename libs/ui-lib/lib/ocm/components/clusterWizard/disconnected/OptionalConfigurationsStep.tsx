@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Formik, useFormikContext, yupToFormErrors } from 'formik';
+import { Formik, useFormikContext } from 'formik';
+import { TFunction } from 'i18next';
 import * as Yup from 'yup';
 import {
   ClusterWizardStep,
@@ -82,44 +83,39 @@ const buildInfraEnvParams = (values: OptionalConfigurationsFormValues) => {
   };
 };
 
-const getValidationSchema = (values: OptionalConfigurationsFormValues) =>
-  Yup.object().shape({
-    sshPublicKey: sshPublicKeyValidationSchema,
-    pullSecret: pullSecretValidationSchema.required('Pull secret is required'),
-    enableProxy: Yup.boolean().required(),
-    httpProxy: httpProxyValidationSchema({
-      values,
-      pairValueName: 'httpsProxy',
-      allowEmpty: true,
+const getValidationSchema = (t: TFunction) =>
+  Yup.lazy((values: OptionalConfigurationsFormValues) =>
+    Yup.object().shape({
+      sshPublicKey: sshPublicKeyValidationSchema(t),
+      pullSecret: pullSecretValidationSchema(t).required('Required field'),
+      enableProxy: Yup.boolean().required(),
+      httpProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpsProxy',
+        allowEmpty: true,
+        t,
+      }),
+      httpsProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpProxy',
+        allowEmpty: true,
+        t,
+      }),
+      noProxy: noProxyValidationSchema(t),
+      enableNtpSources: Yup.boolean().required(),
+      additionalNtpSources: ntpSourceValidationSchema(t),
+      hostsNetworkConfigurationType: Yup.string()
+        .oneOf(Object.values(HostsNetworkConfigurationType))
+        .required(),
+      rendezvousIp: Yup.string()
+        .max(45, 'IP address must be at most 45 characters')
+        .test(
+          'ip-validation',
+          'Not a valid IP address',
+          (value) => !value || ipValidationSchema(t).isValidSync(value),
+        ),
     }),
-    httpsProxy: httpProxyValidationSchema({
-      values,
-      pairValueName: 'httpProxy',
-      allowEmpty: true,
-    }),
-    noProxy: noProxyValidationSchema,
-    enableNtpSources: Yup.boolean().required(),
-    additionalNtpSources: ntpSourceValidationSchema,
-    hostsNetworkConfigurationType: Yup.string()
-      .oneOf(Object.values(HostsNetworkConfigurationType))
-      .required(),
-    rendezvousIp: Yup.string()
-      .max(45, 'IP address must be at most 45 characters')
-      .test(
-        'ip-validation',
-        'Not a valid IP address',
-        (value) => !value || ipValidationSchema.isValidSync(value),
-      ),
-  });
-
-const validate = (values: OptionalConfigurationsFormValues) => {
-  try {
-    getValidationSchema(values).validateSync(values, { abortEarly: false });
-    return {};
-  } catch (error) {
-    return yupToFormErrors(error);
-  }
-};
+  );
 
 const PullSecretSync: React.FC<{ pullSecret?: string }> = ({ pullSecret }) => {
   const { setFieldValue } = useFormikContext<OptionalConfigurationsFormValues>();
@@ -183,7 +179,7 @@ const OptionalConfigurationsStep = () => {
     <Formik
       initialValues={initialValues}
       validateOnMount
-      validate={validate}
+      validationSchema={getValidationSchema(t)}
       onSubmit={async (values) => {
         clearAlerts();
         if (!cluster?.id) {
