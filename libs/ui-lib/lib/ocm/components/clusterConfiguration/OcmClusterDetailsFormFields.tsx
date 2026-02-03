@@ -30,7 +30,11 @@ import { ExternalPlatformDropdown } from './platformIntegration/ExternalPlatform
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { ExternalPlatformLabels } from './platformIntegration/constants';
-import { ManagedDomain, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  ManagedDomain,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { useFeature } from '../../hooks/use-feature';
 import ControlPlaneNodesDropdown, {
@@ -40,28 +44,21 @@ import ControlPlaneNodesDropdown, {
 } from './ControlPlaneNodesDropdown';
 
 export type OcmClusterDetailsFormFieldsProps = {
-  forceOpenshiftVersion?: string;
+  cluster?: Cluster;
   defaultPullSecret?: string;
   isOcm: boolean;
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
-  isPullSecretSet: boolean;
-  clusterExists: boolean;
-  clusterCpuArchitecture?: string;
-  clusterId?: string;
 };
 
 export const OcmClusterDetailsFormFields = ({
   managedDomains = [],
   versions,
-  isPullSecretSet,
   defaultPullSecret,
-  forceOpenshiftVersion,
   isOcm,
-  clusterExists,
-  clusterCpuArchitecture,
-  clusterId,
+  cluster,
 }: OcmClusterDetailsFormFieldsProps) => {
+  const clusterExists = !!cluster;
   const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
   const { useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
@@ -165,16 +162,16 @@ export const OcmClusterDetailsFormFields = ({
 
       <OcmBaseDomainField managedDomains={managedDomains} clusterExists={clusterExists} />
 
-      {forceOpenshiftVersion ? (
+      {clusterExists || isSingleClusterFeatureEnabled ? (
         <OcmOpenShiftVersion
           versions={versions}
-          openshiftVersion={forceOpenshiftVersion}
-          clusterCpuArchitecture={clusterCpuArchitecture}
+          openshiftVersion={values.openshiftVersion}
+          clusterCpuArchitecture={values.cpuArchitecture}
           withPreviewText
           withMultiText
         />
       ) : (
-        <OcmOpenShiftVersionSelect versions={versions} />
+        <OcmOpenShiftVersionSelect />
       )}
       {clusterExists || isSingleClusterFeatureEnabled ? (
         <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
@@ -187,7 +184,9 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
 
-      {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      {!cluster?.pullSecretSet && (
+        <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />
+      )}
 
       {!isSingleClusterFeatureEnabled &&
         (clusterExists ? (
@@ -214,7 +213,7 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ControlPlaneNodesDropdown featureSupportLevelData={featureSupportLevelData} />
       )}
-      <CustomManifestCheckbox clusterId={clusterId || ''} isDisabled={platform === 'external'} />
+      <CustomManifestCheckbox clusterId={cluster?.id || ''} isDisabled={platform === 'external'} />
 
       {!isSingleClusterFeatureEnabled && (
         <HostsNetworkConfigurationControlGroup
@@ -225,7 +224,7 @@ export const OcmClusterDetailsFormFields = ({
 
       <DiskEncryptionControlGroup
         values={values}
-        isDisabled={isPullSecretSet}
+        isDisabled={cluster?.pullSecretSet}
         isSNO={values.controlPlaneCount === 1}
         docVersion={openshiftVersion}
       />

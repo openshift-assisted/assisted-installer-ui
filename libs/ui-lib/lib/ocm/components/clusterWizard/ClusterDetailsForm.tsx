@@ -9,7 +9,6 @@ import {
   ClusterWizardStepHeader,
   getClusterDetailsValidationSchema,
   getRichTextValidation,
-  CpuArchitecture,
   useAlerts,
   TechnologyPreview,
 } from '../../../common';
@@ -179,18 +178,10 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields
                   versions={ocpVersions}
-                  forceOpenshiftVersion={
-                    isSingleClusterFeatureEnabled
-                      ? ocpVersions[0].version
-                      : cluster?.openshiftVersion
-                  }
-                  isPullSecretSet={!!cluster?.pullSecretSet}
                   defaultPullSecret={pullSecret}
                   isOcm={isInOcm}
                   managedDomains={managedDomains}
-                  clusterExists={!!cluster}
-                  clusterCpuArchitecture={cluster?.cpuArchitecture as CpuArchitecture}
-                  clusterId={cluster?.id}
+                  cluster={cluster}
                 />
               </GridItem>
             </Grid>
