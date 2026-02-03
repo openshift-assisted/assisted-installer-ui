@@ -76,7 +76,7 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
   Yup.lazy((values: EnvironmentStepFormValues) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: richNameValidationSchema(t, usedNames),
-      location: locationValidationSchema(t).required(t('ai:Location is a required field.')),
+      location: locationValidationSchema(t),
       pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
       sshPublicKey: sshPublicKeyValidationSchema,
       httpProxy: httpProxyValidationSchema({

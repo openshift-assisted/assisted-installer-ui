@@ -10,7 +10,7 @@ import {
   nameValidationSchema,
   noProxyValidationSchema,
   pullSecretValidationSchema,
-} from './validationSchemas';
+} from './..';
 import { TFunction } from 'react-i18next';
 import { CLUSTER_NAME_MAX_LENGTH } from './constants';
 

@@ -18,12 +18,7 @@ import {
   InfraEnv,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  AlertFormikError,
-  httpProxyValidationSchema,
-  noProxyValidationSchema,
-  sshPublicKeyValidationSchema,
-} from '../../../common/components/ui';
+import { AlertFormikError } from '../../../common/components/ui';
 import {
   DiscoveryImageType,
   ProxyFieldsType,
@@ -36,6 +31,11 @@ import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
+import {
+  httpProxyValidationSchema,
+  noProxyValidationSchema,
+  sshPublicKeyValidationSchema,
+} from '../../../common';
 
 export interface OcmImageCreateParams {
   /**

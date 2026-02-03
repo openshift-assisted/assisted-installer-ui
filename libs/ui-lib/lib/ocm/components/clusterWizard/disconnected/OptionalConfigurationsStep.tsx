@@ -9,7 +9,6 @@ import {
   getFormikErrorFields,
   httpProxyValidationSchema,
   noProxyValidationSchema,
-  ntpSourceValidationSchema,
   ipValidationSchema,
   InputField,
   CheckboxField,
@@ -41,6 +40,7 @@ import { HostsNetworkConfigurationControlGroup } from '../../clusterConfiguratio
 import { HostsNetworkConfigurationType } from '../../../services/types';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
+import { ntpSourceValidationSchema } from '../../../../common/validationSchemas/ntpValidation';
 
 const DEFAULT_CPU_ARCHITECTURE = 'x86_64' as const;
 const DISCONNECTED_IMAGE_TYPE = 'disconnected-iso' as const;

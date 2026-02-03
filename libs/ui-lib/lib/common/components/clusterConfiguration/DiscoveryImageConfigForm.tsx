@@ -17,12 +17,12 @@ import {
   ImageType,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { AlertFormikError } from '../../../common/components/ui';
 import {
-  AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
-} from '../../../common/components/ui';
+} from '../../validationSchemas';
 import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';

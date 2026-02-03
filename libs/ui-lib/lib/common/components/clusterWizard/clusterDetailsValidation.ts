@@ -7,13 +7,13 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
+import { getDefaultOpenShiftVersion } from '../ui';
 import {
   baseDomainValidationSchema,
   dnsNameValidationSchema,
-  getDefaultOpenShiftVersion,
   nameValidationSchema,
   pullSecretValidationSchema,
-} from '../ui';
+} from '../../validationSchemas';
 import { ClusterDetailsValues } from './types';
 
 const emptyTangServers = (): TangServer[] => {

@@ -57,12 +57,6 @@ export const locationValidationMessages = (t: TFunction) => ({
   INVALID_START_END: t('ai:Must start and end with an alphanumeric character'),
 });
 
-export const bmcAddressValidationMessages = (t: TFunction) => ({
-  INVALID_VALUE: t(
-    'ai:The Value is not valid BMC address, supported protocols are redfish-virtualmedia or idrac-virtualmedia.',
-  ),
-});
-
 export const FORBIDDEN_HOSTNAMES = [
   'localhost',
   'localhost.localdomain',
