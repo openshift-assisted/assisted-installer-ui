@@ -7,4 +7,6 @@ export * from './reducers';
 export * from './selectors';
 export * from './hooks';
 export * from './utils';
+export * from './validationSchemas';
+
 export { ResourceUIState } from './types/resource-ui-state';

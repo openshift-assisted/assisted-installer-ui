@@ -14,14 +14,8 @@ import {
 import { Formik } from 'formik';
 import { TFunction } from 'i18next';
 import { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  richHostnameValidationSchema,
-  RichInputField,
-  StaticTextField,
-  hostnameValidationMessages,
-  getRichTextValidation,
-  AlertFormikError,
-} from '../ui';
+import { RichInputField, StaticTextField, getRichTextValidation, AlertFormikError } from '../ui';
+import { richHostnameValidationSchema, hostnameValidationMessages } from '../../validationSchemas';
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
 import { EditHostFormValues } from './types';

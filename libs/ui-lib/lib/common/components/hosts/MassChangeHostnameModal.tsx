@@ -23,14 +23,12 @@ import { t_global_icon_color_status_info_default as blueInfoColor } from '@patte
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TFunction } from 'i18next';
 
+import { RichInputField, getRichTextValidation, ModalProgress } from '../ui';
 import {
-  RichInputField,
-  getRichTextValidation,
-  richHostnameValidationSchema,
-  hostnameValidationMessages,
-  ModalProgress,
   FORBIDDEN_HOSTNAMES,
-} from '../ui';
+  hostnameValidationMessages,
+  richHostnameValidationSchema,
+} from '../../validationSchemas';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
