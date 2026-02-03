@@ -748,6 +748,7 @@
   "ai:Removing from cluster": "Removing from cluster",
   "ai:Rename hostnames using the custom template:": "Rename hostnames using the custom template:",
   "ai:Rendezvous IP": "Rendezvous IP",
+  "ai:RendezvousIP": "RendezvousIP",
   "ai:Report a bug": "Report a bug",
   "ai:Required field": "Required field",
   "ai:Requirements for Two Node control plane OpenShift": "Requirements for Two Node control plane OpenShift",
