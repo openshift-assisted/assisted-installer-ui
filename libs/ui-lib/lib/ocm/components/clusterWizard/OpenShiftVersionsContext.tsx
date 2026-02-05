@@ -23,6 +23,7 @@ export const OpenShiftVersionsContextProvider = ({ children }: { children: React
   const [allVersions, setAllVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [latestVersions, setLatestVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [error, setError] = React.useState<{ title: string; message: string }>();
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
     return versions.sort((version1, version2) =>
@@ -30,8 +31,11 @@ export const OpenShiftVersionsContextProvider = ({ children }: { children: React
     );
   };
 
-  const getVersions = React.useCallback(
-    async (latest: boolean, setVersions: (versions: OpenshiftVersionOptionType[]) => void) => {
+  React.useEffect(() => {
+    const getVersions = async (
+      latest: boolean,
+      setVersions: (versions: OpenshiftVersionOptionType[]) => void,
+    ) => {
       try {
         const { data } = await SupportedOpenshiftVersionsAPI.list(latest);
 
@@ -49,7 +53,15 @@ export const OpenShiftVersionsContextProvider = ({ children }: { children: React
           };
         }) as OpenshiftVersionOptionType[];
 
-        setVersions(sortVersions(versions));
+        const sorted = sortVersions(versions);
+        setVersions(sorted);
+
+        if (!latest && sorted.length === 0) {
+          setError({
+            title: 'Failed to retrieve list of supported OpenShift versions.',
+            message: 'No OpenShift versions available.',
+          });
+        }
       } catch (e) {
         handleApiError(e, (e) => {
           setError({
@@ -58,21 +70,13 @@ export const OpenShiftVersionsContextProvider = ({ children }: { children: React
           });
         });
       }
-    },
-    [],
-  );
+    };
 
-  React.useEffect(() => {
-    if (!allVersions.length) {
-      void getVersions(false, setAllVersions);
-    }
-  }, [allVersions, getVersions]);
-
-  React.useEffect(() => {
-    if (!latestVersions.length) {
-      void getVersions(true, setLatestVersions);
-    }
-  }, [getVersions, latestVersions]);
+    void Promise.allSettled([
+      getVersions(false, setAllVersions),
+      getVersions(true, setLatestVersions),
+    ]).finally(() => setIsLoading(false));
+  }, []);
 
   const findVersionItemByVersion = React.useCallback(
     (version: OpenShiftVersion) => {
@@ -111,7 +115,7 @@ export const OpenShiftVersionsContextProvider = ({ children }: { children: React
       value={{
         allVersions,
         latestVersions,
-        loading: !error && (allVersions?.length === 0 || latestVersions?.length === 0),
+        loading: !error && isLoading,
         error,
         isSupportedOpenShiftVersion,
         getCpuArchitectures,
