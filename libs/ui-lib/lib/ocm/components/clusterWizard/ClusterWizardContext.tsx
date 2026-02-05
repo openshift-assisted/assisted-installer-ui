@@ -23,6 +23,9 @@ export type ClusterWizardContextType = {
   setInstallDisconnected: (enabled: boolean) => void;
   disconnectedInfraEnv?: InfraEnv;
   setDisconnectedInfraEnv: (infraEnv: InfraEnv | undefined) => void;
+  /** Last pull secret submitted in disconnected Optional configurations (restored when going back from Review) */
+  disconnectedFormPullSecret?: string;
+  setDisconnectedFormPullSecret: (value: string | undefined) => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

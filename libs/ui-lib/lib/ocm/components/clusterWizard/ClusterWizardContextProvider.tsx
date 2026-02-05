@@ -124,6 +124,9 @@ const ClusterWizardContextProvider = ({
   const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>(
     infraEnv,
   );
+  const [disconnectedFormPullSecret, setDisconnectedFormPullSecret] = React.useState<
+    string | undefined
+  >(undefined);
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -331,6 +334,8 @@ const ClusterWizardContextProvider = ({
       },
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
+      disconnectedFormPullSecret,
+      setDisconnectedFormPullSecret,
     };
   }, [
     wizardStepIds,
@@ -346,6 +351,7 @@ const ClusterWizardContextProvider = ({
     connectedWizardStepIds,
     disconnectedWizardStepIds,
     disconnectedInfraEnv,
+    disconnectedFormPullSecret,
   ]);
 
   if (!contextValue) {

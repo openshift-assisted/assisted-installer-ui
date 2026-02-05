@@ -98,7 +98,7 @@ const ReviewStep = () => {
             <DescriptionList isHorizontal>
               {disconnectedInfraEnv?.rendezvousIp && (
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Controller Ip</DescriptionListTerm>
+                  <DescriptionListTerm>Rendezvous IP</DescriptionListTerm>
                   <DescriptionListDescription>
                     {disconnectedInfraEnv?.rendezvousIp}
                   </DescriptionListDescription>

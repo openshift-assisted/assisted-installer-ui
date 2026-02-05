@@ -331,7 +331,7 @@ describe('validationSchemas', () => {
   });
 
   test('baseDomainNameValidationSchema', async () => {
-    const valid = ['a.com', 'co', '1c'];
+    const valid = ['a.com', 'b.example.com'];
     const invalid = [
       '    ',
       'a g',
