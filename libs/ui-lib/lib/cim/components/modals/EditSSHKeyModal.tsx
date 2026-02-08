@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
   Alert,
   Button,
@@ -20,11 +21,12 @@ import { EditSSHKeyFormikValues } from './types';
 import { getWarningMessage } from './utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const validationSchema = Yup.object({
-  sshPublicKey: sshPublicKeyValidationSchema.required(
-    'An SSH key is required to debug hosts as they register.',
-  ),
-});
+const validationSchema = (t: TFunction) =>
+  Yup.object({
+    sshPublicKey: sshPublicKeyValidationSchema(t).required(
+      t('ai:An SSH key is required to debug hosts as they register.'),
+    ),
+  });
 
 export type EditSSHKeyModalProps = {
   isOpen: boolean;
@@ -61,7 +63,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
         initialValues={{
           sshPublicKey: infraEnv.spec?.sshAuthorizedKey || '',
         }}
-        validationSchema={validationSchema}
+        validationSchema={validationSchema(t)}
         onSubmit={async (values) => {
           try {
             await onSubmit(values, infraEnv);

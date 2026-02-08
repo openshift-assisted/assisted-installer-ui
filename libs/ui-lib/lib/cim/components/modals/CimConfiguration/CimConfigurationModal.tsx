@@ -100,9 +100,15 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   };
 
   const validationSchema = Yup.object<CimConfigurationValues>({
-    dbVolSize: Yup.number().min(MIN_DB_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
-    fsVolSize: Yup.number().min(MIN_FS_VOL_SIZE, t('ai:Minimal value is 1Gi')).required(),
-    imgVolSize: Yup.number().min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi')).required(),
+    dbVolSize: Yup.number()
+      .min(MIN_DB_VOL_SIZE, t('ai:Minimal value is 1Gi'))
+      .required(t('ai:Required field')),
+    fsVolSize: Yup.number()
+      .min(MIN_FS_VOL_SIZE, t('ai:Minimal value is 1Gi'))
+      .required(t('ai:Required field')),
+    imgVolSize: Yup.number()
+      .min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi'))
+      .required(t('ai:Required field')),
     configureLoadBalancer: Yup.boolean(),
     addCiscoIntersightURL: Yup.boolean(),
     ciscoIntersightURL: Yup.string().when('addCiscoIntersightURL', {

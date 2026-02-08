@@ -9,8 +9,10 @@ import { formViewHostsToInfraEnvField } from '../../data/formDataToInfraEnvField
 import { getEmptyFormViewHostsValues } from '../../data/emptyData';
 import { getFormViewHostsValues, getFormViewNetworkWideValues } from '../../data/fromInfraEnv';
 import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../../../../../common';
 
 export const FormViewHosts: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
+  const { t } = useTranslation();
   const [protocolType, setProtocolType] = React.useState<StaticProtocolType>();
   const [formProps, setFormProps] = React.useState<StaticIpFormProps<FormViewHostsValues>>();
   React.useEffect(() => {
@@ -20,7 +22,7 @@ export const FormViewHosts: React.FC<StaticIpViewProps> = ({ infraEnv, ...props 
     if (networkWideValues) {
       setFormProps({
         infraEnv,
-        validationSchema: getFormViewHostsValidationSchema(networkWideValues),
+        validationSchema: getFormViewHostsValidationSchema(networkWideValues, t),
         getInitialValues: (infraEnv: InfraEnv) => {
           return getFormViewHostsValues(infraEnv);
         },

@@ -17,6 +17,7 @@ import {
   useAlerts,
   useFormikAutoSave,
   ClustersAPI,
+  useTranslation,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -163,6 +164,7 @@ const NetworkConfigurationForm: React.FC<{
 };
 
 const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
+  const { t } = useTranslation();
   const pullSecret = usePullSecret();
   const {
     infraEnv,
@@ -201,8 +203,13 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
 
   const memoizedValidationSchema = React.useMemo(
     () =>
-      getNetworkConfigurationValidationSchema(initialValues, hostSubnets, cluster.openshiftVersion),
-    [hostSubnets, initialValues, cluster.openshiftVersion],
+      getNetworkConfigurationValidationSchema(
+        initialValues,
+        hostSubnets,
+        t,
+        cluster.openshiftVersion,
+      ),
+    [initialValues, hostSubnets, t, cluster.openshiftVersion],
   );
 
   React.useEffect(() => {

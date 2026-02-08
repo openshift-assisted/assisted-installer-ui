@@ -96,9 +96,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
       selectedHostIds: values.autoSelectHosts
         ? Yup.array(Yup.string())
         : isSNOCluster
-        ? Yup.array(Yup.string())
-            .min(1, t('ai:Please select one host for the cluster.'))
-            .max(1, t('ai:Please select one host for the cluster.')) // TODO(jtomasek): replace this with Yup.array().length() after updating Yup
+        ? Yup.array(Yup.string()).length(1, t('ai:Please select one host for the cluster.'))
         : Yup.array(Yup.string()).min(3, t('ai:Please select at least 3 hosts for the cluster.')),
     });
   });
