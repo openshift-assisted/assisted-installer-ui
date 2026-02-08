@@ -9,13 +9,9 @@ import {
   ModalFooter,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import {
-  AlertFormikError,
-  day2ApiVipValidationSchema,
-  InputField,
-} from '../../../common/components/ui';
+import { AlertFormikError, InputField } from '../../../common/components/ui';
 import GridGap from '../../../common/components/ui/GridGap';
-import { StatusErrorType } from '../../../common';
+import { day2ApiVipValidationSchema, StatusErrorType } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type UpdateDay2ApiVipFormProps = {
@@ -46,7 +42,7 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   const validationSchema = React.useMemo(
     () =>
       Yup.object().shape({
-        apiVip: day2ApiVipValidationSchema.required(t('ai:Required field')),
+        apiVip: day2ApiVipValidationSchema(t).required(t('ai:Required field')),
       }),
     [t],
   );

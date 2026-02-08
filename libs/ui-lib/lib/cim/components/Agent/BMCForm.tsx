@@ -151,14 +151,14 @@ const getValidationSchema = (usedHostnames: string[], origHostname: string, t: T
     bmcAddress: bmcAddressValidationSchema(t),
     username: Yup.string().required(t('ai:Required field')),
     password: Yup.string().required(t('ai:Required field')),
-    bootMACAddress: macAddressValidationSchema,
+    bootMACAddress: macAddressValidationSchema(t),
     nmState: Yup.string(),
     macMapping: Yup.array().of(
       Yup.object().shape(
         {
-          macAddress: macAddressValidationSchema.when('name', {
+          macAddress: macAddressValidationSchema(t).when('name', {
             is: (name: string) => !!name,
-            then: () => macAddressValidationSchema.required(t('ai:MAC has to be specified')),
+            then: (schema) => schema.required(t('ai:MAC has to be specified')),
           }),
           name: Yup.string().when('macAddress', {
             is: (name: string) => !!name,

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
   Button,
   Form,
@@ -17,12 +18,12 @@ import {
   ImageType,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { AlertFormikError } from '../../../common/components/ui';
 import {
-  AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
-} from '../../../common/components/ui';
+} from '../../validationSchemas';
 import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
@@ -55,13 +56,13 @@ export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
 
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
-const getValidationSchema = (allowEmpty: boolean) =>
+const getValidationSchema = (allowEmpty: boolean, t: TFunction) =>
   Yup.lazy((values: DiscoveryImageFormValues) =>
     Yup.object<DiscoveryImageFormValues>().shape({
-      sshPublicKey: sshPublicKeyValidationSchema,
-      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', allowEmpty }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', allowEmpty }), // share the schema, httpS is currently not supported
-      noProxy: noProxyValidationSchema,
+      sshPublicKey: sshPublicKeyValidationSchema(t),
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', allowEmpty, t }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', allowEmpty, t }), // share the schema, httpS is currently not supported
+      noProxy: noProxyValidationSchema(t),
     }),
   );
 
@@ -108,7 +109,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={getValidationSchema(!!allowEmpty)}
+      validationSchema={getValidationSchema(!!allowEmpty, t)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {

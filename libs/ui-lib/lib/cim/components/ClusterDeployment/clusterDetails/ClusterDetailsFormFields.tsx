@@ -3,6 +3,7 @@ import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import {
+  acmClusterNameValidationMessages,
   ExternalPlatformsDropdown,
   isMajorMinorVersionEqualOrGreater,
   OpenShiftVersionDropdown,
@@ -11,11 +12,7 @@ import {
 import { StaticTextField } from '../../../../common/components/ui/StaticTextField';
 import { PullSecret } from '../../../../common/components/clusters';
 import { OpenshiftVersionOptionType, SupportedCpuArchitecture } from '../../../../common/types';
-import {
-  InputField,
-  RichInputField,
-  acmClusterNameValidationMessages,
-} from '../../../../common/components/ui/formik';
+import { InputField, RichInputField } from '../../../../common/components/ui/formik';
 import { ClusterDetailsValues } from '../../../../common/components/clusterWizard/types';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../../common/CpuArchitectureDropdown';

@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 
 import {
   FormViewNetworkWideValues,
@@ -14,6 +15,7 @@ import {
   getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
 import { getMachineNetworkCidr } from '../../data/machineNetwork';
+
 const requiredMsg = 'A value is required';
 
 const getAllIpv4Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
@@ -39,12 +41,12 @@ const getAllBondInterfaces: UniqueStringArrayExtractor<FormViewHostsValues> = (
   ]);
 };
 
-const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =>
+const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues, t: TFunction) =>
   Yup.object({
     macAddress: Yup.mixed().when('useBond', {
       is: false,
       then: () =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .required(requiredMsg)
           .concat(getUniqueValidationSchema(getAllMacAddresses)),
       otherwise: () => Yup.mixed().notRequired(),
@@ -82,7 +84,7 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     bondPrimaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .required(requiredMsg)
           .concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
@@ -90,15 +92,18 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     bondSecondaryInterface: Yup.mixed().when('useBond', {
       is: true,
       then: () =>
-        macAddressValidationSchema
+        macAddressValidationSchema(t)
           .required(requiredMsg)
           .concat(getUniqueValidationSchema(getAllBondInterfaces)),
       otherwise: () => Yup.mixed().notRequired(),
     }),
   });
 
-export const getFormViewHostsValidationSchema = (networkWideValues: FormViewNetworkWideValues) => {
+export const getFormViewHostsValidationSchema = (
+  networkWideValues: FormViewNetworkWideValues,
+  t: TFunction,
+) => {
   return Yup.object().shape({
-    hosts: Yup.array(getHostValidationSchema(networkWideValues)),
+    hosts: Yup.array(getHostValidationSchema(networkWideValues, t)),
   });
 };

@@ -90,7 +90,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
         .fileUploadError()
         .should(
           'contain.text',
-          'File type is not supported. File type must be yaml, yml ,json , yaml.patch. or yml.patch.',
+          'File type is not supported. File type must be yaml, yml, json, yaml.patch. or yml.patch.',
         );
       commonActions.verifyNextIsDisabled();
     });

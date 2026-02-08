@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { getHostSubnets } from '../../../common/components/clusterConfiguration/utils';
@@ -47,32 +48,33 @@ const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
 const getNetworkConfigurationValidationSchema = (
   initialValues: ClusterDeploymentNetworkingValues,
   hostSubnets: HostSubnets,
+  t: TFunction,
   openshiftVersion?: string,
 ) =>
   Yup.lazy((values: ClusterDeploymentNetworkingValues) =>
     Yup.object<ClusterDeploymentNetworkingValues>().shape({
-      clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
+      clusterNetworks: clusterNetworksValidationSchema(t).when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => clusterNetworksValidationSchema.concat(IPv4ValidationSchema),
+        then: () => clusterNetworksValidationSchema(t).concat(IPv4ValidationSchema),
         otherwise: () =>
-          clusterNetworksValidationSchema.concat(
-            dualStackValidationSchema('cluster network', openshiftVersion),
+          clusterNetworksValidationSchema(t).concat(
+            dualStackValidationSchema(t('ai:cluster network'), t, openshiftVersion),
           ),
       }),
-      serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
+      serviceNetworks: serviceNetworkValidationSchema(t).when('stackType', {
         is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => serviceNetworkValidationSchema.concat(IPv4ValidationSchema),
+        then: () => serviceNetworkValidationSchema(t).concat(IPv4ValidationSchema),
         otherwise: () =>
-          serviceNetworkValidationSchema.concat(
-            dualStackValidationSchema('service network', openshiftVersion),
+          serviceNetworkValidationSchema(t).concat(
+            dualStackValidationSchema(t('ai:service network'), t, openshiftVersion),
           ),
       }),
-      apiVips: vipArrayValidationSchema(hostSubnets, values),
-      ingressVips: vipArrayValidationSchema(hostSubnets, values),
-      sshPublicKey: sshPublicKeyListValidationSchema,
-      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
-      noProxy: noProxyValidationSchema,
+      apiVips: vipArrayValidationSchema(hostSubnets, values, t),
+      ingressVips: vipArrayValidationSchema(hostSubnets, values, t),
+      sshPublicKey: sshPublicKeyListValidationSchema(t),
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      noProxy: noProxyValidationSchema(t),
     }),
   );
 
@@ -87,6 +89,7 @@ export const useNetworkingFormik = ({
   agentClusterInstall,
   agents,
 }: UseNetworkingFormikArgs) => {
+  const { t } = useTranslation();
   const initialValues = React.useMemo(
     () => {
       const cluster = getAICluster({
@@ -112,9 +115,10 @@ export const useNetworkingFormik = ({
     return getNetworkConfigurationValidationSchema(
       initialValues,
       hostSubnets,
+      t,
       cluster.openshiftVersion,
     );
-  }, [initialValues, clusterDeployment, agentClusterInstall, agents]);
+  }, [clusterDeployment, agentClusterInstall, agents, t, initialValues]);
 
   return {
     initialValues,

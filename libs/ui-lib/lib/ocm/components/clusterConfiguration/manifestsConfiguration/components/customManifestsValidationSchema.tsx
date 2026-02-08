@@ -1,14 +1,13 @@
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import {
   getMaxFileSizeMessage,
   validateFileSize,
   validateFileName,
   validateFileType,
-  INCORRECT_TYPE_FILE_MESSAGE,
 } from '../../../../../common/utils';
-
-import * as yup from 'yup';
+import { getIncorrectFileTypeMessage } from '../../../../../common';
 
 /* eslint-disable */
 type CustomManifestMapper = (a: CustomManifestValues) => string;
@@ -33,7 +32,7 @@ Yup.addMethod(
       if (!list) return true;
 
       const seen = new Set();
-      const errors: yup.ValidationError[] = [];
+      const errors: Yup.ValidationError[] = [];
 
       list.forEach((item, index) => {
         const mappedValue = mapper(item);
@@ -49,7 +48,7 @@ Yup.addMethod(
       });
 
       if (errors.length > 0) {
-        throw new yup.ValidationError(errors);
+        throw new Yup.ValidationError(errors);
       }
 
       return true;
@@ -62,31 +61,32 @@ const INCORRECT_FILENAME =
 
 const UNIQUE_FOLDER_FILENAME = 'Ensure unique file names to avoid conflicts and errors.';
 
-export const getFormViewManifestsValidationSchema = Yup.object<ManifestFormData>({
-  manifests: Yup.array<CustomManifestValues>()
-    .of(
-      Yup.object({
-        folder: Yup.mixed().required('Required'),
-        filename: Yup.string()
-          .required('Required')
-          .min(1, 'Number of characters must be 1-255')
-          .max(255, 'Number of characters must be 1-255')
-          .test('not-correct-filename', INCORRECT_FILENAME, (value: string) => {
-            return validateFileName(value);
+export const getFormViewManifestsValidationSchema = (t: TFunction) =>
+  Yup.object<ManifestFormData>({
+    manifests: Yup.array<CustomManifestValues>()
+      .of(
+        Yup.object({
+          folder: Yup.mixed().required('Required'),
+          filename: Yup.string()
+            .required('Required')
+            .min(1, 'Number of characters must be 1-255')
+            .max(255, 'Number of characters must be 1-255')
+            .test('not-correct-filename', INCORRECT_FILENAME, (value: string) => {
+              return validateFileName(value);
+            }),
+          manifestYaml: Yup.string().when('filename', {
+            is: (filename: string) => !filename.includes('patch'),
+            then: () =>
+              Yup.string()
+                .required('Required')
+                .test('not-big-file', getMaxFileSizeMessage(t), validateFileSize)
+                .test('not-valid-file', getIncorrectFileTypeMessage(t), validateFileType),
+            otherwise: () =>
+              Yup.string()
+                .required('Required')
+                .test('not-big-file', getMaxFileSizeMessage(t), validateFileSize), // Validation of file content is not required if filename contains 'patch'
           }),
-        manifestYaml: Yup.string().when('filename', {
-          is: (filename: string) => !filename.includes('patch'),
-          then: () =>
-            Yup.string()
-              .required('Required')
-              .test('not-big-file', getMaxFileSizeMessage, validateFileSize)
-              .test('not-valid-file', INCORRECT_TYPE_FILE_MESSAGE, validateFileType),
-          otherwise: () =>
-            Yup.string()
-              .required('Required')
-              .test('not-big-file', getMaxFileSizeMessage, validateFileSize), // Validation of file content is not required if filename contains 'patch'
         }),
-      }),
-    )
-    .uniqueManifestFiles(UNIQUE_FOLDER_FILENAME, (val: CustomManifestValues) => val.filename),
-});
+      )
+      .uniqueManifestFiles(UNIQUE_FOLDER_FILENAME, (val: CustomManifestValues) => val.filename),
+  });

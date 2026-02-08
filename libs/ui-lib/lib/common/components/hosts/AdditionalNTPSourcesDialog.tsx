@@ -11,11 +11,8 @@ import {
   ModalVariant,
   ModalHeader,
 } from '@patternfly/react-core';
-import {
-  ntpSourceValidationSchema,
-  AdditionalNTPSourcesField,
-  StatusErrorType,
-} from '../../../common';
+import { AdditionalNTPSourcesField, StatusErrorType } from '../../../common';
+import { ntpSourceValidationSchema } from '../../validationSchemas/ntpValidation';
 import { AlertFormikError } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import {
@@ -43,7 +40,7 @@ const AdditionalNTPSourcesForm = ({
 
   const getValidationSchema = (t: TFunction) =>
     Yup.object().shape({
-      additionalNtpSource: ntpSourceValidationSchema.required(t('ai:Required field')),
+      additionalNtpSource: ntpSourceValidationSchema(t).required(t('ai:Required field')),
     });
 
   const { t } = useTranslation();

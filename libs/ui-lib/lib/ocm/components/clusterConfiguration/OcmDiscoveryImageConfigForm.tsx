@@ -13,18 +13,14 @@ import {
   FlexItem,
 } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
+import { TFunction } from 'i18next';
 import {
   HostStaticNetworkConfig,
   ImageType,
   InfraEnv,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  AlertFormikError,
-  httpProxyValidationSchema,
-  noProxyValidationSchema,
-  sshPublicKeyValidationSchema,
-} from '../../../common/components/ui';
+import { AlertFormikError } from '../../../common/components/ui';
 import {
   DiscoveryImageType,
   ProxyFieldsType,
@@ -37,6 +33,11 @@ import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
+import {
+  httpProxyValidationSchema,
+  noProxyValidationSchema,
+  sshPublicKeyValidationSchema,
+} from '../../../common';
 
 export interface OcmImageCreateParams {
   /**
@@ -54,14 +55,15 @@ export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
   ProxyFieldsType &
   TrustedCertificateFieldsType;
 
-const validationSchema = Yup.lazy((values: OcmDiscoveryImageFormValues) =>
-  Yup.object<OcmDiscoveryImageFormValues>().shape({
-    sshPublicKey: sshPublicKeyValidationSchema,
-    httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy' }),
-    httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy' }), // share the schema, httpS is currently not supported
-    noProxy: noProxyValidationSchema,
-  }),
-);
+const validationSchema = (t: TFunction) =>
+  Yup.lazy((values: OcmDiscoveryImageFormValues) =>
+    Yup.object<OcmDiscoveryImageFormValues>().shape({
+      sshPublicKey: sshPublicKeyValidationSchema(t),
+      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
+      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      noProxy: noProxyValidationSchema(t),
+    }),
+  );
 
 type OcmDiscoveryImageConfigFormProps = Proxy & {
   onCancel: () => void;
@@ -137,7 +139,7 @@ export const OcmDiscoveryImageConfigForm = ({
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchema(t)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status, setStatus }) => {
