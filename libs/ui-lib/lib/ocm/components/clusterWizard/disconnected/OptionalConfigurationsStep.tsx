@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Formik, useFormikContext } from 'formik';
+import { Formik } from 'formik';
 import { TFunction } from 'i18next';
 import * as Yup from 'yup';
 import {
   ClusterWizardStep,
   TechnologyPreview,
   sshPublicKeyValidationSchema,
-  pullSecretValidationSchema,
   getFormikErrorFields,
   httpProxyValidationSchema,
   noProxyValidationSchema,
@@ -16,15 +15,14 @@ import {
   AdditionalNTPSourcesField,
   ProxyFieldsType,
 } from '../../../../common';
-import { Split, SplitItem, Grid, GridItem, Form, Content, Checkbox } from '@patternfly/react-core';
+import { Split, SplitItem, Grid, GridItem, Form, Content } from '@patternfly/react-core';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import UploadSSH from '../../../../common/components/clusterConfiguration/UploadSSH';
-import PullSecretField from '../../../../common/components/ui/formik/PullSecretField';
 import { ProxyInputFields } from '../../../../common/components/clusterConfiguration/ProxyFields';
-import { isInOcm, handleApiError, getApiErrorMessage } from '../../../../common/api';
+import { handleApiError, getApiErrorMessage } from '../../../../common/api';
 import { useAlerts } from '../../../../common/components/AlertsContextProvider';
 import { AlertVariant } from '@patternfly/react-core';
 import InfraEnvsService from '../../../services/InfraEnvsService';
@@ -48,7 +46,6 @@ const DISCONNECTED_IMAGE_TYPE = 'disconnected-iso' as const;
 
 type OptionalConfigurationsFormValues = ProxyFieldsType & {
   sshPublicKey?: string;
-  pullSecret: string;
   enableNtpSources: boolean;
   additionalNtpSources?: string;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
@@ -68,7 +65,7 @@ const buildInfraEnvParams = (values: OptionalConfigurationsFormValues) => {
   const hasProxy = Object.keys(proxy).length > 0;
 
   return {
-    pullSecret: values.pullSecret,
+    // pullSecret,
     ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
     ...(hasProxy && { proxy }),
     ...(values.additionalNtpSources && {
@@ -87,7 +84,6 @@ const getValidationSchema = (t: TFunction) =>
   Yup.lazy((values: OptionalConfigurationsFormValues) =>
     Yup.object().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
-      pullSecret: pullSecretValidationSchema(t).required('Required field'),
       enableProxy: Yup.boolean().required(),
       httpProxy: httpProxyValidationSchema({
         values,
@@ -117,31 +113,15 @@ const getValidationSchema = (t: TFunction) =>
     }),
   );
 
-const PullSecretSync = () => {
-  const defaultPullSecret = usePullSecret();
-  const {
-    setFieldValue,
-    values: { pullSecret },
-  } = useFormikContext<OptionalConfigurationsFormValues>();
-
-  React.useEffect(() => {
-    if (defaultPullSecret !== undefined && pullSecret === '') {
-      setFieldValue('pullSecret', defaultPullSecret);
-    }
-  }, [defaultPullSecret, pullSecret, setFieldValue]);
-
-  return null;
-};
-
 const OptionalConfigurationsStep = () => {
   const { clusterId } = useParams<{ clusterId: string }>();
   const [cluster, setCluster] = React.useState<Cluster | null>(null);
   const { t } = useTranslation();
+  const defaultPullSecret = usePullSecret();
 
   const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
     useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
-  const [editPullSecret, setEditPullSecret] = React.useState(false);
 
   React.useEffect(() => {
     const fetchCluster = async () => {
@@ -166,7 +146,6 @@ const OptionalConfigurationsStep = () => {
 
   const initialValues: OptionalConfigurationsFormValues = {
     sshPublicKey: '',
-    pullSecret: '',
     enableProxy: false,
     httpProxy: '',
     httpsProxy: '',
@@ -219,6 +198,7 @@ const OptionalConfigurationsStep = () => {
               openshiftVersion: cluster.openshiftVersion,
               cpuArchitecture: DEFAULT_CPU_ARCHITECTURE,
               imageType: DISCONNECTED_IMAGE_TYPE,
+              pullSecret: defaultPullSecret ?? '',
               ...commonParams,
             };
             const createdInfraEnv = await InfraEnvsService.create(createParams);
@@ -263,7 +243,6 @@ const OptionalConfigurationsStep = () => {
             }
           >
             <WithErrorBoundary title="Failed to load Optional Configurations step">
-              <PullSecretSync />
               <Grid hasGutter>
                 <GridItem>
                   <Split>
@@ -289,13 +268,6 @@ const OptionalConfigurationsStep = () => {
                     />
 
                     <UploadSSH />
-                    <Checkbox
-                      label={t('ai:Edit pull secret')}
-                      isChecked={editPullSecret}
-                      onChange={(_, checked) => setEditPullSecret(checked)}
-                      id="edit-pull-secret-checkbox"
-                    />
-                    {editPullSecret && <PullSecretField isOcm={isInOcm} />}
 
                     {/* Proxy Settings */}
                     <CheckboxField
