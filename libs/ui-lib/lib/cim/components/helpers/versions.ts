@@ -60,48 +60,65 @@ export const isValidImageSet = (
   );
 };
 
+// Extracts major.minor version, strips any non-numeric prefix (e.g., "img4.18.55" → "4.18")
+const extractMajorMinor = (version: string): string => {
+  const versionWithoutPrefix = version.replace(/^[^\d]*/, '');
+  return versionWithoutPrefix.split('.').slice(0, 2).join('.');
+};
+
+// Converts a ClusterImageSet to an OpenshiftVersionOptionType
+const toVersionOption = (
+  clusterImageSet: ClusterImageSetK8sResource,
+): OpenshiftVersionOptionType => {
+  const version =
+    getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage) ||
+    clusterImageSet.metadata?.name ||
+    '';
+  const cpuArch = getCPUArchFromReleaseImage(clusterImageSet.spec?.releaseImage);
+  return {
+    label: `OpenShift ${version}`,
+    version,
+    value: clusterImageSet.metadata?.name as string,
+    default: false,
+    // (rawagner) ACM does not have the warning so changing to 'production'
+    // supportLevel : getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel)
+    supportLevel: 'production',
+    cpuArchitectures: cpuArch ? [cpuArch as CpuArchitecture] : undefined,
+  };
+};
+
+/**
+ * In case there are osImages specified on the AgentServiceConfig, we want to limit
+ * the availability in the dropdown to only versions that are listed there.
+ * Otherwise the installation fails.
+ */
+const hasMatchingOsImage = (
+  version: OpenshiftVersionOptionType,
+  osImageVersions: (string | undefined)[],
+): boolean => {
+  if (!osImageVersions.length) return true;
+  return osImageVersions.includes(extractMajorMinor(version.version));
+};
+
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
-  isNutanix?: boolean | undefined,
+  isNutanix?: boolean,
   osImages?: OsImage[],
   extended?: boolean,
 ): OpenshiftVersionOptionType[] => {
-  const ocpImageVersions = Array.from(
-    new Set(osImages?.map((osImage) => osImage.openshiftVersion)),
-  );
+  const architectures = isNutanix ? supportedNutanixPlatforms : undefined;
+  const osImageVersions = [...new Set(osImages?.map((img) => img.openshiftVersion))];
 
   const versions = clusterImageSets
-    .filter((clusterImageSet) =>
-      isValidImageSet(clusterImageSet, isNutanix ? supportedNutanixPlatforms : undefined, extended),
-    )
-    .map((clusterImageSet): OpenshiftVersionOptionType => {
-      const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
-      const cpuArch = getCPUArchFromReleaseImage(clusterImageSet.spec?.releaseImage);
-      return {
-        label: `OpenShift ${version ? version : (clusterImageSet.metadata?.name as string)}`,
-        version: version || clusterImageSet.metadata?.name || '',
-        value: clusterImageSet.metadata?.name as string,
-        default: false,
-        // (rawagner) ACM does not have the warning so changing to 'production'
-        supportLevel: 'production', // getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel),
-        cpuArchitectures: cpuArch ? [cpuArch as CpuArchitecture] : undefined,
-      };
-    })
-    .filter((ocpVersion) => {
-      const ver = ocpVersion.version.split('.').slice(0, 2).join('.');
-      return !!ocpImageVersions.length ? ocpImageVersions.includes(ver) : true;
-    })
-    .sort(
-      (versionA, versionB) => /* descending */ -1 * versionA.label.localeCompare(versionB.label),
-    );
+    .filter((clusterImageSet) => isValidImageSet(clusterImageSet, architectures, extended))
+    .map(toVersionOption)
+    .filter((v) => hasMatchingOsImage(v, osImageVersions))
+    .sort((a, b) => b.label.localeCompare(a.label));
 
-  if (versions.length) {
-    // make sure that the pre-selected one is the first-one after sorting
-    versions[0].default = true;
-  }
+  // Mark first version as the default selection
+  versions[0] && (versions[0].default = true);
 
-  const deduped = uniqBy(versions, (v) => v.version);
-  return deduped;
+  return uniqBy(versions, (v) => v.version);
 };
 
 export const getSelectedVersion = (
