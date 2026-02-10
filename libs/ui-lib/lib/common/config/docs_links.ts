@@ -1,6 +1,6 @@
 import { isMajorMinorVersionEqualOrGreater } from '../utils';
 
-const LATEST_OPENSHIFT_DOCS_VERSION = '4.19';
+const LATEST_OPENSHIFT_DOCS_VERSION = '4.21';
 const MIN_OPENSHIFT_DOCS_VERSION = '4.14';
 
 const getDocsOpenshiftVersion = (ocpVersion?: string): string => {
