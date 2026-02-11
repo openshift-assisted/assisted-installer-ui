@@ -29,7 +29,7 @@
     "check:types:all": "yarn workspaces foreach -vp run check_types",
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
     "format:all": "yarn workspaces foreach -vp run format",
-    "lint:all": "yarn workspaces foreach -vp run lint",
+    "lint:all": "yarn workspaces foreach -v run lint",
     "process_new_strings": "yarn workspace @openshift-assisted/locales run process_new_strings",
     "fix-code-style:all": "yarn workspaces foreach -vp run fix-code-style",
     "test:open:dev": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:dev",
