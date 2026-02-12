@@ -123,23 +123,55 @@ export const dnsNameValidationSchema = (t: TFunction) =>
       excludeEmptyString: true,
     });
 
-export const baseDomainValidationSchema = (t: TFunction) =>
-  Yup.string().test(
-    'dns-name-label-length',
-    t(
-      'ai:Every single host component in the base domain name cannot contain more than 63 characters and must not contain spaces.',
-    ),
-    (value?: string) => {
-      // Check if the value contains any spaces
-      if (/\s/.test(value as string)) {
-        return false; // Value contains spaces, validation fails
-      }
+const MAX_DNS_NAME_LENGTH = 253;
+/** Only letters, digits, hyphen, and dot (valid DNS/hostname characters). */
+const DNS_CHARS_REGEX = /^[a-z0-9.-]+$/i;
 
-      // Check the label lengths
-      const labels = (value || '').split('.');
-      return labels.every((label: string) => label.length <= 63);
-    },
-  );
+/**
+ * Validates the full cluster address [clusterName].[baseDomain] as a single DNS/hostname
+ * (e.g. "doma.ca" is valid even though "ca" alone might not pass standalone base-domain rules).
+ */
+export const isValidFullClusterAddress = (full: string): boolean => {
+  if (!full || full === '.' || /\s/.test(full)) {
+    return false;
+  }
+  if (full.length > MAX_DNS_NAME_LENGTH) {
+    return false;
+  }
+  if (!DNS_CHARS_REGEX.test(full)) {
+    return false;
+  }
+  const labels = full.split('.');
+  if (labels.some((label) => label.length === 0 || label.length > 63)) {
+    return false;
+  }
+  return HOST_NAME_REGEX.test(full);
+};
+
+export const baseDomainValidationSchema = (t: TFunction) =>
+  Yup.string()
+    .test(
+      'dns-name-label-length',
+      t(
+        'ai:Every single host component in the base domain name cannot contain more than 63 characters and must not contain spaces.',
+      ),
+      (value?: string) => {
+        // Check if the value contains any spaces
+        if (/\s/.test(value as string)) {
+          return false; // Value contains spaces, validation fails
+        }
+
+        // Check the label lengths
+        const labels = (value || '').split('.');
+        return labels.every((label: string) => label.length <= 63);
+      },
+    )
+    .matches(NAME_CHARS_REGEX, {
+      message: t(
+        'ai:Base domain can only contain letters, digits, hyphens, and dots. Example: example.com',
+      ),
+      excludeEmptyString: true,
+    });
 
 export const locationValidationSchema = (t: TFunction) =>
   Yup.string()
