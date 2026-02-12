@@ -6,8 +6,6 @@ import { Stack, StackItem } from '@patternfly/react-core';
 import HostsForm from './HostsForm';
 import { HostsStepProps, HostsFormValues, NodePoolFormValue } from './types';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { getAgentsForSelection } from '../../../helpers';
-import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../../common';
 import { TFunction } from 'i18next';
 import { NodePoolK8sResource } from '../../types';
 
@@ -61,16 +59,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
   olmCatalogPlacement,
 }) => {
   const { t } = useTranslation();
-  const availableAgents = getAgentsForSelection(agents);
 
-  const infraEnvsWithAgents = infraEnvs.filter((ie) =>
-    availableAgents.some(
-      (a) =>
-        a.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === ie.metadata?.name &&
-        a.metadata?.namespace === ie.metadata?.namespace &&
-        !a.spec.clusterDeploymentName,
-    ),
-  );
   return (
     <Stack hasGutter>
       <StackItem>
@@ -84,7 +73,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
             controllerAvailabilityPolicy: controllerAvailabilityPolicy || 'HighlyAvailable',
             infrastructureAvailabilityPolicy: infrastructureAvailabilityPolicy || 'HighlyAvailable',
             olmCatalogPlacement: olmCatalogPlacement || 'management',
-            agentNamespace: initInfraEnv || infraEnvsWithAgents[0]?.metadata?.namespace || '',
+            agentNamespace: initInfraEnv || infraEnvs[0]?.metadata?.namespace || '',
             nodePools: initNodePools || [
               {
                 nodePoolName: `nodepool-${clusterName}-1`,
@@ -106,7 +95,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
         >
           <HostsForm
             onValuesChanged={onValuesChanged}
-            infraEnvs={infraEnvsWithAgents}
+            infraEnvs={infraEnvs}
             agents={agents}
             clusterName={clusterName}
             initReleaseImage={initReleaseImage}
