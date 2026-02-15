@@ -1838,6 +1838,10 @@ export interface InfraEnv {
    * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
    */
   hostsNetworkConfigurationType?: 'dhcp' | 'static';
+  /**
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
+   */
+  pullSecret?: string;
 }
 export interface InfraEnvCreateParams {
   /**

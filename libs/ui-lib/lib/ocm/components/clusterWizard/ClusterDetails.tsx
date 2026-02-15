@@ -39,7 +39,6 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
-  const pullSecret = usePullSecret();
   const {
     error: errorOCPVersions,
     loading: loadingOCPVersions,
@@ -47,6 +46,8 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   } = useOpenShiftVersionsContext();
   const location = useLocation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const defaultPullSecret = usePullSecret();
+  const pullSecret = isSingleClusterFeatureEnabled ? infraEnv?.pullSecret || '' : defaultPullSecret;
 
   const handleClusterUpdate = React.useCallback(
     async (
