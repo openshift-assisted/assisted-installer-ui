@@ -815,7 +815,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ">=0.22.0 <2.0.0"
+    axios: ^1.13.5
     concurrently: ^8.2.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
@@ -857,7 +857,7 @@ __metadata:
     "@tsconfig/vite-react": ^1.0.1
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
-    axios: ">=0.22.0 <2.0.0"
+    axios: ^1.13.5
     i18next: ^20.4.0
     parse-url: ^9.2.0
     react: ^18.2.0
@@ -891,7 +891,7 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ">=0.22.0 <2.0.0"
+    axios: ^1.13.5
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4
@@ -1059,7 +1059,7 @@ __metadata:
   peerDependencies:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
-    axios: ">=0.22.0 <1.0.0"
+    axios: ^1.13.5
     i18next: ^20.4 || ^21
     monaco-editor: ^0.44.0
     react: ^18
@@ -4352,17 +4352,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:>=0.22.0 <2.0.0, axios@npm:^1.6.1":
-  version: 1.12.2
-  resolution: "axios@npm:1.12.2"
-  dependencies:
-    follow-redirects: ^1.15.6
-    form-data: ^4.0.4
-    proxy-from-env: ^1.1.0
-  checksum: f0331594fe053a4bbff04104edb073973a3aabfad2e56b0aa18de82428aa63f6f0839ca3d837258ec739cb4528014121793b1649a21e5115ffb2bf8237eadca3
-  languageName: node
-  linkType: hard
-
 "axios@npm:^1.12.2":
   version: 1.13.2
   resolution: "axios@npm:1.13.2"
@@ -4382,6 +4371,17 @@ __metadata:
     form-data: ^4.0.5
     proxy-from-env: ^1.1.0
   checksum: 985024c4a32f837053f198f02a308fd6f8bfb4053a2f21e39e37992bc6d06917f008679c36b3e7f0f0c9060c85ffe37c61e58d2ac662595d68dc1b89cef78de8
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.6.1":
+  version: 1.12.2
+  resolution: "axios@npm:1.12.2"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.4
+    proxy-from-env: ^1.1.0
+  checksum: f0331594fe053a4bbff04104edb073973a3aabfad2e56b0aa18de82428aa63f6f0839ca3d837258ec739cb4528014121793b1649a21e5115ffb2bf8237eadca3
   languageName: node
   linkType: hard
 
