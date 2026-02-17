@@ -1597,8 +1597,8 @@ __metadata:
   linkType: hard
 
 "@redhat-cloud-services/frontend-components-config@npm:^6.0.17":
-  version: 6.7.4
-  resolution: "@redhat-cloud-services/frontend-components-config@npm:6.7.4"
+  version: 6.7.52
+  resolution: "@redhat-cloud-services/frontend-components-config@npm:6.7.52"
   dependencies:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.15
     "@redhat-cloud-services/frontend-components-config-utilities": ^4.7.1
@@ -1644,7 +1644,7 @@ __metadata:
     yargs: ^17.6.2
   bin:
     fec: bin/fec.js
-  checksum: d71814d7ec66e0fcaad2dbf26741d81e8cc1c4b31bc4e9ba7c4399f9640365e2941bcfb3effab2a1646b31717c91656b37b3af2783dcd4b2437d993d221df71a
+  checksum: 47f8de999d067a66fb801665fda6d735dde5e88098646d54e5cb5e65bd750c0d7a487f43ac8bfe0c675312912d6cea09e80882e5b9ff691997318897ea8cc377
   languageName: node
   linkType: hard
 
