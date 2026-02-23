@@ -76,7 +76,7 @@ const BasicStepForm = () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         await ClustersService.registerDisconnected({
           name: 'disconnected-cluster',
-          openshiftVersion: values.openshiftVersion,
+          openshiftVersion: '4.20',
         });
       navigate(`${currentPath}/${disconnectedCluster.id}`, {
         state: ClusterWizardFlowStateNew,
@@ -96,41 +96,41 @@ const BasicStepForm = () => {
   };
 
   return (
-    <ClusterWizardStep
-      navigation={<ClusterWizardNavigation />}
-      footer={
-        <ClusterWizardFooter
-          onNext={() => {
-            clusterId ? moveNext() : void createCluster();
-          }}
-          isSubmitting={isSubmitting}
-          isNextDisabled={isLoading || (cluster ? false : !values.openshiftVersion)}
-          disconnectedClusterId={clusterId}
-        />
-      }
+    <Formik
+      initialValues={{}}
+      onSubmit={() => {
+        // nothing to do
+      }}
     >
-      <WithErrorBoundary title="Failed to load Basic step">
-        <Grid hasGutter>
-          <GridItem>
-            <Content component="h2">Basic information</Content>
-          </GridItem>
-          <GridItem>
-            <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
-              <TechnologyPreview />
-              <InstallDisconnectedSwitch isDisabled={!!clusterId} />
-              <span>{t("ai:I'm installing on a disconnected/air-gapped/secured environment")}</span>
-            </Flex>
-          </GridItem>
-          <GridItem>
-            <Form id="wizard-cluster-basic-info__form">
-              {isLoading ? (
-                <Spinner />
-              ) : cluster ? (
-                <OcmOpenShiftVersion
-                  openshiftVersion={cluster.openshiftVersion || ''}
-                  withPreviewText
-                  withMultiText
-                >
+      <ClusterWizardStep
+        navigation={<ClusterWizardNavigation />}
+        footer={
+          <ClusterWizardFooter
+            onNext={() => {
+              void onNext();
+            }}
+            isSubmitting={isSubmitting}
+            disconnectedClusterId={disconnectedClusterId}
+          />
+        }
+      >
+        <WithErrorBoundary title="Failed to load Basic step">
+          <Grid hasGutter>
+            <GridItem>
+              <Content component="h2">Basic information</Content>
+            </GridItem>
+            <GridItem>
+              <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
+                <TechnologyPreview />
+                <InstallDisconnectedSwitch />
+                <span>
+                  {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
+                </span>
+              </Flex>
+            </GridItem>
+            <GridItem>
+              <Form id="wizard-cluster-basic-info__form">
+                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
                   <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
                     <span data-ouia-id="openshift-releases-link">
                       {t('ai:Learn more about OpenShift releases')}

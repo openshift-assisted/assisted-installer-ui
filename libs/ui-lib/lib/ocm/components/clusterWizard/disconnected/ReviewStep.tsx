@@ -25,6 +25,7 @@ import {
   Content,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
+import { saveAs } from 'file-saver';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
@@ -47,10 +48,36 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              if (disconnectedInfraEnv?.downloadUrl) {
-                window.open(disconnectedInfraEnv.downloadUrl, '_blank');
-              }
-              navigate('/cluster-list');
+              void (async () => {
+                if (disconnectedInfraEnv?.downloadUrl) {
+                  saveAs(disconnectedInfraEnv.downloadUrl);
+                }
+                if (clusterId) {
+                  try {
+                    await ClustersService.remove(clusterId);
+                    // Remove infraEnv from wizard context after successful deregistration
+                    setDisconnectedInfraEnv(undefined);
+                    // Navigate to cluster-list only after successful deregistration
+                    navigate('/cluster-list');
+                  } catch (error) {
+                    handleApiError(error, () => {
+                      addAlert({
+                        title: 'Failed to deregister cluster',
+                        message: getApiErrorMessage(error),
+                        variant: AlertVariant.danger,
+                      });
+                    });
+                    // Error handling: continue with navigation even if deregistration fails
+                    // Still clear the context to avoid stale data
+                    setDisconnectedInfraEnv(undefined);
+                    // Navigate even on error to avoid getting stuck
+                    navigate('/cluster-list');
+                  }
+                } else {
+                  // If there's no cluster to deregister, navigate immediately
+                  navigate('/cluster-list');
+                }
+              })();
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"
@@ -96,19 +123,9 @@ const ReviewStep = () => {
               </List>
             </Alert>
             <DescriptionList isHorizontal>
-              {disconnectedInfraEnv?.rendezvousIp && (
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Controller Ip</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {disconnectedInfraEnv?.rendezvousIp}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-              )}
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {disconnectedInfraEnv?.openshiftVersion || ''}
-                </DescriptionListDescription>
+                <DescriptionListDescription>4.20</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>

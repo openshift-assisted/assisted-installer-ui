@@ -1734,7 +1734,7 @@ export interface ImageInfo {
   staticNetworkConfig?: string;
   type?: ImageType;
 }
-export type ImageType = 'full-iso' | 'minimal-iso' | 'disconnected-iso';
+export type ImageType = 'full-iso' | 'minimal-iso';
 export interface ImportClusterParams {
   /**
    * OpenShift cluster name.
@@ -1830,14 +1830,6 @@ export interface InfraEnv {
    * certificates in this bundle.
    */
   additionalTrustBundle?: string;
-  /**
-   * The IP address that hosts will use to communicate with the bootstrap node during installation.
-   */
-  rendezvousIp?: string;
-  /**
-   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
-   */
-  hostsNetworkConfigurationType?: 'dhcp' | 'static';
 }
 export interface InfraEnvCreateParams {
   /**
@@ -1883,14 +1875,6 @@ export interface InfraEnvCreateParams {
    * certificates in this bundle.
    */
   additionalTrustBundle?: string;
-  /**
-   * The IP address that hosts will use to communicate with the bootstrap node during installation.
-   */
-  rendezvousIp?: string;
-  /**
-   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
-   */
-  hostsNetworkConfigurationType?: 'dhcp' | 'static';
 }
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
@@ -1922,14 +1906,6 @@ export interface InfraEnvUpdateParams {
    * Version of the OS image
    */
   openshiftVersion?: string;
-  /**
-   * The IP address that hosts will use to communicate with the bootstrap node during installation.
-   */
-  rendezvousIp?: string;
-  /**
-   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
-   */
-  hostsNetworkConfigurationType?: 'dhcp' | 'static';
 }
 export interface InfraError {
   /**
