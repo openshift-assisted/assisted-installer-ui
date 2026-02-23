@@ -7,7 +7,7 @@ import {
   StaticTextField,
   useTranslation,
 } from '../../../../common';
-import { Flex, Grid, GridItem, Form, Content, Spinner } from '@patternfly/react-core';
+import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
 import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
@@ -54,32 +54,14 @@ const BasicStep = () => {
                     </span>
                   </ExternalLink>
                 </OcmOpenShiftVersion>
-              ) : (
-                <OcmOpenShiftVersionSelect minVersionAllowed={4021} />
-              )}
-              <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
-                x86_64
-              </StaticTextField>
-            </Form>
-          </GridItem>
-        </Grid>
-      </WithErrorBoundary>
-    </ClusterWizardStep>
-  );
-};
-
-const BasicStep = () => {
-  return (
-    <Formik<BasicStepFormikValues>
-      initialValues={{
-        openshiftVersion: '',
-        customOpenshiftSelect: null,
-      }}
-      onSubmit={() => {
-        // nothing to do
-      }}
-    >
-      <BasicStepForm />
+                <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
+                  x86_64
+                </StaticTextField>
+              </Form>
+            </GridItem>
+          </Grid>
+        </WithErrorBoundary>
+      </ClusterWizardStep>
     </Formik>
   );
 };

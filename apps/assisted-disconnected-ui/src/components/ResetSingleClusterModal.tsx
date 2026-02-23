@@ -42,12 +42,6 @@ const ResetSingleClusterModal: React.FC = () => {
     try {
       setError(undefined);
       setIsLoading(true);
-      const hosts = cluster?.hosts;
-      if (hosts) {
-        for (const host of hosts) {
-          await HostsService.unbind(host);
-        }
-      }
       await ClustersService.remove(cluster.id);
       navigate(`/`);
     } catch (e) {

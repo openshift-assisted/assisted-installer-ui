@@ -888,6 +888,7 @@
   "ai:The HTTP proxy URL that agents should use to access the discovery service.": "The HTTP proxy URL that agents should use to access the discovery service.",
   "ai:The IP address cannot be a network or broadcast address": "The IP address cannot be a network or broadcast address",
   "ai:The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.": "The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.",
+  "ai:The IP address pool used for service IP addresses.": "The IP address pool used for service IP addresses.",
   "ai:The MAC address of the host's network connected NIC that will be used to provision the host.": "The MAC address of the host's network connected NIC that will be used to provision the host.",
   "ai:The output displays the following:": "The output displays the following:",
   "ai:The resource has been saved and the YAML is now read only.": "The resource has been saved and the YAML is now read only.",
