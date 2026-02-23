@@ -34,7 +34,6 @@ import { useParams } from 'react-router-dom-v5-compat';
 import ClustersService from '../../../services/ClustersService';
 import {
   Cluster,
-  InfraEnv,
   InfraEnvCreateParams,
   InfraEnvUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
@@ -55,42 +54,6 @@ type OptionalConfigurationsFormValues = ProxyFieldsType & {
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
   rendezvousIp?: string;
 };
-
-const DEFAULT_INITIAL_VALUES: OptionalConfigurationsFormValues = {
-  sshPublicKey: '',
-  pullSecret: '',
-  enableProxy: false,
-  httpProxy: '',
-  httpsProxy: '',
-  noProxy: '',
-  enableNtpSources: false,
-  additionalNtpSources: '',
-  hostsNetworkConfigurationType: HostsNetworkConfigurationType.DHCP,
-  rendezvousIp: '',
-};
-
-/**
- * Rehydrate form values from infraEnv and optional stored pull secret (API does not return pull secret).
- */
-const infraEnvToFormValues = (
-  infraEnv: InfraEnv,
-  storedPullSecret?: string,
-): OptionalConfigurationsFormValues => ({
-  ...DEFAULT_INITIAL_VALUES,
-  sshPublicKey: infraEnv.sshAuthorizedKey ?? '',
-  pullSecret: storedPullSecret ?? '',
-  enableProxy: !!(infraEnv.proxy?.httpProxy || infraEnv.proxy?.httpsProxy),
-  httpProxy: infraEnv.proxy?.httpProxy ?? '',
-  httpsProxy: infraEnv.proxy?.httpsProxy ?? '',
-  noProxy: infraEnv.proxy?.noProxy ?? '',
-  enableNtpSources: !!infraEnv.additionalNtpSources,
-  additionalNtpSources: infraEnv.additionalNtpSources ?? '',
-  hostsNetworkConfigurationType:
-    infraEnv.hostsNetworkConfigurationType === 'static'
-      ? HostsNetworkConfigurationType.STATIC
-      : HostsNetworkConfigurationType.DHCP,
-  rendezvousIp: infraEnv.rendezvousIp ?? '',
-});
 
 /**
  * Builds common infrastructure environment params from form values
@@ -175,17 +138,10 @@ const OptionalConfigurationsStep = () => {
   const [cluster, setCluster] = React.useState<Cluster | null>(null);
   const { t } = useTranslation();
 
-  const {
-    moveNext,
-    moveBack,
-    setDisconnectedInfraEnv,
-    disconnectedInfraEnv,
-    disconnectedFormPullSecret,
-    setDisconnectedFormPullSecret,
-    disconnectedFormEditPullSecret,
-    setDisconnectedFormEditPullSecret,
-  } = useClusterWizardContext();
+  const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
+    useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
+  const [editPullSecret, setEditPullSecret] = React.useState(false);
 
   React.useEffect(() => {
     const fetchCluster = async () => {
@@ -208,9 +164,18 @@ const OptionalConfigurationsStep = () => {
     void fetchCluster();
   }, [clusterId, addAlert, t]);
 
-  const initialValues: OptionalConfigurationsFormValues = disconnectedInfraEnv
-    ? infraEnvToFormValues(disconnectedInfraEnv, disconnectedFormPullSecret)
-    : DEFAULT_INITIAL_VALUES;
+  const initialValues: OptionalConfigurationsFormValues = {
+    sshPublicKey: '',
+    pullSecret: '',
+    enableProxy: false,
+    httpProxy: '',
+    httpsProxy: '',
+    noProxy: '',
+    enableNtpSources: false,
+    additionalNtpSources: '',
+    hostsNetworkConfigurationType: HostsNetworkConfigurationType.DHCP,
+    rendezvousIp: '',
+  };
 
   return (
     <Formik
@@ -241,10 +206,6 @@ const OptionalConfigurationsStep = () => {
               disconnectedInfraEnv.id,
               updateParams,
             );
-            setDisconnectedFormPullSecret(values.pullSecret);
-            setDisconnectedFormEditPullSecret(
-              disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet,
-            );
             setDisconnectedInfraEnv({
               ...updatedInfraEnv,
               // infraEnv does not return the whole OCP version
@@ -261,10 +222,6 @@ const OptionalConfigurationsStep = () => {
               ...commonParams,
             };
             const createdInfraEnv = await InfraEnvsService.create(createParams);
-            setDisconnectedFormPullSecret(values.pullSecret);
-            setDisconnectedFormEditPullSecret(
-              disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet,
-            );
             setDisconnectedInfraEnv({
               ...createdInfraEnv,
               // infraEnv does not return the whole OCP version
@@ -334,15 +291,11 @@ const OptionalConfigurationsStep = () => {
                     <UploadSSH />
                     <Checkbox
                       label={t('ai:Edit pull secret')}
-                      isChecked={
-                        disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet
-                      }
-                      onChange={(_, checked) => setDisconnectedFormEditPullSecret(checked)}
+                      isChecked={editPullSecret}
+                      onChange={(_, checked) => setEditPullSecret(checked)}
                       id="edit-pull-secret-checkbox"
                     />
-                    {(disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet) && (
-                      <PullSecretField isOcm={isInOcm} />
-                    )}
+                    {editPullSecret && <PullSecretField isOcm={isInOcm} />}
 
                     {/* Proxy Settings */}
                     <CheckboxField
