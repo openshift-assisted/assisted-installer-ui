@@ -819,7 +819,7 @@ __metadata:
     concurrently: ^8.2.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
-    lodash: ^4
+    lodash: ^4.17.23
     monaco-editor: ^0.44.0
     nodemon: ^3.0.3
     react: ^18.2.0
@@ -894,7 +894,7 @@ __metadata:
     axios: ^1.13.5
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
-    lodash: ^4
+    lodash: ^4.17.23
     monaco-editor: ^0.44.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -10582,13 +10582,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.14, lodash-es@npm:^4.17.21":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
-  languageName: node
-  linkType: hard
-
 "lodash-es@npm:^4.17.23":
   version: 4.17.23
   resolution: "lodash-es@npm:4.17.23"
@@ -10607,13 +10600,6 @@ __metadata:
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1"
   checksum: d768fa9f9b4e1dc6453be99b753906f58990e0c45e7b2ca5a3b40a33111e5d17f6edf2f768786e2716af90a8e78f8f91431ab8435f761fef00f9b0c256f6d245
-  languageName: node
-  linkType: hard
-
-"lodash@npm:4.17.21, lodash@npm:^4, lodash@npm:^4.17.0, lodash@npm:^4.17.14, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
-  version: 4.17.21
-  resolution: "lodash@npm:4.17.21"
-  checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
   languageName: node
   linkType: hard
 
