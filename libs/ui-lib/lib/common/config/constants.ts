@@ -73,7 +73,6 @@ export const clusterFieldLabels = (t: TFunction): { [key in string]: string } =>
   machineNetworks: t('ai:Machine networks'),
   clusterNetworks: t('ai:Cluster networks'),
   serviceNetworks: t('ai:Service networks'),
-  rendezvousIp: t('ai:Rendezvous IP'),
 });
 
 export const hostValidationGroupLabels = (
