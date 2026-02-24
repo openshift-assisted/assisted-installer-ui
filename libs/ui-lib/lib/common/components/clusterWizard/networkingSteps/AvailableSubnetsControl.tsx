@@ -59,6 +59,8 @@ export interface AvailableSubnetsControlProps {
   isViewerMode?: boolean;
   hosts?: Host[];
   isMultiNodeCluster?: boolean;
+  /** When true (CIM), single-stack machine network dropdown shows both IPv4 and IPv6 subnets. */
+  allowSingleStackIPv6?: boolean;
 }
 
 export const AvailableSubnetsControl = ({
@@ -70,6 +72,7 @@ export const AvailableSubnetsControl = ({
   isViewerMode = false,
   hosts,
   isMultiNodeCluster = true,
+  allowSingleStackIPv6 = false,
 }: AvailableSubnetsControlProps) => {
   const { t } = useTranslation();
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
@@ -86,10 +89,10 @@ export const AvailableSubnetsControl = ({
     .filter((subnet) => Address6.isValid(subnet.subnet))
     .sort(subnetSort);
 
-  // For OCP >= 4.12, both networks can use either IPv4 or IPv6
-  const allSubnets = supportsIPv6Primary
-    ? [...IPv4Subnets, ...IPv6Subnets].sort(subnetSort)
-    : IPv4Subnets;
+  const allSubnets =
+    supportsIPv6Primary || allowSingleStackIPv6
+      ? [...IPv4Subnets, ...IPv6Subnets].sort(subnetSort)
+      : IPv4Subnets;
 
   // For auto-selection, prefer IPv4 as primary (even for dual-stack)
   const cidrV4 = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
@@ -207,7 +210,12 @@ export const AvailableSubnetsControl = ({
     isDualStack && values.machineNetworks && values.machineNetworks.length > 1;
 
   // Determine available subnets for primary dropdown
-  const primaryMachineSubnets = isDualStack && supportsIPv6Primary ? allSubnets : IPv4Subnets;
+  let primaryMachineSubnets: HostSubnet[];
+  if ((isDualStack && supportsIPv6Primary) || (!isDualStack && allowSingleStackIPv6)) {
+    primaryMachineSubnets = allSubnets;
+  } else {
+    primaryMachineSubnets = IPv4Subnets;
+  }
 
   // Determine available subnets for secondary dropdown
   const secondaryMachineSubnets = React.useMemo(() => {

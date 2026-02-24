@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useFormikContext } from 'formik';
+import isCIDR from 'is-cidr';
 import { Checkbox, Grid } from '@patternfly/react-core';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
@@ -27,8 +28,10 @@ export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Pick<
     ClusterDefaultConfig,
     | 'clusterNetworksIpv4'
+    | 'clusterNetworksIpv6'
     | 'clusterNetworksDualstack'
     | 'serviceNetworksIpv4'
+    | 'serviceNetworksIpv6'
     | 'serviceNetworksDualstack'
   >;
   hideManagedNetworking?: boolean;
@@ -63,11 +66,23 @@ const NetworkConfiguration = ({
       setAdvanced(checked);
 
       if (!checked) {
-        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworksIpv4);
-        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworksIpv4);
+        const primaryCidr = values.machineNetworks?.[0]?.cidr;
+        const useIPv6Defaults = primaryCidr && isCIDR.v6(primaryCidr);
+        setFieldValue(
+          'clusterNetworks',
+          useIPv6Defaults
+            ? defaultNetworkSettings.clusterNetworksIpv6
+            : defaultNetworkSettings.clusterNetworksIpv4,
+        );
+        setFieldValue(
+          'serviceNetworks',
+          useIPv6Defaults
+            ? defaultNetworkSettings.serviceNetworksIpv6
+            : defaultNetworkSettings.serviceNetworksIpv4,
+        );
       }
     },
-    [setFieldValue, defaultNetworkSettings],
+    [setFieldValue, defaultNetworkSettings, values.machineNetworks],
   );
 
   // Auto-enable advanced networking when switching to dual-stack
@@ -76,6 +91,37 @@ const NetworkConfiguration = ({
       toggleAdvConfiguration(true);
     }
   }, [isDualStack, toggleAdvConfiguration]);
+
+  // Sync cluster/service networks to match primary machine network family when single-stack (fix mismatch)
+  useEffect(() => {
+    if (isDualStack) {
+      return;
+    }
+    const primaryCidr = values.machineNetworks?.[0]?.cidr;
+    const firstClusterCidr = values.clusterNetworks?.[0]?.cidr;
+    if (!primaryCidr || !firstClusterCidr) {
+      return;
+    }
+    const primaryIsIPv6 = isCIDR.v6(primaryCidr);
+    const primaryIsIPv4 = isCIDR.v4(primaryCidr);
+    const clusterIsIPv6 = isCIDR.v6(firstClusterCidr);
+    const clusterIsIPv4 = isCIDR.v4(firstClusterCidr);
+
+    if (primaryIsIPv4 && clusterIsIPv6) {
+      setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworksIpv4);
+      setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworksIpv4);
+    } else if (primaryIsIPv6 && clusterIsIPv4) {
+      setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworksIpv6);
+      setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworksIpv6);
+    }
+  }, [
+    isDualStack,
+    values.machineNetworks,
+    values.clusterNetworks,
+    values.serviceNetworks,
+    setFieldValue,
+    defaultNetworkSettings,
+  ]);
 
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const primaryMachineNetwork = values.machineNetworks?.[0]?.cidr;
@@ -134,6 +180,7 @@ const NetworkConfiguration = ({
           isDualStackSelectable={isDualStackSelectable}
           hostSubnets={hostSubnets}
           defaultNetworkValues={defaultNetworkSettings}
+          allowSingleStackIPv6
         />
       )}
 
@@ -148,6 +195,7 @@ const NetworkConfiguration = ({
           openshiftVersion={cluster.openshiftVersion}
           hosts={cluster.hosts || []}
           isMultiNodeCluster={isMultiNodeCluster}
+          allowSingleStackIPv6
         />
       )}
 
