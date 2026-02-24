@@ -25,13 +25,16 @@ import {
   Content,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { saveAs } from 'file-saver';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
+const downloadUrl =
+  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
+
 const ReviewStep = () => {
-  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
-  const { clusterId } = useParams<{ clusterId: string }>();
+  const { moveBack } = useClusterWizardContext();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -47,14 +50,11 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              if (disconnectedInfraEnv?.downloadUrl) {
-                window.open(disconnectedInfraEnv.downloadUrl, '_blank');
-              }
+              downloadUrl && saveAs(downloadUrl);
               navigate('/cluster-list');
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"
-            disconnectedClusterId={clusterId}
           />
         }
       >
@@ -96,19 +96,9 @@ const ReviewStep = () => {
               </List>
             </Alert>
             <DescriptionList isHorizontal>
-              {disconnectedInfraEnv?.rendezvousIp && (
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Rendezvous IP</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {disconnectedInfraEnv?.rendezvousIp}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-              )}
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {disconnectedInfraEnv?.openshiftVersion || ''}
-                </DescriptionListDescription>
+                <DescriptionListDescription>4.20</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>

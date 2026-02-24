@@ -3,7 +3,6 @@ import { HostsNetworkConfigurationType } from '../../services';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { ClusterWizardStepsType } from './wizardTransition';
 import { UISettingsValues } from '../../../common';
-import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ClusterWizardContextType = {
   currentStepId: ClusterWizardStepsType;
@@ -21,14 +20,6 @@ export type ClusterWizardContextType = {
   uiSettings?: UISettingsValues;
   installDisconnected: boolean;
   setInstallDisconnected: (enabled: boolean) => void;
-  disconnectedInfraEnv?: InfraEnv;
-  setDisconnectedInfraEnv: (infraEnv: InfraEnv | undefined) => void;
-  /** Last pull secret submitted in disconnected Optional configurations (restored when going back from Review) */
-  disconnectedFormPullSecret?: string;
-  setDisconnectedFormPullSecret: (value: string | undefined) => void;
-  /** Whether "Edit pull secret" was checked when user last clicked Next (restored when going back from Review) */
-  disconnectedFormEditPullSecret?: boolean;
-  setDisconnectedFormEditPullSecret: (value: boolean) => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

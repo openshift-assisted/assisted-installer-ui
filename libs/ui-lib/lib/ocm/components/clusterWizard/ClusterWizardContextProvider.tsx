@@ -76,33 +76,6 @@ const getWizardStepIds = (
   return stepsCopy;
 };
 
-// Same logic as getWizardStepIds but for disconnected flow
-// Adds static IP steps after 'disconnected-optional-configurations' instead of 'cluster-details'
-const getDisconnectedWizardStepIds = (
-  wizardStepIds: ClusterWizardStepsType[] | undefined,
-  staticIpView?: StaticIpView | 'dhcp-selected',
-): ClusterWizardStepsType[] => {
-  let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...disconnectedSteps];
-  if (staticIpView === StaticIpView.YAML) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'disconnected-optional-configurations', [
-      'static-ip-yaml-view',
-    ]);
-  } else if (staticIpView === StaticIpView.FORM) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-yaml-view', 1);
-    stepsCopy = addStepToClusterWizard(
-      stepsCopy,
-      'disconnected-optional-configurations',
-      staticIpFormViewSubSteps,
-    );
-  } else if (staticIpView === 'dhcp-selected') {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-yaml-view', 1);
-  }
-
-  return stepsCopy;
-};
-
 const ClusterWizardContextProvider = ({
   children,
   cluster,
@@ -116,17 +89,9 @@ const ClusterWizardContextProvider = ({
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [connectedWizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
-  const [disconnectedWizardStepIds, setDisconnectedWizardStepIds] =
-    React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [customManifestsStep, setCustomManifestsStep] = React.useState<boolean>(false);
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
-  const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>(
-    infraEnv,
-  );
-  const [disconnectedFormPullSecret, setDisconnectedFormPullSecret] = React.useState<string>();
-  const [disconnectedFormEditPullSecret, setDisconnectedFormEditPullSecret] =
-    React.useState<boolean>();
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -138,7 +103,7 @@ const ClusterWizardContextProvider = ({
   const { clearAlerts, addAlert, alerts } = useAlerts();
   const setClusterPermissions = useSetClusterPermissions();
 
-  const wizardStepIds = installDisconnected ? disconnectedWizardStepIds : connectedWizardStepIds;
+  const wizardStepIds = installDisconnected ? disconnectedSteps : connectedWizardStepIds;
 
   React.useEffect(() => {
     if (!UISettingsLoading) {
@@ -197,29 +162,17 @@ const ClusterWizardContextProvider = ({
 
     const handleMoveFromStaticIp = () => {
       //if static ip view change wasn't persisted, moving from static ip step should change the wizard steps to match the view in the infra env
-      const currentInfraEnv = installDisconnected ? disconnectedInfraEnv : infraEnv;
-      const staticIpInfo = currentInfraEnv ? getStaticIpInfo(currentInfraEnv) : undefined;
+      const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
       if (!staticIpInfo) {
         throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
       }
-
-      if (installDisconnected) {
-        // For disconnected wizard, update wizard steps directly (same pattern as connected)
-        const newStepIds = getDisconnectedWizardStepIds(
-          disconnectedWizardStepIds,
-          staticIpInfo.view,
-        );
-        setDisconnectedWizardStepIds(newStepIds);
-      } else {
-        // For connected wizard, update wizard steps directly
-        const newStepIds = getWizardStepIds(
-          wizardStepIds,
-          staticIpInfo.view,
-          customManifestsStep,
-          isSingleClusterFeatureEnabled,
-        );
-        setWizardStepIds(newStepIds);
-      }
+      const newStepIds = getWizardStepIds(
+        wizardStepIds,
+        staticIpInfo.view,
+        customManifestsStep,
+        isSingleClusterFeatureEnabled,
+      );
+      setWizardStepIds(newStepIds);
     };
 
     const onSetCurrentStepId = (stepId: ClusterWizardStepsType) => {
@@ -263,55 +216,29 @@ const ClusterWizardContextProvider = ({
         } else {
           setCurrentStepId('static-ip-network-wide-configurations');
         }
-        if (installDisconnected) {
-          // For disconnected wizard, update wizard steps (same pattern as connected)
-          setDisconnectedWizardStepIds(
-            getDisconnectedWizardStepIds(disconnectedWizardStepIds, view),
+        setWizardStepIds(
+          getWizardStepIds(wizardStepIds, view, customManifestsStep, isSingleClusterFeatureEnabled),
+        );
+      },
+      onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
+        if (type === HostsNetworkConfigurationType.STATIC) {
+          setWizardStepIds(
+            getWizardStepIds(
+              wizardStepIds,
+              StaticIpView.FORM,
+              customManifestsStep,
+              isSingleClusterFeatureEnabled,
+            ),
           );
         } else {
           setWizardStepIds(
             getWizardStepIds(
               wizardStepIds,
-              view,
+              'dhcp-selected',
               customManifestsStep,
               isSingleClusterFeatureEnabled,
             ),
           );
-        }
-      },
-      onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
-        if (installDisconnected) {
-          // For disconnected wizard, update wizard steps (same pattern as connected)
-          if (type === HostsNetworkConfigurationType.STATIC) {
-            setDisconnectedWizardStepIds(
-              getDisconnectedWizardStepIds(disconnectedWizardStepIds, StaticIpView.FORM),
-            );
-          } else {
-            setDisconnectedWizardStepIds(
-              getDisconnectedWizardStepIds(disconnectedWizardStepIds, 'dhcp-selected'),
-            );
-          }
-        } else {
-          // For connected wizard, update wizard steps directly
-          if (type === HostsNetworkConfigurationType.STATIC) {
-            setWizardStepIds(
-              getWizardStepIds(
-                wizardStepIds,
-                StaticIpView.FORM,
-                customManifestsStep,
-                isSingleClusterFeatureEnabled,
-              ),
-            );
-          } else {
-            setWizardStepIds(
-              getWizardStepIds(
-                wizardStepIds,
-                'dhcp-selected',
-                customManifestsStep,
-                isSingleClusterFeatureEnabled,
-              ),
-            );
-          }
         }
       },
       wizardStepIds: wizardStepIds,
@@ -332,12 +259,6 @@ const ClusterWizardContextProvider = ({
           connectedWizardStepIds?.length && onSetCurrentStepId(connectedWizardStepIds[0]);
         }
       },
-      disconnectedInfraEnv,
-      setDisconnectedInfraEnv,
-      disconnectedFormPullSecret,
-      setDisconnectedFormPullSecret,
-      disconnectedFormEditPullSecret,
-      setDisconnectedFormEditPullSecret,
     };
   }, [
     wizardStepIds,
@@ -350,11 +271,8 @@ const ClusterWizardContextProvider = ({
     uiSettings,
     updateUISettings,
     installDisconnected,
+    setInstallDisconnected,
     connectedWizardStepIds,
-    disconnectedWizardStepIds,
-    disconnectedInfraEnv,
-    disconnectedFormPullSecret,
-    disconnectedFormEditPullSecret,
   ]);
 
   if (!contextValue) {
