@@ -29,9 +29,19 @@ const getOperatorsInitialValues = (
   uiSettings: UISettingsValues | undefined,
   cluster: Cluster,
 ): OperatorsValues => {
+  const olmOperators = selectOlmOperators(cluster);
+  const operatorProperties: Record<string, string> = {};
+
+  olmOperators.forEach((op) => {
+    if (op.name && op.properties) {
+      operatorProperties[op.name] = op.properties;
+    }
+  });
+
   return {
     selectedBundles: uiSettings?.bundlesSelected || [],
-    selectedOperators: selectOlmOperators(cluster).map((o) => o.name || ''),
+    selectedOperators: olmOperators.map((o) => o.name || ''),
+    operatorProperties: operatorProperties || {},
   };
 };
 
@@ -85,9 +95,13 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
-    const enabledOperators = values.selectedOperators.map((so) => ({
-      name: so,
-    }));
+    const enabledOperators = values.selectedOperators.map((so) => {
+      const operator: { name: string; properties?: string } = { name: so };
+      if (values.operatorProperties[so]) {
+        operator.properties = values.operatorProperties[so];
+      }
+      return operator;
+    });
 
     try {
       const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
@@ -107,8 +121,13 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
     }
   };
 
+  const initialValues = React.useMemo(
+    () => getOperatorsInitialValues(uiSettings, cluster),
+    [uiSettings, cluster],
+  );
+
   return (
-    <Formik initialValues={getOperatorsInitialValues(uiSettings, cluster)} onSubmit={handleSubmit}>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       <OperatorsForm cluster={cluster} />
     </Formik>
   );
