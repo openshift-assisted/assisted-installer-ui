@@ -81,29 +81,18 @@ apply for `libs/locales` as well.
    yalc link @openshift-assisted/chatbot
    ```
 
-   **Note**: `yalc link` needs to be executed following the `npm install` command.  
+   **Note**: `yalc link` needs to be executed following the `npm ci` command.  
    **Be aware that this command updates the project's `package.json` and `yarn.lock` files**.  
    **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
 
 4. Start the assisted-installer-app project:
 
    ```bash
-   npm run start:federated
+   npm run start
 
    ```
 
-5. Fork and clone the uhc-portal project
-
-   ```bash
-   git clone git@github.com:RedHatInsights/uhc-portal.git
-   ```
-
-6. Now you can follow the uhc-portal's
-   [README file](https://github.com/RedHatInsights/uhc-portal/blob/master/README.md#running-locally)
-   in order to set up their dev-environment.
-   ```bash
-   yarn start --env ai_standalone
-   ```
+5. Access the page at https://prod.foo.redhat.com:1337/openshift/assisted-installer
 
 ## Integrating with the OpenShift Console for ACM and MCE (aka CIM)
 
