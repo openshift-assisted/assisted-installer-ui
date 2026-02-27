@@ -7,13 +7,7 @@ import { getAddress } from '../components/ui/formik/utils';
 import { getSubnet } from '../components/clusterConfiguration/utils';
 import { HostSubnets, NetworkConfigurationValues } from '../types';
 import { IP_V4_ZERO, IP_V6_ZERO, MAC_REGEX } from './regexes';
-import {
-  alwaysRequired,
-  getArrayIndexFromPath,
-  isIPorDN,
-  isIPv4Address,
-  isIPv6Address,
-} from './utils';
+import { getArrayIndexFromPath, isIPorDN, isIPv4Address, isIPv6Address } from './utils';
 import { NO_SUBNET_SET } from '../config';
 import { overlap } from 'cidr-tools';
 import parseUrl from 'parse-url';
@@ -28,6 +22,7 @@ export const ipValidationSchema = (t: TFunction) =>
 
 export const ipNoSuffixValidationSchema = (t: TFunction) =>
   Yup.string().test('ip-validation-no-suffix', t('ai:Not a valid IP address'), (value?: string) => {
+    if (!value) return true;
     const address = getAddress(value || '');
     return !!address && address.address === address.addressMinusSuffix;
   });
@@ -180,8 +175,17 @@ export const vipNoSuffixValidationSchema = (
         }
         return true;
       });
+      const requiredField = (message: string) =>
+        Yup.string().test('required-field', message, function (value?: string) {
+          const index = getArrayIndexFromPath(this.path || '');
+          const api1 = (values.apiVips?.[1]?.ip ?? '').toString().trim();
+          const ingress1 = (values.ingressVips?.[1]?.ip ?? '').toString().trim();
+          // Dual-stack: secondary VIPs (index 1) are optional; skip required when both are empty
+          if (index === 1 && api1 === '' && ingress1 === '') return true;
+          return !!value;
+        });
 
-      return alwaysRequired(t('ai:Required field'))
+      return requiredField(t('ai:Required field'))
         .concat(ipNoSuffixValidationSchema(t))
         .concat(vipFamilyMatchSchema)
         .concat(vipRangeValidationSchema(hostSubnets, values, false, t))
