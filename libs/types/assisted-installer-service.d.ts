@@ -554,8 +554,10 @@ export interface ClusterDefaultConfig {
   ntpSource?: string;
   clusterNetworksIpv4?: ClusterNetwork[];
   clusterNetworksDualstack?: ClusterNetwork[];
+  clusterNetworksIpv6?: ClusterNetwork[];
   serviceNetworksIpv4?: ServiceNetwork[];
   serviceNetworksDualstack?: ServiceNetwork[];
+  serviceNetworksIpv6?: ServiceNetwork[];
   /**
    * This provides a list of forbidden hostnames. If this list is empty or not present, this implies that the UI should fall back to a hard coded list.
    */

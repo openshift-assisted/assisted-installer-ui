@@ -7,13 +7,14 @@ import { HostSubnets, NetworkConfigurationValues } from '../../../types';
 import { getFieldId } from '../../ui';
 import {
   DUAL_STACK,
-  IPV4_STACK,
+  NO_SUBNET_SET,
+  SINGLE_STACK,
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_SDN,
-  NO_SUBNET_SET,
 } from '../../../config';
 import { RadioField } from '../../ui/formik';
 import { ConfirmationModal, PopoverIcon } from '../../ui';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
 import {
   Cluster,
@@ -37,6 +38,8 @@ export type StackTypeControlGroupProps = {
   hostSubnets: HostSubnets;
   defaultNetworkValues: StackTypeDefaultNetworkValues;
   isViewerMode?: boolean;
+  /** When true, single-stack allows IPv4 or IPv6; Used by CIM. */
+  allowSingleStackIPv6?: boolean;
 };
 
 const hasDualStackConfigurationChanged = (
@@ -61,9 +64,13 @@ export const StackTypeControlGroup = ({
   hostSubnets,
   defaultNetworkValues,
   isViewerMode = false,
+  allowSingleStackIPv6 = false,
 }: StackTypeControlGroupProps) => {
+  const { t } = useTranslation();
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
+
+  const singleStackLabel = allowSingleStackIPv6 ? t('ai:Single stack') : t('ai:IPv4');
 
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
@@ -71,7 +78,7 @@ export const StackTypeControlGroup = ({
     !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
   const setSingleStack = React.useCallback(() => {
-    setFieldValue('stackType', IPV4_STACK);
+    setFieldValue('stackType', SINGLE_STACK);
 
     // Determine whether the first machine network is IPv4
     const firstNetwork = values.machineNetworks?.[0];
@@ -95,7 +102,8 @@ export const StackTypeControlGroup = ({
         }
       }
     }
-    // Ensure single-stack inputs are IPv4 after switching from dual-stack
+
+    // Set cluster/service to IPv4 defaults when switching to single-stack
     if (values.clusterNetworks && values.clusterNetworks.length >= 1) {
       const defaultCluster =
         defaultNetworkValues.clusterNetworksIpv4 && defaultNetworkValues.clusterNetworksIpv4[0];
@@ -197,28 +205,27 @@ export const StackTypeControlGroup = ({
       }
     }
     if (values.clusterNetworks && values.clusterNetworks?.length < 2) {
-      setFieldValue(
-        'clusterNetworks',
-        [
-          ...values.clusterNetworks,
-          defaultNetworkValues.clusterNetworksDualstack?.length
-            ? defaultNetworkValues.clusterNetworksDualstack[1]
-            : { cidr: '', hostPrefix: '', clusterId: clusterId },
-        ],
-        false,
-      );
+      const firstClusterCidr = values.clusterNetworks[0]?.cidr;
+      const isPrimaryIPv6 = firstClusterCidr && Address6.isValid(firstClusterCidr);
+      const missingFamilyNetworkDefault =
+        defaultNetworkValues.clusterNetworksDualstack?.[isPrimaryIPv6 ? 0 : 1];
+      const secondClusterNetwork = missingFamilyNetworkDefault ?? {
+        cidr: '',
+        hostPrefix: '',
+        clusterId: clusterId,
+      };
+      setFieldValue('clusterNetworks', [...values.clusterNetworks, secondClusterNetwork], false);
     }
     if (values.serviceNetworks && values.serviceNetworks?.length < 2) {
-      setFieldValue(
-        'serviceNetworks',
-        [
-          ...values.serviceNetworks,
-          defaultNetworkValues.serviceNetworksDualstack?.length
-            ? defaultNetworkValues.serviceNetworksDualstack[1]
-            : { cidr: '', clusterId: clusterId },
-        ],
-        false,
-      );
+      const firstServiceCidr = values.serviceNetworks[0]?.cidr;
+      const isPrimaryIPv6 = firstServiceCidr && Address6.isValid(firstServiceCidr);
+      const missingFamilyNetworkDefault =
+        defaultNetworkValues.serviceNetworksDualstack?.[isPrimaryIPv6 ? 0 : 1];
+      const secondServiceNetwork = missingFamilyNetworkDefault ?? {
+        cidr: '',
+        clusterId: clusterId,
+      };
+      setFieldValue('serviceNetworks', [...values.serviceNetworks, secondServiceNetwork], false);
     }
     // Initialize VIPs for dual-stack
     if (values.apiVips && values.apiVips.length < 2) {
@@ -291,14 +298,18 @@ export const StackTypeControlGroup = ({
           <SplitItem>
             <RadioField
               name={'stackType'}
-              value={IPV4_STACK}
+              value={SINGLE_STACK}
               isDisabled={!isDualStackSelectable || isViewerMode}
-              label="IPv4&nbsp;"
+              label={`${singleStackLabel}\u00A0`}
             />
           </SplitItem>
           <SplitItem>
             <PopoverIcon
-              bodyContent="Select this when your hosts are using only IPv4."
+              bodyContent={
+                allowSingleStackIPv6
+                  ? t('ai:Select a single address family (IPv4 or IPv6) for your machine network.')
+                  : t('ai:Select this when your hosts are using only IPv4.')
+              }
               buttonStyle={{ top: '-4px' }}
             />
           </SplitItem>
