@@ -288,14 +288,22 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS: Pick<
   ClusterDefaultConfig,
   | 'clusterNetworksIpv4'
+  | 'clusterNetworksIpv6'
   | 'clusterNetworksDualstack'
   | 'serviceNetworksIpv4'
+  | 'serviceNetworksIpv6'
   | 'serviceNetworksDualstack'
 > = {
   clusterNetworksIpv4: [
     {
       cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr,
       hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkHostPrefix,
+    },
+  ],
+  clusterNetworksIpv6: [
+    {
+      cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkCidr,
+      hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkHostPrefix,
     },
   ],
   clusterNetworksDualstack: [
@@ -309,6 +317,7 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS: Pick<
     },
   ],
   serviceNetworksIpv4: [{ cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr }],
+  serviceNetworksIpv6: [{ cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr }],
   serviceNetworksDualstack: [
     { cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr },
     { cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr },
@@ -335,7 +344,7 @@ export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 export const NETWORK_TYPE_OVN = 'OVNKubernetes';
 export const NETWORK_TYPE_SDN = 'OpenShiftSDN';
 
-export const IPV4_STACK = 'singleStack';
+export const SINGLE_STACK = 'singleStack';
 export const DUAL_STACK = 'dualStack';
 
 export const PREFIX_MAX_RESTRICTION = {
