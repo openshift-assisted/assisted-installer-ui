@@ -28,7 +28,7 @@ spec:
     - name: build-args
       value:
         - PACKAGE_JSON_PATH=apps/assisted-chatbot/package.json
-        - 'APP_YARN_BUILD_SCRIPT=workspace @openshift-assisted/assisted-installer-ui-chatbot build'
+        - 'APP_YARN_BUILD_SCRIPT=build:assisted-chatbot'
         - APP_BUILD_DIR=apps/assisted-chatbot/dist
   pipelineSpec:
     description: |

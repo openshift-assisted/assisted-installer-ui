@@ -24,6 +24,7 @@
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
     "_yalc:push": "bash -c \"for lib in ui-lib types locales chatbot; do yalc push --changed libs/\\${lib}; done\"",
     "build:all": "yarn workspaces foreach -v --topological-dev run build",
+    "build:assisted-chatbot": "yarn workspace @openshift-assisted/chatbot build && yarn workspace @openshift-assisted/assisted-installer-ui-chatbot build",
     "check:circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
     "check:translation_files": "yarn workspace @openshift-assisted/locales run validate_translation_files",
     "check:types:all": "yarn workspaces foreach -vp run check_types",
