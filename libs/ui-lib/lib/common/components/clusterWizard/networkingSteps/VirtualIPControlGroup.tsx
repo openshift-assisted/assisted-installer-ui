@@ -243,7 +243,6 @@ export const VirtualIPControlGroup = ({
                       }
                       name="apiVips.1.ip"
                       maxLength={45}
-                      isRequired
                       isDisabled={isVipInputDisabled || isViewerMode}
                       labelInfo={t('ai:Secondary')}
                     />
@@ -275,7 +274,6 @@ export const VirtualIPControlGroup = ({
                         </>
                       }
                       maxLength={45}
-                      isRequired
                       isDisabled={isVipInputDisabled || isViewerMode}
                       labelInfo={t('ai:Secondary')}
                     />
