@@ -236,9 +236,13 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
       const isMultiNodeCluster = !isSNO(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
 
+      // Only send VIPs that have a non-empty IP;
+      const apiVips = (values.apiVips || []).filter((v) => (v?.ip ?? '').trim() !== '');
+      const ingressVips = (values.ingressVips || []).filter((v) => (v?.ip ?? '').trim() !== '');
+
       const params: V2ClusterUpdateParams = {
-        apiVips: values.apiVips,
-        ingressVips: values.ingressVips,
+        apiVips,
+        ingressVips,
         sshPublicKey: values.sshPublicKey,
         vipDhcpAllocation: values.vipDhcpAllocation,
         networkType: values.networkType,
@@ -247,7 +251,6 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
         serviceNetworks: values.serviceNetworks,
         userManagedNetworking: isUserManagedNetworking,
       };
-
       if (params.userManagedNetworking) {
         params.apiVips = [];
         params.ingressVips = [];
