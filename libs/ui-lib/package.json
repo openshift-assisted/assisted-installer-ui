@@ -8,7 +8,7 @@
     "@patternfly/react-core": "6.4.0",
     "@patternfly/react-icons": "6.4.0",
     "@patternfly/react-styles": "6.4.0",
-    "@patternfly/react-table": "6.4.0",
+    "@patternfly/react-table": "6.4.1",
     "@patternfly/react-tokens": "6.4.0",
     "@react-hook/resize-observer": "^2.0.2",
     "axios-case-converter": "^0.11.1",
