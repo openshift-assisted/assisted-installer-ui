@@ -15,15 +15,13 @@ import {
   FormHelperText,
   HelperText,
   ButtonVariant,
+  Icon,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { CheckIcon } from '@patternfly/react-icons/dist/js/icons/check-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TimesIcon } from '@patternfly/react-icons/dist/js/icons/times-icon';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
-import { t_global_icon_color_status_info_default as blueInfoColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_info_default';
 
 import { InputFieldProps as BaseInputProps } from './types';
 import { getFieldId } from './utils';
@@ -164,11 +162,17 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               <Button
                 icon={
                   !isValid ? (
-                    <ExclamationCircleIcon color={dangerColor.value} />
+                    <Icon status="danger">
+                      <ExclamationCircleIcon />
+                    </Icon>
                   ) : value ? (
-                    <CheckCircleIcon color={okColor.value} />
+                    <Icon status="success">
+                      <CheckCircleIcon />
+                    </Icon>
                   ) : (
-                    <InfoCircleIcon color={blueInfoColor.value} />
+                    <Icon status="info">
+                      <InfoCircleIcon />
+                    </Icon>
                   )
                 }
                 variant={ButtonVariant.control}

@@ -1,16 +1,15 @@
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { EventListFetchProps } from '../../types';
 import React from 'react';
-import { EventsModal } from '../ui';
-import { Button, ButtonVariant, Popover, Content } from '@patternfly/react-core';
+import capitalize from 'lodash-es/capitalize.js';
+import { Button, ButtonVariant, Popover, Content, Icon } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
+
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { EventsModal } from '../ui';
+import { EventListFetchProps } from '../../types';
 import ClusterProgressItem from './ClusterProgressItem';
-import capitalize from 'lodash-es/capitalize.js';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type FinalizingProgressProps = {
@@ -32,7 +31,11 @@ const areAllBuiltInOperatorsAvailable = (
 export const getFinalizingStatus = (cluster: Cluster) => {
   let finalizingIcon, initializationStatus;
   if (areAllBuiltInOperatorsAvailable(cluster.monitoredOperators)) {
-    finalizingIcon = <CheckCircleIcon color={okColor.value} />;
+    finalizingIcon = (
+      <Icon status="success">
+        <CheckCircleIcon />
+      </Icon>
+    );
     initializationStatus = 'completed';
   } else {
     switch (cluster.status) {
@@ -42,12 +45,20 @@ export const getFinalizingStatus = (cluster: Cluster) => {
         break;
       case 'error':
       case 'cancelled':
-        finalizingIcon = <ExclamationCircleIcon color={dangerColor.value} />;
+        finalizingIcon = (
+          <Icon status="danger">
+            <ExclamationCircleIcon />
+          </Icon>
+        );
         initializationStatus = 'failed';
         break;
       case 'installed':
       case 'adding-hosts':
-        finalizingIcon = <CheckCircleIcon color={okColor.value} />;
+        finalizingIcon = (
+          <Icon status="success">
+            <CheckCircleIcon />
+          </Icon>
+        );
         initializationStatus = 'completed';
         break;
       default:

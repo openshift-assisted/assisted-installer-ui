@@ -14,9 +14,10 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
+  Icon,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { PrismCode, UiIcon } from '../ui';
+import { PrismCode } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
@@ -207,7 +208,9 @@ export const HostsNotShowingLink = ({
     <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
       {!isInline && (
         <>
-          <UiIcon size="sm" icon={<InfoCircleIcon />} />
+          <Icon size="sm">
+            <InfoCircleIcon />
+          </Icon>
           &nbsp;
         </>
       )}

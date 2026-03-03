@@ -1,10 +1,9 @@
 import * as React from 'react';
+import { Icon, Tooltip } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 import { getAgentStatus, getBMHStatus } from '../helpers';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
-import { Tooltip } from '@patternfly/react-core';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
@@ -51,10 +50,9 @@ const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarning> = (
   if (hostsWithProblemsCount) {
     return (
       <Tooltip content={t('ai:{{count}} host has problems', { count: hostsWithProblemsCount })}>
-        <ExclamationTriangleIcon
-          color={warningColor.value}
-          className="infra-env-hosts-tab-title__icon"
-        />
+        <Icon status="warning">
+          <ExclamationTriangleIcon className="infra-env-hosts-tab-title__icon" />
+        </Icon>
       </Tooltip>
     );
   }

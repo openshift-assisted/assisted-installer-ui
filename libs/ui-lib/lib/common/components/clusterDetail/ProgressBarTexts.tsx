@@ -1,10 +1,10 @@
 import React from 'react';
-import { Host, HostRole } from '@openshift-assisted/types/assisted-installer-service';
+import { Icon } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+
+import { Host, HostRole } from '@openshift-assisted/types/assisted-installer-service';
 import ClusterProgressItem from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -24,7 +24,13 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
   if (hosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
     const failedHostsCount = hosts.filter((host) => host.status === 'error').length;
     return (
-      <ClusterProgressItem icon={<ExclamationCircleIcon color={dangerColor.value} />}>
+      <ClusterProgressItem
+        icon={
+          <Icon status="danger">
+            <ExclamationCircleIcon />
+          </Icon>
+        }
+      >
         <>
           {hostRoleText}
           <br />
@@ -73,7 +79,13 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
   }
 
   return (
-    <ClusterProgressItem icon={<CheckCircleIcon color={okColor.value} />}>
+    <ClusterProgressItem
+      icon={
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      }
+    >
       <>
         {hostRoleText}
         <br />

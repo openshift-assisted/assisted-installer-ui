@@ -1,10 +1,9 @@
 import React from 'react';
 import lodashValues from 'lodash-es/values.js';
-import { Button, ButtonVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Icon } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 
 import {
   ValidationsInfo as ClusterValidationsInfo,
@@ -30,13 +29,15 @@ import {
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { getKeys, stringToJSON } from '../../utils';
-import { UiIcon } from '../ui';
 
 const AllValidationsPassed = () => {
   const { t } = useTranslation();
   return (
     <>
-      <CheckCircleIcon color={okColor.value} /> {t('ai:All checks passed')}
+      <Icon status="success">
+        <CheckCircleIcon />
+      </Icon>{' '}
+      {t('ai:All checks passed')}
     </>
   );
 };
@@ -124,9 +125,17 @@ const FailingValidation = <S extends string>({
 
   let icon;
   if (severity === 'warning') {
-    icon = <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />;
+    icon = (
+      <Icon status="warning">
+        <ExclamationTriangleIcon />
+      </Icon>
+    );
   } else {
-    icon = <UiIcon status="danger" icon={<ExclamationCircleIcon />} />;
+    icon = (
+      <Icon status="danger">
+        <ExclamationCircleIcon />
+      </Icon>
+    );
   }
 
   return (

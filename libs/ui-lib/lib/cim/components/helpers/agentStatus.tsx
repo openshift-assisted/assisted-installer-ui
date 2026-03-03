@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { TFunction } from 'i18next';
+import { Icon } from '@patternfly/react-core';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
 import { hostStatus } from '../../../common';
 import { HostStatus } from '../../../common/components/hosts/types';
-import { TFunction } from 'i18next';
 
 export const bmhStatus = (t: TFunction): HostStatus<string> => ({
   'bmh-error': {
@@ -68,7 +68,11 @@ export const agentStatus = (t: TFunction): HostStatus<string> => ({
   specSyncErr: {
     key: 'specSyncErr',
     title: t('ai:Sync error'),
-    icon: <ExclamationCircleIcon color={dangerColor.value} />,
+    icon: (
+      <Icon status="danger">
+        <ExclamationCircleIcon />
+      </Icon>
+    ),
     category: 'Discovery related',
   },
 });
