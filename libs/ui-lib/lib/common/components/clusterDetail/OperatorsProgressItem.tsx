@@ -1,11 +1,9 @@
 import React from 'react';
-import { Button, ButtonVariant, List, ListItem, Popover } from '@patternfly/react-core';
+import { Button, ButtonVariant, Icon, List, ListItem, Popover } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 import { pluralize } from 'humanize-plus';
 import { TFunction } from 'i18next';
 import {
@@ -60,9 +58,17 @@ export function getOperatorsLabel(operators: MonitoredOperatorsList, t: TFunctio
 export function getOperatorsIcon(status: OperatorStatus | 'pending') {
   switch (status) {
     case 'available':
-      return <CheckCircleIcon color={okColor.value} />;
+      return (
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      );
     case 'failed':
-      return <ExclamationCircleIcon color={dangerColor.value} />;
+      return (
+        <Icon status="danger">
+          <ExclamationCircleIcon />
+        </Icon>
+      );
     case 'progressing':
       return <InProgressIcon />;
     default:

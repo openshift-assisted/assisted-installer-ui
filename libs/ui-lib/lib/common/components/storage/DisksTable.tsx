@@ -1,5 +1,12 @@
 import React from 'react';
-import { Content, ContentVariants, Popover, Alert, AlertVariant } from '@patternfly/react-core';
+import {
+  Content,
+  ContentVariants,
+  Popover,
+  Alert,
+  AlertVariant,
+  Icon,
+} from '@patternfly/react-core';
 import { TableVariant, Thead, Tbody, Table, Th, Tr, Td } from '@patternfly/react-table';
 import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
 import type { WithTestID } from '../../types/index';
@@ -12,7 +19,7 @@ import FormatDiskCheckbox, {
   isInDiskSkipFormattingList,
 } from '../hosts/FormatDiskCheckbox';
 import { fileSize } from '../../utils';
-import { PopoverIcon, UiIcon } from '../ui';
+import { PopoverIcon } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 
@@ -100,7 +107,9 @@ const DiskName = ({
       {isIndented && <span style={{ width: '1rem', display: 'inline-block' }} />}
       {isInDiskSkipFormattingList(host, disk.id) && (
         <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
-          <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>
         </Popover>
       )}
       {'   '}
@@ -115,7 +124,9 @@ const DiskName = ({
             maxWidth="30rem"
             data-testid="disk-limitations-popover"
           >
-            <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
+            <Icon size="sm" status="warning">
+              <ExclamationTriangleIcon />
+            </Icon>
           </Popover>
         </>
       )}

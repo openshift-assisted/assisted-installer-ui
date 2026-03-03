@@ -13,12 +13,11 @@ import {
   Title,
   TitleSizes,
   Label,
+  Icon,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { PencilAltIcon } from '@patternfly/react-icons/dist/js/icons/pencil-alt-icon';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 
 import { architectureData } from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
@@ -39,11 +38,19 @@ type EditItemProps = {
 };
 
 const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning, noIcon }) => {
-  let icon = <CheckCircleIcon color={okColor.value} />;
+  let icon = (
+    <Icon status="success">
+      <CheckCircleIcon />
+    </Icon>
+  );
   if (isLoading) {
     icon = <Spinner size="md" />;
   } else if (isWarning) {
-    icon = <ExclamationTriangleIcon color={warningColor.value} />;
+    icon = (
+      <Icon status="warning">
+        <ExclamationTriangleIcon />
+      </Icon>
+    );
   }
   const btn = (
     <>
