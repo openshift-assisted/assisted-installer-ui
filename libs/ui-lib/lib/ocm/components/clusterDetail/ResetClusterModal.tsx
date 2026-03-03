@@ -4,6 +4,7 @@ import {
   Button,
   ButtonVariant,
   Content,
+  Icon,
   Modal,
   ModalBody,
   ModalFooter,
@@ -16,7 +17,7 @@ import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { calculateCollectedLogsCount } from '../clusters/utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { ErrorState, LoadingState, UiIcon } from '../../../common';
+import { ErrorState, LoadingState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 
 const ResetClusterModal: React.FC = () => {
@@ -87,8 +88,10 @@ const ResetClusterModal: React.FC = () => {
         </Content>
 
         <Content component="p">
-          <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} /> Logs won't be
-          available after the installation is reset.
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>{' '}
+          Logs won't be available after the installation is reset.
         </Content>
 
         <Content component="p">Are you sure you want to reset the cluster?</Content>

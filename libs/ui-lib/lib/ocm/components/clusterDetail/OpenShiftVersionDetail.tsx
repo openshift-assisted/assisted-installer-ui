@@ -1,10 +1,11 @@
 import React from 'react';
-import { UiIcon, getOpenshiftVersionText } from '../../../common';
-import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
+import { Popover, Content, ContentVariants, Icon } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { Popover, Content, ContentVariants } from '@patternfly/react-core';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { getOpenshiftVersionText } from '../../../common';
+import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const UnsupportedVersion = ({ version }: { version: string }) => {
   const { t } = useTranslation();
@@ -18,7 +19,9 @@ const UnsupportedVersion = ({ version }: { version: string }) => {
     <Content component="p">
       {version} &nbsp;
       <Popover bodyContent={hint}>
-        <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
+        <Icon size="sm" status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
       </Popover>
     </Content>
   );

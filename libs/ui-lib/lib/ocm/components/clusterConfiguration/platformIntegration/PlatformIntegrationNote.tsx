@@ -1,14 +1,17 @@
 import React from 'react';
+import { Icon } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { UiIcon, SupportedPlatformType } from '../../../../common';
+import { SupportedPlatformType } from '../../../../common';
 import { ExternalPlatformLinks } from './constants';
 
 const PlatformIntegrationNote = ({ platformType }: { platformType: SupportedPlatformType }) => {
   const integrationPlatformLink = ExternalPlatformLinks[platformType];
   return (
     <p>
-      <UiIcon status="warning" icon={<ExclamationTriangleIcon />} /> You will need to modify your
-      platform configuration after cluster installation is completed.{' '}
+      <Icon status="warning">
+        <ExclamationTriangleIcon />
+      </Icon>{' '}
+      You will need to modify your platform configuration after cluster installation is completed.{' '}
       {!!integrationPlatformLink && (
         <a
           href={integrationPlatformLink || ''}

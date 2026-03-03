@@ -1,5 +1,14 @@
 import React from 'react';
-import { Popover, Button, Content, FlexItem, Flex, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Popover,
+  Button,
+  Content,
+  FlexItem,
+  Flex,
+  Stack,
+  StackItem,
+  Icon,
+} from '@patternfly/react-core';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { UnknownIcon } from '@patternfly/react-icons/dist/js/icons/unknown-icon';
@@ -8,7 +17,7 @@ import hdate from 'human-date';
 
 import { Host, HostProgressInfo } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/hosts';
-import { ExternalLink, UiIcon, getHumanizedDateTime } from '../ui';
+import { ExternalLink, getHumanizedDateTime } from '../ui';
 
 import HostProgress from './HostProgress';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
@@ -227,7 +236,9 @@ const getHostStatusIcon = (
         minWidth="20rem"
         maxWidth="30rem"
       >
-        <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
+        <Icon size="sm" status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
       </Popover>
     );
   } else return icon;

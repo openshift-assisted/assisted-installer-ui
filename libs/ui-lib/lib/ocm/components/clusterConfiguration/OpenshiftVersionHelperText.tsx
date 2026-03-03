@@ -1,9 +1,6 @@
 import * as React from 'react';
-import {
-  OPENSHIFT_LIFE_CYCLE_DATES_LINK,
-  OpenshiftVersionOptionType,
-  UiIcon,
-} from '../../../common';
+import { Icon } from '@patternfly/react-core';
+import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
 import { TFunction } from 'i18next';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
@@ -29,7 +26,9 @@ export const getOpenshiftVersionHelperText = (
   if (!versions.length && !isModal) {
     return (
       <>
-        <UiIcon status="danger" size="sm" icon={<ExclamationCircleIcon />} />
+        <Icon status="danger" size="sm">
+          <ExclamationCircleIcon />
+        </Icon>
         &nbsp; {t('ai:No release image is available.')}
       </>
     );
@@ -50,7 +49,9 @@ export const getOpenshiftVersionHelperText = (
     }
     return (
       <>
-        <UiIcon status="warning" icon={<ExclamationTriangleIcon />} />
+        <Icon status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
         &nbsp;
         {messageSelectedVersion}&nbsp;
         <OpenShiftLifeCycleDatesLink />
