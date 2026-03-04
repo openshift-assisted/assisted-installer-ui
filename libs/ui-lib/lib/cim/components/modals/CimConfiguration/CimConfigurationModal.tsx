@@ -62,7 +62,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         fsVolSizeGiB: values.fsVolSize,
         imgVolSizeGiB: values.imgVolSize,
         configureLoadBalancer: values.configureLoadBalancer,
-        ciscoIntersightURL: values.addCiscoIntersightUrl ? values.ciscoIntersightURL : undefined,
+        ciscoIntersightURL: values.addCiscoIntersightURL ? values.ciscoIntersightURL : undefined,
       })
     ) {
       // successfully persisted
@@ -95,7 +95,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage,
     ),
     configureLoadBalancer: platform === 'AWS',
-    addCiscoIntersightUrl: !!agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'],
+    addCiscoIntersightURL: !!agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'],
     ciscoIntersightURL: agentServiceConfig?.metadata?.annotations?.['ciscoIntersightURL'] || '',
   };
 
@@ -110,7 +110,8 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       .min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi'))
       .required(t('ai:Required field')),
     configureLoadBalancer: Yup.boolean(),
-    ciscoIntersightURL: Yup.string().when('addCiscoIntersightUrl', {
+    addCiscoIntersightURL: Yup.boolean(),
+    ciscoIntersightURL: Yup.string().when('addCiscoIntersightURL', {
       is: true,
       then: (schema) =>
         schema
