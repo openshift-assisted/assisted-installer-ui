@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button, ButtonVariant, Flex, FlexItem, Popover } from '@patternfly/react-core';
+import { Button, ButtonVariant, Flex, FlexItem, Icon, Popover } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 import type { Host, Inventory } from '@openshift-assisted/types/assisted-installer-service';
 import { getHostname } from './utils';
 import { DASH } from '../constants';
@@ -44,7 +43,9 @@ const Hostname: React.FC<HostnameProps> = ({
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
       {onEditHostname && !isValid && (
         <FlexItem className={'pf-v6-u-mr-xs'}>
-          <ExclamationTriangleIcon color={warningColor.value} />
+          <Icon status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>
         </FlexItem>
       )}
       <FlexItem>{hostname}</FlexItem>
@@ -61,7 +62,9 @@ const Hostname: React.FC<HostnameProps> = ({
         headerContent={
           <Flex alignItems={{ default: 'alignItemsCenter' }}>
             <FlexItem className={'pf-v6-u-mr-xs'}>
-              <ExclamationTriangleIcon color={warningColor.value} />
+              <Icon status="warning">
+                <ExclamationTriangleIcon />
+              </Icon>
             </FlexItem>
             <FlexItem>{t('ai:Hostname is not valid')}</FlexItem>
           </Flex>

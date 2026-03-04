@@ -8,13 +8,10 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { LinkIcon } from '@patternfly/react-icons/dist/js/icons/link-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { chart_color_blue_300 as blueColor } from '@patternfly/react-tokens/dist/js/chart_color_blue_300';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostStatus } from './types';
 import { TFunction } from 'i18next';
+import { Icon } from '@patternfly/react-core';
 
 export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizing'> =>
   Object.freeze({
@@ -85,7 +82,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'insufficient-unbound',
       title: t('ai:Insufficient'),
       category: 'Discovery related',
-      icon: <ExclamationTriangleIcon color={warningColor.value} />,
+      icon: (
+        <Icon status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
+      ),
       details: t(
         'ai:This host does not meet the minimum hardware or networking requirements and can not be included in the cluster.',
       ),
@@ -94,7 +95,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'known-unbound',
       title: t('ai:Available'),
       category: 'Discovery related',
-      icon: <ConnectedIcon color={blueColor.value} />,
+      icon: (
+        <Icon status="info">
+          <ConnectedIcon />
+        </Icon>
+      ),
       details: t(
         'ai:This host meets the minimum hardware and networking requirements and can be included in the cluster.',
       ),
@@ -125,7 +130,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'known',
       title: t('ai:Ready'),
       category: 'Discovery related',
-      icon: <CheckCircleIcon color={okColor.value} />,
+      icon: (
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      ),
       details: t(
         'ai:This host meets the minimum hardware and networking requirements and will be included in the cluster.',
       ),
@@ -143,7 +152,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'insufficient',
       title: t('ai:Insufficient'),
       category: 'Discovery related',
-      icon: <ExclamationTriangleIcon color={warningColor.value} />,
+      icon: (
+        <Icon status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
+      ),
       details: t(
         'ai:This host does not meet the minimum hardware or networking requirements and will not be included in the cluster.',
       ),
@@ -186,14 +199,22 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'installing-pending-user-action',
       title: t('ai:Pending user action'),
       category: 'Installation related',
-      icon: <ExclamationTriangleIcon color={warningColor.value} />,
+      icon: (
+        <Icon status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
+      ),
       details: t('ai:This host is pending user action'),
     },
     installed: {
       key: 'installed',
       title: t('ai:Installed'),
       category: 'Installation related',
-      icon: <CheckCircleIcon color={okColor.value} />,
+      icon: (
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      ),
       details: t('ai:This host completed its installation successfully.'),
     },
     cancelled: {
@@ -208,7 +229,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'error',
       title: t('ai:Error'),
       category: 'Installation related',
-      icon: <ExclamationCircleIcon color={dangerColor.value} />,
+      icon: (
+        <Icon status="danger">
+          <ExclamationCircleIcon />
+        </Icon>
+      ),
       details: t('ai:This host failed its installation.'),
       withProgress: true,
     },
@@ -223,7 +248,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'resetting-pending-user-action',
       title: t('ai:Reboot required'),
       category: 'Installation related',
-      icon: <ExclamationTriangleIcon color={warningColor.value} />,
+      icon: (
+        <Icon status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
+      ),
       details: t(
         'ai:Host has already been booted from disk during the previous installation. To finish resetting the installation, boot the host into the discovery image',
       ),
@@ -238,7 +267,11 @@ export const hostStatus = (t: TFunction): HostStatus<Host['status'] | 'finalizin
       key: 'added-to-existing-cluster',
       title: t('ai:Installed'),
       category: 'Installation related',
-      icon: <CheckCircleIcon color={okColor.value} />,
+      icon: (
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      ),
       details: t('ai:This host completed its installation successfully.'),
     },
   });

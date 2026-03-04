@@ -8,12 +8,11 @@ import {
   ContentVariants,
   Button,
   ButtonVariant,
+  Icon,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
 
 import { getHumanizedDateTime, useTranslation } from '../../../common';
 import { BareMetalHostK8sResource } from '../../types';
@@ -44,10 +43,19 @@ export const BMHStatusInfo = ({
   switch (bmh.status?.operationalStatus) {
     case 'OK':
     case 'discovered':
-      icon = <CheckCircleIcon color={okColor.value} />;
+      icon = (
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      );
+
       break;
     case 'error':
-      icon = <ExclamationTriangleIcon color={warningColor.value} />;
+      icon = (
+        <Icon status="warning">
+          <ExclamationTriangleIcon />
+        </Icon>
+      );
       break;
     default:
       icon = <PendingIcon />;

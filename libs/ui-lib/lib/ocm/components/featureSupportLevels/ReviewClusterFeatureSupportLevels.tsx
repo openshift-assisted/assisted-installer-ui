@@ -1,9 +1,7 @@
+import React from 'react';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import React from 'react';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { t_global_color_status_info_100 as infoColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_info_100';
-import { Content } from '@patternfly/react-core';
+import { Content, Icon } from '@patternfly/react-core';
 import {
   FeatureId,
   FeatureIdToSupportLevel,
@@ -13,7 +11,7 @@ import {
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/docs_links';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { DetailItem, UiIcon } from '../../../common';
+import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -90,13 +88,17 @@ export const LimitedSupportedCluster = ({
   <>
     {showVersionWarning && (
       <Content component="p">
-        <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.var} />} />
+        <Icon status="info" size="sm">
+          <InfoCircleIcon />
+        </Icon>
         &nbsp;The installed OpenShift version is not production-ready
       </Content>
     )}
     {Object.keys(clusterFeatureSupportLevels).length > 0 && (
       <>
-        <UiIcon size="sm" icon={<InfoCircleIcon color={infoColor.var} />} />
+        <Icon status="info" size="sm">
+          <InfoCircleIcon />
+        </Icon>
         &nbsp;Your cluster will be subject to support limitations because it includes:
         <Content component="ul">{getPreviewFeatureList(clusterFeatureSupportLevels)}</Content>
       </>
@@ -106,7 +108,9 @@ export const LimitedSupportedCluster = ({
 
 export const FullySupportedCluster = () => (
   <>
-    <CheckCircleIcon color={okColor.value} />
+    <Icon status="success">
+      <CheckCircleIcon />
+    </Icon>
     &nbsp;Your installed cluster will be fully supported
   </>
 );

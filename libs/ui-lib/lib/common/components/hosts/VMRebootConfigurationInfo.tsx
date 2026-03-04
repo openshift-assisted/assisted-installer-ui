@@ -1,8 +1,15 @@
 import React from 'react';
-import { Button, ButtonVariant, Popover, Content, ContentVariants } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Popover,
+  Content,
+  ContentVariants,
+  Icon,
+} from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Trans } from 'react-i18next';
-import { PrismCode, UiIcon } from '../../../common/components/ui';
+import { PrismCode } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export const VMRebootConfigurationContent = () => {
@@ -43,7 +50,9 @@ const VMRebootConfigurationInfo = () => {
       <Popover bodyContent={<VMRebootConfigurationContent />} minWidth="35rem">
         <Button variant={ButtonVariant.link} isInline>
           <>
-            <UiIcon size="sm" icon={<InfoCircleIcon />} />
+            <Icon size="sm">
+              <InfoCircleIcon />
+            </Icon>
             &nbsp;
           </>
           {t('ai:Check your VM reboot configuration')}
