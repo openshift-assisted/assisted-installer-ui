@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { UiIcon, hostStatus } from '../../../common';
+import { ExpandableSection, Icon } from '@patternfly/react-core';
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+
+import { hostStatus } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { getHostsWithTimeout, getMostSevereHostStatus } from './utils';
-import { ExpandableSection } from '@patternfly/react-core';
-import './HostInventoryExpandable.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+
+import './HostInventoryExpandable.css';
 
 type HostInventoryExpandableProps = {
   cluster: Cluster;
@@ -33,7 +35,11 @@ const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
   const hostStatusDef = mostSevereHostStatus ? hostStatus(t)[mostSevereHostStatus] : null;
   const someHostHasTimeout = getHostsWithTimeout(hosts);
-  const warningIcon = <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />;
+  const warningIcon = (
+    <Icon size="sm" status="warning">
+      <ExclamationTriangleIcon />
+    </Icon>
+  );
   return (
     <ExpandableSection
       toggleContent={

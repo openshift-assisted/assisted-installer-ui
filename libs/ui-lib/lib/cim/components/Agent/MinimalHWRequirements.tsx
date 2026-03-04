@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   Button,
   ButtonVariant,
+  Icon,
   Modal,
   ModalBody,
   ModalFooter,
@@ -15,7 +16,6 @@ import HostRequirements, {
   HostRequirementsListProps,
 } from '../../../common/components/hosts/HostRequirements';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { UiIcon } from '../../../common';
 
 type HostData = {
   cpu_cores: number;
@@ -86,7 +86,9 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
         isInline
         className="host-requirements-link"
       >
-        <UiIcon size="sm" status="warning" icon={<InfoCircleIcon />} />
+        <Icon status="warning" size="sm">
+          <InfoCircleIcon />
+        </Icon>
         &nbsp;{t('ai:Minimum hardware requirements')}
       </Button>
       <MinimalHWRequirementsModal

@@ -1,15 +1,15 @@
 import React from 'react';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { FileAltIcon } from '@patternfly/react-icons/dist/js/icons/file-alt-icon';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import { BanIcon } from '@patternfly/react-icons/dist/js/icons/ban-icon';
-import { clusterStatusLabels, UiIcon, WithTestID } from '../../../common';
+import { clusterStatusLabels, WithTestID } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { Icon } from '@patternfly/react-core';
 
 type ClusterStatusProps = {
   status: Cluster['status'];
@@ -24,25 +24,47 @@ type ClusterStatusIconProps = {
 export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ...extraProps }) => {
   switch (status) {
     case 'cancelled':
-      return <UiIcon size="sm" icon={<BanIcon {...extraProps} />} />;
+      return (
+        <Icon size="sm">
+          <BanIcon {...extraProps} />
+        </Icon>
+      );
     case 'insufficient':
     case 'pending-for-input':
     case 'ready':
-      return <UiIcon size="sm" icon={<FileAltIcon {...extraProps} />} />;
+      return (
+        <Icon size="sm">
+          <FileAltIcon {...extraProps} />
+        </Icon>
+      );
     case 'error':
-      return <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon {...extraProps} />} />;
+      return (
+        <Icon size="sm" status="danger">
+          <ExclamationCircleIcon {...extraProps} />
+        </Icon>
+      );
     case 'installed':
-      return <UiIcon size="sm" icon={<CheckCircleIcon color={okColor.value} {...extraProps} />} />;
+      return (
+        <Icon status="success" size="sm">
+          <CheckCircleIcon {...extraProps} />
+        </Icon>
+      );
     case 'installing-pending-user-action':
       return (
-        <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon {...extraProps} />} />
+        <Icon size="sm" status="warning">
+          <ExclamationTriangleIcon {...extraProps} />
+        </Icon>
       );
 
     case 'preparing-for-installation':
     case 'installing':
     case 'finalizing':
     case 'adding-hosts':
-      return <UiIcon size="sm" icon={<InProgressIcon {...extraProps} />} />;
+      return (
+        <Icon size="sm">
+          <InProgressIcon {...extraProps} />
+        </Icon>
+      );
     default:
       return <></>;
   }
