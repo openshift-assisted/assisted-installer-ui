@@ -89,6 +89,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.28.4":
+  version: 7.28.6
+  resolution: "@babel/runtime@npm:7.28.6"
+  checksum: 42d8a868c2fc2e9a77927945a6daa7ec03c7ea49e611e0d15442933cdabb12f20e3a6849c729259076c10a4247adec229331d1f94c2d0073ea0979d7853e29fd
+  languageName: node
+  linkType: hard
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -817,7 +824,7 @@ __metadata:
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
     concurrently: ^8.2.2
-    i18next: ^20.4.0
+    i18next: ^25.0.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.44.0
@@ -858,7 +865,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^25.0.0
     parse-url: ^9.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -892,7 +899,7 @@ __metadata:
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^25.0.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.44.0
@@ -1060,7 +1067,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
     axios: ^1.13.5
-    i18next: ^20.4 || ^21
+    i18next: ^20.4 || ^21 || ^25.0.0
     monaco-editor: ^0.44.0
     react: ^18
     react-dom: ^18
@@ -8901,12 +8908,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^20.2.1, i18next@npm:^20.4.0":
+"i18next@npm:^20.2.1":
   version: 20.6.1
   resolution: "i18next@npm:20.6.1"
   dependencies:
     "@babel/runtime": ^7.12.0
   checksum: 313cd4b17f9092eaf8ca92a02bb74d099f4a8b26de6e38018f438ce6f706220e5f72d865e1f50d815e13504ec38bc77e0f6341f670ca5162689f8d11a859e564
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^25.0.0":
+  version: 25.8.13
+  resolution: "i18next@npm:25.8.13"
+  dependencies:
+    "@babel/runtime": ^7.28.4
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: a9ac4113d02933d51b5d971ecac469096c992ac7ddb6ea8874af77bbf48a5950b32a252504f78d3b54c3294f307cb8e25dd501023d27e3b35835d4140ef31858
   languageName: node
   linkType: hard
 
