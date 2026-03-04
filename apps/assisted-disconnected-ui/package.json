@@ -29,7 +29,7 @@
   },
   "description": "A stand-alone web UI for the disconnected environments",
   "devDependencies": {
-    "@tsconfig/vite-react": "^1.0.1",
+    "@tsconfig/vite-react": "^7.0.0",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react-swc": "^3.0.1",
