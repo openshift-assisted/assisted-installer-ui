@@ -924,7 +924,7 @@ __metadata:
     "@redhat-cloud-services/ai-client-state": ^0.15.0
     "@redhat-cloud-services/lightspeed-client": ^0.15.0
     "@tsconfig/recommended": ^1.0.2
-    "@types/node": ^18.14.6
+    "@types/node": ^24.0.0
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     file-saver: ^2.0.2
@@ -974,7 +974,7 @@ __metadata:
   resolution: "@openshift-assisted/toolbox@workspace:tools/toolbox"
   dependencies:
     "@tsconfig/recommended": ^1.0.2
-    "@types/node": ^18.14.6
+    "@types/node": ^24.0.0
     chokidar: ^3.5.3
     lodash: ^4.17.23
     zx: ^8.8.5
@@ -1029,7 +1029,7 @@ __metadata:
     "@types/humanize-plus": ^1.8.0
     "@types/js-yaml": ^4.0.1
     "@types/lodash-es": ^4.17.6
-    "@types/node": ^18.14.6
+    "@types/node": ^24.0.0
     "@types/react": 18.2.37
     "@types/react-autosuggest": ^10.1.5
     "@types/react-dom": 18.2.15
@@ -2929,7 +2929,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.14.6, @types/node@npm:^18.17.5":
+"@types/node@npm:^18.17.5":
   version: 18.19.31
   resolution: "@types/node@npm:18.19.31"
   dependencies:
@@ -2944,6 +2944,15 @@ __metadata:
   dependencies:
     undici-types: ~6.21.0
   checksum: 64753aa9bf736a0fb6c979a506babbce34a33dd8dd96b8a5387cffffb2098b0a39df435e376a44b6eb99518faecdafd7c48db0a087b8e3c51e1c9a1b653e7ae5
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^24.0.0":
+  version: 24.11.0
+  resolution: "@types/node@npm:24.11.0"
+  dependencies:
+    undici-types: ~7.16.0
+  checksum: 21bc65998faab117bead0bf372bd2fcacd12a5b25cdb88a947154b0b0b212aa4bc78a116467a963f9aafad68032421ebd4b6063396ba858c49cbcfebbc3e83a7
   languageName: node
   linkType: hard
 
@@ -15882,6 +15891,13 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 1ef68fc6c5bad200c8b6f17de8e5bc5cfdcadc164ba8d7208cd087cfa8583d922d8316a7fd76c9a658c22b4123d3ff847429185094484fbc65377d695c905857
   languageName: node
   linkType: hard
 
