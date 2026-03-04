@@ -2,7 +2,7 @@
   "description": "The Assisted Installer UI",
   "devDependencies": {
     "@openshift-assisted/toolbox": "workspace:*",
-    "@vitest/ui": "^0.34.5",
+    "@vitest/ui": "^4.0.0",
     "dpdm": "^3.14.0",
     "eslint": "^8.36.0",
     "happy-dom": "^20.0.2",
@@ -10,7 +10,7 @@
     "prettier": "2.8.4",
     "rimraf": "^4.4.0",
     "typescript": "^5.2.2",
-    "vitest": "^0.34.5"
+    "vitest": "^4.0.0"
   },
   "engines": {
     "node": ">=14",
