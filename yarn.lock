@@ -1046,7 +1046,7 @@ __metadata:
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
     ip-address: ^7.1.0
-    is-cidr: ^4.0.2
+    is-cidr: ^6.0.0
     is-in-subnet: ^4
     js-yaml: ^4.1.1
     lodash-es: ^4.17.23
@@ -4971,6 +4971,13 @@ __metadata:
   dependencies:
     ip-regex: ^4.1.0
   checksum: ef9306d086928ee82b3f841b3bdab6e072230f3623a57cf19e06174946f2cbfeb70ca52bc106b127db27a628b9e84fb39284f5851003898ffdb957fe330478ee
+  languageName: node
+  linkType: hard
+
+"cidr-regex@npm:^5.0.1":
+  version: 5.0.3
+  resolution: "cidr-regex@npm:5.0.3"
+  checksum: b179d218173536dfebe02b917c7e4a74b3c26a1eeda450e7c383d657d6b162a83e408ec086ad78d07e5e89259ef69c8d4bd176e7264638dd6f55adf041d731a9
   languageName: node
   linkType: hard
 
@@ -9388,6 +9395,15 @@ __metadata:
   dependencies:
     cidr-regex: ^3.1.1
   checksum: ee6e670e655a835710a7fa15268b428adbf80267114a494ce1c2ca2b09e1ca0b629fe1375aae621d4c093b32930d5ff7c4ee6da97eae14e3836bc7b3a07b171f
+  languageName: node
+  linkType: hard
+
+"is-cidr@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "is-cidr@npm:6.0.3"
+  dependencies:
+    cidr-regex: ^5.0.1
+  checksum: bccccbde48e29037a32a6aae852d522e0b96f039aacba721686de906424dfa6c28e5f2c5480a193a3577e1ba9facde65f572fdefccd398bb7206566c0238e45f
   languageName: node
   linkType: hard
 
