@@ -9,8 +9,9 @@ This is a federated module for
    1. For now you need to use my fork which can load this new assisted chatbot module - clone the
       repo
       [Astro fork](https://github.com/rawagner/astro-virtual-assistant-frontend/tree/chatbot_app)
-   2. run `npm install`
-   3. start the Astro `npm run start`
+   2. Use branch `chatbot_app`: `git checkout chatbot_app`
+   3. run `npm install`
+   4. start the Astro `npm run start`
 2. Run the Assisted Chatbot
 
    1. run `yarn start:assisted_chatbot:static`
