@@ -101,7 +101,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom-v5-compat": "^6.30.3",
     "redux": "^4",
-    "uuid": "^8.1",
+    "uuid": "^8.1 || ^13.0.0",
     "yup": "^1.4.0"
   },
   "publishConfig": {
