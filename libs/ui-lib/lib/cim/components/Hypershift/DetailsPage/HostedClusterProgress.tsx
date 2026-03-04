@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {
   ExpandableSectionToggle,
+  Icon,
   ProgressStep,
   Spinner,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { HostedClusterK8sResource } from '../types';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { ExternalLink, UiIcon } from '../../../../common';
+import { ExternalLink } from '../../../../common';
 import ConditionsTable from './ConditionsTable';
 
 type HostedClusterProgressProps = {
@@ -34,9 +34,13 @@ const HostedClusterProgress = ({ hostedCluster, launchToOCP }: HostedClusterProg
   if (progressingCondtion?.status === 'False') {
     progressIcon =
       availableCondtion?.status === 'True' ? (
-        <CheckCircleIcon color={okColor.value} />
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
       ) : (
-        <UiIcon size="sm" status="danger" icon={<ExclamationCircleIcon />} />
+        <Icon status="danger" size="sm">
+          <ExclamationCircleIcon />
+        </Icon>
       );
   }
 

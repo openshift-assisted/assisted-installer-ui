@@ -1,14 +1,13 @@
+import React from 'react';
+import { TFunction } from 'i18next';
+import { Icon } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
-import React from 'react';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
-import { t_global_icon_color_status_danger_default as dangerColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_danger_default';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
+
+import { NodePoolK8sResource } from '../types';
 import { AgentK8sResource } from '../../../types';
 import { getAgentStatus } from '../../helpers';
-import { NodePoolK8sResource } from '../types';
-import { TFunction } from 'i18next';
 import { agentStatus } from '../../helpers/agentStatus';
 
 export type NodePoolStatus = {
@@ -40,7 +39,11 @@ export const getNodePoolStatus = (
   if (hasErrorAgents) {
     return {
       type: 'error',
-      icon: <ExclamationCircleIcon color={dangerColor.value} />,
+      icon: (
+        <Icon status="danger">
+          <ExclamationCircleIcon />
+        </Icon>
+      ),
       text: t('ai:Error'),
     };
   }
@@ -58,7 +61,11 @@ export const getNodePoolStatus = (
   if (hasWarningAgents) {
     return {
       type: 'warning',
-      icon: <ExclamationCircleIcon color={warningColor.value} />,
+      icon: (
+        <Icon status="warning">
+          <ExclamationCircleIcon />
+        </Icon>
+      ),
       text: t('ai:Warning'),
     };
   }
@@ -66,7 +73,11 @@ export const getNodePoolStatus = (
   return nodePool.status?.conditions?.find(({ type }) => type === 'Ready')?.status === 'True'
     ? {
         type: 'ok',
-        icon: <CheckCircleIcon color={okColor.value} />,
+        icon: (
+          <Icon status="success">
+            <CheckCircleIcon />
+          </Icon>
+        ),
         text: t('ai:Ready'),
       }
     : {

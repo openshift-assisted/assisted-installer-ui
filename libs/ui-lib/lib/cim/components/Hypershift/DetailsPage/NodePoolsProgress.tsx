@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {
   ExpandableSectionToggle,
+  Icon,
   ProgressStep,
   Spinner,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 
 import {
@@ -42,7 +42,11 @@ const getNodePoolsStatus = (
 
   const nodePoolsStatus: { type: string; icon: React.ReactNode } = {
     type: 'ok',
-    icon: <CheckCircleIcon color={okColor.value} />,
+    icon: (
+      <Icon status="success">
+        <CheckCircleIcon />
+      </Icon>
+    ),
   };
 
   for (const property in nodePoolMap) {
