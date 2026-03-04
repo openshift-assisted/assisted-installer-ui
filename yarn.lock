@@ -89,6 +89,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.28.4":
+  version: 7.28.6
+  resolution: "@babel/runtime@npm:7.28.6"
+  checksum: 42d8a868c2fc2e9a77927945a6daa7ec03c7ea49e611e0d15442933cdabb12f20e3a6849c729259076c10a4247adec229331d1f94c2d0073ea0979d7853e29fd
+  languageName: node
+  linkType: hard
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -824,7 +831,7 @@ __metadata:
     nodemon: ^3.0.3
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-i18next: ^11.11.4
+    react-i18next: ^16.0.0
     react-monaco-editor: ^0.55.0
     react-redux: ^8.0.5
     react-router-dom: 5.3.x
@@ -862,7 +869,7 @@ __metadata:
     parse-url: ^9.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-i18next: ^11.11.4
+    react-i18next: ^16.0.0
     react-router-dom-v5-compat: ^6.30.3
     rimraf: ^5.0.5
     ts-patch: ^3.0.2
@@ -898,7 +905,7 @@ __metadata:
     monaco-editor: ^0.44.0
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-i18next: ^11.11.4
+    react-i18next: ^16.0.0
     react-monaco-editor: ^0.55.0
     react-redux: ^8.0.5
     react-router-dom: 5.3.x
@@ -13135,7 +13142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^11.11.4, react-i18next@npm:^11.7.3":
+"react-i18next@npm:^11.7.3":
   version: 11.18.6
   resolution: "react-i18next@npm:11.18.6"
   dependencies:
@@ -13150,6 +13157,28 @@ __metadata:
     react-native:
       optional: true
   checksum: 624c0a0313fac4e0d18560b83c99a8bd0a83abc02e5db8d01984e0643ac409d178668aa3a4720d01f7a0d9520d38598dcbff801d6f69a970bae67461de6cd852
+  languageName: node
+  linkType: hard
+
+"react-i18next@npm:^16.0.0":
+  version: 16.5.4
+  resolution: "react-i18next@npm:16.5.4"
+  dependencies:
+    "@babel/runtime": ^7.28.4
+    html-parse-stringify: ^3.0.1
+    use-sync-external-store: ^1.6.0
+  peerDependencies:
+    i18next: ">= 25.6.2"
+    react: ">= 16.8.0"
+    typescript: ^5
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+    typescript:
+      optional: true
+  checksum: 024aa00ba56ae10b149ad76b3af251462eaf9ef29c742afab6cf16ae3b7370da7cb6f27e258e6ab6d8e77faa18fe31582ae263f779d2f8e2caa8d411df0b2e39
   languageName: node
   linkType: hard
 
@@ -16106,6 +16135,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: dbc61cd7970ab141fbe5b0b8fa170d70a684a160d228e2521a6cdb17b27cc0baa9eda127b4ccc91d28d8ec5e1ca67c403c87f08dc556f170b1c70def419eba5e
+  languageName: node
+  linkType: hard
+
+"use-sync-external-store@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 61a62e910713adfaf91bdb72ff2cd30e5ba83687accaf3b6e75a903b45bf635f5722e3694af30d83a03e92cb533c0a5c699298d2fef639a03ffc86b469f4eee2
   languageName: node
   linkType: hard
 
