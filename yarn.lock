@@ -827,7 +827,7 @@ __metadata:
     react-i18next: ^11.11.4
     react-monaco-editor: ^0.55.0
     react-redux: ^8.0.5
-    react-router-dom: 5.3.x
+    react-router-dom: 7.13.x
     react-router-dom-v5-compat: ^6.30.3
     redux: ^4
     uuid: ^8.1
@@ -901,7 +901,7 @@ __metadata:
     react-i18next: ^11.11.4
     react-monaco-editor: ^0.55.0
     react-redux: ^8.0.5
-    react-router-dom: 5.3.x
+    react-router-dom: 7.13.x
     react-router-dom-v5-compat: ^6.30.3
     redux: ^4
     uuid: ^8.1
@@ -5438,6 +5438,13 @@ __metadata:
   version: 0.4.2
   resolution: "cookie@npm:0.4.2"
   checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.0.1":
+  version: 1.1.1
+  resolution: "cookie@npm:1.1.1"
+  checksum: e40c4ff817a73ec0a41413654ca9a71e6207bd6e511151bb1d307aef2903eb59771127a85474afe0e12a8982804f7b03cce0bda798b55c306aca9608b4b9acab
   languageName: node
   linkType: hard
 
@@ -13322,6 +13329,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:7.13.x":
+  version: 7.13.1
+  resolution: "react-router-dom@npm:7.13.1"
+  dependencies:
+    react-router: 7.13.1
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: b8377b8d77caa381dcfdb5a158351a226fe573ace6c6a40b3a3dd1ef1af67c92d01e35f5cee26a11f4866a65183aa3fc0a2c2d18cafa7c8ccb6293d879062a00
+  languageName: node
+  linkType: hard
+
 "react-router@npm:5.3.4, react-router@npm:5.3.x":
   version: 5.3.4
   resolution: "react-router@npm:5.3.4"
@@ -13349,6 +13368,22 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: b61e1a456b72ed35907dadc261d8572a65dd4caae008f7a85a6b09b437b1a4b90034fc7df0e418f1f01b73c2b8a8f6755d7fc0108b1ec3f2ed37f03a1e248513
+  languageName: node
+  linkType: hard
+
+"react-router@npm:7.13.1":
+  version: 7.13.1
+  resolution: "react-router@npm:7.13.1"
+  dependencies:
+    cookie: ^1.0.1
+    set-cookie-parser: ^2.6.0
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+  checksum: 159e7fa3fbec7fc0273064bb54fd4d395e21f84ae5cb21d57fb6c53bfc274d9879918001ceb4f4a1f28f0e4dd41865b82366b88f027ba17243ee592a676c9ef2
   languageName: node
   linkType: hard
 
@@ -14330,6 +14365,13 @@ __metadata:
   version: 2.6.0
   resolution: "set-cookie-parser@npm:2.6.0"
   checksum: bf11ebc594c53d84588f1b4c04f1b8ce14e0498b1c011b3d76b5c6d5aac481bbc3f7c5260ec4ce99bdc1d9aed19f9fc315e73166a36ca74d0f12349a73f6bdc9
+  languageName: node
+  linkType: hard
+
+"set-cookie-parser@npm:^2.6.0":
+  version: 2.7.2
+  resolution: "set-cookie-parser@npm:2.7.2"
+  checksum: 9e1b09e7184079c81f9ba4d2db3222854adf4e6e4fe73982388367649386a93e7f9b979333ddeba22610706def93c2478f34c3324fe223528cb2c4c879a2c2d3
   languageName: node
   linkType: hard
 
