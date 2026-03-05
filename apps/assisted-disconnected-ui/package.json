@@ -3,7 +3,7 @@
     "@openshift-assisted/ui-lib": "workspace:*",
     "@openshift-console/dynamic-plugin-sdk": "1.0.0",
     "@patternfly/patternfly": "6.4.0",
-    "@patternfly/react-code-editor": "6.4.0",
+    "@patternfly/react-code-editor": "6.4.1",
     "@patternfly/react-core": "6.4.0",
     "@patternfly/react-icons": "6.4.0",
     "@patternfly/react-styles": "6.4.0",
