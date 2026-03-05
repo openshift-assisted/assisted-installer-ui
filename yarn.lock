@@ -2921,29 +2921,29 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 20.12.7
-  resolution: "@types/node@npm:20.12.7"
+  version: 25.3.3
+  resolution: "@types/node@npm:25.3.3"
   dependencies:
-    undici-types: ~5.26.4
-  checksum: 7cc979f7e2ca9a339ec71318c3901b9978555257929ef3666987f3e447123bc6dc92afcc89f6347e09e07d602fde7d51bcddea626c23aa2bb74aeaacfd1e1686
+    undici-types: ~7.18.0
+  checksum: 9186aae36f8ddb0b3630dba446e5c16e5f3e6c5e7a4708d117a394d3e3b6f41db2dd83a6127adf4567826776a732ca9e2561594667bce74bb18ea4d59ee1e06a
   languageName: node
   linkType: hard
 
 "@types/node@npm:^18.14.6, @types/node@npm:^18.17.5":
-  version: 18.19.31
-  resolution: "@types/node@npm:18.19.31"
+  version: 18.19.130
+  resolution: "@types/node@npm:18.19.130"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 949bddfd7071bd47300d1f33d380ee34695ccd5f046f1a03e4d2be0d953ace896905144d44a6f483f241b5ef34b86f0e40a0e312201117782eecf89e81a4ff13
+  checksum: b7032363581c416e721a88cffdc2b47662337cacd20f8294f5619a1abf79615c7fef1521964c2aa9d36ed6aae733e1a03e8c704661bd5a0c2f34b390f41ea395
   languageName: node
   linkType: hard
 
 "@types/node@npm:^20.0.0":
-  version: 20.19.20
-  resolution: "@types/node@npm:20.19.20"
+  version: 20.19.35
+  resolution: "@types/node@npm:20.19.35"
   dependencies:
     undici-types: ~6.21.0
-  checksum: 64753aa9bf736a0fb6c979a506babbce34a33dd8dd96b8a5387cffffb2098b0a39df435e376a44b6eb99518faecdafd7c48db0a087b8e3c51e1c9a1b653e7ae5
+  checksum: 465aac31b208bd4248f64b05abd0218509c696c55f62ae000571427e357168650d4c484f4531c37ad3be2a75198ba13f9dda7a0c14c539b09cf52b529d7f0d66
   languageName: node
   linkType: hard
 
@@ -15882,6 +15882,13 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 23da306c8366574adec305b06a8519ab5c7d09e3f5d16c1a98709a34fae17da09ec95198f30f86c00055e02efa8bfcc843e84e8aebeb9b8d6bb3e06afccae07a
   languageName: node
   linkType: hard
 
