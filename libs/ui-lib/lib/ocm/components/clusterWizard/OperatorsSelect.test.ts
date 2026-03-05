@@ -50,6 +50,7 @@ describe('OperatorsSelect counting logic', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm', 'odf'],
       selectedBundles: [],
+      operatorProperties: {},
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -62,6 +63,7 @@ describe('OperatorsSelect counting logic', () => {
   it('should count bundle operators when a bundle is selected', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm'], // 1 manually selected
+      operatorProperties: {},
       selectedBundles: ['virtualization'], // bundle with 3 operators: cnv, nmstate, mtv
     };
 
@@ -78,6 +80,7 @@ describe('OperatorsSelect counting logic', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm', 'cnv'], // cnv is also in the bundle
       selectedBundles: ['virtualization'], // bundle with: cnv, nmstate, mtv
+      operatorProperties: {},
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -95,6 +98,7 @@ describe('OperatorsSelect counting logic', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm', 'invalid-operator'], // invalid-operator not in opSpecs
       selectedBundles: [],
+      operatorProperties: {},
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -108,6 +112,7 @@ describe('OperatorsSelect counting logic', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm'],
       selectedBundles: ['virtualization', 'openshift-ai'], // Two bundles
+      operatorProperties: {},
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -126,6 +131,7 @@ describe('OperatorsSelect counting logic', () => {
     const values: OperatorsValues = {
       selectedOperators: [],
       selectedBundles: ['virtualization', 'openshift-ai'], // Both bundles have 'odf' (but only virtualization has it in our mock)
+      operatorProperties: {},
     };
 
     // Let's modify the virtualization bundle to include odf to test overlap
@@ -154,6 +160,7 @@ describe('OperatorsSelect counting logic', () => {
     const values: OperatorsValues = {
       selectedOperators: [],
       selectedBundles: [],
+      operatorProperties: {},
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
