@@ -7,7 +7,7 @@
     "@patternfly/react-core": "6.4.0",
     "@patternfly/react-icons": "6.4.0",
     "@patternfly/react-styles": "6.4.0",
-    "@patternfly/react-table": "6.4.0",
+    "@patternfly/react-table": "6.4.1",
     "@patternfly/react-tokens": "6.4.0",
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/browser": "^7.119",
