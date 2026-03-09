@@ -21,6 +21,9 @@ export type ClusterWizardContextType = {
   setInstallDisconnected: (enabled: boolean) => void;
   disconnectedInfraEnv?: InfraEnv;
   setDisconnectedInfraEnv: (infraEnv: InfraEnv | undefined) => void;
+  /** UI-only: network config type for disconnected flow (not on API infraEnv). */
+  disconnectedHostsNetworkConfigurationType?: 'dhcp' | 'static';
+  setDisconnectedHostsNetworkConfigurationType: (value: 'dhcp' | 'static') => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

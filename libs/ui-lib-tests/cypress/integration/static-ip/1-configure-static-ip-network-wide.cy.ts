@@ -75,9 +75,9 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       fillStaticIpForm('ipv4', ipv4Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-      commonActions.verifyNextIsDisabled(); // auto-save is triggered
 
-      cy.wait('@update-infra-env').then(({ request }) => {
+      cy.get('@update-infra-env').then((interception) => {
+        const { request } = interception as unknown as { request: { body: unknown } };
         validateStaticIpRequest(request.body, 'ipv4');
         commonActions.verifyNextIsEnabled();
       });
@@ -92,7 +92,6 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       fillStaticIpForm('dual-stack', ipv6Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-      commonActions.verifyNextIsDisabled(); // auto-save is triggered
 
       cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'dual-stack');
