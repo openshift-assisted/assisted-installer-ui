@@ -92,10 +92,16 @@ export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) =
   const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
   return Yup.string().test(
     protocolVersion,
-    `Value \${value} is not a valid ${protocolVersionLabel} address`,
+    (params: { value?: unknown }) =>
+      `Value "${
+        params?.value !== undefined ? String(params.value) : ''
+      }" is not a valid ${protocolVersionLabel} address`,
     (value?: string) => {
-      if (!value) {
+      if (value === undefined || value === '') {
         return true;
+      }
+      if (typeof value !== 'string') {
+        return false;
       }
       return isValidAddress(value, protocolVersion);
     },
