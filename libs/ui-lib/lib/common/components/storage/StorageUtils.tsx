@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { TFunction } from 'i18next';
-import { getHostRole, getInventory, RoleCell, UiIcon } from '../../index';
-import { TableRow } from '../hosts/AITable';
-import { Popover, Content, ContentVariants } from '@patternfly/react-core';
+import { Popover, Content, ContentVariants, Icon } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { getHostRole, getInventory, RoleCell } from '../../index';
+import { TableRow } from '../hosts/AITable';
 
 const SkipFormattingDisks = () => (
   <Content component={ContentVariants.p}>Some bootable disks will skip formatting</Content>
@@ -49,7 +49,9 @@ export const numberOfDisksColumn: TableRow<Host> = {
           {'   '}
           {host.skipFormattingDisks && (
             <Popover bodyContent={<SkipFormattingDisks />} minWidth="20rem" maxWidth="30rem">
-              <UiIcon size="sm" status="warning" icon={<ExclamationTriangleIcon />} />
+              <Icon size="sm" status="warning">
+                <ExclamationTriangleIcon />
+              </Icon>
             </Popover>
           )}
         </>

@@ -1,7 +1,5 @@
 import React, { Fragment, ReactElement } from 'react';
-import { Alert, AlertGroup, AlertVariant, Level, LevelItem } from '@patternfly/react-core';
-import { t_global_icon_color_status_warning_default as warningColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_warning_default';
-import { t_global_color_status_success_default as okColor } from '@patternfly/react-tokens/dist/js/t_global_color_status_success_default';
+import { Alert, AlertGroup, AlertVariant, Icon, Level, LevelItem } from '@patternfly/react-core';
 import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
@@ -293,7 +291,10 @@ export const HostValidationGroups = ({
           if (failedValidations.length) {
             return (
               <>
-                {t('ai:Failed')} <ExclamationTriangleIcon color={warningColor.value} />
+                {t('ai:Failed')}{' '}
+                <Icon status="warning">
+                  <ExclamationTriangleIcon />
+                </Icon>
               </>
             );
           } else if (pendingValidations.length) {
@@ -305,7 +306,10 @@ export const HostValidationGroups = ({
           }
           return (
             <>
-              {t('ai:Ready')} <CheckCircleIcon color={okColor.value} />
+              {t('ai:Ready')}{' '}
+              <Icon status="success">
+                <CheckCircleIcon />
+              </Icon>
             </>
           );
         };

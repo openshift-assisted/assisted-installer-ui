@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Button, Flex, FlexItem, Popover } from '@patternfly/react-core';
+import { TFunction } from 'i18next';
+import { Button, Flex, FlexItem, Icon, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Link } from 'react-router-dom-v5-compat';
-import { t_global_icon_color_status_info_default as blueInfoColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_info_default';
+
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   getHostname,
   getInventory,
@@ -23,8 +25,6 @@ import BMHStatus from '../Agent/BMHStatus';
 import { getBMHStatus, getAgentStatus } from '../helpers';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
@@ -99,7 +99,14 @@ const statusColumn = (
                   </Link>
                 }
               >
-                <Button variant="link" icon={<InfoCircleIcon color={blueInfoColor.value} />}>
+                <Button
+                  variant="link"
+                  icon={
+                    <Icon status="info">
+                      <InfoCircleIcon />
+                    </Icon>
+                  }
+                >
                   {t('ai:Cannot be deleted')}
                 </Button>
               </Popover>

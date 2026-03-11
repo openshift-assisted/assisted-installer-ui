@@ -7,6 +7,7 @@ import {
   Form,
   HelperText,
   HelperTextItem,
+  Icon,
   Modal,
   ModalBody,
   ModalFooter,
@@ -19,7 +20,6 @@ import {
 } from '@patternfly/react-core';
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { t_global_icon_color_status_info_default as blueInfoColor } from '@patternfly/react-tokens/dist/js/t_global_icon_color_status_info_default';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { TFunction } from 'i18next';
 
@@ -235,7 +235,11 @@ const MassChangeHostnameForm = ({
                       >
                         <Button
                           variant="link"
-                          icon={<InfoCircleIcon color={blueInfoColor.value} />}
+                          icon={
+                            <Icon status="info">
+                              <InfoCircleIcon />
+                            </Icon>
+                          }
                           isInline
                         >
                           {t('ai:Not changeable')}
