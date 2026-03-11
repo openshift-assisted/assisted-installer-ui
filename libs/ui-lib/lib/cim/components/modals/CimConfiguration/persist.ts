@@ -13,11 +13,13 @@ import {
   AgentServiceConfigK8sResource,
   AgentServiceConfigModel,
   IngressControllerModel,
+  K8sPatch,
   ProvisioningModel,
   RouteK8sResource,
   RouteModel,
 } from '../../../types';
 import { LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP } from './utils';
+import { appendPatch } from '../../../utils';
 
 export type SetErrorFuncType = ({
   title,
@@ -352,6 +354,15 @@ export const onEnableCIM = async ({
     ) {
       return false;
     }
+  } else {
+    const patches = [] as K8sPatch;
+    appendPatch(
+      patches,
+      '/metadata/annotations/ciscoIntersightURL',
+      ciscoIntersightURL,
+      agentServiceConfig.metadata?.annotations?.['ciscoIntersightURL'],
+    );
+    await k8sPatch({ model: AgentServiceConfigModel, resource: agentServiceConfig, data: patches });
   }
 
   // see isCIMConfigProgressing()
