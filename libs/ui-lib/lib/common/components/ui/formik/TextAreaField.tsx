@@ -72,7 +72,7 @@ const TextAreaField: React.FC<React.PropsWithChildren<TextAreaFieldProps>> = ({
                 icon={<ExclamationCircleIcon />}
                 variant={'error'}
                 id={`${fieldId}-helper-error`}
-                data-testid={`input-textarea-${fieldId}-helper-text`}
+                data-testid={`input-textarea-${fieldId}-helper-text-error`}
               >
                 {errorMessage}
               </HelperTextItem>
