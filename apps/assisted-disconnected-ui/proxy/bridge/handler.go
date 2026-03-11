@@ -16,8 +16,9 @@ import (
 const AssistedPingEndpoint = "/api/assisted-install/v2/clusters"
 
 type handler struct {
-	target *url.URL
-	proxy  *httputil.ReverseProxy
+	target    *url.URL
+	proxy     *httputil.ReverseProxy
+	authToken string
 }
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -26,6 +27,9 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 	r.Host = h.target.Host
 	r.URL.Path = mux.Vars(r)["forward"]
+	if h.authToken != "" {
+		r.Header.Set("Authorization", h.authToken)
+	}
 	h.proxy.ServeHTTP(w, r)
 }
 
@@ -56,10 +60,18 @@ func NewAssistedAPIHandler(tlsConfig *tls.Config) (*handler, error) {
 			TLSClientConfig: tlsConfig,
 		},
 	}
-	resp, err := client.Get(fmt.Sprintf("%s%s", config.AssistedApiUrl, AssistedPingEndpoint))
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", config.AssistedApiUrl, AssistedPingEndpoint), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create health check request: %w", err)
+	}
+	if config.UserAuthToken != "" {
+		req.Header.Set("Authorization", config.UserAuthToken)
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to Assisted Installer: %w", err)
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected response code from Assisted Installer: %v", resp.StatusCode)
 	}
@@ -70,5 +82,5 @@ func NewAssistedAPIHandler(tlsConfig *tls.Config) (*handler, error) {
 		TLSClientConfig: tlsConfig,
 	}
 
-	return &handler{target: target, proxy: proxy}, nil
+	return &handler{target: target, proxy: proxy, authToken: config.UserAuthToken}, nil
 }
