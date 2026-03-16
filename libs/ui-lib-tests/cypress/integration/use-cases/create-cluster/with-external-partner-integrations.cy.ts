@@ -47,15 +47,6 @@ describe('Create a new cluster with external partner integrations', () => {
       });
     });
 
-    it('Selecting oracle as external partner integration enables custom manifests as well', () => {
-      ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
-      ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');
-      ClusterDetailsForm.customManifestsField
-        .findCheckbox()
-        .should('be.checked')
-        .and('be.disabled');
-    });
-
     it('Validate that oracle as external partner integration is unselected in dropdown after OCP < v4.14 is selected', () => {
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');
       ClusterDetailsForm.externalPartnerIntegrationsField.selectPlatform('Oracle');

@@ -21,18 +21,9 @@ describe(`Assisted Installer Cluster Installation with Custom Manifests`, () => 
       clusterDetailsPage.inputOpenshiftVersion();
       clusterDetailsPage.inputPullSecret();
 
-      clusterDetailsPage.getCustomManifestCheckbox().should('be.visible').check();
-      clusterDetailsPage.getCustomManifestCheckbox().should('be.checked');
-      commonActions
-        .getInfoAlert()
-        .should('contain.text', 'This is an advanced configuration feature.');
-
       commonActions.getWizardStepNav('Custom manifests').should('exist');
 
       commonActions.getNextButton().click();
-      cy.wait('@update-ui-settings').then(({ request }) => {
-        expect(request.body).to.deep.equal('AI_UI:{"addCustomManifests":true}');
-      });
     });
   });
 });

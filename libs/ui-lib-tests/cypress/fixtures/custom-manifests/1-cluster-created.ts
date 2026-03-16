@@ -38,7 +38,7 @@ const customManifestsCluster = {
   // We're adding this field to easily debug which mock is returning the response
   feature_usage: JSON.stringify(featureUsage),
   control_plane_count: 3,
-  network_type: 'OpenShiftSDN',
+  network_type: 'Cilium',
   user_managed_networking: false,
   vip_dhcp_allocation: true,
   e2e_mock_source: '5-cluster-ready',

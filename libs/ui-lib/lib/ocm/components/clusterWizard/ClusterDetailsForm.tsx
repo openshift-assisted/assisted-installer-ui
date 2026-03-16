@@ -42,11 +42,10 @@ type ClusterDetailsFormProps = {
   ocpVersions: OpenshiftVersionOptionType[];
   usedClusterNames: string[];
   navigation: React.ReactNode;
-  handleClusterCreate: (params: ClusterCreateParams, addCustomManifests: boolean) => Promise<void>;
+  handleClusterCreate: (params: ClusterCreateParams) => Promise<void>;
   handleClusterUpdate: (
     clusterId: Cluster['id'],
     params: ClusterDetailsUpdateParams,
-    addCustomManifests: boolean,
   ) => Promise<void>;
 };
 
@@ -63,7 +62,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     navigation,
   } = props;
 
-  const { customManifestsStep, moveNext } = useClusterWizardContext();
+  const { moveNext } = useClusterWizardContext();
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { clearAlerts } = useAlerts();
@@ -82,10 +81,10 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
           resetPlatform = 'baremetal';
         }
         const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
-        await handleClusterUpdate(cluster.id, params, values.addCustomManifest);
+        await handleClusterUpdate(cluster.id, params);
       } else {
         const params = ClusterDetailsService.getClusterCreateParams(values);
-        await handleClusterCreate(params, values.addCustomManifest);
+        await handleClusterCreate(params);
       }
     },
     [cluster, handleClusterCreate, handleClusterUpdate],
@@ -118,9 +117,8 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         managedDomains,
         ocpVersions,
         urlSearchParams: search,
-        addCustomManifests: customManifestsStep,
       }),
-    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search, customManifestsStep],
+    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
   );
 
   const { t } = useTranslation();

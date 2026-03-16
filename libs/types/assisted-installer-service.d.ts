@@ -111,6 +111,7 @@ export interface Cluster {
   /**
    * Indicates the type of this object. Will be 'Cluster' if this is a complete object,
    * 'AddHostsCluster' for cluster that add hosts to existing OCP cluster,
+   * 'DisconnectedCluster' for clusters with embedded ignition for offline installation,
    *
    */
   kind: 'Cluster' | 'AddHostsCluster' | 'DisconnectedCluster';
@@ -215,7 +216,8 @@ export interface Cluster {
     | 'installed'
     | 'adding-hosts'
     | 'cancelled'
-    | 'installing-pending-user-action';
+    | 'installing-pending-user-action'
+    | 'unmonitored';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -357,8 +359,15 @@ export interface Cluster {
   featureUsage?: string;
   /**
    * The desired network type used.
+   * - OVNKubernetes: Default CNI for OpenShift (recommended)
+   * - OpenShiftSDN: Legacy SDN (deprecated in newer versions)
+   * - CiscoACI: Cisco ACI CNI (requires custom manifests)
+   * - Cilium: Isovalent Cilium CNI (requires custom manifests)
+   * - Calico: Tigera Calico CNI (requires custom manifests)
+   * - None: No CNI - user must provide custom CNI manifests
+   *
    */
-  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes' | 'CiscoACI' | 'Cilium' | 'Calico' | 'None';
   /**
    * Cluster networks that are associated with this cluster.
    */
@@ -505,8 +514,17 @@ export interface ClusterCreateParams {
     | 'all';
   /**
    * The desired network type used.
+   * - OVNKubernetes: Default CNI for OpenShift (recommended)
+   * - OpenShiftSDN: Legacy SDN (deprecated in newer versions)
+   * - CiscoACI: Cisco ACI CNI (requires custom manifests)
+   * - Cilium: Isovalent Cilium CNI (requires custom manifests)
+   * - Calico: Tigera Calico CNI (requires custom manifests)
+   * - None: No CNI - user must provide custom CNI manifests
+   * Note: Third-party CNIs (CiscoACI, Cilium, Calico, None) require uploading
+   * CNI manifests via the custom manifests API before installation.
+   *
    */
-  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes' | 'CiscoACI' | 'Cilium' | 'Calico' | 'None';
   /**
    * Schedule workloads on masters
    */
@@ -666,6 +684,7 @@ export type ClusterValidationId =
   | 'mtv-requirements-satisfied'
   | 'osc-requirements-satisfied'
   | 'network-type-valid'
+  | 'custom-manifests-requirements-satisfied'
   | 'platform-requirements-satisfied'
   | 'node-feature-discovery-requirements-satisfied'
   | 'nvidia-gpu-requirements-satisfied'
@@ -822,6 +841,16 @@ export interface DhcpAllocationResponse {
    * Contents of last acquired lease for Ingress virtual IP.
    */
   ingressVipLease?: string;
+}
+export interface DisconnectedClusterCreateParams {
+  /**
+   * Name of the OpenShift cluster.
+   */
+  name: string;
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion: string;
 }
 export interface Disk {
   /**
@@ -1053,9 +1082,16 @@ export interface Event {
   props?: string;
 }
 export type EventList = Event[];
+export interface Feature {
+  'feature-support-level-id': FeatureSupportLevelId;
+  supportLevel: SupportLevel;
+  reason?: IncompatibilityReason;
+  incompatibilities: FeatureSupportLevelId[];
+}
 export type FeatureSupportLevelId =
   | 'SNO'
   | 'TNA'
+  | 'TNF'
   | 'VIP_AUTO_ALLOC'
   | 'CUSTOM_MANIFEST'
   | 'SINGLE_NODE_EXPANSION'
@@ -1081,6 +1117,10 @@ export type FeatureSupportLevelId =
   | 'EXTERNAL_PLATFORM'
   | 'OVN_NETWORK_TYPE'
   | 'SDN_NETWORK_TYPE'
+  | 'CILIUM_NETWORK_TYPE'
+  | 'CALICO_NETWORK_TYPE'
+  | 'CISCO_ACI_NETWORK_TYPE'
+  | 'NONE_NETWORK_TYPE'
   | 'NODE_FEATURE_DISCOVERY'
   | 'NVIDIA_GPU'
   | 'PIPELINES'
@@ -1102,8 +1142,27 @@ export type FeatureSupportLevelId =
   | 'NUMA_RESOURCES'
   | 'OADP'
   | 'METALLB'
+  | 'DUAL_STACK_PRIMARY_IPV6'
   | 'LOKI'
   | 'OPENSHIFT_LOGGING';
+export interface FencingCredentialsParams {
+  /**
+   * The URL of the host's BMC, for example https://bmc1.example.com.
+   */
+  address: string;
+  /**
+   * The username to connect to the host's BMC.
+   */
+  username: string;
+  /**
+   * The password to connect to the host's BMC.
+   */
+  password: string;
+  /**
+   * Whether to enable or disable certificate verification when connecting to the host's BMC.
+   */
+  certificateVerification?: 'Enabled' | 'Disabled';
+}
 /**
  * Cluster finalizing stage managed by controller
  */
@@ -1318,6 +1377,10 @@ export interface Host {
    * formatting.
    */
   skipFormattingDisks?: string;
+  /**
+   * The host's BMC credentials that will be used in TNF.
+   */
+  fencingCredentials?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -1526,6 +1589,10 @@ export interface HostRegistrationResponse {
    */
   skipFormattingDisks?: string;
   /**
+   * The host's BMC credentials that will be used in TNF.
+   */
+  fencingCredentials?: string;
+  /**
    * Command for starting the next step runner
    */
   nextStepRunnerCommand?: {
@@ -1546,6 +1613,7 @@ export type HostStage =
   | 'Waiting for controller'
   | 'Installing'
   | 'Writing image to disk'
+  | 'Copying registry data to disk'
   | 'Rebooting'
   | 'Waiting for ignition'
   | 'Configuring'
@@ -1603,6 +1671,10 @@ export interface HostUpdateParams {
    * Labels to be added to the corresponding node.
    */
   nodeLabels?: NodeLabelParams[];
+  /**
+   * The host's BMC credentials that will be used in TNF.
+   */
+  fencingCredentials?: FencingCredentialsParams;
 }
 export type HostValidationId =
   | 'connected'
@@ -1753,6 +1825,11 @@ export interface ImportClusterParams {
    */
   openshiftClusterId: string; // uuid
 }
+export type IncompatibilityReason =
+  | 'cpuArchitecture'
+  | 'platform'
+  | 'openshiftVersion'
+  | 'ociExternalIntegrationDisabled';
 export interface InfraEnv {
   /**
    * Indicates the type of this object.
@@ -1794,6 +1871,12 @@ export interface InfraEnv {
    * static network configuration string in the format expected by discovery ignition generation.
    */
   staticNetworkConfig?: string;
+  /**
+   * The IP address of the host that will act as the rendezvous (bootstrap) node for agent-based installations.
+   * This is optional for disconnected-iso image type and specifies which host will run the assisted service
+   * during the bootstrap phase. All other hosts will connect to this IP to coordinate the installation.
+   */
+  rendezvousIp?: string; // ^(?:$|(?:(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])|(?:([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6}|:(:[0-9a-fA-F]{1,4}){1,7}|:|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9]))))$
   type: ImageType;
   /**
    * Json formatted string containing the user overrides for the initial ignition config.
@@ -1831,14 +1914,6 @@ export interface InfraEnv {
    */
   additionalTrustBundle?: string;
   /**
-   * The IP address that hosts will use to communicate with the bootstrap node during installation.
-   */
-  rendezvousIp?: string;
-  /**
-   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
-   */
-  hostsNetworkConfigurationType?: 'dhcp' | 'static';
-  /**
    * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
@@ -1862,6 +1937,12 @@ export interface InfraEnvCreateParams {
    */
   pullSecret: string;
   staticNetworkConfig?: HostStaticNetworkConfig[];
+  /**
+   * The IP address of the host that will act as the rendezvous (bootstrap) node for agent-based installations.
+   * This is optional for disconnected-iso image type and specifies which host will run the assisted service
+   * during the bootstrap phase. All other hosts will connect to this IP to coordinate the installation.
+   */
+  rendezvousIp?: string; // ^(?:$|(?:(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])|(?:([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6}|:(:[0-9a-fA-F]{1,4}){1,7}|:|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9]))))$
   imageType?: ImageType;
   /**
    * JSON formatted string containing the user overrides for the initial ignition config.
@@ -1887,14 +1968,6 @@ export interface InfraEnvCreateParams {
    * certificates in this bundle.
    */
   additionalTrustBundle?: string;
-  /**
-   * The IP address that hosts will use to communicate with the bootstrap node during installation.
-   */
-  rendezvousIp?: string;
-  /**
-   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
-   */
-  hostsNetworkConfigurationType?: 'dhcp' | 'static';
 }
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
@@ -1912,6 +1985,12 @@ export interface InfraEnvUpdateParams {
    */
   pullSecret?: string;
   staticNetworkConfig?: HostStaticNetworkConfig[];
+  /**
+   * The IP address of the host that will act as the rendezvous (bootstrap) node for agent-based installations.
+   * This is optional for disconnected-iso image type and specifies which host will run the assisted service
+   * during the bootstrap phase. All other hosts will connect to this IP to coordinate the installation.
+   */
+  rendezvousIp?: string; // ^(?:$|(?:(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])|(?:([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6}|:(:[0-9a-fA-F]{1,4}){1,7}|:|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9]))))$
   imageType?: ImageType;
   /**
    * JSON formatted string containing the user overrides for the initial ignition config.
@@ -1926,14 +2005,6 @@ export interface InfraEnvUpdateParams {
    * Version of the OS image
    */
   openshiftVersion?: string;
-  /**
-   * The IP address that hosts will use to communicate with the bootstrap node during installation.
-   */
-  rendezvousIp?: string;
-  /**
-   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
-   */
-  hostsNetworkConfigurationType?: 'dhcp' | 'static';
 }
 export interface InfraError {
   /**
@@ -2204,7 +2275,7 @@ export type MacInterfaceMap = {
   /**
    * mac address present on the host
    */
-  macAddress?: string; // ^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$
+  macAddress: string; // ^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$
   /**
    * nic name used in the yaml, which relates 1:1 to the mac address
    */
@@ -2367,6 +2438,17 @@ export interface OpenshiftVersion {
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
+}
+export interface Operator {
+  'feature-support-level-id': FeatureSupportLevelId;
+  supportLevel: SupportLevel;
+  reason?: IncompatibilityReason;
+  incompatibilities: FeatureSupportLevelId[];
+  /**
+   * Name of the operator
+   */
+  name: string;
+  dependencies: FeatureSupportLevelId[];
 }
 export interface OperatorCreateParams {
   name?: string;
@@ -2875,8 +2957,17 @@ export interface V2ClusterUpdateParams {
     | 'all';
   /**
    * The desired network type used.
+   * - OVNKubernetes: Default CNI for OpenShift (recommended)
+   * - OpenShiftSDN: Legacy SDN (deprecated in newer versions)
+   * - CiscoACI: Cisco ACI CNI (requires custom manifests)
+   * - Cilium: Isovalent Cilium CNI (requires custom manifests)
+   * - Calico: Tigera Calico CNI (requires custom manifests)
+   * - None: No CNI - user must provide custom CNI manifests
+   * Note: Third-party CNIs (CiscoACI, Cilium, Calico, None) require uploading
+   * CNI manifests via the custom manifests API before installation.
+   *
    */
-  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes' | 'CiscoACI' | 'Cilium' | 'Calico' | 'None';
   /**
    * Schedule workloads on masters
    */
@@ -2933,12 +3024,25 @@ export interface V2OpenshiftVersions {
   version?: string;
   onlyLatest?: boolean;
 }
+export interface V2OperatorsBundles {
+  openshiftVersion?: string;
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'external';
+  externalPlatformName?: string;
+  featureIds?: 'SNO'[];
+}
 export interface V2SupportLevelsArchitectures {
   openshiftVersion: string;
 }
 export interface V2SupportLevelsFeatures {
   openshiftVersion: string;
   cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
+  platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'external';
+  externalPlatformName?: string;
+}
+export interface V2SupportLevelsFeaturesDetailed {
+  openshiftVersion: string;
+  cpuArchitecture?: 'x86_64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   platformType?: 'baremetal' | 'none' | 'nutanix' | 'vsphere' | 'external';
   externalPlatformName?: string;
 }

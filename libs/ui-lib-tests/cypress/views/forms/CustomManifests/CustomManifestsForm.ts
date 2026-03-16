@@ -13,7 +13,7 @@ export const CustomManifestsForm = {
   },
 
   validationAlert: () => {
-    return cy.get('.pf-v6-c-alert.pf-m-danger');
+    return cy.contains('.pf-v6-c-alert', 'Custom manifests configuration contains missing or invalid fields');
   },
   addManifest: () => {
     return CustomManifestsForm.body().findByTestId('add-manifest');

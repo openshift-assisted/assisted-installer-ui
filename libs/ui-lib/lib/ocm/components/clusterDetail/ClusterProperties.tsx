@@ -5,7 +5,7 @@ import {
   DetailList,
   getDefaultCpuArchitecture,
   isDualStack,
-  NETWORK_TYPE_SDN,
+  NETWORK_TYPE_LABELS,
   selectApiVip,
   selectIngressVip,
   selectIpv4Cidr,
@@ -25,11 +25,7 @@ type ClusterPropertiesProps = {
 };
 
 export const getNetworkType = (clusterNetworkType: Cluster['networkType']): string => {
-  let networkType: string;
-  clusterNetworkType === NETWORK_TYPE_SDN
-    ? (networkType = 'Software-Defined Networking (SDN)')
-    : (networkType = 'Open Virtual Network (OVN)');
-  return networkType;
+  return NETWORK_TYPE_LABELS[clusterNetworkType || ''];
 };
 
 export const getManagementType = ({ userManagedNetworking }: Cluster): string => {

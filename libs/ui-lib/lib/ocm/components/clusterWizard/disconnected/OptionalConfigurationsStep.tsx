@@ -82,10 +82,9 @@ const infraEnvToFormValues = (infraEnv: InfraEnv): OptionalConfigurationsFormVal
   noProxy: infraEnv.proxy?.noProxy ?? '',
   enableNtpSources: !!infraEnv.additionalNtpSources,
   additionalNtpSources: infraEnv.additionalNtpSources ?? '',
-  hostsNetworkConfigurationType:
-    infraEnv.hostsNetworkConfigurationType === 'static'
-      ? HostsNetworkConfigurationType.STATIC
-      : HostsNetworkConfigurationType.DHCP,
+  hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
+    ? HostsNetworkConfigurationType.STATIC
+    : HostsNetworkConfigurationType.DHCP,
   rendezvousIp: infraEnv.rendezvousIp ?? '',
 });
 

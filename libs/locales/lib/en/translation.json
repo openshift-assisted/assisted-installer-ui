@@ -970,6 +970,7 @@
   "ai:Unable to SSH into your hosts through the network?": "Unable to SSH into your hosts through the network?",
   "ai:Unique hostname": "Unique hostname",
   "ai:Unknown": "Unknown",
+  "ai:Unmonitored": "Unmonitored",
   "ai:Unreachable": "Unreachable",
   "ai:Update": "Update",
   "ai:Upload": "Upload",

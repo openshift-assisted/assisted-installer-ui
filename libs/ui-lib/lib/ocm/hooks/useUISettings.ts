@@ -31,7 +31,6 @@ const useUISettings = (clusterId?: Cluster['id']) => {
           const { data: customManifests } = await ClustersAPI.getManifests(clusterId);
 
           const mockUISettings: UISettingsValues = {
-            addCustomManifests: !!customManifests.length,
             customManifestsAdded: !!customManifests.length,
           };
 

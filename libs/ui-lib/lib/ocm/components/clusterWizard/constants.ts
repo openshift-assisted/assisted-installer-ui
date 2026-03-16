@@ -23,6 +23,7 @@ export const defaultWizardSteps: ClusterWizardStepsType[] = [
   'host-discovery',
   'storage',
   'networking',
+  'custom-manifests',
   'review',
 ];
 
