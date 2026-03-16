@@ -54,6 +54,8 @@ export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) => {
   return `https://docs.redhat.com/en/documentation/openshift_container_platform/${validOcpVersion}/html/installing_on_bare_metal/${variant}#installation-network-user-infra_installing-bare-metal`;
 };
 
+export const RED_HAT_CNI_SUPPORT_MATRIX_LINK = 'https://access.redhat.com/articles/5436171';
+
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
 //Hosts status

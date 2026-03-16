@@ -7,9 +7,5 @@ export const isOciPlatformType = (cluster: Cluster): boolean => {
   );
 };
 
-export const isExternalPlatform = (cluster: Cluster): boolean => {
-  return cluster.platform?.type === 'external';
-};
-
 export const isThirdPartyCNI = (networkType: Cluster['networkType']): boolean =>
   !!networkType && networkType !== NETWORK_TYPE_OVN && networkType !== NETWORK_TYPE_SDN;

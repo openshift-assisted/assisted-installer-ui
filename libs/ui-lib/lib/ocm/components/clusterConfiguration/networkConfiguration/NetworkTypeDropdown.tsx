@@ -26,19 +26,10 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
+import { TechnologyPreview } from '../../../../common/components/ui/TechnologyPreview';
 import type { NetworkConfigurationValues } from '../../../../common/types/clusters';
 import { isThirdPartyCNI } from '../../utils';
-
-const RED_HAT_CNI_SUPPORT_MATRIX_URL = 'https://access.redhat.com/articles/5436171';
-
-const allOptions = [
-  NETWORK_TYPE_OVN,
-  NETWORK_TYPE_SDN,
-  NETWORK_TYPE_CISCO_ACI,
-  NETWORK_TYPE_CILIUM,
-  NETWORK_TYPE_CALICO,
-  NETWORK_TYPE_NONE,
-].map((value) => ({ value, label: NETWORK_TYPE_LABELS[value] }));
+import { RED_HAT_CNI_SUPPORT_MATRIX_LINK } from '../../../../common/config/docs_links';
 
 export interface NetworkTypeDropDownProps {
   isDisabled?: boolean;
@@ -62,9 +53,6 @@ export const NetworkTypeDropDown = ({
     if (!isSDNSelectable) {
       return 'SDN is not supported for SNO clusters or when IPv6 is detected.';
     }
-    if (featureSupportLevelData?.['SDN_NETWORK_TYPE'] === 'unavailable') {
-      return 'SDN is not available for the selected configuration.';
-    }
     return getFeatureDisabledReason('SDN_NETWORK_TYPE', featureSupportLevelData ?? undefined);
   }, [isSDNSelectable, featureSupportLevelData, getFeatureDisabledReason]);
 
@@ -74,12 +62,17 @@ export const NetworkTypeDropDown = ({
     }
   }, [sdnDisabledReason, field.value, setValue]);
 
-  const currentDisplayValue =
-    allOptions.find((opt) => opt.value === field.value)?.label ?? allOptions[0].label;
+  const currentDisplayValue = NETWORK_TYPE_LABELS[field.value];
 
-  const dropdownItems = allOptions.map(({ value, label }) => {
+  const dropdownItems = Object.entries(NETWORK_TYPE_LABELS).map(([value, label]) => {
     const isSDN = value === NETWORK_TYPE_SDN;
     const disabledReason = isSDN ? sdnDisabledReason : undefined;
+    const isTechPreview = [
+      NETWORK_TYPE_CISCO_ACI,
+      NETWORK_TYPE_CILIUM,
+      NETWORK_TYPE_CALICO,
+      NETWORK_TYPE_NONE,
+    ].includes(value);
     return (
       <DropdownItem
         key={value}
@@ -88,14 +81,20 @@ export const NetworkTypeDropDown = ({
         isAriaDisabled={disabledReason !== undefined}
       >
         <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
-          <div>{label}</div>
+          <div>
+            {label}
+            {isTechPreview && (
+              <span onClick={(event) => event.stopPropagation()}>
+                <TechnologyPreview testId={`${value}-support-level`} />
+              </span>
+            )}
+          </div>
         </Tooltip>
       </DropdownItem>
     );
   });
 
-  const onSelect = (event?: React.MouseEvent<Element, MouseEvent>): void => {
-    const nextValue = event?.currentTarget.id;
+  const onSelect = (event?: React.MouseEvent<Element, MouseEvent>, nextValue?: string): void => {
     if (nextValue) {
       setValue(nextValue);
     }
@@ -145,7 +144,7 @@ export const NetworkTypeDropDown = ({
                 OpenShift version.
               </StackItem>
               <StackItem>
-                <ExternalLink href={RED_HAT_CNI_SUPPORT_MATRIX_URL}>
+                <ExternalLink href={RED_HAT_CNI_SUPPORT_MATRIX_LINK}>
                   Red Hat CNI Support Matrix
                 </ExternalLink>
               </StackItem>

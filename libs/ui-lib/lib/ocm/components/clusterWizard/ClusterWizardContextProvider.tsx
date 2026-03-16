@@ -19,7 +19,7 @@ import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-
 import { useUISettings } from '../../hooks';
 import { AlertVariant } from '@patternfly/react-core';
 import { useFeature } from '../../hooks/use-feature';
-import { isExternalPlatform, isThirdPartyCNI } from '../utils';
+import { isOciPlatformType, isThirdPartyCNI } from '../utils';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -138,7 +138,7 @@ const ClusterWizardContextProvider = ({
       let customManifestsRequired = false;
       if (cluster) {
         customManifestsRequired =
-          isThirdPartyCNI(cluster.networkType) || isExternalPlatform(cluster);
+          isThirdPartyCNI(cluster.networkType) || isOciPlatformType(cluster);
       }
       const customManifestsStepNeedsToBeFilled =
         customManifestsRequired && !uiSettings?.customManifestsAdded;

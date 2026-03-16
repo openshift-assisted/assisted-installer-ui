@@ -16,7 +16,7 @@ import { CustomManifests } from './components/CustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CustomManifestFormState } from './components/propTypes';
 import { ClustersAPI, ClusterWizardStepHeader } from '../../../../common';
-import { isExternalPlatform, isThirdPartyCNI } from '../../utils';
+import { isOciPlatformType, isThirdPartyCNI } from '../../utils';
 import DeleteCustomManifestModal from './DeleteCustomManifestModal';
 import { ClustersService } from '../../../services';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -29,7 +29,7 @@ export const CustomManifestsPage = ({
   onFormStateChange(formState: CustomManifestFormState): void;
 }) => {
   const clusterWizardContext = useClusterWizardContext();
-  const isRequired = isThirdPartyCNI(cluster.networkType) || isExternalPlatform(cluster);
+  const isRequired = isThirdPartyCNI(cluster.networkType) || isOciPlatformType(cluster);
   const [useCustomManifests, setUseCustomManifests] = React.useState(isRequired);
   const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
@@ -84,7 +84,7 @@ export const CustomManifestsPage = ({
     ? 'Custom manifests are required when using a third-party CNI or Oracle Cloud Infrastructure.'
     : '';
 
-  const showExternalPlatformReminder = isExternalPlatform(cluster);
+  const showExternalPlatformReminder = isOciPlatformType(cluster);
   const showThirdPartyCnIReminder = isThirdPartyCNI(cluster.networkType);
   const showCombinedReminder = showExternalPlatformReminder && showThirdPartyCnIReminder;
   let reminderAlerts: React.ReactNode = null;

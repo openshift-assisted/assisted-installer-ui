@@ -104,12 +104,21 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
         if (isAssistedMigration) {
-          const uiPatch: UISettingsValues = {
-            bundlesSelected: ['virtualization'],
-            isAssistedMigration: true,
-          };
-          await UISettingService.update(cluster.id, uiPatch);
-          await clusterWizardContext.updateUISettings(uiPatch);
+          try {
+            const uiPatch: UISettingsValues = {
+              bundlesSelected: ['virtualization'],
+              isAssistedMigration: true,
+            };
+            await UISettingService.update(cluster.id, uiPatch);
+            await clusterWizardContext.updateUISettings(uiPatch);
+          } catch (uiError) {
+            handleApiError(uiError, () =>
+              addAlert({
+                title: 'Failed to update UI settings',
+                message: getApiErrorMessage(uiError),
+              }),
+            );
+          }
         }
       } catch (e) {
         handleApiError(e, () =>
