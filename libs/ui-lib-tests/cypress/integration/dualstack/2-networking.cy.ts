@@ -39,8 +39,7 @@ describe(`Assisted Installer Dualstack Networking`, () => {
       networkingPage.getStackTypeDualStack().should('be.enabled').and('be.checked');
       networkingPage.getClusterManagedNetworking().should('be.disabled').and('be.checked');
       networkingPage.getVipDhcp().should('be.disabled').and('not.be.checked');
-      networkingPage.getOvnNetworkingField().should('not.be.enabled').and('be.checked');
-      networkingPage.getSdnNetworkingField().should('not.be.enabled').and('not.be.checked');
+      networkingPage.getNetworkTypeToggle().should('contain.text', 'Open Virtual Networking (OVN)');
       networkingPage
         .getClusterSubnetCidrIpv4()
         .should('contain.text', '192.168.122.0/24 (192.168.122.0 - 192.168.122.255)');
@@ -71,8 +70,7 @@ describe(`Assisted Installer Dualstack Networking`, () => {
       networkingPage.getClusterManagedNetworking().should('be.enabled').and('be.checked');
       networkingPage.getStackTypeSingleStack().should('be.enabled').and('be.checked');
       networkingPage.getVipDhcp().should('be.disabled').and('not.be.checked');
-      networkingPage.getOvnNetworkingField().should('be.enabled').and('be.checked');
-      networkingPage.getSdnNetworkingField().should('be.enabled').and('not.be.checked');
+      networkingPage.getNetworkTypeToggle().should('contain.text', 'Open Virtual Networking (OVN)');
 
       cy.wait('@update-cluster').then(({ request }) => {
         expect(request.body, 'Networking request body').to.deep.equal(ipv4NetworkingRequest);

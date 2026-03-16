@@ -102,6 +102,9 @@ export const getClusterWizardFirstStep = (
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
+      if (customManifestsStepNeedsToBeFilled) {
+        return 'custom-manifests';
+      }
       return getStepForFailingHostValidations(hosts);
     default:
       return 'cluster-details';
@@ -241,7 +244,12 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   // Alternatively we would have to whitelist network validations instead of using group
   // TODO(mlibra): remove that container-images-available from soft validations and let backend drive it via disabling it.
   //   Depends on: https://issues.redhat.com/browse/MGMT-5265
-  softValidationIds: ['ntp-synced', 'container-images-available', 'mtu-valid'],
+  softValidationIds: [
+    'ntp-synced',
+    'container-images-available',
+    'mtu-valid',
+    'custom-manifests-requirements-satisfied',
+  ],
 };
 
 const reviewStepValidationsMap: WizardStepValidationMap = {

@@ -21,7 +21,6 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { OcmRichInputField } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
-import CustomManifestCheckbox from './CustomManifestCheckbox';
 import CpuArchitectureDropdown from './CpuArchitectureDropdown';
 import { OcmBaseDomainField } from './OcmBaseDomainField';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
@@ -35,7 +34,6 @@ import {
   ManagedDomain,
   PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { useFeature } from '../../hooks/use-feature';
 import ControlPlaneNodesDropdown, {
   ControlPlaneNodesLabel,
@@ -68,7 +66,6 @@ export const OcmClusterDetailsFormFields = ({
   const { openshiftVersion, platform } = values;
   const { getCpuArchitectures } = useOpenShiftVersionsContext();
   const cpuArchitecturesByVersionImage = getCpuArchitectures(openshiftVersion);
-  const clusterWizardContext = useClusterWizardContext();
   const featureSupportLevelData = useSupportLevelsAPI(
     'features',
     values.openshiftVersion,
@@ -91,12 +88,10 @@ export const OcmClusterDetailsFormFields = ({
     (selectedPlatform: PlatformType) => {
       const isOracleSelected = selectedPlatform === 'external';
       if (isOracleSelected) {
-        setFieldValue('addCustomManifest', isOracleSelected, false);
-        clusterWizardContext.setCustomManifestsStep(isOracleSelected);
         setFieldValue('hostsNetworkConfigurationType', HostsNetworkConfigurationType.DHCP);
       }
     },
-    [clusterWizardContext, setFieldValue],
+    [setFieldValue],
   );
 
   React.useEffect(() => {
@@ -213,8 +208,6 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <ControlPlaneNodesDropdown featureSupportLevelData={featureSupportLevelData} />
       )}
-      <CustomManifestCheckbox clusterId={cluster?.id || ''} isDisabled={platform === 'external'} />
-
       {!isSingleClusterFeatureEnabled && (
         <HostsNetworkConfigurationControlGroup
           clusterExists={clusterExists}

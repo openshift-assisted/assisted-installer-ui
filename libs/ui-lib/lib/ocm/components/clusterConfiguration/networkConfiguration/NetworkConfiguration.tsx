@@ -23,9 +23,9 @@ import {
   VirtualIPControlGroupProps,
   AdvancedNetworkFields,
 } from '../../../../common/components/clusterWizard/networkingSteps';
+import { NetworkTypeDropDown } from './NetworkTypeDropdown';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
-import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import {
   NewFeatureSupportLevelData,
   NewFeatureSupportLevelMap,
@@ -259,11 +259,13 @@ const NetworkConfiguration = ({
           />
         </StackItem>
       )}
-      {isSDNSupported && (
-        <StackItem>
-          <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
-        </StackItem>
-      )}
+      <StackItem>
+        <NetworkTypeDropDown
+          isDisabled={isViewerMode}
+          isSDNSelectable={isSDNSelectable}
+          featureSupportLevelData={featureSupportLevelData}
+        />
+      </StackItem>
 
       {!(isUserManagedNetworking && !isSNOCluster) && (
         <StackItem>

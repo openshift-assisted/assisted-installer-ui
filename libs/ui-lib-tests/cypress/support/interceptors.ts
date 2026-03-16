@@ -135,9 +135,9 @@ const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
 
 const mockUISettingsResponse: HttpRequestInterceptor = (req) => {
   if (hasWizardSignal('CUSTOM_MANIFEST_ADDED')) {
-    req.reply('AI_UI:{"addCustomManifests":true,"customManifestsAdded":true}');
+    req.reply('AI_UI:{"customManifestsAdded":true}');
   } else if (hasWizardSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED')) {
-    req.reply('AI_UI:{"addCustomManifests":true}');
+    req.reply('AI_UI:{}');
   } else {
     req.reply('""');
   }

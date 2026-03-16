@@ -60,8 +60,7 @@ describe(`Assisted Installer Multinode Networking`, () => {
 
     it('Should have the correct default network type', () => {
       networkingPage.getAdvancedNetwork().click();
-      networkingPage.getSdnNetworkingField().should('be.enabled').and('not.be.checked');
-      networkingPage.getOvnNetworkingField().should('be.enabled').and('be.checked');
+      networkingPage.getNetworkTypeToggle().should('contain.text', 'Open Virtual Networking (OVN)');
     });
   });
 });

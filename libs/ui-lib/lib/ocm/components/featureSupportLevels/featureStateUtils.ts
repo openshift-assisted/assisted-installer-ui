@@ -181,6 +181,12 @@ export const getNewFeatureDisabledReason = (
     case 'OSC': {
       return getOscDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
+    case 'SDN_NETWORK_TYPE': {
+      if (!isSupported) {
+        return 'SDN is not available for the selected configuration.';
+      }
+      return undefined;
+    }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
     }

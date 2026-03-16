@@ -19,8 +19,7 @@ Cypress.env(
 Cypress.env('serviceNetworkCidrFieldHelperId', '#form-input-serviceNetworks-0-cidr-field-helper');
 Cypress.env('userManagedNetworkingRadioText', 'User-Managed Networking');
 Cypress.env('openVirtualNetworkingRadioText', 'Open Virtual Networking');
-Cypress.env('openshiftSdnInputValue', 'input[value="OpenShiftSDN"]');
-Cypress.env('ovnKubernetesRadioId', `#form-radio-networkType-OVNKubernetes-field`);
+Cypress.env('networkTypeToggleId', '#form-input-networkType-field');
 Cypress.env('hostSubnetFieldId', '#form-input-hostSubnet-field');
 Cypress.env('clusterNetworkCidrFieldId', '#form-input-clusterNetworks-0-cidr-field');
 Cypress.env('clusterNetworks0HostPrefixFieldId', '#form-input-clusterNetworks-0-hostPrefix-field');

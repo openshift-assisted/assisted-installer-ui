@@ -277,11 +277,8 @@ export const networkingPage = {
         });
       });
   },
-  getSdnNetworkingField: () => {
-    return cy.get(Cypress.env('openshiftSdnInputValue')).scrollIntoView();
-  },
-  getOvnNetworkingField: () => {
-    return cy.get(Cypress.env('ovnKubernetesRadioId')).scrollIntoView();
+  getNetworkTypeToggle: () => {
+    return cy.get(Cypress.env('networkTypeToggleId')).scrollIntoView();
   },
   setOvnNetworking: () => {
     cy.get(`.pf-v6-c-radio__label:contains(${Cypress.env('openVirtualNetworkingRadioText')})`)

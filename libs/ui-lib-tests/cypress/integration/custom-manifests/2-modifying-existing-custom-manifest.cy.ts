@@ -105,10 +105,9 @@ describe(`Assisted Installer Custom manifests step`, () => {
           'Must have a yaml, yml, json, yaml.patch or yml.patch extension and can not contain /.',
         );
 
-      CustomManifestsForm.validationAlert().should(
-        'contain.text',
-        'Custom manifests configuration contains missing or invalid fields',
-      );
+      CustomManifestsForm.validationAlert()
+        .should('be.visible')
+        .and('contain.text', 'Custom manifests configuration contains missing or invalid fields');
       commonActions.verifyNextIsDisabled();
     });
 
@@ -130,10 +129,9 @@ describe(`Assisted Installer Custom manifests step`, () => {
           'Must have a yaml, yml, json, yaml.patch or yml.patch extension and can not contain /.',
         );
 
-      CustomManifestsForm.validationAlert().should(
-        'contain.text',
-        'Custom manifests configuration contains missing or invalid fields',
-      );
+      CustomManifestsForm.validationAlert()
+        .should('be.visible')
+        .and('contain.text', 'Custom manifests configuration contains missing or invalid fields');
       commonActions.verifyNextIsDisabled();
     });
   });

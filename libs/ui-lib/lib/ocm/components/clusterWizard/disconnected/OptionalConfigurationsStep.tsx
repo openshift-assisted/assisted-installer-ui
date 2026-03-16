@@ -83,7 +83,7 @@ const infraEnvToFormValues = (infraEnv: InfraEnv): OptionalConfigurationsFormVal
   enableNtpSources: !!infraEnv.additionalNtpSources,
   additionalNtpSources: infraEnv.additionalNtpSources ?? '',
   hostsNetworkConfigurationType:
-    infraEnv.hostsNetworkConfigurationType === 'static'
+    (infraEnv.staticNetworkConfig?.length ?? 0) > 0
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
   rendezvousIp: infraEnv.rendezvousIp ?? '',
