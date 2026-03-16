@@ -183,7 +183,6 @@
   "ai:Cluster CIDR": "Cluster CIDR",
   "ai:Cluster configured and ready for installation.": "Cluster configured and ready for installation.",
   "ai:Cluster details": "Cluster details",
-  "ai:Cluster Details": "Cluster Details",
   "ai:cluster doesn't contain the feature_usage field": "cluster does not contain the feature_usage field",
   "ai:cluster doesn't contain the openshift_version field": "cluster does not contain the openshift_version field",
   "ai:Cluster Events": "Cluster Events",
