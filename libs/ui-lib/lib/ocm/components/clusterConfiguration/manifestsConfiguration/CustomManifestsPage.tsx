@@ -146,7 +146,7 @@ export const CustomManifestsPage = ({
           </span>
         </Tooltip>
       </FormGroup>
-      {!useCustomManifests && <div style={{ minHeight: '120px' }} aria-hidden="true" />}
+      {!useCustomManifests && <div style={{ minHeight: '250px' }} aria-hidden="true" />}
       {useCustomManifests && (
         <>
           {reminderAlerts}
