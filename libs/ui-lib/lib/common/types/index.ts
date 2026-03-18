@@ -7,6 +7,7 @@ export * from './events';
 export * from './clusters';
 export * from './cpuArchitecture';
 export * from './featureSupportLevel';
+export * from './networkType';
 export * from './typescriptExtensions';
 export * from './generateIsoFields';
 export * from './errortype';

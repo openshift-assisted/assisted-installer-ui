@@ -2,7 +2,7 @@ import React from 'react';
 import { Split, SplitItem, Tooltip, FormGroup } from '@patternfly/react-core';
 import { RadioField } from '../../ui/formik';
 import { PopoverIcon } from '../../../components/ui';
-import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
+import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../types/networkType';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 const GROUP_NAME = 'networkType';
