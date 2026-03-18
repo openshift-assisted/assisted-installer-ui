@@ -28,21 +28,19 @@ const DisconnectedStaticIp: React.FC = () => {
     getInitialFormStateProps(),
   );
 
-  const onFormStateChange = (formState: StaticIpFormState) => {
-    setFormStateProps(formState);
-  };
+  const updateInfraEnv = React.useCallback(
+    async (params: InfraEnvUpdateParams) => {
+      if (!disconnectedInfraEnv?.id) {
+        throw new Error('No disconnected infraEnv available');
+      }
+      const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, params);
+      setDisconnectedInfraEnv(updatedInfraEnv);
+      return updatedInfraEnv;
+    },
+    [disconnectedInfraEnv, setDisconnectedInfraEnv],
+  );
 
-  const updateInfraEnv = async (params: InfraEnvUpdateParams) => {
-    if (!disconnectedInfraEnv?.id) {
-      throw new Error('No disconnected infraEnv available');
-    }
-    const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, params);
-    setDisconnectedInfraEnv(updatedInfraEnv);
-    return updatedInfraEnv;
-  };
-
-  const isNextDisabled =
-    formState.isAutoSaveRunning || !formState.isValid || !!alerts.length || formState.isSubmitting;
+  const isNextDisabled = !formState.isValid || !!alerts.length || formState.isSubmitting;
   const errorFields = getFormikErrorFields<object>(formState.errors, formState.touched);
 
   const footer = (
@@ -51,10 +49,10 @@ const DisconnectedStaticIp: React.FC = () => {
       alertContent={null}
       errorFields={errorFields}
       isSubmitting={formState.isSubmitting}
-      onNext={() => moveNext()}
-      onBack={() => moveBack()}
+      onNext={moveNext}
+      onBack={moveBack}
       isNextDisabled={isNextDisabled}
-      isBackDisabled={formState.isSubmitting || formState.isAutoSaveRunning}
+      isBackDisabled={formState.isSubmitting}
     />
   );
 
@@ -68,7 +66,7 @@ const DisconnectedStaticIp: React.FC = () => {
         <StaticIpPage
           infraEnv={disconnectedInfraEnv}
           updateInfraEnv={updateInfraEnv}
-          onFormStateChange={onFormStateChange}
+          onFormStateChange={setFormStateProps}
         />
       </WithErrorBoundary>
     </ClusterWizardStep>

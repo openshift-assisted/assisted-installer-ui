@@ -6,19 +6,18 @@ export const pullSecretValidationSchema = (t: TFunction) =>
     'is-well-formed-json',
     t("ai:Invalid pull secret format. You must use your Red Hat account's pull secret."),
     (value?: string) => {
-      const isValid = true;
-      if (!value) return isValid;
+      if (!value || !value.trim()) return true;
       try {
-        const pullSecret = JSON.parse(value) as {
-          auths: string;
-        };
+        const pullSecret = JSON.parse(value) as unknown;
         return (
-          pullSecret.constructor.name === 'Object' &&
-          !!pullSecret?.auths &&
-          pullSecret.auths.constructor.name === 'Object'
+          typeof pullSecret === 'object' &&
+          pullSecret !== null &&
+          'auths' in pullSecret &&
+          typeof (pullSecret as { auths: unknown }).auths === 'object' &&
+          (pullSecret as { auths: unknown }).auths !== null
         );
       } catch {
-        return !isValid;
+        return false;
       }
     },
   );

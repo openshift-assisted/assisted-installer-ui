@@ -1959,7 +1959,7 @@ export interface InfraEnvCreateParams {
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
-  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x';
+  cpuArchitecture?: 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
   kernelArguments?: KernelArguments;
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this

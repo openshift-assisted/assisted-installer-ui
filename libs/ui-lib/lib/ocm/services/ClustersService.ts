@@ -40,7 +40,7 @@ const ClustersService = {
       pullSecret: params.pullSecret,
       clusterId: cluster.id,
       openshiftVersion: params.openshiftVersion,
-      cpuArchitecture: params.cpuArchitecture as InfraEnvCreateParams['cpuArchitecture'],
+      cpuArchitecture: params.cpuArchitecture,
       staticNetworkConfig: params.staticNetworkConfig,
     };
 

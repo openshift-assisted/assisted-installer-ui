@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 import { Form } from '@patternfly/react-core';
-import { Formik, FormikConfig, useFormikContext, yupToFormErrors } from 'formik';
+import { Formik, useFormikContext, yupToFormErrors } from 'formik';
 import isEqual from 'lodash-es/isEqual.js';
 import { useAlerts, useFormikAutoSave } from '../../../../../common';
 import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
@@ -9,6 +9,7 @@ import { getApiErrorMessage } from '../../../../../common/api';
 import { StaticIpFormProps } from './propTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 
+/** Reports form state and triggers save on every value change (useFormikAutoSave) */
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
   getEmptyValues,
@@ -16,28 +17,41 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange: StaticIpFormProps<StaticIpFormValues>['onFormStateChange'];
   getEmptyValues: StaticIpFormProps<StaticIpFormValues>['getEmptyValues'];
 }) => {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const emptyValues = React.useMemo(() => getEmptyValues(), []);
+  const emptyValues = React.useMemo(() => getEmptyValues(), [getEmptyValues]);
   const { isSubmitting, isValid, touched, errors, values, initialValues, submitForm } =
     useFormikContext<StaticIpFormValues>();
 
-  const isEmpty = React.useMemo<boolean>(() => {
-    return isEqual(values, emptyValues);
-  }, [values, emptyValues]);
+  const isEmpty = React.useMemo(() => isEqual(values, emptyValues), [values, emptyValues]);
+  const isAutoSaveRunning = useFormikAutoSave(0);
 
-  const isAutoSaveRunning = useFormikAutoSave();
-
+  // Submit once on mount when form was opened with existing data (so it gets persisted).
   React.useEffect(() => {
     if (!isEqual(emptyValues, initialValues)) {
       void submitForm();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: run only on mount.
   }, []);
 
   React.useEffect(() => {
-    onFormStateChange({ isSubmitting, isAutoSaveRunning, isValid, touched, errors, isEmpty });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSubmitting, isValid, isAutoSaveRunning, touched, errors]);
+    onFormStateChange({
+      isSubmitting,
+      isAutoSaveRunning,
+      isValid,
+      touched,
+      errors,
+      isEmpty,
+      values: values as Record<string, unknown>,
+    });
+  }, [
+    isSubmitting,
+    isValid,
+    isAutoSaveRunning,
+    touched,
+    errors,
+    values,
+    isEmpty,
+    onFormStateChange,
+  ]);
   return null;
 };
 
@@ -55,27 +69,13 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
   const { clearAlerts, addAlert } = useAlerts();
   const { captureException } = useErrorMonitor();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const [initialValues, setInitialValues] = React.useState<StaticIpFormValues | undefined>();
-  React.useEffect(() => {
-    if (showEmptyValues) {
-      //after view changed the formik should be rendered with empty values
-      setInitialValues(getEmptyValues());
-    } else {
-      setInitialValues(getInitialValues(infraEnv));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const initialValues = showEmptyValues ? getEmptyValues() : getInitialValues(infraEnv);
 
-  if (!initialValues) {
-    return null;
-  }
-
-  const handleSubmit: FormikConfig<StaticIpFormValues>['onSubmit'] = async (values) => {
+  const handleSubmit = async (values: StaticIpFormValues) => {
     clearAlerts();
     try {
-      const staticNetworkConfig = getUpdateParams(infraEnv, values);
       await updateInfraEnv({
-        staticNetworkConfig: staticNetworkConfig,
+        staticNetworkConfig: getUpdateParams(infraEnv, values),
       });
     } catch (error) {
       captureException(error);
@@ -97,6 +97,10 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
       return yupToFormErrors(error);
     }
   };
+
+  if (!initialValues) {
+    return null;
+  }
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
   return (

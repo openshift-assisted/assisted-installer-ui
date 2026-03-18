@@ -13,6 +13,7 @@ export type StaticIpFormState = {
   touched: FormikTouched<object>;
   errors: FormikErrors<object>;
   isEmpty: boolean;
+  values?: Record<string, unknown>;
 };
 
 export type StaticIpProps = {
@@ -29,7 +30,6 @@ export type StaticIpViewProps = StaticIpPageProps & {
 };
 
 export type StaticIpFormProps<StaticIpViewValues extends object> = StaticIpViewProps & {
-  showEmptyValues: boolean;
   getInitialValues(infraEnv: InfraEnv): StaticIpViewValues;
   getUpdateParams(currentInfraEnv: InfraEnv, values: StaticIpViewValues): HostStaticNetworkConfig[];
   validationSchema: Yup.ObjectSchema<Yup.AnyObject> | Yup.Lazy<Yup.AnyObject>;

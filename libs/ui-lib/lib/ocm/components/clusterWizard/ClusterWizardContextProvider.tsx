@@ -116,9 +116,18 @@ const ClusterWizardContextProvider = ({
     React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
-  const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>(
+  const [disconnectedInfraEnv, setDisconnectedInfraEnvState] = React.useState<InfraEnv | undefined>(
     infraEnv,
   );
+  const [disconnectedHostsNetworkConfigurationType, setDisconnectedHostsNetworkConfigurationType] =
+    React.useState<'dhcp' | 'static'>('dhcp');
+
+  const setDisconnectedInfraEnv = React.useCallback((infraEnv: InfraEnv | undefined) => {
+    setDisconnectedInfraEnvState(infraEnv);
+    if (infraEnv === undefined) {
+      setDisconnectedHostsNetworkConfigurationType('dhcp');
+    }
+  }, []);
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -301,6 +310,8 @@ const ClusterWizardContextProvider = ({
       },
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
+      disconnectedHostsNetworkConfigurationType,
+      setDisconnectedHostsNetworkConfigurationType,
     };
   }, [
     wizardStepIds,
@@ -315,6 +326,8 @@ const ClusterWizardContextProvider = ({
     connectedWizardStepIds,
     disconnectedWizardStepIds,
     disconnectedInfraEnv,
+    disconnectedHostsNetworkConfigurationType,
+    setDisconnectedInfraEnv,
   ]);
 
   if (!contextValue) {
