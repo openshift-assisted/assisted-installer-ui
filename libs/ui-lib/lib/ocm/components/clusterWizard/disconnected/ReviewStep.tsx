@@ -47,8 +47,14 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              if (disconnectedInfraEnv?.downloadUrl) {
-                window.open(disconnectedInfraEnv.downloadUrl, '_blank');
+              const arch = disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64';
+              const isoFileName = `agent-ove.${arch}.iso`;
+              const url = disconnectedInfraEnv?.downloadUrl;
+              if (url) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = isoFileName;
+                a.click();
               }
               navigate('/cluster-list');
             }}
@@ -112,7 +118,9 @@ const ReviewStep = () => {
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
-                <DescriptionListDescription>x86_64</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64'}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>ISO size</DescriptionListTerm>
