@@ -10,7 +10,8 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { NetworkConfigurationValues, HostSubnets } from '../../../types';
-import { NETWORK_TYPE_SDN, DUAL_STACK } from '../../../config';
+import { DUAL_STACK } from '../../../config';
+import { NETWORK_TYPE_SDN } from '../../../types/networkType';
 import { selectMachineNetworkCIDR, selectApiVip, selectIngressVip } from '../../../selectors';
 import { getVipValidationsById } from '../../clusterConfiguration';
 import { FormikStaticField, PopoverIcon } from '../../ui';

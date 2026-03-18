@@ -3,6 +3,7 @@ import {
   architectureData,
   CpuArchitecture,
   FeatureId,
+  isDualStack,
   isSNO,
   SupportedCpuArchitecture,
 } from '../../../common';
@@ -143,6 +144,19 @@ const getOciDisabledReason = (cpuArchitecture: string | undefined, isSupported: 
   }
 };
 
+const getSDNDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
+  if (cluster && isSNO(cluster)) {
+    return 'SDN is not supported for single-node clusters.';
+  }
+  if (cluster && isDualStack(cluster)) {
+    return 'SDN is not supported for dual-stack clusters.';
+  }
+  if (!isSupported) {
+    return 'SDN is not supported for the selected configuration.';
+  }
+  return undefined;
+};
+
 export const getNewFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
@@ -182,10 +196,7 @@ export const getNewFeatureDisabledReason = (
       return getOscDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'SDN_NETWORK_TYPE': {
-      if (!isSupported) {
-        return 'SDN is not available for the selected configuration.';
-      }
-      return undefined;
+      return getSDNDisabledReason(cluster, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
