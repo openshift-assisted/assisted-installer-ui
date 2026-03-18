@@ -102,19 +102,30 @@ const shouldSendDummyStaticConfig = (
     (typeof infraEnv.staticNetworkConfig === 'string' &&
       isDummyYaml(infraEnv.staticNetworkConfig)));
 
+/**
+ * Builds common infrastructure environment params from form values.
+ * Proxy and NTP are only included when their respective checkboxes are checked.
+ */
 const buildInfraEnvParams = (
   values: OptionalConfigurationsFormValues,
   disconnectedInfraEnv: InfraEnv | null,
 ): InfraEnvUpdateParams => {
-  const proxy = {
-    ...(values.httpProxy && { httpProxy: values.httpProxy }),
-    ...(values.httpsProxy && { httpsProxy: values.httpsProxy }),
-    ...(values.noProxy && { noProxy: values.noProxy }),
-  };
+  const proxy =
+    values.enableProxy && (values.httpProxy || values.httpsProxy || values.noProxy)
+      ? {
+          ...(values.httpProxy && { httpProxy: values.httpProxy }),
+          ...(values.httpsProxy && { httpsProxy: values.httpsProxy }),
+          ...(values.noProxy && { noProxy: values.noProxy }),
+        }
+      : undefined;
+
   return {
     ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
-    ...(Object.keys(proxy).length > 0 && { proxy }),
-    ...(values.additionalNtpSources && { additionalNtpSources: values.additionalNtpSources }),
+    ...(proxy && { proxy }),
+    ...(values.enableNtpSources &&
+      values.additionalNtpSources?.trim() && {
+        additionalNtpSources: values.additionalNtpSources.trim(),
+      }),
     ...(values.rendezvousIp && { rendezvousIp: values.rendezvousIp }),
     ...(shouldSendDummyStaticConfig(values, disconnectedInfraEnv) && {
       staticNetworkConfig: getDummyInfraEnvField(),
@@ -148,21 +159,27 @@ const getValidationSchema = (t: TFunction) =>
     Yup.object().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
       enableProxy: Yup.boolean().required(),
-      httpProxy: httpProxyValidationSchema({
-        values,
-        pairValueName: 'httpsProxy',
-        allowEmpty: true,
-        t,
-      }),
-      httpsProxy: httpProxyValidationSchema({
-        values,
-        pairValueName: 'httpProxy',
-        allowEmpty: true,
-        t,
-      }),
-      noProxy: noProxyValidationSchema(t),
+      httpProxy: values.enableProxy
+        ? httpProxyValidationSchema({
+            values,
+            pairValueName: 'httpsProxy',
+            allowEmpty: false,
+            t,
+          })
+        : Yup.string().optional(),
+      httpsProxy: values.enableProxy
+        ? httpProxyValidationSchema({
+            values,
+            pairValueName: 'httpProxy',
+            allowEmpty: false,
+            t,
+          })
+        : Yup.string().optional(),
+      noProxy: values.enableProxy ? noProxyValidationSchema(t) : Yup.string().optional(),
       enableNtpSources: Yup.boolean().required(),
-      additionalNtpSources: ntpSourceValidationSchema(t),
+      additionalNtpSources: values.enableNtpSources
+        ? ntpSourceValidationSchema(t, false)
+        : Yup.string().optional(),
       hostsNetworkConfigurationType: Yup.string()
         .oneOf(Object.values(HostsNetworkConfigurationType))
         .required(),
@@ -187,10 +204,49 @@ const OptionalConfigurationsStepForm = ({
 }: OptionalConfigurationsStepFormProps) => {
   const { t } = useTranslation();
   const { moveNext, moveBack, disconnectedInfraEnv } = useClusterWizardContext();
-  const { isValid, errors, touched, isSubmitting, values } =
-    useFormikContext<OptionalConfigurationsFormValues>();
+  const {
+    isValid,
+    errors,
+    touched,
+    isSubmitting,
+    values,
+    setFieldValue,
+    setFieldError,
+    setFieldTouched,
+    validateForm,
+  } = useFormikContext<OptionalConfigurationsFormValues>();
 
   const errorFields = getFormikErrorFields(errors, touched);
+
+  const onProxyCheckboxChange = React.useCallback(
+    (checked: boolean) => {
+      if (!checked) {
+        setFieldValue('httpProxy', '');
+        setFieldValue('httpsProxy', '');
+        setFieldValue('noProxy', '');
+        setFieldError('httpProxy', undefined);
+        setFieldError('httpsProxy', undefined);
+        setFieldError('noProxy', undefined);
+        setFieldTouched('httpProxy', false);
+        setFieldTouched('httpsProxy', false);
+        setFieldTouched('noProxy', false);
+        setTimeout(() => void validateForm(), 0);
+      }
+    },
+    [setFieldValue, setFieldError, setFieldTouched, validateForm],
+  );
+
+  const onNtpCheckboxChange = React.useCallback(
+    (checked: boolean) => {
+      if (!checked) {
+        setFieldValue('additionalNtpSources', '');
+        setFieldError('additionalNtpSources', undefined);
+        setFieldTouched('additionalNtpSources', false);
+        setTimeout(() => void validateForm(), 0);
+      }
+    },
+    [setFieldValue, setFieldError, setFieldTouched, validateForm],
+  );
 
   return (
     <>
@@ -240,6 +296,7 @@ const OptionalConfigurationsStepForm = ({
                 <CheckboxField
                   label={t('ai:Configure proxy settings')}
                   name="enableProxy"
+                  onChange={onProxyCheckboxChange}
                   helperText={
                     <p>
                       {t(
@@ -254,6 +311,7 @@ const OptionalConfigurationsStepForm = ({
                 <CheckboxField
                   label={t('ai:Add your own NTP (Network Time Protocol) sources')}
                   name="enableNtpSources"
+                  onChange={onNtpCheckboxChange}
                   helperText={
                     <p>
                       {t(
