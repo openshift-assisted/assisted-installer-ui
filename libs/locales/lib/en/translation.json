@@ -73,6 +73,7 @@
   "ai:Adding hosts instructions": "Adding hosts instructions",
   "ai:Adding...": "Adding...",
   "ai:Additional certificates": "Additional certificates",
+  "ai:Additional NTP sources": "Additional NTP sources",
   "ai:Additional NTP Sources": "Additional NTP sources",
   "ai:Address": "Address",
   "ai:Address is the host/ip that the NodePort service is exposed over.": "Address is the host or IP address that exposes the NodePort service.",

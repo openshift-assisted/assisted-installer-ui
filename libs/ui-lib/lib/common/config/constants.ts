@@ -71,6 +71,7 @@ export const clusterFieldLabels = (t: TFunction): { [key in string]: string } =>
   httpProxy: t('ai:HTTP proxy'),
   httpsProxy: t('ai:HTTPS proxy'),
   noProxy: t('ai:No proxy'),
+  additionalNtpSources: t('ai:Additional NTP sources'),
   machineNetworks: t('ai:Machine networks'),
   clusterNetworks: t('ai:Cluster networks'),
   serviceNetworks: t('ai:Service networks'),

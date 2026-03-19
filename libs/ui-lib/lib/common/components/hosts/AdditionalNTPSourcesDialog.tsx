@@ -40,7 +40,7 @@ const AdditionalNTPSourcesForm = ({
 
   const getValidationSchema = (t: TFunction) =>
     Yup.object().shape({
-      additionalNtpSource: ntpSourceValidationSchema(t).required(t('ai:Required field')),
+      additionalNtpSource: ntpSourceValidationSchema(t, false),
     });
 
   const { t } = useTranslation();

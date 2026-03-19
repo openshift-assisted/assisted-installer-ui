@@ -16,6 +16,9 @@ export const ProxyInputFields = () => {
     }
   };
   const { t } = useTranslation();
+  const hasHttp = !!values.httpProxy?.trim();
+  const hasHttps = !!values.httpsProxy?.trim();
+
   return (
     <Grid hasGutter>
       <InputField
@@ -31,6 +34,7 @@ export const ProxyInputFields = () => {
         }
         name="httpProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
+        isRequired={values.enableProxy && !hasHttps}
         helperText={
           <div>
             <Trans
@@ -54,6 +58,7 @@ export const ProxyInputFields = () => {
         }
         name="httpsProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
+        isRequired={values.enableProxy && !hasHttp}
         helperText={
           <div>
             <Trans

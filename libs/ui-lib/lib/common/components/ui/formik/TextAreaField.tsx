@@ -54,7 +54,10 @@ const TextAreaField: React.FC<React.PropsWithChildren<TextAreaFieldProps>> = ({
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
-        onChange={(event) => field.onChange(event)}
+        onChange={(event) => {
+          field.onChange(event);
+          restProps.onChange?.(event);
+        }}
         disabled={isDisabled}
       />
       {(errorMessage || helperText) && (
