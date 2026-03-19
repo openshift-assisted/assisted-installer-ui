@@ -16,6 +16,7 @@ import { CustomManifests } from './components/CustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CustomManifestFormState } from './components/propTypes';
 import { ClustersAPI, ClusterWizardStepHeader } from '../../../../common';
+import { getFieldId } from '../../../../common/components/ui/formik';
 import { isOciPlatformType, isThirdPartyCNI } from '../../utils';
 import DeleteCustomManifestModal from './DeleteCustomManifestModal';
 import { ClustersService } from '../../../services';
@@ -80,6 +81,8 @@ export const CustomManifestsPage = ({
     await clusterWizardContext.updateUISettings({ customManifestsAdded: false });
   }, [cluster.id, clusterWizardContext]);
 
+  const fieldId = getFieldId('use-custom-manifests', 'switch');
+
   const tooltipWhenDisabled = isRequired
     ? 'Custom manifests are required when using a third-party CNI or Oracle Cloud Infrastructure.'
     : '';
@@ -133,11 +136,13 @@ export const CustomManifestsPage = ({
           configuration of the cluster.
         </Content>
       </Content>
-      <FormGroup fieldId="use-custom-manifests" label="">
+      <FormGroup fieldId={fieldId} label="">
         <Tooltip content={tooltipWhenDisabled} hidden={!isRequired}>
           <span style={{ display: 'inline-block', cursor: isRequired ? 'not-allowed' : undefined }}>
             <Switch
-              id="use-custom-manifests"
+              id={fieldId}
+              data-testid={fieldId}
+              data-checked={useCustomManifests}
               isChecked={useCustomManifests}
               isDisabled={isRequired}
               onChange={handleSwitchChange}
