@@ -90,7 +90,7 @@
   "name": "@openshift-assisted/ui-lib",
   "peerDependencies": {
     "@reduxjs/toolkit": "^1.9.1",
-    "@sentry/browser": "^5.9 || ^6",
+    "@sentry/browser": "^5.9 || ^6 || ^10.0.0",
     "axios": "^1.13.5",
     "i18next": "^20.4 || ^21",
     "monaco-editor": "^0.44.0",
