@@ -23,7 +23,7 @@
     "@openshift-assisted/chatbot": "workspace:*",
     "@patternfly/chatbot": "6.4.1",
     "@patternfly/patternfly": "6.4.0",
-    "@patternfly/react-core": "6.4.0",
+    "@patternfly/react-core": "6.4.1",
     "@patternfly/react-icons": "6.4.0",
     "@patternfly/react-styles": "6.4.0",
     "@patternfly/react-tokens": "6.4.0",
