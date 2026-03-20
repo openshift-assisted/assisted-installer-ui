@@ -2,7 +2,7 @@
   "author": "Red Hat",
   "description": "Locales for the Assisted Installer UI library",
   "devDependencies": {
-    "i18next-parser": "^3.3.0"
+    "i18next-parser": "^9.0.0"
   },
   "exports": {
     "./en/translation.json": "./lib/en/translation.json",
