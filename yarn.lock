@@ -803,7 +803,7 @@ __metadata:
     "@openshift-assisted/ui-lib": "workspace:*"
     "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-code-editor": 6.4.0
+    "@patternfly/react-code-editor": 6.4.1
     "@patternfly/react-core": 6.4.0
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
@@ -877,7 +877,7 @@ __metadata:
     "@openshift-assisted/ui-lib": "workspace:*"
     "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-code-editor": 6.4.0
+    "@patternfly/react-code-editor": 6.4.1
     "@patternfly/react-core": 6.4.0
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
@@ -1016,7 +1016,7 @@ __metadata:
     "@openshift-assisted/types": "workspace:*"
     "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-code-editor": 6.4.0
+    "@patternfly/react-code-editor": 6.4.1
     "@patternfly/react-core": 6.4.0
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
@@ -1299,12 +1299,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-code-editor@npm:6.4.0":
-  version: 6.4.0
-  resolution: "@patternfly/react-code-editor@npm:6.4.0"
+"@patternfly/react-code-editor@npm:6.4.1":
+  version: 6.4.1
+  resolution: "@patternfly/react-code-editor@npm:6.4.1"
   dependencies:
     "@monaco-editor/react": ^4.6.0
-    "@patternfly/react-core": ^6.4.0
+    "@patternfly/react-core": ^6.4.1
     "@patternfly/react-icons": ^6.4.0
     "@patternfly/react-styles": ^6.4.0
     react-dropzone: 14.3.5
@@ -1312,7 +1312,7 @@ __metadata:
   peerDependencies:
     react: ^17 || ^18 || ^19
     react-dom: ^17 || ^18 || ^19
-  checksum: 1f522988fe265d0e1b525c7ebf8b7c5e57eb68c8ff9389c54befbd57ce756fb21ab7e4b0be74ad4468b55a070edda6d63aff20d269490ffa25fb66d929baa59c
+  checksum: a4df2aec0a570a1e51997f04c3b11753286d97930c7a23afcd09f67331258c6c5aaae98932c75142df47de547ca9e37ae14f0c3f931e9bfdead9b3c00494ff83
   languageName: node
   linkType: hard
 
