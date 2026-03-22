@@ -45,7 +45,13 @@ const useUISettings = (clusterId?: Cluster['id']) => {
       if (clusterId) {
         try {
           const settings = await UISettingService.fetch(clusterId);
-          setUISettings(settings);
+          if (!settings.customManifestsAdded) {
+            // Covers the case where the user added custom manifests not through the wizard UI but through the API
+            const { data: manifests } = await ClustersAPI.getManifests(clusterId);
+            setUISettings({ ...settings, customManifestsAdded: manifests.length > 0 });
+          } else {
+            setUISettings(settings);
+          }
         } catch (e) {
           await handleUISettingsError();
         }
