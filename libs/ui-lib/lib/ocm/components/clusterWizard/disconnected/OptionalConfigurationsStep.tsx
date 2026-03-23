@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Formik } from 'formik';
+import { Formik, useFormikContext } from 'formik';
 import { TFunction } from 'i18next';
 import * as Yup from 'yup';
 import {
   ClusterWizardStep,
   TechnologyPreview,
   sshPublicKeyValidationSchema,
+  pullSecretValidationSchema,
   getFormikErrorFields,
   httpProxyValidationSchema,
   noProxyValidationSchema,
@@ -14,17 +15,16 @@ import {
   CheckboxField,
   AdditionalNTPSourcesField,
   ProxyFieldsType,
-  PullSecret,
-  pullSecretValidationSchema,
 } from '../../../../common';
-import { Split, SplitItem, Grid, GridItem, Form, Content } from '@patternfly/react-core';
+import { Split, SplitItem, Grid, GridItem, Form, Content, Checkbox } from '@patternfly/react-core';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import UploadSSH from '../../../../common/components/clusterConfiguration/UploadSSH';
+import PullSecretField from '../../../../common/components/ui/formik/PullSecretField';
 import { ProxyInputFields } from '../../../../common/components/clusterConfiguration/ProxyFields';
-import { handleApiError, getApiErrorMessage } from '../../../../common/api';
+import { isInOcm, handleApiError, getApiErrorMessage } from '../../../../common/api';
 import { useAlerts } from '../../../../common/components/AlertsContextProvider';
 import { AlertVariant } from '@patternfly/react-core';
 import InfraEnvsService from '../../../services/InfraEnvsService';
@@ -43,22 +43,22 @@ import { HostsNetworkConfigurationType } from '../../../services/types';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
 import { ntpSourceValidationSchema } from '../../../../common/validationSchemas/ntpValidation';
-import { isInOcm } from '../../../../common/api';
 
 const DEFAULT_CPU_ARCHITECTURE = 'x86_64' as const;
 const DISCONNECTED_IMAGE_TYPE = 'disconnected-iso' as const;
 
 type OptionalConfigurationsFormValues = ProxyFieldsType & {
   sshPublicKey?: string;
+  pullSecret: string;
   enableNtpSources: boolean;
   additionalNtpSources?: string;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
   rendezvousIp?: string;
-  pullSecret?: string;
 };
 
 const DEFAULT_INITIAL_VALUES: OptionalConfigurationsFormValues = {
   sshPublicKey: '',
+  pullSecret: '',
   enableProxy: false,
   httpProxy: '',
   httpsProxy: '',
@@ -67,15 +67,18 @@ const DEFAULT_INITIAL_VALUES: OptionalConfigurationsFormValues = {
   additionalNtpSources: '',
   hostsNetworkConfigurationType: HostsNetworkConfigurationType.DHCP,
   rendezvousIp: '',
-  pullSecret: '',
 };
 
 /**
- * Rehydrate form values from infraEnv when navigating back to this step.
+ * Rehydrate form values from infraEnv and optional stored pull secret (API does not return pull secret).
  */
-const infraEnvToFormValues = (infraEnv: InfraEnv): OptionalConfigurationsFormValues => ({
+const infraEnvToFormValues = (
+  infraEnv: InfraEnv,
+  storedPullSecret?: string,
+): OptionalConfigurationsFormValues => ({
   ...DEFAULT_INITIAL_VALUES,
   sshPublicKey: infraEnv.sshAuthorizedKey ?? '',
+  pullSecret: storedPullSecret ?? '',
   enableProxy: !!(infraEnv.proxy?.httpProxy || infraEnv.proxy?.httpsProxy),
   httpProxy: infraEnv.proxy?.httpProxy ?? '',
   httpsProxy: infraEnv.proxy?.httpsProxy ?? '',
@@ -102,6 +105,7 @@ const buildInfraEnvParams = (values: OptionalConfigurationsFormValues) => {
   const hasProxy = Object.keys(proxy).length > 0;
 
   return {
+    pullSecret: values.pullSecret,
     ...(values.sshPublicKey && { sshAuthorizedKey: values.sshPublicKey }),
     ...(hasProxy && { proxy }),
     ...(values.additionalNtpSources && {
@@ -116,10 +120,11 @@ const buildInfraEnvParams = (values: OptionalConfigurationsFormValues) => {
   };
 };
 
-const getValidationSchema = (t: TFunction, requirePullSecret: boolean) =>
+const getValidationSchema = (t: TFunction) =>
   Yup.lazy((values: OptionalConfigurationsFormValues) =>
     Yup.object().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
+      pullSecret: pullSecretValidationSchema(t).required('Required field'),
       enableProxy: Yup.boolean().required(),
       httpProxy: httpProxyValidationSchema({
         values,
@@ -146,20 +151,40 @@ const getValidationSchema = (t: TFunction, requirePullSecret: boolean) =>
           'Not a valid IP address',
           (value) => !value || ipValidationSchema(t).isValidSync(value),
         ),
-      ...(requirePullSecret && {
-        pullSecret: pullSecretValidationSchema(t).required(t('ai:Required field')),
-      }),
     }),
   );
+
+const PullSecretSync = () => {
+  const defaultPullSecret = usePullSecret();
+  const {
+    setFieldValue,
+    values: { pullSecret },
+  } = useFormikContext<OptionalConfigurationsFormValues>();
+
+  React.useEffect(() => {
+    if (defaultPullSecret !== undefined && pullSecret === '') {
+      setFieldValue('pullSecret', defaultPullSecret);
+    }
+  }, [defaultPullSecret, pullSecret, setFieldValue]);
+
+  return null;
+};
 
 const OptionalConfigurationsStep = () => {
   const { clusterId } = useParams<{ clusterId: string }>();
   const [cluster, setCluster] = React.useState<Cluster | null>(null);
   const { t } = useTranslation();
-  const defaultPullSecret = usePullSecret();
 
-  const { moveNext, moveBack, setDisconnectedInfraEnv, disconnectedInfraEnv } =
-    useClusterWizardContext();
+  const {
+    moveNext,
+    moveBack,
+    setDisconnectedInfraEnv,
+    disconnectedInfraEnv,
+    disconnectedFormPullSecret,
+    setDisconnectedFormPullSecret,
+    disconnectedFormEditPullSecret,
+    setDisconnectedFormEditPullSecret,
+  } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
 
   React.useEffect(() => {
@@ -184,14 +209,14 @@ const OptionalConfigurationsStep = () => {
   }, [clusterId, addAlert, t]);
 
   const initialValues: OptionalConfigurationsFormValues = disconnectedInfraEnv
-    ? infraEnvToFormValues(disconnectedInfraEnv)
+    ? infraEnvToFormValues(disconnectedInfraEnv, disconnectedFormPullSecret)
     : DEFAULT_INITIAL_VALUES;
 
   return (
     <Formik
       initialValues={initialValues}
       validateOnMount
-      validationSchema={getValidationSchema(t, !isInOcm)}
+      validationSchema={getValidationSchema(t)}
       onSubmit={async (values) => {
         clearAlerts();
         if (!cluster?.id) {
@@ -204,8 +229,6 @@ const OptionalConfigurationsStep = () => {
         }
 
         const commonParams = buildInfraEnvParams(values);
-        // Default pull secret only exists in OCM; when !isInOcm the user must provide it via the field
-        const pullSecretToUse = isInOcm ? defaultPullSecret : values.pullSecret;
 
         try {
           if (disconnectedInfraEnv?.id) {
@@ -213,11 +236,14 @@ const OptionalConfigurationsStep = () => {
             const updateParams: InfraEnvUpdateParams = {
               ...commonParams,
               imageType: DISCONNECTED_IMAGE_TYPE,
-              pullSecret: pullSecretToUse,
             };
             const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
               disconnectedInfraEnv.id,
               updateParams,
+            );
+            setDisconnectedFormPullSecret(values.pullSecret);
+            setDisconnectedFormEditPullSecret(
+              disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet,
             );
             setDisconnectedInfraEnv({
               ...updatedInfraEnv,
@@ -232,10 +258,13 @@ const OptionalConfigurationsStep = () => {
               openshiftVersion: cluster.openshiftVersion,
               cpuArchitecture: DEFAULT_CPU_ARCHITECTURE,
               imageType: DISCONNECTED_IMAGE_TYPE,
-              pullSecret: pullSecretToUse ?? '',
               ...commonParams,
             };
             const createdInfraEnv = await InfraEnvsService.create(createParams);
+            setDisconnectedFormPullSecret(values.pullSecret);
+            setDisconnectedFormEditPullSecret(
+              disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet,
+            );
             setDisconnectedInfraEnv({
               ...createdInfraEnv,
               // infraEnv does not return the whole OCP version
@@ -277,6 +306,7 @@ const OptionalConfigurationsStep = () => {
             }
           >
             <WithErrorBoundary title="Failed to load Optional Configurations step">
+              <PullSecretSync />
               <Grid hasGutter>
                 <GridItem>
                   <Split>
@@ -290,9 +320,6 @@ const OptionalConfigurationsStep = () => {
                 </GridItem>
                 <GridItem>
                   <Form id="wizard-cluster-optional-configurations__form">
-                    {/* Pull secret (!OCM only) */}
-                    {!isInOcm && <PullSecret defaultPullSecret={defaultPullSecret} isOcm={false} />}
-
                     {/* Rendezvous IP */}
                     <InputField
                       label={t('ai:Rendezvous IP')}
@@ -305,6 +332,17 @@ const OptionalConfigurationsStep = () => {
                     />
 
                     <UploadSSH />
+                    <Checkbox
+                      label={t('ai:Edit pull secret')}
+                      isChecked={
+                        disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet
+                      }
+                      onChange={(_, checked) => setDisconnectedFormEditPullSecret(checked)}
+                      id="edit-pull-secret-checkbox"
+                    />
+                    {(disconnectedFormEditPullSecret ?? !!disconnectedInfraEnv?.pullSecretSet) && (
+                      <PullSecretField isOcm={isInOcm} />
+                    )}
 
                     {/* Proxy Settings */}
                     <CheckboxField
