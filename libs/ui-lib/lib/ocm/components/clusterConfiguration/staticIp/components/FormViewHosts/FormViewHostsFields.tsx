@@ -96,7 +96,6 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
               label={`IP address (${getProtocolVersionLabel(protocolVersion)})`}
               fieldId={getFieldId(`${fieldName}.ips.${protocolVersion}`, 'input')}
               key={protocolVersion}
-              isRequired
             >
               <OcmInputField
                 name={`${fieldName}.ips.${protocolVersion}`}
