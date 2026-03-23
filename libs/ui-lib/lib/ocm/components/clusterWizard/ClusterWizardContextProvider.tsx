@@ -13,17 +13,13 @@ import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import {
-  AssistedInstallerOCMPermissionTypesListType,
-  useAlerts,
-  isThirdPartyCNI,
-} from '../../../common';
+import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { useUISettings } from '../../hooks';
 import { AlertVariant } from '@patternfly/react-core';
 import { useFeature } from '../../hooks/use-feature';
-import { isOciPlatformType } from '../utils';
+import { isOciPlatformType, isThirdPartyCNI } from '../utils';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -120,18 +116,12 @@ const ClusterWizardContextProvider = ({
     React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
-  const [disconnectedInfraEnv, setDisconnectedInfraEnvState] = React.useState<InfraEnv | undefined>(
+  const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>(
     infraEnv,
   );
-  const [disconnectedHostsNetworkConfigurationType, setDisconnectedHostsNetworkConfigurationType] =
-    React.useState<'dhcp' | 'static'>('dhcp');
-
-  const setDisconnectedInfraEnv = React.useCallback((infraEnv: InfraEnv | undefined) => {
-    setDisconnectedInfraEnvState(infraEnv);
-    if (infraEnv === undefined) {
-      setDisconnectedHostsNetworkConfigurationType('dhcp');
-    }
-  }, []);
+  const [disconnectedFormPullSecret, setDisconnectedFormPullSecret] = React.useState<string>();
+  const [disconnectedFormEditPullSecret, setDisconnectedFormEditPullSecret] =
+    React.useState<boolean>();
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -314,8 +304,10 @@ const ClusterWizardContextProvider = ({
       },
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
-      disconnectedHostsNetworkConfigurationType,
-      setDisconnectedHostsNetworkConfigurationType,
+      disconnectedFormPullSecret,
+      setDisconnectedFormPullSecret,
+      disconnectedFormEditPullSecret,
+      setDisconnectedFormEditPullSecret,
     };
   }, [
     wizardStepIds,
@@ -330,8 +322,8 @@ const ClusterWizardContextProvider = ({
     connectedWizardStepIds,
     disconnectedWizardStepIds,
     disconnectedInfraEnv,
-    disconnectedHostsNetworkConfigurationType,
-    setDisconnectedInfraEnv,
+    disconnectedFormPullSecret,
+    disconnectedFormEditPullSecret,
   ]);
 
   if (!contextValue) {

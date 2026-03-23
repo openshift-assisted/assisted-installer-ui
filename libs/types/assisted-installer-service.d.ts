@@ -1914,9 +1914,9 @@ export interface InfraEnv {
    */
   additionalTrustBundle?: string;
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
+   * The type of network configuration for hosts: 'dhcp' for DHCP only, 'static' for static IP configuration.
    */
-  pullSecret?: string;
+  hostsNetworkConfigurationType?: 'dhcp' | 'static';
 }
 export interface InfraEnvCreateParams {
   /**
