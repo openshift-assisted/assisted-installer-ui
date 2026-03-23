@@ -2,7 +2,7 @@ import React from 'react';
 import { StaticIpForm } from '../StaticIpForm';
 import { StaticIpFormProps, StaticIpViewProps } from '../propTypes';
 import { FormViewHost, FormViewNetworkWideValues } from '../../data/dataTypes';
-import { getNetworkWideValidationSchema } from './formViewNetworkWideValidationSchema';
+import { networkWideValidationSchema } from './formViewNetworkWideValidationSchema';
 import { networkWideToInfraEnvField } from '../../data/formDataToInfraEnvField';
 import { FormViewNetworkWideFields } from './FormViewNetworkWideFields';
 import { getFormData, getFormViewNetworkWideValues } from '../../data/fromInfraEnv';
@@ -22,7 +22,7 @@ export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...
     setFormProps({
       infraEnv,
       ...props,
-      validationSchema: getNetworkWideValidationSchema(infraEnv.rendezvousIp),
+      validationSchema: networkWideValidationSchema,
       getInitialValues: (infraEnv: InfraEnv) => {
         return getFormViewNetworkWideValues(infraEnv);
       },

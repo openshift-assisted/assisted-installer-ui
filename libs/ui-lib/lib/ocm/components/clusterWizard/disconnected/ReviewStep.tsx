@@ -124,7 +124,7 @@ const ReviewStep = () => {
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>ISO size</DescriptionListTerm>
-                <DescriptionListDescription>approx. 50 GB</DescriptionListDescription>
+                <DescriptionListDescription>approx. 43.5GB</DescriptionListDescription>
               </DescriptionListGroup>
             </DescriptionList>
           </Grid>
