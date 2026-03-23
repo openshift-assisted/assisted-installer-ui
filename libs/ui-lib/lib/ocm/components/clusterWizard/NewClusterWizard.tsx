@@ -5,15 +5,9 @@ import { useClusterWizardContext } from './ClusterWizardContext';
 import ReviewStep from './disconnected/ReviewStep';
 import BasicStep from './disconnected/BasicStep';
 import OptionalConfigurationsStep from './disconnected/OptionalConfigurationsStep';
-import DisconnectedStaticIp from './disconnected/DisconnectedStaticIp';
 import { ClusterWizardStepsType } from './wizardTransition';
-import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { CpuArchitecture } from '../../../common';
-import { useParams } from 'react-router-dom-v5-compat';
-import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
-const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraEnv) => {
+const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
   switch (currentStepId) {
     case 'disconnected-review':
       return <ReviewStep />;
@@ -21,26 +15,18 @@ const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraE
       return <BasicStep />;
     case 'disconnected-optional-configurations':
       return <OptionalConfigurationsStep />;
-    case 'static-ip-yaml-view':
-    case 'static-ip-network-wide-configurations':
-    case 'static-ip-host-configurations':
-      return <DisconnectedStaticIp />;
     default:
-      return <ClusterDetails infraEnv={infraEnv} />;
+      return <ClusterDetails />;
   }
 };
 
 const NewClusterWizard: React.FC = () => {
   const { currentStepId } = useClusterWizardContext();
-  const { clusterId } = useParams() as { clusterId: string };
-  const { infraEnv } = useInfraEnv(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
 
   return (
-    <ModalDialogsContextProvider>
-      <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
-        {getCurrentStep(currentStepId, infraEnv)}
-      </div>
-    </ModalDialogsContextProvider>
+    <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
+      {getCurrentStep(currentStepId)}
+    </div>
   );
 };
 

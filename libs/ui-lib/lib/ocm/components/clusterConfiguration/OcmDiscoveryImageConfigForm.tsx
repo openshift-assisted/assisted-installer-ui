@@ -16,6 +16,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { TFunction } from 'i18next';
 import {
   HostStaticNetworkConfig,
+  ImageType,
   InfraEnv,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
@@ -71,7 +72,7 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
     formikActions: FormikHelpers<OcmDiscoveryImageFormValues>,
   ) => Promise<void>;
   sshPublicKey?: string;
-  imageType?: DiscoveryImageType;
+  imageType?: ImageType;
   isIpxeSelected?: boolean;
   enableCertificate?: boolean;
   trustBundle?: InfraEnv['additionalTrustBundle'];
@@ -105,7 +106,7 @@ export const OcmDiscoveryImageConfigForm = ({
     httpsProxy: httpsProxy || '',
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
-    imageType: imageType,
+    imageType: imageTypeValue as ImageType,
     enableCertificate: enableCertificate || false,
     trustBundle: trustBundle || '',
   };
