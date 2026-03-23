@@ -394,7 +394,6 @@ export const OPERATOR_NAME_METALLB = 'metallb';
 
 export const singleClusterOperators = [
   OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LSO,
   OPERATOR_NAME_MTV,
   OPERATOR_NAME_NMSTATE,
   OPERATOR_NAME_NODE_HEALTHCHECK,
@@ -404,9 +403,6 @@ export const singleClusterOperators = [
   OPERATOR_NAME_CLUSTER_OBSERVABILITY,
   OPERATOR_NAME_LOKI,
   OPERATOR_NAME_OPENSHIFT_LOGGING,
-  OPERATOR_NAME_NUMA_RESOURCES,
-  OPERATOR_NAME_OADP,
-  OPERATOR_NAME_METALLB,
 ];
 
 export const singleClusterBundles = ['virtualization'];
