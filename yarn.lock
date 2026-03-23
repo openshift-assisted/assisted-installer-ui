@@ -867,7 +867,7 @@ __metadata:
     "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.1
-    "@patternfly/react-core": 6.4.0
+    "@patternfly/react-core": 6.4.1
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-table": 6.4.1
@@ -907,7 +907,7 @@ __metadata:
     "@openshift-assisted/chatbot": "workspace:*"
     "@patternfly/chatbot": 6.4.1
     "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-core": 6.4.0
+    "@patternfly/react-core": 6.4.1
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-tokens": 6.4.0
@@ -941,7 +941,7 @@ __metadata:
     "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.1
-    "@patternfly/react-core": 6.4.0
+    "@patternfly/react-core": 6.4.1
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-table": 6.4.1
@@ -980,7 +980,7 @@ __metadata:
   dependencies:
     "@patternfly/chatbot": 6.4.1
     "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-core": 6.4.0
+    "@patternfly/react-core": 6.4.1
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-tokens": 6.4.0
@@ -1080,7 +1080,7 @@ __metadata:
     "@openshift-console/dynamic-plugin-sdk": 1.0.0
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.1
-    "@patternfly/react-core": 6.4.0
+    "@patternfly/react-core": 6.4.1
     "@patternfly/react-icons": 6.4.0
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-table": 6.4.1
@@ -1413,7 +1413,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:6.4.0, @patternfly/react-core@npm:^6.0.0, @patternfly/react-core@npm:^6.4.0":
+"@patternfly/react-core@npm:6.4.1, @patternfly/react-core@npm:^6.4.1":
+  version: 6.4.1
+  resolution: "@patternfly/react-core@npm:6.4.1"
+  dependencies:
+    "@patternfly/react-icons": ^6.4.0
+    "@patternfly/react-styles": ^6.4.0
+    "@patternfly/react-tokens": ^6.4.0
+    focus-trap: 7.6.4
+    react-dropzone: ^14.3.5
+    tslib: ^2.8.1
+  peerDependencies:
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  checksum: 01c61bf471ec2959223735cb9e05a4efa0092f84de736556a6ef17c86388af07b634a0c11e251bc01b0280ffe54fa2206bc3940a8fcb35efe2a5234ea3588e50
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-core@npm:^6.0.0, @patternfly/react-core@npm:^6.4.0":
   version: 6.4.0
   resolution: "@patternfly/react-core@npm:6.4.0"
   dependencies:
@@ -1444,23 +1461,6 @@ __metadata:
     react: ^17 || ^18
     react-dom: ^17 || ^18
   checksum: a9f05ff2127526dad48565b683fec1f13376e736569be4ae5fe70d86ce0d2254f4802ccd9ad0c92ec27b23b26ad299d5451f78ac6d86d583c8083c432bc28b04
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^6.4.1":
-  version: 6.4.1
-  resolution: "@patternfly/react-core@npm:6.4.1"
-  dependencies:
-    "@patternfly/react-icons": ^6.4.0
-    "@patternfly/react-styles": ^6.4.0
-    "@patternfly/react-tokens": ^6.4.0
-    focus-trap: 7.6.4
-    react-dropzone: ^14.3.5
-    tslib: ^2.8.1
-  peerDependencies:
-    react: ^17 || ^18 || ^19
-    react-dom: ^17 || ^18 || ^19
-  checksum: 01c61bf471ec2959223735cb9e05a4efa0092f84de736556a6ef17c86388af07b634a0c11e251bc01b0280ffe54fa2206bc3940a8fcb35efe2a5234ea3588e50
   languageName: node
   linkType: hard
 
