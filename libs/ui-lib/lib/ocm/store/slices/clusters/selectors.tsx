@@ -11,8 +11,9 @@ import {
   getTotalHostCount,
   HostsCount,
   ResourceUIState,
+  type ClusterTableRows,
+  type HumanizedSortable,
 } from '../../../../common';
-import type { ClusterTableRows, HumanizedSortable } from '../../../../common';
 import ClusterStatus, { getClusterStatusText } from '../../../components/clusters/ClusterStatus';
 import { RootStateDay1 } from '../../store-day1';
 import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';

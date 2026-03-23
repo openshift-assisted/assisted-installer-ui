@@ -4,7 +4,7 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import { isDualStack } from '../../../common/components/clusterConfiguration/utils';
-import { DUAL_STACK, IPV4_STACK, NETWORK_TYPE_OVN } from '../../../common/config';
+import { DUAL_STACK, IPV4_STACK, NETWORK_TYPE_OVN } from '../../../common';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
