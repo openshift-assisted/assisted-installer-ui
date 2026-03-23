@@ -3,10 +3,14 @@ import { ButtonVariant, FormGroup, Split, SplitItem, Tooltip } from '@patternfly
 import { useFormikContext } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
-import { HostSubnets, NetworkConfigurationValues } from '../../../types';
+import {
+  HostSubnets,
+  NetworkConfigurationValues,
+  NETWORK_TYPE_OVN,
+  NETWORK_TYPE_SDN,
+} from '../../../types';
 import { getFieldId } from '../../ui';
 import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../config';
-import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../types/networkType';
 import { RadioField } from '../../ui/formik';
 import { ConfirmationModal, PopoverIcon } from '../../ui';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';

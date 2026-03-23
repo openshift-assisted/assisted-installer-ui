@@ -23,8 +23,8 @@ import {
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_LABELS,
   NETWORK_TYPE_FEATURE_IDS,
+  isThirdPartyCNI,
 } from '../../../../common/types/networkType';
-import { isThirdPartyCNI } from '../../../../common/types/networkType';
 import { RED_HAT_CNI_SUPPORT_MATRIX_LINK } from '../../../../common/config/docs_links';
 
 export interface NetworkTypeDropDownProps {

@@ -11,9 +11,10 @@ import {
   getRichTextValidation,
   useAlerts,
   TechnologyPreview,
+  OpenshiftVersionOptionType,
+  getFormikErrorFields,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
-import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import { isInOcm } from '../../../common/api';
 import {
