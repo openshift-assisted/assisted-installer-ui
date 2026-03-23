@@ -55,12 +55,12 @@ export default function useInfraEnvId(
   ]);
 
   React.useEffect(() => {
-    if (!clusterId && !isSingleClusterFeatureEnabled) {
+    if (!clusterId) {
       setError('Missing clusterId to load infrastructure environment');
     } else if (!infraEnvId) {
       void findInfraEnvId();
     }
-  }, [clusterId, findInfraEnvId, infraEnvId, isSingleClusterFeatureEnabled]);
+  }, [clusterId, findInfraEnvId, infraEnvId]);
 
   return { infraEnvId, error };
 }
