@@ -11584,7 +11584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^10.2.2":
+"minimatch@npm:^10.2.1, minimatch@npm:^10.2.2":
   version: 10.2.4
   resolution: "minimatch@npm:10.2.4"
   dependencies:
@@ -12022,13 +12022,13 @@ __metadata:
   linkType: hard
 
 "nodemon@npm:^3.0.3":
-  version: 3.1.9
-  resolution: "nodemon@npm:3.1.9"
+  version: 3.1.14
+  resolution: "nodemon@npm:3.1.14"
   dependencies:
     chokidar: ^3.5.2
     debug: ^4
     ignore-by-default: ^1.0.1
-    minimatch: ^3.1.2
+    minimatch: ^10.2.1
     pstree.remy: ^1.1.8
     semver: ^7.5.3
     simple-update-notifier: ^2.0.0
@@ -12037,7 +12037,7 @@ __metadata:
     undefsafe: ^2.0.5
   bin:
     nodemon: bin/nodemon.js
-  checksum: d045065dea08904f1356d18132538e71a61df12cb4e2852730310492943676d4789bedb28c343a5d85d5e07558bf47b73f000a8017409f0b7d522a3c1c42b2e5
+  checksum: c9f5a4662784f7843b6a90d6a05ecc96cb491d0b789a524da23db849f5818bb7e2e681492c4f349650cc291afb3107700dcf037d6ad59811c224125b3c627f94
   languageName: node
   linkType: hard
 
