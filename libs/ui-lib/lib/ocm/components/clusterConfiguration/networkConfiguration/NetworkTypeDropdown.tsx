@@ -12,82 +12,71 @@ import {
   StackItem,
   Tooltip,
 } from '@patternfly/react-core';
-import {
-  NETWORK_TYPE_CALICO,
-  NETWORK_TYPE_CILIUM,
-  NETWORK_TYPE_CISCO_ACI,
-  NETWORK_TYPE_LABELS,
-  NETWORK_TYPE_NONE,
-  NETWORK_TYPE_OVN,
-  NETWORK_TYPE_SDN,
-} from '../../../../common/config';
 import { getFieldId, ExternalLink } from '../../../../common/components/ui';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
-import { TechnologyPreview } from '../../../../common/components/ui/TechnologyPreview';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import type { NetworkConfigurationValues } from '../../../../common/types/clusters';
-import { isThirdPartyCNI } from '../../utils';
+import {
+  NETWORK_TYPE_OVN,
+  NETWORK_TYPE_LABELS,
+  NETWORK_TYPE_FEATURE_IDS,
+  isThirdPartyCNI,
+} from '../../../../common/types/networkType';
 import { RED_HAT_CNI_SUPPORT_MATRIX_LINK } from '../../../../common/config/docs_links';
 
 export interface NetworkTypeDropDownProps {
   isDisabled?: boolean;
-  isSDNSelectable: boolean;
   featureSupportLevelData: NewFeatureSupportLevelMap | null;
 }
 
 export const NetworkTypeDropDown = ({
   isDisabled = false,
-  isSDNSelectable,
   featureSupportLevelData,
 }: NetworkTypeDropDownProps) => {
   const [field, , { setValue }] = useField<string>('networkType');
   const [isOpen, setOpen] = React.useState(false);
   const { values } = useFormikContext<NetworkConfigurationValues>();
-  const { getFeatureDisabledReason } = useNewFeatureSupportLevel();
+  const { getFeatureDisabledReason, getFeatureSupportLevel } = useNewFeatureSupportLevel();
   const fieldId = getFieldId('networkType', 'input');
   const showThirdPartyBanner = isThirdPartyCNI(values.networkType);
 
-  const sdnDisabledReason = React.useMemo(() => {
-    if (!isSDNSelectable) {
-      return 'SDN is not supported for SNO clusters or when IPv6 is detected.';
-    }
-    return getFeatureDisabledReason('SDN_NETWORK_TYPE', featureSupportLevelData ?? undefined);
-  }, [isSDNSelectable, featureSupportLevelData, getFeatureDisabledReason]);
-
   React.useEffect(() => {
-    if (field.value === NETWORK_TYPE_SDN && sdnDisabledReason) {
+    if (
+      getFeatureDisabledReason(
+        NETWORK_TYPE_FEATURE_IDS[field.value],
+        featureSupportLevelData ?? undefined,
+      ) !== undefined
+    ) {
       setValue(NETWORK_TYPE_OVN);
     }
-  }, [sdnDisabledReason, field.value, setValue]);
+  }, [field.value, setValue, featureSupportLevelData, getFeatureDisabledReason]);
 
   const currentDisplayValue = NETWORK_TYPE_LABELS[field.value];
 
   const dropdownItems = Object.entries(NETWORK_TYPE_LABELS).map(([value, label]) => {
-    const isSDN = value === NETWORK_TYPE_SDN;
-    const disabledReason = isSDN ? sdnDisabledReason : undefined;
-    const isTechPreview = [
-      NETWORK_TYPE_CISCO_ACI,
-      NETWORK_TYPE_CILIUM,
-      NETWORK_TYPE_CALICO,
-      NETWORK_TYPE_NONE,
-    ].includes(value);
+    const disabledReason = getFeatureDisabledReason(
+      NETWORK_TYPE_FEATURE_IDS[value],
+      featureSupportLevelData ?? undefined,
+    );
+    const featureId = NETWORK_TYPE_FEATURE_IDS[value];
+    const supportLevel = featureId
+      ? getFeatureSupportLevel(featureId, featureSupportLevelData ?? undefined)
+      : undefined;
+    const shouldDisable =
+      supportLevel === 'unavailable' ||
+      supportLevel === 'unsupported' ||
+      disabledReason !== undefined;
     return (
-      <DropdownItem
-        key={value}
-        id={value}
-        value={value}
-        isAriaDisabled={disabledReason !== undefined}
-      >
+      <DropdownItem key={value} id={value} value={value} isAriaDisabled={shouldDisable}>
         <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
           <div>
             {label}
-            {isTechPreview && (
-              <span onClick={(event) => event.stopPropagation()}>
-                <TechnologyPreview testId={`${value}-support-level`} />
-              </span>
-            )}
+            <span onClick={(event) => event.stopPropagation()}>
+              <NewFeatureSupportLevelBadge featureId={featureId} supportLevel={supportLevel} />
+            </span>
           </div>
         </Tooltip>
       </DropdownItem>
@@ -132,11 +121,7 @@ export const NetworkTypeDropDown = ({
       </StackItem>
       {showThirdPartyBanner && (
         <StackItem>
-          <Alert
-            variant={AlertVariant.warning}
-            isInline
-            title="Third-party CNI (Technology Preview)"
-          >
+          <Alert variant={AlertVariant.warning} isInline title="Third-party CNI">
             <Stack hasGutter>
               <StackItem>
                 Third-party CNIs require uploading CNI manifests. Please verify you have the

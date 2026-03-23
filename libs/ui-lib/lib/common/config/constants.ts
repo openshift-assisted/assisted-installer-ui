@@ -333,22 +333,6 @@ export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
-export const NETWORK_TYPE_OVN = 'OVNKubernetes';
-export const NETWORK_TYPE_SDN = 'OpenShiftSDN';
-export const NETWORK_TYPE_CISCO_ACI = 'CiscoACI';
-export const NETWORK_TYPE_CILIUM = 'Cilium';
-export const NETWORK_TYPE_CALICO = 'Calico';
-export const NETWORK_TYPE_NONE = 'None';
-
-export const NETWORK_TYPE_LABELS: Record<string, string> = {
-  [NETWORK_TYPE_OVN]: 'Open Virtual Networking (OVN)',
-  [NETWORK_TYPE_SDN]: 'Software-Defined Networking (SDN)',
-  [NETWORK_TYPE_CISCO_ACI]: 'Cisco ACI',
-  [NETWORK_TYPE_CILIUM]: 'Isovalent Cilium',
-  [NETWORK_TYPE_CALICO]: 'Tigera Calico',
-  [NETWORK_TYPE_NONE]: 'None (Custom CNI)',
-};
-
 export const IPV4_STACK = 'singleStack';
 export const DUAL_STACK = 'dualStack';
 

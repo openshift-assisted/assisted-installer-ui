@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
 import {
   canBeDualStack,
-  canSelectNetworkTypeSDN,
   CpuArchitecture,
   DUAL_STACK,
   HostSubnets,
@@ -144,9 +143,6 @@ const NetworkConfiguration = ({
   const isDualStack = values.stackType === DUAL_STACK;
 
   const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
-  const isSDNSelectable = React.useMemo(() => {
-    return canSelectNetworkTypeSDN(isSNOCluster, isDualStack);
-  }, [isSNOCluster, isDualStack]);
 
   const [isAdvanced, setAdvanced] = React.useState(
     isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings),
@@ -262,7 +258,6 @@ const NetworkConfiguration = ({
       <StackItem>
         <NetworkTypeDropDown
           isDisabled={isViewerMode}
-          isSDNSelectable={isSDNSelectable}
           featureSupportLevelData={featureSupportLevelData}
         />
       </StackItem>

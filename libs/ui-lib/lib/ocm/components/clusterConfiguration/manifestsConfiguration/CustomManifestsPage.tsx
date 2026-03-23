@@ -15,9 +15,9 @@ import {
 import { CustomManifests } from './components/CustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CustomManifestFormState } from './components/propTypes';
-import { ClustersAPI, ClusterWizardStepHeader } from '../../../../common';
+import { ClustersAPI, ClusterWizardStepHeader, isThirdPartyCNI } from '../../../../common';
 import { getFieldId } from '../../../../common/components/ui/formik';
-import { isOciPlatformType, isThirdPartyCNI } from '../../utils';
+import { isOciPlatformType } from '../../utils';
 import DeleteCustomManifestModal from './DeleteCustomManifestModal';
 import { ClustersService } from '../../../services';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
