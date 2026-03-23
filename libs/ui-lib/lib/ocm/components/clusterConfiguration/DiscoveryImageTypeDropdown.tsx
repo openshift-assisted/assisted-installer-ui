@@ -20,7 +20,6 @@ export const discoveryImageTypes: Record<DiscoveryImageType, string> = {
   'minimal-iso': 'Minimal image file - Download an ISO that fetches content on boot',
   'full-iso': 'Full image file - Download a self-contained ISO',
   'discovery-image-ipxe': 'iPXE - Provision from your network server',
-  'disconnected-iso': 'Disconnected ISO - Provision from a local file',
 };
 
 type DiscoveryImageTypeDropdownProps = {
