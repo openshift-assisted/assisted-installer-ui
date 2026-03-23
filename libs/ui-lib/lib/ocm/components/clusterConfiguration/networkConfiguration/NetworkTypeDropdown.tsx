@@ -65,13 +65,12 @@ export const NetworkTypeDropDown = ({
     const supportLevel = featureId
       ? getFeatureSupportLevel(featureId, featureSupportLevelData ?? undefined)
       : undefined;
+    const shouldDisable =
+      supportLevel === 'unavailable' ||
+      supportLevel === 'unsupported' ||
+      disabledReason !== undefined;
     return (
-      <DropdownItem
-        key={value}
-        id={value}
-        value={value}
-        isAriaDisabled={disabledReason !== undefined}
-      >
+      <DropdownItem key={value} id={value} value={value} isAriaDisabled={shouldDisable}>
         <Tooltip hidden={!disabledReason} content={disabledReason} position="top">
           <div>
             {label}
