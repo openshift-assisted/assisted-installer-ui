@@ -26,6 +26,11 @@ spec:
     value: quay.io/redhat-user-workloads/assisted-installer-tenant/assisted-ui-chatbot-saas-main:{{revision}}
   - name: dockerfile
     value: /build-tools/Dockerfile
+  - name: build-args
+    value:
+    - PACKAGE_JSON_PATH=apps/assisted-chatbot/package.json
+    - 'APP_YARN_BUILD_SCRIPT=build:assisted-chatbot'
+    - APP_BUILD_DIR=apps/assisted-chatbot/dist
   pipelineSpec:
     description: |
       This pipeline is ideal for building container images from a Containerfile while reducing network traffic.
