@@ -12,6 +12,7 @@ import { CustomManifest } from './CustomManifest';
 import { getEmptyManifest, getManifestName } from './utils';
 import { CustomManifestValues } from '../data/dataTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
+import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
 
 const fieldName = 'manifests';
 
@@ -40,6 +41,8 @@ export const CustomManifestsArray = ({
   clusterId,
   ...props
 }: CustomManifestsArrayProps) => {
+  const { updateUISettings } = useClusterWizardContext();
+
   const [field, { error }] = useField<CustomManifestValues[]>({
     name: fieldName,
   });
@@ -67,6 +70,7 @@ export const CustomManifestsArray = ({
             manifestToRemove['folder'] as string,
             manifestToRemove['filename'],
           );
+          await updateUISettings({ customManifestsUpdated: true });
         } catch (e) {
           handleApiError(e, () =>
             addAlert({
@@ -77,7 +81,7 @@ export const CustomManifestsArray = ({
         }
       }
     },
-    [addAlert, field.value],
+    [addAlert, field.value, updateUISettings],
   );
 
   const onConfirm = React.useCallback(async (): Promise<void> => {
