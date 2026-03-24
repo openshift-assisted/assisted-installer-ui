@@ -9,7 +9,7 @@
     "@patternfly/react-styles": "6.4.0",
     "@patternfly/react-table": "6.4.1",
     "@patternfly/react-tokens": "6.4.0",
-    "@reduxjs/toolkit": "^1.9.1",
+    "@reduxjs/toolkit": "^2.0.0",
     "@sentry/browser": "^7.119",
     "axios": "^1.13.5",
     "i18next": "^20.4.0",
