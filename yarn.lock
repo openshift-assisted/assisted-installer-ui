@@ -921,7 +921,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^7.119
     "@tsconfig/vite-react": ^1.0.1
-    "@types/react": 18.2.37
+    "@types/react": 18.3.28
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
@@ -964,7 +964,7 @@ __metadata:
     "@redhat-cloud-services/frontend-components-config": ^6.0.17
     "@redhat-cloud-services/tsc-transform-imports": ^1.0.4
     "@tsconfig/vite-react": ^1.0.1
-    "@types/react": 18.2.37
+    "@types/react": 18.3.28
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
     i18next: ^20.4.0
@@ -995,7 +995,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^7.119
     "@tsconfig/vite-react": ^1.0.1
-    "@types/react": 18.2.37
+    "@types/react": 18.3.28
     "@types/react-dom": ^18.2.0
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
@@ -1034,7 +1034,7 @@ __metadata:
     "@redhat-cloud-services/lightspeed-client": ^0.15.0
     "@tsconfig/recommended": ^1.0.2
     "@types/node": ^18.14.6
-    "@types/react": 18.2.37
+    "@types/react": 18.3.28
     "@types/react-dom": ^18.2.0
     file-saver: ^2.0.2
     lodash-es: ^4.17.23
@@ -1139,9 +1139,9 @@ __metadata:
     "@types/js-yaml": ^4.0.1
     "@types/lodash-es": ^4.17.6
     "@types/node": ^18.14.6
-    "@types/react": 18.2.37
+    "@types/react": 18.3.28
     "@types/react-autosuggest": ^10.1.5
-    "@types/react-dom": 18.2.15
+    "@types/react-dom": 18.3.7
     "@types/react-redux": ^7.1.7
     "@types/uuid": ^8.0.0
     axios-case-converter: ^0.11.1
@@ -3095,16 +3095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.15":
-  version: 18.2.15
-  resolution: "@types/react-dom@npm:18.2.15"
-  dependencies:
-    "@types/react": "*"
-  checksum: 8e9631600c21ff561328e38a951d1991b3b3b20f538af4c0efbd1327c883a5573a63f50e1b945c34fa51b114b30e1ca5e62317bd54f21e063d6697b4be843a03
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18.2.0":
+"@types/react-dom@npm:18.3.7, @types/react-dom@npm:^18.2.0":
   version: 18.3.7
   resolution: "@types/react-dom@npm:18.3.7"
   peerDependencies:
@@ -3155,14 +3146,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.37":
-  version: 18.2.37
-  resolution: "@types/react@npm:18.2.37"
+"@types/react@npm:18.3.28":
+  version: 18.3.28
+  resolution: "@types/react@npm:18.3.28"
   dependencies:
     "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 2d2599f1a09e4f678509161fea8baeaf76d21deee460f4f3ccc1ca431ebe85f896d7d0b906127de17e97ed57240cec61955eb97d0b5d9cbf4e97fd6620b1acdb
+    csstype: ^3.2.2
+  checksum: 9d59fb3def4e712d4f8fa15998791a07f9799462f8d581d17039a9503017bfce3463d57fc737ce1d28d6aa3f482f4a3a5bae5a662d97560a9359aab111556c97
   languageName: node
   linkType: hard
 
@@ -3170,13 +3160,6 @@ __metadata:
   version: 0.12.2
   resolution: "@types/retry@npm:0.12.2"
   checksum: e5675035717b39ce4f42f339657cae9637cf0c0051cf54314a6a2c44d38d91f6544be9ddc0280587789b6afd056be5d99dbe3e9f4df68c286c36321579b1bf4a
-  languageName: node
-  linkType: hard
-
-"@types/scheduler@npm:*":
-  version: 0.26.0
-  resolution: "@types/scheduler@npm:0.26.0"
-  checksum: 295ede5e7f991c7c52f9ed8e58d3076526be9a560e59ae11bf1c1414f9755a17bd750f3bfed4657b118283d1eb082bb27dcbe2eadf335a982b0c3b6a562771c2
   languageName: node
   linkType: hard
 
@@ -7108,11 +7091,11 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-react-hooks@npm:^4.6.0":
-  version: 4.6.1
-  resolution: "eslint-plugin-react-hooks@npm:4.6.1"
+  version: 4.6.2
+  resolution: "eslint-plugin-react-hooks@npm:4.6.2"
   peerDependencies:
     eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
-  checksum: 77f3a53f6dd09968062f79e5f873b6a8b22346860bf5874acb08f36f6dff754f061c99e486f83b4946b89127d423f5498b1326f1f95997264e2b9817afce6272
+  checksum: 395c433610f59577cfcf3f2e42bcb130436c8a0b3777ac64f441d88c5275f4fcfc89094cedab270f2822daf29af1079151a7a6579a8e9ea8cee66540ba0384c4
   languageName: node
   linkType: hard
 
@@ -13360,14 +13343,14 @@ __metadata:
   linkType: hard
 
 "react-dom@npm:^18.2.0":
-  version: 18.3.0
-  resolution: "react-dom@npm:18.3.0"
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
   dependencies:
     loose-envify: ^1.1.0
-    scheduler: ^0.23.1
+    scheduler: ^0.23.2
   peerDependencies:
-    react: ^18.3.0
-  checksum: 04dc715fdedee89754c9c2cd627cf8bc5914dbb678d053ceecaf6feb11566fc653763781aefd82c240f264c87b1643ab1328ca6565b8b449ce79fbb2912fd1c7
+    react: ^18.3.1
+  checksum: 298954ecd8f78288dcaece05e88b570014d8f6dce5db6f66e6ee91448debeb59dcd31561dddb354eee47e6c1bb234669459060deb238ed0213497146e555a0b9
   languageName: node
   linkType: hard
 
@@ -13643,11 +13626,11 @@ __metadata:
   linkType: hard
 
 "react@npm:^18.2.0":
-  version: 18.3.0
-  resolution: "react@npm:18.3.0"
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: f1389bf7f9cc9295fded895635e54c4bf73626a8ea51afaa2da4988f89e71b68f249c1782f832d5912ba7d437da9292fc44ecf7c3dff072879253df93d703a10
+  checksum: a27bcfa8ff7c15a1e50244ad0d0c1cb2ad4375eeffefd266a64889beea6f6b64c4966c9b37d14ee32d6c9fcd5aa6ba183b6988167ab4d127d13e7cb5b386a376
   languageName: node
   linkType: hard
 
@@ -14474,12 +14457,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.23.1":
-  version: 0.23.1
-  resolution: "scheduler@npm:0.23.1"
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: 8a5d140ee7e1f0927b64883544794043ebcaf57fe3f3541040535d1cb841640c389674838d3a25050227c20f8606cdeb1172c83e711523c689d428146ed8efcb
+  checksum: 3e82d1f419e240ef6219d794ff29c7ee415fbdc19e038f680a10c067108e06284f1847450a210b29bbaf97b9d8a97ced5f624c31c681248ac84c80d56ad5a2c4
   languageName: node
   linkType: hard
 
