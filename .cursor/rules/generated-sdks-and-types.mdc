@@ -1,0 +1,46 @@
+---
+description: Do not hand-edit OpenAPI-generated SDK code or scripted assisted-service types; use Yarn workspace generate/update scripts instead.
+globs:
+  - libs/sdks/**
+  - libs/types/**
+alwaysApply: false
+---
+
+# Generated SDK and API types
+
+## Do not edit by hand
+
+- **`libs/sdks/lib/**`** — OpenAPI Generator output (e.g. `apis/`, `models/`, `common.ts`). Files include headers such as “Do not edit the class manually.”
+- **`libs/types/assisted-installer-service.d.ts`** — Produced by `libs/types/scripts/update-assisted-installer-service-types.js`.
+
+## Use these commands (from repo root)
+
+**SDKs (`@openshift-assisted/sdks`):**
+
+```bash
+yarn workspace @openshift-assisted/sdks run generate-sdk:all
+```
+
+Or one service:
+
+```bash
+yarn workspace @openshift-assisted/sdks run generate-sdk:production:assisted-installer-service
+yarn workspace @openshift-assisted/sdks run generate-sdk:production:accounts-management-service
+yarn workspace @openshift-assisted/sdks run generate-sdk:production:authorization-service
+```
+
+**Types — assisted installer service only (`@openshift-assisted/types`):**
+
+```bash
+yarn workspace @openshift-assisted/types run update:assisted-installer-service
+```
+
+Optional version tag argument is supported by that script (see its usage in `libs/types/scripts/update-assisted-installer-service-types.js`).
+
+## Allowed edits (not regenerated output)
+
+- **`libs/sdks`:** Generator inputs and config, e.g. `openapitools.json`, `.openapi-generator-ignore`, and similar — not files under `lib/` that are generator output.
+
+## Other `libs/types` `.d.ts` files
+
+`accounts-management-service.d.ts` and `authorization-service.d.ts` are not updated by `update:assisted-installer-service`. If they need changes and no script exists, align with team process or add a generation script — do not assume they are safe to patch like the assisted-service output.
