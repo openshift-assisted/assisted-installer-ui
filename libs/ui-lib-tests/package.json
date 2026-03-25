@@ -11,7 +11,7 @@
     "cypress-file-upload": "5.0.8",
     "cypress-fill-command": "^1.0.2",
     "lodash": "^4.17.23",
-    "start-server-and-test": "^2.0.0"
+    "start-server-and-test": "^3.0.0"
   },
   "scripts": {
     "build:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run build",
