@@ -1,0 +1,49 @@
+---
+description:
+  Translation strings in libs/ui-lib (source) and libs/locales catalogs; use yarn
+  process_new_strings for English; do not hand-edit translation JSON or non-English locale files.
+globs:
+  - libs/locales/**
+  - libs/ui-lib/**
+alwaysApply: false
+---
+
+# Translation strings
+
+Source strings live in **`libs/ui-lib`** (`t('ai:…')`). The English catalog
+**`libs/locales/lib/en/translation.json`** is produced by `yarn process_new_strings`; other locale
+files are out of scope for agents.
+
+## Workflow
+
+1. Add or change strings in TS/TSX using `t("ai:string for translation")` (or `t('ai:…')` — match
+   project style).
+2. From repo root:
+
+```bash
+yarn process_new_strings
+```
+
+Root `package.json` maps this to the `@openshift-assisted/locales` workspace script.
+
+**Whenever translation strings change in source** (new keys, reworded copy, or removed `t('ai:…')`
+usage), run `yarn process_new_strings` so `libs/locales/lib/en/translation.json` stays in sync.
+
+3. **Optional — validation:**
+
+```bash
+yarn workspace @openshift-assisted/locales run validate_translation_files
+```
+
+## What to avoid
+
+- **`libs/locales/lib/en/translation.json`** — Only updated by `process_new_strings` /
+  i18next-parser. Do not add or change keys here by hand; use the workflow above.
+- **`lib/es/`, `lib/fr/`, `lib/ja/`, `lib/ko/`, `lib/zh/`** — Handled by a separate localization
+  process. **Do not edit** those `translation.json` files.
+
+## Allowed edits
+
+Config and tooling under `libs/locales` that are not translation catalogs (e.g.
+`.i18next-parser.config.cjs`, scripts) when intentionally changing the pipeline — not routine string
+changes.
