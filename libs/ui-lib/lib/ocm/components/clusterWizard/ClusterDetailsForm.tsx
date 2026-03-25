@@ -82,14 +82,19 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         ) {
           resetPlatform = 'baremetal';
         }
-        const params = ClusterDetailsService.getClusterUpdateParams(values, resetPlatform);
+        const params = ClusterDetailsService.getClusterUpdateParams(
+          values,
+          resetPlatform,
+          cluster,
+          infraEnv,
+        );
         await handleClusterUpdate(cluster.id, params, values.addCustomManifest);
       } else {
-        const params = ClusterDetailsService.getClusterCreateParams(values);
+        const params = ClusterDetailsService.getClusterCreateParams(values, infraEnv);
         await handleClusterCreate(params, values.addCustomManifest);
       }
     },
-    [cluster, handleClusterCreate, handleClusterUpdate],
+    [cluster, infraEnv, handleClusterCreate, handleClusterUpdate],
   );
 
   const handleOnNext = React.useCallback(
