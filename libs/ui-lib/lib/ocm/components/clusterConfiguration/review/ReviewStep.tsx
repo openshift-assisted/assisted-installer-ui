@@ -24,19 +24,17 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const [disableInstallButton, setDisableInstallButton] = React.useState<boolean>();
 
   React.useEffect(() => {
-    if (
+    const manifestFail =
       cluster['last-installation-preparation']?.status === 'failed' &&
-      cluster['last-installation-preparation'].reason?.includes('manifest')
-    ) {
-      if (clusterWizardContext.uiSettings?.customManifestsUpdated === undefined) {
-        setDisableInstallButton(true);
-        void clusterWizardContext.updateUISettings({ customManifestsUpdated: false });
-      } else if (clusterWizardContext.uiSettings?.customManifestsUpdated === false) {
-        setDisableInstallButton(true);
-      }
-    } else {
-      setDisableInstallButton(isViewerMode || isStartingInstallation || cluster.status !== 'ready');
-    }
+      cluster['last-installation-preparation'].reason?.includes('manifest');
+    const userDidntAddressManifestIssue =
+      clusterWizardContext.uiSettings?.customManifestsUpdated !== true;
+    setDisableInstallButton(
+      (manifestFail && userDidntAddressManifestIssue) ||
+        isViewerMode ||
+        isStartingInstallation ||
+        cluster.status !== 'ready',
+    );
   }, [cluster, isStartingInstallation, isViewerMode, clusterWizardContext]);
 
   const handleClusterInstall = async () => {

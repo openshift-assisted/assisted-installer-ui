@@ -78,7 +78,10 @@ export const CustomManifestsPage = ({
     await ClustersService.removeClusterManifests(manifests, cluster.id);
     setUseCustomManifests(false);
     setDeleteModalOpen(false);
-    await clusterWizardContext.updateUISettings({ customManifestsAdded: false });
+    await clusterWizardContext.updateUISettings({
+      customManifestsAdded: false,
+      customManifestsUpdated: true,
+    });
   }, [cluster.id, clusterWizardContext]);
 
   const fieldId = getFieldId('use-custom-manifests', 'switch');
