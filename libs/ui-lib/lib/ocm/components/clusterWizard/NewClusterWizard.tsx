@@ -8,8 +8,12 @@ import OptionalConfigurationsStep from './disconnected/OptionalConfigurationsSte
 import DisconnectedStaticIp from './disconnected/DisconnectedStaticIp';
 import { ClusterWizardStepsType } from './wizardTransition';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
+import useInfraEnv from '../../hooks/useInfraEnv';
+import { CpuArchitecture } from '../../../common';
+import { useParams } from 'react-router-dom-v5-compat';
+import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
-const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
+const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraEnv) => {
   switch (currentStepId) {
     case 'disconnected-review':
       return <ReviewStep />;
@@ -22,16 +26,19 @@ const getCurrentStep = (currentStepId: ClusterWizardStepsType) => {
     case 'static-ip-host-configurations':
       return <DisconnectedStaticIp />;
     default:
-      return <ClusterDetails />;
+      return <ClusterDetails infraEnv={infraEnv} />;
   }
 };
 
 const NewClusterWizard: React.FC = () => {
   const { currentStepId } = useClusterWizardContext();
+  const { clusterId } = useParams() as { clusterId: string };
+  const { infraEnv } = useInfraEnv(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+
   return (
     <ModalDialogsContextProvider>
       <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
-        {getCurrentStep(currentStepId)}
+        {getCurrentStep(currentStepId, infraEnv)}
       </div>
     </ModalDialogsContextProvider>
   );
