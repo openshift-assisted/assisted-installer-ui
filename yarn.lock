@@ -3031,21 +3031,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:>=20.0.0":
+  version: 25.5.0
+  resolution: "@types/node@npm:25.5.0"
+  dependencies:
+    undici-types: ~7.18.0
+  checksum: ea0908794d5c011f4f2b5d2e93737ae047ff4a9fd1ec6da27e13a1f976d8d0e029830ddf2d4177e00a2601307e8bbc06e7b4cb3e29e889489d42dd44b49c796a
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^18.14.6, @types/node@npm:^18.17.5":
   version: 18.19.130
   resolution: "@types/node@npm:18.19.130"
   dependencies:
     undici-types: ~5.26.4
   checksum: b7032363581c416e721a88cffdc2b47662337cacd20f8294f5619a1abf79615c7fef1521964c2aa9d36ed6aae733e1a03e8c704661bd5a0c2f34b390f41ea395
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^20.0.0":
-  version: 20.19.35
-  resolution: "@types/node@npm:20.19.35"
-  dependencies:
-    undici-types: ~6.21.0
-  checksum: 465aac31b208bd4248f64b05abd0218509c696c55f62ae000571427e357168650d4c484f4531c37ad3be2a75198ba13f9dda7a0c14c539b09cf52b529d7f0d66
   languageName: node
   linkType: hard
 
@@ -3317,7 +3317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.5.10":
+"@types/ws@npm:^8.18.1, @types/ws@npm:^8.5.10":
   version: 8.18.1
   resolution: "@types/ws@npm:8.18.1"
   dependencies:
@@ -6562,6 +6562,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"entities@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "entities@npm:7.0.1"
+  checksum: 5ee49e52e64eafc63251585f74eae50f259ea2169dbbf5380843dcd97c79bfe430a58e7f34012ab67a8e258f6ef9f92d721d149ffc88c89039e155f1bcf48a53
+  languageName: node
+  linkType: hard
+
 "env-paths@npm:^2.2.0":
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
@@ -8508,13 +8515,16 @@ __metadata:
   linkType: hard
 
 "happy-dom@npm:^20.0.2":
-  version: 20.0.2
-  resolution: "happy-dom@npm:20.0.2"
+  version: 20.8.8
+  resolution: "happy-dom@npm:20.8.8"
   dependencies:
-    "@types/node": ^20.0.0
+    "@types/node": ">=20.0.0"
     "@types/whatwg-mimetype": ^3.0.2
+    "@types/ws": ^8.18.1
+    entities: ^7.0.1
     whatwg-mimetype: ^3.0.0
-  checksum: 1ee07fa3ca446ae57cc8333d4bc11d0e937ff58e1afe044a62590261d5d72154bde8bf3e3e65ec5350f52f05139d595f854ec5dfe91d564ffb97905c95c6bd53
+    ws: ^8.18.3
+  checksum: 5995b225f5798de90ee26653e0bf6e2c9c71fa8ce17d9def2ba6c5cc1348dd5910edc318acbbe14b50b5c50e7bc948b8c6afd891dde79385480b2095d5b33c95
   languageName: node
   linkType: hard
 
@@ -17291,6 +17301,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: d64ef1631227bd0c5fe21b3eb3646c9c91229402fb963d12d87b49af0a1ef757277083af23a5f85742bae1e520feddfb434cb882ea59249b15673c16dc3f36e0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.3":
+  version: 8.20.0
+  resolution: "ws@npm:8.20.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 2b31d24a53690770564a033c21ea48390f84d23fbc5abc14b2bbec4e112846f2f3ca66caee769a73fb8bc89ba16b452a6911a553e9742bbc75bccb79e203953e
   languageName: node
   linkType: hard
 
