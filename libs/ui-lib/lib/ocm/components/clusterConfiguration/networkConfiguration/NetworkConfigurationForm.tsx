@@ -92,8 +92,8 @@ const NetworkConfigurationForm: React.FC<{
           cluster.id,
           JSON.stringify(
             JSON.stringify({
-              featureSet: 'CustomNoUpgrade',
-              featureGates: ['NoRegistryClusterInstall=true'],
+              featureSet: 'TechPreviewNoUpgrade',
+              featureGates: [],
             }),
           ),
         );
