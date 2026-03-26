@@ -33,8 +33,18 @@ const getExistingClusterCpuArchitecture = (infraEnv: InfraEnv) => {
   return infraEnv.cpuArchitecture || getDefaultCpuArchitecture();
 };
 
+const ntpSourceForCluster = (cluster?: Cluster, infraEnv?: InfraEnv): string | undefined => {
+  const fromCluster = cluster?.additionalNtpSource?.trim();
+  const fromInfra = infraEnv?.additionalNtpSources?.trim();
+  const merged = fromCluster || fromInfra;
+  return merged || undefined;
+};
+
 const ClusterDetailsService = {
-  getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
+  getClusterCreateParams(
+    values: OcmClusterDetailsValues,
+    infraEnv?: InfraEnv,
+  ): ClusterCreateParamsWithStaticNetworking {
     const params: ClusterCreateParamsWithStaticNetworking = {
       name: values.name,
       controlPlaneCount: toNumber(values.controlPlaneCount),
@@ -72,12 +82,19 @@ const ClusterDetailsService = {
       delete params.platform;
     }
 
+    const ntp = ntpSourceForCluster(undefined, infraEnv);
+    if (ntp) {
+      params.additionalNtpSource = ntp;
+    }
+
     return params;
   },
 
   getClusterUpdateParams(
     values: OcmClusterDetailsValues,
     platform: PlatformType,
+    cluster?: Cluster,
+    infraEnv?: InfraEnv,
   ): ClusterDetailsUpdateParams {
     const params: ClusterDetailsUpdateParams = {
       name: values.name,
@@ -96,6 +113,11 @@ const ClusterDetailsService = {
               external: { platformName: 'oci', cloudControllerManager: 'External' },
             }
           : { type: platform };
+    }
+
+    const ntp = ntpSourceForCluster(cluster, infraEnv);
+    if (ntp) {
+      params.additionalNtpSource = ntp;
     }
 
     return params;
