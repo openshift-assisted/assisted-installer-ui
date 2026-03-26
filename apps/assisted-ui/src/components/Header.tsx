@@ -6,7 +6,7 @@ import { FeedbackButton } from './FeedbackButton';
 export const Header: React.FC = () => (
   <Masthead style={{ display: 'flex', justifyContent: 'space-between' }}>
     <MastheadBrand>
-      <MastheadLogo>
+      <MastheadLogo href="/assisted-installer/clusters">
         <Brand
           src="/logo.svg"
           alt="OpenShift Container Platform Assisted Installer"
