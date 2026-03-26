@@ -46,8 +46,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   } = useOpenShiftVersionsContext();
   const location = useLocation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const defaultPullSecret = usePullSecret();
-  const pullSecret = isSingleClusterFeatureEnabled ? infraEnv?.pullSecret || '' : defaultPullSecret;
+  const pullSecret = usePullSecret(isSingleClusterFeatureEnabled);
 
   const handleClusterUpdate = React.useCallback(
     async (clusterId: Cluster['id'], params: ClusterDetailsUpdateParams) => {
