@@ -10,6 +10,7 @@ import (
 	"github.com/openshift-assisted/assisted-disconnected-ui/bridge"
 	"github.com/openshift-assisted/assisted-disconnected-ui/config"
 	"github.com/openshift-assisted/assisted-disconnected-ui/log"
+	"github.com/openshift-assisted/assisted-disconnected-ui/pullsecret"
 	"github.com/openshift-assisted/assisted-disconnected-ui/server"
 )
 
@@ -27,6 +28,8 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	// Served before SPA catch-all: mounted manifest or plain JSON pull secret for the UI.
+	router.HandleFunc("/api/pull-secret", pullsecret.Handler(config.PullSecretManifestPath)).Methods(http.MethodGet)
 	router.PathPrefix("/api/{forward:.*}").Handler(apiHandler)
 
 	spa := server.SpaHandler{}
