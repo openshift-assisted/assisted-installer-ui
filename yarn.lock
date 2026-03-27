@@ -17370,14 +17370,14 @@ __metadata:
   linkType: hard
 
 "yup@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "yup@npm:1.4.0"
+  version: 1.7.1
+  resolution: "yup@npm:1.7.1"
   dependencies:
     property-expr: ^2.0.5
     tiny-case: ^1.0.3
     toposort: ^2.0.2
     type-fest: ^2.19.0
-  checksum: 20a2ee0c1e891979ca16b34805b3a3be9ab4bea6ea3d2f9005b998b4dc992d0e4d7b53e5f4d8d9423420046630fb44fdf0ecf7e83bc34dd83392bca046c5229d
+  checksum: 80d0d6838da457d489a97ee0b9c26fa9f59355a553f86842ea114b049811a918a0e7221f9c22bb88314699ddfb3e24ded49f7ab10a0e74dd273d03430110d5af
   languageName: node
   linkType: hard
 
