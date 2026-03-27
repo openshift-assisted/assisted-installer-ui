@@ -1,6 +1,6 @@
 module github.com/openshift-assisted/assisted-disconnected-ui
 
-go 1.22
+go 1.25.0
 
 require (
 	github.com/gorilla/mux v1.8.1
@@ -9,5 +9,5 @@ require (
 
 require (
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 )
