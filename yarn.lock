@@ -910,7 +910,7 @@ __metadata:
   resolution: "@openshift-assisted/assisted-disconnected-ui@workspace:apps/assisted-disconnected-ui"
   dependencies:
     "@openshift-assisted/ui-lib": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 1.0.0
+    "@openshift-console/dynamic-plugin-sdk": 1.8.0
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.1
     "@patternfly/react-core": 6.4.1
@@ -984,7 +984,7 @@ __metadata:
   resolution: "@openshift-assisted/assisted-ui@workspace:apps/assisted-ui"
   dependencies:
     "@openshift-assisted/ui-lib": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 1.0.0
+    "@openshift-console/dynamic-plugin-sdk": 1.8.0
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.1
     "@patternfly/react-core": 6.4.1
@@ -1123,7 +1123,7 @@ __metadata:
   dependencies:
     "@openshift-assisted/locales": "workspace:*"
     "@openshift-assisted/types": "workspace:*"
-    "@openshift-console/dynamic-plugin-sdk": 1.0.0
+    "@openshift-console/dynamic-plugin-sdk": 1.8.0
     "@patternfly/patternfly": 6.4.0
     "@patternfly/react-code-editor": 6.4.1
     "@patternfly/react-core": 6.4.1
@@ -1183,9 +1183,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openshift-console/dynamic-plugin-sdk@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@openshift-console/dynamic-plugin-sdk@npm:1.0.0"
+"@openshift-console/dynamic-plugin-sdk@npm:1.8.0":
+  version: 1.8.0
+  resolution: "@openshift-console/dynamic-plugin-sdk@npm:1.8.0"
   dependencies:
     classnames: 2.x
     immutable: 3.x
@@ -1201,7 +1201,7 @@ __metadata:
     reselect: 4.x
     typesafe-actions: ^4.2.1
     whatwg-fetch: 2.x
-  checksum: 3472d8109a550e7c42b43b67bf041dd739f502c4016ee999c2f9634d6dc203eb713273a8a391065b096b95313e43eace6fac317a302d2f65d1f0624c329e9fb4
+  checksum: c9c7f8162930eeead1ed821a0c480f236a4c22172be3978c7c4c676b6d56a0dd89e11c91c174e700e09dd13f134a2c122db7a44934be6c6a66df5e7613becb41
   languageName: node
   linkType: hard
 
