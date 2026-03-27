@@ -35,7 +35,7 @@ export const App: React.FC = () => {
     <Masthead id="masthead">
       <MastheadMain>
         <MastheadBrand>
-          <MastheadLogo>
+          <MastheadLogo href="/assisted-installer/clusters">
             <Brand
               src="/logo.svg"
               alt="OpenShift Container Platform Assisted Installer"
