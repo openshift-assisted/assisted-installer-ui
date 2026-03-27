@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest';
-import { getStackTypeLabel } from './ClusterProperties';
+import { getStackTypeLabel } from './clusterPropertiesUtils';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const createCluster = (overrides: Partial<Cluster> = {}): Cluster =>
