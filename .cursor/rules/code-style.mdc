@@ -1,0 +1,42 @@
+---
+description:
+  ESLint, Prettier, TypeScript; no nested ternaries; unused imports/vars; yarn fix-code-style; root scripts.
+globs:
+  - apps/**
+  - libs/**
+  - tools/**
+alwaysApply: false
+---
+
+# Code style
+
+Edits should **pass ESLint** and match **Prettier** (see root `package.json` `devDependencies`). Follow patterns already used in the file and nearby code—do not introduce one-off formatting. Keep diffs **scoped** to the task (no drive-by refactors).
+
+**TypeScript:** in the workspace you changed, run **`yarn check_types`** before PR. From repo root: **`yarn check:types:all`** if multiple packages are affected.
+
+## What to avoid
+
+- **Nested ternary expressions** — do not use a ternary inside another (`a ? (b ? c : d) : e`). A single `condition ? a : b` is fine when it stays readable; for more branches, use `if` / `else` or a variable.
+- **Unused imports and variables** — remove them so **`yarn lint`** stays clean.
+
+## Fix and format in the touched workspace
+
+Run this **from the package directory** you changed (e.g. `libs/ui-lib`, `apps/assisted-ui`):
+
+```bash
+yarn fix-code-style
+```
+
+## Root scripts (repo root)
+
+Run from **`assisted-installer-ui/`** (monorepo root):
+
+| Script | Purpose |
+|--------|---------|
+| `yarn format:all` | Prettier **check**, all workspaces |
+| `yarn lint:all` | ESLint, all workspaces |
+| `yarn fix-code-style:all` | `lint --fix` + format **write**, all workspaces |
+| `yarn check:types:all` | `check_types` in all workspaces |
+| `yarn process_new_strings` | After **`t('ai:…')`** changes under `libs/ui-lib` (not `lib/ocm`) — see **`translations.mdc`** |
+
+Touching several packages: **`yarn fix-code-style:all`** and **`yarn check:types:all`** before PR when it makes sense.
