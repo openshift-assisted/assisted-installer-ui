@@ -51,9 +51,7 @@ export const OpenShiftVersionModal = ({
           key="select-custom-ocp"
           variant={ButtonVariant.primary}
           onClick={() => {
-            if (values.customOpenshiftSelect !== null) {
-              setFieldValue('openshiftVersion', values.customOpenshiftSelect);
-            }
+            setFieldValue('openshiftVersion', values.customOpenshiftSelect);
             onClose();
           }}
         >

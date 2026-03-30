@@ -69,7 +69,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 variant={ButtonVariant.primary}
                 name="next"
                 onClick={onNext}
-                isDisabled={isNextDisabled || isSubmitting}
+                isDisabled={isNextDisabled}
                 isLoading={isNextButtonLoading}
               >
                 {nextButtonText || t('ai:Next')}

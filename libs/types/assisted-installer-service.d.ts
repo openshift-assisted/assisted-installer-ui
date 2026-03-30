@@ -1806,7 +1806,7 @@ export interface ImageInfo {
   staticNetworkConfig?: string;
   type?: ImageType;
 }
-export type ImageType = 'full-iso' | 'minimal-iso' | 'disconnected-iso';
+export type ImageType = 'full-iso' | 'minimal-iso';
 export interface ImportClusterParams {
   /**
    * OpenShift cluster name.
@@ -1913,10 +1913,6 @@ export interface InfraEnv {
    * certificates in this bundle.
    */
   additionalTrustBundle?: string;
-  /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
-   */
-  pullSecret?: string;
 }
 export interface InfraEnvCreateParams {
   /**
