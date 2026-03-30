@@ -102,9 +102,7 @@ const ReviewStep = () => {
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
-                <DescriptionListDescription>
-                  {disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64'}
-                </DescriptionListDescription>
+                <DescriptionListDescription>x86_64</DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>ISO size</DescriptionListTerm>

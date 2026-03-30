@@ -19,7 +19,8 @@ import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-
 import { useUISettings } from '../../hooks';
 import { AlertVariant } from '@patternfly/react-core';
 import { useFeature } from '../../hooks/use-feature';
-import { isOciPlatformType, isThirdPartyCNI } from '../utils';
+import { isThirdPartyCNI } from '../../../common/types/networkType';
+import { isOciPlatformType } from '../utils';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
