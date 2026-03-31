@@ -41,6 +41,7 @@ yarn workspace @openshift-assisted/locales run validate_translation_files
   i18next-parser. Do not add or change keys here by hand; use the workflow above.
 - **`lib/es/`, `lib/fr/`, `lib/ja/`, `lib/ko/`, `lib/zh/`** — Handled by a separate localization
   process. **Do not edit** those `translation.json` files.
+- **`libs/ui-lib/lib/ocm/**`** — No **`t('ai:…')`**; use plain English strings or text supplied via props.
 
 ## Allowed edits
 
