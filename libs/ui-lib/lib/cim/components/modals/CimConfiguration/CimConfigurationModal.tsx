@@ -20,12 +20,18 @@ import parseUrl from 'parse-url';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getStorageSizeGiB } from '../../helpers';
 import { AlertPayload } from '../../../../common';
+import { getErrorMessage } from '../../../../common/utils';
 
 import { CimConfigurationModalProps, CimConfigurationValues } from './types';
-import { onEnableCIM } from './persist';
+import {
+  patchProvisioning,
+  createAgentServiceConfig,
+  editAgentServiceConfig,
+  configureIngressLoadBalancer,
+} from './persist';
 import { CimConfigDisconnectedAlert } from './CimConfigDisconnectedAlert';
 import { MIN_DB_VOL_SIZE, MIN_FS_VOL_SIZE, MIN_IMG_VOL_SIZE } from './constants';
-import { isCIMConfigProgressing } from './utils';
+import { isCIMConfigProgressing, LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP } from './utils';
 import { resetCimConfigProgressAlertSuccessStatus } from './CimConfigProgressAlert';
 import { CimConfigurationFormFields } from './CimConfigurationFormFields';
 
@@ -52,24 +58,45 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     helpers.setSubmitting(true);
     resetCimConfigProgressAlertSuccessStatus();
 
-    if (
-      await onEnableCIM({
-        t,
-        setError,
-        agentServiceConfig,
-        platform,
-        dbVolSizeGiB: values.dbVolSize,
-        fsVolSizeGiB: values.fsVolSize,
-        imgVolSizeGiB: values.imgVolSize,
-        configureLoadBalancer: values.configureLoadBalancer,
-        ciscoIntersightURL: values.addCiscoIntersightURL ? values.ciscoIntersightURL : undefined,
-      })
-    ) {
-      // successfully persisted
+    try {
+      if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
+        try {
+          await patchProvisioning();
+        } catch (e) {
+          setError({
+            title: t('ai:Failed to configure provisioning to enable registering hosts via BMC.'),
+            message: getErrorMessage(e),
+            variant: AlertVariant.warning,
+          });
+          setConfigureLoadBalancerInitial(values.configureLoadBalancer);
+          return;
+        }
+      }
+
+      if (isEdit && agentServiceConfig) {
+        await editAgentServiceConfig({
+          t,
+          agentServiceConfig,
+          values,
+        });
+      } else {
+        await createAgentServiceConfig({ t, values });
+      }
+
+      window.localStorage.setItem(LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP, new Date().toISOString());
+
+      if (values.configureLoadBalancer) {
+        await configureIngressLoadBalancer({ t });
+      }
+
       onClose();
-    } else {
-      // keep modal open and show error
+    } catch (err) {
+      setError({
+        title: t('ai:Failed to save configuration'),
+        message: getErrorMessage(err),
+      });
       setConfigureLoadBalancerInitial(values.configureLoadBalancer);
+    } finally {
       helpers.setSubmitting(false);
     }
   };
