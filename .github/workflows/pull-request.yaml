@@ -10,7 +10,7 @@ on:
     branches:
       - master
       - releases/*
-      - feature/ABI-above-the-sea-flow
+      - feature/*
 
 env:
   NODE_OPTIONS: '--max-old-space-size=8192'
