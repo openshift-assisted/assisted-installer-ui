@@ -754,11 +754,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:11.1.16":
-  version: 11.1.16
-  resolution: "@nestjs/common@npm:11.1.16"
+"@nestjs/common@npm:11.1.17":
+  version: 11.1.17
+  resolution: "@nestjs/common@npm:11.1.17"
   dependencies:
-    file-type: 21.3.0
+    file-type: 21.3.2
     iterare: 1.2.1
     load-esm: 1.0.3
     tslib: 2.8.1
@@ -773,13 +773,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: f304b1a976a30ba30510942eae64f2dcfcf94294fb871bb6db45797a2e01076116850a472b5a528a62bdf58967f3db62ff08504a126a49dc93dfc3b9c45a5bb8
+  checksum: f4cf278b54c57ef119bf48a05b2730a4e3841e2675b783e809de51bc1dce3ca08a65c6292ff5213c70485f7427acd902590a68e5050325f98daa2563792508a2
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:11.1.16":
-  version: 11.1.16
-  resolution: "@nestjs/core@npm:11.1.16"
+"@nestjs/core@npm:11.1.17":
+  version: 11.1.17
+  resolution: "@nestjs/core@npm:11.1.17"
   dependencies:
     "@nuxt/opencollective": 0.4.1
     fast-safe-stringify: 2.1.1
@@ -801,7 +801,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 4f44337c528d04d540bb53941425f27fa7034313feb36b536050afe83f81d3a95b5b9ae5ddf07eca9aa8c68798b3dd65bcc1db4f160d8099eaec72e5e79f3dac
+  checksum: 2788661a925869419ac60ad0939bb7b201111262dbaf11a75a907d6cbc9aafbfd8283600e0fc4296dca5cb81c92fd88fcb39be5b4105045235de34fb2591b225
   languageName: node
   linkType: hard
 
@@ -895,13 +895,13 @@ __metadata:
   linkType: hard
 
 "@openapitools/openapi-generator-cli@npm:^2.7.0":
-  version: 2.30.2
-  resolution: "@openapitools/openapi-generator-cli@npm:2.30.2"
+  version: 2.31.0
+  resolution: "@openapitools/openapi-generator-cli@npm:2.31.0"
   dependencies:
     "@inquirer/select": 1.3.3
     "@nestjs/axios": 4.0.1
-    "@nestjs/common": 11.1.16
-    "@nestjs/core": 11.1.16
+    "@nestjs/common": 11.1.17
+    "@nestjs/core": 11.1.17
     "@nuxtjs/opencollective": 0.3.2
     axios: ^1.13.6
     chalk: 4.1.2
@@ -917,7 +917,7 @@ __metadata:
     tslib: 2.8.1
   bin:
     openapi-generator-cli: main.js
-  checksum: e7741f41a91f284af240d210e55f5f771a91bed9b586754492742134311225f4bd0a7390e937c97106b503836d99db5390594ea7ce95b621d7f4ef4c802446ee
+  checksum: 790c51ed08a3f6ca8380bf4ca6246a4cabab11a4941b899b7c846f429b1f30ec7da85775a847143e643c6ff5d1c8481f96f26744686e99f0ee0868dd63cb5f71
   languageName: node
   linkType: hard
 
@@ -8262,15 +8262,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:21.3.0":
-  version: 21.3.0
-  resolution: "file-type@npm:21.3.0"
+"file-type@npm:21.3.2":
+  version: 21.3.2
+  resolution: "file-type@npm:21.3.2"
   dependencies:
     "@tokenizer/inflate": ^0.4.1
     strtok3: ^10.3.4
     token-types: ^6.1.1
     uint8array-extras: ^1.4.0
-  checksum: 52c480c327ff4800095988d1b3a0cf92eac5cae84c8ee6f15feb08b866b56404726e83ef74d4c51fffd749d4b7c64a4e2bb40bcfd8d9e44e6a0664cd694baf18
+  checksum: 175ce8a21cf2129410a6e01134638c9237a079c9abb7200cda46824c2a9ff1bdff0c63ce52c40201bb741d9139c24cbe5573b5d06f3ce0b723e018416d0c86cf
   languageName: node
   linkType: hard
 
