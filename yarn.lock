@@ -89,6 +89,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.29.2":
+  version: 7.29.2
+  resolution: "@babel/runtime@npm:7.29.2"
+  checksum: d5548d1165de8995f8afc93a5694b8625409be16cd1f2250ac13e331335858ddac3cb9fd278e6c43956a130101a2203f09417938a1a96f9fb70f02b4b4172e1d
+  languageName: node
+  linkType: hard
+
 "@borewit/text-codec@npm:^0.2.1":
   version: 0.2.2
   resolution: "@borewit/text-codec@npm:0.2.2"
@@ -942,7 +949,7 @@ __metadata:
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
     concurrently: ^8.2.2
-    i18next: ^20.4.0
+    i18next: ^26.0.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.44.0
@@ -983,7 +990,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^26.0.0
     parse-url: ^9.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -1017,7 +1024,7 @@ __metadata:
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^26.0.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.44.0
@@ -1185,7 +1192,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
     axios: ^1.13.5
-    i18next: ^20.4 || ^21
+    i18next: ^20.4 || ^21 || ^26.0.0
     monaco-editor: ^0.44.0
     react: ^18
     react-dom: ^18
@@ -9687,12 +9694,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^20.2.1, i18next@npm:^20.4.0":
+"i18next@npm:^20.2.1":
   version: 20.6.1
   resolution: "i18next@npm:20.6.1"
   dependencies:
     "@babel/runtime": ^7.12.0
   checksum: 313cd4b17f9092eaf8ca92a02bb74d099f4a8b26de6e38018f438ce6f706220e5f72d865e1f50d815e13504ec38bc77e0f6341f670ca5162689f8d11a859e564
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^26.0.0":
+  version: 26.0.3
+  resolution: "i18next@npm:26.0.3"
+  dependencies:
+    "@babel/runtime": ^7.29.2
+  peerDependencies:
+    typescript: ^5 || ^6
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: fcc160deceb26804ee9f1fee7e9869891db95adc1dc5054246743a9b5970a7b26ab741650817094299fec5f0d3351c89ac597c187a606f1af9d68c73714b9297
   languageName: node
   linkType: hard
 
