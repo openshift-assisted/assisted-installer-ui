@@ -39,7 +39,7 @@
     "react-router-dom-v5-compat": "^6.30.3"
   },
   "devDependencies": {
-    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.3",
+    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^3.0.0",
     "@redhat-cloud-services/frontend-components-config": "^6.0.17",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.4",
     "@tsconfig/vite-react": "^1.0.1",
