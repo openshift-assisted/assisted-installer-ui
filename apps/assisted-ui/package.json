@@ -19,7 +19,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.11.4",
-    "react-monaco-editor": "^0.55.0",
+    "react-monaco-editor": "^0.59.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "5.3.x",
     "react-router-dom-v5-compat": "^6.30.3",
