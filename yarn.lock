@@ -936,7 +936,7 @@ __metadata:
     "@patternfly/react-tokens": 6.4.0
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^7.119
-    "@tsconfig/vite-react": ^1.0.1
+    "@tsconfig/vite-react": ^7.0.0
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
@@ -979,7 +979,7 @@ __metadata:
     "@redhat-cloud-services/frontend-components": ^7.0.0
     "@redhat-cloud-services/frontend-components-config": ^6.0.17
     "@redhat-cloud-services/tsc-transform-imports": ^1.0.4
-    "@tsconfig/vite-react": ^1.0.1
+    "@tsconfig/vite-react": ^7.0.0
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
@@ -1010,7 +1010,7 @@ __metadata:
     "@patternfly/react-tokens": 6.4.0
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^7.119
-    "@tsconfig/vite-react": ^1.0.1
+    "@tsconfig/vite-react": ^7.0.0
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@types/react-router": ^5.1.x
@@ -2692,10 +2692,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/vite-react@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@tsconfig/vite-react@npm:1.0.1"
-  checksum: 2d343c07e73b612887d86c0ec6db35fa228ec3e3c237007390de17ba9e69c0e3cd6a1837debd6928988f9abad4cf9da023825ee85c07b51ae2440b95372d945a
+"@tsconfig/vite-react@npm:^7.0.0":
+  version: 7.0.2
+  resolution: "@tsconfig/vite-react@npm:7.0.2"
+  checksum: 1cee6fb2baa94644d4824158ef1df1902d6f6a01c421921ee8b3b6105398483781f032d2e1e0f0a3adb1feba7307ec9bef74107434e8181848449e3434cbb2de
   languageName: node
   linkType: hard
 

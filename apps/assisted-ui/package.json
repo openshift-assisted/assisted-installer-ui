@@ -29,7 +29,7 @@
   },
   "description": "A stand-alone web UI for the Assisted Installer",
   "devDependencies": {
-    "@tsconfig/vite-react": "^1.0.1",
+    "@tsconfig/vite-react": "^7.0.0",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.0",
     "@types/react-router": "^5.1.x",
