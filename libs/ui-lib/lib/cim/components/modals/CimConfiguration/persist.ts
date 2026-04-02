@@ -362,7 +362,25 @@ export const onEnableCIM = async ({
       ciscoIntersightURL,
       agentServiceConfig.metadata?.annotations?.['ciscoIntersightURL'],
     );
-    await k8sPatch({ model: AgentServiceConfigModel, resource: agentServiceConfig, data: patches });
+    if (!agentServiceConfig.metadata?.annotations) {
+      await k8sPatch({
+        model: AgentServiceConfigModel,
+        resource: agentServiceConfig,
+        data: [
+          {
+            op: 'add',
+            path: '/metadata/annotations',
+            value: { ciscoIntersightURL },
+          },
+        ],
+      });
+    } else {
+      await k8sPatch({
+        model: AgentServiceConfigModel,
+        resource: agentServiceConfig,
+        data: patches,
+      });
+    }
   }
 
   // see isCIMConfigProgressing()
