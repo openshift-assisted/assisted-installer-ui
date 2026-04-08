@@ -24,7 +24,7 @@
     "react-router-dom": "5.3.x",
     "react-router-dom-v5-compat": "^6.30.3",
     "redux": "^4",
-    "uuid": "^8.1",
+    "uuid": "^13.0.0",
     "yup": "^1.4.0"
   },
   "description": "A stand-alone web UI for the Assisted Installer",
