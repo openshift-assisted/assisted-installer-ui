@@ -17,7 +17,7 @@
     "classnames": "^2.3.1",
     "file-saver": "^2.0.2",
     "filesize.js": "^2.0.0",
-    "formik": "2.2.6",
+    "formik": "2.4.9",
     "fuse.js": "^6.4.6",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",

@@ -1526,7 +1526,7 @@ __metadata:
     classnames: ^2.3.1
     file-saver: ^2.0.2
     filesize.js: ^2.0.0
-    formik: 2.2.6
+    formik: 2.4.9
     fuse.js: ^6.4.6
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
@@ -9310,20 +9310,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"formik@npm:2.2.6":
-  version: 2.2.6
-  resolution: "formik@npm:2.2.6"
+"formik@npm:2.4.9":
+  version: 2.4.9
+  resolution: "formik@npm:2.4.9"
   dependencies:
+    "@types/hoist-non-react-statics": ^3.3.1
     deepmerge: ^2.1.1
     hoist-non-react-statics: ^3.3.0
-    lodash: ^4.17.14
-    lodash-es: ^4.17.14
+    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     react-fast-compare: ^2.0.1
     tiny-warning: ^1.0.2
-    tslib: ^1.10.0
+    tslib: ^2.0.0
   peerDependencies:
     react: ">=16.8.0"
-  checksum: b3d79717b03e9aadc366bb83d29ef13d800caadd506ed3f097d500dfacf573ae8f7fc7913d6e240f8c6a70b1df925fdceae887be28706822e11b04190c94c95d
+  checksum: c518f055966245b2a120307107a19b3186f554f6218f5cb0fe2d309e5d95722008b361f851eeda2acd2c06441d8d50f7d768c1313c62a2d371f9106b064fbcff
   languageName: node
   linkType: hard
 
@@ -17489,7 +17490,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.10.0, tslib@npm:^1.8.1, tslib@npm:^1.9.3":
+"tslib@npm:^1.8.1, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
