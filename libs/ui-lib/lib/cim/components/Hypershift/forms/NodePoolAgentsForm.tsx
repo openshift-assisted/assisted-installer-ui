@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Alert, AlertVariant, Grid, GridItem, Text } from '@patternfly/react-core';
 import * as React from 'react';
 import { CheckboxField, NumberInputField, PopoverIcon } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -27,6 +27,7 @@ const NodePoolAgentsForm = ({
 }: NodePoolAgentsFormProps) => {
   const { t } = useTranslation();
 
+  const [{ value: count }] = useField<number>(countName);
   const [{ value: minValue }] = useField<number>(`${autoscalingName}.minReplicas`);
   const [{ value: maxValue }] = useField<number>(`${autoscalingName}.maxReplicas`);
   const [{ value: useAutoscalingValue }] = useField<boolean>(useAutoscalingName);
@@ -60,7 +61,7 @@ const NodePoolAgentsForm = ({
               label={t('ai:Minimum number of hosts')}
               isRequired
               minValue={1}
-              maxValue={maxValue || maxAgents}
+              maxValue={maxValue}
             />
           </GridItem>
           <GridItem>
@@ -69,22 +70,33 @@ const NodePoolAgentsForm = ({
               label={t('ai:Maximum number of hosts')}
               isRequired
               minValue={minValue || 1}
-              maxValue={maxAgents}
               helperText={helperText}
             />
           </GridItem>
         </>
       ) : (
+        <>
+          <GridItem>
+            <NumberInputField
+              label={t('ai:Number of hosts')}
+              idPostfix="count"
+              name={countName}
+              isRequired
+              minValue={0}
+              helperText={helperText}
+            />
+          </GridItem>
+        </>
+      )}
+      {(useAutoscalingValue ? maxValue : count) > maxAgents && (
         <GridItem>
-          <NumberInputField
-            label={t('ai:Number of hosts')}
-            idPostfix="count"
-            name={countName}
-            isRequired
-            minValue={0}
-            maxValue={maxAgents}
-            helperText={helperText}
-          />
+          <Alert
+            isInline
+            variant={AlertVariant.warning}
+            title={t('ai:Host count exceeds the current number of available hosts.')}
+          >
+            <Text>{t('ai:Scale down the nodepool or make more hosts available.')}</Text>
+          </Alert>
         </GridItem>
       )}
     </Grid>
