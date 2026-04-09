@@ -41,7 +41,7 @@ type StoredFilters = { filters: ClusterFiltersType; sortBy: ISortBy; searchStrin
 
 const columns = [
   { title: 'Name', cellWidth: 20 },
-  { title: 'Base domain', cellWidth: 20 },
+  { title: 'Base domain', cellWidth: 40 },
   { title: 'Version' },
   { title: 'Status' },
   { title: 'Hosts' },
