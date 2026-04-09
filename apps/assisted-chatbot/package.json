@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@openshift-assisted/chatbot": "workspace:*",
-    "@patternfly/chatbot": "6.4.1",
+    "@patternfly/chatbot": "6.5.0",
     "@patternfly/patternfly": "6.4.0",
     "@patternfly/react-core": "6.4.1",
     "@patternfly/react-icons": "6.4.0",
