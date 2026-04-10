@@ -191,7 +191,7 @@ const AITable = <R extends any>({
         ({
           ...c.header,
           sort: c.header.sort ?? true,
-        } as TableMemoColType),
+        }) as TableMemoColType,
     );
     return [newContent, columns];
   }, [canSelectAll, content, getDataId, onSelect, onSelectAll]);

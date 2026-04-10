@@ -8486,9 +8486,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccessTokenPost(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessTokenCfg>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccessTokenPost(
-        options,
-      );
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.apiAccountsMgmtV1AccessTokenPost(options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**

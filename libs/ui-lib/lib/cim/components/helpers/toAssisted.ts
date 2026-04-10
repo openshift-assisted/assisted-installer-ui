@@ -159,13 +159,13 @@ export const getAICluster = ({
     apiVips: agentClusterInstall?.spec?.apiVIPs?.length
       ? (agentClusterInstall?.spec?.apiVIPs || []).map((ip) => ({ ip }))
       : agentClusterInstall?.spec?.apiVIP
-      ? [{ ip: agentClusterInstall?.spec?.apiVIP }]
-      : [],
+        ? [{ ip: agentClusterInstall?.spec?.apiVIP }]
+        : [],
     ingressVips: agentClusterInstall?.spec?.ingressVIPs?.length
       ? (agentClusterInstall?.spec?.ingressVIPs || []).map((ip) => ({ ip }))
       : agentClusterInstall?.spec?.ingressVIP
-      ? [{ ip: agentClusterInstall?.spec?.ingressVIP }]
-      : [],
+        ? [{ ip: agentClusterInstall?.spec?.ingressVIP }]
+        : [],
     highAvailabilityMode:
       agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
     status,
@@ -185,7 +185,7 @@ export const getAICluster = ({
     vipDhcpAllocation: false,
     userManagedNetworking: Boolean(
       agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ||
-        agentClusterInstall?.spec?.networking?.userManagedNetworking,
+      agentClusterInstall?.spec?.networking?.userManagedNetworking,
     ),
     hostNetworks: getHostNetworks(agents, agentClusterInstall),
     totalHostCount: agents?.length,

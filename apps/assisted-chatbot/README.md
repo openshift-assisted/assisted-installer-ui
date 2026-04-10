@@ -13,7 +13,6 @@ This is a federated module for
    3. run `npm install`
    4. start the Astro `npm run start`
 2. Run the Assisted Chatbot
-
    1. run `yarn start:assisted_chatbot:static`
 
 3. Open [c.rh.c](https://prod.foo.redhat.com:1337/). The chatbot will appear on the bottom left

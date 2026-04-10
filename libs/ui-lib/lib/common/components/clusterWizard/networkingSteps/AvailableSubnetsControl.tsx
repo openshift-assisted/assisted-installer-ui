@@ -129,8 +129,8 @@ export const AvailableSubnetsControl = ({
     // If both are the same family, force the secondary to the opposite family.
     if ((firstIsV4 && secondIsV4) || (firstIsV6 && secondIsV6)) {
       const replacement = firstIsV4
-        ? IPv6Subnets[0]?.subnet ?? NO_SUBNET_SET
-        : IPv4Subnets[0]?.subnet ?? NO_SUBNET_SET;
+        ? (IPv6Subnets[0]?.subnet ?? NO_SUBNET_SET)
+        : (IPv4Subnets[0]?.subnet ?? NO_SUBNET_SET);
 
       if (replacement !== second) {
         setFieldValue('machineNetworks.1.cidr', replacement, false);

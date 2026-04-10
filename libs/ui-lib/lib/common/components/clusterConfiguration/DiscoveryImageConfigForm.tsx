@@ -151,8 +151,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 {isSubmitting
                   ? t('ai:Generating')
                   : isIPXE
-                  ? t('ai:Generate script file')
-                  : t('ai:Generate Discovery ISO')}
+                    ? t('ai:Generate script file')
+                    : t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}

@@ -35,7 +35,6 @@ This project is a user interface backed by Assisted Installer API.
   yarn install
   ```
 - Start the webpack dev server to run the application in dev-mode with:
-
   - Environment variables:
 
   ```

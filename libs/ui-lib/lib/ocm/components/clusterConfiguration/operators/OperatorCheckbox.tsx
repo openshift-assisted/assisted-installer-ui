@@ -157,10 +157,10 @@ const OperatorCheckbox = ({
   const disabledReason = isInBundle
     ? 'This operator is part of a bundle and cannot be deselected.'
     : notStandalone
-    ? 'This operator cannot be installed as a standalone'
-    : parentOperatorName
-    ? `This operator is a dependency of ${parentOperatorName}`
-    : getFeatureDisabledReason(featureId);
+      ? 'This operator cannot be installed as a standalone'
+      : parentOperatorName
+        ? `This operator is a dependency of ${parentOperatorName}`
+        : getFeatureDisabledReason(featureId);
 
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>

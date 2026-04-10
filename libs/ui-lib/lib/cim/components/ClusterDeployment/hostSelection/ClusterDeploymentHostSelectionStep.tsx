@@ -96,8 +96,8 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
       selectedHostIds: values.autoSelectHosts
         ? Yup.array(Yup.string())
         : isSNOCluster
-        ? Yup.array(Yup.string()).length(1, t('ai:Please select one host for the cluster.'))
-        : Yup.array(Yup.string()).min(3, t('ai:Please select at least 3 hosts for the cluster.')),
+          ? Yup.array(Yup.string()).length(1, t('ai:Please select one host for the cluster.'))
+          : Yup.array(Yup.string()).min(3, t('ai:Please select at least 3 hosts for the cluster.')),
     });
   });
 };
@@ -200,10 +200,13 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       setHasAttemptedSubmit(true);
       const errors = await validateForm();
       setTouched(
-        Object.keys(errors).reduce((acc, curr) => {
-          acc[curr] = true;
-          return acc;
-        }, {} as Record<string, boolean>),
+        Object.keys(errors).reduce(
+          (acc, curr) => {
+            acc[curr] = true;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        ),
       );
       if (Object.keys(errors).length) {
         return;

@@ -45,11 +45,14 @@ export const parseStringLabels = (
 ): {
   [key in string]: string;
 } => {
-  const labels = strValues.reduce((acc, curr) => {
-    const label = curr.split('=');
-    acc[label[0]] = label[1];
-    return acc;
-  }, {} as Record<string, string>);
+  const labels = strValues.reduce(
+    (acc, curr) => {
+      const label = curr.split('=');
+      acc[label[0]] = label[1];
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
   return labels;
 };
 

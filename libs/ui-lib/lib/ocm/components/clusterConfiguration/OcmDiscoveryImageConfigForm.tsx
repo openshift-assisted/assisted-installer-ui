@@ -97,8 +97,8 @@ export const OcmDiscoveryImageConfigForm = ({
   const imageTypeValue = isIpxeSelected
     ? 'discovery-image-ipxe'
     : imageType
-    ? imageType
-    : 'full-iso';
+      ? imageType
+      : 'full-iso';
 
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',

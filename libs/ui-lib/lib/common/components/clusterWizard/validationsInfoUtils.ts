@@ -242,10 +242,13 @@ export const getWizardStepClusterStatus = <ClusterWizardStepsType extends string
 export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): WizardStepValidationMap['softValidationIds'] =>
-  Object.keys(wizardStepsValidationsMap).reduce((prev, curr) => {
-    const failingStepValidations = wizardStepsValidationsMap[curr as ClusterWizardStepsType];
-    return [...prev, ...failingStepValidations.softValidationIds];
-  }, [] as WizardStepValidationMap['softValidationIds']);
+  Object.keys(wizardStepsValidationsMap).reduce(
+    (prev, curr) => {
+      const failingStepValidations = wizardStepsValidationsMap[curr as ClusterWizardStepsType];
+      return [...prev, ...failingStepValidations.softValidationIds];
+    },
+    [] as WizardStepValidationMap['softValidationIds'],
+  );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFailingClusterWizardStepHostValidations = <ClusterWizardStepsType extends string>(

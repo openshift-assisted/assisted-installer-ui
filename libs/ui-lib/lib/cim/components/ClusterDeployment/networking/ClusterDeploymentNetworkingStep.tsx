@@ -79,10 +79,13 @@ export const NetworkingForm = ({
     if (!hasAttemptedSubmit) {
       const errors = await validateForm();
       setTouched(
-        Object.keys(errors).reduce((acc, curr) => {
-          acc[curr] = true;
-          return acc;
-        }, {} as Record<string, boolean>),
+        Object.keys(errors).reduce(
+          (acc, curr) => {
+            acc[curr] = true;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        ),
       );
       setHasAttemptedSubmit(true);
       if (Object.keys(errors).length) {

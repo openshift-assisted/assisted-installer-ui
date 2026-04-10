@@ -41,9 +41,8 @@ const Day2StaticIP = () => {
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
-  const [initialStaticIpInfo, setInitialStaticIpInfo] = React.useState<StaticIpInfo>(
-    getDummyStaticIpInfo(),
-  );
+  const [initialStaticIpInfo, setInitialStaticIpInfo] =
+    React.useState<StaticIpInfo>(getDummyStaticIpInfo());
   const [formState, setFormState] = React.useState<StaticIpFormState>();
   const {
     data: { cluster },
