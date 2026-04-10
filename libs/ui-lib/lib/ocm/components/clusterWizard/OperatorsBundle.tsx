@@ -103,14 +103,14 @@ const BundleCard = ({
   const disabledReason = hasUnsupportedOperators
     ? 'Some operators in this bundle are not supported with the current configuration.'
     : incompatibleBundle
-    ? `Bundle cannot be installed together with ${
-        bundles.find(({ id }) => id === incompatibleBundle)?.title || incompatibleBundle
-      }`
-    : isAssistedMigration
-    ? 'This bundle needs to be selected for clusters created from Migration Assessment'
-    : !bundles.some((b) => b.id === bundle.id)
-    ? 'This bundle is not available for the current configuration, you might be able to use the standalone operators instead.'
-    : undefined;
+      ? `Bundle cannot be installed together with ${
+          bundles.find(({ id }) => id === incompatibleBundle)?.title || incompatibleBundle
+        }`
+      : isAssistedMigration
+        ? 'This bundle needs to be selected for clusters created from Migration Assessment'
+        : !bundles.some((b) => b.id === bundle.id)
+          ? 'This bundle is not available for the current configuration, you might be able to use the standalone operators instead.'
+          : undefined;
 
   const onSelect = (checked: boolean) => {
     const newBundles = checked

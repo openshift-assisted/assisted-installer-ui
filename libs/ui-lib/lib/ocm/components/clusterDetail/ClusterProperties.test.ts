@@ -15,7 +15,7 @@ const createCluster = (overrides: Partial<Cluster> = {}): Cluster =>
     clusterNetworks: [],
     serviceNetworks: [],
     ...overrides,
-  } as Cluster);
+  }) as Cluster;
 
 const createMachineNetwork = (cidr: string) => ({ cidr, clusterId: 'test' });
 const createClusterNetwork = (cidr: string, hostPrefix: number) => ({

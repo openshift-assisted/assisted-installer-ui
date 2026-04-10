@@ -33,9 +33,9 @@ const ClusterDetailStatusMessages = ({
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
   const showAddHostsAlert = Boolean(
     showAddHostsInfo &&
-      isInOcm &&
-      cluster.status === 'installed' &&
-      (!isSNO(cluster) || featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION')),
+    isInOcm &&
+    cluster.status === 'installed' &&
+    (!isSNO(cluster) || featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION')),
   );
 
   const platformLink = isClusterPlatformTypeVM(cluster)

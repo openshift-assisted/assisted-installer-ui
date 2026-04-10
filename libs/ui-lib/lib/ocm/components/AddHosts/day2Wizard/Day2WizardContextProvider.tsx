@@ -38,9 +38,8 @@ const Day2WizardContextProvider = ({
   );
   const [selectedIsoUrl, setSelectedIsoUrl] = React.useState<string>('');
   const [selectedIpxeUrl, setSelectedIpxeUrl] = React.useState<string>('');
-  const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>(
-    getWizardStepIds(),
-  );
+  const [wizardStepIds, setWizardStepIds] =
+    React.useState<Day2WizardStepsType[]>(getWizardStepIds());
 
   const contextValue = React.useMemo<Day2WizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {

@@ -570,12 +570,15 @@ export const useOperatorSpecs = () => {
 
   // Flat map operatorKey -> spec
   const byKey: Record<string, OperatorSpec> = React.useMemo(() => {
-    return Object.values(byCategory).reduce((acc, specs) => {
-      specs.forEach((spec) => {
-        acc[spec.operatorKey] = spec;
-      });
-      return acc;
-    }, {} as Record<string, OperatorSpec>);
+    return Object.values(byCategory).reduce(
+      (acc, specs) => {
+        specs.forEach((spec) => {
+          acc[spec.operatorKey] = spec;
+        });
+        return acc;
+      },
+      {} as Record<string, OperatorSpec>,
+    );
   }, [byCategory]);
 
   return { byCategory, byKey };

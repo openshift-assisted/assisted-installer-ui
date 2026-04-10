@@ -142,9 +142,8 @@ export const VersionsApiFp = function (configuration?: Configuration) {
     async v2ListSupportedOpenshiftVersions(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenshiftVersions>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListSupportedOpenshiftVersions(
-        options,
-      );
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v2ListSupportedOpenshiftVersions(options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
   };

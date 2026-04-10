@@ -108,8 +108,8 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion?: ProtocolV
     protocolVersion === undefined
       ? 'IPv4 or IPv6'
       : protocolVersion === ProtocolVersion.ipv4
-      ? 'IPv4'
-      : 'IPv6';
+        ? 'IPv4'
+        : 'IPv6';
   return Yup.string().test(
     validationId,
     ({ value }) => {

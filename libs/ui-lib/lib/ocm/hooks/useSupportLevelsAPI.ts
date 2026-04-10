@@ -12,10 +12,10 @@ type SupportLevelAPIResources = 'architectures' | 'features' | 'featureForAllCpu
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'
   ? ArchitectureSupportLevelMap | null
   : T extends 'features'
-  ? NewFeatureSupportLevelMap | null
-  : T extends 'featureForAllCpus'
-  ? Record<SupportedCpuArchitecture, NewFeatureSupportLevelMap | null> | null
-  : null;
+    ? NewFeatureSupportLevelMap | null
+    : T extends 'featureForAllCpus'
+      ? Record<SupportedCpuArchitecture, NewFeatureSupportLevelMap | null> | null
+      : null;
 
 export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   resourceKind: T,
@@ -34,9 +34,8 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   const fetchArchitecturesSupportLevels = React.useCallback(
     async (openshiftVersion: string) => {
       try {
-        const { data: architectures } = await NewFeatureSupportLevelsAPI.architecturesSupportLevel(
-          openshiftVersion,
-        );
+        const { data: architectures } =
+          await NewFeatureSupportLevelsAPI.architecturesSupportLevel(openshiftVersion);
         setCpuArchitectures(architectures.architectures);
       } catch (e) {
         handleApiError(e, () =>
