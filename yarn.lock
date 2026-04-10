@@ -297,7 +297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.9.2":
   version: 7.26.10
   resolution: "@babel/runtime@npm:7.26.10"
   dependencies:
@@ -313,7 +313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10":
+"@babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.29.2":
   version: 7.29.2
   resolution: "@babel/runtime@npm:7.29.2"
   checksum: d5548d1165de8995f8afc93a5694b8625409be16cd1f2250ac13e331335858ddac3cb9fd278e6c43956a130101a2203f09417938a1a96f9fb70f02b4b4172e1d
@@ -1477,7 +1477,7 @@ __metadata:
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
     concurrently: ^9.0.0
-    i18next: ^20.4.0
+    i18next: ^26.0.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.55.0
@@ -1518,7 +1518,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^26.0.0
     parse-url: ^9.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -1552,7 +1552,7 @@ __metadata:
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^26.0.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.55.0
@@ -1720,7 +1720,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
     axios: ^1.13.5
-    i18next: ^20.4 || ^21
+    i18next: ^20.4 || ^21 || ^26.0.0
     monaco-editor: ^0.44.0 || ^0.55.0
     react: ^18
     react-dom: ^18
@@ -10680,15 +10680,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^20.4.0":
-  version: 20.6.1
-  resolution: "i18next@npm:20.6.1"
-  dependencies:
-    "@babel/runtime": ^7.12.0
-  checksum: 313cd4b17f9092eaf8ca92a02bb74d099f4a8b26de6e38018f438ce6f706220e5f72d865e1f50d815e13504ec38bc77e0f6341f670ca5162689f8d11a859e564
-  languageName: node
-  linkType: hard
-
 "i18next@npm:^23.5.1 || ^24.2.0":
   version: 24.2.3
   resolution: "i18next@npm:24.2.3"
@@ -10700,6 +10691,20 @@ __metadata:
     typescript:
       optional: true
   checksum: e826e0267750ac51968cc7401ddeaf3f9747524e8f89f15baa8d54b5026a5272c1d7040831d9af2caea6abb06b7d088e60000c3f8b2df5a09159751cc232b151
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^26.0.0":
+  version: 26.0.4
+  resolution: "i18next@npm:26.0.4"
+  dependencies:
+    "@babel/runtime": ^7.29.2
+  peerDependencies:
+    typescript: ^5 || ^6
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: e9c6f1dafb1ef7cbbc4285554c19133b5697912cad8f1cd0778f99aa70eef4e515481882e97f320dcc6e90efd3598f1626a197b50118852e03662cce059d6cc6
   languageName: node
   linkType: hard
 
