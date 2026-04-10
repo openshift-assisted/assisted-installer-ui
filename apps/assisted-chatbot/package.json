@@ -31,7 +31,7 @@
     "@redhat-cloud-services/ai-client-state": "^0.15.0",
     "@redhat-cloud-services/frontend-components": "^7.0.0",
     "axios": "^1.13.5",
-    "i18next": "^20.4.0",
+    "i18next": "^20.4 || ^21",
     "parse-url": "^9.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
