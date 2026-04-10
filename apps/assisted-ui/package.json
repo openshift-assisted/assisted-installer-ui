@@ -21,7 +21,7 @@
     "react-i18next": "^11.11.4",
     "react-monaco-editor": "^0.59.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "5.3.x",
+    "react-router-dom": "7.14.x",
     "react-router-dom-v5-compat": "^6.30.3",
     "redux": "^4",
     "uuid": "^8.1",
