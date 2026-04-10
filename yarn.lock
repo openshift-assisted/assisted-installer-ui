@@ -5460,7 +5460,7 @@ __metadata:
     eslint: ^8.36.0
     happy-dom: ^20.8.9
     msw: ^2.0.0
-    prettier: 2.8.8
+    prettier: 3.8.2
     rimraf: ^4.4.0
     typescript: ^5.2.2
     vitest: ^0.34.5
@@ -14620,12 +14620,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.8.8":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
+"prettier@npm:3.8.2":
+  version: 3.8.2
+  resolution: "prettier@npm:3.8.2"
   bin:
-    prettier: bin-prettier.js
-  checksum: b49e409431bf129dd89238d64299ba80717b57ff5a6d1c1a8b1a28b590d998a34e083fa13573bc732bb8d2305becb4c9a4407f8486c81fa7d55100eb08263cf8
+    prettier: bin/prettier.cjs
+  checksum: f415107b70d175983f8141cd78a99d38fbd4241c99b293ed182d76a96081d00db8918b1c76b32e597101d8ed8d3ab37389057b9ff1ba330a6a0e561c873cd22f
   languageName: node
   linkType: hard
 
