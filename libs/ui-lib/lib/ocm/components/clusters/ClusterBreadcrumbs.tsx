@@ -5,15 +5,8 @@ import { isInOcm } from '../../../common/api';
 
 const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => (
   <PageSection hasBodyWrapper={false}>
-    {(clusterName || isInOcm) && (
+    {(clusterName || !isInOcm) && (
       <Breadcrumb data-testid="cluster-breadcrumbs">
-        {isInOcm && (
-          <BreadcrumbItem
-            data-testid="cluster-list-breadcrumb"
-            render={() => <Link to={'/cluster-list'}>Cluster List</Link>}
-          />
-        )}
-
         {clusterName ? (
           <BreadcrumbItem data-testid="assisted-clusters-breadcrumb">
             <Link to={`..`}>Assisted Clusters</Link>

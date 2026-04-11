@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom-v5-compat';
+import { BrowserRouter, Link, Routes, Route } from 'react-router-dom-v5-compat';
 import {
   Brand,
   Masthead,
@@ -9,7 +9,7 @@ import {
   Page,
 } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
-import { Store, useFeatureDetection } from '@openshift-assisted/ui-lib/ocm';
+import { Config, Store, useFeatureDetection } from '@openshift-assisted/ui-lib/ocm';
 import { FeatureListType } from '@openshift-assisted/ui-lib/lib/common';
 
 import CreateClusterWizard from './CreateClusterWizard';
@@ -19,6 +19,8 @@ import '../i18n';
 const features: FeatureListType = {
   ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE: true,
 };
+
+const clustersListPath = `${Config.routeBasePath}/clusters`;
 
 const AppRouter = () => {
   useFeatureDetection(features);
@@ -35,7 +37,7 @@ export const App: React.FC = () => {
     <Masthead id="masthead">
       <MastheadMain>
         <MastheadBrand>
-          <MastheadLogo>
+          <MastheadLogo component={(props) => <Link {...props} to={clustersListPath} />}>
             <Brand
               src="/logo.svg"
               alt="OpenShift Container Platform Assisted Installer"
