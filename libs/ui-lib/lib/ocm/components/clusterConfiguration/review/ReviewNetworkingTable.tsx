@@ -2,7 +2,7 @@ import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import React from 'react';
 import { genericTableRowKey, isDualStack, NETWORK_TYPE_LABELS } from '../../../../common';
-import { getManagementType, getStackTypeLabel } from '../../clusterDetail/ClusterProperties';
+import { getManagementType, getStackTypeLabel } from './utils';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ReviewTableRowsType = {
