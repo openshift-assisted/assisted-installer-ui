@@ -2289,8 +2289,8 @@ __metadata:
   linkType: hard
 
 "@redhat-cloud-services/eslint-config-redhat-cloud-services@npm:^3.0.0":
-  version: 3.0.32
-  resolution: "@redhat-cloud-services/eslint-config-redhat-cloud-services@npm:3.0.32"
+  version: 3.0.33
+  resolution: "@redhat-cloud-services/eslint-config-redhat-cloud-services@npm:3.0.33"
   dependencies:
     "@babel/eslint-parser": ^7.27.0
     "@babel/preset-react": ^7.26.3
@@ -2303,7 +2303,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.14.0
     eslint: ^9.24.0
-  checksum: b3a1ddf5167ff3886d176443c9c4e6a6f74f04986a5b25f635046351ad9b8148821b6dc524b88e95dd5fd20f6568ca33a681c5fbce776ff0d535ad407861fe38
+  checksum: cfe89c91d52b6dd044c285c59bb48cf29568d2b502f1b522dde86063438c00a6ef6cdf2bf0bc9ed0b67477966588e4621840da92ad7cca6816381fac9d3c9475
   languageName: node
   linkType: hard
 
