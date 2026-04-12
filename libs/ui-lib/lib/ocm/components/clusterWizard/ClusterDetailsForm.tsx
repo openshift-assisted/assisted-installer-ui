@@ -123,8 +123,17 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         managedDomains,
         ocpVersions,
         urlSearchParams: search,
+        isSingleClusterFeatureEnabled,
       }),
-    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
+    [
+      infraEnv,
+      cluster,
+      pullSecret,
+      managedDomains,
+      ocpVersions,
+      search,
+      isSingleClusterFeatureEnabled,
+    ],
   );
 
   const { t } = useTranslation();
