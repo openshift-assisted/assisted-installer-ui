@@ -1519,7 +1519,7 @@ __metadata:
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
     i18next: ^20.4 || ^21
-    parse-url: ^9.2.0
+    parse-url: ^11.0.0
     react: ^18.2.0
     react-dom: ^18.2.0
     react-i18next: ^11.11.4
@@ -1710,7 +1710,7 @@ __metadata:
     is-in-subnet: ^4
     js-yaml: ^4.1.1
     lodash-es: ^4.17.23
-    parse-url: ^9.2.0
+    parse-url: ^11.0.0
     prism-react-renderer: ^1.1.1
     react-error-boundary: ^3.1.4
     swr: ^2
@@ -4216,13 +4216,6 @@ __metadata:
   dependencies:
     undici-types: ~7.16.0
   checksum: 81819134cba7708abf6b969c6dbd37a863f378076f51b93c0031ce93060378914d60ea5a208dfd6a7dd368b30af9061dc7e78d5e3e492151a5df61f8268b628e
-  languageName: node
-  linkType: hard
-
-"@types/parse-path@npm:^7.0.0":
-  version: 7.0.3
-  resolution: "@types/parse-path@npm:7.0.3"
-  checksum: 21a12c228d38f5a75659dfd7cb127dc2001ed3f6acbd1b2e0575d1348c735594c0bab06a97fe849c151438384829f20ea5971cb045f7ecd37d53c76a9fcb9de3
   languageName: node
   linkType: hard
 
@@ -14124,12 +14117,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-path@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "parse-path@npm:7.0.0"
+"parse-path@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "parse-path@npm:7.1.0"
   dependencies:
     protocols: ^2.0.0
-  checksum: 244b46523a58181d251dda9b888efde35d8afb957436598d948852f416d8c76ddb4f2010f9fc94218b4be3e5c0f716aa0d2026194a781e3b8981924142009302
+  checksum: 1da6535a967b14911837bba98e5f8d16acb415b28753ff6225e3121dce71167a96c79278fbb631d695210dadae37462a9eff40d93b9c659cf1ce496fd5db9bb6
   languageName: node
   linkType: hard
 
@@ -14140,13 +14133,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-url@npm:^9.2.0":
-  version: 9.2.0
-  resolution: "parse-url@npm:9.2.0"
+"parse-url@npm:^11.0.0":
+  version: 11.1.0
+  resolution: "parse-url@npm:11.1.0"
   dependencies:
-    "@types/parse-path": ^7.0.0
-    parse-path: ^7.0.0
-  checksum: 765d4beac7de59c88007018e2a4b95ed8ff96cdcd0ff510b1ad00ab3d17f63949c7664218685394fe35af52061516c5efbba520fb760d7104b8238a6196f28c4
+    parse-path: ^7.1.0
+  checksum: 1ce2a36b8a51f6e08978c8b2617f5f18d620fd45e73f49c0cbc89be2046c06ea0cf88071f7d023dcb047bfce19875e74fa89c178e7d90420534a5165985593ec
   languageName: node
   linkType: hard
 
