@@ -10,11 +10,24 @@ import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEnc
 import { getDefaultOpenShiftVersion } from '../ui';
 import {
   baseDomainValidationSchema,
-  dnsNameValidationSchema,
+  isValidFullClusterAddress,
   nameValidationSchema,
   pullSecretValidationSchema,
 } from '../../validationSchemas';
 import { ClusterDetailsValues } from './types';
+
+const fullClusterAddressTest = (t: TFunction) => ({
+  name: 'full-cluster-address',
+  message: t(
+    'ai:The full cluster address [Cluster name].[Base domain] must be a valid DNS name (e.g. mycluster.example.com).',
+  ),
+  test: (values: { name?: string; baseDnsDomain?: string } | undefined) => {
+    const name = values?.name?.trim() ?? '';
+    const base = values?.baseDnsDomain?.trim() ?? '';
+    if (!name || !base) return true;
+    return isValidFullClusterAddress(`${name}.${base}`);
+  },
+});
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -98,6 +111,7 @@ export const getClusterDetailsValidationSchema = ({
   t: TFunction;
 }) =>
   Yup.lazy((values: { baseDnsDomain: string; isSNODevPreview: boolean }) => {
+    const fullAddressTest = fullClusterAddressTest(t);
     if (pullSecretSet) {
       return Yup.object({
         name: nameValidationSchema(
@@ -107,10 +121,8 @@ export const getClusterDetailsValidationSchema = ({
           validateUniqueName,
           isOcm,
         ),
-        baseDnsDomain: isOcm
-          ? baseDomainValidationSchema(t).required(t('ai:Required field'))
-          : dnsNameValidationSchema(t).required(t('ai:Required field')),
-      });
+        baseDnsDomain: baseDomainValidationSchema(t).required(t('ai:Required field')),
+      }).test(fullAddressTest.name, fullAddressTest.message, fullAddressTest.test);
     }
     return Yup.object({
       name: nameValidationSchema(
@@ -120,9 +132,7 @@ export const getClusterDetailsValidationSchema = ({
         validateUniqueName,
         isOcm,
       ),
-      baseDnsDomain: isOcm
-        ? baseDomainValidationSchema(t).required(t('ai:Required field'))
-        : dnsNameValidationSchema(t).required(t('ai:Required field')),
+      baseDnsDomain: baseDomainValidationSchema(t).required(t('ai:Required field')),
       pullSecret: pullSecretValidationSchema(t).required(t('ai:Required field')),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode: DiskEncryption['mode']) => {
@@ -140,5 +150,5 @@ export const getClusterDetailsValidationSchema = ({
             }),
           ),
       }),
-    });
+    }).test(fullAddressTest.name, fullAddressTest.message, fullAddressTest.test);
   });
