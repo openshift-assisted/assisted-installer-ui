@@ -29,7 +29,10 @@ export const ipNoSuffixValidationSchema = (t: TFunction) =>
 
 export const macAddressValidationSchema = (t: TFunction) =>
   Yup.string().matches(MAC_REGEX, {
-    message: (value) => t('ai:Value "{{value}}" is not valid MAC address.', { value }),
+    message: (params: { value?: unknown }) =>
+      t('ai:Value "{{value}}" is not valid MAC address.', {
+        value: params?.value !== undefined ? String(params.value) : '',
+      }),
     excludeEmptyString: true,
   });
 

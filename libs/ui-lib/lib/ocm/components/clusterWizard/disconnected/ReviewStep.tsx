@@ -25,16 +25,13 @@ import {
   Content,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
-const downloadUrl =
-  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
-
 const ReviewStep = () => {
-  const { moveBack } = useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
+  const { clusterId } = useParams<{ clusterId: string }>();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -50,11 +47,20 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              downloadUrl && saveAs(downloadUrl);
+              const arch = disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64';
+              const isoFileName = `agent-ove.${arch}.iso`;
+              const url = disconnectedInfraEnv?.downloadUrl;
+              if (url) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = isoFileName;
+                a.click();
+              }
               navigate('/cluster-list');
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"
+            disconnectedClusterId={clusterId}
           />
         }
       >
@@ -96,17 +102,29 @@ const ReviewStep = () => {
               </List>
             </Alert>
             <DescriptionList isHorizontal>
+              {disconnectedInfraEnv?.rendezvousIp && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Rendezvous IP</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {disconnectedInfraEnv?.rendezvousIp}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.20</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.openshiftVersion || ''}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
-                <DescriptionListDescription>x86_64</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64'}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>ISO size</DescriptionListTerm>
-                <DescriptionListDescription>approx. 43.5GB</DescriptionListDescription>
+                <DescriptionListDescription>approx. 50 GB</DescriptionListDescription>
               </DescriptionListGroup>
             </DescriptionList>
           </Grid>

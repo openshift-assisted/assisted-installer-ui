@@ -95,32 +95,71 @@ const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConf
   });
 };
 
-export const networkWideValidationSchema = Yup.lazy((values: FormViewNetworkWideValues) => {
-  const ipConfigsValidationSchemas = Yup.object({
-    ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
-    ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
-      ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
-      : Yup.object<IpConfig>(),
+/**
+ * Validates that Rendezvous IP (when set) is within the IPv4 subnet.
+ * Default gateway is already validated by getAddressDataValidationSchema (getInMachineNetworkValidationSchema).
+ */
+const getRendezvousIpCoherenceTest = (rendezvousIp: string | undefined) => {
+  return Yup.object().test(
+    'rendezvous-ip-in-subnet',
+    'Rendezvous IP must be within the IPv4 subnet.',
+    (value: unknown, context: Yup.TestContext) => {
+      const values = value as FormViewNetworkWideValues | undefined;
+      const machineNetwork = values?.ipConfigs?.ipv4?.machineNetwork;
+      if (
+        !rendezvousIp?.trim() ||
+        !machineNetwork?.ip?.trim() ||
+        machineNetwork.prefixLength === '' ||
+        typeof machineNetwork.prefixLength !== 'number'
+      ) {
+        return true;
+      }
+      const inSubnetSchema = getInMachineNetworkValidationSchema(
+        ProtocolVersion.ipv4,
+        machineNetwork,
+      );
+      if (!inSubnetSchema.isValidSync(rendezvousIp)) {
+        return context.createError({
+          path: 'ipConfigs.ipv4.machineNetwork.ip',
+          message: 'Rendezvous IP must be within the IPv4 subnet.',
+        });
+      }
+      return true;
+    },
+  );
+};
+
+export const getNetworkWideValidationSchema = (rendezvousIp?: string) =>
+  Yup.lazy((values: FormViewNetworkWideValues) => {
+    const ipConfigsValidationSchemas = Yup.object({
+      ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
+      ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
+        ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
+        : Yup.object<IpConfig>(),
+    });
+
+    const baseSchema = Yup.object({
+      useVlan: Yup.boolean(),
+      vlanId: Yup.mixed().when('useVlan', {
+        is: (useVlan: boolean) => useVlan,
+        then: () =>
+          Yup.number()
+            .required(MUST_BE_A_NUMBER)
+            .min(1, `Must be more than or equal to 1`)
+            .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
+            .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
+            .nullable()
+            .transform(transformNumber) as Yup.NumberSchema,
+      }),
+      protocolType: Yup.string(),
+      dns: getDNSValidationSchema(values.protocolType),
+      ipConfigs: ipConfigsValidationSchemas,
+    });
+
+    return baseSchema.concat(getRendezvousIpCoherenceTest(rendezvousIp));
   });
 
-  return Yup.object({
-    useVlan: Yup.boolean(),
-    vlanId: Yup.mixed().when('useVlan', {
-      is: (useVlan: boolean) => useVlan,
-      then: () =>
-        Yup.number()
-          .required(MUST_BE_A_NUMBER)
-          .min(1, `Must be more than or equal to 1`)
-          .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
-          .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
-          .nullable()
-          .transform(transformNumber) as Yup.NumberSchema,
-    }),
-    protocolType: Yup.string(),
-    dns: getDNSValidationSchema(values.protocolType),
-    ipConfigs: ipConfigsValidationSchemas,
-  });
-});
+export const networkWideValidationSchema = getNetworkWideValidationSchema();
 
 export const validateNumber = (vlanId: FormViewNetworkWideValues['vlanId']) => {
   //We need to validate that value is a number(without letters) and is not an exponential number (ex: 1e2)
