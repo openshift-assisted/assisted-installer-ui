@@ -67,6 +67,7 @@ const GetPullSecretHelperText: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
 
 const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
   const { t } = useTranslation();
+
   return (
     <TextAreaField
       name="pullSecret"

@@ -245,6 +245,12 @@ const ClustersAPI = {
       headers: { 'Content-Type': 'application/json' },
     });
   },
+  registerDisconnected(params: { name: string; openshiftVersion: string }) {
+    return client.post<Cluster, AxiosResponse<Cluster>, { name: string; openshiftVersion: string }>(
+      `${ClustersAPI.makeBaseURI()}disconnected`,
+      params,
+    );
+  },
 };
 
 export default ClustersAPI;

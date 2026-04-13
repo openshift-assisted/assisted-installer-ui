@@ -21,7 +21,10 @@ const InfraEnvsService = {
       const { data: infraEnvs } = await InfraEnvsAPI.list(
         !isSingleClusterFeatureEnabled ? clusterId : '',
       );
-      if (infraEnvs.length > 0) {
+      if (isSingleClusterFeatureEnabled) {
+        return infraEnvs[0].id;
+      }
+      if (infraEnvs.length > 0 && clusterId) {
         InfraEnvCache.updateInfraEnvs(clusterId, infraEnvs);
         infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
       }
