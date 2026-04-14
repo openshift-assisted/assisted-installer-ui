@@ -38,7 +38,6 @@ export type StackTypeControlGroupProps = {
   hostSubnets: HostSubnets;
   defaultNetworkValues: StackTypeDefaultNetworkValues;
   isViewerMode?: boolean;
-  /** When true, single-stack allows IPv4 or IPv6; Used by CIM. */
   allowSingleStackIPv6?: boolean;
 };
 
