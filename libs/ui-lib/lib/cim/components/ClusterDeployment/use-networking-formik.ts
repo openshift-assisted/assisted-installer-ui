@@ -20,12 +20,8 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
   CLUSTER_DEFAULT_NETWORK_SETTINGS,
-  clusterNetworksValidationSchema,
-  serviceNetworkValidationSchema,
-  dualStackValidationSchema,
-  IPv4ValidationSchema,
-  IPV4_STACK,
-  NetworkConfigurationValues,
+  clusterNetworksSchema,
+  serviceNetworksSchema,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -53,22 +49,18 @@ const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy((values: ClusterDeploymentNetworkingValues) =>
     Yup.object<ClusterDeploymentNetworkingValues>().shape({
-      clusterNetworks: clusterNetworksValidationSchema(t).when('stackType', {
-        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => clusterNetworksValidationSchema(t).concat(IPv4ValidationSchema),
-        otherwise: () =>
-          clusterNetworksValidationSchema(t).concat(
-            dualStackValidationSchema(t('ai:cluster network'), t, openshiftVersion),
-          ),
-      }),
-      serviceNetworks: serviceNetworkValidationSchema(t).when('stackType', {
-        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
-        then: () => serviceNetworkValidationSchema(t).concat(IPv4ValidationSchema),
-        otherwise: () =>
-          serviceNetworkValidationSchema(t).concat(
-            dualStackValidationSchema(t('ai:service network'), t, openshiftVersion),
-          ),
-      }),
+      clusterNetworks: clusterNetworksSchema(
+        t,
+        values.stackType ?? '',
+        values.machineNetworks?.[0]?.cidr,
+        openshiftVersion,
+      ),
+      serviceNetworks: serviceNetworksSchema(
+        t,
+        values.stackType ?? '',
+        values.machineNetworks?.[0]?.cidr,
+        openshiftVersion,
+      ),
       apiVips: vipArrayValidationSchema(hostSubnets, values, t),
       ingressVips: vipArrayValidationSchema(hostSubnets, values, t),
       sshPublicKey: sshPublicKeyListValidationSchema(t),

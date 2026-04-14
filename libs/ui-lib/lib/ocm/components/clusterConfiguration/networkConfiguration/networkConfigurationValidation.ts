@@ -11,7 +11,7 @@ import {
   serviceNetworkValidationSchema,
   IPv4ValidationSchema,
   sshPublicKeyValidationSchema,
-  IPV4_STACK,
+  SINGLE_STACK,
   DUAL_STACK,
   vipArrayValidationSchema,
   NETWORK_TYPE_OVN,
@@ -50,7 +50,7 @@ export const getNetworkInitialValues = (
         : 'clusterManaged',
     networkType: cluster.networkType || NETWORK_TYPE_OVN,
     machineNetworks: cluster.machineNetworks || [],
-    stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
+    stackType: isDualStackType ? DUAL_STACK : SINGLE_STACK,
     clusterNetworks:
       cluster.clusterNetworks ||
       (isDualStackType
@@ -85,7 +85,8 @@ export const getNetworkConfigurationValidationSchema = (
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
           : machineNetworksValidationSchema.when('stackType', {
-              is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+              is: (stackType: NetworkConfigurationValues['stackType']) =>
+                stackType === SINGLE_STACK,
               then: () => machineNetworksValidationSchema.concat(IPv4ValidationSchema),
               otherwise: () =>
                 values.machineNetworks && values.machineNetworks?.length >= 2
@@ -95,13 +96,13 @@ export const getNetworkConfigurationValidationSchema = (
                   : Yup.array(),
             }),
       clusterNetworks: clusterNetworksValidationSchema(t).when('stackType', {
-        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === SINGLE_STACK,
         then: (schema) => schema.concat(IPv4ValidationSchema),
         otherwise: (schema) =>
           schema.concat(dualStackValidationSchema('cluster network', t, openshiftVersion)),
       }),
       serviceNetworks: serviceNetworkValidationSchema(t).when('stackType', {
-        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === SINGLE_STACK,
         then: (schema) => schema.concat(IPv4ValidationSchema),
         otherwise: (schema) =>
           schema.concat(dualStackValidationSchema('service network', t, openshiftVersion)),
