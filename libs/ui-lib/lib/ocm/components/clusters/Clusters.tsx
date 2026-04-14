@@ -15,7 +15,6 @@ import {
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
 import { handleApiError, getApiErrorMessage } from '../../../common/api';
-import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
@@ -106,7 +105,6 @@ const Clusters = () => {
       } else {
         return (
           <>
-            <ClusterBreadcrumbs />
             <PageSection hasBodyWrapper={false}>
               <Content component="h1">Assisted Clusters</Content>
             </PageSection>
