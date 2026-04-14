@@ -24,7 +24,8 @@
     "@types/react": "17.0.x",
     "@patternfly/chatbot/@patternfly/react-icons": "6.3.1",
     "lodash": "^4.17.23",
-    "lodash-es": "^4.17.23"
+    "lodash-es": "^4.17.23",
+    "axios": "^1.15.0"
   },
   "scripts": {
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
