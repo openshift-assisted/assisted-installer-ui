@@ -59,7 +59,6 @@ export interface AvailableSubnetsControlProps {
   isViewerMode?: boolean;
   hosts?: Host[];
   isMultiNodeCluster?: boolean;
-  /** When true (CIM), single-stack machine network dropdown shows both IPv4 and IPv6 subnets. */
   allowSingleStackIPv6?: boolean;
 }
 
