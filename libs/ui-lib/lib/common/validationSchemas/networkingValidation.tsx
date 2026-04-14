@@ -13,7 +13,8 @@ import {
   ipBlockValidationSchema,
 } from './addressValidation';
 import { isMajorMinorVersionEqualOrGreater } from '../utils';
-import { allSubnetsIPv4 } from '../components/ui/formik/utils';
+import { allSubnetsIPv4, allSubnetsIPv6 } from '../components/ui/formik/utils';
+import { SINGLE_STACK } from '../config';
 
 export const machineNetworksValidationSchema = Yup.array().of(
   Yup.object({ cidr: hostSubnetValidationSchema, clusterId: Yup.string() }),
@@ -111,3 +112,40 @@ export const IPv4ValidationSchema = Yup.array().test(
   `All network subnets must be IPv4.`,
   (values?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
 );
+
+export const IPv6ValidationSchema = Yup.array().test(
+  'single-stack-ipv6',
+  'All network subnets must be IPv6.',
+  (values?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv6(values),
+);
+
+export const clusterNetworksSchema = (
+  t: TFunction,
+  stackType: string,
+  primaryCidr: string | undefined,
+  openshiftVersion?: string,
+) => {
+  const singleStackFamilySchema =
+    primaryCidr && isCIDR.v6(primaryCidr) ? IPv6ValidationSchema : IPv4ValidationSchema;
+
+  const stackFamilySchema =
+    stackType === SINGLE_STACK
+      ? singleStackFamilySchema
+      : dualStackValidationSchema(t('ai:cluster network'), t, openshiftVersion);
+  return clusterNetworksValidationSchema(t).concat(stackFamilySchema);
+};
+
+export const serviceNetworksSchema = (
+  t: TFunction,
+  stackType: string,
+  primaryCidr: string | undefined,
+  openshiftVersion?: string,
+) => {
+  const singleStackFamilySchema =
+    primaryCidr && isCIDR.v6(primaryCidr) ? IPv6ValidationSchema : IPv4ValidationSchema;
+  const stackFamilySchema =
+    stackType === SINGLE_STACK
+      ? singleStackFamilySchema
+      : dualStackValidationSchema(t('ai:service network'), t, openshiftVersion);
+  return serviceNetworkValidationSchema(t).concat(stackFamilySchema);
+};
