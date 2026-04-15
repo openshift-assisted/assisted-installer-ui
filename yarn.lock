@@ -2609,13 +2609,13 @@ __metadata:
   linkType: hard
 
 "@redhat-cloud-services/tsc-transform-imports@npm:^1.0.26, @redhat-cloud-services/tsc-transform-imports@npm:^1.0.4":
-  version: 1.0.57
-  resolution: "@redhat-cloud-services/tsc-transform-imports@npm:1.0.57"
+  version: 1.0.58
+  resolution: "@redhat-cloud-services/tsc-transform-imports@npm:1.0.58"
   dependencies:
     glob: 10.5.0
   peerDependencies:
     typescript: ^5.0.0
-  checksum: d1ebc6995ebc4a05a6cd01fa88002995cd7229c9685f5597f419f2106e813555b8d1182939e9abe57139b81207b1659cac672e552bc6c30af896fd068da7f110
+  checksum: 29b7a2dfdb50ebe8b761221bc7718d995ff48bd15f2ea4e2e7ff0d82eb8d3e64c0a6d12866d658789678233d4a80f95e61cccdcf9bb7ae1561f8f1d18227f5b3
   languageName: node
   linkType: hard
 
