@@ -2553,8 +2553,8 @@ __metadata:
   linkType: hard
 
 "@redhat-cloud-services/frontend-components@npm:^7.0.0":
-  version: 7.3.0
-  resolution: "@redhat-cloud-services/frontend-components@npm:7.3.0"
+  version: 7.3.1
+  resolution: "@redhat-cloud-services/frontend-components@npm:7.3.1"
   dependencies:
     "@patternfly/react-component-groups": ^6.0.0
     "@redhat-cloud-services/frontend-components-utilities": ^7.0.0
@@ -2575,7 +2575,7 @@ __metadata:
     react-dom: ^18.2.0
     react-redux: ^7.0.0 || ^8.0.0 || ^9.0.0
     react-router-dom: ^5.0.0 || ^6.0.0
-  checksum: 8cb345bef5b8c8b947d4833ddbedc14a00df4e73e28da2b83676c562b1a2ac26fb91300f8143ec00c8e579707e8c6746304ce6029660c13851a49d7cd7b02dc0
+  checksum: 244fa65c6033e29ba360c5885c63e8eb45709b2b104f3e230f574f8430970515ad34ab5b80102683f83d52035249001f3b9f57968559856a9e27c5b2d6fa8aa7
   languageName: node
   linkType: hard
 
