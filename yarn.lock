@@ -1533,7 +1533,7 @@ __metadata:
     react-router-dom-v5-compat: ^6.30.3
     rimraf: ^6.0.0
     ts-patch: ^3.0.2
-    typescript: ^5.2.2
+    typescript: ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -1632,7 +1632,7 @@ __metadata:
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
     axios: ^1.15.0
-    typescript: ^5.2.2
+    typescript: ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -5628,7 +5628,7 @@ __metadata:
     msw: ^2.0.0
     prettier: 2.8.8
     rimraf: ^6.0.0
-    typescript: ^5.2.2
+    typescript: ^6.0.0
     vitest: ^0.34.5
   languageName: unknown
   linkType: soft
@@ -17914,7 +17914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.0.4, typescript@npm:^5.2.2, typescript@npm:^5.6.3":
+"typescript@npm:^5.0.4, typescript@npm:^5.6.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -17924,13 +17924,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>, typescript@patch:typescript@^5.6.3#~builtin<compat/typescript>":
+"typescript@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "typescript@npm:6.0.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: c1182dfadf8a8cb22a4e32442715afef1af1b950ae635b1c52c27e0d7fb7a5e2607ed7c7c4079bba4163579250e02445fd8d46b09cbceda71ff72a5b7d69db61
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>, typescript@patch:typescript@^5.6.3#~builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#~builtin<compat/typescript>::version=5.9.3&hash=1f5320"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 8bb8d86819ac86a498eada254cad7fb69c5f74778506c700c2a712daeaff21d3a6f51fd0d534fe16903cb010d1b74f89437a3d02d4d0ff5ca2ba9a4660de8497
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^6.0.0#~builtin<compat/typescript>":
+  version: 6.0.3
+  resolution: "typescript@patch:typescript@npm%3A6.0.3#~builtin<compat/typescript>::version=6.0.3&hash=1f5320"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 8ed159a81ab4901a620c19fda539632cee610f8ec34dde57a3acc6b6df72894ad0b50bdd1946b763313d9b73dedb019d2e81c03eff06c0f2c785cde30a537d15
   languageName: node
   linkType: hard
 
