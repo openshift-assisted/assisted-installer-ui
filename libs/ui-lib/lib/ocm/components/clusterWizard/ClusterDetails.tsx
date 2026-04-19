@@ -46,7 +46,9 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   } = useOpenShiftVersionsContext();
   const location = useLocation();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const pullSecret = usePullSecret(isSingleClusterFeatureEnabled);
+  const fetchedPullSecret = usePullSecret(isSingleClusterFeatureEnabled);
+  /** With a cluster resource, never pre-fill the form with a pull secret (API does not return it); new-cluster flow uses the hook default. */
+  const pullSecretForForm = cluster ? '' : fetchedPullSecret ?? '';
 
   const handleClusterUpdate = React.useCallback(
     async (clusterId: Cluster['id'], params: ClusterDetailsUpdateParams) => {
@@ -59,7 +61,6 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           params,
         );
         dispatch(updateCluster(updatedCluster));
-
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
       } catch (e) {
         handleApiError(e, () =>
@@ -140,7 +141,12 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   );
 
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
-  if (pullSecret === undefined || !managedDomains || loadingOCPVersions || !usedClusterNames) {
+  if (
+    (!cluster && fetchedPullSecret === undefined) ||
+    !managedDomains ||
+    loadingOCPVersions ||
+    !usedClusterNames
+  ) {
     return (
       <ClusterWizardStep navigation={navigation}>
         <LoadingState />
@@ -162,7 +168,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   return (
     <ClusterDetailsForm
       cluster={cluster}
-      pullSecret={pullSecret}
+      pullSecret={pullSecretForForm}
       managedDomains={managedDomains}
       ocpVersions={versions}
       usedClusterNames={usedClusterNames}
