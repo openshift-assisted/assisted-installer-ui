@@ -1,6 +1,7 @@
 import React from 'react';
 import { PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
+import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
@@ -12,7 +13,7 @@ import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
-export const NewClusterPage = ({ children }: React.PropsWithChildren<unknown>) => {
+export const NewClusterPage = () => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
@@ -23,7 +24,7 @@ export const NewClusterPage = ({ children }: React.PropsWithChildren<unknown>) =
           >
             <OpenShiftVersionsContextProvider>
               <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-                {children}
+                <ClusterBreadcrumbs clusterName="New cluster" />
                 <PageSection hasBodyWrapper={false} isFilled>
                   <AssistedInstallerHeader />
                 </PageSection>
