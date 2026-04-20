@@ -14,6 +14,7 @@ import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AddHosts } from '../AddHosts';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
+import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
@@ -36,11 +37,11 @@ import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVers
 
 const ClusterPageGeneric = ({
   clusterId,
-  showHeader = false,
+  showBreadcrumbs = false,
   resetModal,
 }: {
   clusterId: string;
-  showHeader?: boolean;
+  showBreadcrumbs?: boolean;
   resetModal?: React.ReactNode;
 }) => {
   const fetchCluster = useFetchCluster(clusterId);
@@ -88,6 +89,7 @@ const ClusterPageGeneric = ({
     ) {
       return (
         <>
+          {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
           <PageSection hasBodyWrapper={false}>
             <Content component="h1">{cluster.name}</Content>
           </PageSection>
@@ -99,7 +101,8 @@ const ClusterPageGeneric = ({
     } else {
       return (
         <>
-          {showHeader && (
+          {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
+          {showBreadcrumbs && (
             <PageSection hasBodyWrapper={false}>
               <AssistedInstallerHeader />
             </PageSection>
@@ -211,7 +214,7 @@ export const ClusterPage = () => {
   const { clusterId } = useParams<{ clusterId: string }>();
   return (
     <AlertsContextProvider>
-      <ClusterPageGeneric clusterId={clusterId || ''} showHeader />
+      <ClusterPageGeneric clusterId={clusterId || ''} showBreadcrumbs />
     </AlertsContextProvider>
   );
 };
