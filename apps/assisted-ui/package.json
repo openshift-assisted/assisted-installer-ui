@@ -14,7 +14,7 @@
     "axios": "^1.15.0",
     "i18next": "^20.4 || ^21",
     "i18next-browser-languagedetector": "^6.1.2",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.1",
     "monaco-editor": "^0.55.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
