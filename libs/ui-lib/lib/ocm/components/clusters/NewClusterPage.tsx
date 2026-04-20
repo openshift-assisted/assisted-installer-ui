@@ -13,7 +13,7 @@ import { AssistedInstallerHeader } from './AssistedInstallerHeader';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
 
-const NewClusterPageGeneric = ({ children }: React.PropsWithChildren<unknown>) => {
+export const NewClusterPage = () => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
@@ -24,7 +24,7 @@ const NewClusterPageGeneric = ({ children }: React.PropsWithChildren<unknown>) =
           >
             <OpenShiftVersionsContextProvider>
               <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-                {children}
+                <ClusterBreadcrumbs clusterName="New cluster" />
                 <PageSection hasBodyWrapper={false} isFilled>
                   <AssistedInstallerHeader />
                 </PageSection>
@@ -41,10 +41,3 @@ const NewClusterPageGeneric = ({ children }: React.PropsWithChildren<unknown>) =
     </AlertsContextProvider>
   );
 };
-
-export const NewSingleClusterPage = () => <NewClusterPageGeneric />;
-export const NewClusterPage = () => (
-  <NewClusterPageGeneric>
-    <ClusterBreadcrumbs clusterName="New cluster" />
-  </NewClusterPageGeneric>
-);
