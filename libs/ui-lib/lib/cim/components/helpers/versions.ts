@@ -34,10 +34,10 @@ const getCPUArchFromReleaseString = (value = '') => {
 
 const getCPUArchFromClusterImageSet = (clusterImageSet?: ClusterImageSetK8sResource) => {
   const cpuArch =
-    clusterImageSet?.metadata?.labels?.architecture ??
-    getCPUArchFromReleaseString(clusterImageSet?.metadata?.labels?.['releaseTag']) ??
-    getCPUArchFromReleaseString(clusterImageSet?.spec?.releaseImage) ??
-    getCPUArchFromReleaseString(clusterImageSet?.metadata?.name) ??
+    clusterImageSet?.metadata?.labels?.architecture ||
+    getCPUArchFromReleaseString(clusterImageSet?.metadata?.labels?.['releaseTag']) ||
+    getCPUArchFromReleaseString(clusterImageSet?.spec?.releaseImage) ||
+    getCPUArchFromReleaseString(clusterImageSet?.metadata?.name) ||
     '';
 
   switch (cpuArch) {
