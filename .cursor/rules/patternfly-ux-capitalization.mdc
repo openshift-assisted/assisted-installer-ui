@@ -1,0 +1,39 @@
+---
+description:
+  PatternFly UX writing — sentence case and capitalization for user-visible UI copy (aligned with PatternFly guidelines).
+globs:
+  - "**/*.tsx"
+  - "**/*.jsx"
+alwaysApply: false
+---
+
+# PatternFly capitalization (UI copy)
+
+Follow [PatternFly capitalization guidelines](https://www.patternfly.org/ux-writing/capitalization/) for **user-visible strings** (labels, headings, buttons, table text, empty states, errors, etc.).
+
+## Defaults
+
+- Use **sentence case**: capitalize only the **first word** of the phrase/sentence, plus **proper nouns**, **product names**, **acronyms**, and **initialisms** (e.g. OpenShift, OVN, API, DNS).
+- **Buttons, navigation, page titles, headings**: sentence case unless an existing product term requires otherwise.
+- Prefer **consistency** within the same surface (wizard step, table, modal).
+
+## Feature vs generic wording
+
+- Capitalize a name when it refers to a **specific product feature or UI location**; use **lowercase** when it is a **generic concept** (PatternFly’s *Compliance* / *Sources* examples apply the same idea).
+
+## Breadcrumbs and user-defined names
+
+- **Breadcrumbs**: match the capitalization of the **source page title** (even if mixed styles).
+- **User- or system-defined names** (e.g. cluster names, resource names): **preserve the exact casing** the user or API used.
+
+## Third-party products
+
+- Spell and capitalize **external product names** as in **that vendor’s** documentation.
+
+## Docs / component names in prose
+
+- In **documentation-style** text about components: component names **lowercase** unless they start a sentence. **Code identifiers** follow normal language conventions.
+
+## Scope note
+
+- **`libs/ui-lib/lib/ocm/**`** does not use `t('ai:…')`; still apply these rules to **plain English** UI strings there. **`t('ai:…')`** strings under `libs/ui-lib` (outside `ocm`) follow **`translations.mdc`** for workflow; English source strings should still respect sentence case where it fits the string catalog.

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Table,
+  TableText,
   Thead,
   Tr,
   Th,
@@ -167,7 +168,7 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
                 width={col.cellWidth as BaseCellProps['width']}
                 sort={getSortParams(i)}
               >
-                {col.title}
+                <TableText>{col.title}</TableText>
               </Th>
             ))}
             <Th key="col-action" />
@@ -176,15 +177,14 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
         <Tbody>
           {sortedRows.map((row, i) => (
             <Tr {...getRowProps(row.props as ClusterRowDataProps)} key={`row-${i}`}>
-              {row.cells?.map((cell, j) => (
-                <Td
-                  dataLabel={columns[j].title}
-                  key={`cell-${i}-${j}`}
-                  {...(cell as HumanizedSortable).props}
-                >
-                  {(cell as HumanizedSortable)?.title}
-                </Td>
-              ))}
+              {row.cells?.map((cell, j) => {
+                const humanized = cell as HumanizedSortable;
+                return (
+                  <Td dataLabel={columns[j].title} key={`cell-${i}-${j}`} {...humanized.props}>
+                    <TableText wrapModifier="breakWord">{humanized?.title}</TableText>
+                  </Td>
+                );
+              })}
               <Td isActionCell>
                 <ActionsColumn
                   items={[
