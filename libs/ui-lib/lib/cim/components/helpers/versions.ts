@@ -7,43 +7,51 @@ import {
   OsImage,
 } from '../../types';
 import { CpuArchitecture, OpenshiftVersionOptionType } from '../../../common';
-import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 import { getComparableVersionInt } from '../../../common/utils';
 
-export const getVersionFromReleaseImage = (releaseImage = '') => {
-  const match = /.+:(\d+\.\d+(?:\.\d+)?(?:-\w+)?)/gm.exec(releaseImage);
+export const getVersionFromReleaseString = (value = '') => {
+  const match = /(\d+\.\d+(?:\.\d+)?(?:-\w+)?)/gm.exec(value);
   if (match && match.length > 1 && match[1]) {
     return match[1];
   }
 };
 
-const getCPUArchFromReleaseImage = (releaseImage = '') => {
-  const match = /.+:.*-(.*)/gm.exec(releaseImage);
+export const getVersionFromClusterImageSet = (clusterImageSet?: ClusterImageSetK8sResource) => {
+  return (
+    getVersionFromReleaseString(clusterImageSet?.metadata?.labels?.['releaseTag']) ||
+    getVersionFromReleaseString(clusterImageSet?.spec?.releaseImage) ||
+    clusterImageSet?.metadata?.name ||
+    ''
+  );
+};
+
+const getCPUArchFromReleaseString = (value = '') => {
+  const match = /(?:\d+\.)+\d+-(x86-64|[\w_]+)/gm.exec(value);
   if (match && match.length > 1 && match[1]) {
     return match[1];
   }
 };
 
-// eslint-disable-next-line
-const getSupportLevelFromChannel = (
-  channel?: string,
-): OpenshiftVersion['supportLevel'] | 'custom' => {
-  if (!channel) {
-    return 'maintenance';
-  }
+const getCPUArchFromClusterImageSet = (clusterImageSet?: ClusterImageSetK8sResource) => {
+  const cpuArch =
+    clusterImageSet?.metadata?.labels?.architecture ??
+    getCPUArchFromReleaseString(clusterImageSet?.metadata?.labels?.['releaseTag']) ??
+    getCPUArchFromReleaseString(clusterImageSet?.spec?.releaseImage) ??
+    getCPUArchFromReleaseString(clusterImageSet?.metadata?.name) ??
+    '';
 
-  if (channel.startsWith('fast')) {
-    return 'beta'; // TODO(mlibra): Is this correct?
+  switch (cpuArch) {
+    case CpuArchitecture.x86:
+    case CpuArchitecture.ARM:
+    case CpuArchitecture.s390x:
+    case CpuArchitecture.MULTI:
+      return cpuArch as CpuArchitecture;
+    case 'x86-64':
+      return CpuArchitecture.x86;
+    default:
+      return undefined;
   }
-
-  if (channel.startsWith('stable')) {
-    return 'production';
-  }
-
-  return 'beta';
 };
-
-export const supportedNutanixPlatforms = ['x86_64', 'x86-64'];
 
 export const isValidImageSet = (
   cis: ClusterImageSetK8sResource,
@@ -71,20 +79,16 @@ const extractMajorMinor = (version: string): string => {
 const toVersionOption = (
   clusterImageSet: ClusterImageSetK8sResource,
 ): OpenshiftVersionOptionType => {
-  const version =
-    getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage) ||
-    clusterImageSet.metadata?.name ||
-    '';
-  const cpuArch = getCPUArchFromReleaseImage(clusterImageSet.spec?.releaseImage);
+  const version = getVersionFromClusterImageSet(clusterImageSet);
+  const cpuArch = getCPUArchFromClusterImageSet(clusterImageSet);
+
   return {
     label: `OpenShift ${version}`,
     version,
     value: clusterImageSet.metadata?.name as string,
     default: false,
-    // (rawagner) ACM does not have the warning so changing to 'production'
-    // supportLevel : getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel)
-    supportLevel: 'production',
-    cpuArchitectures: cpuArch ? [cpuArch as CpuArchitecture] : undefined,
+    supportLevel: 'production', // ACM doesn't have feature support levels
+    cpuArchitectures: cpuArch ? [cpuArch] : undefined,
   };
 };
 
@@ -100,6 +104,8 @@ const hasMatchingOsImage = (
   if (!osImageVersions.length) return true;
   return osImageVersions.includes(extractMajorMinor(version.version));
 };
+
+const supportedNutanixPlatforms = ['x86_64', 'x86-64'];
 
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
