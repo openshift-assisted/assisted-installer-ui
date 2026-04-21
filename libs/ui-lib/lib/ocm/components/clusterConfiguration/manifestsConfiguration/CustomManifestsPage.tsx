@@ -3,19 +3,21 @@ import {
   Content,
   ContentVariants,
   Alert,
-  AlertVariant,
   Grid,
   FormGroup,
   Switch,
   Tooltip,
-  Stack,
-  StackItem,
 } from '@patternfly/react-core';
 
 import { CustomManifests } from './components/CustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CustomManifestFormState } from './components/propTypes';
-import { ClustersAPI, ClusterWizardStepHeader, isThirdPartyCNI } from '../../../../common';
+import {
+  ClustersAPI,
+  ClusterWizardStepHeader,
+  CustomManifestsAlert,
+  isThirdPartyCNI,
+} from '../../../../common';
 import { getFieldId } from '../../../../common/components/ui/formik';
 import { isOciPlatformType } from '../../utils';
 import DeleteCustomManifestModal from './DeleteCustomManifestModal';
@@ -90,46 +92,6 @@ export const CustomManifestsPage = ({
     ? 'Custom manifests are required when using a third-party CNI or Oracle Cloud Infrastructure.'
     : '';
 
-  const showExternalPlatformReminder = isOciPlatformType(cluster);
-  const showThirdPartyCnIReminder = isThirdPartyCNI(cluster.networkType);
-  const showCombinedReminder = showExternalPlatformReminder && showThirdPartyCnIReminder;
-  let reminderAlerts: React.ReactNode = null;
-  if (showCombinedReminder) {
-    reminderAlerts = (
-      <Stack>
-        <StackItem>
-          <Alert
-            variant={AlertVariant.info}
-            isInline
-            title="You're using an external platform and a third-party CNI"
-          >
-            Make sure to upload the required custom and CNI manifests in this step.
-          </Alert>
-        </StackItem>
-      </Stack>
-    );
-  } else if (showExternalPlatformReminder) {
-    reminderAlerts = (
-      <Stack>
-        <StackItem>
-          <Alert variant={AlertVariant.info} isInline title="You're using an external platform">
-            Make sure to upload the required custom manifests in this step.
-          </Alert>
-        </StackItem>
-      </Stack>
-    );
-  } else if (showThirdPartyCnIReminder) {
-    reminderAlerts = (
-      <Stack>
-        <StackItem>
-          <Alert variant={AlertVariant.info} isInline title="You're using a third-party CNI">
-            Make sure to upload the required CNI manifests in this step.
-          </Alert>
-        </StackItem>
-      </Stack>
-    );
-  }
-
   return (
     <Grid hasGutter>
       <Content>
@@ -157,7 +119,10 @@ export const CustomManifestsPage = ({
       {!useCustomManifests && <div style={{ minHeight: '250px' }} aria-hidden="true" />}
       {useCustomManifests && (
         <>
-          {reminderAlerts}
+          <CustomManifestsAlert
+            usesExternalPlatform={isOciPlatformType(cluster)}
+            usesThirdPartyCNI={isThirdPartyCNI(cluster.networkType)}
+          />
           <Alert
             isInline
             variant="warning"

@@ -14,3 +14,4 @@ export { VirtualIPControlGroup } from './VirtualIPControlGroup';
 export type { VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 export { default as AdvancedNetworkFields } from './AdvancedNetworkFields';
 export type { AdvancedNetworkFieldsProps } from './AdvancedNetworkFields';
+export * from './ThirdPartyCNIBanner';

@@ -21,7 +21,7 @@ import {
   NETWORK_TYPE_OVN,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { NetworkTypeControlGroup } from '../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
+import { NetworkTypeDropDown } from './networking/NetworkTypeDropdown';
 import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
@@ -163,6 +163,7 @@ const NetworkConfiguration = ({
     validateField,
     primaryMachineNetwork,
   ]);
+
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && <ManagedNetworkingControlGroup />}
@@ -174,6 +175,8 @@ const NetworkConfiguration = ({
         />
       )}
 
+      <NetworkTypeDropDown isSDNSelectable={isSDNSelectable} />
+
       {(!isMultiNodeCluster || !isUserManagedNetworking) && (
         <StackTypeControlGroup
           clusterId={cluster.id}
@@ -183,8 +186,6 @@ const NetworkConfiguration = ({
           allowSingleStackIPv6
         />
       )}
-
-      <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl

@@ -11,7 +11,12 @@ import {
   GridItem,
 } from '@patternfly/react-core';
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { ClusterWizardStepHeader, useTranslation } from '../../../../common';
+import {
+  ClusterWizardStepHeader,
+  CustomManifestsAlert,
+  isThirdPartyCNI,
+  useTranslation,
+} from '../../../../common';
 import { AgentClusterInstallK8sResource, AgentClusterInstallModel } from '../../../types';
 import { ConfigMapForm, CustomManifestFormType } from './ConfigMapForm';
 import { appendPatch } from '../../../utils';
@@ -30,6 +35,9 @@ export const ClusterDeploymentCustomManifestsStep = ({
         valid: false,
       })) || [],
   };
+
+  const usesExternalPlatform = agentClusterInstall.spec?.platformType === 'External';
+  const usesThirdPartyCNI = isThirdPartyCNI(agentClusterInstall.spec?.networking.networkType);
 
   const validationSchema = Yup.lazy((values: CustomManifestFormType) =>
     Yup.object<CustomManifestFormType>({
@@ -54,7 +62,7 @@ export const ClusterDeploymentCustomManifestsStep = ({
           }),
         )
         .min(
-          agentClusterInstall.spec?.platformType === 'External' ? 1 : 0,
+          usesExternalPlatform || usesThirdPartyCNI ? 1 : 0,
           t('ai:At least one config map is required'),
         ),
     }),
@@ -114,6 +122,14 @@ export const ClusterDeploymentCustomManifestsStep = ({
           </Content>
         </Alert>
       </GridItem>
+      {(usesExternalPlatform || usesThirdPartyCNI) && (
+        <GridItem>
+          <CustomManifestsAlert
+            usesExternalPlatform={usesExternalPlatform}
+            usesThirdPartyCNI={usesThirdPartyCNI}
+          />
+        </GridItem>
+      )}
       <GridItem>
         <Formik
           initialValues={initialValues}
