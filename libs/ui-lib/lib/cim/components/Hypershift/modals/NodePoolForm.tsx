@@ -13,7 +13,7 @@ import { useFormikContext } from 'formik';
 import { InputField } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentK8sResource } from '../../../types';
-import { getAgentsForSelection, getVersionFromReleaseImage } from '../../helpers';
+import { getAgentsForSelection, getVersionFromReleaseString } from '../../helpers';
 import NodePoolAgentsForm from '../forms/NodePoolAgentsForm';
 import {
   AgentMachineK8sResource,
@@ -44,7 +44,7 @@ const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePo
       !agent.spec.clusterDeploymentName,
   );
 
-  const ocpVersion = getVersionFromReleaseImage(hostedCluster.spec.release.image);
+  const ocpVersion = getVersionFromReleaseString(hostedCluster.spec.release.image);
 
   if (isEdit) {
     const nodePoolAgents = getNodepoolAgents(nodePool, agents, agentMachines, hostedCluster);
