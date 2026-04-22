@@ -9,7 +9,7 @@ import {
 import { ClusterImageSetK8sResource } from '../../types';
 import { featureSupportLevelsACM } from '../../config/constants';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
-import { getOCPVersions, getVersionFromReleaseImage } from '../helpers';
+import { getOCPVersions, getVersionFromClusterImageSet } from '../helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import { getMajorMinorVersion } from '../../../common/utils';
@@ -53,10 +53,7 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
       const clusterImage = clusterImages.find(
         (clusterImageSet) => clusterImageSet.metadata?.name === versionName,
       );
-      const version =
-        getVersionFromReleaseImage(clusterImage?.spec?.releaseImage) ||
-        clusterImage?.metadata?.name ||
-        '';
+      const version = getVersionFromClusterImageSet(clusterImage);
       return getMajorMinorVersion(version);
     },
     [clusterImages],
