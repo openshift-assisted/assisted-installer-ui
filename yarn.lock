@@ -1816,6 +1816,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:>=20.0.0":
+  version: 25.6.0
+  resolution: "@types/node@npm:25.6.0"
+  dependencies:
+    undici-types: ~7.19.0
+  checksum: 98945eb59909a08868ccac203022f122b5549448ef8628de9eac3fe20481467cd6ec32af819fd432695f67ac21ebbbc69c8a141de6c6455edaf6e717e2cb89c9
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^18.14.6, @types/node@npm:^18.16.3, @types/node@npm:^18.17.5":
   version: 18.19.31
   resolution: "@types/node@npm:18.19.31"
@@ -1963,10 +1972,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/whatwg-mimetype@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@types/whatwg-mimetype@npm:3.0.2"
+  checksum: 30e2599ae02c539a6dd08b58de255aad24a41cdabeebc0293814884f1301f1328443b9915f2e990e4f484fa7f226ca8718991b63d2d387287f898c36390ef856
+  languageName: node
+  linkType: hard
+
 "@types/which@npm:^3.0.0":
   version: 3.0.3
   resolution: "@types/which@npm:3.0.3"
   checksum: eee298875ff62f7d56a2267cd70789a7032647c599d6abc684864281923763c082626b9742d4cfa7ea3e0790ac5d05aff48edd6ecba0f61eb69a6d57cc83c6f5
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.18.1":
+  version: 8.18.1
+  resolution: "@types/ws@npm:8.18.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0331b14cde388e2805af66cad3e3f51857db8e68ed91e5b99750915e96fe7572e58296dc99999331bbcf08f0ff00a227a0bb214e991f53c2a5aca7b0e71173fa
   languageName: node
   linkType: hard
 
@@ -2551,7 +2576,7 @@ __metadata:
     "@vitest/ui": ^0.34.5
     dpdm: ^3.14.0
     eslint: ^8.36.0
-    happy-dom: ^15.10.2
+    happy-dom: ^20.8.9
     msw: ^1.3.1
     prettier: 2.8.4
     rimraf: ^4.4.0
@@ -3989,10 +4014,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.2.0, entities@npm:^4.4.0, entities@npm:^4.5.0":
+"entities@npm:^4.2.0, entities@npm:^4.4.0":
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
+  languageName: node
+  linkType: hard
+
+"entities@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "entities@npm:7.0.1"
+  checksum: 5ee49e52e64eafc63251585f74eae50f259ea2169dbbf5380843dcd97c79bfe430a58e7f34012ab67a8e258f6ef9f92d721d149ffc88c89039e155f1bcf48a53
   languageName: node
   linkType: hard
 
@@ -5518,14 +5550,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^15.10.2":
-  version: 15.10.2
-  resolution: "happy-dom@npm:15.10.2"
+"happy-dom@npm:^20.8.9":
+  version: 20.9.0
+  resolution: "happy-dom@npm:20.9.0"
   dependencies:
-    entities: ^4.5.0
-    webidl-conversions: ^7.0.0
+    "@types/node": ">=20.0.0"
+    "@types/whatwg-mimetype": ^3.0.2
+    "@types/ws": ^8.18.1
+    entities: ^7.0.1
     whatwg-mimetype: ^3.0.0
-  checksum: 37ef0875565fe94e3fc47c8ddba422268966ffabc4efd84bc79db692d63b28478090e41a58f68b3e66f1b6dc510a9390fc45a1ceb2b64e9cc1a3c66dd088592f
+    ws: ^8.18.3
+  checksum: 6cc02c95c21204abeb6f38e554d0dc9c91fe77b7ac43d4565ea4225689226de2fc0ba1a509447c9df6dea6c34f5a7c06bc5e539c643b2fc39e4a26d139614542
   languageName: node
   linkType: hard
 
@@ -9893,6 +9928,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~7.19.0":
+  version: 7.19.2
+  resolution: "undici-types@npm:7.19.2"
+  checksum: f721026160e1f068a982401d0272b872819c335a2f64783c235ddd37a65ccd94327ec24489cee4556d57c77c14bd68ced60efa5def11cf11e3991f5ebf5e0e72
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^3.0.0":
   version: 3.0.0
   resolution: "unique-filename@npm:3.0.0"
@@ -10355,13 +10397,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webidl-conversions@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "webidl-conversions@npm:7.0.0"
-  checksum: f05588567a2a76428515333eff87200fae6c83c3948a7482ebb109562971e77ef6dc49749afa58abb993391227c5697b3ecca52018793e0cb4620a48f10bd21b
-  languageName: node
-  linkType: hard
-
 "webpod@npm:^0":
   version: 0.0.2
   resolution: "webpod@npm:0.0.2"
@@ -10535,6 +10570,21 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 159da4805f7e84a3d003d8841557196034155008f817172d4e986bd591f74aa82aa7db55929a54222309e01079a65a92a9e6414da5a6aa4b01ee44a511ac3ee5
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.3":
+  version: 8.20.0
+  resolution: "ws@npm:8.20.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 2b31d24a53690770564a033c21ea48390f84d23fbc5abc14b2bbec4e112846f2f3ca66caee769a73fb8bc89ba16b452a6911a553e9742bbc75bccb79e203953e
   languageName: node
   linkType: hard
 
