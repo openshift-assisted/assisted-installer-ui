@@ -940,7 +940,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.13.5
+    axios: ^1.15.0
     concurrently: ^8.2.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
@@ -982,7 +982,7 @@ __metadata:
     "@tsconfig/vite-react": ^1.0.1
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
-    axios: ^1.13.5
+    axios: ^1.15.0
     i18next: ^20.4.0
     parse-url: ^9.2.0
     react: ^18.2.0
@@ -1016,7 +1016,7 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.13.5
+    axios: ^1.15.0
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
@@ -1089,7 +1089,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.13.5
+    axios: ^1.15.0
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
@@ -4803,6 +4803,17 @@ __metadata:
     form-data: ^4.0.5
     proxy-from-env: ^1.1.0
   checksum: 72e94640e34aa9b591a47a9cc1798a1e18f179e15e39276514dd73f6d910981bdb2117c649da858bd72fc34d91db4f84318f88c8d306e395cd4ef5d6f142ab70
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.15.0":
+  version: 1.15.2
+  resolution: "axios@npm:1.15.2"
+  dependencies:
+    follow-redirects: ^1.15.11
+    form-data: ^4.0.5
+    proxy-from-env: ^2.1.0
+  checksum: e7d208b751959c7c6936417b870d6286979e0dff17784ae230d3988e754b6322682cb136e25669b534072b6f44c08715801ab961227eb8cc075323d9fda8ad43
   languageName: node
   linkType: hard
 
@@ -13947,6 +13958,13 @@ __metadata:
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
   checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
+  languageName: node
+  linkType: hard
+
+"proxy-from-env@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "proxy-from-env@npm:2.1.0"
+  checksum: b106ad790f26d47ba4791af3fe8cba5c8d35d85020119c82c05b413eb11b3ab97d2393ecaed51bca97c2788fa256408283dfeb4d970b2ebcae6702310f064e7e
   languageName: node
   linkType: hard
 
