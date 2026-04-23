@@ -1497,7 +1497,7 @@ __metadata:
     react-router-dom: 5.3.x
     react-router-dom-v5-compat: ^6.30.3
     redux: ^4
-    uuid: ^8.1
+    uuid: ^14.0
     vite: ^6.4.2
     vite-plugin-environment: ^1.1.3
     yup: ^1.4.0
@@ -1571,7 +1571,7 @@ __metadata:
     react-router-dom: 5.3.x
     react-router-dom-v5-compat: ^6.30.3
     redux: ^4
-    uuid: ^8.1
+    uuid: ^14.0
     vite: ^6.4.2
     vite-plugin-environment: ^1.1.3
     yup: ^1.4.0
@@ -1596,7 +1596,7 @@ __metadata:
     "@types/react-dom": ^18.2.0
     file-saver: ^2.0.2
     lodash-es: ^4.17.23
-    uuid: ^8.1
+    uuid: ^14.0
   peerDependencies:
     react: ^18
     react-dom: ^18
@@ -18285,7 +18285,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^8.1, uuid@npm:^8.3.2":
+"uuid@npm:^14.0":
+  version: 14.0.0
+  resolution: "uuid@npm:14.0.0"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 08608584a79e987cdae000fa8eb724fa51dd8aafc136cd9fa9a8c87d07b246c56eec5fd9027fdb3e49a863eedf758bc19e325909ce281955c7a027fed67dc89e
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^8.3.2":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:
