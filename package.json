@@ -18,7 +18,7 @@
   },
   "license": "Apache-2.0",
   "name": "assisted-installer-ui",
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@4.14.1",
   "private": true,
   "scripts": {
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
