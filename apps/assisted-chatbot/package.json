@@ -31,7 +31,7 @@
     "@redhat-cloud-services/ai-client-state": "^0.15.0",
     "@redhat-cloud-services/frontend-components": "^7.0.0",
     "axios": "^1.13.5",
-    "i18next": "^20.4.0",
+    "i18next": "^20.4 || ^21",
     "parse-url": "^9.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -39,13 +39,13 @@
     "react-router-dom-v5-compat": "^6.30.3"
   },
   "devDependencies": {
-    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^2.0.3",
+    "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^3.0.0",
     "@redhat-cloud-services/frontend-components-config": "^6.0.17",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.4",
     "@tsconfig/vite-react": "^1.0.1",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.0",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.0.0",
     "ts-patch": "^3.0.2",
     "typescript": "^5.2.2"
   },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { genericTableRowKey, getDefaultCpuArchitecture } from '../../../../common';
-import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
+import { getDiskEncryptionEnabledOnStatus } from './utils';
 import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';

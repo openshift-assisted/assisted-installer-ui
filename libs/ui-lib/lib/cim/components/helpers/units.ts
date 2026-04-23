@@ -228,7 +228,7 @@ const formatPercentage = (value: number, options?: OptionsType) => {
       maximumFractionDigits: 1,
     },
   );
-  return Intl.NumberFormat(locales, rest).format(value);
+  return Intl.NumberFormat(locales, rest as Intl.NumberFormatOptions).format(value);
 };
 
 type HumanizeFunctionType = (

@@ -17,7 +17,7 @@ Cypress.env(
   '#form-input-clusterNetworks-0-hostPrefix-field-helper',
 );
 Cypress.env('serviceNetworkCidrFieldHelperId', '#form-input-serviceNetworks-0-cidr-field-helper');
-Cypress.env('userManagedNetworkingRadioText', 'User-Managed Networking');
+Cypress.env('userManagedNetworkingRadioText', 'User-Managed networking');
 Cypress.env('openVirtualNetworkingRadioText', 'Open Virtual Networking');
 Cypress.env('networkTypeToggleId', '#form-input-networkType-field');
 Cypress.env('hostSubnetFieldId', '#form-input-hostSubnet-field');

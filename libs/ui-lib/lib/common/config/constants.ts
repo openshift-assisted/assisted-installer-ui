@@ -290,14 +290,22 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS: Pick<
   ClusterDefaultConfig,
   | 'clusterNetworksIpv4'
+  | 'clusterNetworksIpv6'
   | 'clusterNetworksDualstack'
   | 'serviceNetworksIpv4'
+  | 'serviceNetworksIpv6'
   | 'serviceNetworksDualstack'
 > = {
   clusterNetworksIpv4: [
     {
       cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr,
       hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkHostPrefix,
+    },
+  ],
+  clusterNetworksIpv6: [
+    {
+      cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkCidr,
+      hostPrefix: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkHostPrefix,
     },
   ],
   clusterNetworksDualstack: [
@@ -311,6 +319,7 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS: Pick<
     },
   ],
   serviceNetworksIpv4: [{ cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr }],
+  serviceNetworksIpv6: [{ cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr }],
   serviceNetworksDualstack: [
     { cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr },
     { cidr: CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr },
@@ -334,7 +343,7 @@ export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
-export const IPV4_STACK = 'singleStack';
+export const SINGLE_STACK = 'singleStack';
 export const DUAL_STACK = 'dualStack';
 
 export const PREFIX_MAX_RESTRICTION = {
@@ -386,7 +395,11 @@ export const singleClusterOperators = [
   OPERATOR_NAME_NODE_MAINTENANCE,
   OPERATOR_NAME_FENCE_AGENTS_REMEDIATION,
   OPERATOR_NAME_KUBE_DESCHEDULER,
+  OPERATOR_NAME_METALLB,
   OPERATOR_NAME_CLUSTER_OBSERVABILITY,
+  OPERATOR_NAME_OADP,
+  OPERATOR_NAME_LSO,
+  OPERATOR_NAME_NUMA_RESOURCES,
   OPERATOR_NAME_LOKI,
   OPERATOR_NAME_OPENSHIFT_LOGGING,
   OPERATOR_NAME_NUMA_RESOURCES,
