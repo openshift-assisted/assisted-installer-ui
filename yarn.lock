@@ -1702,7 +1702,7 @@ __metadata:
     "@types/react-dom": 18.2.15
     "@types/react-redux": ^7.1.7
     "@types/uuid": ^8.0.0
-    axios-case-converter: ^0.11.1
+    axios-case-converter: ^1.0.0
     camel-case: ^4.1.2
     cidr-tools: ^4.3.0
     classnames: ^2.3.1
@@ -5749,17 +5749,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-case-converter@npm:^0.11.1":
-  version: 0.11.1
-  resolution: "axios-case-converter@npm:0.11.1"
+"axios-case-converter@npm:^1.0.0":
+  version: 1.1.1
+  resolution: "axios-case-converter@npm:1.1.1"
   dependencies:
     camel-case: ^4.1.1
     header-case: ^2.0.3
     snake-case: ^3.0.3
     tslib: ^2.3.0
   peerDependencies:
-    axios: ">=0.23.0 <2.0.0"
-  checksum: 1936ebe0f4ea6ffe6bf00f5706f5d31c5afde57dd64b2907f9e8c459bc8b65e6b3057f003c43add83691efe004567e4d4cf8e8b10be4a1c9a965e14958dc0fb1
+    axios: ">=1.0.0 <2.0.0"
+  checksum: 6df22122c94a4304ddbbed9b1267190be3211ae80d8c04aa227b638dabe730c1fa4459aa668b4701e0433fdb82798e7dd7c7967f0c4467d7add8deef81f91f23
   languageName: node
   linkType: hard
 
