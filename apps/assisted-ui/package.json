@@ -35,7 +35,7 @@
     "@types/react-router": "^5.1.x",
     "@types/react-router-dom": "5.3.x",
     "@vitejs/plugin-react-swc": "^3.0.1",
-    "vite": "^6.4.2",
+    "vite": "^8.0.0",
     "vite-plugin-environment": "^1.1.3"
   },
   "engines": {
