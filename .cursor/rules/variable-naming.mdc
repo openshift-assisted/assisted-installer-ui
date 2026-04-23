@@ -1,0 +1,74 @@
+---
+description:
+  TS/TSX naming in apps/libs—casing, React, Redux, forms, length, single-letter conventions;
+  complements code-style and translations rules.
+globs:
+  - apps/**/*.ts
+  - apps/**/*.tsx
+  - libs/**/*.ts
+  - libs/**/*.tsx
+alwaysApply: false
+---
+
+# Variable naming
+
+Do **not** restate ESLint/Prettier or `yarn fix-code-style` (**code-style**). Do **not** restate the
+`t('ai:…')` workflow (**translations**).
+
+**Precedence:** If a bullet disagrees with the file you edit, **match the file** (**Consistency**
+below). Defaults for new code only—no drive-by renames.
+
+## Casing
+
+`camelCase` for values/functions; `PascalCase` for components, context providers, enums;
+`UPPER_SNAKE_CASE` for stable module constants. **`Id`** in camelCase (`clusterId`), not `ID`.
+
+## React
+
+Hooks `use` + `PascalCase`; handlers `handle*`; callback props `on*`. Refs `*Ref`; file-local
+subcomponents `PascalCase`. Prefer `handleSubmit`, `onChange`, `isModalOpen` over repeating the
+screen in every name; add a qualifier only to disambiguate (`handleSaveDraft` vs `handlePublish`,
+`handleClusterCreate` vs `handleClusterUpdate`). `useState`: `[foo, setFoo]`. `isLoading` or
+`loading` OK; narrow (e.g. `isInfraEnvLoading`) only when **several** loading flags share a scope.
+
+## Booleans
+
+Prefer `is*`, `has*`, `can*` (`has*` ~ possession/completion, `is*` ~ simple flags). Prefer positive
+names; use negative / `isNot*` when the call site reads clearer.
+
+## Redux / async
+
+Match the package (`select*`, `*Async` thunks, existing service names)—no parallel scheme.
+
+## Forms and types
+
+`*Props` (type or interface—do not force one); `*Values` / `*FormValues`. In **`libs/ui-lib/`**,
+suffix `Type` / `Values` / `Props` to avoid clashes; elsewhere mirror that package. Schemas:
+`*ValidationSchema`, `*Schema`, `get*InitialValues` like existing modules. i18n: **`t`** for
+`TFunction` in schema/label factories (see **Single letters**).
+
+## Length
+
+Short domain names (`clusterRows`); plural collections (`hosts`); drop redundant
+`List`/`Array`/`Items` when the type implies a collection. Drop scope-duplicated words
+(`CreateClusterForm` → `handleSubmit`). Reuse codebase abbreviations (SNO, OCM, VIP); no new opaque
+ones. Long logic → named `const` or helper; exported names may be longer, **locals** shorter.
+
+## Consistency
+
+Match dominant style in the file (including hook acronym casing).
+
+## Tests
+
+`create*` + entity (e.g. `createCluster`).
+
+## Single letters
+
+OK: index `i`/`j` with named elements `(row, i)`, `(col, j)`; ignored `_` with index; **`t`** for
+`TFunction` in factories; **`e`** in `catch`; generics `T`, `R`, `S`, `K`, `V`, … **Not** for domain
+entities—use words; if the file differs, **Consistency** wins.
+
+## Out of scope
+
+No repo-wide renames—**match local** spelling (e.g. `DropDown` vs `Dropdown`). No changing of
+existing variable names unless their meaning changes.

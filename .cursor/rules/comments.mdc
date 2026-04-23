@@ -1,0 +1,98 @@
+---
+description:
+  When to comment (why not what); self-documenting code first; generic examples only; complements
+  code-style and variable-naming.
+globs:
+  - apps/**/*.ts
+  - apps/**/*.tsx
+  - libs/**/*.ts
+  - libs/**/*.tsx
+alwaysApply: false
+---
+
+# Comments
+
+Write **self-documenting** code first (clear names, types, structure, small helpers). Add comments **sparingly**, only for **non-obvious _why_** (product rule, version quirk, surprising data shape)—not to restate **_what_** the code does.
+
+Lint/format and `yarn fix-code-style`: **code-style**. Naming: **variable-naming**. This file covers comment **use** only.
+
+Avoid comment text that only points at other files or line numbers—it goes stale. Prefer a short *why* in place. (Examples below stay generic.)
+
+## Default
+
+Omit the comment when control flow and names are enough. Prefer a rename or a small helper over a long explanation.
+
+## When to add a comment
+
+- A **product or UX rule** the code does not make obvious (e.g. show a notice only when there is no hard failure).
+- A **surprising input or invariant** so the next reader does not "fix" it incorrectly (e.g. several values in one comma-separated string). Explaining **input shape** next to a cast is *why*, not cast-justification—see **Hygiene**.
+
+## When not to add a comment
+
+Do not narrate each `if` / `else` branch. Prefer clearer names. If one idea is hard (e.g. a feature flag), use **one** short *why* on the **outer** branch instead of a comment on every branch.
+
+**Principle:** comments express **why** (existence, order, edge case)—not **what**.
+
+## Hygiene
+
+When changing **non-generated** files, keep comments accurate—update or remove comments that no longer match behavior.
+
+Do **not** add comments whose main purpose is to justify `as` / `!`. Do **not** leave blocks of commented-out code (use version control). Do **not** add file- or module-level "this file does..." banners. A short *why* next to a cast is fine when it describes real **data shape**, not the cast itself.
+
+Generated/synced paths are out of scope for edits here—see **generated-sdks-and-types**.
+
+## Tests, JSDoc, style
+
+Same comment bar as production code. Do not document that `before` / `beforeEach` is "setup."
+
+Do **not** add JSDoc unless the task explicitly calls for public API documentation.
+
+Prefer `//` for line comments. In JSX, follow ESLint (`{/* ... */}` where required). Keep comments in **English**.
+
+## Issue URLs in comments
+
+Avoid Jira/GitHub URLs in source—track work in the issue tracker; inline links go stale.
+
+## Do not
+
+- Add `TODO`, `FIXME`, or `HACK` markers (reserve those for human authors when appropriate).
+- Add `eslint-disable-*` comments—fix the lint issue or leave the code unchanged within the task scope.
+- Edit **generated or synced** code or add narrative comments there—follow **generated-sdks-and-types**.
+
+## Snippets (illustrative only)
+
+**Good** — product rule not obvious from JSX alone:
+
+```tsx
+<>
+  {/* Only show pending notice when nothing is in a hard-failure state */}
+  {!failedItems.length && <PendingItemsNotice items={pendingItems} />}
+</>
+```
+
+**Good** — surprising input shape (*why* for `split`, not cast-justification):
+
+```typescript
+function valuesAreAllowed(value: unknown): boolean {
+  if (!value) return true;
+  // Field can carry multiple values in one comma-separated string
+  const entries = (value as string).split(',');
+  return entries.every(isAllowedEntry);
+}
+```
+
+**Avoid** — comments that only narrate branches the code already expresses (noise, easy to drift):
+
+```tsx
+const options = React.useMemo(() => {
+  if (flag) {
+    // When flag is on...
+    if (a) {
+      // If a, return B
+      return B;
+    }
+    return C;
+  }
+  return D;
+}, [flag, a, B, C, D]);
+```
