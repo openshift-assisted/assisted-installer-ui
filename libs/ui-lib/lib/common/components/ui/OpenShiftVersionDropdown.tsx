@@ -4,13 +4,13 @@ import {
   FormGroup,
   FormHelperText,
   HelperTextItem,
-  Button,
   DropdownItem,
   MenuToggle,
   MenuToggleElement,
   Dropdown,
   DropdownGroup,
   Divider,
+  DropdownProps,
 } from '@patternfly/react-core';
 
 import { OpenshiftVersionOptionType } from '../../types';
@@ -103,31 +103,20 @@ export const OpenShiftVersionDropdown = ({
       </DropdownGroup>
     ),
     <DropdownGroup key="all-available-versions">
-      <DropdownItem key="all-versions" id="all-versions" onSelect={(e) => e.preventDefault()}>
-        <Button
-          variant="link"
-          isInline
-          onClick={() => showOpenshiftVersionModal()}
-          id="show-all-versions"
-        >
-          {t('ai:Show all available versions')}
-        </Button>
+      <DropdownItem key="all-versions" id="all-versions" value="all-versions">
+        <div className="pf-v6-u-text-color-link">{t('ai:Show all available versions')}</div>
       </DropdownItem>
     </DropdownGroup>,
   ].filter(Boolean);
 
-  const onSelect = React.useCallback(
-    (event?: React.MouseEvent<Element, MouseEvent>, val?: string | number) => {
-      const newLabel = event?.currentTarget.textContent;
-      const newValue = (val as string) || '';
-      if (newLabel && event.currentTarget.id !== 'all-versions') {
-        setCurrent(newLabel);
-        setValue(newValue);
-        setOpen(false);
-      }
-    },
-    [setValue],
-  );
+  const onSelect: DropdownProps['onSelect'] = (_, val) => {
+    if (val === 'all-versions') {
+      showOpenshiftVersionModal();
+    } else if (val) {
+      setValue(val as string);
+    }
+    setOpen(false);
+  };
 
   const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
