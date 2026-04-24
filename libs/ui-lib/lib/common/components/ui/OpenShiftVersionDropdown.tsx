@@ -4,13 +4,13 @@ import {
   FormGroup,
   FormHelperText,
   HelperTextItem,
-  Button,
   DropdownItem,
   MenuToggle,
   MenuToggleElement,
   Dropdown,
   DropdownGroup,
   Divider,
+  DropdownProps,
 } from '@patternfly/react-core';
 
 import { OpenshiftVersionOptionType } from '../../types';
@@ -20,6 +20,7 @@ import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
 import { ClusterDetailsValues, ItemDropdown } from '../clusterWizard';
+import { getVersionLabel } from './utils';
 
 export type HelperTextType = (value: string | null, inModal?: boolean) => JSX.Element | null;
 
@@ -58,7 +59,13 @@ export const OpenShiftVersionDropdown = ({
   const {
     values: { customOpenshiftSelect },
   } = useFormikContext<ClusterDetailsValues>();
-  const [current, setCurrent] = React.useState<string>();
+  const current = React.useMemo(
+    () =>
+      (customItem ? [...versions, customItem] : versions).find(
+        (item) => item.value === field.value,
+      ),
+    [customItem, field.value, versions],
+  );
 
   React.useEffect(() => {
     let defaultVersion = versions.find((item) => item.default);
@@ -68,7 +75,6 @@ export const OpenShiftVersionDropdown = ({
       defaultVersion = versions.find((item) => item.value === customOpenshiftSelect);
     }
 
-    setCurrent(defaultVersion?.label || '');
     setValue(defaultVersion?.value || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customOpenshiftSelect]);
@@ -100,34 +106,24 @@ export const OpenShiftVersionDropdown = ({
         <DropdownItem key={customItem.value} id={customItem.value} value={customItem.value}>
           {customItem.label}
         </DropdownItem>
+        <Divider key="all-versions-divider" />
       </DropdownGroup>
     ),
     <DropdownGroup key="all-available-versions">
-      <DropdownItem key="all-versions" id="all-versions" onSelect={(e) => e.preventDefault()}>
-        <Button
-          variant="link"
-          isInline
-          onClick={() => showOpenshiftVersionModal()}
-          id="show-all-versions"
-        >
-          {t('ai:Show all available versions')}
-        </Button>
+      <DropdownItem key="all-versions" id="all-versions" value="all-versions">
+        <div className="pf-v5-u-link-color">{t('ai:Show all available versions')}</div>
       </DropdownItem>
     </DropdownGroup>,
   ].filter(Boolean);
 
-  const onSelect = React.useCallback(
-    (event?: React.MouseEvent<Element, MouseEvent>, val?: string | number) => {
-      const newLabel = event?.currentTarget.textContent;
-      const newValue = (val as string) || '';
-      if (newLabel && event.currentTarget.id !== 'all-versions') {
-        setCurrent(newLabel);
-        setValue(newValue);
-        setOpen(false);
-      }
-    },
-    [setValue],
-  );
+  const onSelect: DropdownProps['onSelect'] = (_, val) => {
+    if (val === 'all-versions') {
+      showOpenshiftVersionModal();
+    } else if (val) {
+      setValue(val as string);
+    }
+    setOpen(false);
+  };
 
   const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
@@ -138,7 +134,7 @@ export const OpenShiftVersionDropdown = ({
       onClick={() => setOpen(!isOpen)}
       isExpanded={isOpen}
     >
-      {current || t('ai:OpenShift version')}
+      {current ? getVersionLabel(current, t) : t('ai:OpenShift version')}
     </MenuToggle>
   );
 
