@@ -1701,7 +1701,7 @@ __metadata:
     "@types/react-autosuggest": ^10.1.5
     "@types/react-dom": 18.2.15
     "@types/react-redux": ^7.1.7
-    "@types/uuid": ^8.0.0
+    "@types/uuid": ^11.0.0
     axios-case-converter: ^0.11.1
     camel-case: ^4.1.2
     cidr-tools: ^4.3.0
@@ -4617,10 +4617,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^8.0.0":
-  version: 8.3.4
-  resolution: "@types/uuid@npm:8.3.4"
-  checksum: 6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
+"@types/uuid@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@types/uuid@npm:11.0.0"
+  dependencies:
+    uuid: "*"
+  checksum: 9f94bd34e5d220c53cc58ea9f48a0061d3bc343e29bc33a17edc705f5e21fedda21553318151f2bc227c2b2b03727bbb536da2b82a61f84d2e1ca38abc5e5c3f
   languageName: node
   linkType: hard
 
@@ -18285,7 +18287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0":
+"uuid@npm:*, uuid@npm:^14.0":
   version: 14.0.0
   resolution: "uuid@npm:14.0.0"
   bin:
