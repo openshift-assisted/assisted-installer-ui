@@ -4,7 +4,7 @@ import { AboutModal as PFAboutModal } from '@patternfly/react-core';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config';
 import redHatLogo from '/logo.svg';
 import { Services, Api, Constants, DetailList, DetailItem } from '@openshift-assisted/ui-lib/ocm';
-import { ListVersions } from '@openshift-assisted/types/assisted-installer-service';
+import type { ListVersions } from '@openshift-assisted/types/assisted-installer-service';
 
 type AboutModalProps = {
   isOpen: boolean;
