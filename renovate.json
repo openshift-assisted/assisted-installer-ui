@@ -11,58 +11,79 @@
   "packageRules": [
     {
       "description": "Group all TypeScript type definitions",
-      "matchPackagePrefixes": ["@types/"],
       "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "TypeScript type definitions (non-major)"
+      "groupName": "TypeScript type definitions (non-major)",
+      "matchPackageNames": ["@types/{/,}**"]
     },
     {
       "description": "Group TypeScript type definitions major updates separately",
-      "matchPackagePrefixes": ["@types/"],
       "matchUpdateTypes": ["major"],
-      "groupName": "TypeScript type definitions (major)"
+      "groupName": "TypeScript type definitions (major)",
+      "matchPackageNames": ["@types/{/,}**"]
     },
     {
       "description": "Group React and React-related packages",
-      "matchPackagePatterns": ["^react", "^@types/react"],
-      "groupName": "React and React ecosystem"
+      "groupName": "React and React ecosystem",
+      "matchPackageNames": ["/^react/", "/^@types/react/"]
     },
     {
       "description": "Group all PatternFly packages together",
-      "matchPackagePrefixes": ["@patternfly/"],
-      "groupName": "PatternFly packages"
+      "groupName": "PatternFly packages",
+      "matchPackageNames": ["@patternfly/{/,}**"]
     },
     {
       "description": "Group all linting/formatting tools",
-      "matchPackageNames": ["eslint", "prettier"],
-      "matchPackagePrefixes": ["eslint-", "@typescript-eslint/"],
+      "matchPackageNames": [
+        "eslint",
+        "prettier",
+        "eslint-{/,}**",
+        "@typescript-eslint/{/,}**"
+      ],
       "groupName": "Linting and formatting tools"
     },
     {
       "description": "Group testing-related packages",
-      "matchPackageNames": ["vitest", "happy-dom", "msw", "cypress"],
-      "matchPackagePrefixes": ["@vitest/", "@cypress/"],
+      "matchPackageNames": [
+        "vitest",
+        "happy-dom",
+        "msw",
+        "cypress",
+        "@vitest/{/,}**",
+        "@cypress/{/,}**"
+      ],
       "groupName": "Testing packages"
     },
     {
       "description": "Group minor and patch updates for production dependencies",
       "matchDepTypes": ["dependencies"],
       "matchUpdateTypes": ["minor", "patch"],
-      "excludePackagePrefixes": ["@patternfly/", "@types/"],
-      "excludePackagePatterns": ["^react"],
-      "groupName": "Production dependencies (non-major)"
+      "groupName": "Production dependencies (non-major)",
+      "matchPackageNames": [
+        "!@patternfly/{/,}**",
+        "!@types/{/,}**",
+        "!/^react/"
+      ]
     },
     {
       "description": "Group minor and patch updates for dev dependencies",
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["minor", "patch"],
-      "excludePackagePrefixes": ["@types/", "eslint-", "@typescript-eslint/", "@vitest/"],
-      "excludePackageNames": ["eslint", "prettier", "vitest", "happy-dom", "msw"],
-      "groupName": "Dev dependencies (non-major)"
+      "groupName": "Dev dependencies (non-major)",
+      "matchPackageNames": [
+        "!@types/{/,}**",
+        "!eslint-{/,}**",
+        "!@typescript-eslint/{/,}**",
+        "!@vitest/{/,}**",
+        "!eslint",
+        "!prettier",
+        "!vitest",
+        "!happy-dom",
+        "!msw"
+      ]
     },
     {
       "description": "Group TypeScript compiler updates",
-      "matchPackageNames": ["typescript"],
-      "matchPackagePrefixes": ["@tsconfig/"],
+      "matchPackageNames": ["typescript", "@tsconfig/{/,}**"],
       "groupName": "TypeScript"
     }
   ]
