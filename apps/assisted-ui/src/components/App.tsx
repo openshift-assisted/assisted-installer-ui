@@ -1,5 +1,5 @@
 import type React from 'react';
-import { BrowserRouter, BrowserRouterProps } from 'react-router-dom';
+import { BrowserRouter, type BrowserRouterProps } from 'react-router-dom';
 import { CompatRouter, Route } from 'react-router-dom-v5-compat';
 import { Page } from '@patternfly/react-core';
 import * as OCM from '@openshift-assisted/ui-lib/ocm';

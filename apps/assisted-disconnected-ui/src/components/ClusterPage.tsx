@@ -6,7 +6,7 @@ import {
   getHostProgressStages,
   ResourceUIState,
 } from '@openshift-assisted/ui-lib/common';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 import ResetSingleClusterModal from './ResetSingleClusterModal';
 import SingleClusterFinalizerPage from './SingleClusterFinalizerPage';

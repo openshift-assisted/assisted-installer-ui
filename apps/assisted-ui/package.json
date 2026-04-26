@@ -29,17 +29,17 @@
   },
   "description": "A stand-alone web UI for the Assisted Installer",
   "devDependencies": {
-    "@tsconfig/vite-react": "^1.0.1",
+    "@tsconfig/vite-react": "^7.0.2",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.0",
     "@types/react-router": "^5.1.x",
     "@types/react-router-dom": "5.3.x",
-    "@vitejs/plugin-react-swc": "^4.0.0",
-    "vite": "^6.4.2",
+    "@vitejs/plugin-react-swc": "^4.3.0",
+    "vite": "^8.0.5",
     "vite-plugin-environment": "^1.1.3"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20.19.0"
   },
   "license": "Apache-2.0",
   "name": "@openshift-assisted/assisted-ui",
