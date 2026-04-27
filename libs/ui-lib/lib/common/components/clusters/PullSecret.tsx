@@ -8,14 +8,18 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 export type PullSecretProps = {
   defaultPullSecret?: string;
   isOcm?: boolean;
+  isSingleClusterFeatureEnabled?: boolean;
 };
 
-const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm = false }) => {
-  // Fetched pull secret will never change - see LoadingState in NewCluster
+const PullSecret: React.FC<PullSecretProps> = ({
+  defaultPullSecret,
+  isOcm = false,
+  isSingleClusterFeatureEnabled = false,
+}) => {
   const [isExpanded, setExpanded] = React.useState(!defaultPullSecret);
   const { setFieldValue } = useFormikContext<ClusterCreateParams>();
   const { t } = useTranslation();
-  if (isOcm) {
+  if (isOcm || isSingleClusterFeatureEnabled) {
     const onCheckboxChange = () => {
       if (isExpanded) {
         // about to collapse, reset to original value
