@@ -21,7 +21,7 @@
     "fuse.js": "^6.4.6",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
-    "ip-address": "^7.1.0",
+    "ip-address": "^10.1.0",
     "is-cidr": "^4.0.2",
     "is-in-subnet": "^4",
     "js-yaml": "^4.1.1",
