@@ -1755,7 +1755,7 @@ __metadata:
     file-saver: ^2.0.2
     filesize.js: ^2.0.0
     formik: 2.2.6
-    fuse.js: ^6.4.6
+    fuse.js: ^7.3.0
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
     ip-address: ^7.1.0
@@ -9910,10 +9910,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fuse.js@npm:^6.4.6":
-  version: 6.6.2
-  resolution: "fuse.js@npm:6.6.2"
-  checksum: 17ae758ce205276ebd88bd9c9f088a100be0b4896abac9f6b09847151269d1690f41d7f98ff5813d4a58973162dbd99d0072ce807020fee6f9de60170f6b08eb
+"fuse.js@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "fuse.js@npm:7.3.0"
+  checksum: 806751273cde0086eb87fcb220fdcfa9a613adac064f369e357d875a77d8ed27f59b6c71b1fb8fbfd83a55f39c5e348c7255bec99cd3f379a6be6e3444a86e62
   languageName: node
   linkType: hard
 
