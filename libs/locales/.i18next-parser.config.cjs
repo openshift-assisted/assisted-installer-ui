@@ -12,7 +12,7 @@ module.exports = {
   defaultNS,
   namespaceSeparator: '~',
   reactNamespace: false,
-  useKeysAsDefaultValue: true,
+  defaultValue: (_locale, _namespace, key, value) => value || key,
   output: `./lib/$LOCALE/${defaultNS}.json`,
   sort: true,
 };

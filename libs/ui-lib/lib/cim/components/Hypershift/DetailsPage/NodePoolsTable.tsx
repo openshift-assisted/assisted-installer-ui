@@ -149,9 +149,9 @@ const NodePoolsTable = ({
                       <Popover
                         aria-label="node pool hosts"
                         hasAutoWidth
-                        bodyContent={t('ai:{{agents}} of {{count}} host requested is available', {
-                          agents: nodePoolAgents.length,
-                          count: np.spec.replicas,
+                        bodyContent={t('ai:{{count}} of {{hosts}} requested hosts is available', {
+                          count: nodePoolAgents.length,
+                          hosts: np.spec.replicas,
                         })}
                       >
                         <Label variant="outline">

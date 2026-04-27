@@ -31,7 +31,6 @@ const DiscoveryInstructions = ({
         <Content component="li">
           <Trans
             t={t}
-            count={+isSNO}
             components={{ bold: <span className="pf-v6-u-font-weight-bold" /> }}
             i18nKey="ai:Keep the Discovery ISO media connected to the device throughout the installation process and set each host to boot <bold>only one time</bold> from this device. "
           />
