@@ -1475,7 +1475,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.13.5
+    axios: ^1.15.0
     concurrently: ^9.0.0
     i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
@@ -1551,7 +1551,7 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.13.5
+    axios: ^1.15.0
     i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
@@ -1624,7 +1624,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.13.5
+    axios: ^1.15.0
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
@@ -1719,7 +1719,7 @@ __metadata:
   peerDependencies:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
-    axios: ^1.13.5
+    axios: ^1.15.0
     i18next: ^20.4 || ^21
     monaco-editor: ^0.44.0 || ^0.55.0
     react: ^18
@@ -5597,14 +5597,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.2, axios@npm:^1.13.5, axios@npm:^1.14.0, axios@npm:^1.6.1":
-  version: 1.15.0
-  resolution: "axios@npm:1.15.0"
+"axios@npm:^1.15.0":
+  version: 1.15.2
+  resolution: "axios@npm:1.15.2"
   dependencies:
     follow-redirects: ^1.15.11
     form-data: ^4.0.5
     proxy-from-env: ^2.1.0
-  checksum: 95a8455554867a083ab3772fcadba42a22ec4bb546dccc66011556d837a07e544ae006675a30a5c43453f3e37e7c0982e934cec482c06b75abead2a2c157448a
+  checksum: e7d208b751959c7c6936417b870d6286979e0dff17784ae230d3988e754b6322682cb136e25669b534072b6f44c08715801ab961227eb8cc075323d9fda8ad43
   languageName: node
   linkType: hard
 
