@@ -172,6 +172,11 @@ export const getClusterProperties = (
   const serviceNetworks = agentClusterInstall.spec?.networking?.serviceNetwork;
   const clusterNetworks = agentClusterInstall.spec?.networking?.clusterNetwork;
 
+  const apiIPs = agentClusterInstall.spec?.apiVIPs || [agentClusterInstall.spec?.apiVIP];
+  const ingressIPs = agentClusterInstall.spec?.ingressVIPs || [
+    agentClusterInstall.spec?.ingressVIP,
+  ];
+
   return {
     // TODO: we should translate following keys since they are used "as it is" in AcmDescriptionList.tsx / List component of the stolostron project
     name: {
@@ -191,12 +196,12 @@ export const getClusterProperties = (
       value: clusterDeployment.spec?.baseDomain,
     },
     apiVip: {
-      key: 'API IP',
-      value: agentClusterInstall?.spec?.apiVIP,
+      key: apiIPs.length > 1 ? 'API IPs' : 'API IP',
+      value: apiIPs.join(', '),
     },
     ingressVip: {
-      key: 'Ingress IP',
-      value: agentClusterInstall?.spec?.ingressVIP,
+      key: ingressIPs.length > 1 ? 'Ingress IPs' : 'Ingress IP',
+      value: ingressIPs.join(', '),
     },
     clusterNetworkCidr: {
       key: (clusterNetworks?.length || 0) > 1 ? 'Cluster network CIDRs' : 'Cluster network CIDR',
