@@ -32,7 +32,7 @@
     "@redhat-cloud-services/frontend-components": "^7.0.0",
     "axios": "^1.13.5",
     "i18next": "^20.4 || ^21",
-    "parse-url": "^9.2.0",
+    "parse-url": "^11.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.11.4",
