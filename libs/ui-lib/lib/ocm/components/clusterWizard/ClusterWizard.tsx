@@ -49,7 +49,9 @@ const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps
         return <CredentialsDownload cluster={cluster} />;
       case 'cluster-details':
       default:
-        return <ClusterDetails cluster={cluster} infraEnv={infraEnv} />;
+        return (
+          <ClusterDetails cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
+        );
     }
   }, [currentStepId, cluster, infraEnv, updateInfraEnv]);
   if (!currentStepId) {

@@ -23,16 +23,21 @@ import {
   ClusterCreateParamsWithStaticNetworking,
   UISettingService,
 } from '../../services';
-import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 import BundleService from '../../services/BundleService';
 import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
   infraEnv?: InfraEnv;
+  updateInfraEnv?: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
 };
 
-const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
+const ClusterDetails = ({ cluster, infraEnv, updateInfraEnv }: ClusterDetailsProps) => {
   const clusterWizardContext = useClusterWizardContext();
   const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
@@ -55,6 +60,9 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       clearAlerts();
 
       try {
+        if (params.pullSecret && infraEnv && updateInfraEnv) {
+          await updateInfraEnv({ pullSecret: params.pullSecret });
+        }
         const { data: updatedCluster } = await ClustersService.update(
           clusterId,
           cluster?.tags,
@@ -71,7 +79,15 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, addAlert, dispatch, cluster?.tags, clusterWizardContext],
+    [
+      clearAlerts,
+      addAlert,
+      dispatch,
+      cluster?.tags,
+      clusterWizardContext,
+      infraEnv,
+      updateInfraEnv,
+    ],
   );
 
   const handleClusterCreate = React.useCallback(
