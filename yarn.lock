@@ -1750,7 +1750,7 @@ __metadata:
     "@types/uuid": ^11.0.0
     axios-case-converter: ^0.11.1
     camel-case: ^4.1.2
-    cidr-tools: ^4.3.0
+    cidr-tools: ^11.3.4
     classnames: ^2.3.1
     file-saver: ^2.0.2
     filesize.js: ^2.0.0
@@ -6499,18 +6499,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cidr-tools@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "cidr-tools@npm:4.3.0"
+"cidr-tools@npm:^11.3.4":
+  version: 11.3.4
+  resolution: "cidr-tools@npm:11.3.4"
   dependencies:
-    ip-address: ^8.1.0
-    ip-cidr: ^3.0.4
-    ipv6-normalize: ^1.0.1
-    is-cidr: ^4.0.2
-    is-ip: ^3.1.0
-    jsbn: ^1.1.0
-    string-natural-compare: ^3.0.1
-  checksum: d06c995f09703b6d509f3fff2c2e808c2f09c52b52858ee80218fa163629652dc3e012b22165df40c635eda0be3f3a53d79677daede24adeff89bda4a4772fd7
+    ip-bigint: ^8.3.4
+  checksum: f2504a9e8cae96763fbea0bf7c098f3390d84b045d6f437777074832961b5f482291ab63d5bcffa831832006880044dd88de074dc8684136f52b750ed5b048e2
   languageName: node
   linkType: hard
 
@@ -11194,16 +11188,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "ip-address@npm:8.1.0"
-  dependencies:
-    jsbn: 1.1.0
-    sprintf-js: 1.1.2
-  checksum: abea52788176040b45d35548b369157c11b31a331f5e36517b2e8192068cce78fdca567ecdfab0690ee8b4ad9df55cd2940ac3f20871eeb3687e4447208c4803
-  languageName: node
-  linkType: hard
-
 "ip-address@npm:^9.0.5":
   version: 9.0.5
   resolution: "ip-address@npm:9.0.5"
@@ -11214,17 +11198,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-cidr@npm:^3.0.4":
-  version: 3.1.0
-  resolution: "ip-cidr@npm:3.1.0"
-  dependencies:
-    ip-address: ^7.1.0
-    jsbn: ^1.1.0
-  checksum: 148be0fc9b8adddae955429fef76100e9ebd6d22d5f0f91608b445fde2fda9d2bba898ef36476da1c24da49a55e3fa90d7501c4988718342a2c10d7ca829e577
+"ip-bigint@npm:^8.3.4":
+  version: 8.3.5
+  resolution: "ip-bigint@npm:8.3.5"
+  checksum: af4f08a31c609712c5a6097164a1d81b0e77b9e20e550c6e70b9d7139a4b3bc09a9246fe53c30fdf7d1a2f798934cdab2cbe4408ba28f51d2931991f169b45c2
   languageName: node
   linkType: hard
 
-"ip-regex@npm:^4.0.0, ip-regex@npm:^4.1.0":
+"ip-regex@npm:^4.1.0":
   version: 4.3.0
   resolution: "ip-regex@npm:4.3.0"
   checksum: 7ff904b891221b1847f3fdf3dbb3e6a8660dc39bc283f79eb7ed88f5338e1a3d1104b779bc83759159be266249c59c2160e779ee39446d79d4ed0890dfd06f08
@@ -11242,13 +11223,6 @@ __metadata:
   version: 2.3.0
   resolution: "ipaddr.js@npm:2.3.0"
   checksum: 275602ad56e765d6c4187c1ab1a17d415da7a263e8d3278da5bdb6db147b29c56fac7e98a3f68b05d25e0b515601f1e750c2dd8ec9a871eb93ea094643b84916
-  languageName: node
-  linkType: hard
-
-"ipv6-normalize@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "ipv6-normalize@npm:1.0.1"
-  checksum: 217277069e50eb47f91d0b22e17f47a858cc99785e0e0c1a315e27c1f0c49bcbae448c220c35767666aeb523b87853d5905448ab6c835f0967778d450610cf54
   languageName: node
   linkType: hard
 
@@ -11546,15 +11520,6 @@ __metadata:
   version: 1.0.0
   resolution: "is-interactive@npm:1.0.0"
   checksum: 824808776e2d468b2916cdd6c16acacebce060d844c35ca6d82267da692e92c3a16fdba624c50b54a63f38bdc4016055b6f443ce57d7147240de4f8cdabaf6f9
-  languageName: node
-  linkType: hard
-
-"is-ip@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "is-ip@npm:3.1.0"
-  dependencies:
-    ip-regex: ^4.0.0
-  checksum: da2c2b282407194adf2320bade0bad94be9c9d0bdab85ff45b1b62d8185f31c65dff3884519d57bf270277e5ea2046c7916a6e5a6db22fe4b7ddcdd3760f23eb
   languageName: node
   linkType: hard
 
@@ -12046,7 +12011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsbn@npm:1.1.0, jsbn@npm:^1.1.0":
+"jsbn@npm:1.1.0":
   version: 1.1.0
   resolution: "jsbn@npm:1.1.0"
   checksum: 944f924f2bd67ad533b3850eee47603eed0f6ae425fd1ee8c760f477e8c34a05f144c1bd4f5a5dd1963141dc79a2c55f89ccc5ab77d039e7077f3ad196b64965
@@ -17142,13 +17107,6 @@ __metadata:
   version: 0.5.1
   resolution: "strict-event-emitter@npm:0.5.1"
   checksum: 350480431bc1c28fdb601ef4976c2f8155fc364b4740f9692dd03e5bdd48aafc99a5e021fe655fbd986d0b803e9f3fc5c4b018b35cb838c4690d60f2a26f1cf3
-  languageName: node
-  linkType: hard
-
-"string-natural-compare@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "string-natural-compare@npm:3.0.1"
-  checksum: 65910d9995074086e769a68728395effbba9b7186be5b4c16a7fad4f4ef50cae95ca16e3e9086e019cbb636ae8daac9c7b8fe91b5f21865c5c0f26e3c0725406
   languageName: node
   linkType: hard
 
