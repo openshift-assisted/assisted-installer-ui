@@ -11,7 +11,7 @@ import {
 import { useField } from 'formik';
 import toNumber from 'lodash-es/toNumber';
 import { getFieldId, PopoverIcon, PreviewBadgePosition, TechnologyPreview } from '../../../common';
-
+import { useFeature } from '../../hooks/use-feature';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
@@ -45,6 +45,8 @@ interface ControlPlaneNodesOption {
   value: number;
   label: string;
   badge?: React.ReactNode;
+  /** When true, option is omitted from the list (e.g. product mode does not offer this topology). */
+  hidden?: boolean;
 }
 
 interface ControlPlaneNodesDropdownProps {
@@ -71,7 +73,7 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   const [field, , { setValue }] = useField<number>(INPUT_NAME);
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
-
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const snoExpansion = newFeatureSupportLevelContext.isFeatureSupported(
     'SINGLE_NODE_EXPANSION',
     featureSupportLevelData ?? undefined,
@@ -100,11 +102,12 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
         tnaSupport === 'tech-preview' ? (
           <TechnologyPreview position={PreviewBadgePosition.default} />
         ) : undefined,
+      hidden: isSingleClusterFeatureEnabled,
     },
     { value: 3, label: '3 (highly available cluster)' },
     { value: 4, label: '4 (highly available cluster+)' },
     { value: 5, label: '5 (highly available cluster++)' },
-  ];
+  ].filter(({ hidden }) => !hidden);
 
   React.useEffect(() => {
     if (!field.value) {
