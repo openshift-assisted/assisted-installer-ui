@@ -89,7 +89,7 @@
   "license": "Apache-2.0",
   "name": "@openshift-assisted/ui-lib",
   "peerDependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
+    "@reduxjs/toolkit": "^1.9.7",
     "@sentry/browser": "^5.9 || ^6",
     "axios": "^1.15.2",
     "i18next": "^20.4 || ^21",
