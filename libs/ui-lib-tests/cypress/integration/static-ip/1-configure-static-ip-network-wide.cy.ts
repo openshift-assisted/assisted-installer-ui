@@ -36,6 +36,11 @@ const validateStaticIpRequest = (requestBody, ipVersion: NetworkSelection) => {
     count++;
   });
   expect(count).to.eq(includedValues.length);
+
+  // Verify IPv6 autoconf field is present for dual-stack configurations
+  if (ipVersion === 'dual-stack') {
+    expect(submitYaml).to.contain('autoconf: false');
+  }
 };
 
 const fillStaticIpForm = (networkSelection: NetworkSelection, fields) => {
