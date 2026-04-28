@@ -49,6 +49,7 @@ export const getDummyInterfaces = (): NmstateEthernetInterface[] => {
       ipv4: getNmstateProtocolConfig(
         DUMMY_NMSTATE_ADDRESSES.ipv4.ip,
         DUMMY_NMSTATE_ADDRESSES.ipv4.prefixLength,
+        ProtocolVersion.ipv4,
       ),
     },
   ];
