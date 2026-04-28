@@ -1,0 +1,9 @@
+package_manager: yarn
+base_branch: master
+
+validation:
+  build: yarn build:all
+  lint: yarn lint:all
+  test: yarn test:unit
+  # audit is only executed by the ai-cve-bot flow
+  audit: yarn audit --level high

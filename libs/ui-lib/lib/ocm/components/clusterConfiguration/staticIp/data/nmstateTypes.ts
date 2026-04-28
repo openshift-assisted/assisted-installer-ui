@@ -15,6 +15,7 @@ export type NmstateProtocolConfig = {
   address: NmstateAddress[];
   enabled: boolean;
   dhcp: boolean;
+  autoconf?: boolean;
 };
 
 export type NmstateProtocolConfigs = {

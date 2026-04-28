@@ -80,8 +80,9 @@ export const getProtocolType = (comments: string[]): StaticProtocolType | null =
 export const getNmstateProtocolConfig = (
   ipAddress: string,
   prefixLength: number,
+  protocolVersion: ProtocolVersion,
 ): NmstateProtocolConfig => {
-  return {
+  const config: NmstateProtocolConfig = {
     address: [
       {
         ip: ipAddress,
@@ -91,6 +92,12 @@ export const getNmstateProtocolConfig = (
     enabled: true,
     dhcp: false,
   };
+
+  if (protocolVersion === ProtocolVersion.ipv6) {
+    config.autoconf = false;
+  }
+
+  return config;
 };
 
 export const getDnsSection = (dns: string): NmstateDns => {

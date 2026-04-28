@@ -25,8 +25,8 @@
     "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./lib/index.ts",
     "check_types": "yarn run -T tsc --noEmit",
     "clean": "yarn run -T rimraf node_modules build",
-    "copy:svg": "rsync -Ruv lib/./**/*.svg build/cjs",
-    "copy:css": "rsync -Ruv lib/./**/*.css build/cjs",
+    "copy:svg": "rsync -av lib/assets/ build/cjs/assets/",
+    "copy:css": "rsync -av --include='*/' --include='*.css' --exclude='*' lib/ build/cjs/",
     "format": "yarn run -T prettier --cache --check . \"!build\"",
     "fix-code-style": "yarn lint --fix && yarn format --write",
     "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
