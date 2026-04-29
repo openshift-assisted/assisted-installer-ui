@@ -179,9 +179,14 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
             <Tr {...getRowProps(row.props as ClusterRowDataProps)} key={`row-${i}`}>
               {row.cells?.map((cell, j) => {
                 const humanized = cell as HumanizedSortable;
+                const columnTitle = columns[j]?.title;
                 return (
-                  <Td dataLabel={columns[j].title} key={`cell-${i}-${j}`} {...humanized.props}>
-                    <TableText wrapModifier="breakWord">{humanized?.title}</TableText>
+                  <Td dataLabel={columnTitle} key={`cell-${i}-${j}`} {...humanized.props}>
+                    <TableText
+                      wrapModifier={columnTitle === 'Base domain' ? 'truncate' : 'breakWord'}
+                    >
+                      {humanized?.title}
+                    </TableText>
                   </Td>
                 );
               })}
