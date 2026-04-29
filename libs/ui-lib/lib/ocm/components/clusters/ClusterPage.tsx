@@ -102,12 +102,9 @@ const ClusterPageGeneric = ({
       return (
         <>
           {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
-          {showBreadcrumbs && (
-            <PageSection hasBodyWrapper={false}>
-              <AssistedInstallerHeader />
-            </PageSection>
-          )}
-
+          <PageSection hasBodyWrapper={false}>
+            <Content component="h1">{cluster.name}</Content>
+          </PageSection>
           <PageSection hasBodyWrapper={false}>
             <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
               <ClusterWizard
