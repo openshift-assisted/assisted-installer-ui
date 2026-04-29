@@ -8,12 +8,16 @@ import {
 } from '../../../common';
 import { useFeature } from '../../hooks/use-feature';
 
-export const AssistedInstallerHeader = () => {
+type AssistedInstallerHeaderProps = {
+  clusterName?: string;
+};
+
+export const AssistedInstallerHeader = ({ clusterName }: AssistedInstallerHeaderProps) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   return (
     <>
       <Content component="h1" className="pf-v6-u-display-inline">
-        Install OpenShift with the Assisted Installer
+        {clusterName || 'Install OpenShift with the Assisted Installer'}
       </Content>
       {isSingleClusterFeatureEnabled && <TechnologyPreview />}
       <Split hasGutter>
