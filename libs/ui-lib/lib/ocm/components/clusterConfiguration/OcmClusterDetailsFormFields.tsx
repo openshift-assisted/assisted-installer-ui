@@ -187,7 +187,13 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
 
-      {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      {!isPullSecretSet && (
+        <PullSecret
+          isOcm={isOcm}
+          defaultPullSecret={defaultPullSecret}
+          isSingleClusterFeatureEnabled={isSingleClusterFeatureEnabled}
+        />
+      )}
 
       {!isSingleClusterFeatureEnabled &&
         (clusterExists ? (
