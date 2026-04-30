@@ -58,9 +58,12 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
         <ReviewNetworkingTable cluster={cluster} />
       </TableSummaryExpandable>
 
-      {userManifests && userManifests.length > 0 && (
+      {customManifests && customManifests.length > 0 && (
         <TableSummaryExpandable title={'Custom manifests'} id={'custom-manifests-expandable'}>
-          <ReviewCustomManifestsTable manifests={userManifests} />
+          <ReviewCustomManifestsTable
+            manifests={customManifests}
+            showWarning={!!userManifests && userManifests.length > 0}
+          />
         </TableSummaryExpandable>
       )}
     </>
