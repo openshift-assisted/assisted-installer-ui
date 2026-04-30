@@ -297,7 +297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.9.2":
   version: 7.26.10
   resolution: "@babel/runtime@npm:7.26.10"
   dependencies:
@@ -313,7 +313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10":
+"@babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10":
   version: 7.29.2
   resolution: "@babel/runtime@npm:7.29.2"
   checksum: d5548d1165de8995f8afc93a5694b8625409be16cd1f2250ac13e331335858ddac3cb9fd278e6c43956a130101a2203f09417938a1a96f9fb70f02b4b4172e1d
@@ -1475,9 +1475,9 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.13.5
+    axios: ^1.15.0
     concurrently: ^9.0.0
-    i18next: ^20.4.0
+    i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.55.0
@@ -1518,7 +1518,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     axios: ^1.13.5
-    i18next: ^20.4.0
+    i18next: ^20.4 || ^21
     parse-url: ^9.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -1551,8 +1551,8 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.13.5
-    i18next: ^20.4.0
+    axios: ^1.15.0
+    i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.17.23
     monaco-editor: ^0.55.0
@@ -1624,7 +1624,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.13.5
+    axios: ^1.15.0
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
@@ -1719,7 +1719,7 @@ __metadata:
   peerDependencies:
     "@reduxjs/toolkit": ^1.9.1
     "@sentry/browser": ^5.9 || ^6
-    axios: ^1.13.5
+    axios: ^1.15.0
     i18next: ^20.4 || ^21
     monaco-editor: ^0.44.0 || ^0.55.0
     react: ^18
@@ -5597,14 +5597,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.2, axios@npm:^1.13.5, axios@npm:^1.14.0, axios@npm:^1.6.1":
-  version: 1.15.0
-  resolution: "axios@npm:1.15.0"
+"axios@npm:^1.15.0":
+  version: 1.15.2
+  resolution: "axios@npm:1.15.2"
   dependencies:
     follow-redirects: ^1.15.11
     form-data: ^4.0.5
     proxy-from-env: ^2.1.0
-  checksum: 95a8455554867a083ab3772fcadba42a22ec4bb546dccc66011556d837a07e544ae006675a30a5c43453f3e37e7c0982e934cec482c06b75abead2a2c157448a
+  checksum: e7d208b751959c7c6936417b870d6286979e0dff17784ae230d3988e754b6322682cb136e25669b534072b6f44c08715801ab961227eb8cc075323d9fda8ad43
   languageName: node
   linkType: hard
 
@@ -10668,12 +10668,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^20.4.0":
-  version: 20.6.1
-  resolution: "i18next@npm:20.6.1"
+"i18next@npm:^20.4 || ^21":
+  version: 21.10.0
+  resolution: "i18next@npm:21.10.0"
   dependencies:
-    "@babel/runtime": ^7.12.0
-  checksum: 313cd4b17f9092eaf8ca92a02bb74d099f4a8b26de6e38018f438ce6f706220e5f72d865e1f50d815e13504ec38bc77e0f6341f670ca5162689f8d11a859e564
+    "@babel/runtime": ^7.17.2
+  checksum: f997985e2d4d15a62a0936a82ff6420b97f3f971e776fe685bdd50b4de0cb4dc2198bc75efe6b152844794ebd5040d8060d6d152506a687affad534834836d81
   languageName: node
   linkType: hard
 
