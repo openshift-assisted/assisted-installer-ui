@@ -22,6 +22,7 @@ import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
+  const userManifests = customManifests?.filter((m) => m.manifestSource === 'user');
   return (
     <>
       <TableSummaryExpandable title={'Cluster details'} id={'cluster-details-expandable'}>
@@ -59,7 +60,10 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
 
       {customManifests && customManifests.length > 0 && (
         <TableSummaryExpandable title={'Custom manifests'} id={'custom-manifests-expandable'}>
-          <ReviewCustomManifestsTable manifests={customManifests} />
+          <ReviewCustomManifestsTable
+            manifests={customManifests}
+            showWarning={!!userManifests && userManifests.length > 0}
+          />
         </TableSummaryExpandable>
       )}
     </>

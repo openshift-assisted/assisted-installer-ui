@@ -4,7 +4,13 @@ import { Alert } from '@patternfly/react-core';
 import { ListManifestsExtended } from '../manifestsConfiguration/data/dataTypes';
 import { genericTableRowKey } from '../../../../common';
 
-export const ReviewCustomManifestsTable = ({ manifests }: { manifests: ListManifestsExtended }) => {
+export const ReviewCustomManifestsTable = ({
+  manifests,
+  showWarning,
+}: {
+  manifests: ListManifestsExtended;
+  showWarning: boolean;
+}) => {
   const rows = manifests?.map((manifest) => ({
     rowId:
       manifest.folder && manifest.fileName
@@ -50,6 +56,7 @@ export const ReviewCustomManifestsTable = ({ manifests }: { manifests: ListManif
         title={
           'The custom manifests might contain configurations which are conflicting with the above configurations and might cause installation failure.'
         }
+        hidden={!showWarning}
       />
     </>
   );

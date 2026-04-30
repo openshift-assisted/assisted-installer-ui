@@ -36,12 +36,14 @@ const getManifestsInfo = async (customManifests: ListManifests, clusterId: strin
       manifestsExtended.push({
         folder: manifest.folder || 'manifests',
         fileName: manifest.fileName || '',
+        manifestSource: manifest.manifestSource,
         yamlContent: yamlString,
       });
     } catch (e) {
       manifestsExtended.push({
         folder: manifest.folder || 'manifests',
         fileName: manifest.fileName || '',
+        manifestSource: manifest.manifestSource,
         yamlContent: '',
       });
     }
@@ -67,6 +69,7 @@ const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: bo
           const manifestsExtended = data.map((manifest: Manifest) => ({
             folder: manifest.folder || 'manifests',
             fileName: manifest.fileName || '',
+            manifestSource: manifest.manifestSource,
             yamlContent: '',
           }));
           setCustomManifests(manifestsExtended);
