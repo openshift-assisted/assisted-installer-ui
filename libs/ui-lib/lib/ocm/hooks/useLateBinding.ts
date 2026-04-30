@@ -13,6 +13,8 @@ const useLateBinding = (cluster: Cluster): boolean => {
   const { addAlert, removeAlert, alerts } = useAlerts();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const bindFailureCounts = useRef<Map<string, number>>(new Map());
+  const alertsRef = useRef(alerts);
+  alertsRef.current = alerts;
 
   const {
     hosts: infraEnvHosts,
@@ -36,7 +38,7 @@ const useLateBinding = (cluster: Cluster): boolean => {
         // Binding succeeded: reset the failure counter and clear any alert that
         // was shown after previous exhausted retries.
         bindFailureCounts.current.delete(host.id);
-        const alertKey = alerts.find((alert) => alert.key === host.id)?.key;
+        const alertKey = alertsRef.current.find((alert) => alert.key === host.id)?.key;
         if (alertKey) {
           removeAlert(alertKey);
         }
@@ -57,7 +59,6 @@ const useLateBinding = (cluster: Cluster): boolean => {
         setIsBinding(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [cluster.id, addAlert, removeAlert],
   );
 
@@ -70,7 +71,6 @@ const useLateBinding = (cluster: Cluster): boolean => {
         await bindSingleHost(host);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     infraEnvHosts,
     infraEnvError,
