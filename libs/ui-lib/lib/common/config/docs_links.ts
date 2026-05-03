@@ -92,15 +92,6 @@ export const DISK_WRITE_SPEED_LINK = 'https://access.redhat.com/solutions/488564
 export const HOST_REQUIREMENTS_LINK = 'https://access.redhat.com/solutions/4885641';
 
 //Operators page
-export const ODF_REQUIREMENTS_LINK =
-  'https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation';
-
-export const OPENSHIFT_AI_REQUIREMENTS_LINK =
-  'https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install#requirements-for-openshift-ai-self-managed_install';
-
-export const OSC_REQUIREMENTS_LINK =
-  'https://docs.redhat.com/en/documentation/openshift_sandboxed_containers/1.8/html/user_guide/deploying-osc-bare-metal#osc-resource-requirements_deploying-bare-metal';
-
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const getKmmDocsLink = (ocpVersion?: string) =>
