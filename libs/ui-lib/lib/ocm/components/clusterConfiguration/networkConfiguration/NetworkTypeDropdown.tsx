@@ -1,8 +1,6 @@
 import React from 'react';
 import { useField, useFormikContext } from 'formik';
 import {
-  Alert,
-  AlertVariant,
   Dropdown,
   DropdownItem,
   FormGroup,
@@ -12,7 +10,7 @@ import {
   StackItem,
   Tooltip,
 } from '@patternfly/react-core';
-import { getFieldId, ExternalLink } from '../../../../common/components/ui';
+import { getFieldId } from '../../../../common/components/ui';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
@@ -25,7 +23,8 @@ import {
   NETWORK_TYPE_FEATURE_IDS,
   isThirdPartyCNI,
 } from '../../../../common/types/networkType';
-import { RED_HAT_CNI_SUPPORT_MATRIX_LINK } from '../../../../common/config/docs_links';
+import { useTranslation } from '../../../../common/hooks';
+import { ThirdPartyCNIBanner } from '../../../../common';
 
 export interface NetworkTypeDropDownProps {
   isDisabled?: boolean;
@@ -36,6 +35,7 @@ export const NetworkTypeDropDown = ({
   isDisabled = false,
   featureSupportLevelData,
 }: NetworkTypeDropDownProps) => {
+  const { t } = useTranslation();
   const [field, , { setValue }] = useField<string>('networkType');
   const [isOpen, setOpen] = React.useState(false);
   const { values } = useFormikContext<NetworkConfigurationValues>();
@@ -54,9 +54,9 @@ export const NetworkTypeDropDown = ({
     }
   }, [field.value, setValue, featureSupportLevelData, getFeatureDisabledReason]);
 
-  const currentDisplayValue = NETWORK_TYPE_LABELS[field.value];
+  const currentDisplayValue = NETWORK_TYPE_LABELS(t)[field.value];
 
-  const dropdownItems = Object.entries(NETWORK_TYPE_LABELS).map(([value, label]) => {
+  const dropdownItems = Object.entries(NETWORK_TYPE_LABELS(t)).map(([value, label]) => {
     const disabledReason = getFeatureDisabledReason(
       NETWORK_TYPE_FEATURE_IDS[value],
       featureSupportLevelData ?? undefined,
@@ -119,24 +119,7 @@ export const NetworkTypeDropDown = ({
           </Dropdown>
         </FormGroup>
       </StackItem>
-      {showThirdPartyBanner && (
-        <StackItem>
-          <Alert variant={AlertVariant.warning} isInline title="Third-party CNI">
-            <Stack hasGutter>
-              <StackItem>
-                Third-party CNIs require uploading CNI manifests. Please verify you have the
-                required manifests and that the chosen CNI is compatible with your platform and
-                OpenShift version.
-              </StackItem>
-              <StackItem>
-                <ExternalLink href={RED_HAT_CNI_SUPPORT_MATRIX_LINK}>
-                  Red Hat CNI Support Matrix
-                </ExternalLink>
-              </StackItem>
-            </Stack>
-          </Alert>
-        </StackItem>
-      )}
+      {showThirdPartyBanner && <ThirdPartyCNIBanner />}
     </Stack>
   );
 };

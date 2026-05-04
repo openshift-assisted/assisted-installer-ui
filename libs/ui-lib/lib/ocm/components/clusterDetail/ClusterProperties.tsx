@@ -18,14 +18,18 @@ import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { Cluster, DiskEncryption } from '@openshift-assisted/types/assisted-installer-service';
+import { TFunction } from 'i18next';
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
   externalMode?: boolean;
 };
 
-export const getNetworkType = (clusterNetworkType: Cluster['networkType']): string => {
-  return NETWORK_TYPE_LABELS[clusterNetworkType || ''];
+export const getNetworkType = (
+  clusterNetworkType: Cluster['networkType'],
+  t: TFunction,
+): string => {
+  return NETWORK_TYPE_LABELS(t)[clusterNetworkType || ''];
 };
 
 export const getManagementType = ({ userManagedNetworking }: Cluster): string => {
@@ -111,7 +115,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           />
           <DetailItem
             title="Networking Type"
-            value={getNetworkType(cluster.networkType)}
+            value={getNetworkType(cluster.networkType, t)}
             testId="networking-type"
           />
         </DetailList>

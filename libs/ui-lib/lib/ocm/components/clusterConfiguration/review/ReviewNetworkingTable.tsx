@@ -1,7 +1,12 @@
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import React from 'react';
-import { genericTableRowKey, isDualStack, NETWORK_TYPE_LABELS } from '../../../../common';
+import {
+  genericTableRowKey,
+  isDualStack,
+  NETWORK_TYPE_LABELS,
+  useTranslation,
+} from '../../../../common';
 import { getManagementType, getStackTypeLabel } from '../../clusterDetail/ClusterProperties';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
@@ -11,6 +16,7 @@ type ReviewTableRowsType = {
 }[];
 
 export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
+  const { t } = useTranslation();
   const rows = React.useMemo(() => {
     const networkRows = [
       {
@@ -197,13 +203,13 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'Networking type' },
           {
-            title: cluster.networkType ? NETWORK_TYPE_LABELS[cluster.networkType] : '-',
+            title: cluster.networkType ? NETWORK_TYPE_LABELS(t)[cluster.networkType] : '-',
             props: { 'data-testid': 'networking-type', colSpan: 2 },
           },
         ],
       },
     ] as ReviewTableRowsType;
-  }, [cluster]);
+  }, [cluster, t]);
 
   return (
     <>
