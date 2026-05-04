@@ -5666,7 +5666,7 @@ __metadata:
     "@openshift-assisted/toolbox": "workspace:*"
     "@vitest/ui": ^0.34.5
     dpdm: ^3.14.0
-    eslint: ^8.36.0
+    eslint: ^8.57.1
     happy-dom: ^20.8.9
     msw: ^2.0.0
     prettier: 2.8.8
@@ -9036,7 +9036,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.36.0":
+"eslint@npm:^8.36.0, eslint@npm:^8.57.1":
   version: 8.57.1
   resolution: "eslint@npm:8.57.1"
   dependencies:
