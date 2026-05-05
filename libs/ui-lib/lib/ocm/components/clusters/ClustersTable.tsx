@@ -25,6 +25,7 @@ import {
   ClusterTableRows,
   HumanizedSortable,
   rowSorter,
+  EmptyState,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DeleteClusterModal from './DeleteClusterModal';
@@ -151,6 +152,8 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
     closeModal();
   };
 
+  const hasActiveFilters = searchString.length > 0 || filters.status.length > 0;
+
   return (
     <>
       <ClustersListToolbar
@@ -159,56 +162,63 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
         filters={filters}
         setFilters={setFilters}
       />
-      <Table aria-label="Clusters table" data-testid={'clusters-table'}>
-        <Thead>
-          <Tr>
-            {columns.map((col, i) => (
-              <Th
-                key={`col-${i}`}
-                width={col.cellWidth as BaseCellProps['width']}
-                sort={getSortParams(i)}
-              >
-                <TableText>{col.title}</TableText>
-              </Th>
-            ))}
-            <Th key="col-action" />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {sortedRows.map((row, i) => (
-            <Tr {...getRowProps(row.props as ClusterRowDataProps)} key={`row-${i}`}>
-              {row.cells?.map((cell, j) => {
-                const humanized = cell as HumanizedSortable;
-                return (
-                  <Td dataLabel={columns[j].title} key={`cell-${i}-${j}`} {...humanized.props}>
-                    <TableText wrapModifier="breakWord">{humanized?.title}</TableText>
-                  </Td>
-                );
-              })}
-              <Td isActionCell>
-                <ActionsColumn
-                  items={[
-                    {
-                      title: 'Delete',
-                      id: `button-delete-${(row.props as ClusterRowDataProps).name}`,
-                      isDisabled:
-                        getClusterTableStatusCell(row).sortableValue ===
-                        clusterStatusLabels(t).installing,
-                      onClick: () => {
-                        setDeleteClusterID({
-                          id: (row.props as ClusterRowDataProps).id,
-                          name: (row.props as ClusterRowDataProps).name,
-                        });
-                        setDeleteModalOpen(true);
-                      },
-                    },
-                  ]}
-                />
-              </Td>
+      {sortedRows.length === 0 && hasActiveFilters ? (
+        <EmptyState
+          title="No matching clusters"
+          content="No clusters match the current filter criteria. Try adjusting your filters."
+        />
+      ) : (
+        <Table aria-label="Clusters table" data-testid={'clusters-table'}>
+          <Thead>
+            <Tr>
+              {columns.map((col, i) => (
+                <Th
+                  key={`col-${i}`}
+                  width={col.cellWidth as BaseCellProps['width']}
+                  sort={getSortParams(i)}
+                >
+                  <TableText>{col.title}</TableText>
+                </Th>
+              ))}
+              <Th key="col-action" />
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {sortedRows.map((row, i) => (
+              <Tr {...getRowProps(row.props as ClusterRowDataProps)} key={`row-${i}`}>
+                {row.cells?.map((cell, j) => {
+                  const humanized = cell as HumanizedSortable;
+                  return (
+                    <Td dataLabel={columns[j].title} key={`cell-${i}-${j}`} {...humanized.props}>
+                      <TableText wrapModifier="breakWord">{humanized?.title}</TableText>
+                    </Td>
+                  );
+                })}
+                <Td isActionCell>
+                  <ActionsColumn
+                    items={[
+                      {
+                        title: 'Delete',
+                        id: `button-delete-${(row.props as ClusterRowDataProps).name}`,
+                        isDisabled:
+                          getClusterTableStatusCell(row).sortableValue ===
+                          clusterStatusLabels(t).installing,
+                        onClick: () => {
+                          setDeleteClusterID({
+                            id: (row.props as ClusterRowDataProps).id,
+                            name: (row.props as ClusterRowDataProps).name,
+                          });
+                          setDeleteModalOpen(true);
+                        },
+                      },
+                    ]}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )}
       <DeleteClusterModal
         name={deleteClusterID?.name || ''}
         onClose={closeModal}
