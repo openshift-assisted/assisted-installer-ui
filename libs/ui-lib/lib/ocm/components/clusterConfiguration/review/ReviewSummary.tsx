@@ -21,8 +21,9 @@ import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests'
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ListManifestsExtended } from '../manifestsConfiguration/data/dataTypes';
 
-const userProvidedManifests = (manifests: ListManifestsExtended | undefined): ListManifestsExtended =>
-  (manifests ?? []).filter((m) => m.manifestSource !== 'system');
+const userProvidedManifests = (
+  manifests: ListManifestsExtended | undefined,
+): ListManifestsExtended => (manifests ?? []).filter((m) => m.manifestSource !== 'system');
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
