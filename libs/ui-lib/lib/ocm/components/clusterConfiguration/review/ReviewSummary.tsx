@@ -21,7 +21,7 @@ import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests'
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ListManifestsExtended } from '../manifestsConfiguration/data/dataTypes';
 
-const userProvidedManifests = (manifests: ListManifestsExtended | undefined) =>
+const userProvidedManifests = (manifests: ListManifestsExtended | undefined): ListManifestsExtended =>
   (manifests ?? []).filter((m) => m.manifestSource !== 'system');
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
@@ -68,7 +68,7 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
       {showCustomManifests && (
         <TableSummaryExpandable title={'Custom manifests'} id={'custom-manifests-expandable'}>
           <ReviewCustomManifestsTable
-            manifests={customManifests}
+            manifests={manifestsForReview}
             showWarning={!!userManifests && userManifests.length > 0}
           />
         </TableSummaryExpandable>
