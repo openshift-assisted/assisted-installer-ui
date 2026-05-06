@@ -153,7 +153,7 @@ const BasicStepForm = () => {
           </GridItem>
           <GridItem>
             <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
-              <InstallDisconnectedSwitch isDisabled={!!clusterId} />
+              <InstallDisconnectedSwitch disconnectedClusterId={clusterId} />
               <span>{t("ai:I'm installing on a disconnected/air-gapped/secured environment")}</span>
               <TechnologyPreview />
             </Flex>
