@@ -114,7 +114,11 @@ const NetworkConfigurationForm: React.FC<{
   }, [addAlert, cluster.id, clusterWizardContext, dispatch, isSingleClusterFeatureEnabled]);
 
   const isNextDisabled =
-    isSubmitting || isAutoSaveRunning || !!alerts.length || !isValid || !canNextNetwork({ cluster });
+    isSubmitting ||
+    isAutoSaveRunning ||
+    !!alerts.length ||
+    !isValid ||
+    !canNextNetwork({ cluster });
 
   const footer = (
     <ClusterWizardFooter
