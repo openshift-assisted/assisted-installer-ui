@@ -1013,6 +1013,7 @@
   "ai:Vsphere disk uuid enabled": "Vsphere disk uuid enabled",
   "ai:Waiting for host..._one": "Waiting for host...",
   "ai:Waiting for host..._other": "Waiting for hosts...",
+  "ai:Waiting for hosts to be ready...": "Waiting for hosts to be ready...",
   "ai:Waiting for hosts...": "Waiting for hosts...",
   "ai:Warning": "Warning",
   "ai:Web Console URL": "Web Console URL",
