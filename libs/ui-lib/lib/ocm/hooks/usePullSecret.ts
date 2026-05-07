@@ -4,8 +4,8 @@ import { useAlerts } from '../../common';
 import { AccessTokenAPI } from '../../common/api/accounts-management-service/access-token-api';
 
 /**
- * Standalone / disconnected UI: bridge serves GET /pull-secret from a mounted manifest
- * (see assisted-disconnected-ui proxy).
+ * Standalone / disconnected UI: proxy serves GET /api/pull-secret with pull-secret JSON
+ * `{ "auths": … }` extracted from the mounted Secret manifest (see assisted-disconnected-ui proxy).
  */
 async function fetchPullSecretFromBridge(): Promise<string | undefined> {
   const res = await fetch('/api/pull-secret', { credentials: 'same-origin' });
