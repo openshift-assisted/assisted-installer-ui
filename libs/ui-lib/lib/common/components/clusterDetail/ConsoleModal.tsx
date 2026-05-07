@@ -12,7 +12,6 @@ import {
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { removeProtocolFromURL } from '../../api';
-import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { selectApiVip, selectIngressVip } from '../../selectors';
@@ -22,11 +21,6 @@ type WebConsoleHintProps = {
   cluster: Cluster;
   consoleUrl?: string;
   idPrefix?: string;
-};
-
-type LaunchOpenshiftConsoleButtonProps = WebConsoleHintProps & {
-  isDisabled: boolean;
-  id?: string;
 };
 
 type ConsoleModalProps = WebConsoleHintProps & {
@@ -98,35 +92,6 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
         isExpanded={!isDNSExpanded}
         onToggle={handleToggle}
         requiredList={etcHosts}
-      />
-    </>
-  );
-};
-
-export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButtonProps> = ({
-  cluster,
-  consoleUrl,
-  isDisabled,
-  id,
-}) => {
-  const [isOpen, setOpen] = React.useState(false);
-  const { t } = useTranslation();
-  return (
-    <>
-      <ToolbarButton
-        type="button"
-        variant={ButtonVariant.primary}
-        isDisabled={isDisabled}
-        onClick={() => setOpen(true)}
-        data-testid={id}
-      >
-        {t('ai:Launch OpenShift Console')}
-      </ToolbarButton>
-      <ConsoleModal
-        closeModal={() => setOpen(false)}
-        consoleUrl={consoleUrl}
-        cluster={cluster}
-        isOpen={isOpen}
       />
     </>
   );

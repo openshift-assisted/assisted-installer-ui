@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-  GridItem,
-  ClipboardCopy,
-  clipboardCopyFunc,
-  Button,
-  Alert,
-  TextInput,
-} from '@patternfly/react-core';
+import { GridItem, ClipboardCopy, clipboardCopyFunc, Alert } from '@patternfly/react-core';
 import { Credentials, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ClusterCredentialsProps = {
@@ -74,55 +66,59 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
     const consoleUrl = credentials.consoleUrl
       ? getConsoleUrl(credentials.consoleUrl, isMceEnabled)
       : '';
+    const hasVips = Boolean(cluster.apiVips?.length && cluster.ingressVips?.length);
     credentialsBody = (
-      <DetailList>
-        {credentials.consoleUrl && (
-          <DetailItem
-            title={t('ai:Web Console URL')}
-            value={
-              <>
-                <Button
-                  variant="link"
-                  icon={<ExternalLinkAltIcon />}
-                  iconPosition="right"
-                  isInline
-                  onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
-                  data-testid={`${idPrefix}-link-console-url`}
-                >
-                  {consoleUrl}
-                </Button>
-                <br />
-                {!!cluster.apiVips && !!cluster.ingressVips && (
-                  <TroubleshootingOpenshiftConsoleButton
-                    consoleUrl={consoleUrl}
-                    cluster={cluster}
-                    idPrefix={idPrefix}
-                  />
-                )}
-              </>
-            }
-          />
-        )}
-        {credentials.username && (
-          <>
+      <>
+        <DetailList>
+          {credentials.consoleUrl && (
             <DetailItem
-              title={t('ai:Username')}
-              value={<TextInput value={credentials.username} readOnlyVariant="default" />}
-            />
-            <DetailItem
-              title={t('ai:Password')}
+              title={t('ai:Web Console URL')}
               value={
-                <ClipboardCopy
-                  isReadOnly
-                  onCopy={(event) => clipboardCopyFunc(event, credentials.password)}
-                >
-                  &bull;&bull;&bull;&bull;&bull;
-                </ClipboardCopy>
+                <>
+                  <ClipboardCopy
+                    isReadOnly
+                    className="pf-v6-u-my-sm"
+                    data-testid={`${idPrefix}-link-console-url`}
+                  >
+                    {consoleUrl}
+                  </ClipboardCopy>
+                  {hasVips && (
+                    <TroubleshootingOpenshiftConsoleButton
+                      consoleUrl={consoleUrl}
+                      cluster={cluster}
+                      idPrefix={idPrefix}
+                    />
+                  )}
+                </>
               }
             />
-          </>
-        )}
-      </DetailList>
+          )}
+          {credentials.username && (
+            <>
+              <DetailItem
+                title={t('ai:Username')}
+                value={
+                  <ClipboardCopy isReadOnly className="pf-v6-u-my-sm">
+                    {credentials.username}
+                  </ClipboardCopy>
+                }
+              />
+              <DetailItem
+                title={t('ai:Password')}
+                value={
+                  <ClipboardCopy
+                    isReadOnly
+                    className="pf-v6-u-my-sm"
+                    onCopy={(event) => clipboardCopyFunc(event, credentials.password)}
+                  >
+                    &bull;&bull;&bull;&bull;&bull;
+                  </ClipboardCopy>
+                }
+              />
+            </>
+          )}
+        </DetailList>
+      </>
     );
   }
 
