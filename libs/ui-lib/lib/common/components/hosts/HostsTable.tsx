@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Spinner } from '@patternfly/react-core';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
 import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
@@ -29,6 +30,7 @@ export const HostsTableEmptyState = ({
       icon={ConnectedIcon}
       title={t('ai:Waiting for host...', { count: +isSNO })}
       content={t('ai:Hosts may take a few minutes to appear here after booting.')}
+      primaryAction={<Spinner size="xl" />}
       secondaryActions={
         setDiscoveryHintModalOpen && [
           <HostsNotShowingLink
