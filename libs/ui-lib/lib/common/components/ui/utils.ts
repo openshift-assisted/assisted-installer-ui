@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { DASH } from '../constants';
+import { OpenshiftVersionOptionType } from '../../types';
+import { TFunction } from 'i18next';
 
 export const getHumanizedDateTime = (dateTime?: string) => {
   if (!dateTime) return DASH;
@@ -20,3 +22,8 @@ export const isSelectEventChecked = (
   const target = event?.target as { checked?: boolean };
   return !!target?.checked;
 };
+
+export const getVersionLabel = (version: OpenshiftVersionOptionType, t: TFunction) =>
+  version.supportLevel === 'beta'
+    ? version.label + ' - ' + t('ai:Developer preview release')
+    : version.label;
