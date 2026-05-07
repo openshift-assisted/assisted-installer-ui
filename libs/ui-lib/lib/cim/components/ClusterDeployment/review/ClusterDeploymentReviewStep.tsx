@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   Alert,
   AlertVariant,
@@ -7,7 +8,7 @@ import {
   useWizardFooter,
   WizardFooter,
 } from '@patternfly/react-core';
-import * as React from 'react';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import { canNextFromReviewStep } from '../wizardTransition';
 import {
   AgentClusterInstallK8sResource,
@@ -42,7 +43,6 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
 import { ReviewConfigMapsTable } from './ReviewConfigMapsTable';
 import { ValidationSection } from '../components/ValidationSection';
-import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterDeploymentReviewStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -77,7 +77,8 @@ export const ClusterDeploymentReviewStep = ({
 
   const canContinue = canNextFromReviewStep(agentClusterInstall, clusterAgents);
   const { t } = useTranslation();
-  const onNext = async () => {
+
+  const onNext = React.useCallback(async () => {
     clearAlerts();
     setSubmitting(true);
     try {
@@ -88,18 +89,21 @@ export const ClusterDeploymentReviewStep = ({
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [addAlert, clearAlerts, onFinish, t]);
 
-  const footer = (
-    <WizardFooter
-      activeStep={activeStep}
-      onNext={onNext}
-      isNextDisabled={isSubmitting || !canContinue || !!syncError}
-      nextButtonText={t('ai:Install cluster')}
-      nextButtonProps={{ isLoading: isSubmitting }}
-      onBack={goToPrevStep}
-      onClose={close}
-    />
+  const footer = React.useMemo(
+    () => (
+      <WizardFooter
+        activeStep={activeStep}
+        onNext={onNext}
+        isNextDisabled={isSubmitting || !canContinue || !!syncError}
+        nextButtonText={t('ai:Install cluster')}
+        nextButtonProps={{ isLoading: isSubmitting }}
+        onBack={goToPrevStep}
+        onClose={close}
+      />
+    ),
+    [activeStep, canContinue, close, goToPrevStep, isSubmitting, onNext, syncError, t],
   );
   useWizardFooter(footer);
 
