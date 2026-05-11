@@ -100,7 +100,7 @@
     "react-monaco-editor": "^0.55.0 || ^0.59.0",
     "react-redux": "^8.0.5",
     "react-router-dom-v5-compat": "^6.30.3",
-    "redux": "^4",
+    "redux": "^4.2.1",
     "uuid": "^8.1",
     "yup": "^1.4.0"
   },
