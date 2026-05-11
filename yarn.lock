@@ -1528,7 +1528,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^4.3.0
-    axios: ^1.15.0
+    axios: ^1.15.2
     concurrently: ^9.0.0
     i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
@@ -1570,7 +1570,7 @@ __metadata:
     "@tsconfig/vite-react": ^7.0.2
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
-    axios: ^1.13.5
+    axios: ^1.15.2
     i18next: ^20.4 || ^21
     parse-url: ^9.2.0
     react: ^18.2.0
@@ -1604,7 +1604,7 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^4.3.0
-    axios: ^1.15.0
+    axios: ^1.15.2
     i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.18.1
@@ -1677,7 +1677,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.15.0
+    axios: ^1.15.2
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
