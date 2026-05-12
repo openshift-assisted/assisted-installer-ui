@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { Grid, GridItem, Wizard, WizardStep } from '@patternfly/react-core';
-import { AlertsContextProvider, LoadingState } from '../../../common';
+import { AlertsContextProvider, ErrorState, LoadingState } from '../../../common';
 import { ClusterDeploymentWizardProps } from './types';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { YamlPreview, useYamlPreview } from '../YamlPreview';
@@ -14,6 +14,7 @@ import { ClusterDeploymentHostsDiscoveryStep } from './hostDiscovery';
 import { ClusterDeploymentNetworkingStep } from './networking';
 import { ClusterDeploymentReviewStep } from './review';
 import { ClusterDeploymentCustomManifestsStep } from './customManifests';
+import { useAgents } from '../../hooks';
 
 export const ClusterDeploymentWizard = ({
   className,
@@ -27,7 +28,6 @@ export const ClusterDeploymentWizard = ({
   fetchSecret,
   clusterDeployment,
   agentClusterInstall,
-  agents,
   bareMetalHosts,
   clusterImages,
   aiConfigMap,
@@ -54,11 +54,19 @@ export const ClusterDeploymentWizard = ({
     fetchKlusterletAddonConfig,
   });
 
+  const [agents, loaded, error] = useAgents({ isList: true });
+
   // if initialStep is set, it is either 'host-selection' or 'host-discovery', both at index 4
   // if initialStep is not set, start at 'cluster-details' which is at index 2
   const startIndex = initialStep ? 4 : 2;
   const stepNames = wizardStepNames(t);
   const isAIFlow = !!infraEnv;
+
+  if (!loaded) {
+    return <LoadingState />;
+  } else if (error) {
+    return <ErrorState />;
+  }
 
   return (
     <Grid style={{ height: '100%' }}>
