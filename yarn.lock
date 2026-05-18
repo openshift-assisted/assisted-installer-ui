@@ -753,7 +753,7 @@ __metadata:
     "@tsconfig/vite-react": ^1.0.1
     "@types/react": 17.0.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.15.0
+    axios: ^1.15.2
     concurrently: ^8.2.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
@@ -794,7 +794,7 @@ __metadata:
     "@tsconfig/vite-react": ^1.0.1
     "@types/react": 17.0.x
     "@vitejs/plugin-react-swc": ^3.0.1
-    axios: ^1.15.0
+    axios: ^1.15.2
     i18next: ^20.4.0
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.18.1
@@ -843,7 +843,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.15.0
+    axios: ^1.15.2
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
@@ -2691,14 +2691,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.15.0":
-  version: 1.15.2
-  resolution: "axios@npm:1.15.2"
+"axios@npm:^1.15.2":
+  version: 1.16.0
+  resolution: "axios@npm:1.16.0"
   dependencies:
-    follow-redirects: ^1.15.11
+    follow-redirects: ^1.16.0
     form-data: ^4.0.5
     proxy-from-env: ^2.1.0
-  checksum: e7d208b751959c7c6936417b870d6286979e0dff17784ae230d3988e754b6322682cb136e25669b534072b6f44c08715801ab961227eb8cc075323d9fda8ad43
+  checksum: 93e810968167fea59750d28f458e6860973a573c14bd60fe57ee07b5241f4c16991b149ae9ce65d79765081e3004743c9e158c438edba75af6f4612197e6834b
   languageName: node
   linkType: hard
 
@@ -4974,16 +4974,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.11":
-  version: 1.16.0
-  resolution: "follow-redirects@npm:1.16.0"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: e90dce4607b1f6b8b9883287f912585573c19088209ad82341d550a795b4ba514522b73b1b340cf618279df27975cd46504d09149be60291ba6767384c1fd8f8
-  languageName: node
-  linkType: hard
-
 "follow-redirects@npm:^1.15.6":
   version: 1.15.6
   resolution: "follow-redirects@npm:1.15.6"
@@ -4991,6 +4981,16 @@ __metadata:
     debug:
       optional: true
   checksum: a62c378dfc8c00f60b9c80cab158ba54e99ba0239a5dd7c81245e5a5b39d10f0c35e249c3379eae719ff0285fff88c365dd446fab19dee771f1d76252df1bbf5
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: e90dce4607b1f6b8b9883287f912585573c19088209ad82341d550a795b4ba514522b73b1b340cf618279df27975cd46504d09149be60291ba6767384c1fd8f8
   languageName: node
   linkType: hard
 
