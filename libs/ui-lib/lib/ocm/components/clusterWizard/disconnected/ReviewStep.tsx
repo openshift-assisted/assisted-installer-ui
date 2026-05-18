@@ -36,7 +36,7 @@ const ReviewStep = () => {
 
   const openshiftDocsVersion = disconnectedInfraEnv?.openshiftVersion
     ? disconnectedInfraEnv.openshiftVersion.split('.').slice(0, 2).join('.')
-    : '';
+    : '4.22';
   const abiInstallingDocLink = `https://docs.redhat.com/en/documentation/openshift_container_platform/${openshiftDocsVersion}/html/disconnected_environments/installing-disconnected-environments`;
 
   return (
