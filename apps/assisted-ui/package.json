@@ -23,7 +23,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "5.3.x",
     "react-router-dom-v5-compat": "^6.30.3",
-    "redux": "^4",
+    "redux": "^5.0.1",
     "uuid": "^14.0",
     "yup": "^1.4.0"
   },
