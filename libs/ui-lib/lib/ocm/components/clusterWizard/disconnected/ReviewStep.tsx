@@ -26,7 +26,6 @@ import {
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
-
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
 const ReviewStep = () => {
@@ -34,6 +33,11 @@ const ReviewStep = () => {
   const { clusterId } = useParams<{ clusterId: string }>();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
+
+  const openshiftDocsVersion = disconnectedInfraEnv?.openshiftVersion
+    ? disconnectedInfraEnv.openshiftVersion.split('.').slice(0, 2).join('.')
+    : '4.22';
+  const abiInstallingDocLink = `https://docs.redhat.com/en/documentation/openshift_container_platform/${openshiftDocsVersion}/html/disconnected_environments/installing-disconnected-environments`;
 
   return (
     <Formik
@@ -74,7 +78,7 @@ const ReviewStep = () => {
                 <TechnologyPreview />
               </SplitItem>
             </Split>
-            <Alert isInline variant="info" title="Discovery ISO boot instructions">
+            <Alert isInline variant="info" title="ISO boot instructions">
               <List component={ListComponent.ol} type={OrderType.number}>
                 <ListItem>Download ISO</ListItem>
                 <ListItem>
@@ -84,10 +88,13 @@ const ReviewStep = () => {
                   </a>
                 </ListItem>
                 <ListItem>
-                  Boot your cluster's machines from this ISO and follow instructions
+                  Boot your cluster's machines from this ISO and{' '}
+                  <a href={abiInstallingDocLink} target="_blank" rel="noopener noreferrer">
+                    follow instructions
+                  </a>
                 </ListItem>
                 <ListItem>
-                  Provide your pull secret inside the installation wizard when requested
+                  If needed, provide or update your pull secret in the installation wizard
                 </ListItem>
               </List>
             </Alert>
