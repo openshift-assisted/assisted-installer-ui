@@ -34,7 +34,7 @@ const downloadUrl =
   'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
 
 const ReviewStep = () => {
-  const { moveBack } = useClusterWizardContext();
+  const { moveBack, disconnectedOpenshiftVersion } = useClusterWizardContext();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -98,7 +98,9 @@ const ReviewStep = () => {
             <DescriptionList isHorizontal>
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.20</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedOpenshiftVersion || '—'}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>

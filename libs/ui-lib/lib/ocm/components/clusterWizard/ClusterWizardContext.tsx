@@ -18,6 +18,8 @@ export type ClusterWizardContextType = {
   uiSettings?: UISettingsValues;
   installDisconnected: boolean;
   setInstallDisconnected: (enabled: boolean) => void;
+  disconnectedOpenshiftVersion: string;
+  setDisconnectedOpenshiftVersion: (version: string) => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

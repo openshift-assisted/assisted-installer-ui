@@ -88,6 +88,7 @@ const ClusterWizardContextProvider = ({
   const [connectedWizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const [wizardPerPage, setWizardPerPage] = React.useState(10);
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
+  const [disconnectedOpenshiftVersion, setDisconnectedOpenshiftVersion] = React.useState('');
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -227,6 +228,8 @@ const ClusterWizardContextProvider = ({
       setWizardPerPage,
       uiSettings,
       updateUISettings,
+      disconnectedOpenshiftVersion,
+      setDisconnectedOpenshiftVersion,
       installDisconnected,
       setInstallDisconnected: (enabled: boolean) => {
         setInstallDisconnected(enabled);
@@ -247,6 +250,7 @@ const ClusterWizardContextProvider = ({
     uiSettings,
     updateUISettings,
     installDisconnected,
+    disconnectedOpenshiftVersion,
     connectedWizardStepIds,
   ]);
 
