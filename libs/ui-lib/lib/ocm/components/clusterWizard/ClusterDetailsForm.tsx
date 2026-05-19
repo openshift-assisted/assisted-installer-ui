@@ -125,8 +125,18 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         ocpVersions,
         urlSearchParams: search,
         addCustomManifests: customManifestsStep,
+        isSingleClusterFeatureEnabled,
       }),
-    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search, customManifestsStep],
+    [
+      infraEnv,
+      cluster,
+      pullSecret,
+      managedDomains,
+      ocpVersions,
+      search,
+      customManifestsStep,
+      isSingleClusterFeatureEnabled,
+    ],
   );
 
   const { t } = useTranslation();
