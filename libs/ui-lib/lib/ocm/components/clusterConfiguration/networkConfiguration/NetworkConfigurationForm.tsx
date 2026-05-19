@@ -64,7 +64,7 @@ const NetworkConfigurationForm: React.FC<{
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const { errors, touched, isSubmitting, isValid, setFieldValue, values } =
+  const { errors, touched, isSubmitting, isValid, isValidating, setFieldValue, values } =
     useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -113,18 +113,23 @@ const NetworkConfigurationForm: React.FC<{
     clusterWizardContext.moveNext();
   }, [addAlert, cluster.id, clusterWizardContext, dispatch, isSingleClusterFeatureEnabled]);
 
+  const isNextDisabled =
+    isSubmitting ||
+    isAutoSaveRunning ||
+    !!alerts.length ||
+    !isValid ||
+    !canNextNetwork({ cluster });
+
+  const isNextButtonLoading =
+    isValid && !isSubmitting && !isValidating && !canNextNetwork({ cluster });
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={
-        isSubmitting ||
-        isAutoSaveRunning ||
-        !!alerts.length ||
-        !isValid ||
-        !canNextNetwork({ cluster })
-      }
+      isNextDisabled={isNextDisabled}
+      isNextButtonLoading={isNextButtonLoading}
       onNext={() => void onNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}
