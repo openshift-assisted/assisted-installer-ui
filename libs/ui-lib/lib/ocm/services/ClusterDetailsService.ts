@@ -127,6 +127,7 @@ const ClusterDetailsService = {
     cluster,
     infraEnv,
     urlSearchParams,
+    isSingleClusterFeatureEnabled,
     ...args
   }: {
     cluster?: Cluster;
@@ -135,6 +136,7 @@ const ClusterDetailsService = {
     managedDomains: ManagedDomain[];
     ocpVersions: OpenshiftVersionOptionType[];
     urlSearchParams: string;
+    isSingleClusterFeatureEnabled?: boolean;
   }): OcmClusterDetailsValues {
     const values = getClusterDetailsInitialValues({
       cluster,
@@ -149,8 +151,12 @@ const ClusterDetailsService = {
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
 
+    const platform =
+      isSingleClusterFeatureEnabled && !cluster ? ('none' as PlatformType) : values.platform;
+
     return {
       ...values,
+      platform,
       cpuArchitecture,
       hostsNetworkConfigurationType,
       isCMNSupported: true,
