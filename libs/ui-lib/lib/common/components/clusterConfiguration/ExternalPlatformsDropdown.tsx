@@ -75,11 +75,13 @@ export const ExternalPlatformsDropdown = ({ isDisabled }: { isDisabled: boolean 
       <Dropdown
         isOpen={isOpen}
         toggle={(toggleRef) => (
-          <MenuToggle ref={toggleRef} className="pf-v5-u-w-100" onClick={() => setIsOpen(!isOpen)}>
+          <MenuToggle ref={toggleRef} onClick={() => setIsOpen(!isOpen)} isFullWidth>
             {value ? platforms[value] : t('ai:Integrate with external partner platforms')}
           </MenuToggle>
         )}
         onSelect={onSelect}
+        onOpenChange={() => setIsOpen(!isOpen)}
+        shouldFocusToggleOnSelect
       >
         {options}
       </Dropdown>
