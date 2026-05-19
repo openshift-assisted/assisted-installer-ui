@@ -11,7 +11,6 @@ var (
 	ApiInsecure             = getEnvVar("API_INSECURE_SKIP_VERIFY", "false")
 	TlsKeyPath              = getEnvVar("TLS_KEY", "")
 	TlsCertPath             = getEnvVar("TLS_CERT", "")
-	UserAuthToken           = getEnvVar("USER_AUTH_TOKEN", "")
 	PullSecretManifestPath  = getEnvVar("PULL_SECRET_MANIFEST_PATH", "/etc/assisted/manifests/pull-secret.yaml")
 )
 
