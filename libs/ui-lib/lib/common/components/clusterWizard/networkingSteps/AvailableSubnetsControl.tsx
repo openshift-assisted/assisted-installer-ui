@@ -252,9 +252,9 @@ export const AvailableSubnetsControl = ({
                   name="machineNetworks.0.cidr"
                   machineSubnets={primaryMachineSubnets}
                   isDisabled={isDisabled}
-                  onAfterSelect={(newSelection) =>
-                    reorderNetworksForPrimary(newSelection, values, setFieldValue)
-                  }
+                  onAfterSelect={(newSelection) => {
+                    reorderNetworksForPrimary(newSelection, values, setFieldValue);
+                  }}
                   data-testid="subnets-dropdown-toggle-primary"
                 />
               </StackItem>

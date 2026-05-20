@@ -6,13 +6,16 @@ import {
   canBeDualStack,
   CpuArchitecture,
   DUAL_STACK,
+  getIPv6FromDualstack,
   HostSubnets,
   isAdvNetworkConf,
   isSNO,
   NetworkConfigurationValues,
+  NO_SUBNET_SET,
   selectApiVip,
   selectIngressVip,
 } from '../../../../common';
+import { Address6 } from 'ip-address';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -36,6 +39,7 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
 import { isOciPlatformType } from '../../utils';
+import { useFeature } from '../../../hooks/use-feature';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -136,8 +140,10 @@ const NetworkConfiguration = ({
     cluster.platform?.type,
   );
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
+  const { setFieldValue, values, validateField, validateForm } =
+    useFormikContext<NetworkConfigurationValues>();
 
+  const isSingleClusterFeature = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const isSNOCluster = isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
@@ -177,25 +183,44 @@ const NetworkConfiguration = ({
       setAdvanced(checked);
 
       if (!checked) {
-        setFieldValue(
-          'clusterNetworks',
-          isDualStack
-            ? defaultNetworkSettings.clusterNetworksDualstack
-            : defaultNetworkSettings.clusterNetworksIpv4,
-          true,
-        );
-        setFieldValue(
-          'serviceNetworks',
-          isDualStack
-            ? defaultNetworkSettings.serviceNetworksDualstack
-            : defaultNetworkSettings.serviceNetworksIpv4,
-          true,
-        );
+        const primaryCidr = values.machineNetworks?.[0]?.cidr;
+        const isIPv6Stack = !!primaryCidr && Address6.isValid(primaryCidr);
+
+        let clusterNetworkDefaults;
+        let serviceNetworkDefaults;
+
+        if (isDualStack) {
+          clusterNetworkDefaults = defaultNetworkSettings.clusterNetworksDualstack;
+
+          serviceNetworkDefaults = defaultNetworkSettings.serviceNetworksDualstack;
+        } else if (isIPv6Stack) {
+          const ipv6EntryCluster = getIPv6FromDualstack(
+            defaultNetworkSettings.clusterNetworksDualstack,
+          );
+          clusterNetworkDefaults = ipv6EntryCluster
+            ? [ipv6EntryCluster]
+            : defaultNetworkSettings.clusterNetworksIpv4;
+
+          const ipv6EntryService = getIPv6FromDualstack(
+            defaultNetworkSettings.serviceNetworksDualstack,
+          );
+          serviceNetworkDefaults = ipv6EntryService
+            ? [ipv6EntryService]
+            : defaultNetworkSettings.serviceNetworksIpv4;
+        } else {
+          clusterNetworkDefaults = defaultNetworkSettings.clusterNetworksIpv4;
+
+          serviceNetworkDefaults = defaultNetworkSettings.serviceNetworksIpv4;
+        }
+
+        setFieldValue('clusterNetworks', clusterNetworkDefaults, true);
+        setFieldValue('serviceNetworks', serviceNetworkDefaults, true);
       }
     },
     [
       setFieldValue,
       isDualStack,
+      values.machineNetworks,
       defaultNetworkSettings.clusterNetworksDualstack,
       defaultNetworkSettings.clusterNetworksIpv4,
       defaultNetworkSettings.serviceNetworksDualstack,
@@ -208,6 +233,55 @@ const NetworkConfiguration = ({
       toggleAdvConfiguration(true);
     }
   }, [isDualStack, isViewerMode, toggleAdvConfiguration]);
+
+  React.useEffect(() => {
+    if (!isSingleClusterFeature || isViewerMode || isDualStack || isAdvanced) {
+      return;
+    }
+    const primaryCidr = values.machineNetworks?.[0]?.cidr;
+    if (!primaryCidr || primaryCidr === NO_SUBNET_SET) {
+      return;
+    }
+    const isIPv6 = Address6.isValid(primaryCidr);
+    const currentClusterCidr = values.clusterNetworks?.[0]?.cidr;
+    const clusterIsIPv6 = currentClusterCidr ? Address6.isValid(currentClusterCidr) : null;
+
+    if (clusterIsIPv6 === isIPv6) {
+      return;
+    }
+
+    if (isIPv6) {
+      const ipv6Cluster = getIPv6FromDualstack(defaultNetworkSettings.clusterNetworksDualstack);
+      if (ipv6Cluster) {
+        setFieldValue('clusterNetworks', [{ ...ipv6Cluster, clusterId: cluster.id }]);
+      }
+      const ipv6Service = getIPv6FromDualstack(defaultNetworkSettings.serviceNetworksDualstack);
+      if (ipv6Service) {
+        setFieldValue('serviceNetworks', [{ cidr: ipv6Service.cidr, clusterId: cluster.id }]);
+      }
+    } else {
+      const ipv4Cluster = defaultNetworkSettings.clusterNetworksIpv4?.[0];
+      if (ipv4Cluster) {
+        setFieldValue('clusterNetworks', [{ ...ipv4Cluster, clusterId: cluster.id }]);
+      }
+      const ipv4Service = defaultNetworkSettings.serviceNetworksIpv4?.[0];
+      if (ipv4Service) {
+        setFieldValue('serviceNetworks', [{ cidr: ipv4Service.cidr, clusterId: cluster.id }]);
+      }
+    }
+    void validateForm();
+  }, [
+    isSingleClusterFeature,
+    isViewerMode,
+    isDualStack,
+    isAdvanced,
+    values.machineNetworks,
+    values.clusterNetworks,
+    defaultNetworkSettings,
+    setFieldValue,
+    validateForm,
+    cluster.id,
+  ]);
 
   const managedNetworkingState = React.useMemo(
     () =>
@@ -252,6 +326,7 @@ const NetworkConfiguration = ({
             hostSubnets={hostSubnets}
             defaultNetworkValues={defaultNetworkSettings}
             isViewerMode={isViewerMode}
+            allowSingleStackIPv6={isSingleClusterFeature}
           />
         </StackItem>
       )}
@@ -277,6 +352,7 @@ const NetworkConfiguration = ({
             }
             openshiftVersion={cluster.openshiftVersion}
             isViewerMode={isViewerMode}
+            allowSingleStackIPv6={isSingleClusterFeature}
           />
         </StackItem>
       )}
