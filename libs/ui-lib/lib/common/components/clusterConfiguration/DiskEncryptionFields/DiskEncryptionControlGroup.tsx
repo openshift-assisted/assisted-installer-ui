@@ -29,6 +29,7 @@ const hasFilledTangServers = (tangServers: TangServer[]): boolean => {
 export interface DiskEncryptionControlGroupProps {
   values: DiskEncryptionValues;
   isSNO: boolean;
+  isArbiterEncryptionAvailable?: boolean;
   isDisabled?: boolean;
   docVersion?: string;
 }
@@ -36,6 +37,7 @@ export interface DiskEncryptionControlGroupProps {
 const DiskEncryptionControlGroup = ({
   values,
   isSNO = false,
+  isArbiterEncryptionAvailable = true,
   isDisabled = false,
   docVersion,
 }: DiskEncryptionControlGroupProps) => {
@@ -77,6 +79,12 @@ const DiskEncryptionControlGroup = ({
       setFieldValue('enableDiskEncryptionOnWorkers', false);
     }
   }, [isSNO, setFieldValue]);
+
+  React.useEffect(() => {
+    if (!isArbiterEncryptionAvailable) {
+      setFieldValue('enableDiskEncryptionOnArbiters', false);
+    }
+  }, [isArbiterEncryptionAvailable, setFieldValue]);
   const { t } = useTranslation();
   const disableMessage = t('ai:This option is not editable after the draft cluster is created');
   const tooltipProps = {
@@ -105,14 +113,16 @@ const DiskEncryptionControlGroup = ({
             />
           </StackItem>
         </RenderIf>
-        <StackItem>
-          <SwitchField
-            tooltipProps={tooltipProps}
-            name="enableDiskEncryptionOnArbiters"
-            label={t('ai:Arbiter')}
-            isDisabled={isDisabled}
-          />
-        </StackItem>
+        <RenderIf condition={isArbiterEncryptionAvailable}>
+          <StackItem>
+            <SwitchField
+              tooltipProps={tooltipProps}
+              name="enableDiskEncryptionOnArbiters"
+              label={t('ai:Arbiter')}
+              isDisabled={isDisabled}
+            />
+          </StackItem>
+        </RenderIf>
         <RenderIf
           condition={
             enableDiskEncryptionOnMasters ||
