@@ -9,8 +9,8 @@ import HostDiscovery from './HostDiscovery';
 import Storage from './Storage';
 import StaticIp from './StaticIp';
 import Operators from './Operators';
-import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import CustomManifestStep from './CustomManifestStep';
+import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import {
   Cluster,
   InfraEnv,

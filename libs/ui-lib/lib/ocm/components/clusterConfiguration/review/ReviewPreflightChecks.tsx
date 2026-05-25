@@ -207,7 +207,7 @@ const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
         className={'review-expandable'}
         data-testid="review-preflight-checks-main"
       >
-        <PreflightChecksDetailExpanded cluster={cluster} />
+        {isChecksExpanded ? <PreflightChecksDetailExpanded cluster={cluster} /> : null}
       </ExpandableSection>
       <Divider />
     </>

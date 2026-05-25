@@ -1,10 +1,11 @@
 export const reviewAndCreatePage = {
   expandPreflightCheckSection: () => {
-    cy.get(Cypress.env('clusterPreflightChecksTitle')).then((val) => {
-      if (!val.is('visible')) {
-        cy.get(Cypress.env('preflightChecksSectionExpander')).click();
+    cy.get(Cypress.env('preflightChecksSection')).then(($section) => {
+      if (!$section.hasClass('pf-m-expanded')) {
+        cy.wrap($section).find('button').first().click();
       }
     });
+    cy.get(Cypress.env('clusterPreflightChecksTitle')).should('be.visible');
   },
   validateClusterDetails: ({
     clusterName = Cypress.env('CLUSTER_NAME'),
@@ -12,6 +13,17 @@ export const reviewAndCreatePage = {
     version = Cypress.env('OPENSHIFT_VERSION'),
     stackType = 'IPv4',
   } = {}) => {
+    reviewAndCreatePage.expandClusterSummarySection();
+    cy.get('#cluster-details-expandable').then(($section) => {
+      if (!$section.hasClass('pf-m-expanded')) {
+        cy.wrap($section).find('button').first().click();
+      }
+    });
+    cy.get('#networking-expandable').then(($section) => {
+      if (!$section.hasClass('pf-m-expanded')) {
+        cy.wrap($section).find('button').first().click();
+      }
+    });
     cy.get(Cypress.env('clusterAddressValueId')).should('contain.text', `${clusterName}.${dns}`);
     cy.get(Cypress.env('openshiftVersionValueId')).should('contain.text', version);
     cy.get(Cypress.env('stackTypeValueId')).should('contain.text', stackType);
@@ -33,6 +45,20 @@ export const reviewAndCreatePage = {
   },
   getInstallButton: () => {
     return cy.get('button[name="install"]');
+  },
+  expandClusterSummarySection: () => {
+    cy.get('#summary-expandable').then(($section) => {
+      if (!$section.hasClass('pf-m-expanded')) {
+        cy.wrap($section).find('button').first().click();
+      }
+    });
+  },
+  expandCustomManifestsSection: () => {
+    cy.get('#custom-manifests-expandable').then(($section) => {
+      if (!$section.hasClass('pf-m-expanded')) {
+        cy.wrap($section).find('button').first().click();
+      }
+    });
   },
   getCustomManifestsSection: () => {
     return cy.get('#custom-manifests-expandable');

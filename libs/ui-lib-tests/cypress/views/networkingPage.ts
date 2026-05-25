@@ -295,4 +295,13 @@ export const networkingPage = {
       }
     });
   },
+  /** Networking form autosaves 1000ms after the last change; wait before asserting PATCH body. */
+  waitForAutosaveClusterUpdate: (expectedBody?: object) => {
+    cy.wait(1100);
+    cy.wait('@update-cluster').then((interception) => {
+      if (expectedBody) {
+        expect(interception.request.body, 'Networking request body').to.deep.equal(expectedBody);
+      }
+    });
+  },
 };

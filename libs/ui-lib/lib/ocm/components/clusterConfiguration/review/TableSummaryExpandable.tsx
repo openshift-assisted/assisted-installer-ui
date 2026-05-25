@@ -19,8 +19,7 @@ export const TableSummaryExpandable = ({
       isIndented
       id={id ? id : title}
     >
-      {children}
-      <br />
+      {isExpanded ? children : null}
     </ExpandableSection>
   );
 };

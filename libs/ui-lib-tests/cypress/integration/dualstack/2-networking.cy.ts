@@ -47,11 +47,8 @@ describe(`Assisted Installer Dualstack Networking`, () => {
         .getClusterSubnetCidrIpv6()
         .should('contain.text', '1001:db9::/120 (1001:db9:: - 1001:db9::ff)');
       networkingPage.inputApiVipIngressVipSecondary('1001:db9::1', '1001:db9::2');
+      networkingPage.waitForAutosaveClusterUpdate(dualStackNetworkingRequest);
       networkingPage.waitForNetworkStatusToNotContain('Some validations failed');
-
-      cy.wait('@update-cluster').then(({ request }) => {
-        expect(request.body, 'Networking request body').to.deep.equal(dualStackNetworkingRequest);
-      });
     });
   });
 
@@ -72,9 +69,7 @@ describe(`Assisted Installer Dualstack Networking`, () => {
       networkingPage.getVipDhcp().should('be.disabled').and('not.be.checked');
       networkingPage.getNetworkTypeToggle().should('contain.text', 'Open Virtual Networking (OVN)');
 
-      cy.wait('@update-cluster').then(({ request }) => {
-        expect(request.body, 'Networking request body').to.deep.equal(ipv4NetworkingRequest);
-      });
+      networkingPage.waitForAutosaveClusterUpdate(ipv4NetworkingRequest);
     });
   });
 });

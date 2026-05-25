@@ -74,14 +74,17 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
 };
 
 const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+  const [isExpanded, setIsExpanded] = React.useState(true);
+
   return (
     <ExpandableSection
       toggleContent={'Cluster summary'}
       id={'summary-expandable'}
-      isExpanded={true}
+      isExpanded={isExpanded}
+      onToggle={() => setIsExpanded(!isExpanded)}
       isIndented
     >
-      <ReviewSummaryContent cluster={cluster} />
+      {isExpanded ? <ReviewSummaryContent cluster={cluster} /> : null}
     </ExpandableSection>
   );
 };

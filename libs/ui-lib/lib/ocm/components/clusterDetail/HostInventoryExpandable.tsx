@@ -53,7 +53,7 @@ const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
       className="host-inventory-expandable"
       id="host-inventory-expandable"
     >
-      <ClusterHostsTable cluster={cluster} skipDisabled />
+      {isExpanded ? <ClusterHostsTable cluster={cluster} skipDisabled /> : null}
     </ExpandableSection>
   );
 };

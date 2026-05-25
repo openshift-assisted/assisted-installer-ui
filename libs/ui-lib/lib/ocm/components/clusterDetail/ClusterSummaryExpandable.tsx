@@ -19,10 +19,12 @@ const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) =>
       className="cluster-summary-expandable"
       id="cluster-summary-expandable"
     >
-      <div className="pf-v6-u-pl-md pf-v6-u-pt-md">
-        <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
-        <ReviewSummaryContent cluster={cluster} />
-      </div>
+      {isExpanded ? (
+        <div className="pf-v6-u-pl-md pf-v6-u-pt-md">
+          <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
+          <ReviewSummaryContent cluster={cluster} />
+        </div>
+      ) : null}
     </ExpandableSection>
   );
 };

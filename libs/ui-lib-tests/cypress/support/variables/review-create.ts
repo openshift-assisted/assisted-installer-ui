@@ -1,6 +1,7 @@
 // Review and Create
 
 // Preflight check section
+Cypress.env('preflightChecksSection', '[data-testid=review-preflight-checks-main]');
 Cypress.env('preflightChecksSectionExpander', '.review-expandable button');
 Cypress.env('clusterPreflightChecksTitle', '[data-testid=cluster-preflight-checks-title]');
 Cypress.env('clusterPreflightChecksResult', '[data-testid=cluster-preflight-checks-value]');

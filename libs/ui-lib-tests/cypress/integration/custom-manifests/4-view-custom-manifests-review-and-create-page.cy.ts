@@ -22,7 +22,8 @@ describe(`Assisted Installer Review and create step with custom manifests`, () =
       commonActions
         .getWizardStepNav('Review and create')
         .should('have.class', ACTIVE_NAV_ITEM_CLASS);
-      reviewAndCreatePage.getCustomManifestsSection().click();
+      reviewAndCreatePage.expandClusterSummarySection();
+      reviewAndCreatePage.expandCustomManifestsSection();
       reviewAndCreatePage
         .getCustomManifestsDetail()
         .should('contain.text', 'manifests/manifest1.yaml');
