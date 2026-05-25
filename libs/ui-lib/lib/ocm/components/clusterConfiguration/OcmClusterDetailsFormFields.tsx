@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as React from 'react';
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
@@ -38,6 +37,7 @@ import ControlPlaneNodesDropdown, {
   DEFAULT_VALUE_CPN,
   isCPNDropdownItemEnabled,
 } from './ControlPlaneNodesDropdown';
+import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -85,6 +85,13 @@ export const OcmClusterDetailsFormFields = ({
     architectureData[values.cpuArchitecture as SupportedCpuArchitecture].label;
 
   const featureSupportLevelContext = useNewFeatureSupportLevel();
+  const tnaSupport = featureSupportLevelContext.getFeatureSupportLevel(
+    'TNA',
+    featureSupportLevelData ?? undefined,
+  );
+  const isArbiterEncryptionAvailable = isSingleClusterFeatureEnabled
+    ? false
+    : isFeatureSupportedAndAvailable(tnaSupport);
 
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -232,6 +239,7 @@ export const OcmClusterDetailsFormFields = ({
         values={values}
         isDisabled={isPullSecretSet}
         isSNO={values.controlPlaneCount === 1}
+        isArbiterEncryptionAvailable={isArbiterEncryptionAvailable}
         docVersion={openshiftVersion}
       />
     </Form>
