@@ -22,7 +22,10 @@ import {
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
-import { canNextNetwork } from '../../clusterWizard/wizardTransition';
+import {
+  canNextNetwork,
+  isNetworkingStepAwaitingValidations,
+} from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
@@ -121,7 +124,11 @@ const NetworkConfigurationForm: React.FC<{
     !canNextNetwork({ cluster });
 
   const isNextButtonLoading =
-    isValid && !isSubmitting && !isValidating && !canNextNetwork({ cluster });
+    isValid &&
+    !isSubmitting &&
+    !isValidating &&
+    !canNextNetwork({ cluster }) &&
+    isNetworkingStepAwaitingValidations({ cluster });
 
   const footer = (
     <ClusterWizardFooter

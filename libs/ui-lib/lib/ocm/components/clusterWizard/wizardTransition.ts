@@ -2,6 +2,7 @@ import {
   findValidationStep,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
+  isWizardStepAwaitingValidations,
   WizardStepsValidationMap,
   WizardStepValidationMap,
 } from '../../../common/components/clusterWizard/validationsInfoUtils';
@@ -319,6 +320,9 @@ export const canNextOperators = ({ cluster }: TransitionProps): boolean =>
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus('networking', wizardStepsValidationsMap, cluster, cluster.hosts) ===
   'ready';
+
+export const isNetworkingStepAwaitingValidations = ({ cluster }: TransitionProps): boolean =>
+  isWizardStepAwaitingValidations('networking', wizardStepsValidationsMap, cluster);
 
 export const isStaticIpStep = (stepId: ClusterWizardStepsType | Day2WizardStepsType) => {
   return stepId.startsWith('static-ip');
