@@ -35,7 +35,7 @@
   },
   "description": "React component library for the Assisted Installer UI",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.2",
+    "@tsconfig/recommended": "^1.0.13",
     "@types/file-saver": "^2.0.1",
     "@types/human-date": "^1.4.0",
     "@types/humanize-plus": "^1.8.0",
