@@ -3,22 +3,22 @@
   "devDependencies": {
     "@openshift-assisted/toolbox": "workspace:*",
     "@vitest/ui": "^0.34.5",
-    "dpdm": "^3.14.0",
-    "eslint": "^8.36.0",
+    "dpdm": "^4.2.0",
+    "eslint": "^8.57.1",
     "happy-dom": "^20.8.9",
     "msw": "^2.0.0",
     "prettier": "2.8.8",
     "rimraf": "^6.0.0",
-    "typescript": "^5.2.2",
+    "typescript": "^5.9.3",
     "vitest": "^0.34.5"
   },
   "engines": {
-    "node": ">=14",
+    "node": ">=20.19.0",
     "yarn": ">=3.4.0"
   },
   "license": "Apache-2.0",
   "name": "assisted-installer-ui",
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@3.8.7",
   "private": true,
   "scripts": {
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
@@ -48,8 +48,8 @@
   "resolutions": {
     "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
-    "qs": "^6.14.1",
-    "axios": "^1.15.0"
+    "qs": "^6.15.2",
+    "axios": "^1.15.2"
   },
   "workspaces": [
     "apps/*",

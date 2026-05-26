@@ -229,7 +229,7 @@ export const getNewFeatureDisabledReason = (
     }
     case 'USER_MANAGED_NETWORKING': {
       if (!isSupported) {
-        return `User-Managed networking is not supported when using ${
+        return `User-managed networking is not supported when using ${
           platformType ? ExternalPlatformLabels[platformType] : ''
         }`;
       }

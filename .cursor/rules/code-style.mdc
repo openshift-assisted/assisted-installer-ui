@@ -19,6 +19,10 @@ Edits should **pass ESLint** and match **Prettier** (see root `package.json` `de
 - **Nested ternary expressions** — do not use a ternary inside another (`a ? (b ? c : d) : e`). A single `condition ? a : b` is fine when it stays readable; for more branches, use `if` / `else` or a variable.
 - **Unused imports and variables** — remove them so **`yarn lint`** stays clean.
 
+## Imports
+
+Grouping, barrels, and **`libs/ui-lib`** import paths: see **`imports.mdc`**.
+
 ## Fix and format in the touched workspace
 
 Run this **from the package directory** you changed (e.g. `libs/ui-lib`, `apps/assisted-ui`):

@@ -6,7 +6,7 @@ import {
   EmptyStateFooter,
   EmptyStateVariant,
 } from '@patternfly/react-core';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import type { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   TroubleshootingOpenshiftConsoleButton,
   useTranslation,
