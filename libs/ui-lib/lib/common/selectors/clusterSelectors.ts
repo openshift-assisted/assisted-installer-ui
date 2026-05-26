@@ -39,7 +39,8 @@ export const selectMonitoredOperators = (monitoredOperators: Cluster['monitoredO
 
 export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>) => {
   return selectMonitoredOperators(cluster?.monitoredOperators).filter(
-    (operator) => operator.operatorType === 'olm',
+    (operator) =>
+      operator.operatorType === 'olm' && !!operator.name && operator.dependencyOnly !== true,
   );
 };
 
@@ -120,11 +121,3 @@ export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   SupportedPlatformIntegrations.includes(platform?.type ?? 'none');
-
-export const numberOfEnabledOperators = (monitoredOperators: Cluster['monitoredOperators']) => {
-  return monitoredOperators
-    ? selectMonitoredOperators(
-        monitoredOperators.filter((operator) => operator.operatorType === 'olm'),
-      ).length
-    : 0;
-};
