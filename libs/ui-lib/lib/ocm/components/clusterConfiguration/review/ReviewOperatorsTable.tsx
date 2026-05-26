@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
-import { genericTableRowKey } from '../../../../common';
+import { genericTableRowKey, selectOlmOperators } from '../../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { TableSummaryExpandable } from './TableSummaryExpandable';
 import { useOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
@@ -10,8 +10,8 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
 
   const rows = React.useMemo(
     () =>
-      cluster.monitoredOperators
-        ?.filter(({ name }) => !!name && !!opSpecs[name])
+      selectOlmOperators(cluster)
+        .filter(({ name }) => !!name && !!opSpecs[name])
         .map((op) => {
           const opId = op.name as string;
           return {
@@ -25,7 +25,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
             ],
           };
         }),
-    [cluster.monitoredOperators, opSpecs],
+    [cluster, opSpecs],
   );
 
   if (!rows?.length) {
