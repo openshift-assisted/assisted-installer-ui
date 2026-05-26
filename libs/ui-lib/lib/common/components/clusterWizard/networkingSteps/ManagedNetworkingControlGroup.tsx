@@ -42,7 +42,7 @@ export const ManagedNetworkingControlGroup = ({
             name={GROUP_NAME}
             isDisabled={disabled}
             value={'clusterManaged'}
-            label={t('ai:Cluster-Managed Networking')}
+            label={t('ai:Cluster-managed networking')}
           />
         </SplitItem>
       </Split>
@@ -55,10 +55,10 @@ export const ManagedNetworkingControlGroup = ({
             value={'userManaged'}
             label={
               <>
-                <span>{t('ai:User-Managed networking')}</span>{' '}
+                <span>{t('ai:User-managed networking')}</span>{' '}
                 <PopoverIcon
                   bodyContent={t(
-                    "ai:With User-Managed networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.",
+                    "ai:With user-managed networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.",
                   )}
                 />
               </>
