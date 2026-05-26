@@ -155,7 +155,7 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
     <>
       <ClustersListToolbar
         searchString={searchString}
-        setSearchString={(_event, value) => setSearchString(value)}
+        setSearchString={setSearchString}
         filters={filters}
         setFilters={setFilters}
       />
