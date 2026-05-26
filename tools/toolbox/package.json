@@ -6,7 +6,7 @@
     "zx": "^8.8.5"
   },
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.2",
+    "@tsconfig/recommended": "^1.0.13",
     "@types/node": "^24.0.0"
   },
   "engines": {
