@@ -27,7 +27,6 @@ export type WizardFooterGenericProps = {
   submittingText?: string;
   nextButtonText?: string;
   isNextButtonLoading?: boolean;
-  isWaitingForHosts?: boolean;
 };
 
 type WizardFooterProps = WizardFooterGenericProps & {
@@ -54,7 +53,6 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   cluster,
   onFetchEvents,
   isNextButtonLoading,
-  isWaitingForHosts,
 }) => {
   const { t } = useTranslation();
   submittingText = submittingText || t('ai:Saving changes...');
@@ -118,14 +116,6 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
             <ActionListItem>
               <Content component={ContentVariants.small}>
                 <Spinner size="sm" data-testid="wizard-footer-spinner" /> {submittingText}
-              </Content>
-            </ActionListItem>
-          )}
-          {isWaitingForHosts && !isSubmitting && (
-            <ActionListItem>
-              <Content component={ContentVariants.small}>
-                <Spinner size="sm" data-testid="wizard-footer-hosts-spinner" />{' '}
-                {t('ai:Waiting for hosts to be ready...')}
               </Content>
             </ActionListItem>
           )}
