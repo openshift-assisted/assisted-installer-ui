@@ -1022,7 +1022,7 @@
   "ai:With BMC form": "With BMC form",
   "ai:With Discovery ISO": "With Discovery ISO",
   "ai:With iPXE": "With iPXE",
-  "ai:With User-managed networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.": "With User-managed networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.",
+  "ai:With user-managed networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.": "With user-managed networking, you'll need to provide and configure a load balancer for the API and ingress endpoints.",
   "ai:Worker_one": "Worker",
   "ai:Worker_other": "Workers",
   "ai:Worker Hosts Labels": "Worker Hosts Labels",
