@@ -116,8 +116,7 @@ const ClusterWizardContextProvider = ({
         locationState,
         staticIpInfo,
         cluster?.status,
-        cluster?.hosts,
-        customManifestsStepNeedsToBeFilled,
+        cluster,
       );
       const firstStepIds = getWizardStepIds(
         wizardStepIds,

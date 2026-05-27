@@ -297,8 +297,14 @@ export const findValidationStep = <ClusterWizardStepsType extends string>(
     if (isBeforeMinimumStep) {
       return false;
     }
+
     // find first matching validation-map name, ignoring steps before minimumStep
-    const { host: hostValidationMap } = wizardStepsValidationsMap[wizardStepId];
-    return hostValidationMap.validationIds.includes(validationId as HostValidationId);
+    const { host: hostValidationMap, cluster: clusterValidationMap } =
+      wizardStepsValidationsMap[wizardStepId];
+
+    return (
+      hostValidationMap.validationIds.includes(validationId as HostValidationId) ||
+      clusterValidationMap.validationIds.includes(validationId as ClusterValidationId)
+    );
   });
 };
