@@ -104,7 +104,7 @@ const ClusterPageGeneric = ({
           {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
           {showBreadcrumbs && (
             <PageSection hasBodyWrapper={false}>
-              <AssistedInstallerHeader />
+              <AssistedInstallerHeader clusterName={cluster.name} />
             </PageSection>
           )}
 

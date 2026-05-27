@@ -7,13 +7,15 @@ import {
   RenderIf,
   canOpenConsole,
 } from '../../../common';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
-import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
+import { ToolbarButton } from '../../../common/components/ui/Toolbar';
 import { Cluster, Credentials } from '@openshift-assisted/types/assisted-installer-service';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import './ClusterDetailsButtonGroup.css';
 
@@ -22,6 +24,30 @@ type ClusterDetailsButtonGroupProps = {
   credentials?: Credentials;
   credentialsError: string;
   showKubeConfig?: boolean;
+};
+
+const LaunchOpenshiftConsoleButton: React.FC<{
+  consoleUrl?: string;
+  isDisabled: boolean;
+  id?: string;
+}> = ({ consoleUrl, isDisabled, id }) => {
+  const { t } = useTranslation();
+  return (
+    <ToolbarButton
+      variant={ButtonVariant.primary}
+      component="a"
+      href={consoleUrl}
+      target="_blank"
+      rel="noopener"
+      isDisabled={isDisabled}
+      icon={<ExternalLinkAltIcon />}
+      iconPosition="right"
+      id={id}
+      data-testid={id}
+    >
+      {t('ai:Launch OpenShift Console')}
+    </ToolbarButton>
+  );
 };
 
 const getID = (suffix: string) => `cluster-detail-${suffix}`;
@@ -60,7 +86,6 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
         <FlexItem>
           <LaunchOpenshiftConsoleButton
             isDisabled={false}
-            cluster={cluster}
             consoleUrl={credentials?.consoleUrl}
             id={getID('button-launch-console')}
           />

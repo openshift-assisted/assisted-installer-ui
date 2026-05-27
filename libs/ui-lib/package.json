@@ -21,7 +21,7 @@
     "fuse.js": "^6.4.6",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
-    "ip-address": "^7.1.0",
+    "ip-address": "^10.1.1",
     "is-cidr": "^4.0.2",
     "is-in-subnet": "^4",
     "js-yaml": "^4.1.1",
@@ -35,7 +35,7 @@
   },
   "description": "React component library for the Assisted Installer UI",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.2",
+    "@tsconfig/recommended": "^1.0.13",
     "@types/file-saver": "^2.0.1",
     "@types/human-date": "^1.4.0",
     "@types/humanize-plus": "^1.8.0",
@@ -46,10 +46,10 @@
     "@types/react-autosuggest": "^10.1.5",
     "@types/react-dom": "18.2.15",
     "@types/react-redux": "^7.1.7",
-    "@types/uuid": "^8.0.0"
+    "@types/uuid": "^11.0.0"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20.19.0"
   },
   "exports": {
     ".": {
@@ -89,9 +89,9 @@
   "license": "Apache-2.0",
   "name": "@openshift-assisted/ui-lib",
   "peerDependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
+    "@reduxjs/toolkit": "^1.9.7",
     "@sentry/browser": "^5.9 || ^6",
-    "axios": "^1.15.0",
+    "axios": "^1.15.2",
     "i18next": "^20.4 || ^21",
     "monaco-editor": "^0.44.0 || ^0.55.0",
     "react": "^18",
@@ -100,7 +100,7 @@
     "react-monaco-editor": "^0.55.0 || ^0.59.0",
     "react-redux": "^8.0.5",
     "react-router-dom-v5-compat": "^6.30.3",
-    "redux": "^4",
+    "redux": "^4.2.1",
     "uuid": "^8.1",
     "yup": "^1.4.0"
   },

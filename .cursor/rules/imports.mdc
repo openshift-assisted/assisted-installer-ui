@@ -1,0 +1,71 @@
+---
+description:
+  Import grouping and barrels; inside libs/ui-lib use relatives not package self-imports. ESLint
+  enforces forbidden imports—run lint.
+globs:
+  - apps/**
+  - libs/**
+  - tools/**
+alwaysApply: false
+---
+
+# Imports
+
+This rule describes **conventions** (order, barrels, `libs/ui-lib` paths). It does **not** replace
+ESLint.
+
+## ESLint is the authority
+
+Forbidden specifiers, restricted modules, and duplicate imports are enforced by **ESLint** and the
+configs below—do not rely on this file to list them.
+
+- [`tools/eslint-config/index.js`](tools/eslint-config/index.js)
+- [`libs/ui-lib/.eslintrc.cjs`](libs/ui-lib/.eslintrc.cjs) (`lib/**/*.{ts,tsx}`)
+- Example app override: [`apps/assisted-ui/.eslintrc.cjs`](apps/assisted-ui/.eslintrc.cjs)
+
+After edits, run **`yarn lint`** or **`yarn fix-code-style`** from the package you changed. For
+repo-wide checks, see **Root scripts** in [`code-style.mdc`](code-style.mdc).
+
+## Import group order
+
+1. **`react` / `react-dom`** when imported (first).
+2. **Package specifiers** (anything not starting with `./` or `../`): npm and **workspace** packages
+   together (e.g. `@openshift-assisted/types`, `@patternfly/...`, `formik`). Use package names for
+   other workspaces—**do not** reach into sibling packages with long `../` paths unless that pattern
+   already exists in the file or area you are editing.
+3. **Relative** imports (`./`, `../`).
+
+A blank line between groups is optional; it helps when there are many imports. Group order never
+overrides ESLint.
+
+## `libs/ui-lib/lib` only
+
+Import **other ui-lib files** with **relative** paths, consistent with surrounding code.
+
+**Do not** import via the published package name: `@openshift-assisted/ui-lib`,
+`@openshift-assisted/ui-lib/common`, `@openshift-assisted/ui-lib/cim`,
+`@openshift-assisted/ui-lib/ocm`, and similar (avoids self-resolution issues; aligns with ESLint
+patterns). This is **not** a ban on folders named `cim` or `ocm` on disk—only on importing **via
+that package specifier**.
+
+**Rare exception:** `@openshift-assisted/ui-lib/package.json` (e.g. version or manifest)—keep
+intentional and uncommon.
+
+## Barrels and shorter internal paths
+
+Within a **single package** (`libs/ui-lib/lib/...`, `apps/.../src/...`, etc.), prefer symbols
+re-exported from an **`index.ts`** or **`index.tsx`** when that is already the local convention.
+Avoid longer relative paths to leaf files when a barrel already exports the symbol.
+
+**Vendor paths** required by ESLint (e.g. deep PatternFly import paths) always win over “shorter
+path” preference.
+
+## New shared symbols and cycles
+
+When adding a component, type, or constant **imported from multiple places**, **consider** exporting
+it from the nearest appropriate `index.ts` or `index.tsx` (match existing files in that directory).
+There is no obligation to barrel everything.
+
+After large barrel or re-export graph changes in **`libs/ui-lib`**, run
+**`yarn check_circular_deps`** from that package (see `scripts` in
+[`libs/ui-lib/package.json`](libs/ui-lib/package.json)).
