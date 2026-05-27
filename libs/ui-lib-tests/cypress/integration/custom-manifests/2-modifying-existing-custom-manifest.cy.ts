@@ -12,33 +12,6 @@ describe(`Assisted Installer Custom manifests step`, () => {
       });
     };
 
-    before(() => setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED'));
-
-    beforeEach(() => {
-      setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
-      commonActions.visitClusterDetailsPage();
-    });
-
-    it('Should move to "Custom manifests" step if the current manifests are incomplete', () => {
-      cy.wait('@list-manifests').then(() => {
-        commonActions
-          .getWizardStepNav('Custom manifests')
-          .should('have.class', ACTIVE_NAV_ITEM_CLASS);
-
-        commonActions.verifyIsAtStep('Custom manifests');
-        commonActions.verifyNextIsDisabled();
-      });
-    });
-  });
-
-  describe('Initial step for Custom Manifests', () => {
-    const setTestStartSignal = (activeSignal: string) => {
-      cy.setTestEnvironment({
-        activeSignal,
-        activeScenario: 'AI_CREATE_CUSTOM_MANIFESTS',
-      });
-    };
-
     before(() => setTestStartSignal('CUSTOM_MANIFEST_ADDED'));
 
     beforeEach(() => {
@@ -70,6 +43,7 @@ describe(`Assisted Installer Custom manifests step`, () => {
     beforeEach(() => {
       setTestStartSignal('ONLY_DUMMY_CUSTOM_MANIFEST_ADDED');
       commonActions.visitClusterDetailsPage();
+      commonActions.startAtWizardStep('Custom manifests');
     });
 
     it('Adding valid content to dummy manifest enables next button', () => {

@@ -19,7 +19,6 @@ describe(`Assisted Installer Dualstack Networking`, () => {
     beforeEach(() => {
       setTestStartSignal('NETWORKING_DUAL_STACK_SELECT_SINGLE_STACK');
       commonActions.visitClusterDetailsPage();
-      commonActions.moveNextSteps(['Host discovery', 'Storage']);
     });
 
     it('Networking is displayed correctly', () => {
@@ -59,7 +58,6 @@ describe(`Assisted Installer Dualstack Networking`, () => {
     beforeEach(() => {
       setTestStartSignal('NETWORKING_DUAL_STACK_SELECT_DUAL_STACK');
       commonActions.visitClusterDetailsPage();
-      commonActions.moveNextSteps(['Host discovery', 'Storage']);
     });
 
     it('Can switch to single-stack', () => {
