@@ -8,11 +8,13 @@ import {
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
 } from 'react-router';
-import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import type { FeatureListType } from '../../common/features/featureGate';
-import { AssistedUILibVersion } from './ui';
+import { AssistedUILibVersion } from '../components/ui';
 import { storeDay1 } from '../store';
 import { useFeatureDetection } from '../hooks/use-feature-detection';
+import { NewClusterPage } from './newClusterPage';
+import { ClusterPage } from './clusterPage';
+import { ClusterListPage } from './clusterListPage';
 import './Routes.css';
 
 type UILibRoutesProps = {
@@ -36,7 +38,7 @@ export const UILibRoutes = ({
         <Route path="assisted-installer/clusters" element={<Outlet />}>
           <Route path="~new" element={<NewClusterPage />} />
           <Route path=":clusterId" element={<ClusterPage />} />
-          <Route index element={<Clusters />} />
+          <Route index element={<ClusterListPage />} />
         </Route>
         {children}
         <Route path="*" element={<Navigate to="/assisted-installer/clusters" />} />

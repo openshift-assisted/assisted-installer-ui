@@ -7,6 +7,7 @@ export * as Services from './services';
 export * from './components';
 export * from './services';
 export * from './hooks';
+export * from './pages';
 
 // re-export selected from common
 export * as Features from '../common/features';
