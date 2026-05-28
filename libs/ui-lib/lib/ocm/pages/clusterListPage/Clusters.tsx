@@ -12,12 +12,12 @@ import {
   AlertsContextProvider,
   REDUCED_POLLING_INTERVAL,
 } from '../../../common';
-import ClustersTable from './ClustersTable';
+import ClustersTable from '../../components/clusters/ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
 import { handleApiError, getApiErrorMessage } from '../../../common/api';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
+import ClusterPollingErrorModal from '../../components/clusterDetail/ClusterPollingErrorModal';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useSelectorDay1, useDispatchDay1 } from '../../store';
 import {
@@ -126,10 +126,8 @@ const Clusters = () => {
   }
 };
 
-const ClustersPage = () => (
+export const ClusterListPage = () => (
   <AlertsContextProvider>
     <Clusters />
   </AlertsContextProvider>
 );
-
-export default ClustersPage;
