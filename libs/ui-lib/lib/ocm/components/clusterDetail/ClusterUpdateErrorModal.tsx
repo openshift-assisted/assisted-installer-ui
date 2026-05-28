@@ -9,7 +9,7 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 
-const ClusterUpdateErrorModal = () => (
+export const ClusterUpdateErrorModal = () => (
   <Modal isOpen variant={ModalVariant.small} onClose={undefined}>
     <ModalHeader title="Unable to update cluster" titleIconVariant="danger" />
     <ModalBody>
@@ -26,5 +26,3 @@ const ClusterUpdateErrorModal = () => (
     </ModalFooter>
   </Modal>
 );
-
-export default ClusterUpdateErrorModal;
