@@ -3,7 +3,7 @@ export { default as ClusterToolbar } from './ClusterToolbar';
 export { ClusterUiError } from './ClusterPageErrors';
 export { default as ClusterStatus, ClusterStatusIcon } from './ClusterStatus';
 
-export { useClusterPolling } from './clusterPolling';
+export * from './clusterPolling';
 
 export * from './AssistedInstallerHeader';
 export * from './ClusterBreadcrumbs';

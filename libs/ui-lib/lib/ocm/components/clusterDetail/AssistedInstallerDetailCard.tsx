@@ -17,13 +17,13 @@ import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/Clu
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
-import CancelInstallationModal from './CancelInstallationModal';
-import ResetClusterModal from './ResetClusterModal';
+import { CancelInstallationModal } from './CancelInstallationModal';
+import { ResetClusterModal } from './ResetClusterModal';
 import { ClusterPollingErrorModal } from './ClusterPollingErrorModal';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
-import { BackButton } from '../ui/Buttons/BackButton';
+import { BackButton } from '../ui';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';

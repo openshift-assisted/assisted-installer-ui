@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageSection } from '@patternfly/react-core';
 import { ErrorState } from '../../../common';
-import { BackButton } from '../ui/Buttons/BackButton';
+import { BackButton } from '../ui';
 
 export const ClusterUiError = () => (
   <PageSection hasBodyWrapper={false} isFilled>

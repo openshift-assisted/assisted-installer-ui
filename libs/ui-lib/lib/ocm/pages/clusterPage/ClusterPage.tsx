@@ -17,30 +17,30 @@ import {
 } from '../../../common';
 import { routeBasePath } from '../../config';
 import { useInfraEnv, usePullSecret } from '../../hooks';
-import { forceReload } from '../../store/slices/current-cluster/slice';
-import ClusterDetail from '../../components/clusterDetail/ClusterDetail';
+import { forceReload } from '../../store';
 import {
-  AddHosts,
-  ClusterDefaultConfigurationProvider,
-  ClusterLoading,
-  ClusterUiError,
-  ClusterWizard,
-  ClusterWizardContextProvider,
-  ModalDialogsContextProvider,
-  NewFeatureSupportLevelProvider,
   OpenShiftVersionsContextProvider,
+  AddHosts,
+  ClusterBreadcrumbs,
+  ClusterDetail,
+  AssistedInstallerHeader,
+  ClusterWizardContextProvider,
+  ClusterWizard,
+  useFetchCluster,
   useClusterPolling,
+  ClusterLoading,
+  BackButton,
+  SentryErrorMonitorContextProvider,
+  ModalDialogsContextProvider,
+  ClusterDefaultConfigurationProvider,
+  ClusterUiError,
+  NewFeatureSupportLevelProvider,
   ClusterPollingErrorModal,
+  ClusterUpdateErrorModal,
+  CancelInstallationModal,
+  ResetClusterModal,
+  DiscoveryImageModal,
 } from '../../components';
-import { DiscoveryImageModal } from '../../components/clusterConfiguration/DiscoveryImageModal';
-import CancelInstallationModal from '../../components/clusterDetail/CancelInstallationModal';
-import ClusterUpdateErrorModal from '../../components/clusterDetail/ClusterUpdateErrorModal';
-import ResetClusterModal from '../../components/clusterDetail/ResetClusterModal';
-import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';
-import { ClusterBreadcrumbs } from '../../components/clusters/ClusterBreadcrumbs';
-import { useFetchCluster } from '../../components/clusters/clusterPolling';
-import { SentryErrorMonitorContextProvider } from '../../components/SentryErrorMonitorContextProvider';
-import { BackButton } from '../../components/ui/Buttons/BackButton';
 
 const ClusterPageContent = ({
   cluster,

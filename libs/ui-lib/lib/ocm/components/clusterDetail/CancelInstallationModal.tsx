@@ -16,7 +16,7 @@ import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 
-const CancelInstallationModal: React.FC = () => {
+export const CancelInstallationModal: React.FC = () => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
@@ -84,5 +84,3 @@ const CancelInstallationModal: React.FC = () => {
     </Modal>
   );
 };
-
-export default CancelInstallationModal;
