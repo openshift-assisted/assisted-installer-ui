@@ -9,33 +9,33 @@ import {
   ErrorState,
   ResourceUIState,
 } from '../../../common';
-import ClusterDetail from '../clusterDetail/ClusterDetail';
-import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
-import ResetClusterModal from '../clusterDetail/ResetClusterModal';
-import { AddHosts } from '../AddHosts';
-import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import ClusterBreadcrumbs from './ClusterBreadcrumbs';
-import ClusterWizard from '../clusterWizard/ClusterWizard';
-import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
-import { useClusterPolling, useFetchCluster } from './clusterPolling';
-import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
+import ClusterDetail from '../../components/clusterDetail/ClusterDetail';
+import CancelInstallationModal from '../../components/clusterDetail/CancelInstallationModal';
+import ResetClusterModal from '../../components/clusterDetail/ResetClusterModal';
+import { AddHosts } from '../../components/AddHosts';
+import { ClusterDefaultConfigurationProvider } from '../../components/clusterConfiguration/ClusterDefaultConfigurationContext';
+import ClusterBreadcrumbs from '../../components/clusters/ClusterBreadcrumbs';
+import ClusterWizard from '../../components/clusterWizard/ClusterWizard';
+import { ModalDialogsContextProvider } from '../../components/hosts/ModalDialogsContext';
+import { useClusterPolling, useFetchCluster } from '../../components/clusters/clusterPolling';
+import { DiscoveryImageModal } from '../../components/clusterConfiguration/DiscoveryImageModal';
 import { routeBasePath } from '../../config';
-import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
+import ClusterWizardContextProvider from '../../components/clusterWizard/ClusterWizardContextProvider';
 import useInfraEnv from '../../hooks/useInfraEnv';
-import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
+import { SentryErrorMonitorContextProvider } from '../../components/SentryErrorMonitorContextProvider';
 import { forceReload } from '../../store/slices/current-cluster/slice';
-import { ClusterUiError } from './ClusterPageErrors';
-import ClusterLoading from './ClusterLoading';
-import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
-import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
-import { BackButton } from '../ui/Buttons/BackButton';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
+import { ClusterUiError } from '../../components/clusters/ClusterPageErrors';
+import ClusterLoading from '../../components/clusters/ClusterLoading';
+import ClusterPollingErrorModal from '../../components/clusterDetail/ClusterPollingErrorModal';
+import ClusterUpdateErrorModal from '../../components/clusterDetail/ClusterUpdateErrorModal';
+import { BackButton } from '../../components/ui/Buttons/BackButton';
+import { NewFeatureSupportLevelProvider } from '../../components/featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import { AssistedInstallerHeader } from './AssistedInstallerHeader';
-import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
+import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';
+import { OpenShiftVersionsContextProvider } from '../../components/clusterWizard/OpenShiftVersionsContext';
 
-const ClusterPageGeneric = ({
+export const ClusterPageGeneric = ({
   clusterId,
   showBreadcrumbs = false,
   resetModal,
@@ -194,21 +194,6 @@ const ClusterPageGeneric = ({
 
   return <Navigate to="/clusters" />;
 };
-
-export const SingleClusterPage = ({
-  clusterId,
-  resetModal,
-}: {
-  clusterId: string;
-  resetModal: React.ReactNode;
-}) => (
-  <AlertsContextProvider>
-    <PageSection hasBodyWrapper={false} isFilled>
-      <AssistedInstallerHeader />
-    </PageSection>
-    <ClusterPageGeneric clusterId={clusterId} resetModal={resetModal} />
-  </AlertsContextProvider>
-);
 
 export const ClusterPage = () => {
   const { clusterId } = useParams<{ clusterId: string }>();
