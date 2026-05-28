@@ -2,6 +2,12 @@ import React from 'react';
 import { useParams, Navigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { PageSection, Content } from '@patternfly/react-core';
+
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   AddHostsContextProvider,
   AlertsContextProvider,
@@ -9,31 +15,99 @@ import {
   ErrorState,
   ResourceUIState,
 } from '../../../common';
-import ClusterDetail from '../../components/clusterDetail/ClusterDetail';
-import CancelInstallationModal from '../../components/clusterDetail/CancelInstallationModal';
-import ResetClusterModal from '../../components/clusterDetail/ResetClusterModal';
-import { AddHosts } from '../../components/AddHosts';
-import { ClusterDefaultConfigurationProvider } from '../../components/clusterConfiguration/ClusterDefaultConfigurationContext';
-import ClusterBreadcrumbs from '../../components/clusters/ClusterBreadcrumbs';
-import ClusterWizard from '../../components/clusterWizard/ClusterWizard';
-import { ModalDialogsContextProvider } from '../../components/hosts/ModalDialogsContext';
-import { useClusterPolling, useFetchCluster } from '../../components/clusters/clusterPolling';
-import { DiscoveryImageModal } from '../../components/clusterConfiguration/DiscoveryImageModal';
 import { routeBasePath } from '../../config';
-import ClusterWizardContextProvider from '../../components/clusterWizard/ClusterWizardContextProvider';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { SentryErrorMonitorContextProvider } from '../../components/SentryErrorMonitorContextProvider';
+import { useInfraEnv, usePullSecret } from '../../hooks';
 import { forceReload } from '../../store/slices/current-cluster/slice';
-import { ClusterUiError } from '../../components/clusters/ClusterPageErrors';
-import ClusterLoading from '../../components/clusters/ClusterLoading';
+import ClusterDetail from '../../components/clusterDetail/ClusterDetail';
+import {
+  AddHosts,
+  ClusterDefaultConfigurationProvider,
+  ClusterLoading,
+  ClusterUiError,
+  ClusterWizard,
+  ClusterWizardContextProvider,
+  ModalDialogsContextProvider,
+  NewFeatureSupportLevelProvider,
+  OpenShiftVersionsContextProvider,
+  useClusterPolling,
+} from '../../components';
+import { DiscoveryImageModal } from '../../components/clusterConfiguration/DiscoveryImageModal';
+import CancelInstallationModal from '../../components/clusterDetail/CancelInstallationModal';
 import ClusterPollingErrorModal from '../../components/clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../../components/clusterDetail/ClusterUpdateErrorModal';
-import { BackButton } from '../../components/ui/Buttons/BackButton';
-import { NewFeatureSupportLevelProvider } from '../../components/featureSupportLevels';
-import { usePullSecret } from '../../hooks';
-import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import ResetClusterModal from '../../components/clusterDetail/ResetClusterModal';
 import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';
-import { OpenShiftVersionsContextProvider } from '../../components/clusterWizard/OpenShiftVersionsContext';
+import ClusterBreadcrumbs from '../../components/clusters/ClusterBreadcrumbs';
+import { useFetchCluster } from '../../components/clusters/clusterPolling';
+import { SentryErrorMonitorContextProvider } from '../../components/SentryErrorMonitorContextProvider';
+import { BackButton } from '../../components/ui/Buttons/BackButton';
+
+const ClusterPageContent = ({
+  cluster,
+  infraEnv,
+  updateInfraEnv,
+  showBreadcrumbs = false,
+}: {
+  cluster: Cluster;
+  infraEnv: InfraEnv;
+  updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
+  showBreadcrumbs?: boolean;
+}) => {
+  const dispatch = useDispatch();
+
+  if (cluster.status === 'adding-hosts') {
+    const onReset = async () => {
+      dispatch(forceReload());
+      return Promise.resolve();
+    };
+    return (
+      <AddHostsContextProvider cluster={cluster} resetCluster={onReset}>
+        <OpenShiftVersionsContextProvider>
+          <AddHosts />
+        </OpenShiftVersionsContextProvider>
+      </AddHostsContextProvider>
+    );
+  } else if (
+    [
+      'preparing-for-installation',
+      'installing',
+      'installing-pending-user-action',
+      'finalizing',
+      'installed',
+      'error',
+      'cancelled',
+    ].includes(cluster.status)
+  ) {
+    return (
+      <>
+        {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
+        <PageSection hasBodyWrapper={false}>
+          <Content component="h1">{cluster.name}</Content>
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled>
+          <ClusterDetail cluster={cluster} />
+        </PageSection>
+      </>
+    );
+  } else {
+    return (
+      <>
+        {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
+        {showBreadcrumbs && (
+          <PageSection hasBodyWrapper={false}>
+            <AssistedInstallerHeader clusterName={cluster.name} />
+          </PageSection>
+        )}
+
+        <PageSection hasBodyWrapper={false}>
+          <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
+            <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
+          </ClusterWizardContextProvider>
+        </PageSection>
+      </>
+    );
+  }
+};
 
 export const ClusterPageGeneric = ({
   clusterId,
@@ -45,7 +119,6 @@ export const ClusterPageGeneric = ({
   resetModal?: React.ReactNode;
 }) => {
   const fetchCluster = useFetchCluster(clusterId);
-  const dispatch = useDispatch();
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
   const pullSecret = usePullSecret();
   const {
@@ -62,65 +135,6 @@ export const ClusterPageGeneric = ({
     pullSecret,
     cluster?.openshiftVersion,
   );
-
-  const getContent = (cluster: Cluster, infraEnv: InfraEnv) => {
-    if (cluster.status === 'adding-hosts') {
-      const onReset = async () => {
-        dispatch(forceReload());
-        return Promise.resolve();
-      };
-      return (
-        <AddHostsContextProvider cluster={cluster} resetCluster={onReset}>
-          <OpenShiftVersionsContextProvider>
-            <AddHosts />
-          </OpenShiftVersionsContextProvider>
-        </AddHostsContextProvider>
-      );
-    } else if (
-      [
-        'preparing-for-installation',
-        'installing',
-        'installing-pending-user-action',
-        'finalizing',
-        'installed',
-        'error',
-        'cancelled',
-      ].includes(cluster.status)
-    ) {
-      return (
-        <>
-          {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
-          <PageSection hasBodyWrapper={false}>
-            <Content component="h1">{cluster.name}</Content>
-          </PageSection>
-          <PageSection hasBodyWrapper={false} isFilled>
-            <ClusterDetail cluster={cluster} />
-          </PageSection>
-        </>
-      );
-    } else {
-      return (
-        <>
-          {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
-          {showBreadcrumbs && (
-            <PageSection hasBodyWrapper={false}>
-              <AssistedInstallerHeader clusterName={cluster.name} />
-            </PageSection>
-          )}
-
-          <PageSection hasBodyWrapper={false}>
-            <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
-              <ClusterWizard
-                cluster={cluster}
-                infraEnv={infraEnv}
-                updateInfraEnv={updateInfraEnv}
-              />
-            </ClusterWizardContextProvider>
-          </PageSection>
-        </>
-      );
-    }
-  };
 
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <ClusterLoading />;
@@ -175,7 +189,12 @@ export const ClusterPageGeneric = ({
                     openshiftVersion={cluster.openshiftVersion}
                     platformType={cluster.platform?.type}
                   >
-                    {getContent(cluster, infraEnv)}
+                    <ClusterPageContent
+                      cluster={cluster}
+                      infraEnv={infraEnv}
+                      showBreadcrumbs={showBreadcrumbs}
+                      updateInfraEnv={updateInfraEnv}
+                    />
                     {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
                     {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
                     <CancelInstallationModal />
