@@ -30,10 +30,10 @@ import {
   NewFeatureSupportLevelProvider,
   OpenShiftVersionsContextProvider,
   useClusterPolling,
+  ClusterPollingErrorModal,
 } from '../../components';
 import { DiscoveryImageModal } from '../../components/clusterConfiguration/DiscoveryImageModal';
 import CancelInstallationModal from '../../components/clusterDetail/CancelInstallationModal';
-import ClusterPollingErrorModal from '../../components/clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../../components/clusterDetail/ClusterUpdateErrorModal';
 import ResetClusterModal from '../../components/clusterDetail/ResetClusterModal';
 import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';

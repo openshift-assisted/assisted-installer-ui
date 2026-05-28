@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import omit from 'lodash-es/omit.js';
+import { TFunction } from 'i18next';
 import {
   Toolbar,
   ToolbarItem,
@@ -21,16 +23,22 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons/dist/js/icons/filter-icon';
 import { SyncIcon } from '@patternfly/react-icons/dist/js/icons/sync-icon';
-import { clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
-import { ResourceUIState } from '../../../common';
-import { fetchClustersAsync } from '../../store/slices/clusters/slice';
-import omit from 'lodash-es/omit.js';
-import { TFunction } from 'i18next';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useDispatchDay1, useSelectorDay1 } from '../../store';
-import { selectClustersUIState } from '../../store/slices/clusters/selectors';
-import { CustomToolbarFilter } from '../../../common/components/ui/CustomToolbarFilter';
+import {
+  clusterStatusLabels,
+  isSelectEventChecked,
+  ToolbarButton,
+  ResourceUIState,
+  useTranslation,
+  CustomToolbarFilter,
+} from '../../../common';
+import {
+  useDispatchDay1,
+  useSelectorDay1,
+  fetchClustersAsync,
+  selectClustersUIState,
+} from '../../store';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from clusterStatusLabels
@@ -46,7 +54,7 @@ type ClustersListToolbarProps = {
 const clusterStatusFilterLabels = (t: TFunction) =>
   Array.from(new Set(Object.values(omit(clusterStatusLabels(t), 'adding-hosts'))));
 
-const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
+export const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   searchString,
   setSearchString,
   filters,
@@ -196,5 +204,3 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     </Toolbar>
   );
 };
-
-export default ClustersListToolbar;

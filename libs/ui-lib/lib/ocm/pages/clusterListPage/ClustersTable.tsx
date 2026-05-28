@@ -16,19 +16,16 @@ import {
   TrProps,
 } from '@patternfly/react-table';
 import {
-  ClusterRowDataProps,
-  getClusterTableStatusCell,
-} from '../../store/slices/clusters/selectors';
-import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
-import {
   clusterStatusLabels,
   ClusterTableRows,
   HumanizedSortable,
   rowSorter,
   EmptyState,
+  useTranslation,
 } from '../../../common';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import DeleteClusterModal from './DeleteClusterModal';
+import { ClusterRowDataProps, getClusterTableStatusCell } from '../../store/';
+import { ClustersListToolbar, ClusterFiltersType } from './ClustersListToolbar';
+import { DeleteClusterModal } from './DeleteClusterModal';
 
 type DeleteClusterID = Pick<ClusterRowDataProps, 'id' | 'name'>;
 const STORAGE_KEY_CLUSTERS_FILTER = 'assisted-installer-cluster-list-filters';
@@ -60,7 +57,7 @@ const getRowProps = (props?: ClusterRowDataProps) => {
   } as Omit<TrProps, 'ref'>;
 };
 
-const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
+export const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
   const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: 0, // Name-column
     direction: SortByDirection.asc,
@@ -229,5 +226,3 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
     </>
   );
 };
-
-export default ClustersTable;

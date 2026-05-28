@@ -14,7 +14,7 @@ const defaultTitle = 'Unable to fetch the latest data';
 const defaultContent =
   "There was an error fetching the latest data from the API. We'll try again, but if the data does not update in a few minutes, try refreshing the page.";
 
-const ClusterPollingErrorModal = ({
+export const ClusterPollingErrorModal = ({
   title = defaultTitle,
   content = defaultContent,
 }: {
@@ -37,5 +37,3 @@ const ClusterPollingErrorModal = ({
     </Modal>
   );
 };
-
-export default ClusterPollingErrorModal;
