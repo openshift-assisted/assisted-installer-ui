@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
-import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';
+import { AssistedInstallerHeader } from '../../components';
 import { ClusterPageGeneric } from '../clusterPage';
 
 export const SingleClusterPage = ({

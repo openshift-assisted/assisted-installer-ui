@@ -37,7 +37,7 @@ import CancelInstallationModal from '../../components/clusterDetail/CancelInstal
 import ClusterUpdateErrorModal from '../../components/clusterDetail/ClusterUpdateErrorModal';
 import ResetClusterModal from '../../components/clusterDetail/ResetClusterModal';
 import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';
-import ClusterBreadcrumbs from '../../components/clusters/ClusterBreadcrumbs';
+import { ClusterBreadcrumbs } from '../../components/clusters/ClusterBreadcrumbs';
 import { useFetchCluster } from '../../components/clusters/clusterPolling';
 import { SentryErrorMonitorContextProvider } from '../../components/SentryErrorMonitorContextProvider';
 import { BackButton } from '../../components/ui/Buttons/BackButton';

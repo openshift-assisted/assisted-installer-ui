@@ -1,17 +1,19 @@
 import React from 'react';
 import { PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
-import ClusterBreadcrumbs from '../../components/clusters/ClusterBreadcrumbs';
-import { ClusterDefaultConfigurationProvider } from '../../components/clusterConfiguration/ClusterDefaultConfigurationContext';
-import NewClusterWizard from '../../components/clusterWizard/NewClusterWizard';
-import ClusterWizardContextProvider from '../../components/clusterWizard/ClusterWizardContextProvider';
-import { SentryErrorMonitorContextProvider } from '../../components/SentryErrorMonitorContextProvider';
-import ClusterLoading from '../../components/clusters/ClusterLoading';
-import { ClusterUiError } from '../../components/clusters/ClusterPageErrors';
-import { NewFeatureSupportLevelProvider } from '../../components/featureSupportLevels';
-import { AssistedInstallerHeader } from '../../components/clusters/AssistedInstallerHeader';
-import { ModalDialogsContextProvider } from '../../components/hosts/ModalDialogsContext';
-import { OpenShiftVersionsContextProvider } from '../../components/clusterWizard/OpenShiftVersionsContext';
+import {
+  ModalDialogsContextProvider,
+  ClusterDefaultConfigurationProvider,
+  ClusterLoading,
+  ClusterUiError,
+  OpenShiftVersionsContextProvider,
+  NewFeatureSupportLevelProvider,
+  ClusterWizardContextProvider,
+  NewClusterWizard,
+  AssistedInstallerHeader,
+  SentryErrorMonitorContextProvider,
+  ClusterBreadcrumbs,
+} from '../../components';
 
 export const NewClusterPage = () => {
   return (

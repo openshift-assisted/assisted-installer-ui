@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbItem, PageSection } from '@patternfly/react-core'
 import { Link } from 'react-router';
 import { isInOcm } from '../../../common/api';
 
-const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => {
+export const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => {
   return (
     !isInOcm && (
       <PageSection hasBodyWrapper={false}>
@@ -21,5 +21,3 @@ const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => {
     )
   );
 };
-
-export default ClusterBreadcrumbs;
