@@ -20,7 +20,7 @@ import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 
-const ResetClusterModal: React.FC = () => {
+export const ResetClusterModal: React.FC = () => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
@@ -129,5 +129,3 @@ const ResetClusterModal: React.FC = () => {
     </Modal>
   );
 };
-
-export default ResetClusterModal;
