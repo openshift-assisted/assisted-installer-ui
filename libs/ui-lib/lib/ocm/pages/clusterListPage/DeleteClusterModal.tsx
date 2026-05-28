@@ -16,7 +16,7 @@ type DeleteClusterModalProps = {
   isDeleteInProgress?: boolean;
 };
 
-const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({
+export const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({
   name,
   onClose,
   onDelete,
@@ -47,5 +47,3 @@ const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({
     </ModalFooter>
   </Modal>
 );
-
-export default DeleteClusterModal;

@@ -19,7 +19,7 @@ import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
-import ClusterPollingErrorModal from './ClusterPollingErrorModal';
+import { ClusterPollingErrorModal } from './ClusterPollingErrorModal';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
