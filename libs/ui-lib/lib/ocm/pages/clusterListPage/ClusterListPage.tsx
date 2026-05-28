@@ -1,31 +1,34 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { Button, ButtonVariant, Content, PageSection } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { AddCircleOIcon } from '@patternfly/react-icons/dist/js/icons/add-circle-o-icon';
 import {
-  ResourceUIState,
   Alerts,
-  LoadingState,
-  ErrorState,
-  EmptyState,
-  useAlerts,
   AlertsContextProvider,
+  EmptyState,
+  ErrorState,
+  getApiErrorMessage,
+  handleApiError,
+  LoadingState,
   REDUCED_POLLING_INTERVAL,
+  ResourceUIState,
+  useAlerts,
+  useTranslation,
 } from '../../../common';
-import ClustersTable from '../../components/clusters/ClustersTable';
-import { fetchClustersAsync, deleteCluster } from '../../store/slices/clusters/slice';
-import { handleApiError, getApiErrorMessage } from '../../../common/api';
 import { ClustersService } from '../../services';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import ClusterPollingErrorModal from '../../components/clusterDetail/ClusterPollingErrorModal';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useSelectorDay1, useDispatchDay1 } from '../../store';
+import { ClusterPollingErrorModal } from '../../components';
 import {
   selectClustersUIState,
+  useDispatchDay1,
+  fetchClustersAsync,
+  deleteCluster,
+  useSelectorDay1,
   selectClusterTableRows,
-} from '../../store/slices/clusters/selectors';
+} from '../../store';
+import { ClustersTable } from './ClustersTable';
 
-const Clusters = () => {
+const ClusterListPageContent = () => {
   const navigate = useNavigate();
   const { LOADING, EMPTY, POLLING_ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
@@ -126,8 +129,10 @@ const Clusters = () => {
   }
 };
 
-export const ClusterListPage = () => (
-  <AlertsContextProvider>
-    <Clusters />
-  </AlertsContextProvider>
-);
+export const ClusterListPage = () => {
+  return (
+    <AlertsContextProvider>
+      <ClusterListPageContent />
+    </AlertsContextProvider>
+  );
+};

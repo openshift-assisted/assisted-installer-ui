@@ -11,6 +11,7 @@ export * from './eventsModal';
 export * from './PreviewBadge';
 export * from './TechnologyPreview';
 export * from './DeveloperPreview';
+export * from './CustomToolbarFilter';
 
 export * from './OpenShiftVersionDropdown';
 export * from './OpenShiftVersionModal';
