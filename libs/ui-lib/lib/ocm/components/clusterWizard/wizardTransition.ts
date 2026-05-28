@@ -1,5 +1,3 @@
-import uniq from 'lodash-es/uniq';
-
 import {
   Cluster,
   ClusterValidationId,
@@ -7,7 +5,6 @@ import {
   HostValidationId,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  findValidationStep,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
   WizardStepsValidationMap,
@@ -21,6 +18,8 @@ import {
 } from '../../../common/types/hosts';
 import { getKeys, stringToJSON } from '../../../common/utils';
 import { Validation, ValidationsInfo } from '../../../common';
+
+type ValidationId = ClusterValidationId | HostValidationId;
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -59,16 +58,6 @@ export const disconnectedSteps: ClusterWizardStepsType[] = [
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
-export const getLastStepForWizard = (
-  customManifestsStepNeedsToBeFilled: boolean,
-): ClusterWizardStepsType => {
-  if (customManifestsStepNeedsToBeFilled) {
-    return 'custom-manifests';
-  } else {
-    return 'review';
-  }
-};
-
 export const isStepAfter = (stepA: ClusterWizardStepsType, stepB: ClusterWizardStepsType) => {
   const indexA = wizardStepsOrder.findIndex((step) => step === stepA);
   const indexB = wizardStepsOrder.findIndex((step) => step === stepB);
@@ -103,66 +92,86 @@ export const getClusterWizardFirstStep = (
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
-      return getStepForFailingHostValidations(cluster);
+      return getStepForFailingValidations(cluster);
     default:
       return 'cluster-details';
   }
 };
 
-const getStepForFailingHostValidations = (cluster?: Cluster) => {
+const MINIMUM_STEP = 'host-discovery';
+const getStepForFailingValidations = (cluster?: Cluster) => {
   // test host validations first, then cluster validations
-  const failingValidations: (ClusterValidationId | HostValidationId)[] =
-    getHostFailingValidationIds(cluster?.hosts).concat(getClusterFailingValidationIds(cluster));
+  const failingValidations: Set<ValidationId> = new Set<ValidationId>([
+    ...getHostFailingValidationIds(cluster?.hosts),
+    ...getClusterFailingValidationIds(cluster),
+  ]);
 
   let step;
-  const minimumStep = 'host-discovery';
   for (const failingValidationId of failingValidations) {
-    step = findValidationStep<ClusterWizardStepsType>(
-      failingValidationId,
-      wizardStepsValidationsMap,
-      minimumStep,
-    );
+    step = findValidationStep(failingValidationId, wizardStepsValidationsMap);
     if (step !== undefined) {
       break;
     }
   }
-  return step || minimumStep;
+  return step || MINIMUM_STEP;
 };
 
-const getHostFailingValidationIds = (
-  hosts?: Host[],
-): (ClusterValidationId | HostValidationId)[] => {
-  const failingValidations: HostValidationId[] = [];
+const getHostFailingValidationIds = (hosts?: Host[]): Set<ValidationId> => {
+  const failingValidations = new Set<HostValidationId>();
   hosts?.forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     getKeys(validationsInfo).forEach((group) => {
       const f: (validation: HostValidation) => void = (validation) => {
         if (validation.status === 'failure') {
-          failingValidations.push(validation.id);
+          failingValidations.add(validation.id);
         }
       };
       const validationGroup = validationsInfo[group] as HostValidation[];
       validationGroup.forEach(f);
     });
   });
-  return uniq(failingValidations);
+  return failingValidations;
 };
 
-const getClusterFailingValidationIds = (
-  cluster?: Cluster,
-): (ClusterValidationId | HostValidationId)[] => {
-  const failingValidations: ClusterValidationId[] = [];
+const getClusterFailingValidationIds = (cluster?: Cluster): Set<ValidationId> => {
+  const failingValidations = new Set<ValidationId>();
   const validationsInfo = stringToJSON<ValidationsInfo>(cluster?.validationsInfo) || {};
+
   getKeys(validationsInfo).forEach((group) => {
     const f: (validation: Validation) => void = (validation) => {
       if (validation.status === 'failure') {
-        failingValidations.push(validation.id);
+        failingValidations.add(validation.id);
       }
     };
     const validationGroup = validationsInfo[group] as Validation[];
     validationGroup.forEach(f);
   });
-  return uniq(failingValidations);
+  return failingValidations;
+};
+
+const findValidationStep = (
+  validationId: ValidationId,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+): ClusterWizardStepsType | undefined => {
+  let isBeforeMinimumStep = true;
+
+  return wizardStepsOrder.find((wizardStepId) => {
+    if (wizardStepId === MINIMUM_STEP) {
+      isBeforeMinimumStep = false;
+    }
+    if (isBeforeMinimumStep) {
+      return false;
+    }
+
+    // find first matching validation-map name, ignoring steps before minimumStep
+    const { host: hostValidationMap, cluster: clusterValidationMap } =
+      wizardStepsValidationsMap[wizardStepId];
+
+    return (
+      hostValidationMap.validationIds.includes(validationId as HostValidationId) ||
+      clusterValidationMap.validationIds.includes(validationId as ClusterValidationId)
+    );
+  });
 };
 
 type TransitionProps = { cluster: Cluster };
