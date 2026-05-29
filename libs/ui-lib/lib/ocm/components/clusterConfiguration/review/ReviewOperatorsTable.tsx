@@ -1,15 +1,15 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
-import { Bundle, Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, Bundle } from '@openshift-assisted/types/assisted-installer-service';
 import {
   genericTableRowKey,
   selectAllOlmOperators,
   useStateSafely,
   useOperatorSpecs,
 } from '../../../../common';
+import { BundleService } from '../../../services/BundleService';
 import { TableSummaryExpandable } from './TableSummaryExpandable';
-import { BundleService } from '../../../services';
 
 const fetchBundles = async (
   openshiftVersion: string,

@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { useFormikContext } from 'formik';
 import { Content, ExpandableSection, Stack, StackItem } from '@patternfly/react-core';
 import {
   Bundle,
   Cluster,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useFormikContext } from 'formik';
 import {
   getApiErrorMessage,
   handleApiError,
@@ -14,14 +14,14 @@ import {
   singleClusterOperators,
   useAlerts,
   useStateSafely,
-} from '../../../common';
-import { OperatorsService } from '../../services';
-import { useFeature } from '../../hooks/use-feature';
-import OperatorCheckbox from '../clusterConfiguration/operators/OperatorCheckbox';
-import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
-import { getOperatorDependencies } from '../clusterConfiguration/operators/utils';
+  useOperatorSpecs,
+} from '../../../../../common';
+import { OperatorsService } from '../../../../services';
+import { useFeature } from '../../../../hooks/use-feature';
+import { OperatorCheckbox } from './fields';
+import { getOperatorDependencies } from './utils';
 
-const OperatorsSelect = ({
+export const OperatorsSelect = ({
   cluster,
   bundles,
   preflightRequirements,
@@ -88,6 +88,7 @@ const OperatorsSelect = ({
     return <LoadingState />;
   }
   let foundAtLeastOneOperator = false;
+
   return (
     <>
       <ExpandableSection
@@ -147,5 +148,3 @@ const OperatorsSelect = ({
     </>
   );
 };
-
-export default OperatorsSelect;

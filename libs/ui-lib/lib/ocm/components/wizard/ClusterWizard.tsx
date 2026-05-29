@@ -10,11 +10,10 @@ import NetworkConfigurationPage from '../clusterConfiguration/networkConfigurati
 import CredentialsDownload from '../clusterWizard/CredentialsDownload';
 import CustomManifestStep from '../clusterWizard/CustomManifestStep';
 import HostDiscovery from '../clusterWizard/HostDiscovery';
-import Operators from '../clusterWizard/Operators';
 import Storage from '../clusterWizard/Storage';
 import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './clusterWizardContext';
-import { ClusterDetails, StaticIp } from './steps';
+import { ClusterDetails, StaticIp, Operators } from './steps';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -27,24 +26,24 @@ export const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWiza
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
-      case 'custom-manifests':
-        return <CustomManifestStep cluster={cluster} />;
-      case 'host-discovery':
-        return <HostDiscovery cluster={cluster} />;
-      case 'networking':
-        return <NetworkConfigurationPage cluster={cluster} />;
-      case 'review':
-        return <ReviewStep cluster={cluster} />;
-      case 'operators':
-        return <Operators cluster={cluster} />;
-      case 'storage':
-        return <Storage cluster={cluster} />;
       case 'static-ip-host-configurations':
       case 'static-ip-network-wide-configurations':
       case 'static-ip-yaml-view':
         return <StaticIp cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />;
+      case 'operators':
+        return <Operators cluster={cluster} />;
+      case 'host-discovery':
+        return <HostDiscovery cluster={cluster} />;
+      case 'custom-manifests':
+        return <CustomManifestStep cluster={cluster} />;
+      case 'networking':
+        return <NetworkConfigurationPage cluster={cluster} />;
+      case 'storage':
+        return <Storage cluster={cluster} />;
       case 'credentials-download':
         return <CredentialsDownload cluster={cluster} />;
+      case 'review':
+        return <ReviewStep cluster={cluster} />;
       case 'cluster-details':
       default:
         return <ClusterDetails cluster={cluster} infraEnv={infraEnv} />;

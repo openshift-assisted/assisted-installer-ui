@@ -1,2 +1,2 @@
-export * from './operatorSpecs';
 export * from './operatorDescriptions';
+export * from './operatorSpecs';

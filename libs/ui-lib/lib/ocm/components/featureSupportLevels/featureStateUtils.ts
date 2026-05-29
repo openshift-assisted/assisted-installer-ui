@@ -1,4 +1,9 @@
 import {
+  Cluster,
+  PlatformType,
+  SupportLevel,
+} from '@openshift-assisted/types/assisted-installer-service';
+import {
   NewActiveFeatureConfiguration,
   architectureData,
   CpuArchitecture,
@@ -6,13 +11,8 @@ import {
   isDualStack,
   isSNO,
   SupportedCpuArchitecture,
+  getOperatorTitleByFeatureId,
 } from '../../../common';
-import {
-  Cluster,
-  PlatformType,
-  SupportLevel,
-} from '@openshift-assisted/types/assisted-installer-service';
-import { getOperatorTitleByFeatureId } from '../../../common/components/operators/operatorSpecs';
 import { ExternalPlatformLabels } from '../wizard/wizardFields';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';

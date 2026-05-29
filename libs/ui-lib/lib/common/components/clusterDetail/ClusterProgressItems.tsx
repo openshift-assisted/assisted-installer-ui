@@ -1,13 +1,13 @@
+import React from 'react';
 import { getEnabledHosts } from '../hosts';
 import { RenderIf } from '../ui';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { ProgressBarTexts } from './ProgressBarTexts';
-import { FinalizingProgress } from './FinalizingProgress';
-import OperatorsProgressItem from './OperatorsProgressItem';
-import React from 'react';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types';
 import { selectOlmOperators } from '../../../common';
+import { ProgressBarTexts } from './ProgressBarTexts';
+import { FinalizingProgress } from './FinalizingProgress';
+import { OperatorsProgressItem } from './OperatorsProgressItem';
 
 type ClusterProgressItemsProps = {
   cluster: Cluster;

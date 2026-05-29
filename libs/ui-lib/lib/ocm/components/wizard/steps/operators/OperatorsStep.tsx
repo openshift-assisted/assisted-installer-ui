@@ -8,11 +8,11 @@ import {
   handleApiError,
   LoadingState,
   useAlerts,
-} from '../../../common';
-import OperatorsBundle from './OperatorsBundle';
-import OperatorsSelect from './OperatorsSelect';
-import { BundleService } from '../../services';
-import { useClusterPreflightRequirements } from '../../hooks';
+} from '../../../../../common';
+import { BundleService } from '../../../../services';
+import { useClusterPreflightRequirements } from '../../../../hooks';
+import { OperatorsBundles } from './OperatorsBundles';
+import { OperatorsSelect } from './OperatorsSelect';
 
 export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
   const { addAlert } = useAlerts();
@@ -21,6 +21,7 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
   const [allBundles, setAllBundles] = React.useState<Bundle[]>([]);
   const { preflightRequirements, isLoading } = useClusterPreflightRequirements(cluster.id);
   const [searchTerm, setSearchTerm] = React.useState('');
+
   React.useEffect(() => {
     const fetchBundles = async () => {
       try {
@@ -90,7 +91,7 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
         </Flex>
       </StackItem>
       <StackItem>
-        <OperatorsBundle
+        <OperatorsBundles
           bundles={filteredBundles}
           searchTerm={searchTerm}
           allBundles={allBundles}
