@@ -9,15 +9,15 @@ import {
   getWizardStepClusterStatus,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common/components/clusterWizard/validationsInfoUtils';
-import { Day2WizardStepsType } from '../AddHosts/day2Wizard/constants';
-import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
+} from '../../../../common/components/clusterWizard/validationsInfoUtils';
+import { Day2WizardStepsType } from '../../AddHosts/day2Wizard/constants';
+import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
-} from '../../../common/types/hosts';
-import { getKeys, stringToJSON } from '../../../common/utils';
-import { Validation, ValidationsInfo } from '../../../common';
+} from '../../../../common';
+import { getKeys, stringToJSON } from '../../../../common/utils';
+import { Validation, ValidationsInfo } from '../../../../common';
 
 type ValidationId = ClusterValidationId | HostValidationId;
 

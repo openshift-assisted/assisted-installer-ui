@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Formik } from 'formik';
+import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
   TechnologyPreview,
@@ -6,17 +8,15 @@ import {
   OCP_RELEASES_PAGE,
   StaticTextField,
   useTranslation,
-} from '../../../../common';
-import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
-import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
-import { useClusterWizardContext } from '../ClusterWizardContext';
-import ClusterWizardFooter from '../ClusterWizardFooter';
-import ClusterWizardNavigation from '../ClusterWizardNavigation';
-import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
-import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
-import { Formik } from 'formik';
+} from '../../../../../common';
+import { OcmOpenShiftVersion } from '../../wizardFields/OcmOpenShiftVersion';
+import { WithErrorBoundary } from '../../../../../common/components/ErrorHandling/WithErrorBoundary';
+import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
+import { useClusterWizardContext } from '../../clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardNavigation } from '../../wizardComponents/ClusterWizardNavigation';
+import { ClusterWizardFooter } from '../../wizardComponents/ClusterWizardFooter';
 
-const BasicStep = () => {
+export const BasicStep = () => {
   const { t } = useTranslation();
   const { moveNext } = useClusterWizardContext();
 
@@ -65,5 +65,3 @@ const BasicStep = () => {
     </Formik>
   );
 };
-
-export default BasicStep;

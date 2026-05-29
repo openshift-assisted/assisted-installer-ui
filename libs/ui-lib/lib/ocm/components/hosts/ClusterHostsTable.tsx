@@ -24,7 +24,7 @@ import {
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { TableVariant } from '@patternfly/react-table';
-import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { ClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {

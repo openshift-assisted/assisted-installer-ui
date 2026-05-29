@@ -8,5 +8,7 @@ export { default as DiskEncryptionService } from './DiskEncryptionService';
 export { default as OperatorsService } from './OperatorsService';
 export { default as NewFeatureSupportLevelsService } from './NewFeatureSupportLevelsService';
 export { default as UISettingService } from './UISettingsService';
+
+export * from './BundleService';
 export * from './types';
 export * as APIs from './apis';

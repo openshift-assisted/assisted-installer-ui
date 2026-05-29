@@ -1,37 +1,40 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
+import { InfraEnv, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   useAlerts,
-  LoadingState,
-  ClusterWizardStep,
-  ErrorState,
+  useFeature,
+  handleApiError,
+  getApiErrorMessage,
+  isUnknownServerError,
   UISettingsValues,
-} from '../../../common';
-import { usePullSecret } from '../../hooks';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
-import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
-import { useManagedDomains, useUsedClusterNames } from '../../hooks';
-import { useOpenShiftVersionsContext } from './OpenShiftVersionsContext';
-import ClusterDetailsForm from './ClusterDetailsForm';
-import ClusterWizardNavigation from './ClusterWizardNavigation';
+  ClusterWizardStep,
+  LoadingState,
+  ErrorState,
+} from '../../../../../common';
+import { useManagedDomains, useUsedClusterNames, usePullSecret } from '../../../../hooks';
 import {
   ClusterDetailsUpdateParams,
   ClustersService,
   ClusterCreateParamsWithStaticNetworking,
   UISettingService,
-} from '../../services';
-import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeature } from '../../hooks/use-feature';
+} from '../../../../services';
+import { updateCluster, setServerUpdateError } from '../../../../store';
+
+import { ClusterWizardNavigation } from '../../wizardComponents';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { canNextClusterDetails, ClusterWizardFlowStateNew } from '../../utils';
+import { ClusterDetailsForm } from './ClusterDetailsForm';
+
+import { useOpenShiftVersionsContext } from '../../../clusterWizard/OpenShiftVersionsContext';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
   infraEnv?: InfraEnv;
 };
 
-const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
+export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const clusterWizardContext = useClusterWizardContext();
   const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
@@ -167,5 +170,3 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
     />
   );
 };
-
-export default ClusterDetails;

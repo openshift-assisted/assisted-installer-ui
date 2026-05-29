@@ -11,7 +11,7 @@ import {
 } from '../../../common';
 import OperatorsBundle from './OperatorsBundle';
 import OperatorsSelect from './OperatorsSelect';
-import BundleService from '../../services/BundleService';
+import { BundleService } from '../../services';
 import { useClusterPreflightRequirements } from '../../hooks';
 
 export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {

@@ -1,10 +1,14 @@
 import React from 'react';
 import { Icon } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-import { SupportedPlatformType } from '../../../../common';
+import { SupportedPlatformType } from '../../../../../common';
 import { ExternalPlatformLinks } from './constants';
 
-const PlatformIntegrationNote = ({ platformType }: { platformType: SupportedPlatformType }) => {
+export const PlatformIntegrationNote = ({
+  platformType,
+}: {
+  platformType: SupportedPlatformType;
+}) => {
   const integrationPlatformLink = ExternalPlatformLinks[platformType];
   return (
     <p>
@@ -25,5 +29,3 @@ const PlatformIntegrationNote = ({ platformType }: { platformType: SupportedPlat
     </p>
   );
 };
-
-export default PlatformIntegrationNote;

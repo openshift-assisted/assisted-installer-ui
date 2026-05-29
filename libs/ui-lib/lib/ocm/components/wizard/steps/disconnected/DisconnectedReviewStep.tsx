@@ -1,14 +1,11 @@
 import * as React from 'react';
-import ClusterWizardFooter from '../ClusterWizardFooter';
-import { useClusterWizardContext } from '../ClusterWizardContext';
 import {
   ClusterWizardStep,
   TechnologyPreview,
   PULL_SECRET_INFO_LINK,
   singleClusterOperators,
-} from '../../../../common';
-import ClusterWizardNavigation from '../ClusterWizardNavigation';
-import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
+} from '../../../../../common';
+import { WithErrorBoundary } from '../../../../../common/components/ErrorHandling/WithErrorBoundary';
 import {
   Split,
   SplitItem,
@@ -28,12 +25,15 @@ import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router';
 
-import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
+import { getOperatorSpecs } from '../../../../../common/components/operators/operatorSpecs';
+import { useClusterWizardContext } from '../../clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardFooter } from '../../wizardComponents/ClusterWizardFooter';
+import { ClusterWizardNavigation } from '../../wizardComponents';
 
 const downloadUrl =
   'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
 
-const ReviewStep = () => {
+export const DisconnectedReviewStep = () => {
   const { moveBack } = useClusterWizardContext();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
@@ -115,5 +115,3 @@ const ReviewStep = () => {
     </Formik>
   );
 };
-
-export default ReviewStep;

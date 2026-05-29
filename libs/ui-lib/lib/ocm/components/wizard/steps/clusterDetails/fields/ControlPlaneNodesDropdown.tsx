@@ -10,15 +10,20 @@ import {
 } from '@patternfly/react-core';
 import { useField } from 'formik';
 import toNumber from 'lodash-es/toNumber';
-import { getFieldId, PopoverIcon, PreviewBadgePosition, TechnologyPreview } from '../../../common';
-import { useFeature } from '../../hooks/use-feature';
+import {
+  getFieldId,
+  PopoverIcon,
+  PreviewBadgePosition,
+  TechnologyPreview,
+} from '../../../../../../common';
+import { useFeature } from '../../../../../hooks/use-feature';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
-} from '../../../common/components/newFeatureSupportLevels';
-import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
-import OcmTNADisclaimer from '../../../common/components/clusterConfiguration/OcmTNADisclaimer';
-import OcmSNODisclaimer from './OcmSNODisclaimer';
+} from '../../../../../../common/components/newFeatureSupportLevels';
+import { isFeatureSupportedAndAvailable } from '../../../../featureSupportLevels/featureStateUtils';
+import OcmTNADisclaimer from '../../../../../../common/components/clusterConfiguration/OcmTNADisclaimer';
+import OcmSNODisclaimer from '../../../../clusterConfiguration/OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
 const fieldId = getFieldId(INPUT_NAME, 'input');
@@ -67,7 +72,7 @@ export const isCPNDropdownItemEnabled = (
   return true;
 };
 
-const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
+export const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
   featureSupportLevelData,
 }) => {
   const [field, , { setValue }] = useField<number>(INPUT_NAME);
@@ -173,5 +178,3 @@ const ControlPlaneNodesDropdown: React.FC<ControlPlaneNodesDropdownProps> = ({
     </>
   );
 };
-
-export default ControlPlaneNodesDropdown;

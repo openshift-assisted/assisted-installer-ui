@@ -8,15 +8,15 @@ import {
   useAlerts,
   clusterFieldLabels,
   selectClusterValidationsInfo,
-} from '../../../common';
-import { wizardStepsValidationsMap } from './wizardTransition';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { onFetchEvents } from '../fetching/fetchEvents';
+} from '../../../../common';
+import { wizardStepsValidationsMap } from '../utils/wizardTransition';
+import { useClusterWizardContext } from '../clusterWizardContext/ClusterWizardContext';
+import ClusterWizardStepValidationsAlert from '../../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { onFetchEvents } from '../../fetching/fetchEvents';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeature } from '../../hooks/use-feature';
-import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { useFeature } from '../../../hooks/use-feature';
+import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -73,7 +73,7 @@ type ClusterWizardFooterProps = WizardFooterGenericProps & {
   alertContent?: string | null;
 };
 
-const ClusterWizardFooter = ({
+export const ClusterWizardFooter = ({
   cluster,
   additionalActions,
   errorFields,
@@ -123,5 +123,3 @@ const ClusterWizardFooter = ({
     />
   );
 };
-
-export default ClusterWizardFooter;

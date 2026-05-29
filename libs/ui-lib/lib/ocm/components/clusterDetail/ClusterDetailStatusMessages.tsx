@@ -11,11 +11,11 @@ import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultC
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { calculateClusterDateDiff } from '../../../common/services/DateAndTime';
 import { isInOcm } from '../../../common/api';
-import { ExternalPlatformLinks } from '../clusterConfiguration/platformIntegration/constants';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import PostInstallAlert from '../../../common/components/clusterDetail/PostInstallAlert';
 import { useFeature } from '../../hooks/use-feature';
+import { ExternalPlatformLinks } from '../wizard/wizardFields';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;

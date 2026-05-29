@@ -11,10 +11,10 @@ import {
   MenuToggleElement,
 } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
-import { ClusterDetailsValues, getFieldId } from '../../../common';
-import { OcmCheckboxField, OcmInputField } from '../ui/OcmFormFields';
+import { ClusterDetailsValues, getFieldId } from '../../../../../../common';
+import { OcmCheckboxField, OcmInputField } from '../../../../ui/OcmFormFields';
 import { ManagedDomain } from '@openshift-assisted/types/assisted-installer-service';
-import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
+import { clusterExistsReason } from '../../../../featureSupportLevels/featureStateUtils';
 
 const INPUT_NAME = 'baseDnsDomain';
 const INPUT_LABEL = 'Base domain';

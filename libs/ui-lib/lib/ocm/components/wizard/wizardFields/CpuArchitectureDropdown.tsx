@@ -17,13 +17,13 @@ import {
   getDefaultCpuArchitecture,
   getFieldId,
   SupportedCpuArchitecture,
-} from '../../../common';
+} from '../../../../common';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
-} from '../../../common/components/newFeatureSupportLevels';
-import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+} from '../../../../common/components/newFeatureSupportLevels';
+import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
 import { ExternalPlaformIds, ExternalPlatformLabels } from './platformIntegration/constants';
 
 const INPUT_NAME = 'cpuArchitecture';
@@ -50,7 +50,7 @@ type CpuArchitectureDropdownProps = {
   platformType?: PlatformType;
 };
 
-const CpuArchitectureDropdown = ({
+export const CpuArchitectureDropdown = ({
   openshiftVersion,
   day1CpuArchitecture,
   cpuArchitectures,
@@ -182,4 +182,3 @@ const CpuArchitectureDropdown = ({
     </FormGroup>
   );
 };
-export default CpuArchitectureDropdown;

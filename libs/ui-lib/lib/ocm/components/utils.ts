@@ -1,4 +1,4 @@
-import { Cluster } from '@openshift-assisted/types/./assisted-installer-service';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 export const isOciPlatformType = (cluster: Cluster): boolean => {
   return (

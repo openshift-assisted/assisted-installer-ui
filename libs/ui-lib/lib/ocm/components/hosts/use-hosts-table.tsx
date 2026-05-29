@@ -49,7 +49,7 @@ import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { hardwareStatusColumn } from './HardwareStatus';
-import { ClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { ClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import {
   Cluster,
   Disk,

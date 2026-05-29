@@ -11,10 +11,10 @@ import {
   useFormikAutoSave,
   ClusterWizardStepHeader,
 } from '../../../common';
-import ClusterWizardFooter from './ClusterWizardFooter';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import ClusterWizardNavigation from './ClusterWizardNavigation';
-import { canNextStorage } from './wizardTransition';
+import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
+import { canNextStorage } from '../wizard/utils/wizardTransition';
 import HostsStorageTable from '../hosts/HostsStorageTable';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 

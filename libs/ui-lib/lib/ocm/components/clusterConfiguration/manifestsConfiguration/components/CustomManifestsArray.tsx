@@ -12,7 +12,7 @@ import { CustomManifest } from './CustomManifest';
 import { getEmptyManifest, getManifestName } from './utils';
 import { CustomManifestValues } from '../data/dataTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../../wizard/clusterWizardContext/ClusterWizardContext';
 
 const fieldName = 'manifests';
 
