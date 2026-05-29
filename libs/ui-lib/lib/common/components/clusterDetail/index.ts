@@ -4,3 +4,6 @@ export { default as ClusterCredentials } from './ClusterCredentials';
 export { default as KubeconfigDownload } from './KubeconfigDownload';
 export { default as PostInstallAlert } from './PostInstallAlert';
 export { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
+
+export * from './ClusterProgressItem';
+export * from './OperatorsProgressItem';

@@ -7,7 +7,7 @@ import {
   SelectList,
   SelectOption,
 } from '@patternfly/react-core';
-import { OperatorsValues } from '../../../common';
+import { OperatorsValues } from '../../../../../../common';
 
 type OptionalOperatorsDropdownProps = {
   bundleId: string;
@@ -18,7 +18,7 @@ type OptionalOperatorsDropdownProps = {
   getOperatorLabel: (operatorId: string) => string;
 };
 
-const OptionalOperatorsDropdown = ({
+export const OptionalOperatorsDropdown = ({
   bundleId,
   optionalOperatorIds,
   selectedBundles,
@@ -102,5 +102,3 @@ const OptionalOperatorsDropdown = ({
     </Select>
   );
 };
-
-export default OptionalOperatorsDropdown;

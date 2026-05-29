@@ -31,7 +31,7 @@ import {
   ExternalLink,
   VSPHERE_LIMITATIONS_LINK,
 } from '../../../../../common';
-import NewFeatureSupportLevelBadge from '../../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { NewFeatureSupportLevelBadge } from '../../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { ExternalPlatformLabels, ExternalPlaformIds, ExternalPlatformLinks } from './constants';
 
 const INPUT_NAME = 'platform';

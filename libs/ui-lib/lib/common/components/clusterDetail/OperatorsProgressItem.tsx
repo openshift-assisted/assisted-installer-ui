@@ -11,9 +11,9 @@ import {
   MonitoredOperatorsList,
   OperatorStatus,
 } from '@openshift-assisted/types/assisted-installer-service';
-import ClusterProgressItem from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { useOperatorSpecs } from '../operators/operatorSpecs';
+import { useOperatorSpecs } from '../operators';
+import { ClusterProgressItem } from './ClusterProgressItem';
 
 import './OperatorsProgressItem.css';
 
@@ -115,7 +115,7 @@ const OperatorsPopover = ({ operators, children }: OperatorsPopoverProps) => {
   );
 };
 
-const OperatorsProgressItem = ({ operators }: OperatorListProps) => {
+export const OperatorsProgressItem = ({ operators }: OperatorListProps) => {
   const { t } = useTranslation();
   const icon = getOperatorsIcon(getAggregatedStatus(operators));
   const label = getOperatorsLabel(operators, t);
@@ -132,5 +132,3 @@ const OperatorsProgressItem = ({ operators }: OperatorListProps) => {
     </ClusterProgressItem>
   );
 };
-
-export default OperatorsProgressItem;

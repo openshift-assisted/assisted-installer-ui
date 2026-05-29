@@ -4,6 +4,7 @@ import {
   TechnologyPreview,
   PULL_SECRET_INFO_LINK,
   singleClusterOperators,
+  getOperatorSpecs,
 } from '../../../../../common';
 import { WithErrorBoundary } from '../../../../../common/components/ErrorHandling/WithErrorBoundary';
 import {
@@ -25,7 +26,6 @@ import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router';
 
-import { getOperatorSpecs } from '../../../../../common/components/operators/operatorSpecs';
 import { useClusterWizardContext } from '../../clusterWizardContext/ClusterWizardContext';
 import { ClusterWizardFooter } from '../../wizardComponents/ClusterWizardFooter';
 import { ClusterWizardNavigation } from '../../wizardComponents';

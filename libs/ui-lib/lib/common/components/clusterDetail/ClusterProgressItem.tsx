@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, StackItem, Content } from '@patternfly/react-core';
 import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
 
-const ClusterProgressItem = ({
+export const ClusterProgressItem = ({
   icon,
   children,
 }: {
@@ -18,5 +18,3 @@ const ClusterProgressItem = ({
     </StackItem>
   </Stack>
 );
-
-export default ClusterProgressItem;

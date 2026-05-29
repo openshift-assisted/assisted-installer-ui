@@ -9,8 +9,8 @@ import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon'
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventsModal } from '../ui';
 import { EventListFetchProps } from '../../types';
-import ClusterProgressItem from './ClusterProgressItem';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { useTranslation } from '../../hooks';
+import { ClusterProgressItem } from './ClusterProgressItem';
 
 type FinalizingProgressProps = {
   cluster: Cluster;

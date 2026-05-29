@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { List, ListItem } from '@patternfly/react-core';
-import { getYearForAssistedInstallerDocumentationLink } from '../../../../common/config/docs_links';
+import { getYearForAssistedInstallerDocumentationLink } from '../../../../../../common/config/docs_links';
 
 export type BundleSpec = {
   incompatibleBundles?: string[];

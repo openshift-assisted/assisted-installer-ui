@@ -15,7 +15,7 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
-import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { NewFeatureSupportLevelBadge } from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import type { NetworkConfigurationValues } from '../../../../common/types/clusters';
 import {
   NETWORK_TYPE_OVN,

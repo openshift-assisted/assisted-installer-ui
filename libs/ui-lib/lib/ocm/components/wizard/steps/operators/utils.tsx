@@ -3,6 +3,7 @@ import {
   Bundle,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
+
 export const getOperatorDependencies = (
   operatorId: string,
   preflightRequirements: PreflightHardwareRequirements | undefined,

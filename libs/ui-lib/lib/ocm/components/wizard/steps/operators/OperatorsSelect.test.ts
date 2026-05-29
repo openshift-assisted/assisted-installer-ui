@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Bundle } from '@openshift-assisted/types/assisted-installer-service';
-import { OperatorsValues } from '../../../common';
+import { OperatorsValues } from '../../../../../common';
 
 // Test the counting logic that was implemented in OperatorsSelect
 function calculateSelectedOperators(
