@@ -9,12 +9,14 @@ import {
   HistoryRouterProps,
 } from 'react-router';
 import type { FeatureListType } from '../../common/features/featureGate';
-import { AssistedUILibVersion } from '../components/ui';
 import { storeDay1 } from '../store';
-import { useFeatureDetection } from '../hooks/use-feature-detection';
+import { AssistedUILibVersion } from '../components';
+import { useFeatureDetection } from '../hooks';
 import { NewClusterPage } from './newClusterPage';
 import { ClusterPage } from './clusterPage';
 import { ClusterListPage } from './clusterListPage';
+import './Routes.css';
+
 import './Routes.css';
 
 type UILibRoutesProps = {
