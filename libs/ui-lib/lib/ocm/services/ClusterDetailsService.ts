@@ -12,7 +12,6 @@ import {
   HostsNetworkConfigurationType,
   OcmClusterDetailsValues,
 } from './types';
-import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import { isInOcm } from '../../common/api';
 import { getDefaultCpuArchitecture } from './CpuArchitectureService';
 import {
@@ -22,6 +21,7 @@ import {
   PlatformType,
 } from '@openshift-assisted/types/assisted-installer-service';
 import toNumber from 'lodash-es/toNumber';
+import { getDummyInfraEnvField } from '../components/wizard/steps/staticIp/data';
 
 const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
   const params = new URLSearchParams(urlSearchParams);

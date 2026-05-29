@@ -11,13 +11,13 @@ import {
   WizardStepValidationMap,
 } from '../../../../common/components/clusterWizard/validationsInfoUtils';
 import { Day2WizardStepsType } from '../../AddHosts/day2Wizard/constants';
-import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
 } from '../../../../common';
 import { getKeys, stringToJSON } from '../../../../common/utils';
 import { Validation, ValidationsInfo } from '../../../../common';
+import { StaticIpInfo, StaticIpView } from '../steps/staticIp/data';
 
 type ValidationId = ClusterValidationId | HostValidationId;
 
@@ -117,7 +117,7 @@ const getStepForFailingValidations = (cluster?: Cluster) => {
 };
 
 const getHostFailingValidationIds = (hosts?: Host[]): Set<ValidationId> => {
-  const failingValidations = new Set<HostValidationId>();
+  const failingValidations = new Set<ValidationId>();
   hosts?.forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     getKeys(validationsInfo).forEach((group) => {

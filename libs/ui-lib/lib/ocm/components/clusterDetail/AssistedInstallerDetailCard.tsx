@@ -12,7 +12,7 @@ import {
   ResourceUIState,
 } from '../../../common';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
-import ClusterWizard from '../clusterWizard/ClusterWizard';
+import { ClusterWizard } from '../wizard';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
