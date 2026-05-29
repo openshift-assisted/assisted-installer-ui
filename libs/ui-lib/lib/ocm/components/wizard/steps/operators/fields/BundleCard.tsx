@@ -1,39 +1,31 @@
-import * as React from 'react';
+import React from 'react';
+import { useFormikContext } from 'formik';
 import {
   Alert,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Gallery,
-  GalleryItem,
-  List,
-  ListItem,
   Stack,
   StackItem,
-  Title,
+  List,
+  ListItem,
   Tooltip,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
 } from '@patternfly/react-core';
-import { Bundle, Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { Bundle } from '@openshift-assisted/types/assisted-installer-service';
 import {
+  PopoverIcon,
   ExternalLink,
   OperatorsValues,
-  PopoverIcon,
-  selectClusterValidationsInfo,
-  singleClusterBundles,
-} from '../../../common';
-import { useFormikContext } from 'formik';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
-import { useFeature } from '../../hooks/use-feature';
-import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
-import {
-  highlightMatch,
+  useNewFeatureSupportLevel,
   useOperatorSpecs,
-} from '../../../common/components/operators/operatorSpecs';
-import OptionalOperatorsDropdown from './OptionalOperatorsDropdown';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
+  highlightMatch,
+} from '../../../../../../common';
+import { useClusterWizardContext } from '../../../clusterWizardContext';
+import { OptionalOperatorsDropdown } from './OptionalOperatorsDropdown';
+import { bundleSpecs } from './bundleSpecs';
 
-import './OperatorsBundle.css';
+import './BundleCard.css';
 
 const BundleLabel = ({ bundle, searchTerm }: { bundle: Bundle; searchTerm?: string }) => {
   const { byKey: opSpecs } = useOperatorSpecs();
@@ -75,7 +67,7 @@ const BundleLabel = ({ bundle, searchTerm }: { bundle: Bundle; searchTerm?: stri
   );
 };
 
-const BundleCard = ({
+export const BundleCard = ({
   bundle,
   bundles,
   searchTerm,
@@ -195,62 +187,3 @@ const BundleCard = ({
     </Tooltip>
   );
 };
-
-const OperatorsBundle = ({
-  bundles,
-  allBundles,
-  searchTerm,
-  cluster,
-}: {
-  bundles: Bundle[];
-  allBundles: Bundle[];
-  searchTerm?: string;
-  cluster: Cluster;
-}) => {
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const openshiftAiGpuInfoMessage = React.useMemo(() => {
-    const validationsInfo = selectClusterValidationsInfo(cluster);
-    if (!validationsInfo) {
-      return undefined;
-    }
-    return Object.values(validationsInfo)
-      .flat()
-      .find(
-        (validation) =>
-          validation?.id === 'openshift-ai-gpu-requirements-satisfied' &&
-          validation?.status === 'success' &&
-          !!validation.message,
-      )?.message;
-  }, [cluster]);
-
-  return (
-    <Stack hasGutter>
-      <StackItem>
-        <Title headingLevel="h2" size="lg">
-          {allBundles.length > 0 ? 'Bundles' : ''}
-        </Title>
-      </StackItem>
-      <StackItem>
-        <Gallery hasGutter minWidths={{ default: '350px' }}>
-          {(isSingleClusterFeatureEnabled
-            ? allBundles.filter((b) => b.id && singleClusterBundles.includes(b.id))
-            : allBundles
-          ).map((bundle) => (
-            <GalleryItem key={bundle.id}>
-              <BundleCard
-                bundle={bundles.find((b) => b.id === bundle.id) || bundle}
-                bundles={bundles}
-                searchTerm={searchTerm}
-                informationalMessage={
-                  bundle.id === 'openshift-ai' ? openshiftAiGpuInfoMessage : undefined
-                }
-              />
-            </GalleryItem>
-          ))}
-        </Gallery>
-      </StackItem>
-    </Stack>
-  );
-};
-
-export default OperatorsBundle;

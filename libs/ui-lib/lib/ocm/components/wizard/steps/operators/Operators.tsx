@@ -11,15 +11,17 @@ import {
   UISettingsValues,
   useAlerts,
   useFormikAutoSave,
-} from '../../../common';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
-import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
+  getApiErrorMessage,
+  handleApiError,
+  isUnknownServerError,
+} from '../../../../../common';
+import { ClustersService } from '../../../../services';
+import { setServerUpdateError, updateCluster } from '../../../../store';
+
+import { canNextOperators } from '../../utils';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
 import { OperatorsStep } from './OperatorsStep';
-import { ClustersService } from '../../services';
-import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
-import { canNextOperators } from '../wizard/utils/wizardTransition';
 
 // Balance debounce time: fast clicks should trigger a single API call,
 // but making it shorter will allow us to disable navigation buttons while changes are pending
@@ -99,7 +101,7 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-const Operators = ({ cluster }: { cluster: Cluster }) => {
+export const Operators = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { updateUISettings, uiSettings } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
@@ -148,5 +150,3 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
     </Formik>
   );
 };
-
-export default Operators;

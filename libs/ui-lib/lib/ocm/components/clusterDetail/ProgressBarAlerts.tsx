@@ -1,18 +1,18 @@
 import React from 'react';
 import { Alert, AlertActionLink, Content } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
+import { Cluster, MonitoredOperator } from '@openshift-assisted/types/assisted-installer-service';
 import {
   RenderIf,
   toSentence,
   canDownloadClusterLogs,
   getReportIssueLink,
   useAlerts,
+  useOperatorSpecs,
+  isInOcm,
 } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { isInOcm } from '../../../common/api';
-import { Cluster, MonitoredOperator } from '@openshift-assisted/types/assisted-installer-service';
-import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;

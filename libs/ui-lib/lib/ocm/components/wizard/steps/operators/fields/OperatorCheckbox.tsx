@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useFormikContext } from 'formik';
+import { useSelector } from 'react-redux';
 import {
   Checkbox,
   FormGroup,
@@ -10,25 +12,25 @@ import {
   StackItem,
   Tooltip,
 } from '@patternfly/react-core';
-import { useFormikContext } from 'formik';
-import { useSelector } from 'react-redux';
 import {
   Bundle,
   Cluster,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  selectCurrentClusterPermissionsState,
-  selectIsCurrentClusterSNO,
-} from '../../../store/slices/current-cluster/selectors';
-import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { getFieldId, OperatorsValues, PopoverIcon } from '../../../../common';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
-import {
+  getFieldId,
+  OperatorsValues,
+  PopoverIcon,
+  NewFeatureSupportLevelBadge,
+  useNewFeatureSupportLevel,
   highlightMatch,
   OperatorSpec,
   useOperatorSpecs,
-} from '../../../../common/components/operators/operatorSpecs';
+} from '../../../../../../common';
+import {
+  selectCurrentClusterPermissionsState,
+  selectIsCurrentClusterSNO,
+} from '../../../../../store';
 
 const OperatorRequirements = ({
   operatorId,
@@ -107,7 +109,7 @@ const OperatorRequirements = ({
   );
 };
 
-const OperatorCheckbox = ({
+export const OperatorCheckbox = ({
   bundles,
   checkedOperatorIds,
   cluster,
@@ -223,5 +225,3 @@ const OperatorCheckbox = ({
     </FormGroup>
   );
 };
-
-export default OperatorCheckbox;

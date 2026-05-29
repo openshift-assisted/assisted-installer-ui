@@ -5,7 +5,7 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exc
 import { InProgressIcon } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 
 import { Host, HostRole } from '@openshift-assisted/types/assisted-installer-service';
-import ClusterProgressItem from './ClusterProgressItem';
+import { ClusterProgressItem } from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type HostProgressProps = {

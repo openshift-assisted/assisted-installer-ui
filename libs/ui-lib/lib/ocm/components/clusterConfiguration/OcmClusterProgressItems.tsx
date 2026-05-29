@@ -3,12 +3,12 @@ import React from 'react';
 import {
   EventListFetchProps,
   getEnabledHosts,
+  OperatorsProgressItem,
   RenderIf,
   selectAllOlmOperators,
 } from '../../../common';
 import { FinalizingProgress } from '../../../common/components/clusterDetail/FinalizingProgress';
 import { ProgressBarTexts } from '../../../common/components/clusterDetail/ProgressBarTexts';
-import OcmOperatorsProgressItem from './OcmOperatorProgressItem';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type OcmClusterProgressItemsProps = {
@@ -52,7 +52,7 @@ const OcmClusterProgressItems = ({
           </GridItem>
           <RenderIf condition={olmOperators.length > 0}>
             <GridItem span={3}>
-              <OcmOperatorsProgressItem operators={olmOperators} />
+              <OperatorsProgressItem operators={olmOperators} />
             </GridItem>
           </RenderIf>
         </Grid>
