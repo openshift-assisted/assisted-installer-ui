@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import {
-  ActiveFeatureConfiguration,
+  NewActiveFeatureConfiguration,
   CpuArchitecture,
   FeatureId,
   SupportedCpuArchitecture,
@@ -71,7 +71,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
 
   const isLoading = !supportLevelData || loadingOCPVersions || isInfraEnvLoading;
 
-  const activeFeatureConfiguration = React.useMemo<ActiveFeatureConfiguration>(
+  const activeFeatureConfiguration = React.useMemo<NewActiveFeatureConfiguration>(
     () => ({
       underlyingCpuArchitecture: (infraEnv?.cpuArchitecture ||
         cluster?.cpuArchitecture ||

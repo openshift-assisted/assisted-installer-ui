@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import ClusterWizardFooter from './ClusterWizardFooter';
-import ClusterWizardNavigation from './ClusterWizardNavigation';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
+import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
 import {
   StaticIpFormState,
   StaticIpProps,

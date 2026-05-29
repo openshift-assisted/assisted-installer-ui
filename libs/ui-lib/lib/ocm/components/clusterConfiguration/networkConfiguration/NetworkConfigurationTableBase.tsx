@@ -17,7 +17,7 @@ import { usePagination } from '../../../../common/components/hosts/usePagination
 import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
 import HostsTable from '../../../../common/components/hosts/HostsTable';
 import { ValidationsInfo } from '../../../../common/types/hosts';
-import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
 import { stringToJSON } from '../../../../common/utils';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 

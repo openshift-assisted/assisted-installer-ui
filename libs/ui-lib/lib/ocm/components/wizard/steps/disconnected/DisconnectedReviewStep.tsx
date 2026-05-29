@@ -1,0 +1,117 @@
+import * as React from 'react';
+import { Formik } from 'formik';
+import { saveAs } from 'file-saver';
+import { useNavigate } from 'react-router';
+import {
+  Split,
+  SplitItem,
+  Alert,
+  Grid,
+  DescriptionList,
+  DescriptionListGroup,
+  DescriptionListTerm,
+  DescriptionListDescription,
+  List,
+  ListItem,
+  ListComponent,
+  OrderType,
+  Content,
+} from '@patternfly/react-core';
+import {
+  ClusterWizardStep,
+  TechnologyPreview,
+  PULL_SECRET_INFO_LINK,
+  singleClusterOperators,
+  WithErrorBoundary,
+  getOperatorSpecs,
+} from '../../../../../common';
+import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
+
+export const ReviewStep = () => {
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
+  const opSpecs = getOperatorSpecs(() => undefined);
+  const navigate = useNavigate();
+
+  return (
+    <Formik
+      initialValues={{}}
+      onSubmit={() => {
+        // nothing to do
+      }}
+    >
+      <ClusterWizardStep
+        navigation={<ClusterWizardNavigation />}
+        footer={
+          <ClusterWizardFooter
+            onNext={() => {
+              saveAs(disconnectedInfraEnv?.downloadUrl ?? '');
+              void navigate('/cluster-list');
+            }}
+            onBack={moveBack}
+            nextButtonText="Download ISO"
+          />
+        }
+      >
+        <WithErrorBoundary title="Failed to load Review step">
+          <Grid hasGutter>
+            <Split>
+              <SplitItem>
+                <Content component="h2">Review and download ISO</Content>
+              </SplitItem>
+              <SplitItem>
+                <TechnologyPreview />
+              </SplitItem>
+            </Split>
+            <Alert isInline variant="info" title="Discovery ISO boot instructions">
+              <List component={ListComponent.ol} type={OrderType.number}>
+                <ListItem>Download ISO</ListItem>
+                <ListItem>
+                  Download or copy your pull secret from{' '}
+                  <a href={PULL_SECRET_INFO_LINK} target="_blank" rel="noopener noreferrer">
+                    here
+                  </a>
+                </ListItem>
+                <ListItem>
+                  Boot your cluster's machines from this ISO and follow instructions
+                </ListItem>
+                <ListItem>
+                  Provide your pull secret inside the installation wizard when requested
+                </ListItem>
+              </List>
+            </Alert>
+            <Alert isInline isExpandable variant="info" title="List of available operators">
+              <List>
+                {singleClusterOperators.map((o) => {
+                  const operator = Object.values(opSpecs)
+                    .flatMap((op) => op)
+                    .find((op) => op.operatorKey === o);
+                  return <ListItem key={o}>{operator ? operator.title : o}</ListItem>;
+                })}
+              </List>
+            </Alert>
+            <DescriptionList isHorizontal>
+              <DescriptionListGroup>
+                <DescriptionListTerm>OpenShift version</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.openshiftVersion ?? DISCONNECTED_OPENSHIFT_VERSION}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>CPU architecture</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64'}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>ISO size</DescriptionListTerm>
+                <DescriptionListDescription>approx. 43.5GB</DescriptionListDescription>
+              </DescriptionListGroup>
+            </DescriptionList>
+          </Grid>
+        </WithErrorBoundary>
+      </ClusterWizardStep>
+    </Formik>
+  );
+};

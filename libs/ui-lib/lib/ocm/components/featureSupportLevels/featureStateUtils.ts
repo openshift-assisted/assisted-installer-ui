@@ -1,5 +1,5 @@
 import {
-  ActiveFeatureConfiguration,
+  NewActiveFeatureConfiguration,
   architectureData,
   CpuArchitecture,
   FeatureId,
@@ -12,8 +12,8 @@ import {
   PlatformType,
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
 import { getOperatorTitleByFeatureId } from '../../../common/components/operators/operatorSpecs';
+import { ExternalPlatformLabels } from '../wizard/wizardFields';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
@@ -35,7 +35,7 @@ const getArmDisabledReason = (cluster: Cluster | undefined) => {
 
 const getOdfDisabledReason = (
   cluster: Cluster | undefined,
-  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  activeFeatureConfiguration: NewActiveFeatureConfiguration | undefined,
   isSupported: boolean,
 ) => {
   if (!cluster) {
@@ -60,7 +60,7 @@ const getOdfDisabledReason = (
 };
 
 const getCnvDisabledReason = (
-  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  activeFeatureConfiguration: NewActiveFeatureConfiguration,
   isSupported: boolean,
   platformType?: PlatformType,
 ) => {
@@ -90,7 +90,7 @@ const getCnvDisabledReason = (
 };
 
 const getLvmDisabledReason = (
-  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  activeFeatureConfiguration: NewActiveFeatureConfiguration,
   isSupported: boolean,
   platformType?: PlatformType,
 ) => {
@@ -110,7 +110,7 @@ const getLvmDisabledReason = (
 
 const getOscDisabledReason = (
   cluster: Cluster | undefined,
-  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  activeFeatureConfiguration: NewActiveFeatureConfiguration | undefined,
   isSupported: boolean,
 ) => {
   if (!cluster) {
@@ -160,7 +160,7 @@ const getSDNDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
 export const getNewFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
-  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  activeFeatureConfiguration: NewActiveFeatureConfiguration,
   isSupported: boolean,
   cpuArchitecture?: SupportedCpuArchitecture,
   platformType?: PlatformType,
@@ -299,7 +299,7 @@ export const hostsNetworkConfigurationDisabledReason =
 
 const getOpenShiftAIDisabledReason = (
   cluster: Cluster | undefined,
-  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  activeFeatureConfiguration: NewActiveFeatureConfiguration | undefined,
   isSupported: boolean,
 ) => {
   if (!cluster) {

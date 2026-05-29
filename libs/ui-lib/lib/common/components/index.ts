@@ -9,3 +9,5 @@ export * from './hosts';
 export * from './fetching';
 export * from './AddHosts';
 export * from './newFeatureSupportLevels';
+export * from './ErrorHandling';
+export * from './operators';

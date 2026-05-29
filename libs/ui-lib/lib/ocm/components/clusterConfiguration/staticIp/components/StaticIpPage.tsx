@@ -13,7 +13,7 @@ import { getStaticIpInfo, getStaticNetworkConfig } from '../data/fromInfraEnv';
 import { useFeature } from '../../../../hooks/use-feature';
 import { StaticIpFormState, StaticIpPageProps, StaticIpViewProps } from './propTypes';
 import { YamlView } from './YamlView/YamlView';
-import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../../wizard/clusterWizardContext/ClusterWizardContext';
 import { FormViewHosts } from './FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from './FormViewNetworkWide/FormViewNetworkWide';
 import './staticIp.css';
