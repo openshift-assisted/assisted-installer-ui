@@ -2,8 +2,8 @@ import React from 'react';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { UISettingsValues } from '../../../../common';
 import { HostsNetworkConfigurationType } from '../../../services';
-import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { ClusterWizardStepsType } from '../utils/wizardTransition';
+import { StaticIpView } from '../steps/staticIp/data';
 
 export type ClusterWizardContextType = {
   currentStepId: ClusterWizardStepsType;

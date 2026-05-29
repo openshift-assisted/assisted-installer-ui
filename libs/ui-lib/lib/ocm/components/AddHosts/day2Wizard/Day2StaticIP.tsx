@@ -8,31 +8,34 @@ import {
   ButtonVariant,
 } from '@patternfly/react-core';
 import {
+  InfraEnv,
+  InfraEnvUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
+import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
   ErrorState,
   LoadingState,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
-import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
-import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
-import {
-  StaticIpFormState,
-  StaticIpViewProps,
-} from '../../clusterConfiguration/staticIp/components/propTypes';
-import StaticIpViewRadioGroup from '../../clusterConfiguration/staticIp/components/StaticIpViewRadioGroup';
-import { YamlView } from '../../clusterConfiguration/staticIp/components/YamlView/YamlView';
-import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
-import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
-import { getDummyStaticIpInfo } from '../../clusterConfiguration/staticIp/data/dummyData';
+
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import {
+  StaticIpInfo,
+  getDummyStaticIpInfo,
+  YamlView,
+  StaticIpViewRadioGroup,
+  FormViewNetworkWide,
+  FormViewHosts,
+  StaticIpFormState,
+  getStaticIpInfo,
+  StaticIpView,
+  StaticIpViewProps,
+} from '../../wizard/steps/staticIp';
+
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import Day2WizardFooter from './Day2WizardFooter';
-import {
-  InfraEnv,
-  InfraEnvUpdateParams,
-} from '@openshift-assisted/types/assisted-installer-service';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
