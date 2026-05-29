@@ -11,8 +11,6 @@ import {
 } from '../utils/wizardTransition';
 import { HostsNetworkConfigurationType } from '../../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from '../../clusterWizard/constants';
-import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
-import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
 import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../../common';
 import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
@@ -21,6 +19,7 @@ import { AlertVariant } from '@patternfly/react-core';
 import { useFeature } from '../../../hooks/use-feature';
 import { isThirdPartyCNI } from '../../../../common/types/networkType';
 import { isOciPlatformType } from '../../utils';
+import { StaticIpView, getStaticIpInfo } from '../steps/staticIp/data';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],

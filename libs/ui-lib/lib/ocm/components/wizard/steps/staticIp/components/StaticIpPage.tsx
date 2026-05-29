@@ -1,0 +1,115 @@
+import React from 'react';
+import {
+  Content,
+  ContentVariants,
+  Alert,
+  AlertVariant,
+  Grid,
+  GridItem,
+} from '@patternfly/react-core';
+import { useFeature } from '../../../../../hooks';
+import { ClusterWizardStepHeader } from '../../../../../../common';
+import { useClusterWizardContext } from '../../../clusterWizardContext';
+import { StaticIpInfo, StaticIpView, getStaticIpInfo, getStaticNetworkConfig } from '../data';
+import { YamlView } from './YamlView';
+import { FormViewHosts } from './FormViewHosts';
+import { FormViewNetworkWide } from './FormViewNetworkWide';
+import { StaticIpViewRadioGroup } from './StaticIpViewRadioGroup';
+import { StaticIpFormState, StaticIpPageProps, StaticIpViewProps } from './propTypes';
+
+import './staticIp.css';
+
+const isoRegenerationAlert = (
+  <Alert
+    variant={AlertVariant.warning}
+    isInline={true}
+    data-testid="regenerate-iso-alert"
+    title="To add new hosts that will use the new or edited configurations, you'll need to regenerate the
+  Discovery ISO in the 'Host discovery' step and boot your new hosts from it."
+  />
+);
+
+export const StaticIpPage: React.FC<StaticIpPageProps> = ({
+  infraEnv,
+  updateInfraEnv,
+  onFormStateChange: onFormStateChangeParent,
+}) => {
+  const clusterWizardContext = useClusterWizardContext();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const prefillFromInfraEnv = isSingleClusterFeatureEnabled && !!getStaticNetworkConfig(infraEnv);
+  const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
+  const [viewChanged, setViewChanged] = React.useState<boolean>(false);
+
+  const onChangeView = React.useCallback(
+    (view: StaticIpView) => {
+      clusterWizardContext.onUpdateStaticIpView(view);
+      setViewChanged(true);
+    },
+    [clusterWizardContext],
+  );
+
+  const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(
+    () => getStaticIpInfo(infraEnv),
+    [infraEnv],
+  );
+
+  const onFormStateChange = React.useCallback(
+    (formState: StaticIpFormState) => {
+      const hasFilledData =
+        clusterWizardContext.currentStepId === 'static-ip-host-configurations' ||
+        !formState.isEmpty;
+      setConfirmOnChangeView(hasFilledData);
+      onFormStateChangeParent(formState);
+    },
+    [clusterWizardContext.currentStepId, onFormStateChangeParent],
+  );
+
+  const viewProps: StaticIpViewProps = {
+    onFormStateChange,
+    infraEnv,
+    updateInfraEnv,
+    showEmptyValues: viewChanged && !prefillFromInfraEnv,
+  };
+
+  const content = (() => {
+    switch (clusterWizardContext.currentStepId) {
+      case 'static-ip-yaml-view':
+        return <YamlView {...viewProps} />;
+      case 'static-ip-network-wide-configurations':
+        return <FormViewNetworkWide {...viewProps} />;
+      case 'static-ip-host-configurations':
+        return <FormViewHosts {...viewProps} />;
+      default:
+        throw new Error(
+          `Unexpected wizard step id ${clusterWizardContext.currentStepId} when entering static ip page`,
+        );
+    }
+  })();
+
+  if (!initialStaticIpInfo) {
+    return null;
+  }
+
+  return (
+    <Grid hasGutter>
+      <GridItem>
+        <ClusterWizardStepHeader>Static network configurations</ClusterWizardStepHeader>
+        <Content component={ContentVariants.small}>
+          Network configuration can be done using either the form view or YAML view. Configurations
+          done in this step are for discovering hosts.
+        </Content>
+      </GridItem>
+
+      {(clusterWizardContext.currentStepId === 'static-ip-network-wide-configurations' ||
+        clusterWizardContext.currentStepId === 'static-ip-yaml-view') && (
+        <StaticIpViewRadioGroup
+          initialView={initialStaticIpInfo.view}
+          confirmOnChangeView={confirmOnChangeView}
+          onChangeView={onChangeView}
+        />
+      )}
+      {initialStaticIpInfo.isDataComplete && isoRegenerationAlert}
+      {content}
+    </Grid>
+  );
+};

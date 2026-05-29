@@ -4,14 +4,18 @@ import { Button, ButtonVariant, Divider, Flex, FlexItem } from '@patternfly/reac
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
 import { FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash-es/cloneDeep.js';
-import { LoadingState, useAlerts } from '../../../../../common';
-import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
+import {
+  LoadingState,
+  useAlerts,
+  ConfirmationModal,
+  getApiErrorMessage,
+  handleApiError,
+} from '../../../../../common';
 import { ClustersAPI } from '../../../../services/apis';
-import { getApiErrorMessage, handleApiError } from '../../../../../common/api';
+import { selectCurrentClusterPermissionsState } from '../../../../store';
 import { CustomManifest } from './CustomManifest';
 import { getEmptyManifest, getManifestName } from './utils';
 import { CustomManifestValues } from '../data/dataTypes';
-import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 import { useClusterWizardContext } from '../../../wizard/clusterWizardContext/ClusterWizardContext';
 
 const fieldName = 'manifests';

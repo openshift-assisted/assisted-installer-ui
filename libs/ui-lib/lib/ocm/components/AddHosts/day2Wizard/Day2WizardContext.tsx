@@ -1,8 +1,8 @@
 import React from 'react';
 import { HostsNetworkConfigurationType } from '../../../services';
-import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
-import { Day2WizardStepsType } from './constants';
 import { CpuArchitecture } from '../../../../common';
+import { StaticIpView } from '../../wizard/steps/staticIp';
+import { Day2WizardStepsType } from './constants';
 
 export type Day2WizardContextType = {
   currentStepId: Day2WizardStepsType;
