@@ -1,8 +1,8 @@
 import React from 'react';
 import { ClusterWizardStep, ClusterWizardStepHeader } from '../../../common';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import ClusterWizardFooter from './ClusterWizardFooter';
-import ClusterWizardNavigation from './ClusterWizardNavigation';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
+import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { Checkbox } from '@patternfly/react-core';

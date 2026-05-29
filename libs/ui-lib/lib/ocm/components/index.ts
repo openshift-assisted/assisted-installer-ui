@@ -9,4 +9,6 @@ export * from './clusterConfiguration/ClusterDefaultConfigurationContext';
 export * from './hosts/ModalDialogsContext';
 export * from './clusterConfiguration';
 
+export * from './wizard';
+
 export * from './SentryErrorMonitorContextProvider';

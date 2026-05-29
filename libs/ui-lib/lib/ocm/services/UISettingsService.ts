@@ -1,4 +1,4 @@
-import { Cluster } from '@openshift-assisted/types/./assisted-installer-service';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { UISettingsAPI } from '../../common/api/assisted-service';
 import { UISettingsValues } from '../../common';
 

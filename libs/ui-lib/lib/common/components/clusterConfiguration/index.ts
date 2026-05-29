@@ -10,3 +10,4 @@ export * from './utils';
 export * from './DiscoveryTroubleshootingModal';
 export * from './DiscoveryImageConfigForm';
 export * from './ExternalPlatformsDropdown';
+export * from './DiskEncryptionFields';

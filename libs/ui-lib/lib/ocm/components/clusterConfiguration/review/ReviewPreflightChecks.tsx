@@ -13,14 +13,14 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exc
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { ClusterValidations, DetailItem, DetailList, HostsValidations } from '../../../../common';
-import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
 import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
 import { wizardStepNames } from '../../clusterWizard/constants';
 import {
   ClusterWizardStepsType,
   wizardStepsValidationsMap,
   allClusterWizardSoftValidationIds,
-} from '../../clusterWizard/wizardTransition';
+} from '../../wizard/utils/wizardTransition';
 import { ClusterFeatureSupportLevelsDetailItem } from '../../featureSupportLevels';
 import {
   SupportLevelMemo,

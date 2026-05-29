@@ -16,25 +16,23 @@ import {
   HelperTextItem,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
-import {
-  CpuArchitecture,
-  FeatureId,
-  SupportedCpuArchitecture,
-  architectureData,
-  getFieldId,
-  ExternalLink,
-  VSPHERE_LIMITATIONS_LINK,
-} from '../../../../common';
-import { ExternalPlaformIds, ExternalPlatformLabels, ExternalPlatformLinks } from './constants';
 import { PlatformType, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  GetFeatureDisabledReason,
-  GetFeatureSupportLevel,
+  getFieldId,
+  SupportedCpuArchitecture,
   NewFeatureSupportLevelMap,
+  GetFeatureDisabledReason,
+  CpuArchitecture,
+  FeatureId,
+  GetFeatureSupportLevel,
+  useFeature,
+  architectureData,
   useNewFeatureSupportLevel,
-} from '../../../../common/components/newFeatureSupportLevels';
-import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { useFeature } from '../../../hooks/use-feature';
+  ExternalLink,
+  VSPHERE_LIMITATIONS_LINK,
+} from '../../../../../common';
+import NewFeatureSupportLevelBadge from '../../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { ExternalPlatformLabels, ExternalPlaformIds, ExternalPlatformLinks } from './constants';
 
 const INPUT_NAME = 'platform';
 const fieldId = getFieldId(INPUT_NAME, 'input');

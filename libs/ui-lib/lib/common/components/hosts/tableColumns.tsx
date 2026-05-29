@@ -8,7 +8,7 @@ import {
   Interface,
 } from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
-import { getSubnet } from '../clusterConfiguration';
+import { getSubnet } from '../clusterConfiguration/utils';
 import { LabelGroup, Label } from '@patternfly/react-core';
 import { selectMachineNetworkCIDR } from '../../selectors';
 import { stringToJSON } from '../../utils';

@@ -1,14 +1,14 @@
 import React from 'react';
 import { FormGroup, TooltipProps } from '@patternfly/react-core';
-import { getFieldId } from '../../../common/components/ui';
-import { HostsNetworkConfigurationType } from '../../services/types';
+import { getFieldId } from '../../../../../../common/components/ui';
+import { HostsNetworkConfigurationType } from '../../../../../services/types';
 import { useField } from 'formik';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import RadioFieldWithTooltip from '../../../common/components/ui/formik/RadioFieldWithTooltip';
+import { useClusterWizardContext } from '../../../clusterWizardContext/ClusterWizardContext';
+import RadioFieldWithTooltip from '../../../../../../common/components/ui/formik/RadioFieldWithTooltip';
 import {
   clusterExistsReason,
   hostsNetworkConfigurationDisabledReason,
-} from '../featureSupportLevels/featureStateUtils';
+} from '../../../../featureSupportLevels/featureStateUtils';
 
 export interface HostsNetworkConfigurationControlGroupProps {
   clusterExists: boolean;

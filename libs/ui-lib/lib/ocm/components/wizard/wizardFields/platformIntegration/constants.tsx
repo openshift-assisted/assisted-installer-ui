@@ -1,5 +1,5 @@
-import { NUTANIX_CONFIG_LINK, OCI_CONFIG_LINK, VSPHERE_CONFIG_LINK } from '../../../../common';
 import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
+import { NUTANIX_CONFIG_LINK, OCI_CONFIG_LINK, VSPHERE_CONFIG_LINK } from '../../../../../common';
 
 export const ExternalPlatformLabels: { [key in PlatformType]: string } = {
   baremetal: 'No platform integration',

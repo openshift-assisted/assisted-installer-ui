@@ -9,7 +9,7 @@ import {
 } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import { ValidationsInfo } from '../../../common/types/hosts';
-import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
+import { wizardStepsValidationsMap } from '../wizard/utils/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { stringToJSON } from '../../../common/utils';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';

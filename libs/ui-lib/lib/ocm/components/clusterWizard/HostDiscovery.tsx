@@ -10,12 +10,12 @@ import {
   useFormikAutoSave,
 } from '../../../common';
 import HostInventory from '../clusterConfiguration/HostInventory';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import { canNextHostDiscovery } from './wizardTransition';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
+import { canNextHostDiscovery } from '../wizard/utils/wizardTransition';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
-import ClusterWizardFooter from './ClusterWizardFooter';
-import ClusterWizardNavigation from './ClusterWizardNavigation';
+import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
+import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
 import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
 import {

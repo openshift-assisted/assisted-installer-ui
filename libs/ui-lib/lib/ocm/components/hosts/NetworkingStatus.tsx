@@ -7,7 +7,7 @@ import {
   hostStatus,
   HostStatus,
 } from '../../../common';
-import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
+import { wizardStepsValidationsMap } from '../wizard/utils/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 

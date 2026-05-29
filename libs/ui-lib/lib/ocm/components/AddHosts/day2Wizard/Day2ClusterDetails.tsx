@@ -22,7 +22,7 @@ import Day2WizardNav from './Day2WizardNav';
 import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
-import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
+import { CpuArchitectureDropdown } from '../../wizard/wizardFields/CpuArchitectureDropdown';
 import { usePullSecret } from '../../../hooks';
 import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
 import {

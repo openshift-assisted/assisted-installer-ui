@@ -16,10 +16,10 @@ import {
   TableSummaryExpandable,
 } from '.';
 import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
-import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
 import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { userProvidedManifests } from '../manifestsConfiguration/components/utils';
+import { PlatformIntegrationNote } from '../../wizard/wizardFields';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);

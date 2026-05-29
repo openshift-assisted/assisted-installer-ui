@@ -7,10 +7,10 @@ import {
   canNextStorage,
   ClusterWizardStepsType,
   isStaticIpStep,
-} from './wizardTransition';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import { staticIpFormViewSubSteps, wizardStepNames } from './constants';
-import WizardNavItem from '../../../common/components/ui/WizardNavItem';
+} from '../utils/wizardTransition';
+import { useClusterWizardContext } from '../clusterWizardContext/ClusterWizardContext';
+import { staticIpFormViewSubSteps, wizardStepNames } from '../../clusterWizard/constants';
+import WizardNavItem from '../../../../common/components/ui/WizardNavItem';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean => {
@@ -35,7 +35,7 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
   }
 };
 
-const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
+export const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
 
   const isStepIdxAfterCurrent = (idx: number) => {
@@ -106,5 +106,3 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
 
   return <WizardNav data-testid="cluster-wizard-nav">{getWizardNavItems()}</WizardNav>;
 };
-
-export default ClusterWizardNavigation;

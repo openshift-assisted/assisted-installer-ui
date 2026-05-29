@@ -22,7 +22,7 @@ import { ResetClusterModal } from './ResetClusterModal';
 import { ClusterPollingErrorModal } from './ClusterPollingErrorModal';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
-import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
+import { ClusterWizardContextProvider } from '../wizard';
 import { BackButton } from '../ui';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';

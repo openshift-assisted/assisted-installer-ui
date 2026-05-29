@@ -1,8 +1,8 @@
 import React from 'react';
-import { HostsNetworkConfigurationType } from '../../services';
-import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
-import { ClusterWizardStepsType } from './wizardTransition';
-import { UISettingsValues } from '../../../common';
+import { HostsNetworkConfigurationType } from '../../../services';
+import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { ClusterWizardStepsType } from '../utils/wizardTransition';
+import { UISettingsValues } from '../../../../common';
 
 export type ClusterWizardContextType = {
   currentStepId: ClusterWizardStepsType;

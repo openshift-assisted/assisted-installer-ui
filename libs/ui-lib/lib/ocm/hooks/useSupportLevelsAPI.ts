@@ -6,7 +6,7 @@ import {
 } from '../../common/components/newFeatureSupportLevels';
 import { getApiErrorMessage, handleApiError } from '../../common/api';
 import NewFeatureSupportLevelsAPI from '../../common/api/assisted-service/NewFeatureSupportLevelsAPI';
-import { PlatformType } from '@openshift-assisted/types/./assisted-installer-service';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type SupportLevelAPIResources = 'architectures' | 'features' | 'featureForAllCpus';
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'

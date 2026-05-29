@@ -9,7 +9,7 @@ import { CpuArchitecture, FeatureId, SupportedCpuArchitecture } from '../../type
 export type NewFeatureSupportLevelMap = Record<FeatureSupportLevelId, SupportLevel>;
 export type ArchitectureSupportLevelMap = Record<ArchitectureSupportLevelId, SupportLevel>;
 
-export type ActiveFeatureConfiguration = {
+export type NewActiveFeatureConfiguration = {
   underlyingCpuArchitecture: CpuArchitecture;
   hasStaticIpNetworking: boolean;
 };
@@ -36,5 +36,5 @@ export type NewFeatureSupportLevelData = {
     featureId: FeatureId,
     supportLevelData?: NewFeatureSupportLevelMap,
   ) => boolean;
-  activeFeatureConfiguration?: ActiveFeatureConfiguration;
+  activeFeatureConfiguration?: NewActiveFeatureConfiguration;
 };

@@ -1,16 +1,16 @@
 import React from 'react';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { useTranslation } from '../../../../../../common/hooks/use-translation-wrapper';
 import {
   OpenshiftVersionOptionType,
   ClusterDetailsValues,
   OpenShiftVersionDropdown,
   OpenShiftVersionModal,
   getComparableVersionInt,
-} from '../../../common';
-import { isInOcm } from '../../../common/api';
+} from '../../../../../../common';
+import { isInOcm } from '../../../../../../common/api';
 import { useFormikContext } from 'formik';
-import { getOpenshiftVersionHelperText } from './OpenshiftVersionHelperText';
-import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
+import { getOpenshiftVersionHelperText } from '../../../../clusterConfiguration/OpenshiftVersionHelperText';
+import { useOpenShiftVersionsContext } from '../../../../clusterWizard/OpenShiftVersionsContext';
 
 const filterMinVersions = (versions: OpenshiftVersionOptionType[], minVersion: number) =>
   versions.filter((v) => getComparableVersionInt(v.value) >= minVersion);
@@ -18,7 +18,10 @@ const filterMinVersions = (versions: OpenshiftVersionOptionType[], minVersion: n
 type OcmOpenShiftVersionSelectProps = {
   minVersionAllowed?: number;
 };
-const OcmOpenShiftVersionSelect = ({ minVersionAllowed }: OcmOpenShiftVersionSelectProps) => {
+
+export const OcmOpenShiftVersionSelect = ({
+  minVersionAllowed,
+}: OcmOpenShiftVersionSelectProps) => {
   const { t } = useTranslation();
   const {
     values: { customOpenshiftSelect },
@@ -68,5 +71,3 @@ const OcmOpenShiftVersionSelect = ({ minVersionAllowed }: OcmOpenShiftVersionSel
     </>
   );
 };
-
-export default OcmOpenShiftVersionSelect;

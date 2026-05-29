@@ -12,14 +12,14 @@ import {
   useAlerts,
   useFormikAutoSave,
 } from '../../../common';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
-import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
+import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
 import { OperatorsStep } from './OperatorsStep';
 import { ClustersService } from '../../services';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
-import { canNextOperators } from './wizardTransition';
+import { canNextOperators } from '../wizard/utils/wizardTransition';
 
 // Balance debounce time: fast clicks should trigger a single API call,
 // but making it shorter will allow us to disable navigation buttons while changes are pending

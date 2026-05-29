@@ -12,8 +12,8 @@ import {
   PlatformType,
   SupportLevel,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { ExternalPlatformLabels } from '../clusterConfiguration/platformIntegration/constants';
 import { getOperatorTitleByFeatureId } from '../../../common/components/operators/operatorSpecs';
+import { ExternalPlatformLabels } from '../wizard/wizardFields';
 
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 

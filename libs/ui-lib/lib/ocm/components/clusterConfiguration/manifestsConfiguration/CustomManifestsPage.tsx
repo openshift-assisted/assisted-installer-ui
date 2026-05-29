@@ -23,7 +23,7 @@ import { isOciPlatformType } from '../../utils';
 import DeleteCustomManifestModal from './DeleteCustomManifestModal';
 import { ClustersService } from '../../../services';
 import { userProvidedManifests } from './components/utils';
-import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
 
 export const CustomManifestsPage = ({
   cluster,

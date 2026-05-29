@@ -25,7 +25,7 @@ import { ClustersService } from '../../../../services';
 import { CustomManifestsArray } from './CustomManifestsArray';
 import { userProvidedManifests } from './utils';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../../wizard/clusterWizardContext/ClusterWizardContext';
 import { ClustersAPI } from '../../../../services/apis';
 
 const fieldName = 'manifests';

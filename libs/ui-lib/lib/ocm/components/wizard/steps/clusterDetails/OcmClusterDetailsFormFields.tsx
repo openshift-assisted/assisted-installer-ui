@@ -1,45 +1,48 @@
 import * as React from 'react';
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-
-import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurationControlGroup';
 import {
-  ClusterDetailsValues,
-  OpenshiftVersionOptionType,
-  PullSecret,
-  ocmClusterNameValidationMessages,
-  uniqueOcmClusterNameValidationMessages,
-  CLUSTER_NAME_MAX_LENGTH,
-  StaticTextField,
-  getSupportedCpuArchitectures,
-  SupportedCpuArchitecture,
-  architectureData,
-} from '../../../common';
-import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { OcmRichInputField } from '../ui/OcmFormFields';
-import OcmOpenShiftVersion from './OcmOpenShiftVersion';
-import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
-import CpuArchitectureDropdown from './CpuArchitectureDropdown';
-import { OcmBaseDomainField } from './OcmBaseDomainField';
-import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
-import { ExternalPlatformDropdown } from './platformIntegration/ExternalPlatformDropdown';
-import { HostsNetworkConfigurationType } from '../../services/types';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
-import { ExternalPlatformLabels } from './platformIntegration/constants';
-import {
-  Cluster,
   ManagedDomain,
   PlatformType,
+  Cluster,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeature } from '../../hooks/use-feature';
-import ControlPlaneNodesDropdown, {
-  ControlPlaneNodesLabel,
-  DEFAULT_VALUE_CPN,
+import {
+  OpenshiftVersionOptionType,
+  ClusterDetailsValues,
+  useFeature,
+  SupportedCpuArchitecture,
+  getSupportedCpuArchitectures,
+  architectureData,
+  uniqueOcmClusterNameValidationMessages,
+  ocmClusterNameValidationMessages,
+  CLUSTER_NAME_MAX_LENGTH,
+  StaticTextField,
+  PullSecret,
+  useTranslation,
+  DiskEncryptionControlGroup,
+  useNewFeatureSupportLevel,
+} from '../../../../../common';
+import useSupportLevelsAPI from '../../../../hooks/useSupportLevelsAPI';
+import { HostsNetworkConfigurationType } from '../../../../services';
+
+import { useOpenShiftVersionsContext } from '../../../clusterWizard/OpenShiftVersionsContext';
+import { isFeatureSupportedAndAvailable } from '../../../featureSupportLevels/featureStateUtils';
+import { OcmRichInputField } from '../../../ui';
+import {
+  OcmOpenShiftVersion,
+  CpuArchitectureDropdown,
+  ExternalPlatformDropdown,
+  ExternalPlatformLabels,
+} from '../../wizardFields';
+import {
+  OcmBaseDomainField,
+  OcmOpenShiftVersionSelect,
   isCPNDropdownItemEnabled,
-} from './ControlPlaneNodesDropdown';
-import { isFeatureSupportedAndAvailable } from '../featureSupportLevels/featureStateUtils';
+  DEFAULT_VALUE_CPN,
+  ControlPlaneNodesLabel,
+  ControlPlaneNodesDropdown,
+  HostsNetworkConfigurationControlGroup,
+} from './fields';
 
 export type OcmClusterDetailsFormFieldsProps = {
   cluster?: Cluster;

@@ -26,7 +26,7 @@ import {
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
 import { hardwareStatusColumn } from './HardwareStatus';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {

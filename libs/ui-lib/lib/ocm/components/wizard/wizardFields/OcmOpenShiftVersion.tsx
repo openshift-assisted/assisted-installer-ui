@@ -5,7 +5,7 @@ import {
   getOpenshiftVersionText,
   OpenshiftVersionOptionType,
   StaticTextField,
-} from '../../../common';
+} from '../../../../common';
 
 type OcmOpenShiftVersionProps = {
   versions?: OpenshiftVersionOptionType[];
@@ -15,7 +15,7 @@ type OcmOpenShiftVersionProps = {
   withMultiText?: boolean;
 };
 
-const OcmOpenShiftVersion = ({
+export const OcmOpenShiftVersion = ({
   openshiftVersion,
   clusterCpuArchitecture,
   versions,
@@ -41,5 +41,3 @@ const OcmOpenShiftVersion = ({
     </StaticTextField>
   );
 };
-
-export default OcmOpenShiftVersion;

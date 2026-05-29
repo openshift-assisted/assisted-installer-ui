@@ -8,19 +8,19 @@ import {
   getClusterWizardFirstStep,
   isStaticIpStep,
   isStepAfter,
-} from './wizardTransition';
-import { HostsNetworkConfigurationType } from '../../services';
-import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
-import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
-import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../common';
-import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
+} from '../utils/wizardTransition';
+import { HostsNetworkConfigurationType } from '../../../services';
+import { defaultWizardSteps, staticIpFormViewSubSteps } from '../../clusterWizard/constants';
+import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
+import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../../common';
+import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import { useUISettings } from '../../hooks';
+import { useUISettings } from '../../../hooks';
 import { AlertVariant } from '@patternfly/react-core';
-import { useFeature } from '../../hooks/use-feature';
-import { isThirdPartyCNI } from '../../../common/types/networkType';
-import { isOciPlatformType } from '../utils';
+import { useFeature } from '../../../hooks/use-feature';
+import { isThirdPartyCNI } from '../../../../common/types/networkType';
+import { isOciPlatformType } from '../../utils';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -73,7 +73,7 @@ const getWizardStepIds = (
   return stepsCopy;
 };
 
-const ClusterWizardContextProvider = ({
+export const ClusterWizardContextProvider = ({
   children,
   cluster,
   infraEnv,
@@ -252,5 +252,3 @@ const ClusterWizardContextProvider = ({
     </>
   );
 };
-
-export default ClusterWizardContextProvider;

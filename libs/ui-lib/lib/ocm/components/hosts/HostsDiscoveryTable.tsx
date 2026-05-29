@@ -25,7 +25,7 @@ import { hardwareStatusColumn } from './HardwareStatus';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (

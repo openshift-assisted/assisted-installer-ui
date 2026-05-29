@@ -2,7 +2,7 @@ import React from 'react';
 import { WizardNav, WizardNavItem } from '@patternfly/react-core';
 import { Day2WizardStepsType, day2WizardStepNames, staticIpFormViewSubSteps } from './constants';
 import { useDay2WizardContext } from './Day2WizardContext';
-import { isStaticIpStep } from '../../clusterWizard/wizardTransition';
+import { isStaticIpStep } from '../../wizard/utils/wizardTransition';
 
 const Day2WizardNav = () => {
   const wizardContext = useDay2WizardContext();

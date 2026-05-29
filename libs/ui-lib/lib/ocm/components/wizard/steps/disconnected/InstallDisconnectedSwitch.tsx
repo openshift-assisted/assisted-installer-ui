@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Switch, Tooltip } from '@patternfly/react-core';
-import { useClusterWizardContext } from '../ClusterWizardContext';
-import { useTranslation } from '../../../../common';
+import { useTranslation } from '../../../../../common';
+import { useClusterWizardContext } from '../../clusterWizardContext';
 
-const InstallDisconnectedSwitch = ({ isDisabled }: { isDisabled?: boolean }) => {
+export const InstallDisconnectedSwitch = ({ isDisabled }: { isDisabled?: boolean }) => {
   const { t } = useTranslation();
   const { installDisconnected, setInstallDisconnected } = useClusterWizardContext();
 
@@ -27,5 +27,3 @@ const InstallDisconnectedSwitch = ({ isDisabled }: { isDisabled?: boolean }) => 
     switchBtn
   );
 };
-
-export default InstallDisconnectedSwitch;

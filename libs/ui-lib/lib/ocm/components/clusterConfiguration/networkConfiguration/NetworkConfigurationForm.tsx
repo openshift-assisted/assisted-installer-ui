@@ -20,10 +20,10 @@ import {
   useTranslation,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
-import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
-import { canNextNetwork } from '../../clusterWizard/wizardTransition';
-import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
+import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
+import { ClusterWizardFooter } from '../../wizard/wizardComponents/ClusterWizardFooter';
+import { canNextNetwork } from '../../wizard/utils/wizardTransition';
+import { ClusterWizardNavigation } from '../../wizard/wizardComponents/ClusterWizardNavigation';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';

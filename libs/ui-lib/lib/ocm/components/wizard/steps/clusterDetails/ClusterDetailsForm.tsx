@@ -5,35 +5,35 @@ import { Flex, Grid, GridItem } from '@patternfly/react-core';
 import isUndefined from 'lodash-es/isUndefined.js';
 import { Formik, FormikHelpers } from 'formik';
 import {
-  ClusterWizardStep,
-  ClusterWizardStepHeader,
-  getClusterDetailsValidationSchema,
-  getRichTextValidation,
-  useAlerts,
-  TechnologyPreview,
-  OpenshiftVersionOptionType,
-  getFormikErrorFields,
-} from '../../../common';
-import { canNextClusterDetails } from './wizardTransition';
-import ClusterWizardFooter from './ClusterWizardFooter';
-import { isInOcm } from '../../../common/api';
-import {
-  ClusterDetailsService,
-  ClusterDetailsUpdateParams,
-  OcmClusterDetailsValues,
-} from '../../services';
-import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from './ClusterWizardContext';
-import {
-  Cluster,
-  ClusterCreateParams,
   InfraEnv,
   ManagedDomain,
+  ClusterCreateParams,
+  Cluster,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeature } from '../../hooks/use-feature';
-import InstallDisconnectedSwitch from './disconnected/InstallDisconnectedSwitch';
+import {
+  OpenshiftVersionOptionType,
+  useAlerts,
+  useFeature,
+  getClusterDetailsValidationSchema,
+  getRichTextValidation,
+  getFormikErrorFields,
+  ClusterWizardStep,
+  ClusterWizardStepHeader,
+  TechnologyPreview,
+  isInOcm,
+  useTranslation,
+} from '../../../../../common';
+import {
+  ClusterDetailsUpdateParams,
+  OcmClusterDetailsValues,
+  ClusterDetailsService,
+} from '../../../../services';
+import { selectCurrentClusterPermissionsState } from '../../../../store';
+import { canNextClusterDetails } from '../../utils';
+import { InstallDisconnectedSwitch } from '../disconnected';
+import { ClusterWizardFooter } from '../../wizardComponents';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { OcmClusterDetailsFormFields } from './OcmClusterDetailsFormFields';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -50,7 +50,7 @@ type ClusterDetailsFormProps = {
   ) => Promise<void>;
 };
 
-const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
+export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const {
     cluster,
     infraEnv,
@@ -204,5 +204,3 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     </Formik>
   );
 };
-
-export default ClusterDetailsForm;
