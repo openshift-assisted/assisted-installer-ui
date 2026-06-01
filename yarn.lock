@@ -1637,7 +1637,7 @@ __metadata:
     "@redhat-cloud-services/ai-client-state": ^0.15.0
     "@redhat-cloud-services/lightspeed-client": ^0.15.0
     "@tsconfig/recommended": ^1.0.13
-    "@types/node": ^24.0.0
+    "@types/node": ^24.12.4
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     file-saver: ^2.0.2
@@ -1653,7 +1653,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/eslint-config@workspace:tools/eslint-config"
   dependencies:
-    "@types/eslint": ^9.0.0
+    "@types/eslint": ^9.6.1
     "@typescript-eslint/eslint-plugin": ^5.54.1
     "@typescript-eslint/parser": ^5.54.1
     eslint: ^8.36.0
@@ -1687,7 +1687,7 @@ __metadata:
   resolution: "@openshift-assisted/toolbox@workspace:tools/toolbox"
   dependencies:
     "@tsconfig/recommended": ^1.0.13
-    "@types/node": ^24.0.0
+    "@types/node": ^24.12.4
     chokidar: ^3.5.3
     lodash: ^4.18.1
     zx: ^8.8.5
@@ -1700,7 +1700,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/types@workspace:libs/types"
   dependencies:
-    "@types/js-yaml": ^4.0.1
+    "@types/js-yaml": ^4.0.9
     js-yaml: ^4.1.1
     sw2dts: ^2.6.3
   languageName: unknown
@@ -1712,7 +1712,7 @@ __metadata:
   dependencies:
     "@openshift-assisted/ui-lib": "workspace:*"
     "@testing-library/cypress": ^9.0.0
-    "@types/lodash": ^4.14.121
+    "@types/lodash": ^4.17.24
     cypress: 13.17.0
     cypress-file-upload: 5.0.8
     cypress-fill-command: ^1.0.2
@@ -1737,12 +1737,12 @@ __metadata:
     "@patternfly/react-tokens": 6.4.0
     "@react-hook/resize-observer": ^2.0.2
     "@tsconfig/recommended": ^1.0.13
-    "@types/file-saver": ^2.0.1
-    "@types/human-date": ^1.4.0
-    "@types/humanize-plus": ^1.8.0
-    "@types/js-yaml": ^4.0.1
-    "@types/lodash-es": ^4.17.6
-    "@types/node": ^24.0.0
+    "@types/file-saver": ^2.0.7
+    "@types/human-date": ^1.4.5
+    "@types/humanize-plus": ^1.8.2
+    "@types/js-yaml": ^4.0.9
+    "@types/lodash-es": ^4.17.12
+    "@types/node": ^24.12.4
     "@types/react": 18.2.37
     "@types/react-autosuggest": ^10.1.5
     "@types/react-dom": 18.2.15
@@ -4108,7 +4108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*, @types/eslint@npm:^9.0.0":
+"@types/eslint@npm:*, @types/eslint@npm:^9.6.1":
   version: 9.6.1
   resolution: "@types/eslint@npm:9.6.1"
   dependencies:
@@ -4200,7 +4200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/file-saver@npm:^2.0.1":
+"@types/file-saver@npm:^2.0.7":
   version: 2.0.7
   resolution: "@types/file-saver@npm:2.0.7"
   checksum: c3d1cd80eab1214767922cabac97681f3fb688e82b74890450d70deaca49537949bbc96d80d363d91e8f0a4752c7164909cc8902d9721c5c4809baafc42a3801
@@ -4273,21 +4273,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/human-date@npm:^1.4.0":
+"@types/human-date@npm:^1.4.5":
   version: 1.4.5
   resolution: "@types/human-date@npm:1.4.5"
   checksum: 66bfd4a00d42eadabba8d8ace2ddbae41ac65c734223da4ebb0cb3682dcd10513aade37262b716d6d7a4e7f1ba2381ff29460fc2528d6ed151514170b7809b79
   languageName: node
   linkType: hard
 
-"@types/humanize-plus@npm:^1.8.0":
+"@types/humanize-plus@npm:^1.8.2":
   version: 1.8.2
   resolution: "@types/humanize-plus@npm:1.8.2"
   checksum: a95ba6e42b71d3a11bf1b5c1f9ae2d76f4344191c88ff4149a89d53857b4d5b45df8c54555bcb7b7b6faf3198a470aba264414b5a140f82092c705c2d26d4075
   languageName: node
   linkType: hard
 
-"@types/js-yaml@npm:^4.0.1":
+"@types/js-yaml@npm:^4.0.9":
   version: 4.0.9
   resolution: "@types/js-yaml@npm:4.0.9"
   checksum: e5e5e49b5789a29fdb1f7d204f82de11cb9e8f6cb24ab064c616da5d6e1b3ccfbf95aa5d1498a9fbd3b9e745564e69b4a20b6c530b5a8bbb2d4eb830cda9bc69
@@ -4308,7 +4308,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash-es@npm:^4.17.6":
+"@types/lodash-es@npm:^4.17.12":
   version: 4.17.12
   resolution: "@types/lodash-es@npm:4.17.12"
   dependencies:
@@ -4317,7 +4317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:^4.14.121, @types/lodash@npm:^4.14.175":
+"@types/lodash@npm:*, @types/lodash@npm:^4.14.175, @types/lodash@npm:^4.17.24":
   version: 4.17.24
   resolution: "@types/lodash@npm:4.17.24"
   checksum: 2b254973145ecdf9b052d83f00ebaa111245f319d45b217c78f81cea8892fda81180fc749bd50a99c08f4e5efceb834c774d3f74153a50a9c4a28648343dc9f3
@@ -4397,12 +4397,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.0.0":
-  version: 24.12.2
-  resolution: "@types/node@npm:24.12.2"
+"@types/node@npm:^24.12.4":
+  version: 24.12.4
+  resolution: "@types/node@npm:24.12.4"
   dependencies:
     undici-types: ~7.16.0
-  checksum: 81819134cba7708abf6b969c6dbd37a863f378076f51b93c0031ce93060378914d60ea5a208dfd6a7dd368b30af9061dc7e78d5e3e492151a5df61f8268b628e
+  checksum: 1fbacea2224e98aedcac45df9d71ccf3af138707b131c33b8c6b1e65fab3e41992d826eb92e229a52408ef0983f24f6c711cf69054274001732677ce5559d934
   languageName: node
   linkType: hard
 

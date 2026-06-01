@@ -6,7 +6,7 @@
   "dependencies": {
     "@openshift-assisted/ui-lib": "workspace:*",
     "@testing-library/cypress": "^9.0.0",
-    "@types/lodash": "^4.14.121",
+    "@types/lodash": "^4.17.24",
     "cypress": "13.17.0",
     "cypress-file-upload": "5.0.8",
     "cypress-fill-command": "^1.0.2",
