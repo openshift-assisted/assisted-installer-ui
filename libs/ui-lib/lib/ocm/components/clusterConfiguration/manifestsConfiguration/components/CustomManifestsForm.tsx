@@ -23,6 +23,7 @@ import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
 import useClusterCustomManifests from '../../../../hooks/useClusterCustomManifests';
 import { ClustersService } from '../../../../services';
 import { CustomManifestsArray } from './CustomManifestsArray';
+import { userProvidedManifests } from './utils';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
 import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
 import { ClustersAPI } from '../../../../services/apis';
@@ -70,7 +71,8 @@ export const CustomManifestsForm = ({
     if (customManifests && !customManifestsLocalRef.current.length) {
       const initValues = getInitialValues(customManifests);
       setInitialValues(initValues);
-      customManifestsLocalRef.current = !!customManifests.length ? initValues.manifests : [];
+      customManifestsLocalRef.current =
+        userProvidedManifests(customManifests).length > 0 ? initValues.manifests : [];
     }
   }, [customManifests, getInitialValues]);
 
