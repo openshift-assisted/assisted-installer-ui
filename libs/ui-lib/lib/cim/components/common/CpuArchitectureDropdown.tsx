@@ -86,7 +86,7 @@ const CpuArchitectureDropdown = ({
             id={fieldId}
             ref={toggleRef}
             onClick={() => setCpuArchOpen(!cpuArchOpen)}
-            className="pf-v6-u-w-100"
+            isFullWidth
           >
             {value ? architectureData[value].label : t('ai:CPU architecture')}
           </MenuToggle>
@@ -94,6 +94,7 @@ const CpuArchitectureDropdown = ({
         isOpen={cpuArchOpen}
         onSelect={onCpuArchSelect}
         onOpenChange={() => setCpuArchOpen(!cpuArchOpen)}
+        shouldFocusToggleOnSelect
       >
         {dropdownItems}
       </Dropdown>
