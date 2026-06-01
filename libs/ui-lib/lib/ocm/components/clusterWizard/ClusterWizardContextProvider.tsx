@@ -69,8 +69,8 @@ const getWizardStepIds = (
   } else {
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
   }
-  if (isSingleClusterFeatureEnabled) {
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['credentials-download']);
+  if (isSingleClusterFeatureEnabled && !stepsCopy.includes('credentials-download')) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'custom-manifests', ['credentials-download']);
   }
 
   return stepsCopy;
@@ -156,7 +156,7 @@ const ClusterWizardContextProvider = ({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uiSettings, UISettingsLoading, UISettingsError]);
+  }, [uiSettings, UISettingsLoading, UISettingsError, isSingleClusterFeatureEnabled]);
 
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
