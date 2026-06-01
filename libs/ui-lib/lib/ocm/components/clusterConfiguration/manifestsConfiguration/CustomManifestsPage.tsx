@@ -20,6 +20,7 @@ import { getFieldId } from '../../../../common/components/ui/formik';
 import { isOciPlatformType } from '../../utils';
 import DeleteCustomManifestModal from './DeleteCustomManifestModal';
 import { ClustersService } from '../../../services';
+import { userProvidedManifests } from './components/utils';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 
 export const CustomManifestsPage = ({
@@ -75,7 +76,13 @@ export const CustomManifestsPage = ({
   const cleanCustomManifests = React.useCallback(async () => {
     if (!clusterWizardContext.uiSettings?.customManifestsAdded || !cluster.id) return;
     const { data: manifests } = await ClustersAPI.getManifests(cluster.id);
-    await ClustersService.removeClusterManifests(manifests, cluster.id);
+    const manifestsToRemove = userProvidedManifests(manifests).map((manifest) => ({
+      ...manifest,
+      folder: manifest.folder || 'manifests',
+      fileName: manifest.fileName || '',
+      yamlContent: '',
+    }));
+    await ClustersService.removeClusterManifests(manifestsToRemove, cluster.id);
     setUseCustomManifests(false);
     setDeleteModalOpen(false);
     await clusterWizardContext.updateUISettings({
