@@ -49,6 +49,7 @@ describe(`Assisted Installer SNO Host discovery`, () => {
     beforeEach(() => {
       setTestStartSignal('HOST_DISCOVERED_1');
       commonActions.visitClusterDetailsPage();
+      commonActions.verifyIsAtStep('Host discovery');
     });
 
     it('Should rename the host, get valid state and see the "next" button enabled', () => {
