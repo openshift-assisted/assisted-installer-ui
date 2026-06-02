@@ -8,6 +8,8 @@ import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/
 import { getApiErrorMessage } from '../../../../../common/api';
 import { StaticIpFormProps } from './propTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
+import { useFeature } from '../../../../hooks/use-feature';
+import { getStaticNetworkConfig } from '../data/fromInfraEnv';
 
 /** Reports form state and triggers save on every value change (useFormikAutoSave) */
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
@@ -69,7 +71,14 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
   const { clearAlerts, addAlert } = useAlerts();
   const { captureException } = useErrorMonitor();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const initialValues = showEmptyValues ? getEmptyValues() : getInitialValues(infraEnv);
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const prefillFromInfraEnv = isSingleClusterFeatureEnabled && !!getStaticNetworkConfig(infraEnv);
+  const initialValues = React.useMemo(() => {
+    if (showEmptyValues && !prefillFromInfraEnv) {
+      return getEmptyValues();
+    }
+    return getInitialValues(infraEnv);
+  }, [showEmptyValues, prefillFromInfraEnv, infraEnv, getInitialValues, getEmptyValues]);
 
   const handleSubmit = async (values: StaticIpFormValues) => {
     clearAlerts();
