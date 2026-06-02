@@ -8,6 +8,8 @@ import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/
 import { getApiErrorMessage } from '../../../../../common/api';
 import { StaticIpFormProps } from './propTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
+import { useFeature } from '../../../../hooks/use-feature';
+import { getStaticNetworkConfig } from '../data/fromInfraEnv';
 
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
@@ -55,16 +57,16 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
   const { clearAlerts, addAlert } = useAlerts();
   const { captureException } = useErrorMonitor();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const prefillFromInfraEnv = isSingleClusterFeatureEnabled && !!getStaticNetworkConfig(infraEnv);
   const [initialValues, setInitialValues] = React.useState<StaticIpFormValues | undefined>();
   React.useEffect(() => {
-    if (showEmptyValues) {
-      //after view changed the formik should be rendered with empty values
+    if (showEmptyValues && !prefillFromInfraEnv) {
       setInitialValues(getEmptyValues());
     } else {
       setInitialValues(getInitialValues(infraEnv));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showEmptyValues, prefillFromInfraEnv, infraEnv, getEmptyValues, getInitialValues]);
 
   if (!initialValues) {
     return null;

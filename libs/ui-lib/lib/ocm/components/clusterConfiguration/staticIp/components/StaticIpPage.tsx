@@ -9,7 +9,8 @@ import {
 } from '@patternfly/react-core';
 import { StaticIpInfo, StaticIpView } from '../data/dataTypes';
 import StaticIpViewRadioGroup from './StaticIpViewRadioGroup';
-import { getStaticIpInfo } from '../data/fromInfraEnv';
+import { getStaticIpInfo, getStaticNetworkConfig } from '../data/fromInfraEnv';
+import { useFeature } from '../../../../hooks/use-feature';
 import { StaticIpFormState, StaticIpPageProps, StaticIpViewProps } from './propTypes';
 import { YamlView } from './YamlView/YamlView';
 import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
@@ -33,6 +34,8 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   onFormStateChange: onFormStateChangeParent,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const prefillFromInfraEnv = isSingleClusterFeatureEnabled && !!getStaticNetworkConfig(infraEnv);
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
 
@@ -44,25 +47,31 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
     [clusterWizardContext],
   );
 
-  const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(() => {
-    return getStaticIpInfo(infraEnv);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(
+    () => getStaticIpInfo(infraEnv),
+    [infraEnv],
+  );
+
+  const onFormStateChange = React.useCallback(
+    (formState: StaticIpFormState) => {
+      const hasFilledData =
+        clusterWizardContext.currentStepId === 'static-ip-host-configurations' ||
+        !formState.isEmpty;
+      setConfirmOnChangeView(hasFilledData);
+      onFormStateChangeParent(formState);
+    },
+    [clusterWizardContext.currentStepId, onFormStateChangeParent],
+  );
+
   if (!initialStaticIpInfo) {
     return null;
   }
-  const onFormStateChange = (formState: StaticIpFormState) => {
-    const hasFilledData =
-      clusterWizardContext.currentStepId === 'static-ip-host-configurations' || !formState.isEmpty;
-    setConfirmOnChangeView(hasFilledData);
-    onFormStateChangeParent(formState);
-  };
 
   const viewProps: StaticIpViewProps = {
     onFormStateChange,
     infraEnv,
     updateInfraEnv,
-    showEmptyValues: viewChanged,
+    showEmptyValues: viewChanged && !prefillFromInfraEnv,
   };
 
   const getContent = () => {
