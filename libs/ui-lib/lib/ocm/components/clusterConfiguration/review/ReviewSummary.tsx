@@ -19,10 +19,7 @@ import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
 import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
 import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { ListManifestsExtended } from '../manifestsConfiguration/data/dataTypes';
-
-const userProvidedManifests = (manifests: ListManifestsExtended | undefined) =>
-  (manifests ?? []).filter((m) => m.manifestSource !== 'system');
+import { userProvidedManifests } from '../manifestsConfiguration/components/utils';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
