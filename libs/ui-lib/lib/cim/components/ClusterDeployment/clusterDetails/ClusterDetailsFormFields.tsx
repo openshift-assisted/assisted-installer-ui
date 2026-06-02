@@ -17,7 +17,6 @@ import { ClusterDetailsValues } from '../../../../common/components/clusterWizar
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import CpuArchitectureDropdown from '../../common/CpuArchitectureDropdown';
 import ControlPlaneNodesDropdown from '../../../../common/components/clusterConfiguration/ControlPlaneNodesDropdown';
-import { getNetworkType } from '../../helpers';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;
@@ -59,18 +58,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const { t } = useTranslation();
   const nameInputRef = React.useRef<HTMLInputElement>();
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
-  const { values, setFieldValue } = useFormikContext<ClusterDetailsValues>();
+  const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain } = values;
-
-  React.useEffect(() => {
-    if (!versions.length && !values.openshiftVersion && !isEditFlow) {
-      const fallbackOpenShiftVersion = allVersions.find((version) => version.default);
-      setFieldValue('customOpenshiftSelect', fallbackOpenShiftVersion?.value);
-      setFieldValue('openshiftVersion', fallbackOpenShiftVersion?.value);
-      setFieldValue('networkType', getNetworkType(fallbackOpenShiftVersion));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   React.useEffect(() => {
     nameInputRef.current?.focus();
