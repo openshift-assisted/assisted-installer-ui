@@ -60,7 +60,12 @@ const validationSchema = (t: TFunction) =>
     Yup.object<OcmDiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      httpsProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpProxy',
+        t,
+        supportHttps: true,
+      }),
       noProxy: noProxyValidationSchema(t),
     }),
   );
@@ -165,7 +170,7 @@ export const OcmDiscoveryImageConfigForm = ({
                         'ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process',
                       )}
                     />
-                    <ProxyFields />
+                    <ProxyFields supportHttps />
                     <CertificateFields />
                   </Form>
                 </StackItem>

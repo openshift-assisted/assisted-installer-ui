@@ -9,22 +9,25 @@ export const httpProxyValidationSchema = ({
   values,
   pairValueName,
   allowEmpty,
+  supportHttps = false,
   t,
 }: {
   values: ProxyFieldsType;
   pairValueName: 'httpProxy' | 'httpsProxy';
   allowEmpty?: boolean;
+  supportHttps?: boolean;
   t: TFunction;
 }) => {
   const validation = Yup.string().test(
     'http-proxy-validation',
-    t('ai:Provide a valid HTTP URL.'),
+    supportHttps ? t('ai:Provide a valid HTTP or HTTPS URL.') : t('ai:Provide a valid HTTP URL.'),
     (value?: string) => {
       if (!value) {
         return true;
       }
 
-      if (!value.startsWith('http://')) {
+      const supportedProtocols = supportHttps ? ['http://', 'https://'] : ['http://'];
+      if (!supportedProtocols.some((protocol) => value.startsWith(protocol))) {
         return false;
       }
 
