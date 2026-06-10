@@ -43,7 +43,7 @@
     "lint": "yarn run -T eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache ."
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.1",
+    "@types/js-yaml": "^4.0.9",
     "js-yaml": "^4.1.1",
     "sw2dts": "^2.6.3"
   },
