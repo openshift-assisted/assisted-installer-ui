@@ -1549,7 +1549,7 @@ __metadata:
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^4.3.0
-    axios: ^1.15.2
+    axios: ^1.17.0
     concurrently: ^9.0.0
     i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
@@ -1591,7 +1591,7 @@ __metadata:
     "@tsconfig/vite-react": ^7.0.2
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
-    axios: ^1.15.2
+    axios: ^1.17.0
     i18next: ^20.4 || ^21
     parse-url: ^9.2.0
     react: ^18.2.0
@@ -1625,7 +1625,7 @@ __metadata:
     "@types/react-router": ^5.1.x
     "@types/react-router-dom": 5.3.x
     "@vitejs/plugin-react-swc": ^4.3.0
-    axios: ^1.15.2
+    axios: ^1.17.0
     i18next: ^20.4 || ^21
     i18next-browser-languagedetector: ^6.1.2
     lodash: ^4.18.1
@@ -1698,7 +1698,7 @@ __metadata:
   resolution: "@openshift-assisted/sdks@workspace:libs/sdks"
   dependencies:
     "@openapitools/openapi-generator-cli": ^2.7.0
-    axios: ^1.15.2
+    axios: ^1.17.0
     typescript: ^5.9.3
   languageName: unknown
   linkType: soft
@@ -5872,14 +5872,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.15.2":
-  version: 1.15.2
-  resolution: "axios@npm:1.15.2"
+"axios@npm:^1.12.2, axios@npm:^1.13.5, axios@npm:^1.14.0, axios@npm:^1.17.0, axios@npm:^1.6.1":
+  version: 1.17.0
+  resolution: "axios@npm:1.17.0"
   dependencies:
-    follow-redirects: ^1.15.11
+    follow-redirects: ^1.16.0
     form-data: ^4.0.5
+    https-proxy-agent: ^5.0.1
     proxy-from-env: ^2.1.0
-  checksum: e7d208b751959c7c6936417b870d6286979e0dff17784ae230d3988e754b6322682cb136e25669b534072b6f44c08715801ab961227eb8cc075323d9fda8ad43
+  checksum: 4bf030d85fde8720ebd112115223f162844505e4e44687749ba36e7b37241ef2e875fb8a5406be82097f4bc907362dc74f3ae94ea2c9cffca4fd2b2c37cafc5c
   languageName: node
   linkType: hard
 
@@ -9745,7 +9746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.16.0":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
