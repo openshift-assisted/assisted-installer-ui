@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { BundleCreateParams, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStep,
   getFormikErrorFields,
@@ -29,9 +29,31 @@ const getOperatorsInitialValues = (
   uiSettings: UISettingsValues | undefined,
   cluster: Cluster,
 ): OperatorsValues => {
+  const olmOperators = selectOlmOperators(cluster);
+  const selectedOperators = olmOperators
+    .filter((operator) => operator.name && !operator.sourceBundles?.length)
+    .flatMap(({ name }) => (name ? [name] : []));
+
+  const selectedBundlesFromOperatorBundles = (cluster.operatorBundles || []).map(
+    ({ id, optionalOperators }) => ({
+      id,
+      optionalOperators: optionalOperators || [],
+    }),
+  );
+
+  // Backward compatibility: old clusters can miss `operatorBundles`.
+  const selectedBundlesFromUiSettings = (uiSettings?.bundlesSelected || []).map((id) => ({
+    id,
+    optionalOperators: [],
+  }));
+
+  const selectedBundles = !!cluster.operatorBundles?.length
+    ? selectedBundlesFromOperatorBundles
+    : selectedBundlesFromUiSettings;
+
   return {
-    selectedBundles: uiSettings?.bundlesSelected || [],
-    selectedOperators: selectOlmOperators(cluster).map((o) => o.name || ''),
+    selectedBundles,
+    selectedOperators,
   };
 };
 
@@ -81,20 +103,31 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { updateUISettings, uiSettings } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
+  const initialValues = React.useMemo(
+    () => getOperatorsInitialValues(uiSettings, cluster),
+    [cluster, uiSettings],
+  );
 
   const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
-    const enabledOperators = values.selectedOperators.map((so) => ({
-      name: so,
-    }));
+    const selectedOperators = values.selectedOperators.map((name) => ({ name }));
+
+    const selectedBundles: BundleCreateParams[] = values.selectedBundles.map(
+      ({ id, optionalOperators }) => ({
+        id,
+        optionalOperators,
+      }),
+    );
 
     try {
       const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
-        olmOperators: enabledOperators,
+        operatorBundles: selectedBundles,
+        olmOperators: selectedOperators,
       });
 
-      await updateUISettings({ bundlesSelected: values.selectedBundles });
+      // Backward compatibility: old clusters used uiSettings.bundlesSelected, keep a single source of truth in operatorBundles.
+      await updateUISettings({ bundlesSelected: undefined });
 
       dispatch(updateCluster(updatedCluster));
     } catch (e) {
@@ -108,7 +141,7 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   };
 
   return (
-    <Formik initialValues={getOperatorsInitialValues(uiSettings, cluster)} onSubmit={handleSubmit}>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       <OperatorsForm cluster={cluster} />
     </Formik>
   );

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Alert,
   Card,
   CardBody,
   CardHeader,
@@ -13,21 +14,24 @@ import {
   Title,
   Tooltip,
 } from '@patternfly/react-core';
+import { Bundle, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  Bundle,
-  PreflightHardwareRequirements,
-} from '@openshift-assisted/types/assisted-installer-service';
-import { ExternalLink, OperatorsValues, PopoverIcon, singleClusterBundles } from '../../../common';
+  ExternalLink,
+  OperatorsValues,
+  PopoverIcon,
+  selectClusterValidationsInfo,
+  singleClusterBundles,
+} from '../../../common';
 import { useFormikContext } from 'formik';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { useFeature } from '../../hooks/use-feature';
-import { getNewBundleOperators } from '../clusterConfiguration/operators/utils';
 import { bundleSpecs } from '../clusterConfiguration/operators/bundleSpecs';
 import {
   highlightMatch,
   useOperatorSpecs,
 } from '../../../common/components/operators/operatorSpecs';
 import { useClusterWizardContext } from './ClusterWizardContext';
+import OptionalOperatorsDropdown from './OptionalOperatorsDropdown';
 import './OperatorsBundle.css';
 
 const BundleLabel = ({ bundle, searchTerm }: { bundle: Bundle; searchTerm?: string }) => {
@@ -73,13 +77,13 @@ const BundleLabel = ({ bundle, searchTerm }: { bundle: Bundle; searchTerm?: stri
 const BundleCard = ({
   bundle,
   bundles,
-  preflightRequirements,
   searchTerm,
+  informationalMessage,
 }: {
   bundle: Bundle;
   bundles: Bundle[];
-  preflightRequirements: PreflightHardwareRequirements | undefined;
   searchTerm?: string;
+  informationalMessage?: string;
 }) => {
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const { isFeatureSupported } = useNewFeatureSupportLevel();
@@ -97,7 +101,7 @@ const BundleCard = ({
   const bundleSpec = bundleSpecs[bundle.id || ''];
 
   const incompatibleBundle = bundleSpec?.incompatibleBundles?.find((b) =>
-    values.selectedBundles.includes(b),
+    values.selectedBundles.some((bundleSelection) => bundleSelection.id === b),
   );
   const isAssistedMigration = uiSettings?.isAssistedMigration;
   const disabledReason = hasUnsupportedOperators
@@ -112,23 +116,30 @@ const BundleCard = ({
     ? 'This bundle is not available for the current configuration, you might be able to use the standalone operators instead.'
     : undefined;
 
+  const addBundle = (
+    selectedBundles: OperatorsValues['selectedBundles'],
+    bundle: Bundle,
+  ): OperatorsValues['selectedBundles'] => [
+    ...selectedBundles,
+    { id: bundle.id || '', optionalOperators: bundle.optionalOperators || [] },
+  ];
+
+  const removeBundle = (
+    selectedBundles: OperatorsValues['selectedBundles'],
+    bundleId: Bundle['id'],
+  ): OperatorsValues['selectedBundles'] =>
+    selectedBundles.filter((selectedBundle) => selectedBundle.id !== bundleId);
+
   const onSelect = (checked: boolean) => {
-    const newBundles = checked
-      ? [...values.selectedBundles, bundle.id || '']
-      : values.selectedBundles.filter((sb) => sb !== bundle.id);
-    setFieldValue('selectedBundles', newBundles);
-    const newOperators = getNewBundleOperators(
-      values.selectedOperators,
-      newBundles,
-      bundles,
-      bundle,
-      preflightRequirements,
-      checked,
-    );
-    setFieldValue('selectedOperators', newOperators);
+    const nextBundles = checked
+      ? addBundle(values.selectedBundles, bundle)
+      : removeBundle(values.selectedBundles, bundle.id);
+    setFieldValue('selectedBundles', nextBundles);
   };
 
-  const isSelected = values.selectedBundles.includes(bundle.id || '');
+  const isSelected = values.selectedBundles.some(
+    (selectedBundle) => selectedBundle.id === bundle.id,
+  );
   const checkboxId = `bundle-${bundle.id || ''}`;
   return (
     <Tooltip content={disabledReason} hidden={!disabledReason}>
@@ -145,7 +156,7 @@ const BundleCard = ({
             selectableActionId: checkboxId,
             selectableActionAriaLabelledby: checkboxId,
             name: checkboxId,
-            onChange: (_, checked) => onSelect(checked),
+            onChange: (_, checked) => onSelect(!!checked),
             isChecked: isSelected,
           }}
         >
@@ -158,6 +169,25 @@ const BundleCard = ({
             <StackItem isFilled>
               <div>{highlightMatch(bundle.description || '', searchTerm)}</div>
             </StackItem>
+            {!!bundle.optionalOperators?.length && (
+              <StackItem onClick={(e) => e.stopPropagation()}>
+                <OptionalOperatorsDropdown
+                  bundleId={bundle.id || ''}
+                  optionalOperatorIds={bundle.optionalOperators}
+                  selectedBundles={values.selectedBundles}
+                  setSelectedBundles={(selectedBundles) =>
+                    setFieldValue('selectedBundles', selectedBundles)
+                  }
+                  isDisabled={!isSelected || !!disabledReason}
+                  getOperatorLabel={(operatorId) => opSpecs[operatorId]?.title || operatorId}
+                />
+              </StackItem>
+            )}
+            {informationalMessage && (
+              <StackItem>
+                <Alert isInline variant="info" title={informationalMessage} />
+              </StackItem>
+            )}
           </Stack>
         </CardBody>
       </Card>
@@ -168,15 +198,29 @@ const BundleCard = ({
 const OperatorsBundle = ({
   bundles,
   allBundles,
-  preflightRequirements,
   searchTerm,
+  cluster,
 }: {
   bundles: Bundle[];
   allBundles: Bundle[];
-  preflightRequirements: PreflightHardwareRequirements | undefined;
   searchTerm?: string;
+  cluster: Cluster;
 }) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const openshiftAiGpuInfoMessage = React.useMemo(() => {
+    const validationsInfo = selectClusterValidationsInfo(cluster);
+    if (!validationsInfo) {
+      return undefined;
+    }
+    return Object.values(validationsInfo)
+      .flat()
+      .find(
+        (validation) =>
+          validation?.id === 'openshift-ai-gpu-requirements-satisfied' &&
+          validation?.status === 'success' &&
+          !!validation.message,
+      )?.message;
+  }, [cluster]);
 
   return (
     <Stack hasGutter>
@@ -195,8 +239,10 @@ const OperatorsBundle = ({
               <BundleCard
                 bundle={bundles.find((b) => b.id === bundle.id) || bundle}
                 bundles={bundles}
-                preflightRequirements={preflightRequirements}
                 searchTerm={searchTerm}
+                informationalMessage={
+                  bundle.id === 'openshift-ai' ? openshiftAiGpuInfoMessage : undefined
+                }
               />
             </GalleryItem>
           ))}

@@ -136,9 +136,14 @@ const OperatorCheckbox = ({
   const fieldId = getFieldId(operatorId, 'input');
   const supportLevel = getFeatureSupportLevel(featureId);
 
-  const isInBundle = values.selectedBundles.some(
-    (sb) => !!bundles.find((b) => b.id === sb)?.operators?.includes(operatorId),
+  const isRequiredByBundle = values.selectedBundles.some(
+    (selectedBundle) =>
+      !!bundles.find((bundle) => bundle.id === selectedBundle.id)?.operators?.includes(operatorId),
   );
+  const isSelectedForBundle = values.selectedBundles.some((selectedBundle) =>
+    selectedBundle.optionalOperators?.includes(operatorId),
+  );
+  const isInBundle = isRequiredByBundle || isSelectedForBundle;
 
   const isChecked = values.selectedOperators.includes(operatorId) || isInBundle;
 
@@ -154,8 +159,10 @@ const OperatorCheckbox = ({
     parentOperatorName = opSpecs[parentOperator.operatorName]?.title || parentOperator.operatorName;
   }
 
-  const disabledReason = isInBundle
-    ? 'This operator is part of a bundle and cannot be deselected.'
+  const disabledReason = isRequiredByBundle
+    ? 'This operator is part of a selected bundle and cannot be deselected.'
+    : isSelectedForBundle
+    ? 'This optional operator is selected through a bundle. Use the bundle card to change it.'
     : notStandalone
     ? 'This operator cannot be installed as a standalone'
     : parentOperatorName

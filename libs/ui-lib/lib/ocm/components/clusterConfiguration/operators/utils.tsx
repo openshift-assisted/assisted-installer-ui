@@ -2,6 +2,7 @@ import {
   Bundle,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { SelectedBundle } from '../../../../common/types';
 import { OperatorSpec } from '../../../../common/components/operators/operatorSpecs';
 
 const getOperatorDependencies = (
@@ -68,7 +69,7 @@ const getBundleOperators = (
 
 export const getNewBundleOperators = (
   currentOperators: string[],
-  currentBundles: string[],
+  currentBundles: SelectedBundle[],
   allBundles: Bundle[],
   newBundle: Bundle,
   preflightRequirements: PreflightHardwareRequirements | undefined,
@@ -81,10 +82,10 @@ export const getNewBundleOperators = (
     return Array.from(new Set(combined));
   }
 
-  const newBundles = currentBundles.filter((b) => b !== newBundle.id);
+  const newBundles = currentBundles.filter((bundle) => bundle.id !== newBundle.id);
   const operatorsToKeep = [
-    ...newBundles.reduce((acc, bundleId) => {
-      const bundle = allBundles.find(({ id }) => id === bundleId);
+    ...newBundles.reduce((acc, selectedBundle) => {
+      const bundle = allBundles.find(({ id }) => id === selectedBundle.id);
       if (bundle) {
         const bundleOperators = getBundleOperators(bundle, preflightRequirements);
         bundleOperators.forEach((op) => {
