@@ -112,6 +112,10 @@
     "type": "git",
     "url": "https://github.com/openshift-assisted/assisted-installer-ui.git"
   },
+  "bugs": {
+    "url": "https://github.com/openshift-assisted/assisted-installer-ui/issues"
+  },
+  "homepage": "https://github.com/openshift-assisted/assisted-installer-ui/tree/master/libs/ui-lib#readme",
   "scripts": {
     "build": "yarn run -T tsc --build --verbose && yarn copy:css",
     "check_circular_deps": "yarn run -T dpdm --transform --warning false --tree false --exit-code circular:1 ./lib/index.ts",
