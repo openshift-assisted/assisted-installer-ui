@@ -3,3 +3,4 @@ export * from './clusterDetails';
 export * from './staticIp';
 export * from './operators';
 export * from './hostDiscovery';
+export * from './customManifests';

@@ -8,8 +8,8 @@ import {
   MenuToggleElement,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
-import { getFieldId } from '../../../../../common/components/ui/formik';
-import { PopoverIcon } from '../../../../../common';
+import { getFieldId } from '../../../../../../common/components/ui/formik';
+import { PopoverIcon } from '../../../../../../common';
 
 const FolderLabel = () => {
   return (

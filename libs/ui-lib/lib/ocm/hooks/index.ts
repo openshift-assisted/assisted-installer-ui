@@ -9,3 +9,4 @@ export { default as useInfraEnvHosts } from './useInfraEnvHosts';
 export { useFeatureDetection } from './use-feature-detection';
 export * from './use-feature';
 export * from './useLateBinding';
+export * from './useClusterCustomManifests';
