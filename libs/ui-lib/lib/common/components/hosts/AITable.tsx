@@ -84,7 +84,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
 };
 
 // eslint-disable-next-line
-const AITable = <R extends any>({
+export const AITable = <R extends any>({
   data,
   testId = 'hosts-table',
   className,
@@ -285,4 +285,3 @@ const AITable = <R extends any>({
     </>
   );
 };
-export default AITable;

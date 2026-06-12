@@ -1,7 +1,7 @@
 import React from 'react';
 import { Content, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
-import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
+import { InformationAndAlerts } from '../clusterConfiguration';
 import { CpuArchitecture } from '../../../common';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';

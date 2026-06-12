@@ -11,14 +11,14 @@ import {
   ModalVariant,
   ModalHeader,
 } from '@patternfly/react-core';
-import { AdditionalNTPSourcesField, StatusErrorType } from '../../../common';
-import { ntpSourceValidationSchema } from '../../validationSchemas/ntpValidation';
-import { AlertFormikError } from '../../../common/components/ui';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 import {
   Cluster,
   V2ClusterUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import type { StatusErrorType } from '../../types';
+import { ntpSourceValidationSchema } from '../../validationSchemas';
+import { AdditionalNTPSourcesField, AlertFormikError } from '../ui';
+import { useTranslation } from '../../hooks';
 
 export type AdditionalNTPSourcesFormProps = {
   additionalNtpSource: Cluster['additionalNtpSource'];

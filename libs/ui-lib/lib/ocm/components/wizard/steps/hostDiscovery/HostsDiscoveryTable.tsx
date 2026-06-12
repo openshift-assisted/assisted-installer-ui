@@ -1,5 +1,7 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Stack, StackItem } from '@patternfly/react-core';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ChangeHostnameAction,
   selectSchedulableMasters,
@@ -13,20 +15,21 @@ import {
   hostnameColumn,
   memoryColumn,
   roleColumn,
-} from '../../../common';
-import { HostsTableModals, useHostsTable } from './use-hosts-table';
-import HostsTable from '../../../common/components/hosts/HostsTable';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { hardwareStatusColumn } from './HardwareStatus';
-import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
-import { useSelector } from 'react-redux';
-import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+  HostsTable,
+  HostDetail,
+  ExpandComponentProps,
+  usePagination,
+  useTranslation,
+} from '../../../../../common';
+import { selectCurrentClusterPermissionsState } from '../../../../store';
+import {
+  HostsTableModals,
+  useHostsTable,
+  AdditionalNTPSourcesDialogToggle,
+  hardwareStatusColumn,
+  HostsTableEmptyState,
+} from '../../../hosts';
+import { useClusterWizardContext } from '../../clusterWizardContext';
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
   <HostDetail
@@ -41,7 +44,7 @@ type HostsDiscoveryTableProps = {
   hosts: Host[];
 };
 
-const HostsDiscoveryTable = ({ cluster, hosts }: HostsDiscoveryTableProps) => {
+export const HostsDiscoveryTable = ({ cluster, hosts }: HostsDiscoveryTableProps) => {
   const {
     onEditHost,
     actionChecks,
@@ -124,5 +127,3 @@ const HostsDiscoveryTable = ({ cluster, hosts }: HostsDiscoveryTableProps) => {
     </>
   );
 };
-
-export default HostsDiscoveryTable;

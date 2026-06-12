@@ -8,7 +8,7 @@ export interface HostsDiscoveryTroubleshootingInfoLinkWithModalProps {
   isSingleNode?: boolean;
 }
 
-const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
+export const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
   isInline = false,
   isSingleNode = false,
 }: HostsDiscoveryTroubleshootingInfoLinkWithModalProps) => {
@@ -27,5 +27,3 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
     </InfoLinkWithModal>
   );
 };
-
-export default HostsDiscoveryTroubleshootingInfoLinkWithModal;

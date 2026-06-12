@@ -9,7 +9,7 @@ import {
 } from '../../../common';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { downloadClusterInstallationLogs } from './utils';
-import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';

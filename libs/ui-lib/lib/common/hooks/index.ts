@@ -3,3 +3,4 @@ export { default as useDeepCompareMemoize } from './useDeepCompareMemoize';
 export { useTranslation } from './use-translation-wrapper';
 
 export * from './useFieldErrorMsg';
+export * from './useFormikHelpers';

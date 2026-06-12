@@ -4,6 +4,24 @@ import { DropdownItem } from '@patternfly/react-core';
 
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
+  HostsTable,
+  DefaultExpandComponent,
+  HostsTableEmptyState,
+  cpuCoresColumn,
+  discoveredAtColumn,
+  disksColumn,
+  gpusColumn,
+  memoryColumn,
+  labelsColumn,
+  DiscoveryTroubleshootingModal,
+  MassChangeHostnameModal,
+  DeleteHostAction,
+  EmptyState,
+  usePagination,
+  useTranslation,
+} from '../../../common';
+import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
+import {
   useAgentsTable,
   useAgentsFilter,
   canEditBMH,
@@ -16,30 +34,11 @@ import {
   clusterColumn,
   agentHostnameColumn,
 } from '../Agent/tableColumns';
-import HostsTable, {
-  DefaultExpandComponent,
-  HostsTableEmptyState,
-} from '../../../common/components/hosts/HostsTable';
-import {
-  cpuCoresColumn,
-  discoveredAtColumn,
-  disksColumn,
-  gpusColumn,
-  memoryColumn,
-  labelsColumn,
-  DiscoveryTroubleshootingModal,
-  MassChangeHostnameModal,
-  DeleteHostAction,
-  EmptyState,
-} from '../../../common';
-import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
-import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
-import MassApproveAction from '../modals/MassApproveAction';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import InfraTableToolbar from './InfraTableToolbar';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 import { onAgentChangeHostname } from '../helpers';
+import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
+import MassApproveAction from '../modals/MassApproveAction';
+import InfraTableToolbar from './InfraTableToolbar';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;

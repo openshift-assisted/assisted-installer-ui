@@ -2,7 +2,7 @@ import React from 'react';
 import { GridItem, Alert, AlertVariant, AlertActionLink, Content } from '@patternfly/react-core';
 import { getReportIssueLink, canDownloadClusterLogs, useAlerts, toSentence } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
-import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ClusterInstallationErrorProps = {
