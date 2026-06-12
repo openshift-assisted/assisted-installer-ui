@@ -1,22 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import cloneDeep from 'lodash-es/cloneDeep.js';
+import { FieldArrayRenderProps, useField } from 'formik';
 import { Button, ButtonVariant, Divider, Flex, FlexItem } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons/dist/js/icons/plus-circle-icon';
-import { FieldArrayRenderProps, useField } from 'formik';
-import cloneDeep from 'lodash-es/cloneDeep.js';
 import {
   LoadingState,
   useAlerts,
   ConfirmationModal,
   getApiErrorMessage,
   handleApiError,
-} from '../../../../../common';
-import { ClustersAPI } from '../../../../services/apis';
-import { selectCurrentClusterPermissionsState } from '../../../../store';
+} from '../../../../../../common';
+import { ClustersAPI } from '../../../../../services/apis';
+import { selectCurrentClusterPermissionsState } from '../../../../../store';
+import { useClusterWizardContext } from '../../../clusterWizardContext';
 import { CustomManifest } from './CustomManifest';
 import { getEmptyManifest, getManifestName } from './utils';
-import { CustomManifestValues } from '../data/dataTypes';
-import { useClusterWizardContext } from '../../../wizard/clusterWizardContext/ClusterWizardContext';
+import { CustomManifestValues } from './types';
 
 const fieldName = 'manifests';
 

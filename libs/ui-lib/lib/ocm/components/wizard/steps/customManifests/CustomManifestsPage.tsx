@@ -9,21 +9,23 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 
-import { CustomManifests } from './components/CustomManifests';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { CustomManifestFormState } from './components/propTypes';
 import {
   ClustersAPI,
   ClusterWizardStepHeader,
   CustomManifestsAlert,
   isThirdPartyCNI,
-} from '../../../../common';
-import { getFieldId } from '../../../../common/components/ui/formik';
-import { isOciPlatformType } from '../../utils';
-import DeleteCustomManifestModal from './DeleteCustomManifestModal';
-import { ClustersService } from '../../../services';
-import { userProvidedManifests } from './components/utils';
-import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
+  getFieldId,
+} from '../../../../../common';
+import { ClustersService } from '../../../../services';
+import { isOciPlatformType } from '../../../utils';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import {
+  CustomManifestFormState,
+  userProvidedManifests,
+  CustomManifests,
+  DeleteCustomManifestModal,
+} from './components';
 
 export const CustomManifestsPage = ({
   cluster,

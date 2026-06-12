@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
-import { Form } from '@patternfly/react-core';
 import {
   FieldArray,
   FieldArrayRenderProps,
@@ -10,6 +9,8 @@ import {
   yupToFormErrors,
 } from 'formik';
 import isEqual from 'lodash-es/isEqual.js';
+import { Form } from '@patternfly/react-core';
+
 import {
   ErrorState,
   LoadingState,
@@ -17,16 +18,17 @@ import {
   handleApiError,
   useAlerts,
   useFormikAutoSave,
-} from '../../../../../common';
-import { CustomManifestsFormProps } from './propTypes';
-import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
-import useClusterCustomManifests from '../../../../hooks/useClusterCustomManifests';
-import { ClustersService } from '../../../../services';
+} from '../../../../../../common';
+import { ClustersAPI } from '../../../../../services/apis';
+import { ClustersService } from '../../../../../services';
+import { selectCurrentClusterPermissionsState } from '../../../../../store';
+import { useClusterCustomManifests } from '../../../../../hooks';
+import { useClusterWizardContext } from '../../../clusterWizardContext';
+
+import { CustomManifestValues, ManifestFormData } from './types';
 import { CustomManifestsArray } from './CustomManifestsArray';
+import { CustomManifestsFormProps } from './propTypes';
 import { userProvidedManifests } from './utils';
-import { selectCurrentClusterPermissionsState } from '../../../../store/slices/current-cluster/selectors';
-import { useClusterWizardContext } from '../../../wizard/clusterWizardContext/ClusterWizardContext';
-import { ClustersAPI } from '../../../../services/apis';
 
 const fieldName = 'manifests';
 

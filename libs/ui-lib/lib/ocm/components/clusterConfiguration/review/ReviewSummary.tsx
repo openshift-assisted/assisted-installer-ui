@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExpandableSection } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   DetailItem,
   DetailList,
@@ -15,11 +16,10 @@ import {
   ReviewPlatformTable,
   TableSummaryExpandable,
 } from '.';
-import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
-import useClusterCustomManifests from '../../../hooks/useClusterCustomManifests';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { userProvidedManifests } from '../manifestsConfiguration/components/utils';
+import { useClusterCustomManifests } from '../../../hooks';
+import { userProvidedManifests } from '../../wizard/steps/customManifests/components/utils';
 import { PlatformIntegrationNote } from '../../wizard/wizardFields';
+import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);

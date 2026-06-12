@@ -1,11 +1,11 @@
+import React from 'react';
+import { useField } from 'formik';
 import { Flex, FlexItem, Label, StackItem } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { useField } from 'formik';
-import React from 'react';
-import { CustomManifestValues } from '../data/dataTypes';
 import { CustomManifestComponentProps } from './propTypes';
+import { CustomManifestValues } from './types';
 
-const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentProps) => {
+export const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentProps) => {
   const [{ value }, { error }] = useField<CustomManifestValues>({
     name: fieldName,
   });
@@ -43,5 +43,3 @@ const CollapsedManifest = ({ manifestIdx, fieldName }: CustomManifestComponentPr
     </>
   );
 };
-
-export default CollapsedManifest;

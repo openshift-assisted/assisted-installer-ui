@@ -1,14 +1,17 @@
 import React from 'react';
-import { ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
-import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
-import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
-import { CustomManifestsPage } from '../clusterConfiguration/manifestsConfiguration/CustomManifestsPage';
-import { CustomManifestFormState } from '../clusterConfiguration/manifestsConfiguration/components/propTypes';
 import { useSelector } from 'react-redux';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
+import {
+  ClusterWizardStep,
+  getFormikErrorFields,
+  useAlerts,
+  WithErrorBoundary,
+} from '../../../../../common';
+import { selectCurrentClusterPermissionsState } from '../../../../store';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
+import { CustomManifestFormState } from './components';
+import { CustomManifestsPage } from './CustomManifestsPage';
 
 const getInitialFormStateProps = () => {
   return {
@@ -20,7 +23,8 @@ const getInitialFormStateProps = () => {
     isEmpty: true,
   };
 };
-const CustomManifestStep = ({ cluster }: { cluster: Cluster }) => {
+
+export const CustomManifestStep = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { alerts } = useAlerts();
@@ -60,5 +64,3 @@ const CustomManifestStep = ({ cluster }: { cluster: Cluster }) => {
     </ClusterWizardStep>
   );
 };
-
-export default CustomManifestStep;

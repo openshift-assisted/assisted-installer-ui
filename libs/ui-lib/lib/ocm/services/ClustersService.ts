@@ -2,7 +2,7 @@ import type { ClusterCreateParamsWithStaticNetworking } from './types';
 import type {
   CustomManifestValues,
   ListManifestsExtended,
-} from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+} from '../components/wizard/steps/customManifests/components/types';
 import type {
   Cluster,
   Host,
