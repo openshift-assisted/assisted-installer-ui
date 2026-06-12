@@ -1,13 +1,13 @@
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
-import { CustomManifestValues } from '../data/dataTypes';
+import { CustomManifestValues } from './types';
 import {
   getMaxFileSizeMessage,
   validateFileSize,
   validateFileName,
   validateFileType,
-} from '../../../../../common/utils';
-import { getIncorrectFileTypeMessage } from '../../../../../common';
+  getIncorrectFileTypeMessage,
+} from '../../../../../../common';
 
 /* eslint-disable */
 type CustomManifestMapper = (a: CustomManifestValues) => string;

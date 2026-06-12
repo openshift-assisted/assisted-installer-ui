@@ -8,7 +8,7 @@ import {
 import { ClustersAPI } from '../services/apis';
 import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { getErrorMessage } from '../../common/utils';
-import { ListManifestsExtended } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
+import { ListManifestsExtended } from '../components/wizard/steps/customManifests/components/types';
 
 const { addAlert } = alertsSlice.actions;
 
@@ -51,7 +51,7 @@ const getManifestsInfo = async (customManifests: ListManifests, clusterId: strin
   return manifestsExtended;
 };
 
-const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: boolean) => {
+export const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: boolean) => {
   const [customManifests, setCustomManifests] = React.useState<ListManifestsExtended>();
   const [error, setError] = React.useState('');
   const [extendedManifestsLoaded, setExtendedManifestsLoaded] = React.useState<boolean>(false);
@@ -97,5 +97,3 @@ const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: bo
     isLoading: !error && !customManifests && (extendedVersion ? !extendedManifestsLoaded : true),
   };
 };
-
-export default useClusterCustomManifests;

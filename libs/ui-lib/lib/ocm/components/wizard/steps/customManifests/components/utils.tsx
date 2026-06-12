@@ -1,4 +1,4 @@
-import { CustomManifestValues, ListManifestsExtended, ManifestFormData } from '../data/dataTypes';
+import { CustomManifestValues, ListManifestsExtended, ManifestFormData } from './types';
 
 /** Manifests created by the installer (e.g. OVE defaults); not editable in the wizard. */
 export const userProvidedManifests = <T extends { manifestSource?: string }>(

@@ -8,11 +8,10 @@ import {
 import { LoadingState, WithErrorBoundary } from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import CredentialsDownload from '../clusterWizard/CredentialsDownload';
-import CustomManifestStep from '../clusterWizard/CustomManifestStep';
 import Storage from '../clusterWizard/Storage';
 import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './clusterWizardContext';
-import { ClusterDetails, StaticIp, Operators, HostDiscovery } from './steps';
+import { ClusterDetails, StaticIp, Operators, HostDiscovery, CustomManifestStep } from './steps';
 
 type ClusterWizardProps = {
   cluster: Cluster;

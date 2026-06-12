@@ -1,14 +1,12 @@
 import React from 'react';
+import { useField } from 'formik';
 import { Language } from '@patternfly/react-code-editor';
 import { ExpandableSection, Grid, GridItem } from '@patternfly/react-core';
-import { useField } from 'formik';
-import { OcmInputField, OcmCodeField } from '../../../ui/OcmFormFields';
-import { CustomManifestValues } from '../data/dataTypes';
-import { FolderDropdown } from './FolderDropdown';
+import { PopoverIcon, fileSize, MAX_FILE_SIZE_BYTES } from '../../../../../../common';
+import { OcmInputField, OcmCodeField } from '../../../../ui';
 import { CustomManifestComponentProps } from './propTypes';
-import { PopoverIcon } from '../../../../../common';
-import { MAX_FILE_SIZE_BYTES } from '../../../../../common/configurations';
-import { fileSize } from '../../../../../common/utils';
+import { FolderDropdown } from './FolderDropdown';
+import { CustomManifestValues } from './types';
 
 const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) => {
   return value.folder && value.filename
@@ -16,7 +14,7 @@ const getDownloadFileName = (manifestIdx: number, value: CustomManifestValues) =
     : `custom_manifest_${manifestIdx}`;
 };
 
-const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentProps) => {
+export const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentProps) => {
   const [{ value }] = useField<CustomManifestValues>({
     name: fieldName,
   });
@@ -70,5 +68,3 @@ const ExpandedManifest = ({ fieldName, manifestIdx }: CustomManifestComponentPro
     </ExpandableSection>
   );
 };
-
-export default ExpandedManifest;

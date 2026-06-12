@@ -1,7 +1,7 @@
-import { FormikErrors, FormikTouched } from 'formik';
 import Yup from 'yup';
+import { FormikErrors, FormikTouched } from 'formik';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { ManifestFormData, ListManifestsExtended } from '../data/dataTypes';
+import { ManifestFormData, ListManifestsExtended } from './types';
 
 export type CustomManifestFormState = {
   isAutoSaveRunning: boolean;
