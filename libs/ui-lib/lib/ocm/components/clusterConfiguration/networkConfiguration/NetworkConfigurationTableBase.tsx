@@ -15,7 +15,7 @@ import {
 import { ActionsResolver, TableRow } from '../../../../common/components/hosts/AITable';
 import { usePagination } from '../../../../common/components/hosts/usePagination';
 import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
-import HostsTable from '../../../../common/components/hosts/HostsTable';
+import { HostsTable } from '../../../../common/components/hosts/HostsTable';
 import { ValidationsInfo } from '../../../../common/types/hosts';
 import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
 import { stringToJSON } from '../../../../common/utils';

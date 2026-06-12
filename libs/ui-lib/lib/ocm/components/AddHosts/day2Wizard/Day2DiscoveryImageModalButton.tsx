@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { AddHostsContext } from '../../../../common';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 const Day2DiscoveryImageModalButton = ({ cluster }: { cluster: Cluster }) => {

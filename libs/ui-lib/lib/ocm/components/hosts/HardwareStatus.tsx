@@ -1,4 +1,5 @@
 import React from 'react';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
@@ -6,14 +7,13 @@ import {
   HostsTableActions,
   hostStatus,
   HostStatus,
+  TableRow,
+  stringToJSON,
+  useTranslation,
 } from '../../../common';
-import { TableRow } from '../../../common/components/hosts/AITable';
 import { ValidationsInfo } from '../../../common/types/hosts';
-import { wizardStepsValidationsMap } from '../wizard/utils/wizardTransition';
+import { wizardStepsValidationsMap } from '../wizard/utils';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { stringToJSON } from '../../../common/utils';
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type HardwareStatusProps = {
   host: Host;
@@ -25,7 +25,7 @@ type HardwareStatusProps = {
 
 const DELETE_MODAL_STATUS_Z_INDEX = 500;
 
-const HardwareStatus = (props: HardwareStatusProps) => {
+export const HardwareStatus = (props: HardwareStatusProps) => {
   const { t } = useTranslation();
   const hardwareStatus = getWizardStepHostStatus(
     'host-discovery',
@@ -94,5 +94,3 @@ export const hardwareStatusColumn = ({
     },
   };
 };
-
-export default { HardwareStatus, hardwareStatusColumn };

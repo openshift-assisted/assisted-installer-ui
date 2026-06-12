@@ -2,25 +2,24 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Content, Button, Stack, StackItem, Split, SplitItem } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   HostDiscoveryValues,
   PopoverIcon,
   ClusterWizardStepHeader,
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
-} from '../../../common';
-import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
-import { DiscoveryImageModalButton } from './DiscoveryImageModal';
-import InformationAndAlerts from './InformationAndAlerts';
-import { OcmSwitchField } from '../ui/OcmFormFields';
-import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeature } from '../../hooks/use-feature';
+} from '../../../../../common';
+import { useFeature } from '../../../../hooks';
+import { selectCurrentClusterPermissionsState } from '../../../../store';
+import { OcmSwitchField } from '../../../ui';
+import { DiscoveryImageModalButton, InformationAndAlerts } from '../../../clusterConfiguration';
+import { HostsDiscoveryTable } from './HostsDiscoveryTable';
 
 const schedulableMastersTooltip =
   'Workloads must be run on control plane nodes when less than 5 hosts are discovered';
 
-const HostInventory = ({ cluster }: { cluster: Cluster }) => {
+export const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
@@ -83,4 +82,3 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
     </Stack>
   );
 };
-export default HostInventory;

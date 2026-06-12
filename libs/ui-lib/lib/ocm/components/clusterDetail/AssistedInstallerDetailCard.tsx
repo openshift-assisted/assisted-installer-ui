@@ -14,7 +14,7 @@ import {
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import { ClusterWizard } from '../wizard';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
+import { ModalDialogsContextProvider } from '../hosts/modals/ModalDialogsContext';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { CancelInstallationModal } from './CancelInstallationModal';

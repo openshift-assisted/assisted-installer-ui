@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { ClusterWizardStep, ClusterWizardStepHeader, DownloadIso, isSNO } from '../../../../common';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import DownloadIpxeScript from '../../../../common/components/clusterConfiguration/DownloadIpxeScript';

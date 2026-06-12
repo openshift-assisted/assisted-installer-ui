@@ -1,26 +1,30 @@
 import React from 'react';
 import { useField } from 'formik';
-import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
-import { cpuCoresColumn, disksColumn, memoryColumn, roleColumn } from '../../../common';
-import { agentHostnameColumn, infraEnvColumn, agentStatusColumn } from './tableColumns';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  DefaultExpandComponent,
+  HostsTable,
+  cpuCoresColumn,
+  disksColumn,
+  memoryColumn,
+  roleColumn,
+  EmptyState,
+  usePagination,
+  useFormikHelpers,
+  useTranslation,
+  HostDetail,
+  ExpandComponentProps,
+  HostsTableDetailContextProvider,
+  useHostsTableDetailContext,
+} from '../../../common';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import {
   ClusterDeploymentHostsSelectionValues,
   AgentTableActions,
 } from '../ClusterDeployment/types';
-import { useAgentsTable } from './tableUtils';
-import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  HostsTableDetailContextProvider,
-  useHostsTableDetailContext,
-} from '../../../common/components/hosts/HostsTableDetailContext';
 import { agentStatus } from '../helpers/agentStatus';
+import { agentHostnameColumn, infraEnvColumn, agentStatusColumn } from './tableColumns';
+import { useAgentsTable } from './tableUtils';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
@@ -138,7 +142,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
         {...actions}
         {...paginationProps}
       >
-        <DefaultEmptyState
+        <EmptyState
           title={t('ai:No hosts found')}
           content={t('ai:No host matches provided labels/locations')}
         />

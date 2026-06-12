@@ -8,7 +8,7 @@ import {
   ModalHeader,
   ModalVariant,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { useTranslation } from '../../../../common';
 
 type DeleteHostModalProps = {
   hostname?: string;
@@ -17,7 +17,7 @@ type DeleteHostModalProps = {
   onDelete: () => void;
 };
 
-const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModalProps) => {
+export const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModalProps) => {
   const { t } = useTranslation();
   return (
     <Modal
@@ -46,5 +46,3 @@ const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModa
     </Modal>
   );
 };
-
-export default DeleteHostModal;

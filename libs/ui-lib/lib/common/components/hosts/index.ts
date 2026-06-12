@@ -1,8 +1,14 @@
 export * from './utils';
 export * from './types';
+export * from './AITable';
+export * from './AdditionalNTPSourcesDialog';
 export * from './HostValidationGroups';
+export * from './HostsTable';
+export * from './HostRowDetail';
 export * from './tableColumns';
 export * from './tableUtils';
+export * from './usePagination';
+export * from './HostsTableDetailContext';
 
 export { default as RoleCell } from './RoleCell';
 export { default as RoleDropdown } from './RoleDropdown';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
 import classNames from 'classnames';
 import { ClusterWizardStep } from '../../../../common';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
 import Day2ClusterDetails from './Day2ClusterDetails';
 import Day2DownloadISO from './Day2DownloadISO';
 import Day2GenerateISO from './Day2GenerateISO';

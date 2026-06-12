@@ -4,6 +4,7 @@ import { handleApiError } from '../../../common/api';
 import { EventsAPI } from '../../services/apis';
 import { SeverityCountsType } from '../../../common/components/ui/ClusterEventsToolbar';
 import { Event } from '@openshift-assisted/types/assisted-installer-service';
+
 const parseHeaders = (
   headers:
     | AxiosResponseHeaders

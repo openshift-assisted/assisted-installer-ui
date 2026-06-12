@@ -12,7 +12,7 @@ const HostsTableDetailContext = React.createContext<HostsTableDetailContextValue
   undefined,
 );
 
-const HostsTableDetailContextProvider: React.FC<
+export const HostsTableDetailContextProvider: React.FC<
   React.PropsWithChildren<HostsTableDetailContextValue>
 > = ({ canEditDisks, onDiskRole, updateDiskSkipFormatting, children }) => {
   const context = {
@@ -28,7 +28,7 @@ const HostsTableDetailContextProvider: React.FC<
   );
 };
 
-const useHostsTableDetailContext = () => {
+export const useHostsTableDetailContext = () => {
   const context = React.useContext(HostsTableDetailContext);
   if (context === undefined) {
     throw new Error(
@@ -37,5 +37,3 @@ const useHostsTableDetailContext = () => {
   }
   return context;
 };
-
-export { HostsTableDetailContextProvider, useHostsTableDetailContext };

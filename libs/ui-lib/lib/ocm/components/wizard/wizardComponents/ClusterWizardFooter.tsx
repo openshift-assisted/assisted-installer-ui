@@ -16,7 +16,7 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { onFetchEvents } from '../../fetching/fetchEvents';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeature } from '../../../hooks/use-feature';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;

@@ -12,9 +12,9 @@ import {
 } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useHostsTable, HostsTableModals } from './use-hosts-table';
-import HostsTable from '../../../common/components/hosts/HostsTable';
-import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { useHostsTable } from './use-hosts-table';
+import { HostsTable } from '../../../common/components/hosts/HostsTable';
+import { HostsTableEmptyState } from '../hosts/HostsTableEmptyState';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
@@ -26,6 +26,7 @@ import {
 import { TableVariant } from '@patternfly/react-table';
 import { ClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+import { HostsTableModals } from './modals/HostsTableModals';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();

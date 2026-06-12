@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import AITable, {
-  ExpandComponentProps,
-  AITableProps,
-} from '../../../common/components/hosts/AITable';
-import { HostDetail } from './HostRowDetail';
-import { WithTestID } from '../../types';
-import EmptyState from '../ui/uiState/EmptyState';
-import { usePagination } from './usePagination';
+
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { WithTestID } from '../../types';
+import { EmptyState } from '../ui';
+import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
+import { HostDetail } from './HostRowDetail';
+import { usePagination } from './usePagination';
+import { AITable, AITableProps, ExpandComponentProps } from './AITable';
 
 const getHostId = (host: Host) => host.id;
 
@@ -65,7 +63,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     children: React.ReactNode;
   };
 
-const HostsTable = ({
+export const HostsTable = ({
   hosts,
   skipDisabled,
   alreadySorted,
@@ -87,5 +85,3 @@ const HostsTable = ({
     <AITable<Host> getDataId={getHostId} data={data} alreadySorted={alreadySorted} {...rest} />
   );
 };
-
-export default HostsTable;

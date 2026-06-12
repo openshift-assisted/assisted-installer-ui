@@ -20,7 +20,7 @@ import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import CommonStorageTable from '../../../common/components/storage/StorageTable';
 import StorageDetail from '../../../common/components/storage/StorageDetail';
 import StorageAlerts from './StorageAlerts';
-import { HostsTableModals, useHostsTable } from './use-hosts-table';
+import { useHostsTable } from './use-hosts-table';
 import {
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,
@@ -28,6 +28,7 @@ import {
 import { hardwareStatusColumn } from './HardwareStatus';
 import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+import { HostsTableModals } from './modals/HostsTableModals';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();

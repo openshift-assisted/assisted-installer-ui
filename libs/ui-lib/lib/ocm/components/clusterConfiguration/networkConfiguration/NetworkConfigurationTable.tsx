@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { HostsTableEmptyState } from '../../../../common/components/hosts/HostsTable';
 import { ClusterHostsTableProps, isSNO } from '../../../../common';
-import { AdditionalNTPSourcesDialogToggle } from '../../hosts/AdditionaNTPSourceDialogToggle';
-import { HostsTableModals, useHostsTable } from '../../hosts/use-hosts-table';
+import { HostsTableModals, useHostsTable, AdditionalNTPSourcesDialogToggle } from '../../hosts';
 import NetworkConfigurationTableBase from './NetworkConfigurationTableBase';
 
 const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { TFunction } from 'i18next';
 import {
   Alert,
   Button,
@@ -10,18 +11,19 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { getAIHosts } from '../helpers';
-import { AgentK8sResource } from '../../types';
-import HostsTable from '../../../common/components/hosts/HostsTable';
-import { TableRow } from '../../../common/components/hosts/AITable';
-import { ModalProgress } from '../../../common';
-import { agentStatus } from '../helpers/agentStatus';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { getErrorMessage } from '../../../common/utils';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  HostsTable,
+  TableRow,
+  ModalProgress,
+  usePagination,
+  useTranslation,
+  getErrorMessage,
+} from '../../../common';
 import { HostStatus } from '../../../common/components/hosts/types';
+import { AgentK8sResource } from '../../types';
+import { getAIHosts } from '../helpers';
+import { agentStatus } from '../helpers/agentStatus';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;

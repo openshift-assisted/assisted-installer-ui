@@ -1,21 +1,26 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { EmptyState, activeNICColumn, hostnameColumn, roleColumn } from '../../../../common';
-import { AgentTableActions } from '../types';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  EmptyState,
+  activeNICColumn,
+  hostnameColumn,
+  roleColumn,
+  HostsTable,
+  HostDetail,
+  usePagination,
+  useTranslation,
+} from '../../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
 } from '../../../types';
 import { getAICluster, getIsSNOCluster } from '../../helpers';
-import { AdditionalNTPSourcesDialogToggle } from '../components/AdditionalNTPSourcesDialogToggle';
-import { agentStatusColumn, useAgentsTable } from '../../Agent';
-import HostsTable from '../../../../common/components/hosts/HostsTable';
-import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
-import { usePagination } from '../../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { agentStatus } from '../../helpers/agentStatus';
+import { agentStatusColumn, useAgentsTable } from '../../Agent';
+import { AdditionalNTPSourcesDialogToggle } from '../components/AdditionalNTPSourcesDialogToggle';
+import { AgentTableActions } from '../types';
 
 type ExpandComponentContextType = {
   onSetInstallationDiskId?: ClusterDeploymentHostsNetworkTableProps['onSetInstallationDiskId'];

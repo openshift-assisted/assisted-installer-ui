@@ -8,7 +8,7 @@ import { useFeature } from './use-feature';
 
 const MAX_BIND_RETRY_ATTEMPTS = 3;
 
-const useLateBinding = (cluster: Cluster): boolean => {
+export const useLateBinding = (cluster: Cluster): boolean => {
   const [isBinding, setIsBinding] = useState(false);
   const { addAlert, removeAlert, alerts } = useAlerts();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
@@ -88,5 +88,3 @@ const useLateBinding = (cluster: Cluster): boolean => {
 
   return infraEnvLoading || isBinding;
 };
-
-export default useLateBinding;

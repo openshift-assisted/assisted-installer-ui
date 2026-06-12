@@ -19,7 +19,7 @@ import {
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
 import {
   StaticIpInfo,
   getDummyStaticIpInfo,
