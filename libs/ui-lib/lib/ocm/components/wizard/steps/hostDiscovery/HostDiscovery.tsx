@@ -2,27 +2,31 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
+  Cluster,
+  V2ClusterUpdateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
+import {
   getFormikErrorFields,
   ClusterWizardStep,
   HostDiscoveryValues,
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
-} from '../../../common';
-import HostInventory from '../clusterConfiguration/HostInventory';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { canNextHostDiscovery } from '../wizard/utils/wizardTransition';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
-import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
-import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
-import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
-import { ClustersService, HostDiscoveryService } from '../../services';
-import { selectCurrentClusterPermissionsState } from '../../store/slices/current-cluster/selectors';
+  getApiErrorMessage,
+  handleApiError,
+  isUnknownServerError,
+} from '../../../../../common';
+import { ClustersService, HostDiscoveryService } from '../../../../services';
 import {
-  Cluster,
-  V2ClusterUpdateParams,
-} from '@openshift-assisted/types/assisted-installer-service';
-import useLateBinding from '../../hooks/useLateBinding';
+  setServerUpdateError,
+  updateCluster,
+  selectCurrentClusterPermissionsState,
+} from '../../../../store';
+import { useLateBinding } from '../../../../hooks';
+import { canNextHostDiscovery } from '../../utils';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
+import { HostInventory } from './HostInventory';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -59,7 +63,7 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
+export const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { addAlert, clearAlerts } = useAlerts();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -96,5 +100,3 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
     </Formik>
   );
 };
-
-export default HostDiscovery;

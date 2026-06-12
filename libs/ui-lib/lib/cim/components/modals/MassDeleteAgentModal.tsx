@@ -9,17 +9,17 @@ import {
   getHostname,
   getInventory,
   MassDeleteHostModal as CommonMassDeleteHostModal,
+  TableRow,
+  HostsTable,
+  usePagination,
+  useTranslation,
 } from '../../../common';
-import { TableRow } from '../../../common/components/hosts/AITable';
-import HostsTable from '../../../common/components/hosts/HostsTable';
 import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { useAgentsTable } from '../Agent/tableUtils';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common/constants';
 import AgentStatus from '../Agent/AgentStatus';
 import BMHStatus from '../Agent/BMHStatus';
 import { getBMHStatus, getAgentStatus } from '../helpers';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {

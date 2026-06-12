@@ -7,11 +7,10 @@ import {
   discoveryTypeColumn,
   agentStatusColumn,
 } from '../../Agent';
-import HostsTable, {
+import {
+  HostsTable,
   DefaultExpandComponent,
   HostsTableEmptyState,
-} from '../../../../common/components/hosts/HostsTable';
-import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
@@ -24,16 +23,16 @@ import {
   ChangeHostnameAction,
   MassChangeHostnameModal,
   TableToolbar,
+  usePagination,
+  useTranslation,
+  HostsTableDetailContextProvider,
 } from '../../../../common';
-import { ClusterDeploymentHostDiscoveryTableProps } from '../types';
 import MassApproveAgentModal from '../../modals/MassApproveAgentModal';
 import MassApproveAction from '../../modals/MassApproveAction';
-import { usePagination } from '../../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ExpandComponent } from '../../Agent/AgentsSelectionTable';
-import { HostsTableDetailContextProvider } from '../../../../common/components/hosts/HostsTableDetailContext';
 import { agentStatus, bmhStatus } from '../../helpers/agentStatus';
 import { onAgentChangeHostname } from '../../helpers';
+import { ClusterDeploymentHostDiscoveryTableProps } from '../types';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,

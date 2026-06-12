@@ -8,3 +8,4 @@ export { default as useInfraEnv } from './useInfraEnv';
 export { default as useInfraEnvHosts } from './useInfraEnvHosts';
 export { useFeatureDetection } from './use-feature-detection';
 export * from './use-feature';
+export * from './useLateBinding';

@@ -17,7 +17,7 @@ import {
   ToolbarButton,
 } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
-import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';

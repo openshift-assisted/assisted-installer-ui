@@ -1,10 +1,5 @@
 import * as React from 'react';
-import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
-import { AgentTableActions } from '../ClusterDeployment/types';
-import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { useAgentsTable } from './tableUtils';
-import { infraEnvColumn, agentStatusColumn } from './tableColumns';
 import {
   cpuArchitectureColumn,
   cpuCoresColumn,
@@ -12,18 +7,24 @@ import {
   hostnameColumn,
   memoryColumn,
   roleColumn,
+  DefaultExpandComponent,
+  HostsTable,
+  usePagination,
+  useTranslation,
+  EmptyState,
 } from '../../../common';
-import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
+import { AgentTableActions } from '../ClusterDeployment/types';
 import { agentStatus } from '../helpers/agentStatus';
+import { useAgentsTable } from './tableUtils';
+import { infraEnvColumn, agentStatusColumn } from './tableColumns';
 
 export const getAgentId = (agent: AgentK8sResource) => agent.metadata?.uid as string;
 
 export const AgentTableEmptyState = () => {
   const { t } = useTranslation();
   return (
-    <DefaultEmptyState
+    <EmptyState
       icon={ConnectedIcon}
       title={t('ai:Waiting for hosts...')}
       content={t('ai:Hosts may take a few minutes to appear here after booting.')}

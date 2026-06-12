@@ -16,7 +16,12 @@ type ResetHostModalProps = {
   onReset: () => void;
 };
 
-const ResetHostModal: React.FC<ResetHostModalProps> = ({ isOpen, hostname, onClose, onReset }) => (
+export const ResetHostModal: React.FC<ResetHostModalProps> = ({
+  isOpen,
+  hostname,
+  onClose,
+  onReset,
+}) => (
   <Modal isOpen={isOpen} onClose={onClose} variant={ModalVariant.small}>
     <ModalHeader title="Reset Host" />
     <ModalBody>Are you sure you want to reset host{` ${hostname || ''}`} ?</ModalBody>
@@ -35,5 +40,3 @@ const ResetHostModal: React.FC<ResetHostModalProps> = ({ isOpen, hostname, onClo
     </ModalFooter>
   </Modal>
 );
-
-export default ResetHostModal;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { getInventory } from '../../index';
+import { getInventory } from '../hosts/utils';
 import { OnDiskRoleType } from '../hosts/DiskRole';
 import { DiskFormattingType } from '../hosts/FormatDiskCheckbox';
 import { DisksTable } from './DisksTable';

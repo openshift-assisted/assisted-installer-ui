@@ -11,7 +11,7 @@ type AdditionalNTPSourcesFieldProps = {
   helperText?: string;
 };
 
-const AdditionalNTPSourcesField: React.FC<AdditionalNTPSourcesFieldProps> = ({
+export const AdditionalNTPSourcesField: React.FC<AdditionalNTPSourcesFieldProps> = ({
   name,
   label,
   isRequired,
@@ -37,5 +37,3 @@ const AdditionalNTPSourcesField: React.FC<AdditionalNTPSourcesFieldProps> = ({
     />
   );
 };
-
-export default AdditionalNTPSourcesField;

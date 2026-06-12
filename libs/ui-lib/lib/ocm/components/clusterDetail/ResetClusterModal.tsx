@@ -16,7 +16,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 import { getApiErrorMessage, handleApiError } from '../../../common/api';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import { calculateCollectedLogsCount } from '../clusters/utils';
-import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 
