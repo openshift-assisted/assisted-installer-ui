@@ -59,5 +59,8 @@
     "apps/*",
     "libs/*",
     "tools/*"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/openshift-assisted/assisted-installer-ui/issues"
+  }
 }
