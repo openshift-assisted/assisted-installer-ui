@@ -1,9 +1,9 @@
 import React from 'react';
-import { Validation, ValidationsInfo } from '../../../common/types/hosts';
-import HostPropertyValidationPopover from './HostPropertyValidationPopover';
-import { ValidationInfoActionProps } from './HostValidationGroups';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { useTranslation } from '../../hooks';
+import { Validation, ValidationsInfo } from '../../types/hosts';
+import { HostPropertyValidationPopover } from './HostPropertyValidationPopover';
+import { ValidationInfoActionProps } from './HostValidationGroups';
 
 const getLabel = (t: TFunction, validationStatus?: Validation['status']) => {
   switch (validationStatus) {
@@ -21,7 +21,7 @@ type NtpValidationsStatusProps = {
   AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
 };
 
-const NtpValidationStatus: React.FC<NtpValidationsStatusProps> = ({
+export const NtpValidationStatus: React.FC<NtpValidationsStatusProps> = ({
   validationsInfo,
   AdditionalNTPSourcesDialogToggleComponent,
 }) => {
@@ -43,4 +43,3 @@ const NtpValidationStatus: React.FC<NtpValidationsStatusProps> = ({
     </HostPropertyValidationPopover>
   );
 };
-export default NtpValidationStatus;

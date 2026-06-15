@@ -1,4 +1,5 @@
 import React from 'react';
+import { TFunction } from 'i18next';
 import {
   Dropdown,
   DropdownItem,
@@ -11,22 +12,15 @@ import {
   DiskRole as DiskRoleValue,
   Host,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { useStateSafely, useTranslation } from '../../hooks';
 import { diskRoleLabels } from '../../config';
-import { useStateSafely } from '../../hooks';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
+import { OnDiskRoleType } from '../hosts';
 
 export const getCurrentDiskRoleLabel = (
   disk: Disk,
   installationDiskId: Host['installationDiskId'],
   t: TFunction,
 ) => (disk.id === installationDiskId ? diskRoleLabels(t).install : diskRoleLabels(t).none);
-
-export type OnDiskRoleType = (
-  hostId: Host['id'],
-  diskId: Disk['id'],
-  role: DiskRoleValue,
-) => Promise<unknown>;
 
 export type DiskRoleProps = {
   host: Host;
@@ -36,7 +30,7 @@ export type DiskRoleProps = {
   onDiskRole?: OnDiskRoleType;
 };
 
-const DiskRole: React.FC<DiskRoleProps> = ({
+export const DiskRole: React.FC<DiskRoleProps> = ({
   host,
   disk,
   installationDiskId,
@@ -128,5 +122,3 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
     </Dropdown>
   );
 };
-
-export default DiskRole;

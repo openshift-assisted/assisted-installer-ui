@@ -31,9 +31,3 @@ export const canAbortInstallation = (cluster: Cluster) => {
   ];
   return allowedClusterStates.includes(cluster.status);
 };
-
-export const isSomeDisksSkipFormatting = (cluster: Cluster) => {
-  return cluster.hosts?.some(
-    (host) => host.skipFormattingDisks && host.skipFormattingDisks.length > 0,
-  );
-};

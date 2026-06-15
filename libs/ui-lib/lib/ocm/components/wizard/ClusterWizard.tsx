@@ -8,10 +8,16 @@ import {
 import { LoadingState, WithErrorBoundary } from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import CredentialsDownload from '../clusterWizard/CredentialsDownload';
-import Storage from '../clusterWizard/Storage';
 import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './clusterWizardContext';
-import { ClusterDetails, StaticIp, Operators, HostDiscovery, CustomManifestStep } from './steps';
+import {
+  ClusterDetails,
+  StaticIp,
+  Operators,
+  HostDiscovery,
+  CustomManifestStep,
+  Storage,
+} from './steps';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -32,12 +38,12 @@ export const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWiza
         return <Operators cluster={cluster} />;
       case 'host-discovery':
         return <HostDiscovery cluster={cluster} />;
-      case 'custom-manifests':
-        return <CustomManifestStep cluster={cluster} />;
-      case 'networking':
-        return <NetworkConfigurationPage cluster={cluster} />;
       case 'storage':
         return <Storage cluster={cluster} />;
+      case 'networking':
+        return <NetworkConfigurationPage cluster={cluster} />;
+      case 'custom-manifests':
+        return <CustomManifestStep cluster={cluster} />;
       case 'credentials-download':
         return <CredentialsDownload cluster={cluster} />;
       case 'review':

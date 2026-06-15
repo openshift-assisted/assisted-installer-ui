@@ -7,8 +7,8 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
-import { OnDiskRoleType } from './DiskRole';
 import { AdditionNtpSourcePropsType, UpdateDay2ApiVipPropsType } from './HostValidationGroups';
+import { OnDiskRoleType } from './HostsTableDetailContext';
 
 export type ClusterHostsTableProps = {
   cluster: Cluster;

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { getInventory } from '../hosts/utils';
-import { OnDiskRoleType } from '../hosts/DiskRole';
-import { DiskFormattingType } from '../hosts/FormatDiskCheckbox';
-import { DisksTable } from './DisksTable';
-import SectionTitle from '../ui/SectionTitle';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { useTranslation } from '../../hooks';
+import { getInventory } from '../hosts/utils';
+import { OnDiskRoleType } from '../hosts/HostsTableDetailContext';
+import { SectionTitle } from '../ui';
+import { DisksTable } from './DisksTable';
+import { DiskFormattingType } from './types';
 
 type StorageDetailProps = {
   host: Host;
@@ -15,7 +15,7 @@ type StorageDetailProps = {
   updateDiskSkipFormatting?: DiskFormattingType;
 };
 
-const StorageDetail = ({
+export const StorageDetail = ({
   host,
   canEditDisks,
   onDiskRole,
@@ -46,5 +46,3 @@ const StorageDetail = ({
     </Grid>
   );
 };
-
-export default StorageDetail;

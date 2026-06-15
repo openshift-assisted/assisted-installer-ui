@@ -1,6 +1,7 @@
 import React from 'react';
 import { StackItem } from '@patternfly/react-core';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   getFormikErrorFields,
   FormikAutoSave,
@@ -10,13 +11,11 @@ import {
   StorageValues,
   useFormikAutoSave,
   ClusterWizardStepHeader,
-} from '../../../common';
-import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
-import { canNextStorage } from '../wizard/utils/wizardTransition';
-import HostsStorageTable from '../hosts/HostsStorageTable';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+} from '../../../../../common';
+import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { canNextStorage } from '../../utils';
+import { StorageTable } from './StorageTable';
 
 const StorageForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -44,14 +43,14 @@ const StorageForm = ({ cluster }: { cluster: Cluster }) => {
         <ClusterWizardStepHeader>Storage</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <HostsStorageTable cluster={cluster} />
+        <StorageTable cluster={cluster} />
       </StackItem>
       <FormikAutoSave />
     </ClusterWizardStep>
   );
 };
 
-const Storage = ({ cluster }: { cluster: Cluster }) => {
+export const Storage = ({ cluster }: { cluster: Cluster }) => {
   const { clearAlerts } = useAlerts();
   const initialValues = React.useMemo(
     () => getStorageInitialValues(),
@@ -67,5 +66,3 @@ const Storage = ({ cluster }: { cluster: Cluster }) => {
     </Formik>
   );
 };
-
-export default Storage;

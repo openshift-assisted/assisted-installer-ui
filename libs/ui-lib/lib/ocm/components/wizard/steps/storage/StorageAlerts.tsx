@@ -1,18 +1,23 @@
 import * as React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   FormatDiskWarning,
   getInventory,
   hasEnabledOperators,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_ODF,
-} from '../../../common';
-import { isAddHostsCluster, isSomeDisksSkipFormatting } from '../clusters/utils';
-import OdfLvmDisksManualFormattingHint from './OdfLvmDisksManualFormattingHint';
-import { getDiskLimitation } from '../../../common/components/storage/DisksTable';
-import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+  getDiskLimitation,
+} from '../../../../../common';
+import { isAddHostsCluster } from '../../../clusters';
 
-const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
+const isSomeDisksSkipFormatting = (cluster: Cluster) => {
+  return cluster.hosts?.some(
+    (host) => host.skipFormattingDisks && host.skipFormattingDisks.length > 0,
+  );
+};
+
+export const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint =
     (hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
       hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)) &&
@@ -69,7 +74,14 @@ const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
       )}
       {showFormattingHint && (
         <StackItem>
-          <OdfLvmDisksManualFormattingHint />
+          <Alert
+            variant={AlertVariant.warning}
+            isInline
+            title="Make sure you format all non-installation disks"
+          >
+            All non-installation disks will be used for local storage and must be formatted before
+            the storage operator's installation.
+          </Alert>
         </StackItem>
       )}
       <StackItem>
@@ -78,5 +90,3 @@ const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
     </Stack>
   );
 };
-
-export default StorageAlerts;

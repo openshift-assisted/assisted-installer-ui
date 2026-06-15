@@ -12,3 +12,4 @@ export * from './featureSupportLevels';
 export * from './newFeatureSupportLevels';
 export * from './ErrorHandling';
 export * from './operators';
+export * from './storage';

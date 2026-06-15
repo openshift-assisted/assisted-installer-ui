@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   countColumn,
   disksColumn,
@@ -9,26 +10,19 @@ import {
   isCompact,
   selectSchedulableMasters,
   OPERATOR_NAME_ODF,
-} from '../../../common';
-import {
-  numberOfDisksColumn,
-  odfUsageColumn,
-} from '../../../common/components/storage/StorageUtils';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import CommonStorageTable from '../../../common/components/storage/StorageTable';
-import StorageDetail from '../../../common/components/storage/StorageDetail';
-import StorageAlerts from './StorageAlerts';
-import { useHostsTable } from './use-hosts-table';
-import {
+  usePagination,
+  useTranslation,
+  ExpandComponentProps,
+  AITable,
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,
-} from '../../../common/components/hosts/HostsTableDetailContext';
-import { hardwareStatusColumn } from './HardwareStatus';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
-import { HostsTableModals } from './modals/HostsTableModals';
+  numberOfDisksColumn,
+  odfUsageColumn,
+  StorageDetail,
+} from '../../../../../common';
+import { HostsTableModals, useHostsTable, hardwareStatusColumn } from '../../../hosts';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { StorageAlerts } from './StorageAlerts';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -43,7 +37,7 @@ export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   );
 }
 
-const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
+export const StorageTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const {
     onEditHost,
@@ -83,14 +77,17 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
             onDiskRole={onDiskRole}
             updateDiskSkipFormatting={updateDiskSkipFormatting}
           >
-            <CommonStorageTable
+            <AITable<Host>
+              getDataId={(host: Host) => host.id}
+              data={hosts}
               testId="storage-table"
-              hosts={hosts}
               content={content}
               actionResolver={actionResolver}
               ExpandComponent={ExpandComponent}
               {...paginationProps}
-            />
+            >
+              {''}
+            </AITable>
           </HostsTableDetailContextProvider>
         </StackItem>
         <StackItem>
@@ -101,5 +98,3 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
     </>
   );
 };
-
-export default HostsStorageTable;

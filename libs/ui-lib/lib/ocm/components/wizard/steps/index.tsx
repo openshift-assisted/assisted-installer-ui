@@ -4,3 +4,4 @@ export * from './staticIp';
 export * from './operators';
 export * from './hostDiscovery';
 export * from './customManifests';
+export * from './storage';

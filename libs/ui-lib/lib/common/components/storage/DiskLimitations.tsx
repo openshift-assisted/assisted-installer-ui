@@ -9,31 +9,7 @@ import {
   Popover,
 } from '@patternfly/react-core';
 import { Disk } from '@openshift-assisted/types/assisted-installer-service';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-
-type DiskLimitationsProps = {
-  disk: Disk;
-};
-const DiskLimitations: React.FC<DiskLimitationsProps> = ({ disk }) => {
-  if (!disk.installationEligibility?.eligible) {
-    const limitationsCount = disk.installationEligibility?.notEligibleReasons?.length || 0;
-    return (
-      <Popover
-        headerContent={<div>Disk limitations</div>}
-        bodyContent={<DiskLimitationsPopoverContent {...disk.installationEligibility} />}
-        minWidth="30rem"
-        maxWidth="50rem"
-      >
-        <Button variant={ButtonVariant.link} isInline>
-          {limitationsCount}
-        </Button>
-      </Popover>
-    );
-  }
-  return null;
-};
-
-export default DiskLimitations;
+import { useTranslation } from '../../hooks';
 
 type DiskLimitationsPopoverContentProps = {
   eligible?: boolean;
@@ -65,4 +41,27 @@ const DiskLimitationsPopoverContent: React.FC<DiskLimitationsPopoverContentProps
     );
   }
   return <>{alerts}</>;
+};
+
+type DiskLimitationsProps = {
+  disk: Disk;
+};
+
+export const DiskLimitations: React.FC<DiskLimitationsProps> = ({ disk }) => {
+  if (!disk.installationEligibility?.eligible) {
+    const limitationsCount = disk.installationEligibility?.notEligibleReasons?.length || 0;
+    return (
+      <Popover
+        headerContent={<div>Disk limitations</div>}
+        bodyContent={<DiskLimitationsPopoverContent {...disk.installationEligibility} />}
+        minWidth="30rem"
+        maxWidth="50rem"
+      >
+        <Button variant={ButtonVariant.link} isInline>
+          {limitationsCount}
+        </Button>
+      </Popover>
+    );
+  }
+  return null;
 };
