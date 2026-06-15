@@ -1,29 +1,27 @@
 import React, { ReactNode } from 'react';
-import { useStateSafely } from '../../../common/hooks';
+import { Button, EmptyStateVariant } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   AddHostsContextProvider,
   CpuArchitecture,
   ErrorState,
   LoadingState,
   DEFAULT_POLLING_INTERVAL,
+  useStateSafely,
+  handleApiError,
+  isApiError,
 } from '../../../common';
-import { usePullSecret } from '../../hooks';
-import { Button, EmptyStateVariant } from '@patternfly/react-core';
-import Day2ClusterService, { getApiVipDnsName } from '../../services/Day2ClusterService';
-import { handleApiError } from '../../../common/api';
-import { isApiError } from '../../../common/api/utils';
-import { AddHosts } from '../AddHosts';
-import { HostsClusterDetailTabProps } from './types';
+import { usePullSecret, useInfraEnv } from '../../hooks';
+import { Day2ClusterService, getApiVipDnsName, mapOcmArchToCpuArchitecture } from '../../services';
+import { OpenShiftVersionsContextProvider } from '../../contexts';
 import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
+import { AddHosts } from '../AddHosts';
 import {
   AddHostsApiError,
   ReloadFailedError,
   UnableToAddHostsError,
 } from './HostsClusterDetailTabContentErrors';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';
+import { HostsClusterDetailTabProps } from './types';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,

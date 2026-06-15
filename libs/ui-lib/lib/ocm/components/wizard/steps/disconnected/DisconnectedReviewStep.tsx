@@ -29,7 +29,7 @@ import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardCompon
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 
-export const ReviewStep = () => {
+export const DisconnectedReviewStep = () => {
   const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();

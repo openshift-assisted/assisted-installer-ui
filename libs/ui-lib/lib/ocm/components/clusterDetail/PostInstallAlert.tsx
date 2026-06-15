@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { Alert } from '@patternfly/react-core';
-import { ExternalLink } from '../ui';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { ExternalLink, useTranslation } from '../../../common';
 
 type PostInstallAlertProps = {
   link: string;
 };
 
-const PostInstallAlert = ({ link }: PostInstallAlertProps) => {
+export const PostInstallAlert = ({ link }: PostInstallAlertProps) => {
   const { t } = useTranslation();
   return (
     <Alert
@@ -25,5 +24,3 @@ const PostInstallAlert = ({ link }: PostInstallAlertProps) => {
     />
   );
 };
-
-export default PostInstallAlert;

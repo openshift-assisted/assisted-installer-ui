@@ -3,14 +3,19 @@ import React from 'react';
 import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import { CpuArchitecture } from '../../../common';
 import { useInfraEnv } from '../../hooks';
-import { ClusterDetails, BasicStep, OptionalConfigurationsStep, ReviewStep } from './steps';
+import {
+  ClusterDetails,
+  BasicStep,
+  OptionalConfigurationsStep,
+  DisconnectedReviewStep,
+} from './steps';
 import { useClusterWizardContext } from './clusterWizardContext';
 import { ClusterWizardStepsType } from './utils';
 
 const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraEnv) => {
   switch (currentStepId) {
     case 'disconnected-review':
-      return <ReviewStep />;
+      return <DisconnectedReviewStep />;
     case 'disconnected-optional-configurations':
       return <OptionalConfigurationsStep />;
     case 'disconnected-basic':
