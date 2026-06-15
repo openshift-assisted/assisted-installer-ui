@@ -22,7 +22,7 @@ import {
   DiskEncryptionControlGroup,
   useNewFeatureSupportLevel,
 } from '../../../../../common';
-import useSupportLevelsAPI from '../../../../hooks/useSupportLevelsAPI';
+import { useSupportLevelsAPI } from '../../../../hooks';
 import { HostsNetworkConfigurationType } from '../../../../services';
 
 import { useOpenShiftVersionsContext } from '../../../clusterWizard/OpenShiftVersionsContext';

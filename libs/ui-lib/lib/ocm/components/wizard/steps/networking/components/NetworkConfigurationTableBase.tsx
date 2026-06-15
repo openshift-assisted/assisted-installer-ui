@@ -1,6 +1,5 @@
 import * as React from 'react';
-import NetworkingStatus from '../../hosts/NetworkingStatus';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 import {
   HostsTableActions,
   selectSchedulableMasters,
@@ -11,15 +10,17 @@ import {
   ipv6Column,
   macAddressColumn,
   countColumn,
-} from '../../../../common';
-import { ActionsResolver, TableRow } from '../../../../common/components/hosts/AITable';
-import { usePagination } from '../../../../common/components/hosts/usePagination';
-import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
-import { HostsTable } from '../../../../common/components/hosts/HostsTable';
-import { ValidationsInfo } from '../../../../common/types/hosts';
-import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
-import { stringToJSON } from '../../../../common/utils';
-import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+  ActionsResolver,
+  TableRow,
+  usePagination,
+  HostDetail,
+  HostsTable,
+  stringToJSON,
+  useTranslation,
+} from '../../../../../../common';
+import { ValidationsInfo } from '../../../../../../common/types/hosts';
+import { NetworkingStatus } from '../../../../hosts';
+import { useClusterWizardContext } from '../../../clusterWizardContext';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -58,7 +59,7 @@ type NetworkConfigurationTableProps = {
   selectedIDs?: string[];
 };
 
-const NetworkConfigurationTableBase = ({
+export const NetworkConfigurationTableBase = ({
   cluster,
   AdditionalNTPSourcesDialogToggleComponent,
   onEditHost,
@@ -117,5 +118,3 @@ const NetworkConfigurationTableBase = ({
     </HostsTable>
   );
 };
-
-export default NetworkConfigurationTableBase;

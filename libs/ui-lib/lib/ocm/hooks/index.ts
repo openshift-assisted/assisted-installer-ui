@@ -10,3 +10,4 @@ export { useFeatureDetection } from './use-feature-detection';
 export * from './use-feature';
 export * from './useLateBinding';
 export * from './useClusterCustomManifests';
+export * from './useSupportLevelsAPI';

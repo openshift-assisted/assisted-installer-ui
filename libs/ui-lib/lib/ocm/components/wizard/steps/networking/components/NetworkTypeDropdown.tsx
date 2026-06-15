@@ -10,21 +10,19 @@ import {
   StackItem,
   Tooltip,
 } from '@patternfly/react-core';
-import { getFieldId } from '../../../../common/components/ui';
 import {
+  ThirdPartyCNIBanner,
+  getFieldId,
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
-} from '../../../../common/components/newFeatureSupportLevels';
-import { NewFeatureSupportLevelBadge } from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import type { NetworkConfigurationValues } from '../../../../common/types/clusters';
-import {
-  NETWORK_TYPE_OVN,
+  NewFeatureSupportLevelBadge,
+  NetworkConfigurationValues,
   NETWORK_TYPE_LABELS,
   NETWORK_TYPE_FEATURE_IDS,
   isThirdPartyCNI,
-} from '../../../../common/types/networkType';
-import { useTranslation } from '../../../../common/hooks';
-import { ThirdPartyCNIBanner } from '../../../../common';
+  NETWORK_TYPE_OVN,
+  useTranslation,
+} from '../../../../../../common';
 
 export interface NetworkTypeDropDownProps {
   isDisabled?: boolean;

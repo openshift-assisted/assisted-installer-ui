@@ -14,7 +14,7 @@ import {
   NewFeatureSupportLevelData,
   NewFeatureSupportLevelMap,
 } from '../../../common/components/newFeatureSupportLevels';
-import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { useSupportLevelsAPI } from '../../hooks';
 import {
   Cluster,
   PlatformType,

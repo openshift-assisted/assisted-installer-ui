@@ -23,7 +23,7 @@ import {
   NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
 } from '../../../../common/components/newFeatureSupportLevels';
-import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
+import { useSupportLevelsAPI } from '../../../hooks/useSupportLevelsAPI';
 import { ExternalPlaformIds, ExternalPlatformLabels } from './platformIntegration/constants';
 
 const INPUT_NAME = 'cpuArchitecture';
