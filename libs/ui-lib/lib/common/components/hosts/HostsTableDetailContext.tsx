@@ -1,6 +1,12 @@
 import React from 'react';
-import { OnDiskRoleType } from './DiskRole';
+import { Disk, DiskRole, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostsTableActions } from './types';
+
+export type OnDiskRoleType = (
+  hostId: Host['id'],
+  diskId: Disk['id'],
+  role: DiskRole,
+) => Promise<unknown>;
 
 type HostsTableDetailContextValue = {
   onDiskRole: OnDiskRoleType | undefined;

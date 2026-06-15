@@ -16,6 +16,7 @@ export * from './CustomToolbarFilter';
 export * from './OpenShiftVersionDropdown';
 export * from './OpenShiftVersionModal';
 export * from './ConfirmationModal';
+export * from './SectionTitle';
 
 export * from './utils';
 

@@ -11,3 +11,4 @@ export * from './AddHosts';
 export * from './newFeatureSupportLevels';
 export * from './ErrorHandling';
 export * from './operators';
+export * from './storage';
