@@ -1,5 +1,5 @@
 import type { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import { CpuArchitecture, getAllCpuArchitectures } from '../../common//types/cpuArchitecture';
+import { CpuArchitecture, getAllCpuArchitectures } from '../../common/types/cpuArchitecture';
 
 const CACHE_KEY = 'infra-env-ids-cache-v2';
 
@@ -28,7 +28,7 @@ type InfraEnvStorage = Omit<Storage, 'getItem' | 'removeItem' | 'setItem'> & {
   updateInfraEnvs(clusterId: string, infraEnvs: InfraEnv[]): void;
 };
 
-const InfraEnvIdsCacheService: InfraEnvStorage = {
+export const InfraEnvIdsCacheService: InfraEnvStorage = {
   key(index: number): string | null {
     const cache = read();
     return Object.keys(cache)[index];
@@ -114,5 +114,3 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     update(cache);
   },
 };
-
-export default InfraEnvIdsCacheService;

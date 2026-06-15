@@ -27,7 +27,7 @@ import {
   updateClusterBase,
   setServerUpdateError,
 } from '../../../../store';
-import { useDefaultConfiguration } from '../../../clusterConfiguration';
+import { useDefaultConfiguration } from '../../../../contexts';
 import { NetworkConfigurationForm } from './NetworkConfigurationForm';
 import { getNetworkValidationSchema } from './validationSchema';
 import { getNetworkInitialValues } from './initialValues';

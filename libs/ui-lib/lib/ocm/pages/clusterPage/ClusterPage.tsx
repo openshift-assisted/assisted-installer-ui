@@ -19,7 +19,6 @@ import { routeBasePath } from '../../config';
 import { useInfraEnv, usePullSecret } from '../../hooks';
 import { forceReload } from '../../store';
 import {
-  OpenShiftVersionsContextProvider,
   AddHosts,
   ClusterBreadcrumbs,
   ClusterDetail,
@@ -30,9 +29,7 @@ import {
   useClusterPolling,
   ClusterLoading,
   BackButton,
-  SentryErrorMonitorContextProvider,
   ModalDialogsContextProvider,
-  ClusterDefaultConfigurationProvider,
   ClusterUiError,
   NewFeatureSupportLevelProvider,
   ClusterPollingErrorModal,
@@ -41,6 +38,11 @@ import {
   ResetClusterModal,
   DiscoveryImageModal,
 } from '../../components';
+import {
+  ClusterDefaultConfigurationProvider,
+  OpenShiftVersionsContextProvider,
+  SentryErrorMonitorContextProvider,
+} from '../../contexts';
 
 const ClusterPageContent = ({
   cluster,

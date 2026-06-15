@@ -3,17 +3,19 @@ import { PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
 import {
   ModalDialogsContextProvider,
-  ClusterDefaultConfigurationProvider,
   ClusterLoading,
   ClusterUiError,
-  OpenShiftVersionsContextProvider,
   NewFeatureSupportLevelProvider,
   ClusterWizardContextProvider,
   NewClusterWizard,
   AssistedInstallerHeader,
-  SentryErrorMonitorContextProvider,
   ClusterBreadcrumbs,
 } from '../../components';
+import {
+  ClusterDefaultConfigurationProvider,
+  OpenShiftVersionsContextProvider,
+  SentryErrorMonitorContextProvider,
+} from '../../contexts';
 
 export const NewClusterPage = () => {
   return (

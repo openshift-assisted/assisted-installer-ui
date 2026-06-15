@@ -1,4 +1,8 @@
-import { InfraEnvsService } from '.';
+import {
+  Cluster,
+  Platform,
+  PlatformType,
+} from '@openshift-assisted/types/assisted-installer-service';
 import { ClustersAPI } from './apis';
 import {
   CpuArchitecture,
@@ -9,11 +13,7 @@ import {
 } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
-import {
-  Cluster,
-  Platform,
-  PlatformType,
-} from '@openshift-assisted/types/assisted-installer-service';
+import InfraEnvsService from './InfraEnvsService';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
@@ -60,7 +60,7 @@ export const mapCloudProviderToPlatformType = (cloudProviderId?: string) => {
   return platform;
 };
 
-const Day2ClusterService = {
+export const Day2ClusterService = {
   getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
     return ocmCluster && ocmCluster.external_id;
   },
@@ -154,5 +154,3 @@ const Day2ClusterService = {
     return treakedCluster;
   },
 };
-
-export default Day2ClusterService;

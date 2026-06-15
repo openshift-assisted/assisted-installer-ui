@@ -2,24 +2,24 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
-import { CpuArchitecture, ErrorState, LoadingState } from '../../../common';
+import { ModalBody } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  forceReload,
-  setServerUpdateError,
-  updateCluster,
-} from '../../store/slices/current-cluster/slice';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { DiscoveryImageFormService } from '../../services';
+  getApiErrorMessage,
+  handleApiError,
+  isUnknownServerError,
+  CpuArchitecture,
+  ErrorState,
+  LoadingState,
+} from '../../../common';
+import { useInfraEnv, usePullSecret } from '../../hooks';
+import { forceReload, setServerUpdateError, updateCluster } from '../../store';
+import { DiscoveryImageFormService, mapClusterCpuArchToInfraEnvCpuArch } from '../../services';
+import { isOciPlatformType } from '../utils';
 import {
   OcmDiscoveryImageConfigForm,
   OcmDiscoveryImageFormValues,
 } from './OcmDiscoveryImageConfigForm';
-import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectureService';
-import { usePullSecret } from '../../hooks';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { isOciPlatformType } from '../utils';
-import { ModalBody } from '@patternfly/react-core';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;

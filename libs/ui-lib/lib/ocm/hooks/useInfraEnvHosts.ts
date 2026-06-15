@@ -1,10 +1,9 @@
 import React from 'react';
-import useInfraEnvId from './useInfraEnvId';
-import { CpuArchitecture, DEFAULT_POLLING_INTERVAL } from '../../common';
-import { getErrorMessage } from '../../common/utils';
-import { InfraEnvsAPI } from '../services/apis';
-import InfraEnvIdsCacheService from '../services/InfraEnvIdsCacheService';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+import { CpuArchitecture, DEFAULT_POLLING_INTERVAL, getErrorMessage } from '../../common';
+import { InfraEnvsAPI } from '../services/apis';
+import { InfraEnvIdsCacheService } from '../services/InfraEnvIdsCacheService';
+import { useInfraEnvId } from './useInfraEnvId';
 
 const useInfraEnvHosts = (
   clusterId: Cluster['id'],
