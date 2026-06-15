@@ -1,15 +1,14 @@
 import { test, describe, expect } from 'vitest';
 import cloneDeep from 'lodash-es/cloneDeep';
 
-import { ValidationsInfo } from '../../../common';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
+import { ValidationsInfo } from '../../../../common';
 import {
-  // ValidationGroup as HostValidationGroup,
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
-} from '../../../common/types/hosts';
+} from '../../../../common/types/hosts';
 
 import { canNextClusterDetails, canNextHostDiscovery, canNextStorage } from './wizardTransition';
-import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const clusterBase: Cluster = {
   kind: 'Cluster',

@@ -1,21 +1,20 @@
 import React from 'react';
 import { Alert, Stack, StackItem } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 import {
   REDHAT_CONSOLE_OPENSHIFT,
   canDownloadKubeconfig,
   isSNO,
   isClusterPlatformTypeVM,
+  calculateClusterDateDiff,
+  isInOcm,
+  useNewFeatureSupportLevel,
 } from '../../../common';
-
-import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { calculateClusterDateDiff } from '../../../common/services/DateAndTime';
-import { isInOcm } from '../../../common/api';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
-import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
-import PostInstallAlert from '../../../common/components/clusterDetail/PostInstallAlert';
+import { useDefaultConfiguration } from '../../contexts';
 import { useFeature } from '../../hooks/use-feature';
 import { ExternalPlatformLinks } from '../wizard/wizardFields';
+import { PostInstallAlert } from './PostInstallAlert';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;

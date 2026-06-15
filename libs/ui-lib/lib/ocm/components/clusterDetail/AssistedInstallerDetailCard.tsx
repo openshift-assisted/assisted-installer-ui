@@ -1,7 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import {
+  unstable_HistoryRouter as HistoryRouter,
+  HistoryRouterProps,
+  BrowserRouter,
+} from 'react-router';
 import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
-import { storeDay1 } from '../../store';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   AlertsContextProvider,
   AssistedInstallerOCMPermissionTypesListType,
@@ -11,29 +16,23 @@ import {
   LoadingState,
   ResourceUIState,
 } from '../../../common';
+import { storeDay1 } from '../../store';
+import { useInfraEnv, usePullSecret, useFeatureDetection } from '../../hooks';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
-import { ClusterWizard } from '../wizard';
-import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
+import { DiscoveryImageModal } from '../clusterConfiguration';
 import { ModalDialogsContextProvider } from '../hosts/modals/ModalDialogsContext';
+import { BackButton } from '../ui';
+import { ClusterWizard, ClusterWizardContextProvider } from '../wizard';
+import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
+import {
+  OpenShiftVersionsContextProvider,
+  SentryErrorMonitorContextProvider,
+  ClusterDefaultConfigurationProvider,
+} from '../../contexts';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
-import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { CancelInstallationModal } from './CancelInstallationModal';
 import { ResetClusterModal } from './ResetClusterModal';
 import { ClusterPollingErrorModal } from './ClusterPollingErrorModal';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
-import { ClusterWizardContextProvider } from '../wizard';
-import { BackButton } from '../ui';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
-import { usePullSecret } from '../../hooks';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useFeatureDetection } from '../../hooks/use-feature-detection';
-import { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';
-import {
-  unstable_HistoryRouter as HistoryRouter,
-  HistoryRouterProps,
-  BrowserRouter,
-} from 'react-router';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;

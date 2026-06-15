@@ -3,9 +3,9 @@ import {
   ErrorMonitorContextProvider,
   ErrorSeverity,
   ExceptionReporter,
-} from '../../common/components/ErrorHandling/ErrorMonitorContext';
-import { handleApiError } from '../../common/api';
-import { isApiError } from '../../common/api/utils';
+  handleApiError,
+  isApiError,
+} from '../../common';
 import { captureException } from '../sentry';
 
 export const SentryErrorMonitorContextProvider: React.FC<React.PropsWithChildren> = ({
