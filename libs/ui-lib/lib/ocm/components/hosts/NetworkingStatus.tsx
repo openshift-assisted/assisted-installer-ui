@@ -6,12 +6,12 @@ import {
   HostNetworkingStatusComponentProps,
   hostStatus,
   HostStatus,
+  useTranslation,
 } from '../../../common';
 import { wizardStepsValidationsMap } from '../wizard/utils/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => {
+export const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => {
   const { t } = useTranslation();
   const networkingStatus = getWizardStepHostStatus(
     'networking',
@@ -41,5 +41,3 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) =
     />
   );
 };
-
-export default NetworkingStatus;

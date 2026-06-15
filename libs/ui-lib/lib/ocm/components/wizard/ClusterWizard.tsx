@@ -6,7 +6,6 @@ import {
   InfraEnvUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { LoadingState, WithErrorBoundary } from '../../../common';
-import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import CredentialsDownload from '../clusterWizard/CredentialsDownload';
 import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './clusterWizardContext';
@@ -17,6 +16,7 @@ import {
   HostDiscovery,
   CustomManifestStep,
   Storage,
+  NetworkingPage,
 } from './steps';
 
 type ClusterWizardProps = {
@@ -41,7 +41,7 @@ export const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWiza
       case 'storage':
         return <Storage cluster={cluster} />;
       case 'networking':
-        return <NetworkConfigurationPage cluster={cluster} />;
+        return <NetworkingPage cluster={cluster} />;
       case 'custom-manifests':
         return <CustomManifestStep cluster={cluster} />;
       case 'credentials-download':
