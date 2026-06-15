@@ -24,7 +24,7 @@ import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import { CpuArchitectureDropdown } from '../../wizard/wizardFields/CpuArchitectureDropdown';
 import { usePullSecret } from '../../../hooks';
-import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../../contexts';
 import {
   Cluster,
   InfraEnv,

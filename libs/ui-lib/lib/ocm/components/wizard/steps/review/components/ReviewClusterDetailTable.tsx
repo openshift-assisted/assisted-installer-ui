@@ -1,10 +1,13 @@
 import React from 'react';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
-import { genericTableRowKey, getDefaultCpuArchitecture } from '../../../../common';
-import { getDiskEncryptionEnabledOnStatus } from './utils';
-import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  genericTableRowKey,
+  getDefaultCpuArchitecture,
+  useNewFeatureSupportLevel,
+} from '../../../../../../common';
+import { getDiskEncryptionEnabledOnStatus } from '../utils';
+import { OpenShiftVersionDetail } from './OpenShiftVersionDetail';
 
 export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
   const { activeFeatureConfiguration } = useNewFeatureSupportLevel();

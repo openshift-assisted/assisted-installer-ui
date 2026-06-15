@@ -1,21 +1,25 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
-import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
-import { getApiErrorMessage, handleApiError } from '../../../../common/api';
-import { updateCluster } from '../../../store/slices/current-cluster/slice';
-import { ClusterWizardFooter } from '../../wizard/wizardComponents/ClusterWizardFooter';
-import { ClusterWizardNavigation } from '../../wizard/wizardComponents/ClusterWizardNavigation';
-import { ClustersService } from '../../../services';
-import { useStateSafely } from '../../../../common/hooks';
-import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
-import ReviewPreflightChecks from './ReviewPreflightChecks';
-import ReviewSummary from './ReviewSummary';
-import './ReviewCluster.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  ClusterWizardStepHeader,
+  useAlerts,
+  ClusterWizardStep,
+  getApiErrorMessage,
+  handleApiError,
+  useStateSafely,
+} from '../../../../../common';
+import { ClustersService } from '../../../../services';
+import { selectCurrentClusterPermissionsState, updateCluster } from '../../../../store';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
+import { ReviewPreflightChecks } from './ReviewPreflightChecks';
+import { ReviewSummary } from './ReviewSummary';
 
-const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
+import './ReviewCluster.css';
+
+export const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const { addAlert, clearAlerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -95,5 +99,3 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
     </ClusterWizardStep>
   );
 };
-
-export default ReviewStep;

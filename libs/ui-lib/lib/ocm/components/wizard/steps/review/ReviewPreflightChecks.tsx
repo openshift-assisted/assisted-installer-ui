@@ -12,27 +12,31 @@ import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { ClusterValidations, DetailItem, DetailList, HostsValidations } from '../../../../common';
-import { useClusterWizardContext } from '../../wizard/clusterWizardContext/ClusterWizardContext';
-import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
-import { wizardStepNames } from '../../clusterWizard/constants';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  ClusterValidations,
+  DetailItem,
+  DetailList,
+  HostsValidations,
+  useTranslation,
+  useNewFeatureSupportLevel,
+  stringToJSON,
+} from '../../../../../common';
+import { ValidationsInfo as ClusterValidationsInfo } from '../../../../../common/types/clusters';
+import { ValidationsInfo as HostValidationsInfo } from '../../../../../common/types/hosts';
+import { useOpenShiftVersionsContext } from '../../../../contexts';
+import {
+  ClusterFeatureSupportLevelsDetailItem,
+  SupportLevelMemo,
+  getSupportLevelInfo,
+} from '../../../featureSupportLevels';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { wizardStepNames } from '../../constants';
 import {
   ClusterWizardStepsType,
   wizardStepsValidationsMap,
   allClusterWizardSoftValidationIds,
-} from '../../wizard/utils/wizardTransition';
-import { ClusterFeatureSupportLevelsDetailItem } from '../../featureSupportLevels';
-import {
-  SupportLevelMemo,
-  getSupportLevelInfo,
-} from '../../featureSupportLevels/ReviewClusterFeatureSupportLevels';
-
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
-import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
-import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
-import { stringToJSON } from '../../../../common/utils';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+} from '../../utils';
 
 const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
@@ -186,7 +190,7 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
+export const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
   const [isChecksExpanded, setChecksExpanded] = React.useState(false);
   return (
     <>
@@ -213,5 +217,3 @@ const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
     </>
   );
 };
-
-export default ReviewPreflightChecks;

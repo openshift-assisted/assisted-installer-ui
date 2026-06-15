@@ -6,7 +6,6 @@ import {
   InfraEnvUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { LoadingState, WithErrorBoundary } from '../../../common';
-import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './clusterWizardContext';
 import {
   ClusterDetails,
@@ -17,6 +16,7 @@ import {
   Storage,
   NetworkingPage,
   CredentialsDownload,
+  ReviewStep,
 } from './steps';
 
 type ClusterWizardProps = {
