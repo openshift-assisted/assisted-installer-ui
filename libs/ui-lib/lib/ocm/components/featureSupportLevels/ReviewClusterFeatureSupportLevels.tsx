@@ -15,7 +15,7 @@ import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../contexts/OpenShiftVersionsContext';
 import { TFunction } from 'i18next';
 import {
   NewFeatureSupportLevelData,
@@ -198,9 +198,8 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
   );
 };
 
-const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
+export const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
   <WithErrorBoundary title="Failed to load feature support levels">
     <SupportLevel {...props} />
   </WithErrorBoundary>
 );
-export default ClusterFeatureSupportLevelsDetailItem;

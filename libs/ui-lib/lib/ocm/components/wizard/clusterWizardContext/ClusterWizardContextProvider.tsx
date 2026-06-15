@@ -10,7 +10,7 @@ import {
   isStepAfter,
 } from '../utils/wizardTransition';
 import { HostsNetworkConfigurationType } from '../../../services';
-import { defaultWizardSteps, staticIpFormViewSubSteps } from '../../clusterWizard/constants';
+import { defaultWizardSteps, staticIpFormViewSubSteps } from '../constants';
 import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../../common';
 import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';

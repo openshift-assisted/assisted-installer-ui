@@ -23,7 +23,7 @@ import {
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { mapOcmArchToCpuArchitecture } from '../../services/CpuArchitectureService';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,

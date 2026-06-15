@@ -1,5 +1,5 @@
 import React from 'react';
-import { isDualStack } from '../../../../common';
+import { isDualStack } from '../../../../../common';
 import { Cluster, DiskEncryption } from '@openshift-assisted/types/assisted-installer-service';
 
 export const getManagementType = ({ userManagedNetworking }: Cluster): string =>

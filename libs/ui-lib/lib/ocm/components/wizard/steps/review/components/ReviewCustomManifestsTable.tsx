@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { Alert } from '@patternfly/react-core';
-import { ListManifestsExtended } from '../../wizard/steps/customManifests/components/types';
-import { genericTableRowKey } from '../../../../common';
+import { genericTableRowKey } from '../../../../../../common';
+import { ListManifestsExtended } from '../../customManifests/components/types';
 
 export const ReviewCustomManifestsTable = ({ manifests }: { manifests: ListManifestsExtended }) => {
   const rows = manifests?.map((manifest) => ({

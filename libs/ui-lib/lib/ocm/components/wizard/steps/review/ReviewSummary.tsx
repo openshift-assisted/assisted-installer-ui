@@ -8,18 +8,18 @@ import {
   ReviewHostsInventory,
   SupportedPlatformType,
   RenderIf,
-} from '../../../../common';
+} from '../../../../../common';
+import { useClusterCustomManifests } from '../../../../hooks';
+import { PlatformIntegrationNote } from '../../wizardFields';
+import { userProvidedManifests } from '../customManifests/components/utils';
+import { TableSummaryExpandable } from './components/TableSummaryExpandable';
 import {
   ReviewClusterDetailTable,
   ReviewNetworkingTable,
   ReviewOperatorsTable,
   ReviewPlatformTable,
-  TableSummaryExpandable,
-} from '.';
-import { useClusterCustomManifests } from '../../../hooks';
-import { userProvidedManifests } from '../../wizard/steps/customManifests/components/utils';
-import { PlatformIntegrationNote } from '../../wizard/wizardFields';
-import { ReviewCustomManifestsTable } from './ReviewCustomManifestsTable';
+  ReviewCustomManifestsTable,
+} from './components';
 
 export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   const { customManifests } = useClusterCustomManifests(cluster.id, false);
@@ -70,7 +70,7 @@ export const ReviewSummaryContent = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+export const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   return (
     <ExpandableSection
       toggleContent={'Cluster summary'}
@@ -82,5 +82,3 @@ const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
     </ExpandableSection>
   );
 };
-
-export default ReviewSummary;

@@ -25,7 +25,7 @@ import {
 import { useSupportLevelsAPI } from '../../../../hooks';
 import { HostsNetworkConfigurationType } from '../../../../services';
 
-import { useOpenShiftVersionsContext } from '../../../clusterWizard/OpenShiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../../../contexts/OpenShiftVersionsContext';
 import { isFeatureSupportedAndAvailable } from '../../../featureSupportLevels/featureStateUtils';
 import { OcmRichInputField } from '../../../ui';
 import {

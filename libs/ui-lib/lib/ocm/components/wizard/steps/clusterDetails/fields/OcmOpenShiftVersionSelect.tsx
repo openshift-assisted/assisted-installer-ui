@@ -10,7 +10,7 @@ import {
 import { isInOcm } from '../../../../../../common/api';
 import { useFormikContext } from 'formik';
 import { getOpenshiftVersionHelperText } from '../../../../clusterConfiguration/OpenshiftVersionHelperText';
-import { useOpenShiftVersionsContext } from '../../../../clusterWizard/OpenShiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../../../../contexts/OpenShiftVersionsContext';
 
 const filterMinVersions = (versions: OpenshiftVersionOptionType[], minVersion: number) =>
   versions.filter((v) => getComparableVersionInt(v.value) >= minVersion);

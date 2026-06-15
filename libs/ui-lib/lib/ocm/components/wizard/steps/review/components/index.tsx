@@ -1,5 +1,5 @@
 export * from './ReviewClusterDetailTable';
 export * from './ReviewOperatorsTable';
 export * from './ReviewNetworkingTable';
-export * from './TableSummaryExpandable';
 export * from './ReviewPlatformTable';
+export * from './ReviewCustomManifestsTable';
