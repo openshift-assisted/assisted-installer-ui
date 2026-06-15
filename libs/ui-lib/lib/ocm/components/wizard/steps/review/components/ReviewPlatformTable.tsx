@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { Cluster, PlatformType } from '@openshift-assisted/types/assisted-installer-service';
-import { genericTableRowKey } from '../../../../common';
-import { ExternalPlatformLabels } from '../../wizard/wizardFields';
+import { genericTableRowKey } from '../../../../../../common';
+import { ExternalPlatformLabels } from '../../../wizardFields';
 
 export const ReviewPlatformTable = ({ cluster }: { cluster: Cluster }) => {
   const rows = React.useMemo(() => {

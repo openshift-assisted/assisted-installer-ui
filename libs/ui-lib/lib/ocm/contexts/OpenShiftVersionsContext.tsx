@@ -1,9 +1,13 @@
 import React, { createContext } from 'react';
-import { CpuArchitecture, OpenshiftVersionOptionType } from '../../../common';
-import { getApiErrorMessage, handleApiError } from '../../../common/api';
-import { SupportedOpenshiftVersionsAPI } from '../../services/apis';
 import { Cluster, OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
-import { getKeys } from '../../../common/utils';
+import {
+  CpuArchitecture,
+  OpenshiftVersionOptionType,
+  getApiErrorMessage,
+  handleApiError,
+  getKeys,
+} from '../../common';
+import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
 const supportedVersionLevels = ['production', 'maintenance'];
 

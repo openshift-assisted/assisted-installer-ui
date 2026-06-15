@@ -14,7 +14,7 @@ import {
 import { OcmClusterType } from '../AddHosts';
 import HostsClusterDetailTab from './HostsClusterDetailTab';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
-import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',

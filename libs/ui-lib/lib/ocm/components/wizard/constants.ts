@@ -1,4 +1,4 @@
-import { ClusterWizardStepsType } from '../wizard/utils/wizardTransition';
+import { ClusterWizardStepsType } from './utils/wizardTransition';
 
 export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   'cluster-details': 'Cluster details',

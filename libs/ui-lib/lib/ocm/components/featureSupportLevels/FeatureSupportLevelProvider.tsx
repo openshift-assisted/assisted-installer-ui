@@ -21,7 +21,7 @@ import {
   SupportLevel,
   SupportLevels,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../contexts/OpenShiftVersionsContext';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;

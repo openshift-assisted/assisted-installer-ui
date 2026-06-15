@@ -1,15 +1,15 @@
+import React from 'react';
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
-import React from 'react';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   genericTableRowKey,
   isDualStack,
   NETWORK_TYPE_LABELS,
   useTranslation,
-} from '../../../../common';
-import { getManagementType, getStackTypeLabel } from './utils';
-import { useFeature } from '../../../hooks/use-feature';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+} from '../../../../../../common';
+import { getManagementType, getStackTypeLabel } from '../utils';
+import { useFeature } from '../../../../../hooks';
 
 type ReviewTableRowsType = {
   rowId: string;

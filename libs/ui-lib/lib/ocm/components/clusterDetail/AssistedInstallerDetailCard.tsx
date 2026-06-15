@@ -28,7 +28,7 @@ import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
-import { OpenShiftVersionsContextProvider } from '../clusterWizard/OpenShiftVersionsContext';
+import { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';
 import {
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,

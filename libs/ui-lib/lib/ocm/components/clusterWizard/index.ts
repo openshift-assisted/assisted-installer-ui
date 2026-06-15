@@ -1,1 +1,1 @@
-export { OpenShiftVersionsContextProvider } from './OpenShiftVersionsContext';
+export { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';

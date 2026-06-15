@@ -1,7 +1,7 @@
 import { ExpandableSection } from '@patternfly/react-core';
 import React, { useState } from 'react';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { ReviewSummaryContent } from '../clusterConfiguration/review/ReviewSummary';
+import { ReviewSummaryContent } from '../wizard/steps/review/ReviewSummary';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import './ClusterSummaryExpandable.css';
 

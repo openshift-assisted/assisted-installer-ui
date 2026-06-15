@@ -9,7 +9,7 @@ import {
   isStaticIpStep,
 } from '../utils/wizardTransition';
 import { useClusterWizardContext } from '../clusterWizardContext/ClusterWizardContext';
-import { staticIpFormViewSubSteps, wizardStepNames } from '../../clusterWizard/constants';
+import { staticIpFormViewSubSteps, wizardStepNames } from '../constants';
 import WizardNavItem from '../../../../common/components/ui/WizardNavItem';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 

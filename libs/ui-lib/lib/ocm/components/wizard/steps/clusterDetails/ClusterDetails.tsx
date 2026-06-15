@@ -27,7 +27,7 @@ import { useClusterWizardContext } from '../../clusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from '../../utils';
 import { ClusterDetailsForm } from './ClusterDetailsForm';
 
-import { useOpenShiftVersionsContext } from '../../../clusterWizard/OpenShiftVersionsContext';
+import { useOpenShiftVersionsContext } from '../../../../contexts/OpenShiftVersionsContext';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
