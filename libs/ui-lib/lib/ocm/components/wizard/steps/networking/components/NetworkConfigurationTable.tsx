@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { HostsTableEmptyState } from '../../../../common/components/hosts/HostsTable';
-import { ClusterHostsTableProps, isSNO } from '../../../../common';
-import { HostsTableModals, useHostsTable, AdditionalNTPSourcesDialogToggle } from '../../hosts';
-import NetworkConfigurationTableBase from './NetworkConfigurationTableBase';
+import { ClusterHostsTableProps, isSNO, HostsTableEmptyState } from '../../../../../../common';
+import {
+  HostsTableModals,
+  useHostsTable,
+  AdditionalNTPSourcesDialogToggle,
+} from '../../../../hosts';
+import { NetworkConfigurationTableBase } from './NetworkConfigurationTableBase';
 
-const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
+export const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
   const { actionChecks, onEditHost, actionResolver, ...modalProps } = useHostsTable(cluster);
 
   return (
@@ -22,5 +25,3 @@ const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
     </>
   );
 };
-
-export default NetworkConfigurationTable;

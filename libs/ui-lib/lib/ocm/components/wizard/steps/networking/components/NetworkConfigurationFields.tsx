@@ -1,12 +1,13 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
+import { Address6 } from 'ip-address';
 import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
+import { ClusterDefaultConfig } from '@openshift-assisted/types/assisted-installer-service';
 import {
   canBeDualStack,
   CpuArchitecture,
   DUAL_STACK,
-  getIPv6FromDualstack,
   HostSubnets,
   isAdvNetworkConf,
   isSNO,
@@ -14,9 +15,6 @@ import {
   NO_SUBNET_SET,
   selectApiVip,
   selectIngressVip,
-} from '../../../../common';
-import { Address6 } from 'ip-address';
-import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
   StackTypeControlGroup,
@@ -24,22 +22,14 @@ import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
   AdvancedNetworkFields,
-} from '../../../../common/components/clusterWizard/networkingSteps';
-import { NetworkTypeDropDown } from './NetworkTypeDropdown';
-import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
-import { OcmCheckbox } from '../../ui/OcmFormFields';
-import {
-  NewFeatureSupportLevelData,
-  NewFeatureSupportLevelMap,
   useNewFeatureSupportLevel,
-} from '../../../../common/components/newFeatureSupportLevels';
-import {
-  ClusterDefaultConfig,
-  PlatformType,
-} from '@openshift-assisted/types/assisted-installer-service';
-import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
-import { isOciPlatformType } from '../../utils';
-import { useFeature } from '../../../hooks/use-feature';
+} from '../../../../../../common';
+import { selectCurrentClusterPermissionsState } from '../../../../../store';
+import { useFeature, useSupportLevelsAPI } from '../../../../../hooks';
+import { OcmCheckbox } from '../../../../ui';
+import { isOciPlatformType } from '../../../../utils';
+import { NetworkTypeDropDown } from './NetworkTypeDropdown';
+import { getManagedNetworkingState, getNetworkDefaultsByFamily } from './utils';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -52,108 +42,7 @@ export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   >;
 };
 
-const getManagedNetworkingDisabledReason = (
-  isDualStack: boolean,
-  isOracleCloudInfrastructure: boolean,
-  featureSupportLevelData: NewFeatureSupportLevelData,
-) => {
-  if (isOracleCloudInfrastructure) {
-    return 'Network management selection is not supported with Oracle Cloud Infrastructure';
-  } else if (isDualStack) {
-    return 'Network management selection is not supported with dual-stack';
-  } else if (featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')) {
-    return featureSupportLevelData.getFeatureDisabledReason('NETWORK_TYPE_SELECTION');
-  }
-};
-
-const getUserManagedDisabledReason = (
-  featureSupportLevelContext: NewFeatureSupportLevelData,
-  platformType?: PlatformType,
-  featureSupportLevelMap?: NewFeatureSupportLevelMap | null,
-) => {
-  if (!featureSupportLevelContext.isFeatureSupported('USER_MANAGED_NETWORKING')) {
-    return featureSupportLevelContext.getFeatureDisabledReason(
-      'USER_MANAGED_NETWORKING',
-      featureSupportLevelMap ?? undefined,
-      undefined,
-      platformType,
-    );
-  }
-};
-
-const getClusterManagedDisabledReason = (
-  featureSupportLevelContext: NewFeatureSupportLevelData,
-  featureSupportLevelMap?: NewFeatureSupportLevelMap | null,
-) => {
-  if (!featureSupportLevelContext.isFeatureSupported('CLUSTER_MANAGED_NETWORKING')) {
-    return featureSupportLevelContext.getFeatureDisabledReason(
-      'CLUSTER_MANAGED_NETWORKING',
-      featureSupportLevelMap ?? undefined,
-    );
-  }
-};
-
-const getManagedNetworkingState = (
-  isDualStack: boolean,
-  isOracleCloudInfrastructure: boolean,
-  featureSupportLevelData: NewFeatureSupportLevelData,
-  platformType?: PlatformType,
-  featureSupportLevelMap?: NewFeatureSupportLevelMap | null,
-): {
-  isDisabled: boolean;
-  clusterManagedDisabledReason?: string;
-  userManagedDisabledReason?: string;
-} => {
-  const networkingReason = getManagedNetworkingDisabledReason(
-    isDualStack,
-    isOracleCloudInfrastructure,
-    featureSupportLevelData,
-  );
-  const cmnReason = getClusterManagedDisabledReason(
-    featureSupportLevelData,
-    featureSupportLevelMap,
-  );
-  const umnReason = getUserManagedDisabledReason(
-    featureSupportLevelData,
-    platformType,
-    featureSupportLevelMap,
-  );
-
-  return {
-    isDisabled: !!(cmnReason || umnReason || networkingReason),
-    clusterManagedDisabledReason: cmnReason || networkingReason,
-    userManagedDisabledReason: umnReason || networkingReason,
-  };
-};
-
-type DefaultNetworkSettings = NetworkConfigurationProps['defaultNetworkSettings'];
-
-const getNetworkDefaultsByFamily = (
-  settings: DefaultNetworkSettings,
-  isDualStack: boolean,
-  isIPv6: boolean,
-) => {
-  if (isDualStack) {
-    return {
-      clusterNetworkDefaults: settings.clusterNetworksDualstack,
-      serviceNetworkDefaults: settings.serviceNetworksDualstack,
-    };
-  }
-  if (isIPv6) {
-    const ipv6Cluster = getIPv6FromDualstack(settings.clusterNetworksDualstack);
-    const ipv6Service = getIPv6FromDualstack(settings.serviceNetworksDualstack);
-    return {
-      clusterNetworkDefaults: ipv6Cluster ? [ipv6Cluster] : settings.clusterNetworksIpv4,
-      serviceNetworkDefaults: ipv6Service ? [ipv6Service] : settings.serviceNetworksIpv4,
-    };
-  }
-  return {
-    clusterNetworkDefaults: settings.clusterNetworksIpv4,
-    serviceNetworkDefaults: settings.serviceNetworksIpv4,
-  };
-};
-
-const NetworkConfiguration = ({
+export const NetworkConfigurationFields = ({
   cluster,
   hostSubnets,
   isVipDhcpAllocationDisabled,
@@ -380,5 +269,3 @@ const NetworkConfiguration = ({
     </Stack>
   );
 };
-
-export default NetworkConfiguration;
