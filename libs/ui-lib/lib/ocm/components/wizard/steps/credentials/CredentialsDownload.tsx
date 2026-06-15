@@ -1,4 +1,7 @@
 import React from 'react';
+import { Alert, AlertVariant, Checkbox, Stack } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClustersAPI,
   ClusterWizardStep,
@@ -8,17 +11,13 @@ import {
   KUBECONFIG_INFO_LINK,
   useAlerts,
   useTranslation,
-} from '../../../common';
-import { useClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
-import { ClusterWizardFooter } from '../wizard/wizardComponents/ClusterWizardFooter';
-import { ClusterWizardNavigation } from '../wizard/wizardComponents/ClusterWizardNavigation';
-import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { Alert, AlertVariant, Checkbox, Stack } from '@patternfly/react-core';
-import { downloadFile } from '../../../common/utils';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+  WithErrorBoundary,
+  downloadFile,
+} from '../../../../../common';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
 
-const CredentialsDownload: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+export const CredentialsDownload: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const [isChecked, setIsChecked] = React.useState<boolean>(false);
   const [isDownloading, setIsDownloading] = React.useState(false);
@@ -102,5 +101,3 @@ const CredentialsDownload: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     </ClusterWizardStep>
   );
 };
-
-export default CredentialsDownload;
