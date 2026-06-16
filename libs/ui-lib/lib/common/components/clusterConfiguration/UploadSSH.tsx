@@ -10,7 +10,7 @@ type UploadSSHProps = {
   labelText?: string;
 };
 
-const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
+export const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
   const [{ name }, , { setValue }] = useField<string>('sshPublicKey');
   const { t } = useTranslation();
   const defaultLabelText = t(
@@ -32,5 +32,3 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
     />
   );
 };
-
-export default UploadSSH;

@@ -1,16 +1,16 @@
 import React from 'react';
+import { Cluster, PresignedUrl } from '@openshift-assisted/types/assisted-installer-service';
 import { CpuArchitecture } from '../../common';
-import { InfraEnvsAPI } from '../services/apis';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
-import { Cluster, PresignedUrl } from '@openshift-assisted/types/assisted-installer-service';
+import { InfraEnvsAPI } from '../services/apis';
 
 type ImgUrl = {
   url: PresignedUrl['url'];
   error: string;
 };
 
-export default function useInfraEnvIpxeImageUrl() {
+export const useInfraEnvIpxeImageUrl = () => {
   const getIpxeImageUrl = React.useCallback(
     async (clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<ImgUrl> => {
       try {
@@ -36,4 +36,4 @@ export default function useInfraEnvIpxeImageUrl() {
   );
 
   return { getIpxeImageUrl };
-}
+};

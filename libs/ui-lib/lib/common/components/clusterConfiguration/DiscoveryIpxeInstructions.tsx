@@ -2,7 +2,7 @@ import React from 'react';
 import { Content, OrderType } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-const DiscoveryIpxeInstructions = () => {
+export const DiscoveryIpxeInstructions = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -22,5 +22,3 @@ const DiscoveryIpxeInstructions = () => {
     </>
   );
 };
-
-export default DiscoveryIpxeInstructions;

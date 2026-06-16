@@ -17,6 +17,7 @@ export * from './OpenShiftVersionDropdown';
 export * from './OpenShiftVersionModal';
 export * from './ConfirmationModal';
 export * from './SectionTitle';
+export * from './ViewClusterEventsButton';
 
 export * from './utils';
 

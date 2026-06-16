@@ -18,7 +18,6 @@ import {
   LoadingState,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
-
 import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
 import {
   StaticIpInfo,
@@ -34,8 +33,8 @@ import {
 } from '../../wizard/steps/staticIp';
 
 import { useDay2WizardContext } from './Day2WizardContext';
-import Day2WizardNav from './Day2WizardNav';
-import Day2WizardFooter from './Day2WizardFooter';
+import { Day2WizardNav } from './Day2WizardNav';
+import { Day2WizardFooter } from './Day2WizardFooter';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();

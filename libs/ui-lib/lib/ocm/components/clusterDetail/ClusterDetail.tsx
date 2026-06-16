@@ -1,26 +1,34 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { Stack, StackItem, Content, ButtonVariant, GridItem, Grid } from '@patternfly/react-core';
-import { ToolbarButton, Alerts, getEnabledHosts, selectOlmOperators, isSNO } from '../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import ClusterToolbar from '../clusters/ClusterToolbar';
-import { getClusterDetailId } from './utils';
+import {
+  ToolbarButton,
+  Alerts,
+  getEnabledHosts,
+  selectOlmOperators,
+  isSNO,
+  handleApiError,
+  isInOcm,
+  useNewFeatureSupportLevel,
+  ClusterProgress,
+} from '../../../common';
 import { routeBasePath } from '../../config';
-import ClusterDetailStatusVarieties, {
+import { onFetchEvents } from '../fetching/fetchEvents';
+import { ClustersAPI } from '../../services/apis';
+import { useFeature } from '../../hooks/use-feature';
+import { updateCluster } from '../../store/slices/current-cluster/slice';
+import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
+import ClusterToolbar from '../clusters/ClusterToolbar';
+import { getClusterProgressAlerts } from './getProgressBarAlerts';
+import { ClusterDetailsButtonGroup } from './ClusterDetailsButtonGroup';
+import { ClusterSummaryExpandable } from './ClusterSummaryExpandable';
+import { HostInventoryExpandable } from './HostInventoryExpandable';
+import {
+  ClusterDetailStatusVarieties,
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
-import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
-import { onFetchEvents } from '../fetching/fetchEvents';
-import { getClusterProgressAlerts } from './getProgressBarAlerts';
-import { ClustersAPI } from '../../services/apis';
-import { updateCluster } from '../../store/slices/current-cluster/slice';
-import { handleApiError, isInOcm } from '../../../common/api';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
-import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
-import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
-import ClusterSummaryExpandable from './ClusterSummaryExpandable';
-import HostInventoryExpandable from './HostInventoryExpandable';
-import { useFeature } from '../../hooks/use-feature';
+import { getClusterDetailId } from './utils';
 
 type ClusterDetailProps = {
   cluster: Cluster;

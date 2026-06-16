@@ -30,7 +30,7 @@ type DiscoveryImageFormProps = {
   isIpxeSelected?: boolean;
 };
 
-const DiscoveryImageForm = ({
+export const DiscoveryImageForm = ({
   cluster,
   onCancel,
   onSuccess,
@@ -128,5 +128,3 @@ const DiscoveryImageForm = ({
     />
   );
 };
-
-export default DiscoveryImageForm;
