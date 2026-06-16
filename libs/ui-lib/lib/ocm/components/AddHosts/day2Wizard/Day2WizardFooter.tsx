@@ -10,7 +10,7 @@ type Day2WizardFooterProps = {
   onNext?: () => void;
 };
 
-const Day2WizardFooter = ({
+export const Day2WizardFooter = ({
   isSubmitting,
   isNextDisabled,
   onNext,
@@ -45,5 +45,3 @@ const Day2WizardFooter = ({
     />
   );
 };
-
-export default Day2WizardFooter;

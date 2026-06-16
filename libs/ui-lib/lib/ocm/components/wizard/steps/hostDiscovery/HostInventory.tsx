@@ -13,7 +13,8 @@ import {
 import { useFeature } from '../../../../hooks';
 import { selectCurrentClusterPermissionsState } from '../../../../store';
 import { OcmSwitchField } from '../../../ui';
-import { DiscoveryImageModalButton, InformationAndAlerts } from '../../../clusterConfiguration';
+import { InformationAndAlerts } from '../../../clusterConfiguration';
+import { DiscoveryImageModalButton } from '../../../discoveryImage';
 import { HostsDiscoveryTable } from './HostsDiscoveryTable';
 
 const schedulableMastersTooltip =

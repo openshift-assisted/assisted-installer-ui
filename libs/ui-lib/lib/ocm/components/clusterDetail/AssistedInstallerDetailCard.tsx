@@ -19,7 +19,6 @@ import {
 import { storeDay1 } from '../../store';
 import { useInfraEnv, usePullSecret, useFeatureDetection } from '../../hooks';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
-import { DiscoveryImageModal } from '../clusterConfiguration';
 import { ModalDialogsContextProvider } from '../hosts/modals/ModalDialogsContext';
 import { BackButton } from '../ui';
 import { ClusterWizard, ClusterWizardContextProvider } from '../wizard';
@@ -33,6 +32,7 @@ import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import { CancelInstallationModal } from './CancelInstallationModal';
 import { ResetClusterModal } from './ResetClusterModal';
 import { ClusterPollingErrorModal } from './ClusterPollingErrorModal';
+import { DiscoveryImageModal } from '../discoveryImage';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;

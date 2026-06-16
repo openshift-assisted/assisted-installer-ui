@@ -27,7 +27,7 @@ const ExpandableSectionTitle = ({
   </span>
 );
 
-const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
+export const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const hosts = cluster.hosts || [];
@@ -57,4 +57,3 @@ const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
     </ExpandableSection>
   );
 };
-export default HostInventoryExpandable;

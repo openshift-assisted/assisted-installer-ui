@@ -1,22 +1,22 @@
 import React from 'react';
-import {
-  selectOlmOperators,
-  selectMonitoredOperators,
-  ClusterCredentials,
-  hasEnabledOperators,
-  OPERATOR_NAME_MCE,
-} from '../../../common';
-import { getClusterDetailId } from './utils';
-import { ClustersAPI } from '../../services/apis';
-import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { getErrorMessage } from '../../../common/utils';
 import {
   Cluster,
   Credentials,
   MonitoredOperator,
   MonitoredOperatorsList,
 } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  selectOlmOperators,
+  selectMonitoredOperators,
+  ClusterCredentials,
+  hasEnabledOperators,
+  OPERATOR_NAME_MCE,
+  getErrorMessage,
+} from '../../../common';
+import { ClustersAPI } from '../../services/apis';
+import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
+import { getClusterDetailId } from './utils';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
@@ -83,7 +83,7 @@ type ClusterDetailStatusVarietiesProps = {
   showAddHostsInfo?: boolean;
 };
 
-const ClusterDetailStatusVarieties = ({
+export const ClusterDetailStatusVarieties = ({
   cluster,
   clusterVarieties,
   showAddHostsInfo = true,
@@ -114,5 +114,3 @@ const ClusterDetailStatusVarieties = ({
     </Stack>
   );
 };
-
-export default ClusterDetailStatusVarieties;

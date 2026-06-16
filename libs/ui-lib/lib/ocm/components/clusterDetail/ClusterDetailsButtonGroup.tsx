@@ -1,21 +1,21 @@
-import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
+import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
+import { Cluster, Credentials } from '@openshift-assisted/types/assisted-installer-service';
 import {
   canDownloadClusterLogs,
   useAlerts,
   KubeconfigDownload,
   RenderIf,
   canOpenConsole,
+  ViewClusterEventsButton,
+  ToolbarButton,
+  useTranslation,
 } from '../../../common';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
-import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
-import { ToolbarButton } from '../../../common/components/ui/Toolbar';
-import { Cluster, Credentials } from '@openshift-assisted/types/assisted-installer-service';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { downloadClusterInstallationLogs } from './utils';
 
 import './ClusterDetailsButtonGroup.css';
 
@@ -52,7 +52,7 @@ const LaunchOpenshiftConsoleButton: React.FC<{
 
 const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
-const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
+export const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
   cluster,
   credentials,
   credentialsError,
@@ -129,5 +129,3 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
     </Flex>
   );
 };
-
-export default ClusterDetailsButtonGroup;

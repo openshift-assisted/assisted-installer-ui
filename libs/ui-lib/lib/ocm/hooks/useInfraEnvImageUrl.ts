@@ -1,16 +1,15 @@
 import React from 'react';
-import { CpuArchitecture } from '../../common';
-import { InfraEnvsAPI } from '../services/apis';
-import { getErrorMessage } from '../../common/utils';
-import { InfraEnvsService } from '../services';
 import { Cluster, PresignedUrl } from '@openshift-assisted/types/assisted-installer-service';
+import { CpuArchitecture, getErrorMessage } from '../../common';
+import { InfraEnvsService } from '../services';
+import { InfraEnvsAPI } from '../services/apis';
 
 type ImgUrl = {
   url: PresignedUrl['url'];
   error: string;
 };
 
-export default function useInfraEnvImageUrl() {
+export const useInfraEnvImageUrl = () => {
   const getIsoImageUrl = React.useCallback(
     async (clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<ImgUrl> => {
       try {
@@ -34,4 +33,4 @@ export default function useInfraEnvImageUrl() {
   );
 
   return { getIsoImageUrl };
-}
+};

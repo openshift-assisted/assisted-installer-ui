@@ -12,3 +12,5 @@ export * from './use-feature';
 export * from './useLateBinding';
 export * from './useClusterCustomManifests';
 export * from './useSupportLevelsAPI';
+export * from './useInfraEnvImageUrl';
+export * from './useInfraEnvIpxeImageUrl';

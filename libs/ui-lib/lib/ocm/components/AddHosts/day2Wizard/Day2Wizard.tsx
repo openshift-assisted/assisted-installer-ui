@@ -7,7 +7,7 @@ import Day2ClusterDetails from './Day2ClusterDetails';
 import Day2DownloadISO from './Day2DownloadISO';
 import Day2GenerateISO from './Day2GenerateISO';
 import Day2StaticIP from './Day2StaticIP';
-import Day2WizardNav from './Day2WizardNav';
+import { Day2WizardNav } from './Day2WizardNav';
 import { useDay2WizardContext } from './Day2WizardContext';
 
 const Day2WizardStep = () => {

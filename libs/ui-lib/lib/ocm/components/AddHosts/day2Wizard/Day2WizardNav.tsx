@@ -4,7 +4,7 @@ import { Day2WizardStepsType, day2WizardStepNames, staticIpFormViewSubSteps } fr
 import { useDay2WizardContext } from './Day2WizardContext';
 import { isStaticIpStep } from '../../wizard/utils/wizardTransition';
 
-const Day2WizardNav = () => {
+export const Day2WizardNav = () => {
   const wizardContext = useDay2WizardContext();
 
   const isStepIdxAfterCurrent = (idx: number) => {
@@ -71,5 +71,3 @@ const Day2WizardNav = () => {
 
   return <WizardNav data-testid="day2-wizard-nav">{getWizardNavItems()}</WizardNav>;
 };
-
-export default Day2WizardNav;

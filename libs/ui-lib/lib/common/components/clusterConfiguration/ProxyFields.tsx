@@ -1,12 +1,12 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
+import { Trans } from 'react-i18next';
 import { Grid } from '@patternfly/react-core';
 import { InputField, CheckboxField, trimCommaSeparatedList, PopoverIcon } from '../ui';
 import { ProxyFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './ProxyFields.css';
-import { Trans } from 'react-i18next';
 
 export const ProxyInputFields = () => {
   const { setFieldValue, values } = useFormikContext<ProxyFieldsType>();
@@ -97,7 +97,7 @@ export const ProxyInputFields = () => {
   );
 };
 
-const ProxyFields: React.FC = () => {
+export const ProxyFields: React.FC = () => {
   const { setFieldValue, values, initialValues } = useFormikContext<ProxyFieldsType>();
   const resetProxy = (isNewlyChecked: boolean) => {
     if (isNewlyChecked) {
@@ -131,5 +131,3 @@ const ProxyFields: React.FC = () => {
     </>
   );
 };
-
-export default ProxyFields;

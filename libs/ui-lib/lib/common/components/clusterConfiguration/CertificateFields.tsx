@@ -7,13 +7,13 @@ import {
   HelperText,
   HelperTextItem,
 } from '@patternfly/react-core';
-import { CheckboxField, PopoverIcon } from '../ui';
-import { TrustedCertificateFieldsType } from '../../types';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-
 import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import CertificatesUploadField from '../ui/formik/CertificatesUploadField';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TrustedCertificateFieldsType } from '../../types';
+import { CheckboxField, PopoverIcon, CertificatesUploadField } from '../ui';
+
 import './CertificateFields.css';
+
 const FIELD_NAME = 'trustBundle';
 
 export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
@@ -59,7 +59,7 @@ export const CertificateInputFields = () => {
   );
 };
 
-const CertificateFields = () => {
+export const CertificateFields = () => {
   const { setFieldValue, values, initialValues } = useFormikContext<TrustedCertificateFieldsType>();
   const resetCertificate = (isNewlyChecked: boolean) => {
     if (isNewlyChecked) {
@@ -88,5 +88,3 @@ const CertificateFields = () => {
     </>
   );
 };
-
-export default CertificateFields;
