@@ -5,5 +5,6 @@ export * from './AddHosts';
 export * from './featureSupportLevels';
 export * from './hosts/modals/ModalDialogsContext';
 export * from './clusterConfiguration';
+export * from './discoveryImage';
 
 export * from './wizard';

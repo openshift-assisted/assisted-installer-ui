@@ -23,3 +23,4 @@ export * from './PullSecretField';
 export * from './LabelField';
 export * from './types';
 export * from './AdditionalNTPSourcesField';
+export * from './CertificatesUploadField';

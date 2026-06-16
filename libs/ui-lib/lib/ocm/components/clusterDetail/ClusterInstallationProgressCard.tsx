@@ -8,14 +8,15 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ClusterProgress } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
-import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
 import { ClusterStatusIcon } from '../clusters/ClusterStatus';
-import ClusterDetailStatusVarieties, {
+import {
+  ClusterDetailStatusVarieties,
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { ClusterDetailsButtonGroup } from './ClusterDetailsButtonGroup';
 
 const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isCardExpanded, setIsCardExpanded] = React.useState(true);

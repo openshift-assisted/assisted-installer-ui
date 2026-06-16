@@ -1,5 +1,5 @@
-import { ExpandableSection } from '@patternfly/react-core';
 import React, { useState } from 'react';
+import { ExpandableSection } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ReviewSummaryContent } from '../wizard/steps/review/ReviewSummary';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
@@ -9,7 +9,7 @@ type ClusterSummaryExpandableProps = {
   cluster: Cluster;
 };
 
-const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) => {
+export const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <ExpandableSection
@@ -26,5 +26,3 @@ const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) =>
     </ExpandableSection>
   );
 };
-
-export default ClusterSummaryExpandable;

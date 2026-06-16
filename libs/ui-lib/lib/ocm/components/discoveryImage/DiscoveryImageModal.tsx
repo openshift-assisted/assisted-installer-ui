@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   ButtonVariant,
@@ -8,6 +9,7 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   AI_CISCO_INTERSIGHT_TAG,
   CpuArchitecture,
@@ -15,16 +17,13 @@ import {
   ErrorState,
   isSNO,
   ToolbarButton,
+  DownloadIpxeScript,
 } from '../../../common';
-import DiscoveryImageForm from './DiscoveryImageForm';
-import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
-import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
-import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
-import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useInfraEnvImageUrl, useInfraEnvIpxeImageUrl } from '../../hooks';
 import { ClustersService } from '../../services';
-import { useDispatch } from 'react-redux';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
+import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
+import { DiscoveryImageForm } from './DiscoveryImageForm';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;

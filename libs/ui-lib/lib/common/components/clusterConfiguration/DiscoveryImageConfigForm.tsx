@@ -18,18 +18,18 @@ import {
   ImageType,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { AlertFormikError } from '../../../common/components/ui';
+import { AlertFormikError } from '../../components/ui';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../validationSchemas';
 import { ProxyFieldsType, StatusErrorType } from '../../types';
-import ProxyFields from './ProxyFields';
-import UploadSSH from './UploadSSH';
-import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { getOCPStaticIPDocLink } from '../../config/docs_links';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { DiscoveryImageTypeControlGroup } from './DiscoveryImageTypeControlGroup';
+import { ProxyFields } from './ProxyFields';
+import { UploadSSH } from './UploadSSH';
 
 export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
   const { t } = useTranslation();

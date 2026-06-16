@@ -1,5 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
+import { Formik, FormikHelpers } from 'formik';
+import { TFunction } from 'i18next';
 import {
   Button,
   Form,
@@ -12,32 +14,28 @@ import {
   Flex,
   FlexItem,
 } from '@patternfly/react-core';
-import { Formik, FormikHelpers } from 'formik';
-import { TFunction } from 'i18next';
 import {
   HostStaticNetworkConfig,
   ImageType,
   InfraEnv,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { AlertFormikError } from '../../../common/components/ui';
 import {
   DiscoveryImageType,
   ProxyFieldsType,
   StatusErrorType,
   SupportedCpuArchitecture,
   TrustedCertificateFieldsType,
-} from '../../../common/types';
-import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
-import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
-import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
-import {
+  AlertFormikError,
+  useTranslation,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
+  ProxyFields,
+  UploadSSH,
+  CertificateFields,
 } from '../../../common';
+import { DiscoveryImageTypeDropdown, discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 
 export interface OcmImageCreateParams {
   /**
