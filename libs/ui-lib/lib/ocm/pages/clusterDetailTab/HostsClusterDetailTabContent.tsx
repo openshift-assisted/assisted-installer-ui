@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
@@ -13,21 +13,20 @@ import {
 } from '../../../common';
 import { usePullSecret, useInfraEnv } from '../../hooks';
 import { Day2ClusterService, getApiVipDnsName, mapOcmArchToCpuArchitecture } from '../../services';
+import { AddHosts, NewFeatureSupportLevelProvider } from '../../components';
 import { OpenShiftVersionsContextProvider } from '../../contexts';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
-import { AddHosts } from '../AddHosts';
+import { HostsClusterDetailTabProps } from './types';
 import {
   AddHostsApiError,
   ReloadFailedError,
   UnableToAddHostsError,
 } from './HostsClusterDetailTabContentErrors';
-import { HostsClusterDetailTabProps } from './types';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
   isVisible,
 }: HostsClusterDetailTabProps) => {
-  const [error, setError] = React.useState<ReactNode>();
+  const [error, setError] = React.useState<React.ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
 

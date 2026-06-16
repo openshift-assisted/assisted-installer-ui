@@ -11,10 +11,10 @@ import {
   STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
   ToolbarButton,
 } from '../../../common';
-import { OcmClusterType } from '../AddHosts';
-import HostsClusterDetailTab from './HostsClusterDetailTab';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
-import { OpenShiftVersionsContextProvider } from '../../contexts/OpenShiftVersionsContext';
+import { HostsClusterDetailTab } from './HostsClusterDetailTab';
+import { OpenShiftVersionsContextProvider } from '../../contexts';
+import { OcmClusterType } from '../../components';
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',

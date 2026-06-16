@@ -1,13 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { AssistedUILibVersion } from '../ui';
 import { AlertsContextProvider } from '../../../common';
-import { HostsClusterDetailTabContent } from './HostsClusterDetailTabContent';
-import { HostsClusterDetailTabProps } from './types';
+import { AssistedUILibVersion } from '../../components';
 import { storeDay1 } from '../../store';
 import { useFeatureDetection } from '../../hooks/use-feature-detection';
+import { HostsClusterDetailTabContent } from './HostsClusterDetailTabContent';
+import { HostsClusterDetailTabProps } from './types';
 
-const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => {
+export const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => {
   useFeatureDetection(props.allEnabledFeatures);
 
   return (
@@ -19,5 +19,3 @@ const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => {
     </Provider>
   );
 };
-
-export default HostsClusterDetailTab;

@@ -159,5 +159,3 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     </NewFeatureSupportLevelContextProvider>
   );
 };
-
-export default NewFeatureSupportLevelProvider;
