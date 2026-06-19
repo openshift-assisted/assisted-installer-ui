@@ -19,6 +19,7 @@ import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectu
 import { usePullSecret } from '../../hooks';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { isOciPlatformType } from '../utils';
+import { ModalBody } from '@patternfly/react-core';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -93,10 +94,18 @@ const DiscoveryImageForm = ({
   };
 
   if (infraEnvError) {
-    return <ErrorState />;
+    return (
+      <ModalBody style={{ height: '696px' }}>
+        <ErrorState />
+      </ModalBody>
+    );
   }
   if (!infraEnv) {
-    return <LoadingState />;
+    return (
+      <ModalBody style={{ height: '696px' }}>
+        <LoadingState />
+      </ModalBody>
+    );
   }
   return (
     <OcmDiscoveryImageConfigForm
