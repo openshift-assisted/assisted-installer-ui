@@ -10,6 +10,7 @@ import {
   getOpenshiftVersionText,
   getTotalHostCount,
   HostsCount,
+  installationInProgress,
   ResourceUIState,
   type ClusterTableRows,
   type HumanizedSortable,
@@ -33,6 +34,7 @@ export const selectClustersUIState = createSelector(
 export type ClusterRowDataProps = {
   id: string;
   name: string;
+  disableDelete: boolean;
   baseDnsDomain?: string;
 };
 
@@ -48,6 +50,7 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
     name,
     id,
     baseDnsDomain,
+    disableDelete: installationInProgress(cluster.status),
   };
 
   return {

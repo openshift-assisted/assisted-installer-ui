@@ -22,16 +22,6 @@ export const calculateCollectedLogsCount = (cluster: Cluster) => {
 export const getBuiltInOperators = (monitoredOperators: MonitoredOperatorsList = []) =>
   monitoredOperators.filter((operator: MonitoredOperator) => operator.operatorType === 'builtin');
 
-export const canAbortInstallation = (cluster: Cluster) => {
-  const allowedClusterStates: Cluster['status'][] = [
-    'preparing-for-installation',
-    'installing',
-    'installing-pending-user-action',
-    'finalizing',
-  ];
-  return allowedClusterStates.includes(cluster.status);
-};
-
 export const isSomeDisksSkipFormatting = (cluster: Cluster) => {
   return cluster.hosts?.some(
     (host) => host.skipFormattingDisks && host.skipFormattingDisks.length > 0,

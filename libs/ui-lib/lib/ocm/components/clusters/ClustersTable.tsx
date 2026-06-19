@@ -15,19 +15,9 @@ import {
   ISortBy,
   TrProps,
 } from '@patternfly/react-table';
-import {
-  ClusterRowDataProps,
-  getClusterTableStatusCell,
-} from '../../store/slices/clusters/selectors';
+import { ClusterRowDataProps } from '../../store/slices/clusters/selectors';
 import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
-import {
-  clusterStatusLabels,
-  ClusterTableRows,
-  HumanizedSortable,
-  rowSorter,
-  EmptyState,
-} from '../../../common';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { ClusterTableRows, HumanizedSortable, rowSorter, EmptyState } from '../../../common';
 import DeleteClusterModal from './DeleteClusterModal';
 
 type DeleteClusterID = Pick<ClusterRowDataProps, 'id' | 'name'>;
@@ -74,8 +64,6 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
   const [filters, setFilters] = React.useState<ClusterFiltersType>({
     status: [],
   });
-
-  const { t } = useTranslation();
 
   const getSortParams = (columnIndex: number): ThProps['sort'] => ({
     sortBy,
@@ -200,9 +188,7 @@ const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
                       {
                         title: 'Delete',
                         id: `button-delete-${(row.props as ClusterRowDataProps).name}`,
-                        isDisabled:
-                          getClusterTableStatusCell(row).sortableValue ===
-                          clusterStatusLabels(t).installing,
+                        isDisabled: (row.props as ClusterRowDataProps).disableDelete,
                         onClick: () => {
                           setDeleteClusterID({
                             id: (row.props as ClusterRowDataProps).id,

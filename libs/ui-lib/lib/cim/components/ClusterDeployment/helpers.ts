@@ -10,7 +10,7 @@ import {
 import { getClusterStatus } from '../helpers/status';
 import { getK8sProxyURL } from '../helpers/proxy';
 import { getInfraEnvNameOfAgent } from '../helpers/agents';
-import { EventListFetchProps } from '../../../common';
+import { EventListFetchProps, installationInProgress } from '../../../common';
 import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
 import { INFRAENV_GENERATED_AI_FLOW, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 import { gridSpans } from '@patternfly/react-core';
@@ -64,12 +64,7 @@ export const isInstallationInProgress = (agentClusterInstall: AgentClusterInstal
     return true;
   }
 
-  return [
-    'preparing-for-installation',
-    'installing',
-    'finalizing',
-    'installing-pending-user-action',
-  ].includes(clusterStatus);
+  return installationInProgress(clusterStatus);
 };
 
 export const isInstallationReady = (agentClusterInstall: AgentClusterInstallK8sResource) => {

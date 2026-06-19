@@ -6,11 +6,11 @@ import {
   KubeconfigDownload,
   RenderIf,
   canOpenConsole,
+  installationInProgress,
 } from '../../../common';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
 import { ToolbarButton } from '../../../common/components/ui/Toolbar';
@@ -91,7 +91,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
           />
         </FlexItem>
       </RenderIf>
-      <RenderIf condition={canAbortInstallation(cluster)}>
+      <RenderIf condition={installationInProgress(cluster.status)}>
         <FlexItem>
           <Button
             data-testid="cluster-installation-abort-button"
