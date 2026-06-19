@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExpandableSection, Content } from '@patternfly/react-core';
+import './TableSummaryExpandable.css';
 
 export const TableSummaryExpandable = ({
   title,
@@ -20,7 +21,6 @@ export const TableSummaryExpandable = ({
       id={id ? id : title}
     >
       {children}
-      <br />
     </ExpandableSection>
   );
 };
