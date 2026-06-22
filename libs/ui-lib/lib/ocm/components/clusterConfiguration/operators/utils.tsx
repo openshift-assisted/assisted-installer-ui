@@ -1,8 +1,8 @@
 import {
+  BundleCreateParams,
   Bundle,
   PreflightHardwareRequirements,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { SelectedBundle } from '../../../../common/types';
 import { OperatorSpec } from '../../../../common/components/operators/operatorSpecs';
 
 const getOperatorDependencies = (
@@ -69,7 +69,7 @@ const getBundleOperators = (
 
 export const getNewBundleOperators = (
   currentOperators: string[],
-  currentBundles: SelectedBundle[],
+  currentBundles: BundleCreateParams[],
   allBundles: Bundle[],
   newBundle: Bundle,
   preflightRequirements: PreflightHardwareRequirements | undefined,

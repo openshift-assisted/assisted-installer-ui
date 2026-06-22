@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { BundleCreateParams, Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStep,
   getFormikErrorFields,
@@ -32,7 +32,7 @@ const getOperatorsInitialValues = (
   const olmOperators = selectOlmOperators(cluster);
   const selectedOperators = olmOperators
     .filter((operator) => operator.name && !operator.sourceBundles?.length)
-    .flatMap(({ name }) => (name ? [name] : []));
+    .map(({ name }) => name as string);
 
   const selectedBundlesFromOperatorBundles = (cluster.operatorBundles || []).map(
     ({ id, optionalOperators }) => ({
@@ -111,25 +111,27 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
-    const selectedOperators = values.selectedOperators.map((name) => ({ name }));
-
-    const selectedBundles: BundleCreateParams[] = values.selectedBundles.map(
-      ({ id, optionalOperators }) => ({
-        id,
-        optionalOperators,
-      }),
-    );
-
     try {
       const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
-        operatorBundles: selectedBundles,
-        olmOperators: selectedOperators,
+        operatorBundles: values.selectedBundles,
+        olmOperators: values.selectedOperators.map((name) => ({ name })),
       });
 
-      // Backward compatibility: old clusters used uiSettings.bundlesSelected, keep a single source of truth in operatorBundles.
-      await updateUISettings({ bundlesSelected: undefined });
-
       dispatch(updateCluster(updatedCluster));
+
+      // Backward compatibility: old clusters used uiSettings.bundlesSelected, keep operatorBundles as source of truth.
+      if (uiSettings?.bundlesSelected?.length) {
+        try {
+          await updateUISettings({ bundlesSelected: undefined });
+        } catch (uiSettingsError) {
+          handleApiError(uiSettingsError, () =>
+            addAlert({
+              title: 'Failed to update UI settings',
+              message: getApiErrorMessage(uiSettingsError),
+            }),
+          );
+        }
+      }
     } catch (e) {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),

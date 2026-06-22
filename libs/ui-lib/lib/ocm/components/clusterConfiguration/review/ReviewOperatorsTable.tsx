@@ -2,31 +2,68 @@ import React from 'react';
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import { genericTableRowKey, selectOlmOperators } from '../../../../common';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { useStateSafely } from '../../../../common/hooks';
+import { Bundle, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { TableSummaryExpandable } from './TableSummaryExpandable';
 import { useOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
+import BundleService from '../../../services/BundleService';
 
-const getBundleTitle = (bundleId: string) => {
-  if (bundleId === 'openshift-ai') {
-    return 'OpenShift AI';
+const fetchBundles = async (
+  openshiftVersion: string,
+  cpuArchitecture: string,
+  platformType: string,
+): Promise<Bundle[]> => {
+  try {
+    return await BundleService.listBundles(
+      openshiftVersion,
+      cpuArchitecture,
+      platformType,
+      undefined,
+    );
+  } catch (_e) {
+    return [] as Bundle[];
   }
-
-  if (bundleId === 'lso') {
-    return 'Local Storage Operator';
-  }
-
-  return bundleId
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
 };
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const { byKey: opSpecs } = useOperatorSpecs();
   const selectedBundles = cluster.operatorBundles || [];
+  const [bundleTitlesById, setBundleTitlesById] = useStateSafely<Record<string, string>>({});
+  const hasFetchedBundles = React.useRef(false);
+  const hasSelectedBundles = selectedBundles.length > 0;
+  React.useEffect(() => {
+    if (!hasFetchedBundles.current && hasSelectedBundles) {
+      hasFetchedBundles.current = true;
+      void (async () => {
+        const bundles = await fetchBundles(
+          cluster.openshiftVersion || '',
+          cluster.cpuArchitecture || '',
+          cluster.platform?.type || '',
+        );
+        const titlesById = Object.fromEntries(
+          bundles
+            .filter((bundle) => !!bundle.id && !!bundle.title)
+            .map((bundle) => [bundle.id, bundle.title]),
+        ) as Record<string, string>;
+        setBundleTitlesById(titlesById);
+      })();
+    }
+  }, [
+    cluster.cpuArchitecture,
+    cluster.openshiftVersion,
+    cluster.platform?.type,
+    hasSelectedBundles,
+    setBundleTitlesById,
+  ]);
+
   const bundleRows = selectedBundles.map((bundle) => ({
     rowId: `bundle-${bundle.id}`,
-    cells: [{ title: getBundleTitle(bundle.id), props: { 'data-testid': `bundle-${bundle.id}` } }],
+    cells: [
+      {
+        title: bundleTitlesById[bundle.id] || bundle.id,
+        props: { 'data-testid': `bundle-${bundle.id}` },
+      },
+    ],
   }));
 
   const rows = React.useMemo(

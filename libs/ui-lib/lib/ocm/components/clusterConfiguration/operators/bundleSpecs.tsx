@@ -31,8 +31,10 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
     incompatibleBundles: [],
     Description: () => (
       <List>
-        <ListItem>GPUs are recommended for optimal AI/ML workload performance.</ListItem>
-        <ListItem>Select the GPU operators you want to install.</ListItem>
+        <ListItem>
+          GPUs are recommended for optimal AI/ML workload performance. Please select the GPU
+          operators you want to install.
+        </ListItem>
       </List>
     ),
     docsLink: `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/customizing-with-bundles-and-operators#openshift-ai-bundle_customizing-with-bundles-and-operators`,

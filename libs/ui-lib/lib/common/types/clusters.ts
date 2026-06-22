@@ -59,10 +59,8 @@ export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;
 };
 
-export type SelectedBundle = BundleCreateParams;
-
 export type OperatorsValues = {
-  selectedBundles: SelectedBundle[];
+  selectedBundles: BundleCreateParams[];
   selectedOperators: string[];
 };
 

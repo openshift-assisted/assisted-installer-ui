@@ -28,11 +28,13 @@ const OptionalOperatorsDropdown = ({
 }: OptionalOperatorsDropdownProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggleLabel = bundleId === 'openshift-ai' ? 'GPU operators' : 'Optional operators';
-  const bundle = selectedBundles.find((bundleSelection) => bundleSelection.id === bundleId);
-  const selectedOptionalOperators = bundle?.optionalOperators || [];
+  const selectedBundleEntry = selectedBundles.find(
+    (bundleSelection) => bundleSelection.id === bundleId,
+  );
+  const selectedOptionalOperators = selectedBundleEntry?.optionalOperators || [];
 
   const updateBundleOptionalOperators = (operatorId: string) => {
-    if (bundle) {
+    if (selectedBundleEntry) {
       const isCurrentlySelected = selectedOptionalOperators.includes(operatorId);
       const nextOptionalOperators = isCurrentlySelected
         ? selectedOptionalOperators.filter((optionalOperator) => optionalOperator !== operatorId)
@@ -55,10 +57,8 @@ const OptionalOperatorsDropdown = ({
     _event: React.MouseEvent | React.ChangeEvent | undefined,
     value?: string | number,
   ) => {
-    const operatorId = value as string | undefined;
-    if (operatorId) {
-      updateBundleOptionalOperators(operatorId);
-    }
+    const operatorId = value as string;
+    updateBundleOptionalOperators(operatorId);
   };
 
   return (
@@ -74,10 +74,14 @@ const OptionalOperatorsDropdown = ({
           onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
           isExpanded={isOpen}
           isDisabled={isDisabled}
+          style={{ minWidth: '190px' }}
         >
           {toggleLabel}
           {selectedOptionalOperators.length > 0 && (
-            <Badge isRead>{selectedOptionalOperators.length}</Badge>
+            <>
+              {' '}
+              <Badge isRead>{selectedOptionalOperators.length}</Badge>
+            </>
           )}
         </MenuToggle>
       )}
