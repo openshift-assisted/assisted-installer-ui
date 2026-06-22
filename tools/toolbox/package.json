@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.13",
-    "@types/node": "^24.12.4"
+    "@types/node": "^24.13.2"
   },
   "engines": {
     "node": ">=20.19.0"

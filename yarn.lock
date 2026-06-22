@@ -1767,7 +1767,7 @@ __metadata:
     "@redhat-cloud-services/ai-client-state": ^0.15.0
     "@redhat-cloud-services/lightspeed-client": ^0.15.0
     "@tsconfig/recommended": ^1.0.13
-    "@types/node": ^24.12.4
+    "@types/node": ^24.13.2
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     file-saver: ^2.0.2
@@ -1817,7 +1817,7 @@ __metadata:
   resolution: "@openshift-assisted/toolbox@workspace:tools/toolbox"
   dependencies:
     "@tsconfig/recommended": ^1.0.13
-    "@types/node": ^24.12.4
+    "@types/node": ^24.13.2
     chokidar: ^3.5.3
     lodash: ^4.18.1
     zx: ^8.8.5
@@ -1872,7 +1872,7 @@ __metadata:
     "@types/humanize-plus": ^1.8.2
     "@types/js-yaml": ^4.0.9
     "@types/lodash-es": ^4.17.12
-    "@types/node": ^24.12.4
+    "@types/node": ^24.13.2
     "@types/react": 18.2.37
     "@types/react-autosuggest": ^10.1.5
     "@types/react-dom": 18.2.15
@@ -4535,12 +4535,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.12.4":
-  version: 24.12.4
-  resolution: "@types/node@npm:24.12.4"
+"@types/node@npm:^24.13.2":
+  version: 24.13.2
+  resolution: "@types/node@npm:24.13.2"
   dependencies:
-    undici-types: ~7.16.0
-  checksum: 1fbacea2224e98aedcac45df9d71ccf3af138707b131c33b8c6b1e65fab3e41992d826eb92e229a52408ef0983f24f6c711cf69054274001732677ce5559d934
+    undici-types: ~7.18.0
+  checksum: a1cdc5f2e2ee1fd38cfad3c2b548b8a9b5cb7edc2fb0524fabe62d27b8d9a247d9e781d7b4698bae7de8817743870a1a9ebef987dcda7e20545ff66a3828365b
   languageName: node
   linkType: hard
 
@@ -18495,13 +18495,6 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~7.16.0":
-  version: 7.16.0
-  resolution: "undici-types@npm:7.16.0"
-  checksum: 1ef68fc6c5bad200c8b6f17de8e5bc5cfdcadc164ba8d7208cd087cfa8583d922d8316a7fd76c9a658c22b4123d3ff847429185094484fbc65377d695c905857
   languageName: node
   linkType: hard
 
