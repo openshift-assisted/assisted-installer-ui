@@ -47,6 +47,20 @@ const PendingValidations = ({ id, count }: { id: string; count: number }) => {
   return <div id={id}>{t('ai:There is still {{count}} pending check', { count: count })}</div>;
 };
 
+const InformationalValidation = ({ validation }: { validation: ClusterValidation }) => {
+  const { t } = useTranslation();
+  const label = clusterValidationLabels(t)[validation.id] || validation.id || '';
+
+  return (
+    <div id={`info-validation-${validation.id}`}>
+      <Icon status="success">
+        <CheckCircleIcon />
+      </Icon>{' '}
+      {label}. {validation.message}
+    </div>
+  );
+};
+
 const ValidationActionLink = <S extends string>({
   step,
   setCurrentStepId,
@@ -171,6 +185,16 @@ export const ClusterValidations = <S extends string>({
             wizardStepNames={wizardStepNames}
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />,
+        );
+      }
+
+      if (
+        validation.status === 'success' &&
+        validation.id === 'openshift-ai-gpu-requirements-satisfied' &&
+        validation.message
+      ) {
+        failingValidations.push(
+          <InformationalValidation key={`info-${validation.id}`} validation={validation} />,
         );
       }
     };
