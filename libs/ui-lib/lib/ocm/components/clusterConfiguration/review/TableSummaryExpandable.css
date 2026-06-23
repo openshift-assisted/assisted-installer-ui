@@ -1,0 +1,3 @@
+.pf-v6-c-expandable-section:not(.pf-m-expanded) {
+  --pf-v6-c-expandable-section__content--MaxHeight: 0;
+}
