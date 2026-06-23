@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { Button, ButtonVariant, Content, PageSection } from '@patternfly/react-core';
 import { AddCircleOIcon } from '@patternfly/react-icons/dist/js/icons/add-circle-o-icon';
 import {

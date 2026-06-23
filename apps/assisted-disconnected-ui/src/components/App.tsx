@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom-v5-compat';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {
   Brand,
   Masthead,

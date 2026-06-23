@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { Stack, StackItem, Content, ButtonVariant, GridItem, Grid } from '@patternfly/react-core';
 import { ToolbarButton, Alerts, getEnabledHosts, selectOlmOperators, isSNO } from '../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';

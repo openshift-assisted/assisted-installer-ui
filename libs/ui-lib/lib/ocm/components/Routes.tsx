@@ -7,7 +7,7 @@ import {
   Outlet,
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
-} from 'react-router-dom-v5-compat';
+} from 'react-router-dom';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import type { FeatureListType } from '../../common/features/featureGate';
 import { AssistedUILibVersion } from './ui';

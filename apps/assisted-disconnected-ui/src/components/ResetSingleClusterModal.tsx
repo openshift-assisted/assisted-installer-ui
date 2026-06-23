@@ -18,7 +18,7 @@ import {
   handleApiError,
   useTranslation,
 } from '@openshift-assisted/ui-lib/common';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 
 const ResetSingleClusterModal: React.FC = () => {
   const navigate = useNavigate();
