@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Navigate } from 'react-router-dom-v5-compat';
+import { useParams, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { PageSection, Content } from '@patternfly/react-core';
 import {

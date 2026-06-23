@@ -26,7 +26,7 @@ import {
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 

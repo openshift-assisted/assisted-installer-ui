@@ -2,7 +2,7 @@ import React from 'react';
 import { createSelector } from '@reduxjs/toolkit';
 import type { Selector } from 'reselect';
 import type { IRow, IRowData } from '@patternfly/react-table';
-import { Link } from 'react-router-dom-v5-compat';
+import { Link } from 'react-router-dom';
 import type { TFunction } from 'i18next';
 import {
   DASH,
@@ -103,6 +103,7 @@ export const selectClusterTableRows = (t: TFunction): Selector<RootStateDay1, Cl
   );
 };
 
-export const selectClusterNames = createSelector(selectClusters, (clusters) =>
-  clusters.map((c) => c.name),
+export const selectClusterNames: Selector<RootStateDay1, (string | undefined)[]> = createSelector(
+  selectClusters,
+  (clusters) => clusters.map((c) => c.name),
 );

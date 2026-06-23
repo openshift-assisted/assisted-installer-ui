@@ -1656,8 +1656,7 @@ __metadata:
     react-i18next: ^11.11.4
     react-monaco-editor: ^0.59.0
     react-redux: ^8.0.5
-    react-router-dom: 5.3.x
-    react-router-dom-v5-compat: ^6.30.3
+    react-router-dom: ^6.0.0
     redux: ^4
     uuid: ^14.0
     vite: ^8.0.16
@@ -1692,7 +1691,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-i18next: ^11.11.4
-    react-router-dom-v5-compat: ^6.30.3
+    react-router-dom: ^6.0.0
     rimraf: ^6.0.0
     ts-patch: ^3.0.2
     typescript: ^5.9.3
@@ -1730,8 +1729,7 @@ __metadata:
     react-i18next: ^11.11.4
     react-monaco-editor: ^0.59.0
     react-redux: ^8.0.5
-    react-router-dom: 5.3.x
-    react-router-dom-v5-compat: ^6.30.3
+    react-router-dom: ^6.0.0
     redux: ^4
     uuid: ^14.0
     vite: ^8.0.16
@@ -1896,7 +1894,7 @@ __metadata:
     react-i18next: ">11.7.3"
     react-monaco-editor: ^0.55.0 || ^0.59.0
     react-redux: ^8.0.5
-    react-router-dom-v5-compat: ^6.30.3
+    react-router-dom: ^6.0.0
     redux: ^4.2.1
     uuid: ^8.1
     yup: ^1.4.0
@@ -2812,10 +2810,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.2":
-  version: 1.23.2
-  resolution: "@remix-run/router@npm:1.23.2"
-  checksum: 0f046e480372be17d14f88684435cd6af4c05ce842bd6094a549605dd5b8f0ab1e9a1e9d9e2faec9e4d5cd370d02179b456189192f06415e461bce44c28295d8
+"@remix-run/router@npm:1.23.3":
+  version: 1.23.3
+  resolution: "@remix-run/router@npm:1.23.3"
+  checksum: 95bfe4c8ef1f1f7e614ceacfcc7ae42a66325284fa1397fe5358197cfba1618bc0832979a42a0fdeca292f015baeacfd82a5395b1f13f86f8ea0f236420bcb3d
   languageName: node
   linkType: hard
 
@@ -14674,10 +14672,10 @@ __metadata:
   version: 6.30.4
   resolution: "react-router@npm:6.30.4"
   dependencies:
-    "@remix-run/router": 1.23.2
+    "@remix-run/router": 1.23.3
   peerDependencies:
     react: ">=16.8"
-  checksum: b61e1a456b72ed35907dadc261d8572a65dd4caae008f7a85a6b09b437b1a4b90034fc7df0e418f1f01b73c2b8a8f6755d7fc0108b1ec3f2ed37f03a1e248513
+  checksum: a9c1d03dd22cc824515dd603eae5dc49f8ed973496eabf404771ad3cfacfd239ccdc7d8cb7e2c6adab6889501cafdcc8abefdf6a061676bfa02a9247cf9d6c50
   languageName: node
   linkType: hard
 
