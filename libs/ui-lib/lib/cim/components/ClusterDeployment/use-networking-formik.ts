@@ -24,7 +24,7 @@ import {
   serviceNetworkValidationSchema,
   dualStackValidationSchema,
   IPv4ValidationSchema,
-  IPV4_STACK,
+  SINGLE_STACK,
   NetworkConfigurationValues,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
@@ -54,7 +54,7 @@ const getNetworkConfigurationValidationSchema = (
   Yup.lazy((values: ClusterDeploymentNetworkingValues) =>
     Yup.object<ClusterDeploymentNetworkingValues>().shape({
       clusterNetworks: clusterNetworksValidationSchema(t).when('stackType', {
-        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === SINGLE_STACK,
         then: () => clusterNetworksValidationSchema(t).concat(IPv4ValidationSchema),
         otherwise: () =>
           clusterNetworksValidationSchema(t).concat(
@@ -62,7 +62,7 @@ const getNetworkConfigurationValidationSchema = (
           ),
       }),
       serviceNetworks: serviceNetworkValidationSchema(t).when('stackType', {
-        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === IPV4_STACK,
+        is: (stackType: NetworkConfigurationValues['stackType']) => stackType === SINGLE_STACK,
         then: () => serviceNetworkValidationSchema(t).concat(IPv4ValidationSchema),
         otherwise: () =>
           serviceNetworkValidationSchema(t).concat(
