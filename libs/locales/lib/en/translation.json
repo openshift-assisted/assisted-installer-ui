@@ -621,6 +621,7 @@
   "ai:Network ports": "Network ports",
   "ai:Network type": "Network type",
   "ai:Networking": "Networking",
+  "ai:Networking stack type": "Networking stack type",
   "ai:Networks same address families": "Networks same address families",
   "ai:Never share your downloaded ISO with anyone else.": "Never share your downloaded ISO with anyone else.",
   "ai:New hostname": "New hostname",

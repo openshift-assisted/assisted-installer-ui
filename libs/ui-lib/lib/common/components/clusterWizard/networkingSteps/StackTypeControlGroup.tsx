@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonVariant, FormGroup, Split, SplitItem, Tooltip } from '@patternfly/react-core';
+import { ButtonVariant, FormGroup, Radio, Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
@@ -9,10 +9,9 @@ import {
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_SDN,
 } from '../../../types';
-import { getFieldId } from '../../ui';
+import { ConfirmationModal, getFieldId, PopoverIcon } from '../../ui';
 import { DUAL_STACK, NO_SUBNET_SET, SINGLE_STACK } from '../../../config';
 import { RadioField } from '../../ui/formik';
-import { ConfirmationModal, PopoverIcon } from '../../ui';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { reorderNetworksByCurrentPrimary } from './reorderNetworks';
 import {
@@ -72,36 +71,32 @@ export const StackTypeControlGroup = ({
 
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
+  const isSingleStackSelected = values.stackType !== DUAL_STACK;
+
   const shouldSetSingleStack =
     !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', SINGLE_STACK);
 
-    // Determine whether the first machine network is IPv4
     const firstNetwork = values.machineNetworks?.[0];
     const isFirstIPv4 = Boolean(firstNetwork?.cidr && Address4.isValid(firstNetwork.cidr));
 
     if (values.machineNetworks && values.machineNetworks?.length >= 2) {
-      // For single-stack IPv4, prefer IPv4 machine network
       if (isFirstIPv4) {
-        // Keep the first network if it's IPv4
         setFieldValue('machineNetworks', [firstNetwork]);
       } else {
-        // If first is IPv6, look for IPv4 network or set empty for auto-selection
         const ipv4Network = values.machineNetworks.find(
           (network) => network.cidr && Address4.isValid(network.cidr),
         );
         if (ipv4Network) {
           setFieldValue('machineNetworks', [ipv4Network]);
         } else {
-          // No IPv4 network found, set empty for auto-selection
           setFieldValue('machineNetworks', []);
         }
       }
     }
 
-    // Set cluster/service to IPv4 defaults when switching to single-stack
     if (values.clusterNetworks && values.clusterNetworks.length >= 1) {
       const defaultCluster =
         defaultNetworkValues.clusterNetworksIpv4 && defaultNetworkValues.clusterNetworksIpv4[0];
@@ -110,12 +105,12 @@ export const StackTypeControlGroup = ({
         ? {
             cidr: defaultCluster.cidr,
             hostPrefix: defaultCluster.hostPrefix,
-            clusterId: firstCluster.clusterId, // ← Preserve clusterId from original network
+            clusterId: firstCluster.clusterId,
           }
         : {
             cidr: '',
             hostPrefix: '',
-            clusterId: clusterId, // ← Use current clusterId
+            clusterId: clusterId,
           };
       setFieldValue('clusterNetworks', [ipv4Cluster]);
     }
@@ -126,22 +121,20 @@ export const StackTypeControlGroup = ({
       const ipv4Service = defaultService
         ? {
             cidr: defaultService.cidr,
-            clusterId: firstService.clusterId, // ← Preserve clusterId from original network
+            clusterId: firstService.clusterId,
           }
         : {
             cidr: '',
-            clusterId: clusterId, // ← Use current clusterId
+            clusterId: clusterId,
           };
       setFieldValue('serviceNetworks', [ipv4Service]);
     }
 
-    // Keep only IPv4 VIPs when switching to single-stack (unless DHCP allocation is used)
     if (!values.vipDhcpAllocation) {
       const pruneVips = (
         vips?: { ip?: string; clusterId?: Cluster['id'] }[],
       ): { ip: string; clusterId: Cluster['id'] }[] => {
         if (!vips || vips.length === 0) return [];
-        // Choose which index to keep based on whether the first network is IPv4
         const keepIndex = isFirstIPv4 ? 0 : 1;
         const chosen = vips[keepIndex];
         return chosen && chosen.ip
@@ -177,12 +170,10 @@ export const StackTypeControlGroup = ({
     }
 
     if (values.machineNetworks && values.machineNetworks?.length < 2) {
-      // Ensure IPv4 is primary when switching to dual-stack
       const firstNetwork = values.machineNetworks[0];
       const isFirstIPv6 = firstNetwork?.cidr && Address6.isValid(firstNetwork.cidr);
 
       if (isFirstIPv6) {
-        // If first network is IPv6, make IPv4 primary and IPv6 secondary
         const IPv4Subnets = hostSubnets.filter((subnet) => Address4.isValid(subnet.subnet));
         const cidrIPv4 = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
         setFieldValue(
@@ -194,7 +185,6 @@ export const StackTypeControlGroup = ({
           false,
         );
       } else {
-        // If first network is IPv4, add IPv6 as secondary
         setFieldValue(
           'machineNetworks',
           [...values.machineNetworks, { cidr: cidrIPv6, clusterId: clusterId }],
@@ -225,7 +215,6 @@ export const StackTypeControlGroup = ({
       };
       setFieldValue('serviceNetworks', [...values.serviceNetworks, secondServiceNetwork], false);
     }
-    // Initialize VIPs for dual-stack
     if (values.apiVips && values.apiVips.length < 2) {
       setFieldValue(
         'apiVips',
@@ -244,8 +233,9 @@ export const StackTypeControlGroup = ({
       );
     }
   };
-  // Ensure cluster/service networks ordering matches the new primary family
+
   const primaryCidr = values.machineNetworks?.[0]?.cidr;
+
   React.useEffect(() => {
     if (isViewerMode) {
       return;
@@ -261,10 +251,11 @@ export const StackTypeControlGroup = ({
     values.serviceNetworks,
   ]);
 
-  const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === DUAL_STACK) {
-      setDualStack();
-    } else if (
+  const handleSingleStackRadioClick = () => {
+    if (isSingleStackSelected) {
+      return;
+    }
+    if (
       hasDualStackConfigurationChanged(
         defaultNetworkValues.clusterNetworksDualstack || [],
         defaultNetworkValues.serviceNetworksDualstack || [],
@@ -284,32 +275,34 @@ export const StackTypeControlGroup = ({
     }
   }, [shouldSetSingleStack, setSingleStack]);
 
+  const singleStackPopoverContent = allowSingleStackIPv6
+    ? t('ai:Select a single address family (IPv4 or IPv6) for your machine network.')
+    : t('ai:Select this when your hosts are using only IPv4.');
+
+  const singleStackRadioId = getFieldId('stackType', 'radio', SINGLE_STACK);
+
   return (
     <>
       <FormGroup
-        label="Networking stack type"
+        label={t('ai:Networking stack type')}
         fieldId={getFieldId('stackType', 'radio')}
-        onChange={setStackType}
         isInline
       >
         <Split>
           <SplitItem>
-            <RadioField
-              name={'stackType'}
+            <Radio
+              id={singleStackRadioId}
+              name="stackType"
               value={SINGLE_STACK}
-              isDisabled={!isDualStackSelectable || isViewerMode}
               label={`${singleStackLabel}\u00A0`}
+              isChecked={isSingleStackSelected}
+              isDisabled={!isDualStackSelectable || isViewerMode}
+              onChange={() => handleSingleStackRadioClick()}
+              data-testid="form-radio-stackType-singleStack-field"
             />
           </SplitItem>
           <SplitItem>
-            <PopoverIcon
-              bodyContent={
-                allowSingleStackIPv6
-                  ? t('ai:Select a single address family (IPv4 or IPv6) for your machine network.')
-                  : t('ai:Select this when your hosts are using only IPv4.')
-              }
-              buttonStyle={{ top: '-4px' }}
-            />
+            <PopoverIcon bodyContent={singleStackPopoverContent} buttonStyle={{ top: '-4px' }} />
           </SplitItem>
         </Split>
         <Split>
@@ -325,6 +318,8 @@ export const StackTypeControlGroup = ({
                 value={DUAL_STACK}
                 isDisabled={!isDualStackSelectable || isViewerMode}
                 label="Dual-stack&nbsp;"
+                callFormikOnChange={false}
+                onChange={() => setDualStack()}
               />
             </Tooltip>
           </SplitItem>
@@ -343,7 +338,7 @@ export const StackTypeControlGroup = ({
           titleIconVariant={'warning'}
           confirmationButtonText={'Change'}
           confirmationButtonVariant={ButtonVariant.primary}
-          content={<p>All data and configuration done for 'Dual-stack' will be lost.</p>}
+          content={<p>All data and configuration done for &apos;Dual-stack&apos; will be lost.</p>}
           onClose={() => {
             setConfirmModal(false);
             setDualStack();
