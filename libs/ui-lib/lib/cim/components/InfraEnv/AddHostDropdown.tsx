@@ -18,7 +18,7 @@ import { AddBmcHostModal, AddBmcHostYamlModal, AddHostModal } from '../modals';
 import { AddHostDropdownProps } from './types';
 import './AddHostDropdown.css';
 import { Trans } from 'react-i18next';
-import { Link } from 'react-router-dom-v5-compat';
+import { Link } from 'react-router';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon';
 
 type ModalType = 'iso' | 'bmc' | 'yaml' | 'ipxe' | undefined;

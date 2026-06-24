@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import {
   useAlerts,
@@ -89,7 +89,7 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           isAssistedMigration,
           isSingleClusterFeatureEnabled,
         );
-        navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
+        void navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
         if (isAssistedMigration) {
           try {

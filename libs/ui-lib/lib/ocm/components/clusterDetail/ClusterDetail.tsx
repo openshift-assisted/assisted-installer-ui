@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router';
 import { Stack, StackItem, Content, ButtonVariant, GridItem, Grid } from '@patternfly/react-core';
 import { ToolbarButton, Alerts, getEnabledHosts, selectOlmOperators, isSNO } from '../../../common';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
@@ -41,7 +41,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       try {
         const { data } = await ClustersAPI.allowAddHosts(cluster.id);
         updateCluster(data);
-        navigate(`${routeBasePath}/clusters/${cluster.id}`);
+        void navigate(`${routeBasePath}/clusters/${cluster.id}`);
       } catch (e) {
         handleApiError(e);
       }
@@ -102,7 +102,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           {!isSingleClusterFeatureEnabled && (
             <ToolbarButton
               variant={ButtonVariant.link}
-              onClick={() => navigate('..')}
+              onClick={() => void navigate('..')}
               id={getClusterDetailId('button-back-to-all-clusters')}
             >
               Back to all clusters

@@ -18,7 +18,7 @@ import {
   handleApiError,
   useTranslation,
 } from '@openshift-assisted/ui-lib/common';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router';
 
 const ResetSingleClusterModal: React.FC = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const ResetSingleClusterModal: React.FC = () => {
       setError(undefined);
       setIsLoading(true);
       await ClustersService.remove(cluster.id);
-      navigate(`/`);
+      void navigate(`/`);
     } catch (e) {
       handleApiError(e, () => {
         setError({

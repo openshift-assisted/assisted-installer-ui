@@ -33,7 +33,7 @@ import {
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
   BrowserRouter,
-} from 'react-router-dom-v5-compat';
+} from 'react-router';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;

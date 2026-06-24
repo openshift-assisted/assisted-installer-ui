@@ -1,6 +1,6 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, PageSection } from '@patternfly/react-core';
-import { Link } from 'react-router-dom-v5-compat';
+import { Link } from 'react-router';
 import { isInOcm } from '../../../common/api';
 
 const ClusterBreadcrumbs = ({ clusterName }: { clusterName?: string }) => {

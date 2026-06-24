@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router';
 import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
 import {
   ClusterWizardFlowStateType,
