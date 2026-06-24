@@ -11,11 +11,7 @@ export const clusterListPage = {
   getCreateNewClusterButton: () => {
     return cy.get(Cypress.env('createNewClusterId')).scrollIntoView();
   },
-  openCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
-    cy.getClusterNameLinkSelector(clusterName).click();
-    cy.get('.pf-v6-c-breadcrumb__list > :nth-child(3)').should('contain', clusterName);
-    cy.get(Cypress.env('clusterNameFieldId')).should('have.value', clusterName);
-  },
+
   deleteCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
     cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`)
       .scrollIntoView()
