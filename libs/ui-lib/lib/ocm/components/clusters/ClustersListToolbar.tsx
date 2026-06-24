@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {
   Toolbar,
   ToolbarItem,
@@ -172,7 +172,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         </CustomToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
-          onClick={() => navigate(`~new`)}
+          onClick={() => void navigate(`~new`)}
           id="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >

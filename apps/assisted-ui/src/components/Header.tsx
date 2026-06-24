@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Brand, Masthead, MastheadLogo, MastheadMain, MastheadBrand } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { AboutButton } from './AboutButton';
 import { FeedbackButton } from './FeedbackButton';
 

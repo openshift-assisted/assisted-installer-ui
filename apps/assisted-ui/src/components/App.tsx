@@ -1,6 +1,5 @@
 import type React from 'react';
-import { BrowserRouter, type BrowserRouterProps } from 'react-router-dom';
-import { Route } from 'react-router-dom';
+import { BrowserRouter, Route, type BrowserRouterProps } from 'react-router';
 import { Page } from '@patternfly/react-core';
 import * as OCM from '@openshift-assisted/ui-lib/ocm';
 import { Header } from './Header';
@@ -16,10 +15,7 @@ const BrowserRouter18 = BrowserRouter as any as React.FC<
 >;
 
 export const App: React.FC = () => (
-  <BrowserRouter18
-    basename={Config.routeBasePath}
-    future={{ v7_relativeSplatPath: true, v7_fetcherPersist: true, v7_startTransition: true }}
-  >
+  <BrowserRouter18 basename={Config.routeBasePath}>
     <Page masthead={<Header />} isManagedSidebar defaultManagedSidebarIsOpen={false}>
       <UILibRoutes allEnabledFeatures={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES}>
         <Route path={'/day2-flow-mock'} element={<HostsClusterDetailTabMock />} />
