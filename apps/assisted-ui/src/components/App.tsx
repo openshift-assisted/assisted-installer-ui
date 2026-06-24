@@ -16,7 +16,10 @@ const BrowserRouter18 = BrowserRouter as any as React.FC<
 >;
 
 export const App: React.FC = () => (
-  <BrowserRouter18 basename={Config.routeBasePath}>
+  <BrowserRouter18
+    basename={Config.routeBasePath}
+    future={{ v7_relativeSplatPath: true, v7_fetcherPersist: true, v7_startTransition: true }}
+  >
     <Page masthead={<Header />} isManagedSidebar defaultManagedSidebarIsOpen={false}>
       <UILibRoutes allEnabledFeatures={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES}>
         <Route path={'/day2-flow-mock'} element={<HostsClusterDetailTabMock />} />

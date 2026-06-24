@@ -50,7 +50,9 @@ export const App: React.FC = () => {
   );
 
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
+    >
       <Provider store={Store.storeDay1}>
         <Page masthead={header} isManagedSidebar defaultManagedSidebarIsOpen={false}>
           <AppRouter />
