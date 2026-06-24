@@ -9,7 +9,7 @@ import { HostSubnets, NetworkConfigurationValues } from '../types';
 import { IP_V4_ZERO, IP_V6_ZERO, MAC_REGEX } from './regexes';
 import { getArrayIndexFromPath, isIPorDN, isIPv4Address, isIPv6Address } from './utils';
 import { NO_SUBNET_SET } from '../config';
-import { overlap } from 'cidr-tools';
+import { overlapCidr } from 'cidr-tools';
 import parseUrl from 'parse-url';
 import { TFunction } from 'i18next';
 
@@ -272,7 +272,7 @@ export const ipBlockValidationSchema = (
     .test('cidrs-can-not-overlap', t('ai:Provided CIDRs can not overlap.'), (cidr: string) => {
       try {
         if (cidr && reservedCidrs && reservedCidrs.length > 0) {
-          return !overlap(cidr, reservedCidrs);
+          return !overlapCidr(cidr, reservedCidrs);
         }
       } catch {
         return false;
