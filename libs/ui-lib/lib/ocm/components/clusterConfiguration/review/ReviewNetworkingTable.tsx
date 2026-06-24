@@ -2,7 +2,8 @@ import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
 import React from 'react';
 import { genericTableRowKey, isDualStack, NETWORK_TYPE_LABELS } from '../../../../common';
-import { getManagementType, getStackTypeLabel } from '../../clusterDetail/ClusterProperties';
+import { getManagementType, getStackTypeLabel } from './utils';
+import { useFeature } from '../../../hooks/use-feature';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 type ReviewTableRowsType = {
@@ -11,6 +12,7 @@ type ReviewTableRowsType = {
 }[];
 
 export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
+  const isSingleClusterFeature = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const rows = React.useMemo(() => {
     const networkRows = [
       {
@@ -28,7 +30,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'Stack type', colSpan: 2 },
           {
-            title: getStackTypeLabel(cluster),
+            title: getStackTypeLabel(cluster, isSingleClusterFeature),
             props: { 'data-testid': 'stack-type', colSpan: 2 },
           },
         ],
@@ -119,7 +121,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       });
 
     return networkRows;
-  }, [cluster]);
+  }, [cluster, isSingleClusterFeature]);
 
   const rowsAdvanced = React.useMemo(() => {
     return [
