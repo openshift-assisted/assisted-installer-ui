@@ -66,7 +66,9 @@ const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; err
         </Title>
       </CardHeader>
       <CardBody>
-        <BrowserRouter>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
+        >
           <ErrorState
             title="Failed to fetch the cluster"
             fetchData={fetchCluster}
@@ -87,7 +89,9 @@ const LoadingDefaultConfigFailedCard = () => (
       </Title>
     </CardHeader>
     <CardBody>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
+      >
         <ErrorState
           title="Failed to retrieve the default configuration"
           actions={[<BackButton key={'cancel'} to={'/cluster-list'} />]}
@@ -181,7 +185,11 @@ const AssistedInstallerDetailCard = ({
           {clusterDetailCard}
         </HistoryRouter>
       ) : (
-        <BrowserRouter>{clusterDetailCard}</BrowserRouter>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
+        >
+          {clusterDetailCard}
+        </BrowserRouter>
       )}
     </>
   );

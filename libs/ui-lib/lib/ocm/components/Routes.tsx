@@ -39,7 +39,7 @@ export const UILibRoutes = ({
           <Route index element={<Clusters />} />
         </Route>
         {children}
-        <Route path="*" element={<Navigate to="assisted-installer/clusters" />} />
+        <Route path="*" element={<Navigate to="/assisted-installer/clusters" />} />
       </Routes>
     </>
   );
