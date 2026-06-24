@@ -126,6 +126,33 @@ const getManagedNetworkingState = (
   };
 };
 
+type DefaultNetworkSettings = NetworkConfigurationProps['defaultNetworkSettings'];
+
+const getNetworkDefaultsByFamily = (
+  settings: DefaultNetworkSettings,
+  isDualStack: boolean,
+  isIPv6: boolean,
+) => {
+  if (isDualStack) {
+    return {
+      clusterNetworkDefaults: settings.clusterNetworksDualstack,
+      serviceNetworkDefaults: settings.serviceNetworksDualstack,
+    };
+  }
+  if (isIPv6) {
+    const ipv6Cluster = getIPv6FromDualstack(settings.clusterNetworksDualstack);
+    const ipv6Service = getIPv6FromDualstack(settings.serviceNetworksDualstack);
+    return {
+      clusterNetworkDefaults: ipv6Cluster ? [ipv6Cluster] : settings.clusterNetworksIpv4,
+      serviceNetworkDefaults: ipv6Service ? [ipv6Service] : settings.serviceNetworksIpv4,
+    };
+  }
+  return {
+    clusterNetworkDefaults: settings.clusterNetworksIpv4,
+    serviceNetworkDefaults: settings.serviceNetworksIpv4,
+  };
+};
+
 const NetworkConfiguration = ({
   cluster,
   hostSubnets,
@@ -185,47 +212,16 @@ const NetworkConfiguration = ({
       if (!checked) {
         const primaryCidr = values.machineNetworks?.[0]?.cidr;
         const isIPv6Stack = !!primaryCidr && Address6.isValid(primaryCidr);
-
-        let clusterNetworkDefaults;
-        let serviceNetworkDefaults;
-
-        if (isDualStack) {
-          clusterNetworkDefaults = defaultNetworkSettings.clusterNetworksDualstack;
-
-          serviceNetworkDefaults = defaultNetworkSettings.serviceNetworksDualstack;
-        } else if (isIPv6Stack) {
-          const ipv6EntryCluster = getIPv6FromDualstack(
-            defaultNetworkSettings.clusterNetworksDualstack,
-          );
-          clusterNetworkDefaults = ipv6EntryCluster
-            ? [ipv6EntryCluster]
-            : defaultNetworkSettings.clusterNetworksIpv4;
-
-          const ipv6EntryService = getIPv6FromDualstack(
-            defaultNetworkSettings.serviceNetworksDualstack,
-          );
-          serviceNetworkDefaults = ipv6EntryService
-            ? [ipv6EntryService]
-            : defaultNetworkSettings.serviceNetworksIpv4;
-        } else {
-          clusterNetworkDefaults = defaultNetworkSettings.clusterNetworksIpv4;
-
-          serviceNetworkDefaults = defaultNetworkSettings.serviceNetworksIpv4;
-        }
-
+        const { clusterNetworkDefaults, serviceNetworkDefaults } = getNetworkDefaultsByFamily(
+          defaultNetworkSettings,
+          isDualStack,
+          isIPv6Stack,
+        );
         setFieldValue('clusterNetworks', clusterNetworkDefaults, true);
         setFieldValue('serviceNetworks', serviceNetworkDefaults, true);
       }
     },
-    [
-      setFieldValue,
-      isDualStack,
-      values.machineNetworks,
-      defaultNetworkSettings.clusterNetworksDualstack,
-      defaultNetworkSettings.clusterNetworksIpv4,
-      defaultNetworkSettings.serviceNetworksDualstack,
-      defaultNetworkSettings.serviceNetworksIpv4,
-    ],
+    [setFieldValue, isDualStack, values.machineNetworks, defaultNetworkSettings],
   );
 
   React.useEffect(() => {
@@ -250,24 +246,16 @@ const NetworkConfiguration = ({
       return;
     }
 
-    if (isIPv6) {
-      const ipv6Cluster = getIPv6FromDualstack(defaultNetworkSettings.clusterNetworksDualstack);
-      if (ipv6Cluster) {
-        setFieldValue('clusterNetworks', [{ ...ipv6Cluster, clusterId: cluster.id }]);
-      }
-      const ipv6Service = getIPv6FromDualstack(defaultNetworkSettings.serviceNetworksDualstack);
-      if (ipv6Service) {
-        setFieldValue('serviceNetworks', [{ cidr: ipv6Service.cidr, clusterId: cluster.id }]);
-      }
-    } else {
-      const ipv4Cluster = defaultNetworkSettings.clusterNetworksIpv4?.[0];
-      if (ipv4Cluster) {
-        setFieldValue('clusterNetworks', [{ ...ipv4Cluster, clusterId: cluster.id }]);
-      }
-      const ipv4Service = defaultNetworkSettings.serviceNetworksIpv4?.[0];
-      if (ipv4Service) {
-        setFieldValue('serviceNetworks', [{ cidr: ipv4Service.cidr, clusterId: cluster.id }]);
-      }
+    const { clusterNetworkDefaults, serviceNetworkDefaults } = getNetworkDefaultsByFamily(
+      defaultNetworkSettings,
+      false,
+      isIPv6,
+    );
+    if (clusterNetworkDefaults) {
+      setFieldValue('clusterNetworks', clusterNetworkDefaults);
+    }
+    if (serviceNetworkDefaults) {
+      setFieldValue('serviceNetworks', serviceNetworkDefaults);
     }
     void validateForm();
   }, [
