@@ -33,7 +33,7 @@ import {
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
   BrowserRouter,
-} from 'react-router-dom';
+} from 'react-router';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -66,9 +66,7 @@ const ClusterLoadFailed = ({ clusterId, error }: { clusterId: Cluster['id']; err
         </Title>
       </CardHeader>
       <CardBody>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
-        >
+        <BrowserRouter>
           <ErrorState
             title="Failed to fetch the cluster"
             fetchData={fetchCluster}
@@ -89,9 +87,7 @@ const LoadingDefaultConfigFailedCard = () => (
       </Title>
     </CardHeader>
     <CardBody>
-      <BrowserRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
-      >
+      <BrowserRouter>
         <ErrorState
           title="Failed to retrieve the default configuration"
           actions={[<BackButton key={'cancel'} to={'/cluster-list'} />]}
@@ -185,11 +181,7 @@ const AssistedInstallerDetailCard = ({
           {clusterDetailCard}
         </HistoryRouter>
       ) : (
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true, v7_fetcherPersist: true }}
-        >
-          {clusterDetailCard}
-        </BrowserRouter>
+        <BrowserRouter>{clusterDetailCard}</BrowserRouter>
       )}
     </>
   );

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TFunction } from 'i18next';
 import { Button, Flex, FlexItem, Icon, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import {

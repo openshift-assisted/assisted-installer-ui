@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SingleClusterPage, Store } from '@openshift-assisted/ui-lib/ocm';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import {
   ClustersAPI,
   getHostProgressStages,

@@ -26,7 +26,7 @@ import {
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
 
@@ -51,7 +51,7 @@ const ReviewStep = () => {
           <ClusterWizardFooter
             onNext={() => {
               downloadUrl && saveAs(downloadUrl);
-              navigate('/cluster-list');
+              void navigate('/cluster-list');
             }}
             onBack={moveBack}
             nextButtonText="Download ISO"

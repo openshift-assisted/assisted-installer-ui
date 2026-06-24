@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {
   Alert,
   AlertVariant,
@@ -69,7 +69,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       variant={ButtonVariant.link}
       isInline
       key="assisted-service-deployment"
-      onClick={() => navigate(assistedServiceDeploymentUrl)}
+      onClick={() => void navigate(assistedServiceDeploymentUrl)}
     >
       {t('ai:Troubleshoot in the assisted service deployment')}
     </Button>

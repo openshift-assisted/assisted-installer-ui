@@ -9,7 +9,7 @@ import {
   ModalDialogsContextProvider,
 } from '@openshift-assisted/ui-lib/ocm';
 import { Alert, PageSection } from '@patternfly/react-core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import ResetSingleClusterModal from './ResetSingleClusterModal';
 
 const CreateClusterWizard = () => {
@@ -28,7 +28,7 @@ const CreateClusterWizard = () => {
   }
 
   if (clusterId) {
-    navigate(`/${clusterId}`);
+    void navigate(`/${clusterId}`);
   }
 
   return (
