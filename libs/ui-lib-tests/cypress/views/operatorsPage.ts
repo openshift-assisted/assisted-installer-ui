@@ -3,6 +3,6 @@ export const operatorsPage = {
     return cy.get('#form-input-cnv-field');
   },
   singleOperatorsToggle: () => {
-    return cy.contains('Single Operators ');
+    return cy.contains('Single operators');
   },
 };

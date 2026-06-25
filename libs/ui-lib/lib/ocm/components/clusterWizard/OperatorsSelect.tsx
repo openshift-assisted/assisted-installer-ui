@@ -19,6 +19,7 @@ import { OperatorsService } from '../../services';
 import { useFeature } from '../../hooks/use-feature';
 import OperatorCheckbox from '../clusterConfiguration/operators/OperatorCheckbox';
 import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import { getOperatorDependencies } from '../clusterConfiguration/operators/utils';
 
 const OperatorsSelect = ({
   cluster,
@@ -65,34 +66,23 @@ const OperatorsSelect = ({
     });
   }, [isSingleClusterFeatureEnabled, supportedOperators]);
 
-  const isOperatorActive = React.useCallback(
-    (opName: string) =>
-      values.selectedOperators.includes(opName) ||
-      values.selectedBundles.some((selectedBundle) => {
-        const bundle = bundles.find(({ id }) => id === selectedBundle.id);
-        return (
-          bundle?.operators?.includes(opName) || selectedBundle.optionalOperators?.includes(opName)
-        );
-      }),
-    [values.selectedOperators, values.selectedBundles, bundles],
+  const bundleOperators = new Set<string>();
+  values.selectedBundles.forEach((b) => {
+    b.optionalOperators?.forEach((op) => bundleOperators.add(op));
+    bundles.find(({ id }) => id === b.id)?.operators?.forEach((op) => bundleOperators.add(op));
+  });
+
+  const dependencies = new Set<string>();
+  [...values.selectedOperators, ...bundleOperators].forEach((op) =>
+    getOperatorDependencies(op, preflightRequirements, dependencies),
   );
 
-  // Computed once for all checkboxes — passed down as a prop to avoid per-checkbox recalculation.
-  const checkedOperatorIds = React.useMemo(
-    () =>
-      new Set(
-        operators.filter(
-          (op) =>
-            isOperatorActive(op) ||
-            preflightRequirements?.operators?.some(
-              (req) => req.dependencies?.includes(op) && isOperatorActive(req.operatorName ?? ''),
-            ),
-        ),
-      ),
-    [operators, isOperatorActive, preflightRequirements],
-  );
-
-  const operatorsCount = checkedOperatorIds.size;
+  const checkedOperatorIds = new Set([
+    ...values.selectedOperators,
+    ...bundleOperators,
+    ...dependencies,
+  ]);
+  const operatorsCount = operators.filter((op) => checkedOperatorIds.has(op)).length;
 
   if (isLoading) {
     return <LoadingState />;
@@ -138,6 +128,7 @@ const OperatorsSelect = ({
                     <OperatorCheckbox
                       bundles={bundles}
                       operatorId={spec.operatorKey}
+                      dependencies={dependencies}
                       isChecked={checkedOperatorIds.has(spec.operatorKey)}
                       cluster={cluster}
                       openshiftVersion={cluster.openshiftVersion}
