@@ -36,7 +36,6 @@ const OperatorsSelect = ({
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [supportedOperators, setSupportedOperators] = useStateSafely<string[]>([]);
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const { values } = useFormikContext<OperatorsValues>();
   React.useEffect(() => {
     const fetchSupportedOperators = async () => {
       try {
@@ -54,6 +53,7 @@ const OperatorsSelect = ({
     void fetchSupportedOperators();
   }, [addAlert, setSupportedOperators, setIsLoading]);
 
+  const { values } = useFormikContext<OperatorsValues>();
   const { byCategory, byKey: opSpecs } = useOperatorSpecs();
 
   const operators = React.useMemo(() => {
@@ -65,9 +65,34 @@ const OperatorsSelect = ({
     });
   }, [isSingleClusterFeatureEnabled, supportedOperators]);
 
-  const selectedOperators = values.selectedOperators.filter(
-    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+  const isOperatorActive = React.useCallback(
+    (opName: string) =>
+      values.selectedOperators.includes(opName) ||
+      values.selectedBundles.some((selectedBundle) => {
+        const bundle = bundles.find(({ id }) => id === selectedBundle.id);
+        return (
+          bundle?.operators?.includes(opName) || selectedBundle.optionalOperators?.includes(opName)
+        );
+      }),
+    [values.selectedOperators, values.selectedBundles, bundles],
   );
+
+  // Computed once for all checkboxes — passed down as a prop to avoid per-checkbox recalculation.
+  const checkedOperatorIds = React.useMemo(
+    () =>
+      new Set(
+        operators.filter(
+          (op) =>
+            isOperatorActive(op) ||
+            preflightRequirements?.operators?.some(
+              (req) => req.dependencies?.includes(op) && isOperatorActive(req.operatorName ?? ''),
+            ),
+        ),
+      ),
+    [operators, isOperatorActive, preflightRequirements],
+  );
+
+  const operatorsCount = checkedOperatorIds.size;
 
   if (isLoading) {
     return <LoadingState />;
@@ -76,7 +101,7 @@ const OperatorsSelect = ({
   return (
     <>
       <ExpandableSection
-        toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+        toggleText={`Single operators ( ${operatorsCount} selected)`}
         onToggle={() => setIsExpanded(!isExpanded)}
         isExpanded={isExpanded}
         data-testid="single-operators-section"
@@ -113,6 +138,7 @@ const OperatorsSelect = ({
                     <OperatorCheckbox
                       bundles={bundles}
                       operatorId={spec.operatorKey}
+                      isChecked={checkedOperatorIds.has(spec.operatorKey)}
                       cluster={cluster}
                       openshiftVersion={cluster.openshiftVersion}
                       preflightRequirements={preflightRequirements}

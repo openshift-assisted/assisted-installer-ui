@@ -24,7 +24,6 @@ import {
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { getFieldId, OperatorsValues, PopoverIcon } from '../../../../common';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
-import { getNewOperators } from './utils';
 import {
   highlightMatch,
   OperatorSpec,
@@ -112,6 +111,7 @@ const OperatorCheckbox = ({
   bundles,
   cluster,
   operatorId,
+  isChecked,
   title,
   featureId,
   notStandalone,
@@ -124,6 +124,7 @@ const OperatorCheckbox = ({
   bundles: Bundle[];
   cluster: Cluster;
   operatorId: string;
+  isChecked: boolean;
   openshiftVersion?: string;
   preflightRequirements: PreflightHardwareRequirements | undefined;
   searchTerm?: string;
@@ -143,8 +144,6 @@ const OperatorCheckbox = ({
   const isSelectedForBundle = values.selectedBundles.some((selectedBundle) =>
     selectedBundle.optionalOperators?.includes(operatorId),
   );
-  const isInBundle = isRequiredByBundle || isSelectedForBundle;
-
   const isOperatorActive = (opName: string) =>
     values.selectedOperators.includes(opName) ||
     values.selectedBundles.some((selectedBundle) => {
@@ -153,8 +152,6 @@ const OperatorCheckbox = ({
         bundle?.operators?.includes(opName) || selectedBundle.optionalOperators?.includes(opName)
       );
     });
-
-  const isChecked = values.selectedOperators.includes(operatorId) || isInBundle;
 
   const parentOperator = preflightRequirements?.operators?.find(
     (op) =>
@@ -203,16 +200,10 @@ const OperatorCheckbox = ({
         aria-describedby={`${fieldId}-helper`}
         isChecked={isChecked}
         onChange={(_, checked) => {
-          setFieldValue(
-            'selectedOperators',
-            getNewOperators(
-              values.selectedOperators,
-              operatorId,
-              preflightRequirements,
-              checked,
-              opSpecs,
-            ),
-          );
+          const next = checked
+            ? [...new Set([...values.selectedOperators, operatorId])]
+            : values.selectedOperators.filter((op) => op !== operatorId);
+          setFieldValue('selectedOperators', next);
         }}
         isDisabled={isViewerMode || !!disabledReason}
         description={
