@@ -61,7 +61,13 @@ const getValidationSchema = (allowEmpty: boolean, t: TFunction) =>
     Yup.object<DiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', allowEmpty, t }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', allowEmpty, t }), // share the schema, httpS is currently not supported
+      httpsProxy: httpProxyValidationSchema({
+        values,
+        pairValueName: 'httpProxy',
+        allowEmpty,
+        supportHttps: true,
+        t,
+      }),
       noProxy: noProxyValidationSchema(t),
     }),
   );
@@ -136,7 +142,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                       }
                     />
                     <UploadSSH />
-                    <ProxyFields />
+                    <ProxyFields supportHttps />
                   </Form>
                 </StackItem>
               </Stack>

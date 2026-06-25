@@ -8,7 +8,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import './ProxyFields.css';
 import { Trans } from 'react-i18next';
 
-export const ProxyInputFields = () => {
+export const ProxyInputFields = ({ supportHttps = false }: { supportHttps?: boolean } = {}) => {
   const { setFieldValue, values } = useFormikContext<ProxyFieldsType>();
   const onNoProxyBlur = () => {
     if (values.noProxy) {
@@ -64,7 +64,13 @@ export const ProxyInputFields = () => {
             <Trans
               t={t}
               components={{ bold: <span className="pf-v6-u-font-weight-bold" /> }}
-              i18nKey="ai:URL must start with <bold>http</bold> (https schemes are not currently supported)."
+              i18nKey={
+                supportHttps
+                  ? t('ai:URL must start with <bold>http</bold> or <bold>https</bold>.')
+                  : t(
+                      'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).',
+                    )
+              }
             />
           </div>
         }
@@ -97,7 +103,7 @@ export const ProxyInputFields = () => {
   );
 };
 
-const ProxyFields: React.FC = () => {
+const ProxyFields: React.FC<{ supportHttps?: boolean }> = ({ supportHttps = false }) => {
   const { setFieldValue, values, initialValues } = useFormikContext<ProxyFieldsType>();
   const resetProxy = (isNewlyChecked: boolean) => {
     if (isNewlyChecked) {
@@ -126,7 +132,7 @@ const ProxyFields: React.FC = () => {
           </p>
         }
         onChange={(value: boolean) => resetProxy(value)}
-        body={values.enableProxy && <ProxyInputFields />}
+        body={values.enableProxy && <ProxyInputFields supportHttps={supportHttps} />}
       />
     </>
   );
