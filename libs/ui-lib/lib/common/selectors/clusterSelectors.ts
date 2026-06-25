@@ -44,6 +44,13 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
   );
 };
 
+// Includes dependency-only operators
+export const selectAllOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>) => {
+  return selectMonitoredOperators(cluster?.monitoredOperators).filter(
+    (operator) => operator.operatorType === 'olm' && !!operator.name,
+  );
+};
+
 export const hasEnabledOperators = (
   monitoredOperators: Cluster['monitoredOperators'],
   searchOperator: string,
