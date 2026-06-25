@@ -40,12 +40,15 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
     isBinding ||
     !canNextHostDiscovery({ cluster });
 
+  const isNextButtonLoading = isBinding || !canNextHostDiscovery({ cluster });
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
       isNextDisabled={isNextDisabled}
+      isNextButtonLoading={isNextButtonLoading}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}

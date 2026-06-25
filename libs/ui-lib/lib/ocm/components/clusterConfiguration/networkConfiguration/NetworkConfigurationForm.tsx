@@ -22,7 +22,10 @@ import {
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
-import { canNextNetwork } from '../../clusterWizard/wizardTransition';
+import {
+  canNextNetwork,
+  isNetworkingStepAwaitingValidations as isNetworkingStepAwaitingValidationsUntyped,
+} from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
@@ -64,7 +67,7 @@ const NetworkConfigurationForm: React.FC<{
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const { errors, touched, isSubmitting, isValid, setFieldValue, values } =
+  const { errors, touched, isSubmitting, isValid, isValidating, setFieldValue, values } =
     useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -113,18 +116,27 @@ const NetworkConfigurationForm: React.FC<{
     clusterWizardContext.moveNext();
   }, [addAlert, cluster.id, clusterWizardContext, dispatch, isSingleClusterFeatureEnabled]);
 
+  const isNextDisabled =
+    isSubmitting ||
+    isAutoSaveRunning ||
+    !!alerts.length ||
+    !isValid ||
+    !canNextNetwork({ cluster });
+
+  const isNextButtonLoading: boolean =
+    isValid &&
+    !isSubmitting &&
+    !isValidating &&
+    !canNextNetwork({ cluster }) &&
+    isNetworkingStepAwaitingValidationsUntyped({ cluster });
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={
-        isSubmitting ||
-        isAutoSaveRunning ||
-        !!alerts.length ||
-        !isValid ||
-        !canNextNetwork({ cluster })
-      }
+      isNextDisabled={isNextDisabled}
+      isNextButtonLoading={isNextButtonLoading}
       onNext={() => void onNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}

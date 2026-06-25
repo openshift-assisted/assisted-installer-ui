@@ -22,6 +22,62 @@ import {
   ValidationsInfo as HostValidationsInfo,
 } from '../../../common/types/hosts';
 import { stringToJSON } from '../../utils';
+import { getEnabledHosts } from '../hosts/utils';
+
+const HOST_STATUSES_REQUIRING_ACTION: Host['status'][] = ['disconnected'];
+const HOST_STATUSES_TRANSIENT: Host['status'][] = ['discovering', 'binding'];
+
+const isHardFailure = (
+  validation: Validation,
+  softValidationIds: WizardStepValidationMap['softValidationIds'],
+) =>
+  (validation.status === 'failure' || validation.status === 'error') &&
+  !softValidationIds.includes(validation.id);
+
+const hasHardFailures = (
+  validations: Validation[],
+  softValidationIds: WizardStepValidationMap['softValidationIds'],
+) => validations.some((validation) => isHardFailure(validation, softValidationIds));
+
+const hasPending = (validations: Validation[]) =>
+  validations.some((validation) => validation.status === 'pending');
+
+const getStepScopedValidations = <ClusterWizardStepsType extends string>(
+  cluster: ClusterWizardStepStatusDeterminationObject & {
+    hosts?: ClusterWizardStepHostStatusDeterminationObject[];
+  },
+  enabledHosts: ClusterWizardStepHostStatusDeterminationObject[],
+  wizardStepId: ClusterWizardStepsType,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+): Validation[] => {
+  const clusterValidationsInfo =
+    (typeof cluster.validationsInfo === 'string'
+      ? stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo)
+      : cluster.validationsInfo) || {};
+  const clusterStepValidations = lodashValues(
+    getWizardStepClusterValidationsInfo(
+      clusterValidationsInfo,
+      wizardStepId,
+      wizardStepsValidationsMap,
+    ),
+  ).flat() as Validation[];
+
+  const hostStepValidations = enabledHosts.flatMap((host) => {
+    const hostValidationsInfo =
+      (typeof host.validationsInfo === 'string'
+        ? stringToJSON<HostValidationsInfo>(host.validationsInfo)
+        : host.validationsInfo) || {};
+    return lodashValues(
+      getWizardStepHostValidationsInfo(
+        hostValidationsInfo,
+        wizardStepId,
+        wizardStepsValidationsMap,
+      ),
+    ).flat();
+  });
+
+  return [...clusterStepValidations, ...hostStepValidations];
+};
 
 export type WizardStepValidationMap = {
   cluster: {
@@ -281,4 +337,66 @@ export const areOnlySoftValidationsOfWizardStepFailing = <ClusterWizardStepsType
     }
   }
   return true;
+};
+
+export const isWizardStepAwaitingValidations = <ClusterWizardStepsType extends string>(
+  wizardStepId: ClusterWizardStepsType,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  cluster: ClusterWizardStepStatusDeterminationObject & {
+    hosts?: ClusterWizardStepHostStatusDeterminationObject[];
+  },
+): boolean => {
+  const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
+  const enabledHosts = getEnabledHosts(cluster.hosts as Host[]);
+
+  for (const host of enabledHosts) {
+    const stepStatus = getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, host);
+    if (stepStatus === 'insufficient') {
+      return false;
+    }
+    if (HOST_STATUSES_REQUIRING_ACTION.includes(host.status)) {
+      return false;
+    }
+  }
+
+  const stepValidations = getStepScopedValidations(
+    cluster,
+    enabledHosts,
+    wizardStepId,
+    wizardStepsValidationsMap,
+  );
+
+  if (hasHardFailures(stepValidations, softValidationIds)) {
+    return false;
+  }
+
+  if (hasPending(stepValidations)) {
+    return true;
+  }
+
+  if (enabledHosts.some((host) => HOST_STATUSES_TRANSIENT.includes(host.status))) {
+    return true;
+  }
+
+  return false;
+};
+
+export const findValidationStep = <ClusterWizardStepsType extends string>(
+  validationId: ClusterValidationId | HostValidationId,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  minimumStep: ClusterWizardStepsType,
+): ClusterWizardStepsType | undefined => {
+  const wizardStepsIds = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+  let isBeforeMinimumStep = true;
+  return wizardStepsIds.find((wizardStepId) => {
+    if (wizardStepId === minimumStep) {
+      isBeforeMinimumStep = false;
+    }
+    if (isBeforeMinimumStep) {
+      return false;
+    }
+    // find first matching validation-map name, ignoring steps before minimumStep
+    const { host: hostValidationMap } = wizardStepsValidationsMap[wizardStepId];
+    return hostValidationMap.validationIds.includes(validationId as HostValidationId);
+  });
 };
