@@ -91,7 +91,7 @@ const OperatorsSelect = ({
   return (
     <>
       <ExpandableSection
-        toggleText={`Single operators ( ${operatorsCount} selected)`}
+        toggleText={`Single operators (${operatorsCount} selected)`}
         onToggle={() => setIsExpanded(!isExpanded)}
         isExpanded={isExpanded}
         data-testid="single-operators-section"
