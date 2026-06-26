@@ -91,7 +91,7 @@ const OperatorsSelect = ({
   return (
     <>
       <ExpandableSection
-        toggleText={`Single operators ( ${operatorsCount} selected)`}
+        toggleText={`Single operators (${operatorsCount} selected)`}
         onToggle={() => setIsExpanded(!isExpanded)}
         isExpanded={isExpanded}
         data-testid="single-operators-section"
@@ -128,7 +128,7 @@ const OperatorsSelect = ({
                     <OperatorCheckbox
                       bundles={bundles}
                       operatorId={spec.operatorKey}
-                      dependencies={dependencies}
+                      checkedOperatorIds={checkedOperatorIds}
                       isChecked={checkedOperatorIds.has(spec.operatorKey)}
                       cluster={cluster}
                       openshiftVersion={cluster.openshiftVersion}
