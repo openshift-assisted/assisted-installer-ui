@@ -109,7 +109,7 @@ const OperatorRequirements = ({
 
 const OperatorCheckbox = ({
   bundles,
-  dependencies,
+  checkedOperatorIds,
   cluster,
   operatorId,
   isChecked,
@@ -123,7 +123,7 @@ const OperatorCheckbox = ({
   searchTerm,
 }: {
   bundles: Bundle[];
-  dependencies: Set<string>;
+  checkedOperatorIds: Set<string>;
   cluster: Cluster;
   operatorId: string;
   isChecked: boolean;
@@ -165,18 +165,14 @@ const OperatorCheckbox = ({
       ({ operatorName, dependencies }) =>
         !!operatorName &&
         dependencies?.includes(operatorId) &&
-        values.selectedOperators.includes(operatorName),
+        checkedOperatorIds.has(operatorName),
     );
     if (parentOperator?.operatorName) {
       const parentName = opSpecs[parentOperator.operatorName]?.title || parentOperator.operatorName;
       return `This operator is required by ${parentName}`;
     }
 
-    if (dependencies.has(operatorId)) {
-      return 'This operator is a sub-dependency of a selected operator';
-    }
-
-    if (notStandalone && !values.selectedOperators.includes(operatorId)) {
+    if (notStandalone && !checkedOperatorIds.has(operatorId)) {
       return 'This operator cannot be installed as a standalone';
     }
 
@@ -186,7 +182,7 @@ const OperatorCheckbox = ({
   const disabledReason = getDisabledReason();
   const handleClick = (_: React.FormEvent, checked: boolean) => {
     const next = checked
-      ? [...new Set([...values.selectedOperators, operatorId])]
+      ? [...values.selectedOperators, operatorId]
       : values.selectedOperators.filter((op) => op !== operatorId);
     setFieldValue('selectedOperators', next);
   };
