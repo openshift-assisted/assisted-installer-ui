@@ -1,6 +1,9 @@
-import { OcmCpuArchitecture, SupportedCpuArchitecture } from '../../../common';
+import {
+  NewFeatureSupportLevelMap,
+  OcmCpuArchitecture,
+  SupportedCpuArchitecture,
+} from '../../../common';
 import { HostsNetworkConfigurationType } from '../../services';
-import { FeaturesSupportsLevel } from '../../../common/components/featureSupportLevels/types';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 
 /* The type is reverse engineered.
@@ -50,7 +53,7 @@ export type OcmClusterType = {
   };
 
   aiCluster?: Cluster;
-  aiSupportLevels?: FeaturesSupportsLevel;
+  aiSupportLevels?: { features: NewFeatureSupportLevelMap };
 };
 
 export type Day2ClusterDetailValues = {
