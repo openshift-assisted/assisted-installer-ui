@@ -508,6 +508,8 @@
   "ai:Integrate with external partner platforms": "Integrate with external partner platforms",
   "ai:Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116": "Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116",
   "ai:Invalid pull secret format. You must use your Red Hat account's pull secret.": "Invalid pull secret format. You must use your Red Hat account's pull secret.",
+  "ai:Inventory fully truncated": "Inventory fully truncated",
+  "ai:Inventory partially truncated": "Inventory partially truncated",
   "ai:IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.": "IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.",
   "ai:IP address blocks from which Pod IPs are allocated.": "IP address blocks from which Pod IPs are allocated.",
   "ai:IP Address is outside of selected subnet": "IP Address is outside of selected subnet",
