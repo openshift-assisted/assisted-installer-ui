@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Tr } from '@patternfly/react-table';
-import { genericTableRowKey, selectOlmOperators } from '../../../../common';
+import { genericTableRowKey, selectAllOlmOperators } from '../../../../common';
 import { useStateSafely } from '../../../../common/hooks';
 import { Bundle, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { TableSummaryExpandable } from './TableSummaryExpandable';
@@ -68,7 +68,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
 
   const rows = React.useMemo(
     () =>
-      selectOlmOperators(cluster)
+      selectAllOlmOperators(cluster)
         .filter(({ name }) => !!name && !!opSpecs[name])
         .map((op) => {
           const opId = op.name as string;

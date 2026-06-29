@@ -19,6 +19,7 @@ import { OperatorsService } from '../../services';
 import { useFeature } from '../../hooks/use-feature';
 import OperatorCheckbox from '../clusterConfiguration/operators/OperatorCheckbox';
 import { useOperatorSpecs } from '../../../common/components/operators/operatorSpecs';
+import { getOperatorDependencies } from '../clusterConfiguration/operators/utils';
 
 const OperatorsSelect = ({
   cluster,
@@ -36,7 +37,6 @@ const OperatorsSelect = ({
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [supportedOperators, setSupportedOperators] = useStateSafely<string[]>([]);
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const { values } = useFormikContext<OperatorsValues>();
   React.useEffect(() => {
     const fetchSupportedOperators = async () => {
       try {
@@ -54,6 +54,7 @@ const OperatorsSelect = ({
     void fetchSupportedOperators();
   }, [addAlert, setSupportedOperators, setIsLoading]);
 
+  const { values } = useFormikContext<OperatorsValues>();
   const { byCategory, byKey: opSpecs } = useOperatorSpecs();
 
   const operators = React.useMemo(() => {
@@ -65,9 +66,23 @@ const OperatorsSelect = ({
     });
   }, [isSingleClusterFeatureEnabled, supportedOperators]);
 
-  const selectedOperators = values.selectedOperators.filter(
-    (opKey) => operators.includes(opKey) && !!opSpecs[opKey],
+  const bundleOperators = new Set<string>();
+  values.selectedBundles.forEach((b) => {
+    b.optionalOperators?.forEach((op) => bundleOperators.add(op));
+    bundles.find(({ id }) => id === b.id)?.operators?.forEach((op) => bundleOperators.add(op));
+  });
+
+  const dependencies = new Set<string>();
+  [...values.selectedOperators, ...bundleOperators].forEach((op) =>
+    getOperatorDependencies(op, preflightRequirements, dependencies),
   );
+
+  const checkedOperatorIds = new Set([
+    ...values.selectedOperators,
+    ...bundleOperators,
+    ...dependencies,
+  ]);
+  const operatorsCount = operators.filter((op) => checkedOperatorIds.has(op)).length;
 
   if (isLoading) {
     return <LoadingState />;
@@ -76,7 +91,7 @@ const OperatorsSelect = ({
   return (
     <>
       <ExpandableSection
-        toggleText={`Single Operators (${operators.length} | ${selectedOperators.length} selected)`}
+        toggleText={`Single operators (${operatorsCount} selected)`}
         onToggle={() => setIsExpanded(!isExpanded)}
         isExpanded={isExpanded}
         data-testid="single-operators-section"
@@ -113,6 +128,8 @@ const OperatorsSelect = ({
                     <OperatorCheckbox
                       bundles={bundles}
                       operatorId={spec.operatorKey}
+                      checkedOperatorIds={checkedOperatorIds}
+                      isChecked={checkedOperatorIds.has(spec.operatorKey)}
                       cluster={cluster}
                       openshiftVersion={cluster.openshiftVersion}
                       preflightRequirements={preflightRequirements}
