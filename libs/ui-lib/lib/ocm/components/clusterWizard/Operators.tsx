@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
@@ -74,7 +74,7 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
 
   const handleNext = () => {
     if (window.location.pathname.indexOf('assisted-installer') > -1) {
-      navigate(pathname, { state: undefined, replace: true });
+      void navigate(pathname, { state: undefined, replace: true });
     }
     clusterWizardContext.moveNext();
   };

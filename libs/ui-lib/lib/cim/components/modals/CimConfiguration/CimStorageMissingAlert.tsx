@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router';
 import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
@@ -20,7 +20,10 @@ export const CimStorageMissingAlert: React.FC<{
   );
 
   const actionLinks: React.ReactNode[] = [
-    <AlertActionLink key="install-storage-operator" onClick={() => navigate(storageOperatorUrl)}>
+    <AlertActionLink
+      key="install-storage-operator"
+      onClick={() => void navigate(storageOperatorUrl)}
+    >
       {t('ai:Install storage operator')}
     </AlertActionLink>,
     <AlertActionLink key="storage-class" onClick={() => window.open(docStorageUrl, '_blank')}>

@@ -1,4 +1,4 @@
-import { Link, LinkProps } from 'react-router-dom-v5-compat';
+import { Link, LinkProps } from 'react-router';
 import type { ButtonProps } from '@patternfly/react-core';
 import { Button } from '@patternfly/react-core';
 import React from 'react';
