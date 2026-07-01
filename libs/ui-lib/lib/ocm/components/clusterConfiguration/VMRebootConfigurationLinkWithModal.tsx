@@ -1,9 +1,8 @@
 import React from 'react';
-import InfoLinkWithModal from '../ui/InfoLinkWithModal';
-import { VMRebootConfigurationContent } from '../../../common/components/hosts/VMRebootConfigurationInfo';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { VMRebootConfigurationContent, useTranslation } from '../../../common';
+import { InfoLinkWithModal } from '../ui';
 
-const VMRebootConfigurationLinkWithModal = () => {
+export const VMRebootConfigurationLinkWithModal = () => {
   const { t } = useTranslation();
   const title = t('ai:Check your VM reboot configuration');
   return (
@@ -19,5 +18,3 @@ const VMRebootConfigurationLinkWithModal = () => {
     </InfoLinkWithModal>
   );
 };
-
-export default VMRebootConfigurationLinkWithModal;

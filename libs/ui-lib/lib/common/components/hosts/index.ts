@@ -9,6 +9,7 @@ export * from './tableColumns';
 export * from './tableUtils';
 export * from './usePagination';
 export * from './HostsTableDetailContext';
+export * from './VMRebootConfigurationInfo';
 
 export { default as RoleCell } from './RoleCell';
 export { default as RoleDropdown } from './RoleDropdown';

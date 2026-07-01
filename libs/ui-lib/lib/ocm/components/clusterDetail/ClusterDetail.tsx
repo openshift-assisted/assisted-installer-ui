@@ -19,7 +19,6 @@ import { ClustersAPI } from '../../services/apis';
 import { useFeature } from '../../hooks/use-feature';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
 import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
-import ClusterToolbar from '../clusters/ClusterToolbar';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
 import { ClusterDetailsButtonGroup } from './ClusterDetailsButtonGroup';
 import { ClusterSummaryExpandable } from './ClusterSummaryExpandable';
@@ -29,6 +28,7 @@ import {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
 import { getClusterDetailId } from './utils';
+import { ClusterToolbar } from './ClusterToolbar';
 
 type ClusterDetailProps = {
   cluster: Cluster;

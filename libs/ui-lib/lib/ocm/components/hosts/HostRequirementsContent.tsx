@@ -13,7 +13,7 @@ type PreflightRequirementsContentProps = {
   isAddingHosts: boolean;
 };
 
-const HostRequirementsContent = ({
+export const HostRequirementsContent = ({
   clusterId,
   isSingleNode,
   isAddingHosts,
@@ -73,5 +73,3 @@ const HostRequirementsContent = ({
 
   return content;
 };
-
-export default HostRequirementsContent;
