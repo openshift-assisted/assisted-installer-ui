@@ -7,9 +7,9 @@ import {
   hostStatus,
   HostStatus,
   useTranslation,
-} from '../../../common';
-import { wizardStepsValidationsMap } from '../wizard/utils/wizardTransition';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+} from '../../../../../../common';
+import { wizardStepsValidationsMap } from '../../../utils/wizardTransition';
+import { AdditionalNTPSourcesDialogToggle } from '../../../../hosts/AdditionaNTPSourceDialogToggle';
 
 export const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => {
   const { t } = useTranslation();
