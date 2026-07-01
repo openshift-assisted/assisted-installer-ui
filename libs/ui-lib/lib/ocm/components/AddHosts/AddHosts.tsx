@@ -26,11 +26,8 @@ import {
 import { HostsService } from '../../services';
 import { DiscoveryImageModal } from '../discoveryImage';
 import { ModalDialogsContextProvider } from '../hostsTable/modals/ModalDialogsContext';
+import { ClusterDetailStatusVarieties, useClusterStatusVarieties } from '../clusterDetail';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import {
-  ClusterDetailStatusVarieties,
-  useClusterStatusVarieties,
-} from '../clusterDetail/ClusterDetailStatusVarieties';
 import { InventoryAddHosts } from './InventoryAddHost';
 
 const { addAlert } = alertsSlice.actions;

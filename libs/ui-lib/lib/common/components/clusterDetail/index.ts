@@ -7,3 +7,5 @@ export * from './ClusterProgress';
 export * from './ClusterProgressItem';
 export * from './ClusterProgressItems';
 export * from './OperatorsProgressItem';
+export * from './FinalizingProgress';
+export * from './ProgressBarTexts';

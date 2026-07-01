@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Icon } from '@patternfly/react-core';
-import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
+import {
+  OPENSHIFT_LIFE_CYCLE_DATES_LINK,
+  OpenshiftVersionOptionType,
+} from '../../../../../../common';
 import { TFunction } from 'i18next';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { useTranslation } from '../../../../../../common/hooks/use-translation-wrapper';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();

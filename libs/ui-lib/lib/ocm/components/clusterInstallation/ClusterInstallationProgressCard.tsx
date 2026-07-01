@@ -14,8 +14,8 @@ import { ClusterStatusIcon } from '../clusters/ClusterStatus';
 import {
   ClusterDetailStatusVarieties,
   useClusterStatusVarieties,
-} from '../clusterDetail/ClusterDetailStatusVarieties';
-import { ClusterDetailsButtonGroup } from '../clusterDetail/ClusterDetailsButtonGroup';
+  ClusterDetailsButtonGroup,
+} from '../clusterDetail';
 import { ClusterHostsTable } from '../hostsTable/ClusterHostsTable';
 
 export const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ cluster }) => {

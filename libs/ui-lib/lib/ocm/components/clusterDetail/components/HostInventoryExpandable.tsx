@@ -3,9 +3,9 @@ import { ExpandableSection, Icon } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { hostStatus, useTranslation } from '../../../common';
-import { ClusterHostsTable } from '../hostsTable/ClusterHostsTable';
-import { getHostsWithTimeout, getMostSevereHostStatus } from './utils';
+import { hostStatus, useTranslation } from '../../../../common';
+import { ClusterHostsTable } from '../../hostsTable/ClusterHostsTable';
+import { getHostsWithTimeout, getMostSevereHostStatus } from '../utils';
 
 import './HostInventoryExpandable.css';
 
