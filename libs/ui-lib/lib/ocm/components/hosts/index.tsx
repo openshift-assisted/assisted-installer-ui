@@ -5,3 +5,5 @@ export * from './HostsTableEmptyState';
 export * from './modals';
 export * from './HostsDiscoveryTroubleshootingInfoLinkWithModal';
 export * from './ClusterHostsTable';
+export * from './HostRequirementsContent';
+export * from './utils';

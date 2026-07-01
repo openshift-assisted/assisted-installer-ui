@@ -1,17 +1,20 @@
 import { saveAs } from 'file-saver';
-import type { AlertsContextType } from '../../../common';
-
-import { isInOcm, handleApiError, getApiErrorMessage } from '../../../common/api';
-import { updateCluster } from '../../store/slices/current-cluster/slice';
-import { ClustersService } from '../../services';
-import ClustersAPI from '../../../common/api/assisted-service/ClustersAPI';
-import { stringToJSON } from '../../../common/utils';
 import {
-  Cluster,
   Host,
-  Inventory,
+  Cluster,
   V2ClusterUpdateParams,
+  Inventory,
 } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  AlertsContextType,
+  isInOcm,
+  ClustersAPI,
+  handleApiError,
+  getApiErrorMessage,
+  stringToJSON,
+} from '../../../common';
+import { ClustersService } from '../../services';
+import { updateCluster } from '../../store';
 
 export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
