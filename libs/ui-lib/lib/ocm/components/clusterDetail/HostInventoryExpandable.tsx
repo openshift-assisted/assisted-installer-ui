@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { ExpandableSection, Icon } from '@patternfly/react-core';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
-import { hostStatus } from '../../../common';
-import ClusterHostsTable from '../hosts/ClusterHostsTable';
-import { getHostsWithTimeout, getMostSevereHostStatus } from './utils';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { hostStatus, useTranslation } from '../../../common';
+import { ClusterHostsTable } from '../hosts';
+import { getHostsWithTimeout, getMostSevereHostStatus } from './utils';
 
 import './HostInventoryExpandable.css';
 

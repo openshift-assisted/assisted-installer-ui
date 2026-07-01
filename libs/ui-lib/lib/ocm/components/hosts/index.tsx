@@ -4,3 +4,4 @@ export * from './HardwareStatus';
 export * from './HostsTableEmptyState';
 export * from './modals';
 export * from './HostsDiscoveryTroubleshootingInfoLinkWithModal';
+export * from './ClusterHostsTable';
