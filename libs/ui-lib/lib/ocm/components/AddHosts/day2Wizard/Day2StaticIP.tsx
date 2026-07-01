@@ -18,7 +18,7 @@ import {
   LoadingState,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
-import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
 import {
   StaticIpInfo,
   getDummyStaticIpInfo,

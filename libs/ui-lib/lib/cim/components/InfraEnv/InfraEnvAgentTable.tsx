@@ -19,6 +19,7 @@ import {
   EmptyState,
   usePagination,
   useTranslation,
+  HostsNotShowingLink,
 } from '../../../common';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 import {
@@ -254,7 +255,16 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
                 }}
               />
             ) : (
-              <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+              <HostsTableEmptyState
+                secondaryActions={
+                  setDiscoveryHintModalOpen && [
+                    <HostsNotShowingLink
+                      key="hosts-not-showing"
+                      setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+                    />,
+                  ]
+                }
+              />
             )}
           </HostsTable>
         </StackItem>

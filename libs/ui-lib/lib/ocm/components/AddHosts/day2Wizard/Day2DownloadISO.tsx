@@ -7,7 +7,7 @@ import {
   isSNO,
   DownloadIpxeScript,
 } from '../../../../common';
-import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
 

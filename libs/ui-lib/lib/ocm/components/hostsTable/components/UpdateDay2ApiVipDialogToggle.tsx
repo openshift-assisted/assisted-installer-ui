@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertActionLink } from '@patternfly/react-core';
-import { useModalDialogsContext } from './modals/ModalDialogsContext';
-import { AddHostsContext } from '../../../common';
+import { useModalDialogsContext } from '../modals/ModalDialogsContext';
+import { AddHostsContext } from '../../../../common';
 
 export const UpdateDay2ApiVipDialogToggle: React.FC = () => {
   const {
