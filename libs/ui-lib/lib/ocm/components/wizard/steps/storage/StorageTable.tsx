@@ -20,7 +20,7 @@ import {
   odfUsageColumn,
   StorageDetail,
 } from '../../../../../common';
-import { HostsTableModals, useHostsTable, hardwareStatusColumn } from '../../../hosts';
+import { HostsTableModals, useHostsTable, hardwareStatusColumn } from '../../../hostsTable';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { StorageAlerts } from './StorageAlerts';
 

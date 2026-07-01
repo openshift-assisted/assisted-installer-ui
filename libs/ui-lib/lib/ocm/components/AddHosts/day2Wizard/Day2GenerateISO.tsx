@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { ClusterWizardStep, ClusterWizardStepHeader } from '../../../../common';
 import { useInfraEnvImageUrl, useInfraEnvIpxeImageUrl } from '../../../hooks';
-import { useModalDialogsContext } from '../../hosts/modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
 import { DiscoveryImageForm } from '../../discoveryImage';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';

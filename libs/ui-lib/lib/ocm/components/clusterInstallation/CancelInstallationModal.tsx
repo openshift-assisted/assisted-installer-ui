@@ -18,7 +18,7 @@ import {
   ErrorState,
 } from '../../../common';
 import { updateCluster } from '../../store';
-import { useModalDialogsContext } from '../hosts';
+import { useModalDialogsContext } from '../hostsTable';
 
 export const CancelInstallationModal: React.FC = () => {
   const dispatch = useDispatch();

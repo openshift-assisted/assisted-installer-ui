@@ -13,7 +13,7 @@ import {
 } from '../../../common';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { wizardStepsValidationsMap } from '../wizard/utils';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+import { AdditionalNTPSourcesDialogToggle } from './components/AdditionaNTPSourceDialogToggle';
 
 type HardwareStatusProps = {
   host: Host;

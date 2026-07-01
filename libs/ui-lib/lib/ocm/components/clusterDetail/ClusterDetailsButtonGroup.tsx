@@ -12,7 +12,7 @@ import {
   ToolbarButton,
   useTranslation,
 } from '../../../common';
-import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../hostsTable/modals/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { downloadClusterInstallationLogs } from './utils';

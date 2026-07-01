@@ -16,7 +16,7 @@ import {
   useClusterStatusVarieties,
 } from '../clusterDetail/ClusterDetailStatusVarieties';
 import { ClusterDetailsButtonGroup } from '../clusterDetail/ClusterDetailsButtonGroup';
-import { ClusterHostsTable } from '../hosts';
+import { ClusterHostsTable } from '../hostsTable/ClusterHostsTable';
 
 export const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isCardExpanded, setIsCardExpanded] = React.useState(true);

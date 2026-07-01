@@ -1,20 +1,8 @@
 import React from 'react';
-import {
-  Cluster,
-  Disk,
-  Host,
-  HostUpdateParams,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { Disk, Host, HostUpdateParams } from '@openshift-assisted/types/assisted-installer-service';
 import { ValidationsInfo } from '../../types/hosts';
-import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { AdditionNtpSourcePropsType, UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 import { OnDiskRoleType } from './HostsTableDetailContext';
-
-export type ClusterHostsTableProps = {
-  cluster: Cluster;
-  skipDisabled?: boolean;
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-};
 
 export type EditHostFormValues = {
   hostId: string; // identifier, uuid

@@ -16,17 +16,20 @@ import {
   usePagination,
   HostsTableDetailContextProvider,
   HostsTable,
+  HostsTableEmptyState,
   isSNO,
   useTranslation,
 } from '../../../common';
-import { ClusterWizardContext } from '../wizard/clusterWizardContext';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
-import { HostsTableEmptyState } from './HostsTableEmptyState';
-import { useHostsTable } from './use-hosts-table';
+import { ClusterWizardContext } from '../wizard';
+import {
+  AdditionalNTPSourcesDialogToggle,
+  HostsDiscoveryTroubleshootingInfoLinkWithModal,
+  UpdateDay2ApiVipDialogToggle,
+} from './components';
 import { HostsTableModals } from './modals';
+import { useHostsTable } from './use-hosts-table';
 
-const ExpandComponent = ({ obj: host }: ExpandComponentProps<Host>) => {
+export const ExpandComponent = ({ obj: host }: ExpandComponentProps<Host>) => {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
   return (
     <HostDetail
@@ -101,7 +104,12 @@ export const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTablePr
           variant={TableVariant.compact}
           {...paginationProps}
         >
-          <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
+          <HostsTableEmptyState
+            isSNO={isSNO(cluster)}
+            secondaryActions={[
+              <HostsDiscoveryTroubleshootingInfoLinkWithModal key={'hosts-not-showing'} />,
+            ]}
+          />
         </HostsTable>
       </HostsTableDetailContextProvider>
       <HostsTableModals cluster={cluster} {...modalProps} />

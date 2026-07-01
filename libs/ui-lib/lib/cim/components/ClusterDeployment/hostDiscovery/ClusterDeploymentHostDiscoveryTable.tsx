@@ -26,6 +26,7 @@ import {
   usePagination,
   useTranslation,
   HostsTableDetailContextProvider,
+  HostsNotShowingLink,
 } from '../../../../common';
 import MassApproveAgentModal from '../../modals/MassApproveAgentModal';
 import MassApproveAction from '../../modals/MassApproveAction';
@@ -161,7 +162,16 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
               ExpandComponent={hostActions.onDiskRole ? ExpandComponent : DefaultExpandComponent}
               {...paginationProps}
             >
-              <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+              <HostsTableEmptyState
+                secondaryActions={
+                  setDiscoveryHintModalOpen && [
+                    <HostsNotShowingLink
+                      key="hosts-not-showing"
+                      setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+                    />,
+                  ]
+                }
+              />
             </HostsTable>
           </HostsTableDetailContextProvider>
         </StackItem>

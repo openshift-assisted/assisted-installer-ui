@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertActionLink } from '@patternfly/react-core';
-import { useModalDialogsContext } from './modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../modals/ModalDialogsContext';
 
 export const AdditionalNTPSourcesDialogToggle = () => {
   const {

@@ -1,9 +1,14 @@
 import React from 'react';
 import { List, ListItem, Content } from '@patternfly/react-core';
-import { DISK_WRITE_SPEED_LINK, ErrorState, ExternalLink, LoadingState } from '../../../common';
-import { useClusterPreflightRequirements } from '../../hooks';
-import { fileSize } from '../../../common/utils';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  DISK_WRITE_SPEED_LINK,
+  ErrorState,
+  ExternalLink,
+  LoadingState,
+  fileSize,
+} from '../../../common';
+import { useClusterPreflightRequirements } from '../../hooks';
 
 const parseRAM = (ramMib: number) => fileSize(ramMib * 1024 * 1024, 2, 'iec');
 
