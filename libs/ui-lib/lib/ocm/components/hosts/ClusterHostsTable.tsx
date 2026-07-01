@@ -1,34 +1,32 @@
 import * as React from 'react';
-import {
-  selectSchedulableMasters,
-  isSNO,
-  discoveredAtColumn,
-  disksColumn,
-  hostnameColumn,
-  memoryColumn,
-  roleColumn,
-  statusColumn,
-  cpuCoresColumn,
-} from '../../../common';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { usePagination } from '../../../common/components/hosts/usePagination';
-import { useHostsTable } from './use-hosts-table';
-import { HostsTable } from '../../../common/components/hosts/HostsTable';
-import { HostsTableEmptyState } from '../hosts/HostsTableEmptyState';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import {
-  HostsTableDetailContextProvider,
-  useHostsTableDetailContext,
-} from '../../../common/components/hosts/HostsTableDetailContext';
-import { TableVariant } from '@patternfly/react-table';
-import { ClusterWizardContext } from '../wizard/clusterWizardContext/ClusterWizardContext';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
-import { HostsTableModals } from './modals/HostsTableModals';
+import { TableVariant } from '@patternfly/react-table';
+import {
+  ExpandComponentProps,
+  useHostsTableDetailContext,
+  HostDetail,
+  hostnameColumn,
+  roleColumn,
+  selectSchedulableMasters,
+  statusColumn,
+  discoveredAtColumn,
+  cpuCoresColumn,
+  memoryColumn,
+  disksColumn,
+  usePagination,
+  HostsTableDetailContextProvider,
+  HostsTable,
+  isSNO,
+  useTranslation,
+} from '../../../common';
+import { ClusterWizardContext } from '../wizard/clusterWizardContext';
+import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
+import { HostsTableEmptyState } from './HostsTableEmptyState';
+import { useHostsTable } from './use-hosts-table';
+import { HostsTableModals } from './modals';
 
-export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+const ExpandComponent = ({ obj: host }: ExpandComponentProps<Host>) => {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
   return (
     <HostDetail
@@ -40,14 +38,14 @@ export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
       updateDiskSkipFormatting={updateDiskSkipFormatting}
     />
   );
-}
+};
 
 export interface ClusterHostsTableProps {
   cluster: Cluster;
   skipDisabled?: boolean;
 }
 
-const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
+export const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
   const { wizardPerPage, setWizardPerPage } = React.useContext(ClusterWizardContext) || {};
   const {
     onEditHost,
@@ -110,5 +108,3 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
     </>
   );
 };
-
-export default ClusterHostsTable;

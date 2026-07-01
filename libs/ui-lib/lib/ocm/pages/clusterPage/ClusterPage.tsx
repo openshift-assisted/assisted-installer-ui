@@ -30,7 +30,7 @@ import {
   ClusterLoading,
   BackButton,
   ModalDialogsContextProvider,
-  ClusterUiError,
+  ClusterPageError,
   NewFeatureSupportLevelProvider,
   ClusterPollingErrorModal,
   ClusterUpdateErrorModal,
@@ -181,7 +181,7 @@ export const ClusterPageGeneric = ({
             <ModalDialogsContextProvider>
               <ClusterDefaultConfigurationProvider
                 loadingUI={<ClusterLoading />}
-                errorUI={<ClusterUiError />}
+                errorUI={<ClusterPageError />}
               >
                 <OpenShiftVersionsContextProvider>
                   <NewFeatureSupportLevelProvider
