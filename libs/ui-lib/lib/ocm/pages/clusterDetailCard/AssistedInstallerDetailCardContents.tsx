@@ -1,46 +1,35 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import {
-  unstable_HistoryRouter as HistoryRouter,
-  HistoryRouterProps,
-  BrowserRouter,
-} from 'react-router';
-import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
+import { BrowserRouter, unstable_HistoryRouter as HistoryRouter } from 'react-router';
+import { Card, CardHeader, Title, CardBody } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
-  AlertsContextProvider,
-  AssistedInstallerOCMPermissionTypesListType,
-  CpuArchitecture,
-  ErrorState,
-  FeatureListType,
   LoadingState,
+  ErrorState,
+  CpuArchitecture,
   ResourceUIState,
+  AlertsContextProvider,
 } from '../../../common';
-import { storeDay1 } from '../../store';
-import { useInfraEnv, usePullSecret, useFeatureDetection } from '../../hooks';
-import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
-import { ModalDialogsContextProvider } from '../hosts/modals/ModalDialogsContext';
-import { BackButton } from '../ui';
-import { ClusterWizard, ClusterWizardContextProvider } from '../wizard';
-import { NewFeatureSupportLevelProvider } from '../featureSupportLevels';
+import {
+  useFetchCluster,
+  BackButton,
+  useClusterPolling,
+  ClusterWizardContextProvider,
+  ClusterWizard,
+  ClusterInstallationProgressCard,
+  ModalDialogsContextProvider,
+  NewFeatureSupportLevelProvider,
+  ClusterPollingErrorModal,
+  CancelInstallationModal,
+  ResetClusterModal,
+  DiscoveryImageModal,
+} from '../../components';
 import {
   OpenShiftVersionsContextProvider,
   SentryErrorMonitorContextProvider,
   ClusterDefaultConfigurationProvider,
 } from '../../contexts';
-import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
-import { CancelInstallationModal } from './CancelInstallationModal';
-import { ResetClusterModal } from './ResetClusterModal';
-import { ClusterPollingErrorModal } from './ClusterPollingErrorModal';
-import { DiscoveryImageModal } from '../discoveryImage';
-
-type AssistedInstallerDetailCardProps = {
-  aiClusterId: string;
-  allEnabledFeatures: FeatureListType;
-  history: HistoryRouterProps['history'];
-  basename: HistoryRouterProps['basename'];
-  permissions?: AssistedInstallerOCMPermissionTypesListType;
-};
+import { useFeatureDetection, usePullSecret, useInfraEnv } from '../../hooks';
+import { AssistedInstallerDetailCardProps } from './types';
 
 const LoadingCard = () => (
   <Card data-testid="ai-cluster-details-card">
@@ -96,7 +85,7 @@ const LoadingDefaultConfigFailedCard = () => (
   </Card>
 );
 
-const AssistedInstallerDetailCard = ({
+export const AssistedInstallerDetailCardContent = ({
   aiClusterId,
   allEnabledFeatures,
   history,
@@ -185,13 +174,3 @@ const AssistedInstallerDetailCard = ({
     </>
   );
 };
-
-const Wrapper = (props: AssistedInstallerDetailCardProps) => (
-  <Provider store={storeDay1}>
-    <AlertsContextProvider>
-      <AssistedInstallerDetailCard {...props} />
-    </AlertsContextProvider>
-  </Provider>
-);
-
-export default Wrapper;
