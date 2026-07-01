@@ -6,7 +6,7 @@ interface Props {
   validationSection?: React.ReactNode;
 }
 
-const ClusterToolbar: React.FC<React.PropsWithChildren<Props>> = ({
+export const ClusterToolbar: React.FC<React.PropsWithChildren<Props>> = ({
   children,
   validationSection,
 }) => (
@@ -19,5 +19,3 @@ const ClusterToolbar: React.FC<React.PropsWithChildren<Props>> = ({
     </ActionGroup>
   </>
 );
-
-export default ClusterToolbar;

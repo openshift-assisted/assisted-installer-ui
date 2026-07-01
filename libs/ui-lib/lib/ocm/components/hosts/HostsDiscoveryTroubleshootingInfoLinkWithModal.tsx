@@ -1,7 +1,6 @@
 import React from 'react';
-import InfoLinkWithModal from '../ui/InfoLinkWithModal';
-import { DiscoveryTroubleshootingModalContent } from '../../../common';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { DiscoveryTroubleshootingModalContent, useTranslation } from '../../../common';
+import { InfoLinkWithModal } from '../ui';
 
 export interface HostsDiscoveryTroubleshootingInfoLinkWithModalProps {
   isInline?: boolean;
