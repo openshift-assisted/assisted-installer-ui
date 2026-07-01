@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Alert } from '@patternfly/react-core';
-import { ExternalLink, useTranslation } from '../../../common';
+import { ExternalLink, useTranslation } from '../../../../common';
 
 type PostInstallAlertProps = {
   link: string;

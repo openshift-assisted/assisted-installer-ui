@@ -5,7 +5,7 @@ export * from './uiStates';
 export * from './AddHosts';
 export * from './featureSupportLevels';
 export * from './hostsTable';
-export * from './clusterConfiguration';
+export * from './information';
 export * from './discoveryImage';
 export * from './clusterInstallation';
 export * from './wizard';

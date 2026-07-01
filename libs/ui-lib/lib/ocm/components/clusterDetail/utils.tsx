@@ -1,15 +1,21 @@
 import get from 'lodash-es/get.js';
-import { isInOcm, handleApiError, getApiErrorMessage } from '../../../common/api';
-import { AlertsContextType, hostStatusOrder } from '../../../common';
-import { ClustersAPI } from '../../services/apis';
-import { ClustersService } from '../../services';
-import { downloadFile, stringToJSON } from '../../../common/utils';
 import {
   Cluster,
   Host,
   HostRole,
   Inventory,
 } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  AlertsContextType,
+  isInOcm,
+  ClustersAPI,
+  downloadFile,
+  handleApiError,
+  getApiErrorMessage,
+  stringToJSON,
+  hostStatusOrder,
+} from '../../../common';
+import { ClustersService } from '../../services';
 
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],

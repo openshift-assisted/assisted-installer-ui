@@ -12,13 +12,16 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
-
-import { getApiErrorMessage, handleApiError } from '../../../common/api';
-import { updateCluster } from '../../store/slices/current-cluster/slice';
-import { calculateCollectedLogsCount } from '../clusters/utils';
-import { useModalDialogsContext } from '../hostsTable/modals/ModalDialogsContext';
-import { ErrorState, LoadingState } from '../../../common';
-import { ClustersAPI } from '../../services/apis';
+import {
+  ClustersAPI,
+  handleApiError,
+  getApiErrorMessage,
+  LoadingState,
+  ErrorState,
+} from '../../../common';
+import { updateCluster } from '../../store';
+import { calculateCollectedLogsCount } from '../clusters';
+import { useModalDialogsContext } from '../hostsTable';
 
 export const ResetClusterModal: React.FC = () => {
   const dispatch = useDispatch();

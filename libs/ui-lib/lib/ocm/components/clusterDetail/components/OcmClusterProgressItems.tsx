@@ -1,15 +1,15 @@
-import { Grid, GridItem } from '@patternfly/react-core';
 import React from 'react';
+import { Grid, GridItem } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   EventListFetchProps,
   getEnabledHosts,
   OperatorsProgressItem,
   RenderIf,
   selectAllOlmOperators,
-} from '../../../common';
-import { FinalizingProgress } from '../../../common/components/clusterDetail/FinalizingProgress';
-import { ProgressBarTexts } from '../../../common/components/clusterDetail/ProgressBarTexts';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+  FinalizingProgress,
+  ProgressBarTexts,
+} from '../../../../common';
 
 type OcmClusterProgressItemsProps = {
   cluster: Cluster;
@@ -19,7 +19,7 @@ type OcmClusterProgressItemsProps = {
   fallbackEventsURL?: string;
 };
 
-const OcmClusterProgressItems = ({
+export const OcmClusterProgressItems = ({
   cluster,
   minimizedView = false,
   onFetchEvents,
@@ -60,5 +60,3 @@ const OcmClusterProgressItems = ({
     </>
   );
 };
-
-export default OcmClusterProgressItems;

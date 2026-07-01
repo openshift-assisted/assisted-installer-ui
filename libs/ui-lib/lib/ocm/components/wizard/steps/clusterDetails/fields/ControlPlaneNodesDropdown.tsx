@@ -23,7 +23,7 @@ import {
 } from '../../../../../../common/components/newFeatureSupportLevels';
 import { isFeatureSupportedAndAvailable } from '../../../../featureSupportLevels/featureStateUtils';
 import OcmTNADisclaimer from '../../../../../../common/components/clusterConfiguration/OcmTNADisclaimer';
-import OcmSNODisclaimer from '../../../../clusterConfiguration/OcmSNODisclaimer';
+import OcmSNODisclaimer from './OcmSNODisclaimer';
 
 const INPUT_NAME = 'controlPlaneCount';
 const fieldId = getFieldId(INPUT_NAME, 'input');

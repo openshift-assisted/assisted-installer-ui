@@ -1,18 +1,18 @@
-import { RenderIf } from '../../../common';
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import {
-  HostsInstallationFailed,
-  HostInstallationWarning,
-  HostsInstallationSuccess,
-  ClusterInstallationTimeout,
-} from './ProgressBarAlerts';
 import {
   Cluster,
   Host,
   HostRole,
   MonitoredOperator,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { RenderIf } from '../../../../common';
+import {
+  HostsInstallationFailed,
+  HostInstallationWarning,
+  HostsInstallationSuccess,
+  ClusterInstallationTimeout,
+} from './ProgressBarAlerts';
 
 const hostsStatus = (hosts: Host[], hostRole: HostRole) => {
   const totalHosts = hosts.filter((host) => host.role && host.role === hostRole);
@@ -27,7 +27,7 @@ const olmOperatorsStatus = (olmOperators: MonitoredOperator[]) => {
   return olmOperators.filter((operator) => operator.status && operator.status === 'failed');
 };
 
-export const getClusterProgressAlerts = (
+export const getProgressAlerts = (
   hosts: Host[],
   cluster: Cluster,
   olmOperators: MonitoredOperator[],
