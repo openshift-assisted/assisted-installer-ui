@@ -19,8 +19,8 @@ import {
   useTranslation,
 } from '../../../../../../common';
 import { ValidationsInfo } from '../../../../../../common/types/hosts';
-import { NetworkingStatus } from '../../../../hosts';
 import { useClusterWizardContext } from '../../../clusterWizardContext';
+import { NetworkingStatus } from './NetworkingStatus';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
