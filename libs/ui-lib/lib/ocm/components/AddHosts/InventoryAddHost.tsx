@@ -3,7 +3,7 @@ import { Content, Alert, AlertVariant, Stack, StackItem } from '@patternfly/reac
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CpuArchitecture } from '../../../common';
 import { ClusterHostsTable } from '../hostsTable/ClusterHostsTable';
-import { InformationAndAlerts } from '../clusterConfiguration';
+import { InformationAndAlerts } from '../information';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';
 import Day2Wizard from './day2Wizard/Day2Wizard';

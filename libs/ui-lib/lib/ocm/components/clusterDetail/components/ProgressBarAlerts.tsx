@@ -10,9 +10,9 @@ import {
   useAlerts,
   useOperatorSpecs,
   isInOcm,
-} from '../../../common';
-import { downloadClusterInstallationLogs } from './utils';
-import { useModalDialogsContext } from '../hostsTable/modals/ModalDialogsContext';
+} from '../../../../common';
+import { downloadClusterInstallationLogs } from '../utils';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;

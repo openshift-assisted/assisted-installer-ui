@@ -1,16 +1,16 @@
 import React from 'react';
-import { useTranslation } from '../../../../../../common/hooks/use-translation-wrapper';
+import { useFormikContext } from 'formik';
 import {
   OpenshiftVersionOptionType,
   ClusterDetailsValues,
   OpenShiftVersionDropdown,
   OpenShiftVersionModal,
   getComparableVersionInt,
+  useTranslation,
+  isInOcm,
 } from '../../../../../../common';
-import { isInOcm } from '../../../../../../common/api';
-import { useFormikContext } from 'formik';
-import { getOpenshiftVersionHelperText } from '../../../../clusterConfiguration/OpenshiftVersionHelperText';
 import { useOpenShiftVersionsContext } from '../../../../../contexts/OpenShiftVersionsContext';
+import { getOpenshiftVersionHelperText } from './OpenshiftVersionHelperText';
 
 const filterMinVersions = (versions: OpenshiftVersionOptionType[], minVersion: number) =>
   versions.filter((v) => getComparableVersionInt(v.value) >= minVersion);

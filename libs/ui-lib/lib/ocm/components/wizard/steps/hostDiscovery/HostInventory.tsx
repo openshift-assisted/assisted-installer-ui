@@ -13,7 +13,7 @@ import {
 import { useFeature } from '../../../../hooks';
 import { selectCurrentClusterPermissionsState } from '../../../../store';
 import { OcmSwitchField } from '../../../ui';
-import { InformationAndAlerts } from '../../../clusterConfiguration';
+import { InformationAndAlerts } from '../../../information';
 import { DiscoveryImageModalButton } from '../../../discoveryImage';
 import { HostsDiscoveryTable } from './HostsDiscoveryTable';
 

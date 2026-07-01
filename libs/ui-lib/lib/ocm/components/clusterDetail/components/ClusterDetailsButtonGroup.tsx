@@ -11,11 +11,11 @@ import {
   ViewClusterEventsButton,
   ToolbarButton,
   useTranslation,
-} from '../../../common';
-import { useModalDialogsContext } from '../hostsTable/modals/ModalDialogsContext';
-import { canAbortInstallation } from '../clusters/utils';
-import { onFetchEvents } from '../fetching/fetchEvents';
-import { downloadClusterInstallationLogs } from './utils';
+} from '../../../../common';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
+import { canAbortInstallation } from '../../clusters/utils';
+import { onFetchEvents } from '../../fetching/fetchEvents';
+import { downloadClusterInstallationLogs } from '../utils';
 
 import './ClusterDetailsButtonGroup.css';
 

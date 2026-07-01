@@ -10,10 +10,10 @@ import {
   calculateClusterDateDiff,
   isInOcm,
   useNewFeatureSupportLevel,
-} from '../../../common';
-import { useDefaultConfiguration } from '../../contexts';
-import { useFeature } from '../../hooks/use-feature';
-import { ExternalPlatformLinks } from '../wizard/wizardFields';
+} from '../../../../common';
+import { useDefaultConfiguration } from '../../../contexts';
+import { useFeature } from '../../../hooks/use-feature';
+import { ExternalPlatformLinks } from '../../wizard/wizardFields';
 import { PostInstallAlert } from './PostInstallAlert';
 
 type ClusterDetailStatusMessagesProps = {
@@ -21,7 +21,7 @@ type ClusterDetailStatusMessagesProps = {
   showAddHostsInfo: boolean;
 };
 
-const ClusterDetailStatusMessages = ({
+export const ClusterDetailStatusMessages = ({
   cluster,
   showAddHostsInfo,
 }: ClusterDetailStatusMessagesProps) => {
@@ -87,5 +87,3 @@ const ClusterDetailStatusMessages = ({
     </Stack>
   );
 };
-
-export default ClusterDetailStatusMessages;

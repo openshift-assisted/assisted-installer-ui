@@ -13,10 +13,10 @@ import {
   hasEnabledOperators,
   OPERATOR_NAME_MCE,
   getErrorMessage,
-} from '../../../common';
-import { ClustersAPI } from '../../services/apis';
-import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
-import { getClusterDetailId } from './utils';
+} from '../../../../common';
+import { ClustersAPI } from '../../../services/apis';
+import { ClusterDetailStatusMessages } from './ClusterDetailStatusMessages';
+import { getClusterDetailId } from '../utils';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;

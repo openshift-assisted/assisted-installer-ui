@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AlertVariant, List, ListItem } from '@patternfly/react-core';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { useTranslation } from '../../../../../../common/hooks/use-translation-wrapper';
 
 type OcmSNODisclaimerProps = {
   snoExpansionSupported?: boolean;

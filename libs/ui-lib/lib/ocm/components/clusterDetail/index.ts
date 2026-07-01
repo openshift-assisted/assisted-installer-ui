@@ -1,4 +1,3 @@
 export * from './utils';
-export { default as ClusterDetail } from './ClusterDetail';
-
-export * from './ResetClusterModal';
+export * from './ClusterDetail';
+export * from './components';
