@@ -4,7 +4,7 @@ import { AlertsContextProvider } from '../../../common';
 import {
   ModalDialogsContextProvider,
   ClusterLoading,
-  ClusterUiError,
+  ClusterPageError,
   NewFeatureSupportLevelProvider,
   ClusterWizardContextProvider,
   NewClusterWizard,
@@ -24,7 +24,7 @@ export const NewClusterPage = () => {
         <ModalDialogsContextProvider>
           <ClusterDefaultConfigurationProvider
             loadingUI={<ClusterLoading />}
-            errorUI={<ClusterUiError />}
+            errorUI={<ClusterPageError />}
           >
             <OpenShiftVersionsContextProvider>
               <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>

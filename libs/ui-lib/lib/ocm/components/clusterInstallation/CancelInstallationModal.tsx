@@ -10,11 +10,15 @@ import {
   ModalHeader,
   ModalVariant,
 } from '@patternfly/react-core';
-import { getApiErrorMessage, handleApiError } from '../../../common/api';
-import { updateCluster } from '../../store/slices/current-cluster/slice';
-import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
-import { ErrorState, LoadingState } from '../../../common';
-import { ClustersAPI } from '../../services/apis';
+import {
+  ClustersAPI,
+  handleApiError,
+  getApiErrorMessage,
+  LoadingState,
+  ErrorState,
+} from '../../../common';
+import { updateCluster } from '../../store';
+import { useModalDialogsContext } from '../hosts';
 
 export const CancelInstallationModal: React.FC = () => {
   const dispatch = useDispatch();
