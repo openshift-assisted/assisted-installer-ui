@@ -3,13 +3,10 @@ import { Alert, AlertVariant } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { isSNO } from '../../../common';
 import { isAddHostsCluster } from '../clusters';
-import {
-  HostsDiscoveryTroubleshootingInfoLinkWithModal,
-  HostRequirementsContent,
-  isAHostVM,
-} from '../hosts';
+import { HostsDiscoveryTroubleshootingInfoLinkWithModal, isAHostVM } from '../hostsTable';
 import { InfoLinkWithModal } from '../ui';
 import { VMRebootConfigurationLinkWithModal } from './VMRebootConfigurationLinkWithModal';
+import { HostRequirementsContent } from './HostRequirementsContent';
 
 export const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
   const isVM = React.useMemo(() => isAHostVM(cluster.hosts || []), [cluster.hosts]);

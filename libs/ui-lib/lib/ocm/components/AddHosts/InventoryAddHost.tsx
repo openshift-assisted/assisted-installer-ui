@@ -2,7 +2,7 @@ import React from 'react';
 import { Content, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { CpuArchitecture } from '../../../common';
-import { ClusterHostsTable } from '../hosts';
+import { ClusterHostsTable } from '../hostsTable/ClusterHostsTable';
 import { InformationAndAlerts } from '../clusterConfiguration';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';

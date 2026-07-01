@@ -5,7 +5,6 @@ import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { WithTestID } from '../../types';
 import { EmptyState } from '../ui';
-import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { HostDetail } from './HostRowDetail';
 import { usePagination } from './usePagination';
 import { AITable, AITableProps, ExpandComponentProps } from './AITable';
@@ -13,13 +12,13 @@ import { AITable, AITableProps, ExpandComponentProps } from './AITable';
 const getHostId = (host: Host) => host.id;
 
 type HostsTableEmptyStateProps = {
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
   isSNO?: boolean;
+  secondaryActions?: React.ReactNode[];
 };
 
 export const HostsTableEmptyState = ({
-  setDiscoveryHintModalOpen,
   isSNO = false,
+  secondaryActions,
 }: HostsTableEmptyStateProps) => {
   const { t } = useTranslation();
   return (
@@ -27,15 +26,7 @@ export const HostsTableEmptyState = ({
       icon={ConnectedIcon}
       title={t('ai:Waiting for host...', { count: +isSNO })}
       content={t('ai:Hosts may take a few minutes to appear here after booting.')}
-      secondaryActions={
-        setDiscoveryHintModalOpen && [
-          <HostsNotShowingLink
-            key="hosts-not-showing"
-            isSNO={isSNO}
-            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-          />,
-        ]
-      }
+      secondaryActions={secondaryActions}
     />
   );
 };

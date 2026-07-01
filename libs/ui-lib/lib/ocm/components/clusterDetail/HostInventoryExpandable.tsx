@@ -4,7 +4,7 @@ import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/excla
 
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { hostStatus, useTranslation } from '../../../common';
-import { ClusterHostsTable } from '../hosts';
+import { ClusterHostsTable } from '../hostsTable/ClusterHostsTable';
 import { getHostsWithTimeout, getMostSevereHostStatus } from './utils';
 
 import './HostInventoryExpandable.css';

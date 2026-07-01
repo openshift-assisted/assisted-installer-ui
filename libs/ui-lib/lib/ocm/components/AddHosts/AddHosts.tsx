@@ -25,7 +25,7 @@ import {
 } from '../../../common';
 import { HostsService } from '../../services';
 import { DiscoveryImageModal } from '../discoveryImage';
-import { ModalDialogsContextProvider } from '../hosts/modals/ModalDialogsContext';
+import { ModalDialogsContextProvider } from '../hostsTable/modals/ModalDialogsContext';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import {
   ClusterDetailStatusVarieties,

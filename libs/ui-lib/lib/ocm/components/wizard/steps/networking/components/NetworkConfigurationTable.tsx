@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { ClusterHostsTableProps, isSNO, HostsTableEmptyState } from '../../../../../../common';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import { isSNO, HostsTableEmptyState } from '../../../../../../common';
 import {
   HostsTableModals,
   useHostsTable,
   AdditionalNTPSourcesDialogToggle,
-} from '../../../../hosts';
+} from '../../../../hostsTable';
 import { NetworkConfigurationTableBase } from './NetworkConfigurationTableBase';
 
-export const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
+export const NetworkConfigurationTable = ({ cluster }: { cluster: Cluster }) => {
   const { actionChecks, onEditHost, actionResolver, ...modalProps } = useHostsTable(cluster);
 
   return (

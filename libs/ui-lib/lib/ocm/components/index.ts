@@ -4,7 +4,7 @@ export * from './ui';
 export * from './uiStates';
 export * from './AddHosts';
 export * from './featureSupportLevels';
-export * from './hosts/modals/ModalDialogsContext';
+export * from './hostsTable';
 export * from './clusterConfiguration';
 export * from './discoveryImage';
 export * from './clusterInstallation';

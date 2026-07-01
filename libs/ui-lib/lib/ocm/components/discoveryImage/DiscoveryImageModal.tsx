@@ -22,7 +22,7 @@ import {
 import { useInfraEnvImageUrl, useInfraEnvIpxeImageUrl } from '../../hooks';
 import { ClustersService } from '../../services';
 import { updateCluster } from '../../store/slices/current-cluster/slice';
-import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../hostsTable/modals/ModalDialogsContext';
 import { DiscoveryImageForm } from './DiscoveryImageForm';
 
 type DiscoveryImageModalButtonProps = {

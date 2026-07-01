@@ -12,7 +12,7 @@ import {
   isInOcm,
 } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
-import { useModalDialogsContext } from '../hosts/modals/ModalDialogsContext';
+import { useModalDialogsContext } from '../hostsTable/modals/ModalDialogsContext';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;

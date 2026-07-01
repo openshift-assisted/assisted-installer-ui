@@ -20,6 +20,7 @@ import {
   ExpandComponentProps,
   usePagination,
   useTranslation,
+  HostsTableEmptyState,
 } from '../../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../../store';
 import {
@@ -27,8 +28,8 @@ import {
   useHostsTable,
   AdditionalNTPSourcesDialogToggle,
   hardwareStatusColumn,
-  HostsTableEmptyState,
-} from '../../../hosts';
+  HostsDiscoveryTroubleshootingInfoLinkWithModal,
+} from '../../../hostsTable';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
@@ -119,7 +120,12 @@ export const HostsDiscoveryTable = ({ cluster, hosts }: HostsDiscoveryTableProps
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}
           >
-            <HostsTableEmptyState isSingleNode={isSNOCluster} />
+            <HostsTableEmptyState
+              isSNO={isSNOCluster}
+              secondaryActions={[
+                <HostsDiscoveryTroubleshootingInfoLinkWithModal key={'hosts-not-showing'} />,
+              ]}
+            />
           </HostsTable>
         </StackItem>
       </Stack>
