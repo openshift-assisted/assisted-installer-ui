@@ -45,7 +45,9 @@ export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
         icon={<ExternalLinkAltIcon />}
         iconPosition="right"
         isInline
-        onClick={() => window.open(getOCPStaticIPDocLink(docVersion), '_blank', 'noopener')}
+        onClick={() =>
+          window.open(getOCPStaticIPDocLink(docVersion), '_blank', 'noopener,noreferrer')
+        }
       >
         {t('ai:View documentation')}
       </Button>
