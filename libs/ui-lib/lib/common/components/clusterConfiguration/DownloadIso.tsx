@@ -45,7 +45,7 @@ const DownloadIso = ({
 
   const openCiscoIntersightHostsLink = (downloadUrl: string) => {
     updateTagsForCiscoIntersight ? updateTagsForCiscoIntersight() : '';
-    window.open(getCiscoIntersightLink(downloadUrl, ciscoUrl), '_blank', 'noopener');
+    window.open(getCiscoIntersightLink(downloadUrl, ciscoUrl), '_blank', 'noopener,noreferrer');
   };
 
   return (
