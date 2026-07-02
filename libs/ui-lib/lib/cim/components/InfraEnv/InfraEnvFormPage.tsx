@@ -213,7 +213,7 @@ const InfraEnvForm: React.FC<React.PropsWithChildren<InfraEnvFormProps>> = ({
                                   window.open(
                                     getOCPStaticIPDocLink(docVersion),
                                     '_blank',
-                                    'noopener',
+                                    'noopener,noreferrer',
                                   )
                                 }
                               >
