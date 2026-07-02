@@ -146,8 +146,10 @@ export const FEEDBACK_FORM_LINK =
 export const CHANGE_ISO_PASSWORD_FILE_LINK =
   'https://raw.githubusercontent.com/openshift/assisted-service/master/docs/change-iso-password.sh';
 
-export const getCiscoIntersightLink = (downloadIsoUrl: string) =>
-  `https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO?_workflow_Version=1&IsoUrl=${downloadIsoUrl}`;
+export const getCiscoIntersightLink = (downloadIsoUrl: string) => {
+  const isoUrl = encodeURIComponent(downloadIsoUrl);
+  return `https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO?_workflow_Version=1&IsoUrl=${isoUrl}`;
+};
 
 export const MTV_LINK =
   'https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/2.7/';

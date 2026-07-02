@@ -150,7 +150,7 @@ export const ExternalPlatformDropdown = ({
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>, href: string): void => {
     event.stopPropagation(); // Stop event propagation here
-    window.open(href, '_blank');
+    window.open(href, '_blank', 'noopener,noreferrer');
   };
 
   const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();

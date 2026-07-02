@@ -159,7 +159,7 @@ export const HostsInstallationFailed = ({
               Download installation logs
             </AlertActionLink>
             <AlertActionLink
-              onClick={() => window.open(getReportIssueLink(), '_blank')}
+              onClick={() => window.open(getReportIssueLink(), '_blank', 'noopener,noreferrer')}
               id={getID('button-report-bug')}
             >
               Report a bug
