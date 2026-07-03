@@ -161,7 +161,7 @@ export const CimConfigurationFormFields = ({
               <PopoverIcon
                 noVerticalAlign
                 bodyContent={t(
-                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50Gi or more. The value can not be updated later.',
+                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 100Gi or more. The value can not be updated later.',
                 )}
                 aria-label={t('ai:More info for image storage')}
               >

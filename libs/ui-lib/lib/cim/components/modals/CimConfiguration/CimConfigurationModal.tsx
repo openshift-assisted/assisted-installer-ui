@@ -118,7 +118,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       agentServiceConfig?.spec?.filesystemStorage?.resources?.requests?.storage,
     ),
     imgVolSize: getStorageSizeGiB(
-      50,
+      100,
       agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage,
     ),
     configureLoadBalancer: platform === 'AWS',
@@ -134,7 +134,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       .min(MIN_FS_VOL_SIZE, t('ai:Minimal value is 1Gi'))
       .required(t('ai:Required field')),
     imgVolSize: Yup.number()
-      .min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 10Gi'))
+      .min(MIN_IMG_VOL_SIZE, t('ai:Minimal value is 50Gi'))
       .required(t('ai:Required field')),
     configureLoadBalancer: Yup.boolean(),
     addCiscoIntersightURL: Yup.boolean(),
