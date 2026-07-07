@@ -123,15 +123,16 @@ const filterToSerializableProperties = (
 
 // Helper function to clean properties object, removing any non-serializable values
 // This ensures we ONLY have primitive values (string, number, boolean) - NO objects, NO functions
-const cleanProperties = (props: Record<string, unknown>): Record<string, string | number | boolean> => {
+const cleanProperties = (
+  props: Record<string, unknown>,
+): Record<string, string | number | boolean> => {
   try {
     const cleaned = filterToSerializableProperties(props);
     // Verify the cleaned object can be stringified
     JSON.stringify(cleaned);
     return cleaned;
-  } catch (error) {
+  } catch {
     // If cleaning fails, return empty object
-    console.warn('Failed to clean properties:', error);
     return {};
   }
 };
@@ -141,7 +142,9 @@ const cleanProperties = (props: Record<string, unknown>): Record<string, string 
 // Note: axios-case-converter may convert responses to camelCase at runtime,
 // but the type reflects the actual API contract (snake_case).
 // This function normalizes the API response to camelCase for internal use.
-const normalizeOperatorProperty = (prop: ApiOperatorProperty | OperatorProperty): NormalizedOperatorProperty => {
+const normalizeOperatorProperty = (
+  prop: ApiOperatorProperty | OperatorProperty,
+): NormalizedOperatorProperty => {
   // Handle both snake_case (API contract) and camelCase (if axios-case-converter converted it)
   // Prefer snake_case as the source of truth per the OpenAPI spec
   const apiProp = prop as ApiOperatorProperty;
@@ -159,10 +162,7 @@ const normalizeOperatorProperty = (prop: ApiOperatorProperty | OperatorProperty)
 };
 
 // Helper function to compute NumberInput value from currentValue and defaultValue
-const computeNumberInputValue = (
-  currentValue: unknown,
-  defaultValue: unknown,
-): number => {
+const computeNumberInputValue = (currentValue: unknown, defaultValue: unknown): number => {
   // Ensure we always return a number for NumberInput
   if (typeof currentValue === 'number') {
     return currentValue;
@@ -203,13 +203,13 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
       if (typeof propertiesJson !== 'string') {
         return {};
       }
-      const parsed = JSON.parse(propertiesJson);
+      const parsed: unknown = JSON.parse(propertiesJson);
       // Ensure parsed is an object
       if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
         return {};
       }
       // Clean the parsed properties to remove any non-serializable values
-      const cleaned = cleanProperties(parsed);
+      const cleaned = cleanProperties(parsed as Record<string, unknown>);
       // Verify the cleaned object can be stringified (sanity check)
       try {
         JSON.stringify(cleaned);
@@ -231,7 +231,10 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
   // mounted, re-initialization won't occur because initializationRef.current stays true. This seems unlikely
   // in practice but worth noting for future maintenance.
   React.useEffect(() => {
-    if (!initializationRef.current && (!values.operatorProperties || !values.operatorProperties[operatorId])) {
+    if (
+      !initializationRef.current &&
+      (!values.operatorProperties || !values.operatorProperties[operatorId])
+    ) {
       initializationRef.current = true;
       const defaults: Record<string, unknown> = {};
       properties.forEach((prop) => {
@@ -242,7 +245,8 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 
         if (defaultValue !== undefined && prop.name) {
           if (dataType === 'boolean' || dataType === 'Boolean') {
-            defaults[prop.name] = defaultValue === 'true' || String(defaultValue).toLowerCase() === 'true';
+            defaults[prop.name] =
+              defaultValue === 'true' || String(defaultValue).toLowerCase() === 'true';
           } else if (dataType === 'integer' || dataType === 'Integer') {
             defaults[prop.name] = parseInt(String(defaultValue), 10);
           } else {
@@ -278,8 +282,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
       let propertiesJson: string;
       try {
         propertiesJson = JSON.stringify(newProperties);
-      } catch (error) {
-        console.error('Failed to stringify properties:', error, { propertyName, sanitizedValue, newProperties });
+      } catch {
         // Fallback: create a minimal safe object with just this property
         propertiesJson = JSON.stringify({ [propertyName]: sanitizedValue });
       }
@@ -290,8 +293,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
       updatedProps[operatorId] = propertiesJson;
 
       setFieldValue('operatorProperties', updatedProps);
-    } catch (error) {
-      console.error('Error updating property:', error, { propertyName, value });
+    } catch {
       // Don't update if there's an error to prevent corrupting the state
     }
   };
@@ -322,11 +324,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 
           return (
             <StackItem key={property.name}>
-              <FormGroup
-                fieldId={fieldId}
-                label={property.name}
-                isRequired={isRequired}
-              >
+              <FormGroup fieldId={fieldId} label={property.name} isRequired={isRequired}>
                 {property.description && (
                   <HelperText>
                     <HelperTextItem>{property.description}</HelperTextItem>
@@ -388,4 +386,3 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
 };
 
 export default OperatorPropertiesForm;
-

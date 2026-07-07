@@ -359,7 +359,9 @@ export const getOperatorSpecs = (
         Description: ({ openshiftVersion, searchTerm }) => (
           <>
             <HighlightedText text={DESCRIPTION_NETWORK_OBSERVABILITY} searchTerm={searchTerm} />{' '}
-            <ExternalLink href={getNetworkObservabilityLink(openshiftVersion)}>Learn more</ExternalLink>
+            <ExternalLink href={getNetworkObservabilityLink(openshiftVersion)}>
+              Learn more
+            </ExternalLink>
           </>
         ),
         supportLevel: getFeatureSupportLevel('NETWORK_OBSERVABILITY'),

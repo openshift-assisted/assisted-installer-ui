@@ -23,7 +23,14 @@ import {
   selectIsCurrentClusterSNO,
 } from '../../../store/slices/current-cluster/selectors';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import { getFieldId, OperatorsValues, PopoverIcon, getApiErrorMessage, handleApiError, useAlerts } from '../../../../common';
+import {
+  getFieldId,
+  OperatorsValues,
+  PopoverIcon,
+  getApiErrorMessage,
+  handleApiError,
+  useAlerts,
+} from '../../../../common';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import {
   highlightMatch,
