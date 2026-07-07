@@ -156,9 +156,6 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'oadp-requirements-satisfied': t('ai:OADP requirements'),
   'metallb-requirements-satisfied': t('ai:MetalLB requirements'),
   'network-observability-requirements-satisfied': t('ai:Network Observability requirements'),
-  'network-observability-host-requirements-satisfied': t(
-    'ai:Network Observability host requirements',
-  ),
 });
 
 export const hostValidationFailureHints = (
@@ -235,7 +232,6 @@ export const hostValidationFailureHints = (
   'oadp-requirements-satisfied': '',
   'metallb-requirements-satisfied': '',
   'network-observability-requirements-satisfied': '',
-  'network-observability-host-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (t: TFunction): { [key in ClusterValidationId]?: string } =>

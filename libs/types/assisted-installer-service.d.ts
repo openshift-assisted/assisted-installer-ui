@@ -743,8 +743,7 @@ export type ClusterValidationId =
   | 'metallb-requirements-satisfied'
   | 'loki-requirements-satisfied'
   | 'openshift-logging-requirements-satisfied'
-  | 'network-observability-requirements-satisfied'
-  | 'network-observability-host-requirements-satisfied';
+  | 'network-observability-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1783,8 +1782,7 @@ export type HostValidationId =
   | 'metallb-requirements-satisfied'
   | 'loki-requirements-satisfied'
   | 'openshift-logging-requirements-satisfied'
-  | 'network-observability-requirements-satisfied'
-  | 'network-observability-host-requirements-satisfied';
+  | 'network-observability-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
