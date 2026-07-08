@@ -15618,10 +15618,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serialize-javascript@npm:^7.0.6":
-  version: 7.0.6
-  resolution: "serialize-javascript@npm:7.0.6"
-  checksum: c20a2546e3f28030dc68b92127d975d706c9cad73a455a120d9b604cb88c362ce2d767177385e2f231514cc3d42abd932f50a5b65e3b5f19251330c0314da684
+"serialize-javascript@npm:^7.0.7":
+  version: 7.0.7
+  resolution: "serialize-javascript@npm:7.0.7"
+  checksum: 197edeab01b3afb93b53e0dfedf3bb686f4cd3538a498dcd678993a1420462ed0e9bce7a297f4e3dafc4dad12f471e882f3fb17f0f316371b14756df942faa48
   languageName: node
   linkType: hard
 
