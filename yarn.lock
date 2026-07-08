@@ -1697,7 +1697,7 @@ __metadata:
     "@types/uuid": ^8.0.0
     axios-case-converter: ^0.11.1
     camel-case: ^4.1.2
-    cidr-tools: ^4.3.0
+    cidr-tools: ^12.1.1
     classnames: ^2.3.1
     file-saver: ^2.0.2
     filesize.js: ^2.0.0
@@ -6284,18 +6284,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cidr-tools@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "cidr-tools@npm:4.3.0"
+"cidr-tools@npm:^12.1.1":
+  version: 12.1.2
+  resolution: "cidr-tools@npm:12.1.2"
   dependencies:
-    ip-address: ^8.1.0
-    ip-cidr: ^3.0.4
-    ipv6-normalize: ^1.0.1
-    is-cidr: ^4.0.2
-    is-ip: ^3.1.0
-    jsbn: ^1.1.0
-    string-natural-compare: ^3.0.1
-  checksum: d06c995f09703b6d509f3fff2c2e808c2f09c52b52858ee80218fa163629652dc3e012b22165df40c635eda0be3f3a53d79677daede24adeff89bda4a4772fd7
+    ip-bigint: ^9.0.6
+  checksum: 10052947f66490222cd4d53024fdebd660f3c0d3085ac92ffff248ba202a061e81065700a80a8370cf2d6e944ccfdad72ddd1d31b2333f5852b5008fc5a308e5
   languageName: node
   linkType: hard
 
@@ -10927,54 +10921,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^10.0.1":
-  version: 10.1.0
-  resolution: "ip-address@npm:10.1.0"
-  checksum: 76b1abcdf52a32e2e05ca1f202f3a8ab8547e5651a9233781b330271bd7f1a741067748d71c4cbb9d9906d9f1fa69e7ddc8b4a11130db4534fdab0e908c84e0d
+"ip-address@npm:^10.1.1":
+  version: 10.2.0
+  resolution: "ip-address@npm:10.2.0"
+  checksum: 3ffba04dc4cdaf81ed2ed6edc47eee1494bb97550ef73f1918ca28405d175c03efa416b8337e868123b08c2cc677e3a07c5ce03eda3b1aeb2741c149bd37ddf9
   languageName: node
   linkType: hard
 
-"ip-address@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "ip-address@npm:7.1.0"
-  dependencies:
-    jsbn: 1.1.0
-    sprintf-js: 1.1.2
-  checksum: b514b93b76639b204e52a16b1cebdc23c69fa71464665583278cbd0adf402d0b0e15f606049010b7230d35f6e9fa4d0a4ffd61d63fbc00f71adf08f00bc7614b
+"ip-bigint@npm:^9.0.6":
+  version: 9.0.6
+  resolution: "ip-bigint@npm:9.0.6"
+  checksum: 33c70416b663df0b2ad0b69764f8b7809de8b5834d4392b5d3bef50ed3a51fbc1aecaec2c5ba58ce3a624ce776335b96849724595dbc53f1e1f717dacf68abc5
   languageName: node
   linkType: hard
 
-"ip-address@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "ip-address@npm:8.1.0"
-  dependencies:
-    jsbn: 1.1.0
-    sprintf-js: 1.1.2
-  checksum: abea52788176040b45d35548b369157c11b31a331f5e36517b2e8192068cce78fdca567ecdfab0690ee8b4ad9df55cd2940ac3f20871eeb3687e4447208c4803
-  languageName: node
-  linkType: hard
-
-"ip-address@npm:^9.0.5":
-  version: 9.0.5
-  resolution: "ip-address@npm:9.0.5"
-  dependencies:
-    jsbn: 1.1.0
-    sprintf-js: ^1.1.3
-  checksum: aa15f12cfd0ef5e38349744e3654bae649a34c3b10c77a674a167e99925d1549486c5b14730eebce9fea26f6db9d5e42097b00aa4f9f612e68c79121c71652dc
-  languageName: node
-  linkType: hard
-
-"ip-cidr@npm:^3.0.4":
-  version: 3.1.0
-  resolution: "ip-cidr@npm:3.1.0"
-  dependencies:
-    ip-address: ^7.1.0
-    jsbn: ^1.1.0
-  checksum: 148be0fc9b8adddae955429fef76100e9ebd6d22d5f0f91608b445fde2fda9d2bba898ef36476da1c24da49a55e3fa90d7501c4988718342a2c10d7ca829e577
-  languageName: node
-  linkType: hard
-
-"ip-regex@npm:^4.0.0, ip-regex@npm:^4.1.0":
+"ip-regex@npm:^4.1.0":
   version: 4.3.0
   resolution: "ip-regex@npm:4.3.0"
   checksum: 7ff904b891221b1847f3fdf3dbb3e6a8660dc39bc283f79eb7ed88f5338e1a3d1104b779bc83759159be266249c59c2160e779ee39446d79d4ed0890dfd06f08
@@ -10992,13 +10953,6 @@ __metadata:
   version: 2.3.0
   resolution: "ipaddr.js@npm:2.3.0"
   checksum: 275602ad56e765d6c4187c1ab1a17d415da7a263e8d3278da5bdb6db147b29c56fac7e98a3f68b05d25e0b515601f1e750c2dd8ec9a871eb93ea094643b84916
-  languageName: node
-  linkType: hard
-
-"ipv6-normalize@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "ipv6-normalize@npm:1.0.1"
-  checksum: 217277069e50eb47f91d0b22e17f47a858cc99785e0e0c1a315e27c1f0c49bcbae448c220c35767666aeb523b87853d5905448ab6c835f0967778d450610cf54
   languageName: node
   linkType: hard
 
@@ -11296,15 +11250,6 @@ __metadata:
   version: 1.0.0
   resolution: "is-interactive@npm:1.0.0"
   checksum: 824808776e2d468b2916cdd6c16acacebce060d844c35ca6d82267da692e92c3a16fdba624c50b54a63f38bdc4016055b6f443ce57d7147240de4f8cdabaf6f9
-  languageName: node
-  linkType: hard
-
-"is-ip@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "is-ip@npm:3.1.0"
-  dependencies:
-    ip-regex: ^4.0.0
-  checksum: da2c2b282407194adf2320bade0bad94be9c9d0bdab85ff45b1b62d8185f31c65dff3884519d57bf270277e5ea2046c7916a6e5a6db22fe4b7ddcdd3760f23eb
   languageName: node
   linkType: hard
 
@@ -11793,13 +11738,6 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: ea2339c6930fe048ec31b007b3c90be2714ab3e7defcc2c27ebf30c74fd940358f29070b4345af0019ef151875bf3bc3f8644bea1bab0372652b5044813ac02d
-  languageName: node
-  linkType: hard
-
-"jsbn@npm:1.1.0, jsbn@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "jsbn@npm:1.1.0"
-  checksum: 944f924f2bd67ad533b3850eee47603eed0f6ae425fd1ee8c760f477e8c34a05f144c1bd4f5a5dd1963141dc79a2c55f89ccc5ab77d039e7077f3ad196b64965
   languageName: node
   linkType: hard
 
@@ -16289,10 +16227,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:1.8.3, shell-quote@npm:^1.7.3, shell-quote@npm:^1.8.3":
-  version: 1.8.3
-  resolution: "shell-quote@npm:1.8.3"
-  checksum: 550dd84e677f8915eb013d43689c80bb114860649ec5298eb978f40b8f3d4bc4ccb072b82c094eb3548dc587144bb3965a8676f0d685c1cf4c40b5dc27166242
+"shell-quote@npm:^1.8.4":
+  version: 1.9.0
+  resolution: "shell-quote@npm:1.9.0"
+  checksum: 2ec85fb903121c684c3536d051e377e98746cf88525e08c298baaa7b42c168de75c3201cef00db66556e89e340a8cf26bd4c18e7a3fd78799449a21cac43da2e
   languageName: node
   linkType: hard
 
@@ -16599,14 +16537,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sprintf-js@npm:1.1.2":
-  version: 1.1.2
-  resolution: "sprintf-js@npm:1.1.2"
-  checksum: d4bb46464632b335e5faed381bd331157e0af64915a98ede833452663bc672823db49d7531c32d58798e85236581fb7342fd0270531ffc8f914e186187bf1c90
-  languageName: node
-  linkType: hard
-
-"sprintf-js@npm:^1.1.1, sprintf-js@npm:^1.1.3":
+"sprintf-js@npm:^1.1.1":
   version: 1.1.3
   resolution: "sprintf-js@npm:1.1.3"
   checksum: a3fdac7b49643875b70864a9d9b469d87a40dfeaf5d34d9d0c5b1cda5fd7d065531fcb43c76357d62254c57184a7b151954156563a4d6a747015cfb41021cad0
@@ -16774,13 +16705,6 @@ __metadata:
   version: 0.5.1
   resolution: "strict-event-emitter@npm:0.5.1"
   checksum: 350480431bc1c28fdb601ef4976c2f8155fc364b4740f9692dd03e5bdd48aafc99a5e021fe655fbd986d0b803e9f3fc5c4b018b35cb838c4690d60f2a26f1cf3
-  languageName: node
-  linkType: hard
-
-"string-natural-compare@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "string-natural-compare@npm:3.0.1"
-  checksum: 65910d9995074086e769a68728395effbba9b7186be5b4c16a7fad4f4ef50cae95ca16e3e9086e019cbb636ae8daac9c7b8fe91b5f21865c5c0f26e3c0725406
   languageName: node
   linkType: hard
 
