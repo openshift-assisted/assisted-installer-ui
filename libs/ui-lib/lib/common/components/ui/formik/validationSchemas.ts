@@ -1,4 +1,4 @@
-import { overlap } from 'cidr-tools';
+import { overlapCidr } from 'cidr-tools';
 import { Address4, Address6 } from 'ip-address';
 import isCIDR from 'is-cidr';
 import { isInSubnet } from 'is-in-subnet';
@@ -461,7 +461,7 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr: string) => {
       try {
         if (cidr && reservedCidrs && reservedCidrs.length > 0) {
-          return !overlap(cidr, reservedCidrs);
+          return !overlapCidr(cidr, reservedCidrs);
         }
       } catch {
         return false;
