@@ -17,7 +17,6 @@ describe(`Assisted Installer Multinode Networking`, () => {
     beforeEach(() => {
       setTestStartSignal('HOST_RENAMED_3');
       commonActions.visitClusterDetailsPage();
-      commonActions.moveNextSteps(['Host discovery', 'Storage']); // to networking
     });
 
     it('Should submit updated network information', () => {
