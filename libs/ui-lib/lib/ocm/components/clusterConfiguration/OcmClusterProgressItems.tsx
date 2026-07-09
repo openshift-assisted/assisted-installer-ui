@@ -4,7 +4,7 @@ import {
   EventListFetchProps,
   getEnabledHosts,
   RenderIf,
-  selectOlmOperators,
+  selectAllOlmOperators,
 } from '../../../common';
 import { FinalizingProgress } from '../../../common/components/clusterDetail/FinalizingProgress';
 import { ProgressBarTexts } from '../../../common/components/clusterDetail/ProgressBarTexts';
@@ -26,7 +26,7 @@ const OcmClusterProgressItems = ({
   fallbackEventsURL,
 }: OcmClusterProgressItemsProps) => {
   const enabledHosts = getEnabledHosts(cluster.hosts);
-  const olmOperators = selectOlmOperators(cluster);
+  const olmOperators = selectAllOlmOperators(cluster);
 
   const masterHosts = enabledHosts.filter((host) => host.role && 'master' === host.role);
   const workerHosts = enabledHosts.filter((host) => host.role && 'worker' === host.role);
