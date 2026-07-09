@@ -18,8 +18,10 @@ const PullSecret: React.FC<PullSecretProps> = ({
   isPullSecretSet = false,
   isSingleClusterFeatureEnabled = false,
 }) => {
-  // Fetched pull secret will never change - see LoadingState in NewCluster
-  const [isExpanded, setExpanded] = React.useState(!defaultPullSecret);
+  // Existing cluster with a pull secret on the server: start collapsed so the secret text is not shown until the user chooses "Edit pull secret".
+  const [isExpanded, setExpanded] = React.useState(() =>
+    isPullSecretSet ? false : !defaultPullSecret,
+  );
   const { setFieldValue } = useFormikContext<ClusterCreateParams>();
   const { t } = useTranslation();
   const onCheckboxChange = () => {
