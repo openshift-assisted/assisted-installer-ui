@@ -38,6 +38,38 @@ export const parseTangServers = (tangServersString?: string): TangServer[] => {
   return emptyTangServers();
 };
 
+const parseDiskEncryption = (diskEncryption: Cluster['diskEncryption']) => {
+  const enableOn = {
+    enableDiskEncryptionOnMasters: false,
+    enableDiskEncryptionOnWorkers: false,
+    enableDiskEncryptionOnArbiters: false,
+  };
+
+  if (diskEncryption?.enableOn === 'all') {
+    enableOn.enableDiskEncryptionOnMasters = true;
+    enableOn.enableDiskEncryptionOnWorkers = true;
+    enableOn.enableDiskEncryptionOnArbiters = true;
+  } else {
+    const types = diskEncryption?.enableOn?.split(',');
+
+    types?.forEach((type) => {
+      switch (type) {
+        case 'masters':
+          enableOn.enableDiskEncryptionOnMasters = true;
+          break;
+        case 'workers':
+          enableOn.enableDiskEncryptionOnWorkers = true;
+          break;
+        case 'arbiters':
+          enableOn.enableDiskEncryptionOnArbiters = true;
+          break;
+      }
+    });
+  }
+
+  return enableOn;
+};
+
 export const getClusterDetailsInitialValues = ({
   cluster,
   pullSecret,
@@ -57,6 +89,7 @@ export const getClusterDetailsInitialValues = ({
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
     controlPlaneCount = 3,
   } = cluster || {};
+
   return {
     name,
     openshiftVersion,
@@ -65,22 +98,15 @@ export const getClusterDetailsInitialValues = ({
     controlPlaneCount,
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
-    enableDiskEncryptionOnMasters: ['all', 'masters'].includes(
-      cluster?.diskEncryption?.enableOn ?? 'none',
-    ),
-    enableDiskEncryptionOnWorkers: ['all', 'workers'].includes(
-      cluster?.diskEncryption?.enableOn ?? 'none',
-    ),
-    diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
-    diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
-    diskEncryption: cluster?.diskEncryption ?? {},
     cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
     platform: cluster?.platform?.type || 'baremetal',
     customOpenshiftSelect: null,
     userManagedNetworking: cluster?.userManagedNetworking || false,
-    enableDiskEncryptionOnArbiters: ['all', 'arbiters'].includes(
-      cluster?.diskEncryption?.enableOn ?? 'none',
-    ),
+
+    diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
+    diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
+    diskEncryption: cluster?.diskEncryption ?? {},
+    ...parseDiskEncryption(cluster?.diskEncryption),
   };
 };
 
