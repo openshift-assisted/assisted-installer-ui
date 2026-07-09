@@ -73,6 +73,7 @@ const getNmstateObject = (
       realProtocolConfigs[protocolVersion] = getNmstateProtocolConfig(
         hostIp,
         getPrefixLength(networkWide, protocolVersion),
+        protocolVersion,
       );
       if (networkWide.useVlan && networkWide.vlanId) {
         if (bondType && hasBondsConfigured) {
@@ -94,6 +95,7 @@ const getNmstateObject = (
         [protocolVersion]: getNmstateProtocolConfig(
           DUMMY_NMSTATE_ADDRESSES[protocolVersion].ip,
           DUMMY_NMSTATE_ADDRESSES[protocolVersion].prefixLength,
+          protocolVersion,
         ),
       };
       nicName = getDummyNicName(protocolVersion);
