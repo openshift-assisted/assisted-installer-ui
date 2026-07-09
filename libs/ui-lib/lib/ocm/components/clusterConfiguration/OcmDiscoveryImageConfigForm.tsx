@@ -145,7 +145,7 @@ export const OcmDiscoveryImageConfigForm = ({
       {({ submitForm, isSubmitting, status, setStatus }) => {
         return (
           <>
-            <ModalBody>
+            <ModalBody style={{ maxHeight: '611px' }}>
               <Stack hasGutter>
                 <StackItem>
                   <Alert variant={AlertVariant.info} isInline title={alertDiscoveryText} />
