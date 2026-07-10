@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { TFunction } from 'i18next';
-import { CustomManifestValues, ManifestFormData } from '../data/dataTypes';
+import { CustomManifestValues } from '../data/dataTypes';
 import {
   getMaxFileSizeMessage,
   validateFileSize,
@@ -62,7 +62,7 @@ const INCORRECT_FILENAME =
 const UNIQUE_FOLDER_FILENAME = 'Ensure unique file names to avoid conflicts and errors.';
 
 export const getFormViewManifestsValidationSchema = (t: TFunction) =>
-  Yup.object<ManifestFormData>({
+  Yup.object({
     manifests: Yup.array<CustomManifestValues>()
       .of(
         Yup.object({
