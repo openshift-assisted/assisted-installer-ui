@@ -333,7 +333,7 @@ export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
-export const IPV4_STACK = 'singleStack';
+export const SINGLE_STACK = 'singleStack';
 export const DUAL_STACK = 'dualStack';
 
 export const PREFIX_MAX_RESTRICTION = {

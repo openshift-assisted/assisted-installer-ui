@@ -188,6 +188,19 @@ export const canBeDualStack = (subnets: HostSubnets) =>
   subnets.some((subnet) => Address4.isValid(subnet.subnet)) &&
   subnets.some((subnet) => Address6.isValid(subnet.subnet));
 
+export const isPrimaryIPv6 = (machineNetworks: MachineNetwork[] | undefined): boolean => {
+  const cidr = machineNetworks?.[0]?.cidr;
+  return !!cidr && Address6.isValid(cidr);
+};
+
+/**
+ * Find the IPv6 entry in a dualstack network array.
+ * Dualstack arrays contain one IPv4 and one IPv6 entry; this helper returns the IPv6 one.
+ */
+export const getIPv6FromDualstack = <T extends { cidr?: string }>(
+  networks: T[] | undefined,
+): T | undefined => networks?.find((n) => n.cidr && Address6.isValid(n.cidr));
+
 const areNetworksDualStack = (
   networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
   openshiftVersion?: string,

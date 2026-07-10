@@ -31,6 +31,7 @@ export interface AvailableSubnetsControlProps {
   isViewerMode?: boolean;
   hosts?: Host[];
   isMultiNodeCluster?: boolean;
+  allowSingleStackIPv6?: boolean;
 }
 
 export const AvailableSubnetsControl = ({
@@ -42,6 +43,7 @@ export const AvailableSubnetsControl = ({
   isViewerMode = false,
   hosts,
   isMultiNodeCluster = true,
+  allowSingleStackIPv6 = false,
 }: AvailableSubnetsControlProps) => {
   const { t } = useTranslation();
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
@@ -172,7 +174,12 @@ export const AvailableSubnetsControl = ({
     isDualStack && values.machineNetworks && values.machineNetworks.length > 1;
 
   // Determine available subnets for primary dropdown
-  const primaryMachineSubnets = isDualStack && supportsIPv6Primary ? allSubnets : IPv4Subnets;
+  let primaryMachineSubnets: HostSubnet[];
+  if ((isDualStack && supportsIPv6Primary) || (!isDualStack && allowSingleStackIPv6)) {
+    primaryMachineSubnets = allSubnets;
+  } else {
+    primaryMachineSubnets = IPv4Subnets;
+  }
 
   // Determine available subnets for secondary dropdown
   const secondaryMachineSubnets = React.useMemo(() => {
@@ -219,9 +226,9 @@ export const AvailableSubnetsControl = ({
                   name="machineNetworks.0.cidr"
                   machineSubnets={primaryMachineSubnets}
                   isDisabled={isDisabled}
-                  onAfterSelect={(newSelection) =>
-                    reorderNetworksForPrimary(newSelection, values, setFieldValue)
-                  }
+                  onAfterSelect={(newSelection) => {
+                    reorderNetworksForPrimary(newSelection, values, setFieldValue);
+                  }}
                   data-testid="subnets-dropdown-toggle-primary"
                 />
               </StackItem>

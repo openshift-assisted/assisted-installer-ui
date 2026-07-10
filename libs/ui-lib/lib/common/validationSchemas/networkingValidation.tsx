@@ -13,7 +13,7 @@ import {
   ipBlockValidationSchema,
 } from './addressValidation';
 import { isMajorMinorVersionEqualOrGreater } from '../utils';
-import { allSubnetsIPv4 } from '../components/ui/formik/utils';
+import { allSubnetsIPv4, allSubnetsIPv6 } from '../components/ui/formik/utils';
 
 export const machineNetworksValidationSchema = Yup.array().of(
   Yup.object({ cidr: hostSubnetValidationSchema, clusterId: Yup.string() }),
@@ -110,4 +110,10 @@ export const IPv4ValidationSchema = Yup.array().test(
   'single-stack',
   `All network subnets must be IPv4.`,
   (values?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
+);
+
+export const IPv6ValidationSchema = Yup.array().test(
+  'single-stack-ipv6',
+  'All network subnets must be IPv6.',
+  (values?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv6(values),
 );

@@ -36,8 +36,11 @@ export const getManagementType = ({ userManagedNetworking }: Cluster): string =>
   return managementType;
 };
 
-export const getStackTypeLabel = (cluster: Cluster): string =>
-  isDualStack(cluster) ? 'Dual-stack' : 'IPv4';
+export const getStackTypeLabel = (cluster: Cluster, isSingleClusterFeature = false): string => {
+  if (isDualStack(cluster)) return 'Dual-stack';
+  if (isSingleClusterFeature) return 'Single stack';
+  return 'IPv4';
+};
 
 export const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enableOn']) => {
   let diskEncryptionType = null;
