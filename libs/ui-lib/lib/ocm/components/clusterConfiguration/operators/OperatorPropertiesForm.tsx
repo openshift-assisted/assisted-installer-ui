@@ -174,6 +174,7 @@ const OperatorPropertiesForm: React.FC<OperatorPropertiesFormProps> = ({
       toggleText={`Configure ${operatorTitle} properties`}
       onToggle={(_, expanded) => setIsExpanded(expanded)}
       isExpanded={isExpanded}
+      isIndented
       data-testid={`operator-properties-${operatorId}`}
     >
       <Stack hasGutter>
