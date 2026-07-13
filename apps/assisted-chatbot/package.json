@@ -43,7 +43,7 @@
     "@redhat-cloud-services/frontend-components-config": "^6.0.17",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.4",
     "@tsconfig/vite-react": "^7.0.2",
-    "@types/history": "^4",
+    "@types/history": "^4.7.11",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.0",
     "history": "^4.10.1",
