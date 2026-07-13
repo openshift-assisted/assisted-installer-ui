@@ -68,3 +68,19 @@ export const getNewBundleOperators = (
 
   return currentOperators.filter((op) => !operatorsToRemove.includes(op));
 };
+
+const operatorPropertyLabels: Record<string, Record<string, string>> = {
+  'network-observability': {
+    createFlowCollector: 'Create FlowCollector',
+    sampling: 'Sampling rate',
+  },
+};
+
+const formatPropertyName = (propertyName: string): string =>
+  propertyName
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (char) => char.toUpperCase())
+    .trim();
+
+export const getOperatorPropertyLabel = (operatorId: string, propertyName: string): string =>
+  operatorPropertyLabels[operatorId]?.[propertyName] ?? formatPropertyName(propertyName);
