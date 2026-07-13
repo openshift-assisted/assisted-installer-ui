@@ -2,15 +2,15 @@
   "description": "The Assisted Installer UI",
   "devDependencies": {
     "@openshift-assisted/toolbox": "workspace:*",
-    "@vitest/ui": "^0.34.5",
-    "dpdm": "^3.14.0",
-    "eslint": "^8.36.0",
-    "happy-dom": "^20.8.9",
-    "msw": "^2.0.0",
+    "@vitest/ui": "^0.34.7",
+    "dpdm": "^4.2.0",
+    "eslint": "^8.57.1",
+    "happy-dom": "^20.9.0",
+    "msw": "^2.14.6",
     "prettier": "2.8.8",
     "rimraf": "^6.0.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.5"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.6"
   },
   "engines": {
     "node": ">=20.19.0",
@@ -46,10 +46,22 @@
   },
   "type": "module",
   "resolutions": {
+    "ajv@^8.0.0": "^8.18.0",
+    "ajv@^8.9.0": "^8.18.0",
+    "ajv@^8.17.1": "^8.18.0",
+    "tar": "^7.5.19",
+    "glob": "^11.1.0",
+    "globby": "^11.1.0",
+    "pify": "^5.0.0",
+    "del": "^6.1.1",
     "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
-    "qs": "^6.14.1",
-    "axios": "^1.15.2"
+    "ip-address": "^10.2.0",
+    "minimatch": "^10.2.5",
+    "brace-expansion": "^5.0.7",
+    "ws": "^8.21.0",
+    "qs": "^6.15.3",
+    "shell-quote": "^1.8.4"
   },
   "workspaces": [
     "apps/*",

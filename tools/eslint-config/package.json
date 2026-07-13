@@ -10,7 +10,7 @@
     "eslint-plugin-react-hooks": "^4.6.0"
   },
   "devDependencies": {
-    "@types/eslint": "^9.0.0"
+    "@types/eslint": "^9.6.1"
   },
   "private": true,
   "scripts": {

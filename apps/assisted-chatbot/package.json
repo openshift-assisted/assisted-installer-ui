@@ -30,24 +30,26 @@
     "@redhat-cloud-services/ai-client-common": "^0.13.0",
     "@redhat-cloud-services/ai-client-state": "^0.15.0",
     "@redhat-cloud-services/frontend-components": "^7.0.0",
-    "axios": "^1.13.5",
+    "axios": "^1.18.1",
     "i18next": "^20.4 || ^21",
     "parse-url": "^9.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.11.4",
-    "react-router-dom-v5-compat": "^6.30.3"
+    "react-router": "^7.17.0"
   },
   "devDependencies": {
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "^3.0.0",
     "@redhat-cloud-services/frontend-components-config": "^6.0.17",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.4",
     "@tsconfig/vite-react": "^7.0.2",
+    "@types/history": "^4.7.11",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.0",
+    "history": "^4.10.1",
     "rimraf": "^6.0.0",
     "ts-patch": "^3.0.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.9.3"
   },
   "insights": {
     "appname": "assisted-installer-ui-chatbot"

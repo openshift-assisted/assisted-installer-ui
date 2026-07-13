@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import {
   useAlerts,
@@ -24,7 +24,6 @@ import {
   UISettingService,
 } from '../../services';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import BundleService from '../../services/BundleService';
 import { useFeature } from '../../hooks/use-feature';
 
 type ClusterDetailsProps = {
@@ -80,28 +79,17 @@ const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       try {
         const searchParams = new URLSearchParams(location.search);
         const isAssistedMigration = searchParams.get('source') === 'assisted_migration';
-        //For Assisted Migration we need the LVMs operator and also the virtualization bundle operators
+        // For Assisted Migration we need LVM as standalone and the virtualization bundle.
         if (isAssistedMigration) {
           params.olmOperators = [{ name: 'lvm' }];
-          const selectedBundle = (
-            await BundleService.listBundles(
-              params.openshiftVersion,
-              params.cpuArchitecture,
-              params.platform?.type,
-            )
-          ).find((b) => b.id === 'virtualization');
-          const virtOperators = selectedBundle?.operators;
-          params.olmOperators = [
-            ...params.olmOperators,
-            ...(virtOperators ? virtOperators.map((op) => ({ name: op })) : []),
-          ];
+          params.operatorBundles = [{ id: 'virtualization', optionalOperators: [] }];
         }
         const cluster = await ClustersService.create(
           params,
           isAssistedMigration,
           isSingleClusterFeatureEnabled,
         );
-        navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
+        void navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
         if (isAssistedMigration) {
           try {

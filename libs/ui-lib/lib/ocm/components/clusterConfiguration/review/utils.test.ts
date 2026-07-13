@@ -169,6 +169,47 @@ describe('getStackTypeLabel', () => {
     });
   });
 
+  describe('with isSingleClusterFeature=true', () => {
+    test('returns "Single stack" for IPv4 single-stack cluster', () => {
+      const cluster = createCluster({
+        machineNetworks: [createMachineNetwork('192.168.1.0/24')],
+        clusterNetworks: [createClusterNetwork('10.128.0.0/14', 23)],
+        serviceNetworks: [createServiceNetwork('172.30.0.0/16')],
+      });
+
+      expect(getStackTypeLabel(cluster, true)).toBe('Single stack');
+    });
+
+    test('returns "Single stack" for IPv6 single-stack cluster', () => {
+      const cluster = createCluster({
+        machineNetworks: [createMachineNetwork('2001:db8::/64')],
+        clusterNetworks: [createClusterNetwork('fd01::/48', 64)],
+        serviceNetworks: [createServiceNetwork('fd02::/112')],
+      });
+
+      expect(getStackTypeLabel(cluster, true)).toBe('Single stack');
+    });
+
+    test('still returns "Dual-stack" for dual-stack cluster', () => {
+      const cluster = createCluster({
+        machineNetworks: [
+          createMachineNetwork('192.168.1.0/24'),
+          createMachineNetwork('2001:db8::/64'),
+        ],
+        clusterNetworks: [
+          createClusterNetwork('10.128.0.0/14', 23),
+          createClusterNetwork('fd01::/48', 64),
+        ],
+        serviceNetworks: [
+          createServiceNetwork('172.30.0.0/16'),
+          createServiceNetwork('fd02::/112'),
+        ],
+      });
+
+      expect(getStackTypeLabel(cluster, true)).toBe('Dual-stack');
+    });
+  });
+
   describe('edge cases', () => {
     test('handles undefined openshiftVersion', () => {
       const cluster = createCluster({

@@ -141,7 +141,6 @@ export type ClusterDeploymentWizardProps = {
 
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
-  agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv?: InfraEnvK8sResource;

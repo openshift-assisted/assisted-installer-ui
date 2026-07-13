@@ -24,7 +24,6 @@ import {
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { getFieldId, OperatorsValues, PopoverIcon } from '../../../../common';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
-import { getNewOperators } from './utils';
 import {
   highlightMatch,
   OperatorSpec,
@@ -110,8 +109,10 @@ const OperatorRequirements = ({
 
 const OperatorCheckbox = ({
   bundles,
+  checkedOperatorIds,
   cluster,
   operatorId,
+  isChecked,
   title,
   featureId,
   notStandalone,
@@ -122,8 +123,10 @@ const OperatorCheckbox = ({
   searchTerm,
 }: {
   bundles: Bundle[];
+  checkedOperatorIds: Set<string>;
   cluster: Cluster;
   operatorId: string;
+  isChecked: boolean;
   openshiftVersion?: string;
   preflightRequirements: PreflightHardwareRequirements | undefined;
   searchTerm?: string;
@@ -135,32 +138,54 @@ const OperatorCheckbox = ({
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(operatorId, 'input');
   const supportLevel = getFeatureSupportLevel(featureId);
+  const getDisabledReason = (): string | undefined => {
+    const featureDisabledReason = getFeatureDisabledReason(featureId);
+    if (featureDisabledReason) {
+      return featureDisabledReason;
+    }
 
-  const isInBundle = values.selectedBundles.some(
-    (sb) => !!bundles.find((b) => b.id === sb)?.operators?.includes(operatorId),
-  );
+    const isRequiredByBundle = values.selectedBundles.some(
+      (selectedBundle) =>
+        !!bundles
+          .find((bundle) => bundle.id === selectedBundle.id)
+          ?.operators?.includes(operatorId),
+    );
+    if (isRequiredByBundle) {
+      return 'This operator is part of a selected bundle and cannot be deselected.';
+    }
 
-  const isChecked = values.selectedOperators.includes(operatorId) || isInBundle;
+    const isOptionallySelectedForBundle = values.selectedBundles.some((selectedBundle) =>
+      selectedBundle.optionalOperators?.includes(operatorId),
+    );
+    if (isOptionallySelectedForBundle) {
+      return 'This optional operator is selected through a bundle. Use the bundle card to change it.';
+    }
 
-  const parentOperator = preflightRequirements?.operators?.find((op) =>
-    op.dependencies?.includes(operatorId),
-  );
+    const parentOperator = preflightRequirements?.operators?.find(
+      ({ operatorName, dependencies }) =>
+        !!operatorName &&
+        dependencies?.includes(operatorId) &&
+        checkedOperatorIds.has(operatorName),
+    );
+    if (parentOperator?.operatorName) {
+      const parentName = opSpecs[parentOperator.operatorName]?.title || parentOperator.operatorName;
+      return `This operator is required by ${parentName}`;
+    }
 
-  let parentOperatorName = '';
-  if (
-    parentOperator?.operatorName &&
-    values.selectedOperators.includes(parentOperator.operatorName)
-  ) {
-    parentOperatorName = opSpecs[parentOperator.operatorName]?.title || parentOperator.operatorName;
-  }
+    if (notStandalone && !checkedOperatorIds.has(operatorId)) {
+      return 'This operator cannot be installed as a standalone';
+    }
 
-  const disabledReason = isInBundle
-    ? 'This operator is part of a bundle and cannot be deselected.'
-    : notStandalone
-    ? 'This operator cannot be installed as a standalone'
-    : parentOperatorName
-    ? `This operator is a dependency of ${parentOperatorName}`
-    : getFeatureDisabledReason(featureId);
+    return undefined;
+  };
+
+  const disabledReason = getDisabledReason();
+  const handleClick = (_: React.FormEvent, checked: boolean) => {
+    const next = checked
+      ? [...values.selectedOperators, operatorId]
+      : values.selectedOperators.filter((op) => op !== operatorId);
+    setFieldValue('selectedOperators', next);
+  };
 
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>
@@ -182,18 +207,7 @@ const OperatorCheckbox = ({
         }
         aria-describedby={`${fieldId}-helper`}
         isChecked={isChecked}
-        onChange={(_, checked) => {
-          setFieldValue(
-            'selectedOperators',
-            getNewOperators(
-              values.selectedOperators,
-              operatorId,
-              preflightRequirements,
-              checked,
-              opSpecs,
-            ),
-          );
-        }}
+        onChange={handleClick}
         isDisabled={isViewerMode || !!disabledReason}
         description={
           !!Description && (

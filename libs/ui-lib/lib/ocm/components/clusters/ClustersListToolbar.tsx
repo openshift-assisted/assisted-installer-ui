@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router';
 import {
   Toolbar,
   ToolbarItem,
@@ -8,7 +8,6 @@ import {
   TextInput,
   ToolbarProps,
   ToolbarFilterProps,
-  TextInputProps,
   ButtonVariant,
   Spinner,
   ToolbarGroup,
@@ -39,7 +38,7 @@ export type ClusterFiltersType = {
 
 type ClustersListToolbarProps = {
   searchString: string;
-  setSearchString: TextInputProps['onChange'];
+  setSearchString: (value: string) => void;
   filters: ClusterFiltersType;
   setFilters: (filters: ClusterFiltersType) => void;
 };
@@ -63,9 +62,8 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
     setFilters({
       status: [],
     });
+    setSearchString('');
   };
-
-  const onSearchNameChanged: TextInputProps['onChange'] = setSearchString;
 
   const onSelect = (type: string, isChecked: boolean, value: Cluster['status']) => {
     setFilters({
@@ -126,7 +124,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
                 id="search-string"
                 type="search"
                 aria-label="string to be searched in cluster names or ids"
-                onChange={onSearchNameChanged}
+                onChange={(_event, value) => setSearchString(value)}
                 value={searchString}
                 placeholder="Filter by Name, ID or Base domain"
                 title="Filter by Name, ID or Base domain"
@@ -174,7 +172,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         </CustomToolbarFilter>
         <ToolbarButton
           variant={ButtonVariant.primary}
-          onClick={() => navigate(`~new`)}
+          onClick={() => void navigate(`~new`)}
           id="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >

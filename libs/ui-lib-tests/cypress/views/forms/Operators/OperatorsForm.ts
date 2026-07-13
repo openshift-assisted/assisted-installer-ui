@@ -10,6 +10,19 @@ export default class OperatorsForm {
   static get mtvOperatorControl() {
     return MtvOperatorControl;
   }
+
+  static getOperatorCheckbox(operatorId: string) {
+    return OperatorsForm.body.find(`#form-input-${operatorId}-field`);
+  }
+
+  static assertOperatorCheckbox(
+    operatorId: string,
+    { checked, disabled }: { checked: boolean; disabled: boolean },
+  ) {
+    const checkbox = OperatorsForm.getOperatorCheckbox(operatorId);
+    checkbox.should(checked ? 'be.checked' : 'not.be.checked');
+    checkbox.should(disabled ? 'be.disabled' : 'not.be.disabled');
+  }
 }
 
 /** @private */

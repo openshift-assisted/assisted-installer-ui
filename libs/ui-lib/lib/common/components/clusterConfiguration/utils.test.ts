@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest';
-import { isDualStack } from './utils';
+import { isDualStack, getIPv6FromDualstack } from './utils';
 import {
   MachineNetwork,
   ClusterNetwork,
@@ -271,5 +271,47 @@ describe('isDualStack', () => {
 
       expect(result).toBe(false);
     });
+  });
+});
+
+describe('getIPv6FromDualstack', () => {
+  test('returns the IPv6 entry from a dualstack array', () => {
+    const networks = [
+      { cidr: '10.128.0.0/14', hostPrefix: 23, clusterId: 'test' },
+      { cidr: 'fd01::/48', hostPrefix: 64, clusterId: 'test' },
+    ];
+    const result = getIPv6FromDualstack(networks);
+    expect(result).toEqual({ cidr: 'fd01::/48', hostPrefix: 64, clusterId: 'test' });
+  });
+
+  test('returns the IPv6 entry when IPv6 is first', () => {
+    const networks = [
+      { cidr: 'fd01::/48', hostPrefix: 64, clusterId: 'test' },
+      { cidr: '10.128.0.0/14', hostPrefix: 23, clusterId: 'test' },
+    ];
+    const result = getIPv6FromDualstack(networks);
+    expect(result).toEqual({ cidr: 'fd01::/48', hostPrefix: 64, clusterId: 'test' });
+  });
+
+  test('returns undefined when no IPv6 entry is present', () => {
+    const networks = [{ cidr: '10.128.0.0/14', hostPrefix: 23, clusterId: 'test' }];
+    expect(getIPv6FromDualstack(networks)).toBeUndefined();
+  });
+
+  test('returns undefined for an empty array', () => {
+    expect(getIPv6FromDualstack([])).toBeUndefined();
+  });
+
+  test('returns undefined for undefined input', () => {
+    expect(getIPv6FromDualstack(undefined)).toBeUndefined();
+  });
+
+  test('works with service networks (no hostPrefix)', () => {
+    const networks = [
+      { cidr: '172.30.0.0/16', clusterId: 'test' },
+      { cidr: 'fd02::/112', clusterId: 'test' },
+    ];
+    const result = getIPv6FromDualstack(networks);
+    expect(result).toEqual({ cidr: 'fd02::/112', clusterId: 'test' });
   });
 });

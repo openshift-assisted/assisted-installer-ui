@@ -10,7 +10,7 @@ function calculateSelectedOperators(
 ): string[] {
   // Calculate all selected operators (direct selections + bundle selections)
   const bundleOperators = values.selectedBundles.flatMap(
-    (bundleId) => bundles.find((b) => b.id === bundleId)?.operators || [],
+    (bundle) => bundles.find((b) => b.id === bundle.id)?.operators || [],
   );
 
   const allSelectedOperators = values.selectedOperators
@@ -62,7 +62,7 @@ describe('OperatorsSelect counting logic', () => {
   it('should count bundle operators when a bundle is selected', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm'], // 1 manually selected
-      selectedBundles: ['virtualization'], // bundle with 3 operators: cnv, nmstate, mtv
+      selectedBundles: [{ id: 'virtualization', optionalOperators: [] }], // bundle with 3 operators: cnv, nmstate, mtv
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -77,7 +77,7 @@ describe('OperatorsSelect counting logic', () => {
   it('should not double-count operators that are both manually selected and in a bundle', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm', 'cnv'], // cnv is also in the bundle
-      selectedBundles: ['virtualization'], // bundle with: cnv, nmstate, mtv
+      selectedBundles: [{ id: 'virtualization', optionalOperators: [] }], // bundle with: cnv, nmstate, mtv
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -107,7 +107,10 @@ describe('OperatorsSelect counting logic', () => {
   it('should handle multiple bundles correctly', () => {
     const values: OperatorsValues = {
       selectedOperators: ['lvm'],
-      selectedBundles: ['virtualization', 'openshift-ai'], // Two bundles
+      selectedBundles: [
+        { id: 'virtualization', optionalOperators: [] },
+        { id: 'openshift-ai', optionalOperators: [] },
+      ], // Two bundles
     };
 
     const result = calculateSelectedOperators(values, mockBundles, mockOpSpecs);
@@ -125,7 +128,10 @@ describe('OperatorsSelect counting logic', () => {
   it('should handle overlapping operators in multiple bundles', () => {
     const values: OperatorsValues = {
       selectedOperators: [],
-      selectedBundles: ['virtualization', 'openshift-ai'], // Both bundles have 'odf' (but only virtualization has it in our mock)
+      selectedBundles: [
+        { id: 'virtualization', optionalOperators: [] },
+        { id: 'openshift-ai', optionalOperators: [] },
+      ], // Both bundles have 'odf' (but only virtualization has it in our mock)
     };
 
     // Let's modify the virtualization bundle to include odf to test overlap

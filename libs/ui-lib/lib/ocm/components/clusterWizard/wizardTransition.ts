@@ -1,5 +1,10 @@
 import {
-  findValidationStep,
+  Cluster,
+  ClusterValidationId,
+  Host,
+  HostValidationId,
+} from '@openshift-assisted/types/assisted-installer-service';
+import {
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
   WizardStepsValidationMap,
@@ -12,11 +17,9 @@ import {
   Validation as HostValidation,
 } from '../../../common/types/hosts';
 import { getKeys, stringToJSON } from '../../../common/utils';
-import {
-  Cluster,
-  Host,
-  HostValidationId,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { Validation, ValidationsInfo } from '../../../common';
+
+type ValidationId = ClusterValidationId | HostValidationId;
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -55,16 +58,6 @@ export const disconnectedSteps: ClusterWizardStepsType[] = [
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
-export const getLastStepForWizard = (
-  customManifestsStepNeedsToBeFilled: boolean,
-): ClusterWizardStepsType => {
-  if (customManifestsStepNeedsToBeFilled) {
-    return 'custom-manifests';
-  } else {
-    return 'review';
-  }
-};
-
 export const isStepAfter = (stepA: ClusterWizardStepsType, stepB: ClusterWizardStepsType) => {
   const indexA = wizardStepsOrder.findIndex((step) => step === stepA);
   const indexB = wizardStepsOrder.findIndex((step) => step === stepB);
@@ -79,8 +72,7 @@ export const getClusterWizardFirstStep = (
   locationState: ClusterWizardFlowStateType | undefined,
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
-  hosts?: Host[] | undefined,
-  customManifestsStepNeedsToBeFilled?: boolean,
+  cluster?: Cluster,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
@@ -96,40 +88,42 @@ export const getClusterWizardFirstStep = (
 
   switch (state) {
     case 'ready':
-      return getLastStepForWizard(customManifestsStepNeedsToBeFilled || false);
+      return 'review';
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
-      if (customManifestsStepNeedsToBeFilled) {
-        return 'custom-manifests';
-      }
-      return getStepForFailingHostValidations(hosts);
+      return getStepForFailingValidations(cluster);
     default:
       return 'cluster-details';
   }
 };
 
-const getStepForFailingHostValidations = (hosts: Host[] | undefined) => {
-  const failingValidations: HostValidationId[] = getHostFailingValidationIds(hosts);
-  const minimumStep = 'host-discovery';
+const MINIMUM_STEP = 'host-discovery';
+const getStepForFailingValidations = (cluster?: Cluster) => {
+  // test host validations first, then cluster validations
+  const failingValidations: Set<ValidationId> = new Set<ValidationId>([
+    ...getHostFailingValidationIds(cluster?.hosts),
+    ...getClusterFailingValidationIds(cluster),
+  ]);
+
   let step;
   for (const failingValidationId of failingValidations) {
-    step = findValidationStep<string>(failingValidationId, wizardStepsValidationsMap, minimumStep);
+    step = findValidationStep(failingValidationId, wizardStepsValidationsMap);
     if (step !== undefined) {
       break;
     }
   }
-  return (step || minimumStep) as ClusterWizardStepsType;
+  return step || MINIMUM_STEP;
 };
 
-const getHostFailingValidationIds = (hosts: Host[] | undefined) => {
-  const failingValidations: HostValidationId[] = [];
+const getHostFailingValidationIds = (hosts?: Host[]): Set<ValidationId> => {
+  const failingValidations = new Set<HostValidationId>();
   hosts?.forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     getKeys(validationsInfo).forEach((group) => {
       const f: (validation: HostValidation) => void = (validation) => {
         if (validation.status === 'failure') {
-          failingValidations.push(validation.id);
+          failingValidations.add(validation.id);
         }
       };
       const validationGroup = validationsInfo[group] as HostValidation[];
@@ -137,6 +131,47 @@ const getHostFailingValidationIds = (hosts: Host[] | undefined) => {
     });
   });
   return failingValidations;
+};
+
+const getClusterFailingValidationIds = (cluster?: Cluster): Set<ValidationId> => {
+  const failingValidations = new Set<ValidationId>();
+  const validationsInfo = stringToJSON<ValidationsInfo>(cluster?.validationsInfo) || {};
+
+  getKeys(validationsInfo).forEach((group) => {
+    const f: (validation: Validation) => void = (validation) => {
+      if (validation.status === 'failure') {
+        failingValidations.add(validation.id);
+      }
+    };
+    const validationGroup = validationsInfo[group] as Validation[];
+    validationGroup.forEach(f);
+  });
+  return failingValidations;
+};
+
+const findValidationStep = (
+  validationId: ValidationId,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+): ClusterWizardStepsType | undefined => {
+  let isBeforeMinimumStep = true;
+
+  return wizardStepsOrder.find((wizardStepId) => {
+    if (wizardStepId === MINIMUM_STEP) {
+      isBeforeMinimumStep = false;
+    }
+    if (isBeforeMinimumStep) {
+      return false;
+    }
+
+    // find first matching validation-map name, ignoring steps before minimumStep
+    const { host: hostValidationMap, cluster: clusterValidationMap } =
+      wizardStepsValidationsMap[wizardStepId];
+
+    return (
+      hostValidationMap.validationIds.includes(validationId as HostValidationId) ||
+      clusterValidationMap.validationIds.includes(validationId as ClusterValidationId)
+    );
+  });
 };
 
 type TransitionProps = { cluster: Cluster };
@@ -190,6 +225,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     groups: ['hardware'],
     validationIds: [
       'connected',
+      'hostname-valid',
       'media-connected',
       'lso-requirements-satisfied',
       'odf-requirements-satisfied',
@@ -206,6 +242,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     'no-skip-missing-disk',
     'compatible-agent',
     'openshift-ai-gpu-requirements-satisfied',
+    'inventory-not-partially-truncated',
   ],
 };
 
@@ -224,18 +261,24 @@ const storageStepValidationsMap: WizardStepValidationMap = {
       'no-skip-missing-disk',
     ],
   },
-  softValidationIds: [],
+  softValidationIds: ['inventory-not-partially-truncated'],
 };
 
 const networkingStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: ['network'],
-    validationIds: [],
+    validationIds: [
+      'api-vips-defined',
+      'machine-cidr-defined',
+      'cluster-cidr-defined',
+      'service-cidr-defined',
+      'all-hosts-are-ready-to-install',
+    ],
   },
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['network'],
-    validationIds: [],
+    validationIds: ['apps-domain-name-resolved-correctly'],
   },
   // TODO(jtomasek): container-images-available validation is currently not running on the backend, it stays in pending.
   // marking it as soft validation is the easy way to prevent it from blocking the progress.
@@ -248,6 +291,19 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
     'mtu-valid',
     'custom-manifests-requirements-satisfied',
   ],
+};
+
+const customManifestsValidationsMap: WizardStepValidationMap = {
+  cluster: {
+    groups: ['network'],
+    validationIds: ['platform-requirements-satisfied', 'custom-manifests-requirements-satisfied'],
+  },
+  host: {
+    allowedStatuses: ['known', 'disabled'],
+    groups: ['network'],
+    validationIds: [],
+  },
+  softValidationIds: ['ntp-synced', 'container-images-available', 'mtu-valid'],
 };
 
 const reviewStepValidationsMap: WizardStepValidationMap = {
@@ -265,7 +321,6 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
 
 const credentialsValidationMap = buildEmptyValidationsMap();
 
-const customManifestsValidationsMap = buildEmptyValidationsMap();
 const disconnectedReviewValidationsMap = buildEmptyValidationsMap();
 const disconnectedBasicValidationsMap = buildEmptyValidationsMap();
 
@@ -274,13 +329,13 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-yaml-view': staticIpValidationsMap,
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
-  'custom-manifests': customManifestsValidationsMap,
   operators: operatorsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   storage: storageStepValidationsMap,
   networking: networkingStepValidationsMap,
-  review: reviewStepValidationsMap,
+  'custom-manifests': customManifestsValidationsMap,
   'credentials-download': credentialsValidationMap,
+  review: reviewStepValidationsMap,
   'disconnected-review': disconnectedReviewValidationsMap,
   'disconnected-basic': disconnectedBasicValidationsMap,
 };

@@ -1,7 +1,8 @@
 import React from 'react';
 import { createSelector } from '@reduxjs/toolkit';
+import type { Selector } from 'reselect';
 import type { IRow, IRowData } from '@patternfly/react-table';
-import { Link } from 'react-router-dom-v5-compat';
+import { Link } from 'react-router';
 import type { TFunction } from 'i18next';
 import {
   DASH,
@@ -22,7 +23,7 @@ const selectClusters = (state: RootStateDay1) =>
   state.clusters.data.filter((c) => c.kind !== 'DisconnectedCluster');
 const clustersUIState = (state: RootStateDay1) => state.clusters.uiState;
 
-export const selectClustersUIState = createSelector(
+export const selectClustersUIState: (state: RootStateDay1) => ResourceUIState = createSelector(
   [selectClusters, clustersUIState],
   (clusters, uiState): ResourceUIState => {
     const { LOADED, EMPTY } = ResourceUIState;
@@ -95,13 +96,14 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
 export const getClusterTableStatusCell = (rowData: IRowData) =>
   rowData?.cells?.[3] as HumanizedSortable;
 
-export const selectClusterTableRows = (t: TFunction) => {
+export const selectClusterTableRows = (t: TFunction): Selector<RootStateDay1, ClusterTableRows> => {
   return createSelector(
     selectClusters,
     (clusters): ClusterTableRows => clusters.map((c) => clusterToClusterTableRow(c, t)),
   );
 };
 
-export const selectClusterNames = createSelector(selectClusters, (clusters) =>
-  clusters.map((c) => c.name),
+export const selectClusterNames: Selector<RootStateDay1, (string | undefined)[]> = createSelector(
+  selectClusters,
+  (clusters) => clusters.map((c) => c.name),
 );

@@ -7,7 +7,7 @@ import {
   Outlet,
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
-} from 'react-router-dom-v5-compat';
+} from 'react-router';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import type { FeatureListType } from '../../common/features/featureGate';
 import { AssistedUILibVersion } from './ui';
@@ -39,7 +39,7 @@ export const UILibRoutes = ({
           <Route index element={<Clusters />} />
         </Route>
         {children}
-        <Route path="*" element={<Navigate to="assisted-installer/clusters" />} />
+        <Route path="*" element={<Navigate to="/assisted-installer/clusters" />} />
       </Routes>
     </>
   );

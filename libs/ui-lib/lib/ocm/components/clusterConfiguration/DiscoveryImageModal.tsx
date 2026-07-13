@@ -1,5 +1,12 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalHeader, ModalVariant } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
 import {
   AI_CISCO_INTERSIGHT_TAG,
@@ -14,7 +21,6 @@ import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
 import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
-import './DiscoveryImageModal.css';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { ClustersService } from '../../services';
 import { useDispatch } from 'react-redux';
@@ -115,7 +121,11 @@ export const DiscoveryImageModal = () => {
         data-testid="discovery-modal-title"
         title={`Add ${pluralize(+isSNOCluster, 'host')}`}
       />
-      {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
+      {(isoDownloadError || ipxeDownloadError) && (
+        <ModalBody>
+          <ErrorState />
+        </ModalBody>
+      )}
       {isoDownloadUrl ? (
         <DownloadIso
           fileName={`discovery_image_${cluster.name || ''}.iso`}

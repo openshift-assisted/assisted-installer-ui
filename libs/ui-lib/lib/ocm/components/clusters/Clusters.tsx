@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router';
 import { Button, ButtonVariant, Content, PageSection } from '@patternfly/react-core';
 import { AddCircleOIcon } from '@patternfly/react-icons/dist/js/icons/add-circle-o-icon';
 import {
@@ -85,7 +85,7 @@ const Clusters = () => {
             primaryAction={
               <Button
                 variant={ButtonVariant.primary}
-                onClick={() => navigate(`~new`)}
+                onClick={() => void navigate(`~new`)}
                 id="empty-state-new-cluster-button"
                 data-ouia-id="button-create-new-cluster"
               >

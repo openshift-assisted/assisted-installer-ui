@@ -9,7 +9,7 @@ import {
   getFormikErrorFields,
   getHostSubnets,
   HostSubnets,
-  SINGLE_STACK,
+  DUAL_STACK,
   isSNO,
   LoadingState,
   NetworkConfigurationValues,
@@ -262,7 +262,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
         if (values.vipDhcpAllocation) {
           delete params.apiVips;
           delete params.ingressVips;
-        } else if (values.stackType === SINGLE_STACK) {
+        } else if (values.stackType !== DUAL_STACK) {
           // The API will rebuild the default machineNetwork
           params.machineNetworks = [];
         }

@@ -1,101 +1,18 @@
 import React from 'react';
 import { Formik } from 'formik';
-import { Lazy } from 'yup';
 import { Grid, GridItem, useWizardContext } from '@patternfly/react-core';
 
-import {
-  useAlerts,
-  getClusterDetailsInitialValues,
-  getClusterDetailsValidationSchema,
-  ClusterWizardStepHeader,
-  ClusterDetailsValues,
-  getRichTextValidation,
-  OpenshiftVersionOptionType,
-} from '../../../../common';
+import { useAlerts, ClusterWizardStepHeader, getRichTextValidation } from '../../../../common';
 
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from '../types';
-import { getAICluster, getNetworkType, getOCPVersions } from '../../helpers';
-import {
-  AgentClusterInstallK8sResource,
-  AgentK8sResource,
-  ClusterDeploymentK8sResource,
-  InfraEnvK8sResource,
-} from '../../../types';
+import { getOCPVersions } from '../../helpers';
 import {
   ClusterDeploymentDetailsForm,
   ClusterDeploymentDetailsFormWrapper,
 } from './ClusterDeploymentDetailsForm';
 import { getGridSpans } from '../helpers';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-
-type UseDetailsFormikArgs = {
-  usedClusterNames: string[];
-  ocpVersions: OpenshiftVersionOptionType[];
-  clusterDeployment?: ClusterDeploymentK8sResource;
-  agentClusterInstall?: AgentClusterInstallK8sResource;
-  agents?: AgentK8sResource[];
-  infraEnv?: InfraEnvK8sResource;
-};
-
-export const useDetailsFormik = ({
-  clusterDeployment,
-  agentClusterInstall,
-  agents,
-  usedClusterNames,
-  infraEnv,
-  ocpVersions,
-}: UseDetailsFormikArgs): [
-  ClusterDetailsValues & { networkType: 'OpenShiftSDN' | 'OVNKubernetes' },
-  Lazy<{ baseDnsDomain: string }>,
-] => {
-  const { t } = useTranslation();
-  const isEdit = !!clusterDeployment || !!agentClusterInstall;
-
-  const cluster = React.useMemo(
-    () =>
-      clusterDeployment && agentClusterInstall
-        ? getAICluster({
-            clusterDeployment,
-            agentClusterInstall,
-            agents,
-            infraEnv,
-          })
-        : undefined,
-    [agentClusterInstall, clusterDeployment, agents, infraEnv],
-  );
-
-  const initialValues = React.useMemo(
-    () => {
-      const initValues = getClusterDetailsInitialValues({
-        managedDomains: [], // not supported
-        cluster,
-        ocpVersions,
-      });
-
-      const ocpVersion = ocpVersions.find(
-        (ocpVersion) => ocpVersion.value === initValues.openshiftVersion,
-      );
-      return {
-        ...initValues,
-        networkType: getNetworkType(ocpVersion),
-      };
-    },
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  const validationSchema = React.useMemo(
-    () =>
-      getClusterDetailsValidationSchema({
-        usedClusterNames,
-        pullSecretSet: isEdit,
-        validateUniqueName: true,
-        t,
-      }),
-    [usedClusterNames, isEdit, t],
-  );
-
-  return [initialValues, validationSchema];
-};
+import { useDetailsFormik } from './useDetailsFormik';
 
 export const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> = ({
   clusterImages,
@@ -113,11 +30,13 @@ export const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStep
   const { goToNextStep } = useWizardContext();
 
   const ocpVersions = getOCPVersions(clusterImages, isNutanix);
+  const allOcpVersions = getOCPVersions(clusterImages, isNutanix, undefined, true);
   const gridSpans = getGridSpans(isPreviewOpen);
 
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterDeployment,
     ocpVersions,
+    allOcpVersions,
     agentClusterInstall,
     agents,
     usedClusterNames,

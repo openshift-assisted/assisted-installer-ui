@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TFunction } from 'i18next';
-import { Link } from 'react-router-dom-v5-compat';
+import { Link } from 'react-router';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostsTableActions, getInventory, getHostname, Hostname } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';

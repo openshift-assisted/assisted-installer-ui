@@ -1,5 +1,10 @@
 import { CustomManifestValues, ListManifestsExtended, ManifestFormData } from '../data/dataTypes';
 
+/** Manifests created by the installer (e.g. OVE defaults); not editable in the wizard. */
+export const userProvidedManifests = <T extends { manifestSource?: string }>(
+  manifests: T[] | undefined,
+): T[] => (manifests ?? []).filter((m) => m.manifestSource !== 'system');
+
 export const getManifestName = (manifestIdx: number) => `Custom manifest ${manifestIdx + 1}`;
 
 export const getFormData = (manifests: ListManifestsExtended): ManifestFormData => {
@@ -18,11 +23,11 @@ export const getEmptyManifest = (): CustomManifestValues => {
 };
 
 export const getManifestValues = (manifests: ListManifestsExtended): ManifestFormData => {
-  if (!!manifests.length) {
-    return getFormData(manifests);
-  } else {
-    return getEmptyManifestsValues();
+  const userManifests = userProvidedManifests(manifests);
+  if (userManifests.length > 0) {
+    return getFormData(userManifests);
   }
+  return getEmptyManifestsValues();
 };
 
 export const getEmptyManifestsValues = (): ManifestFormData => {
@@ -32,8 +37,9 @@ export const getEmptyManifestsValues = (): ManifestFormData => {
 export const getClusterCustomManifests = (
   customManifests: ListManifestsExtended,
 ): CustomManifestValues[] => {
-  if (customManifests && customManifests.length > 0) {
-    return customManifests.map((manifest) => ({
+  const userManifests = userProvidedManifests(customManifests);
+  if (userManifests.length > 0) {
+    return userManifests.map((manifest) => ({
       folder: manifest.folder || 'manifests',
       filename: manifest.fileName || '',
       manifestYaml: manifest.yamlContent || '',

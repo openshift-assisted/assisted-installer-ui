@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router';
 import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
 import {
   ClusterWizardFlowStateType,
@@ -66,8 +66,8 @@ const getWizardStepIds = (
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
   }
 
-  if (isSingleClusterFeatureEnabled) {
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'networking', ['credentials-download']);
+  if (isSingleClusterFeatureEnabled && !stepsCopy.includes('credentials-download')) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'custom-manifests', ['credentials-download']);
   }
 
   return stepsCopy;
@@ -116,13 +116,11 @@ const ClusterWizardContextProvider = ({
         locationState,
         staticIpInfo,
         cluster?.status,
-        cluster?.hosts,
-        customManifestsStepNeedsToBeFilled,
+        cluster,
       );
       const firstStepIds = getWizardStepIds(
         wizardStepIds,
         staticIpInfo?.view,
-
         isSingleClusterFeatureEnabled,
       );
 
@@ -150,7 +148,7 @@ const ClusterWizardContextProvider = ({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uiSettings, UISettingsLoading, UISettingsError]);
+  }, [uiSettings, UISettingsLoading, UISettingsError, isSingleClusterFeatureEnabled]);
 
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
@@ -167,7 +165,6 @@ const ClusterWizardContextProvider = ({
       const newStepIds = getWizardStepIds(
         wizardStepIds,
         staticIpInfo.view,
-
         isSingleClusterFeatureEnabled,
       );
       setWizardStepIds(newStepIds);
@@ -207,12 +204,7 @@ const ClusterWizardContextProvider = ({
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (type === HostsNetworkConfigurationType.STATIC) {
           setWizardStepIds(
-            getWizardStepIds(
-              wizardStepIds,
-              StaticIpView.FORM,
-
-              isSingleClusterFeatureEnabled,
-            ),
+            getWizardStepIds(wizardStepIds, StaticIpView.FORM, isSingleClusterFeatureEnabled),
           );
         } else {
           setWizardStepIds(

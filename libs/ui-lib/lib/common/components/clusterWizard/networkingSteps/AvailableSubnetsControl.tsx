@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Alert,
   AlertActionLink,
@@ -8,7 +8,7 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
+import { FieldArray, useFormikContext } from 'formik';
 import { Address4, Address6 } from 'ip-address';
 
 import { HostSubnet, NetworkConfigurationValues } from '../../../types';
@@ -17,38 +17,10 @@ import { isMajorMinorVersionEqualOrGreater } from '../../../utils';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { SubnetsDropdown } from './SubnetsDropdown';
 import { reorderNetworksForPrimary } from './reorderNetworks';
-import {
-  Cluster,
-  Host,
-  MachineNetwork,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
-
-const useAutoSelectDefaultMachineNetworks = (
-  autoSelectNetwork: boolean,
-  setFieldValue: FormikHelpers<NetworkConfigurationValues>['setFieldValue'],
-  cidrV4: MachineNetwork['cidr'],
-  cidrV6: MachineNetwork['cidr'],
-  clusterId: string,
-  isDualStack: boolean,
-) => {
-  useEffect(() => {
-    if (autoSelectNetwork) {
-      setFieldValue(
-        'machineNetworks',
-        isDualStack
-          ? [
-              { cidr: cidrV4, clusterId },
-              { cidr: cidrV6, clusterId },
-            ]
-          : [{ cidr: cidrV4, clusterId }],
-        false,
-      );
-    }
-  }, [autoSelectNetwork, cidrV4, cidrV6, clusterId, isDualStack, setFieldValue]);
-};
 
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
@@ -81,31 +53,24 @@ export const AvailableSubnetsControl = ({
   const supportsIPv6Primary =
     openshiftVersion && isMajorMinorVersionEqualOrGreater(openshiftVersion, '4.12');
 
-  const IPv4Subnets = hostSubnets
-    .filter((subnet) => Address4.isValid(subnet.subnet))
-    .sort(subnetSort);
-  const IPv6Subnets = hostSubnets
-    .filter((subnet) => Address6.isValid(subnet.subnet))
-    .sort(subnetSort);
-
   // For OCP >= 4.12, both networks can use either IPv4 or IPv6
-  const allSubnets = supportsIPv6Primary
-    ? [...IPv4Subnets, ...IPv6Subnets].sort(subnetSort)
-    : IPv4Subnets;
+  const { IPv4Subnets, IPv6Subnets, allSubnets } = React.useMemo(() => {
+    const IPv4Subnets = hostSubnets
+      .filter((subnet) => Address4.isValid(subnet.subnet))
+      .sort(subnetSort);
 
-  // For auto-selection, prefer IPv4 as primary (even for dual-stack)
-  const cidrV4 = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
-  const cidrV6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
-  const hasEmptySelection = (values.machineNetworks ?? []).length === 0;
-  const autoSelectNetwork = !isViewerMode && hasEmptySelection;
-  useAutoSelectDefaultMachineNetworks(
-    autoSelectNetwork,
-    setFieldValue,
-    cidrV4,
-    cidrV6,
-    clusterId,
-    isDualStack,
-  );
+    const IPv6Subnets = hostSubnets
+      .filter((subnet) => Address6.isValid(subnet.subnet))
+      .sort(subnetSort);
+
+    const allSubnets = supportsIPv6Primary ? [...IPv4Subnets, ...IPv6Subnets] : IPv4Subnets;
+
+    return {
+      IPv4Subnets,
+      IPv6Subnets,
+      allSubnets,
+    };
+  }, [hostSubnets, supportsIPv6Primary]);
 
   // Ensure primary and secondary machine networks are not in the same stack (IPv4/IPv6).
   // If the user switches primary to the same address family as secondary, adjust secondary to the opposite family
@@ -236,6 +201,15 @@ export const AvailableSubnetsControl = ({
     }
   }, [supportsIPv6Primary, primaryNetworkCidr, IPv4Subnets, IPv6Subnets, allSubnets]);
 
+  // Autoselect values in case machineNetworks is empty
+  React.useEffect(() => {
+    if (!isViewerMode && values.machineNetworks?.length === 0 && primaryMachineSubnets.length) {
+      setFieldValue('machineNetworks', [{ cidr: primaryMachineSubnets[0].subnet, clusterId }]);
+    }
+    // Run only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <FormGroup
@@ -252,9 +226,9 @@ export const AvailableSubnetsControl = ({
                   name="machineNetworks.0.cidr"
                   machineSubnets={primaryMachineSubnets}
                   isDisabled={isDisabled}
-                  onAfterSelect={(newSelection) =>
-                    reorderNetworksForPrimary(newSelection, values, setFieldValue)
-                  }
+                  onAfterSelect={(newSelection) => {
+                    reorderNetworksForPrimary(newSelection, values, setFieldValue);
+                  }}
                   data-testid="subnets-dropdown-toggle-primary"
                 />
               </StackItem>

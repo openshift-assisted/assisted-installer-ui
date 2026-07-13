@@ -7,7 +7,7 @@ import (
 	"github.com/openshift-assisted/assisted-disconnected-ui/log"
 )
 
-// Handler serves GET /pull-secret: JSON pull-secret string for the UI (same shape as cluster pullSecret field).
+// Handler serves GET /api/pull-secret: pull-secret JSON `{ "auths": … }` for the UI (cluster pullSecret field shape).
 func Handler(manifestPath string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
@@ -27,7 +27,13 @@ func Handler(manifestPath string) http.HandlerFunc {
 			return
 		}
 
+		extracted := extractForUI(raw)
+		if len(extracted) == 0 {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write(raw)
+		_, _ = w.Write(extracted)
 	}
 }
