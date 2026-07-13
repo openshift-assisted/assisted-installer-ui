@@ -202,43 +202,34 @@ const OperatorCheckbox = ({
     setFieldValue('selectedOperators', next);
   };
 
-  // Fetch operator properties when operator is selected
   React.useEffect(() => {
-    if (isChecked && !propertiesFetched && !propertiesLoading) {
-      setPropertiesLoading(true);
-      let cancelled = false;
-      OperatorsService.getOperatorProperties(operatorId)
-        .then((properties) => {
-          if (!cancelled) {
-            setOperatorProperties(properties);
-            setPropertiesFetched(true);
-          }
-        })
-        .catch((error) => {
-          if (!cancelled) {
-            handleApiError(error, () =>
-              addAlert({
-                title: 'Failed to fetch operator properties',
-                message: getApiErrorMessage(error),
-              }),
-            );
-          }
-        })
-        .finally(() => {
-          if (!cancelled) {
-            setPropertiesLoading(false);
-          }
-        });
-      return () => {
-        cancelled = true;
-      };
-    } else if (!isChecked) {
-      // Clear properties when operator is unchecked to allow refetch on re-check
-      setOperatorProperties([]);
-      setPropertiesFetched(false);
-    }
-  }, [isChecked, operatorId, propertiesFetched, propertiesLoading, addAlert]);
+    let cancelled = false;
 
+    const fetchOperatorProperties = async () => {
+      try {
+        const properties = await OperatorsService.getOperatorProperties(operatorId);
+        if (!cancelled) {
+          setOperatorProperties(properties);
+          setPropertiesFetched(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          handleApiError(error, () =>
+            addAlert({
+              title: 'Failed to fetch operator properties',
+              message: getApiErrorMessage(error),
+            }),
+          );
+        }
+      }
+    };
+    
+    isChecked ? void fetchOperatorProperties() : void setOperatorProperties([]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isChecked, operatorId, propertiesFetched, addAlert]);
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>
       <Checkbox
