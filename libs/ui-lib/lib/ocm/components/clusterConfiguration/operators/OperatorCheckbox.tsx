@@ -266,6 +266,7 @@ const OperatorCheckbox = ({
       {isChecked && operatorProperties.length > 0 && (
         <OperatorPropertiesForm
           operatorId={operatorId}
+          operatorTitle={title}
           properties={operatorProperties}
           isDisabled={isViewerMode || !!disabledReason}
         />
