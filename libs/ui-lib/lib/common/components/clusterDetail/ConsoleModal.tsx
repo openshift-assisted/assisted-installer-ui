@@ -138,7 +138,7 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
       type="submit"
       key="launch"
       variant={ButtonVariant.primary}
-      onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
+      onClick={() => window.open(consoleUrl, '_blank', 'noopener,noreferrer')}
       isDisabled={!consoleUrl}
     >
       {t('ai:Launch OpenShift Console')}
