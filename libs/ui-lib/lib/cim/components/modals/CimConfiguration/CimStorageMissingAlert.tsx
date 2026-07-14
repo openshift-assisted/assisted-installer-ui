@@ -23,7 +23,10 @@ export const CimStorageMissingAlert: React.FC<{
     <AlertActionLink key="install-storage-operator" onClick={() => navigate(storageOperatorUrl)}>
       {t('ai:Install storage operator')}
     </AlertActionLink>,
-    <AlertActionLink key="storage-class" onClick={() => window.open(docStorageUrl, '_blank')}>
+    <AlertActionLink
+      key="storage-class"
+      onClick={() => window.open(docStorageUrl, '_blank', 'noopener,noreferrer')}
+    >
       {contentWorkaround as unknown as string}
     </AlertActionLink>,
   ];

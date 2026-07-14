@@ -28,6 +28,16 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			h := w.Header()
+			h.Set("X-Frame-Options", "DENY")
+			h.Set("X-Content-Type-Options", "nosniff")
+			h.Set("Referrer-Policy", "no-referrer")
+			h.Set("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'")
+			next.ServeHTTP(w, r)
+		})
+	})
 	// Served before SPA catch-all: mounted manifest or plain JSON pull secret for the UI.
 	router.HandleFunc("/api/pull-secret", pullsecret.Handler(config.PullSecretManifestPath)).Methods(http.MethodGet)
 	router.PathPrefix("/api/{forward:.*}").Handler(apiHandler)
@@ -44,6 +54,7 @@ func main() {
 		}
 		serverTlsconfig = &tls.Config{
 			Certificates: []tls.Certificate{cert},
+			MinVersion:   tls.VersionTLS12,
 		}
 	}
 
