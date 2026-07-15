@@ -31,7 +31,7 @@ export const getNetworkType = (clusterNetworkType: Cluster['networkType']): stri
 export const getManagementType = ({ userManagedNetworking }: Cluster): string => {
   let managementType: string;
   userManagedNetworking
-    ? (managementType = 'User-Managed Networking')
+    ? (managementType = 'User-managed networking')
     : (managementType = 'Cluster-managed networking');
   return managementType;
 };
