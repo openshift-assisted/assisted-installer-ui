@@ -1,12 +1,9 @@
 approvers:
-  - ammont82
-  - batzionb
-  - celdrake
-  - jgyselov
-  - jkilzi
-  - rawagner
-  - LiorSoffer
   - ElayAharoni
+  - jgyselov
+  - rawagner
+  - asmasarw
+  - LiorSoffer
 options: {}
 reviewers:
   - ElayAharoni
