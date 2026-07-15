@@ -16,29 +16,21 @@ import {
   Bundle,
   Cluster,
   PreflightHardwareRequirements,
-  OperatorProperties,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   selectCurrentClusterPermissionsState,
   selectIsCurrentClusterSNO,
 } from '../../../store/slices/current-cluster/selectors';
 import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
-import {
-  getFieldId,
-  OperatorsValues,
-  PopoverIcon,
-  getApiErrorMessage,
-  handleApiError,
-  useAlerts,
-} from '../../../../common';
+import { getFieldId, OperatorsValues, PopoverIcon } from '../../../../common';
 import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 import {
   highlightMatch,
   OperatorSpec,
   useOperatorSpecs,
 } from '../../../../common/components/operators/operatorSpecs';
-import OperatorsService from '../../../services/OperatorsService';
-import OperatorPropertiesForm from './OperatorPropertiesForm';
+import NetworkObservabilityPropertiesForm from './NetworkObservabilityPropertiesForm';
+import { NETWORK_OBSERVABILITY_OPERATOR_ID } from './networkObservabilityProperties';
 
 const OperatorRequirements = ({
   operatorId,
@@ -143,13 +135,11 @@ const OperatorCheckbox = ({
 } & OperatorSpec) => {
   const { getFeatureSupportLevel, getFeatureDisabledReason } = useNewFeatureSupportLevel();
   const { byKey: opSpecs } = useOperatorSpecs();
-  const { addAlert } = useAlerts();
 
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(operatorId, 'input');
   const supportLevel = getFeatureSupportLevel(featureId);
-  const [operatorProperties, setOperatorProperties] = React.useState<OperatorProperties>([]);
 
   const getDisabledReason = (): string | undefined => {
     const featureDisabledReason = getFeatureDisabledReason(featureId);
@@ -200,36 +190,6 @@ const OperatorCheckbox = ({
     setFieldValue('selectedOperators', next);
   };
 
-  React.useEffect(() => {
-    let cancelled = false;
-    const fetchOperatorProperties = async () => {
-      try {
-        const properties = await OperatorsService.getOperatorProperties(operatorId);
-        if (!cancelled) {
-          setOperatorProperties(properties);
-        }
-      } catch (error) {
-        if (!cancelled) {
-          handleApiError(error, () =>
-            addAlert({
-              title: 'Failed to fetch operator properties',
-              message: getApiErrorMessage(error),
-            }),
-          );
-        }
-      }
-    };
-
-    if (isChecked) {
-      void fetchOperatorProperties();
-    } else {
-      setOperatorProperties([]);
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isChecked, operatorId, addAlert]);
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>
       <Checkbox
@@ -263,13 +223,8 @@ const OperatorCheckbox = ({
         }
         data-testid={`operator-checkbox-${operatorId}`}
       />
-      {isChecked && operatorProperties.length > 0 && (
-        <OperatorPropertiesForm
-          operatorId={operatorId}
-          operatorTitle={title}
-          properties={operatorProperties}
-          isDisabled={isViewerMode || !!disabledReason}
-        />
+      {isChecked && operatorId === NETWORK_OBSERVABILITY_OPERATOR_ID && (
+        <NetworkObservabilityPropertiesForm isDisabled={isViewerMode || !!disabledReason} />
       )}
     </FormGroup>
   );

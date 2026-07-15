@@ -1,4 +1,4 @@
-.ai-operator-properties-form {
+.ai-network-observability-properties-form {
   /* Align with PatternFly checkbox description (grid column 2) */
   padding-inline-start: calc(
     1em + var(--pf-t--global--spacer--gap--text-to-element--default, 0.5rem)

@@ -20,6 +20,7 @@ import { ClustersService } from '../../services';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { canNextOperators } from './wizardTransition';
+import { validateOperatorsValues } from './operatorsValidation';
 
 // Balance debounce time: fast clicks should trigger a single API call,
 // but making it shorter will allow us to disable navigation buttons while changes are pending
@@ -159,7 +160,11 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validate={validateOperatorsValues}
+    >
       <OperatorsForm cluster={cluster} />
     </Formik>
   );
