@@ -13,8 +13,6 @@ if [ "$ASSISTED_SERVICE_SCHEME" = "https" ]; then
     envsubst '${HTTPS_CERT_FILE} ${HTTPS_KEY_FILE}' < /deploy/nginx_ssl.conf > "${NGINX_CONF_PATH}"
 fi
 
-envsubst '$AIUI_OCM_REFRESH_TOKEN' < $NGINX_APP_ROOT/src/env.template.js > $NGINX_APP_ROOT/src/env.js
-
 # Do not listen on IPv6 if it's not enabled in the hardware
 if grep 'ipv6.disable=1' /proc/cmdline; then
     cp "${NGINX_CONF_PATH}" ~/nginx.conf.orig

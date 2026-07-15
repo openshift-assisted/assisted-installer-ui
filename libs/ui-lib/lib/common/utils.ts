@@ -90,6 +90,9 @@ export const stringToJSON = <T>(jsonString: string | undefined): T | undefined =
 export const downloadFile = (fileUrl?: string, dataBlob?: Blob, fileName?: string) => {
   const link = document.createElement('a');
   if (fileUrl && fileUrl !== '') {
+    if (!/^(https?|blob):/i.test(fileUrl)) {
+      return;
+    }
     link.setAttribute('href', fileUrl);
   }
   if (dataBlob) {

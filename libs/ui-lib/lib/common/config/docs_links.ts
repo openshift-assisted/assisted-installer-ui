@@ -150,10 +150,11 @@ export const CHANGE_ISO_PASSWORD_FILE_LINK =
   'https://raw.githubusercontent.com/openshift/assisted-service/master/docs/change-iso-password.sh';
 
 export const getCiscoIntersightLink = (downloadIsoUrl: string, ciscoUrl?: string) => {
+  const isoUrl = encodeURIComponent(downloadIsoUrl);
   if (ciscoUrl) {
-    return `${ciscoUrl}?_workflow_Version=1&IsoUrl=${downloadIsoUrl}`;
+    return `${ciscoUrl}?_workflow_Version=1&IsoUrl=${isoUrl}`;
   }
-  return `https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO?_workflow_Version=1&IsoUrl=${downloadIsoUrl}`;
+  return `https://www.intersight.com/an/workflow/workflow-definitions/execute/AddServersFromISO?_workflow_Version=1&IsoUrl=${isoUrl}`;
 };
 
 export const MTV_LINK =
