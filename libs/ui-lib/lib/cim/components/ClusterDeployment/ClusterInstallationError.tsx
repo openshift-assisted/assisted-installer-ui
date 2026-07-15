@@ -36,7 +36,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
               agentClusterInstall={agentClusterInstall}
             />
             <AlertActionLink
-              onClick={() => window.open(getReportIssueLink(), '_blank')}
+              onClick={() => window.open(getReportIssueLink(), '_blank', 'noopener,noreferrer')}
               id={getID('button-report-bug')}
             >
               {t('ai:Report a bug')}
