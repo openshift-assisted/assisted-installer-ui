@@ -22,6 +22,7 @@ import {
   CLUSTER_DEFAULT_NETWORK_SETTINGS,
   clusterNetworksSchema,
   serviceNetworksSchema,
+  httpsProxyValidationSchema,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -65,7 +66,7 @@ const getNetworkConfigurationValidationSchema = (
       ingressVips: vipArrayValidationSchema(hostSubnets, values, t),
       sshPublicKey: sshPublicKeyListValidationSchema(t),
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
       noProxy: noProxyValidationSchema(t),
     }),
   );

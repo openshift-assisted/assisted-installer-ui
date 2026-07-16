@@ -20,6 +20,7 @@ import { ProxyInputFields } from '../../../common/components/clusterConfiguratio
 import { Formik, useFormikContext } from 'formik';
 import {
   httpProxyValidationSchema,
+  httpsProxyValidationSchema,
   noProxyValidationSchema,
   ProxyFieldsType,
 } from '../../../common';
@@ -35,7 +36,7 @@ const validationSchema = (t: TFunction) =>
         allowEmpty: true,
         t,
       }),
-      httpsProxy: httpProxyValidationSchema({
+      httpsProxy: httpsProxyValidationSchema({
         values,
         pairValueName: 'httpProxy',
         allowEmpty: true,
