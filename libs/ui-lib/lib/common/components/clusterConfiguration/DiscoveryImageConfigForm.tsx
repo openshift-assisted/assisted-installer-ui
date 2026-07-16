@@ -22,6 +22,7 @@ import { AlertFormikError } from '../../components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import {
   httpProxyValidationSchema,
+  httpsProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../validationSchemas';
@@ -63,7 +64,12 @@ const getValidationSchema = (allowEmpty: boolean, t: TFunction) =>
     Yup.object<DiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', allowEmpty, t }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', allowEmpty, t }), // share the schema, httpS is currently not supported
+      httpsProxy: httpsProxyValidationSchema({
+        values,
+        pairValueName: 'httpProxy',
+        allowEmpty,
+        t,
+      }),
       noProxy: noProxyValidationSchema(t),
     }),
   );
