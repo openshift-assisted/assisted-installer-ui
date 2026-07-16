@@ -35,6 +35,7 @@ import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImag
 import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
 import {
   httpProxyValidationSchema,
+  httpsProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common';
@@ -60,7 +61,7 @@ const validationSchema = (t: TFunction) =>
     Yup.object<OcmDiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
       noProxy: noProxyValidationSchema(t),
     }),
   );

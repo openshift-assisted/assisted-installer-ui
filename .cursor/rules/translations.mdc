@@ -42,6 +42,7 @@ yarn workspace @openshift-assisted/locales run validate_translation_files
 - **`lib/es/`, `lib/fr/`, `lib/ja/`, `lib/ko/`, `lib/zh/`** — Handled by a separate localization
   process. **Do not edit** those `translation.json` files.
 - **`libs/ui-lib/lib/ocm/**`** — No **`t('ai:…')`**; use plain English strings or text supplied via props.
+- **Bare string literals in `i18nKey` or other translation props** — Always wrap `'ai:…'` strings with `t()` even when assigning to props like `i18nKey`.
 
 ## Allowed edits
 

@@ -48,6 +48,49 @@ export const httpProxyValidationSchema = ({
   );
 };
 
+export const httpsProxyValidationSchema = ({
+  values,
+  pairValueName,
+  allowEmpty,
+  t,
+}: {
+  values: ProxyFieldsType;
+  pairValueName: 'httpProxy' | 'httpsProxy';
+  allowEmpty?: boolean;
+  t: TFunction;
+}) => {
+  const validation = Yup.string().test(
+    'http-proxy-validation',
+    t('ai:Provide a valid HTTP or HTTPS URL.'),
+    (value?: string) => {
+      if (!value) {
+        return true;
+      }
+
+      if (!['http://', 'https://'].some((protocol) => value.startsWith(protocol))) {
+        return false;
+      }
+
+      try {
+        new URL(value);
+      } catch {
+        return false;
+      }
+      return true;
+    },
+  );
+
+  if (allowEmpty) {
+    return validation;
+  }
+
+  return validation.test(
+    'http-proxy-no-empty-validation',
+    t('ai:At least one of the HTTP or HTTPS proxy URLs is required.'),
+    (value) => !values.enableProxy || !!value || !!values[pairValueName],
+  );
+};
+
 export const noProxyValidationSchema = (t: TFunction) =>
   Yup.string().test(
     'no-proxy-validation',
