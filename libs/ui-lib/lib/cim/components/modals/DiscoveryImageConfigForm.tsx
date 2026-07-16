@@ -11,26 +11,27 @@ import {
   ModalBody,
   ModalFooter,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { Formik, FormikHelpers } from 'formik';
 import {
   ImageCreateParams,
   ImageType,
   Proxy,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { AlertFormikError } from '../../components/ui';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 import {
+  AlertFormikError,
+  getOCPStaticIPDocLink,
   httpProxyValidationSchema,
   httpsProxyValidationSchema,
   noProxyValidationSchema,
+  ProxyFields,
+  ProxyFieldsType,
   sshPublicKeyValidationSchema,
-} from '../../validationSchemas';
-import { ProxyFieldsType, StatusErrorType } from '../../types';
-import { getOCPStaticIPDocLink } from '../../config/docs_links';
-import { DiscoveryImageTypeControlGroup } from './DiscoveryImageTypeControlGroup';
-import { ProxyFields } from './ProxyFields';
-import { UploadSSH } from './UploadSSH';
+  StatusErrorType,
+  UploadSSH,
+  useTranslation,
+} from '../../../common';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { DiscoveryImageTypeControlGroup } from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 
 export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
   const { t } = useTranslation();
