@@ -1,4 +1,5 @@
-import { DiscoveryImageFormValues, ProxyFieldsType } from '../../../common';
+import { ProxyFieldsType } from '../../../common';
+import { DiscoveryImageFormValues } from './DiscoveryImageConfigForm';
 import { BMCFormProps } from '../Agent/types';
 import {
   BareMetalHostK8sResource,

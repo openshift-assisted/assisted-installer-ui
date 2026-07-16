@@ -11,7 +11,6 @@ import {
   ModalBody,
   ModalFooter,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { Formik, FormikHelpers } from 'formik';
 import {
   ImageCreateParams,
@@ -24,38 +23,13 @@ import {
   httpsProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
-} from '../../validationSchemas';
-import { ProxyFieldsType, StatusErrorType } from '../../types';
-import ProxyFields from './ProxyFields';
-import UploadSSH from './UploadSSH';
-import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
-import { getOCPStaticIPDocLink } from '../../config/docs_links';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-
-export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
-  const { t } = useTranslation();
-  return (
-    <Alert
-      title={t(
-        'ai:To use static network configuration, follow the steps listed in the documentation.',
-      )}
-      isInline
-      variant="info"
-    >
-      <Button
-        variant="link"
-        icon={<ExternalLinkAltIcon />}
-        iconPosition="right"
-        isInline
-        onClick={() =>
-          window.open(getOCPStaticIPDocLink(docVersion), '_blank', 'noopener,noreferrer')
-        }
-      >
-        {t('ai:View documentation')}
-      </Button>
-    </Alert>
-  );
-};
+} from '../../../common';
+import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
+import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
+import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
+import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
+import { StaticIPInfo } from '../../../common/components/clusterConfiguration/StaticIPInfo';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 

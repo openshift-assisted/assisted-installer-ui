@@ -9,7 +9,8 @@ import {
   ModalVariant,
   Spinner,
 } from '@patternfly/react-core';
-import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
+import { DownloadIso } from '../../../common';
+import { DiscoveryImageConfigForm, DiscoveryImageFormValues } from './DiscoveryImageConfigForm';
 import { AddHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
