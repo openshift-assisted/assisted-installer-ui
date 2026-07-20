@@ -1466,8 +1466,8 @@ __metadata:
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-table": 6.4.1
     "@patternfly/react-tokens": 6.4.0
-    "@reduxjs/toolkit": ^1.9.1
-    "@sentry/browser": ^7.119
+    "@reduxjs/toolkit": ^1.9.7
+    "@sentry/browser": ^7.120.4
     "@tsconfig/vite-react": ^7.0.2
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
@@ -1475,9 +1475,9 @@ __metadata:
     axios: ^1.18.1
     concurrently: ^9.0.0
     i18next: ^20.4 || ^21
-    i18next-browser-languagedetector: ^6.1.2
+    i18next-browser-languagedetector: ^6.1.8
     lodash: ^4.18.1
-    monaco-editor: ^0.55.0
+    monaco-editor: ^0.55.1
     nodemon: ^3.0.3
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -1485,11 +1485,11 @@ __metadata:
     react-monaco-editor: ^0.59.0
     react-redux: ^8.0.5
     react-router: ^7.17.0
-    redux: ^4
-    uuid: ^14.0
+    redux: ^4.2.1
+    uuid: ^14.0.1
     vite: ^8.0.16
     vite-plugin-environment: ^1.1.3
-    yup: ^1.4.0
+    yup: ^1.7.1
   languageName: unknown
   linkType: soft
 
@@ -1507,7 +1507,7 @@ __metadata:
     "@redhat-cloud-services/ai-client-common": ^0.13.0
     "@redhat-cloud-services/ai-client-state": ^0.15.0
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": ^3.0.0
-    "@redhat-cloud-services/frontend-components": ^7.0.0
+    "@redhat-cloud-services/frontend-components": ^7.10.2
     "@redhat-cloud-services/frontend-components-config": ^6.0.17
     "@redhat-cloud-services/tsc-transform-imports": ^1.0.4
     "@tsconfig/vite-react": ^7.0.2
@@ -1541,28 +1541,28 @@ __metadata:
     "@patternfly/react-styles": 6.4.0
     "@patternfly/react-table": 6.4.1
     "@patternfly/react-tokens": 6.4.0
-    "@reduxjs/toolkit": ^1.9.1
-    "@sentry/browser": ^7.119
+    "@reduxjs/toolkit": ^1.9.7
+    "@sentry/browser": ^7.120.4
     "@tsconfig/vite-react": ^7.0.2
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     "@vitejs/plugin-react-swc": ^4.3.0
     axios: ^1.18.1
     i18next: ^20.4 || ^21
-    i18next-browser-languagedetector: ^6.1.2
+    i18next-browser-languagedetector: ^6.1.8
     lodash: ^4.18.1
-    monaco-editor: ^0.55.0
+    monaco-editor: ^0.55.1
     react: ^18.2.0
     react-dom: ^18.2.0
     react-i18next: ^11.11.4
     react-monaco-editor: ^0.59.0
     react-redux: ^8.0.5
     react-router: ^7.17.0
-    redux: ^4
-    uuid: ^14.0
+    redux: ^4.2.1
+    uuid: ^14.0.1
     vite: ^8.0.16
     vite-plugin-environment: ^1.1.3
-    yup: ^1.4.0
+    yup: ^1.7.1
   languageName: unknown
   linkType: soft
 
@@ -1582,9 +1582,9 @@ __metadata:
     "@types/node": ^24.13.3
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
-    file-saver: ^2.0.2
-    lodash-es: ^4.17.23
-    uuid: ^14.0
+    file-saver: ^2.0.5
+    lodash-es: ^4.18.1
+    uuid: ^14.0.1
   peerDependencies:
     react: ^18
     react-dom: ^18
@@ -1596,13 +1596,13 @@ __metadata:
   resolution: "@openshift-assisted/eslint-config@workspace:tools/eslint-config"
   dependencies:
     "@types/eslint": ^9.6.1
-    "@typescript-eslint/eslint-plugin": ^5.54.1
-    "@typescript-eslint/parser": ^5.54.1
-    eslint: ^8.36.0
-    eslint-config-prettier: ^8.7.0
-    eslint-plugin-import: ^2.27.5
-    eslint-plugin-react: ^7.32.2
-    eslint-plugin-react-hooks: ^4.6.0
+    "@typescript-eslint/eslint-plugin": ^5.62.0
+    "@typescript-eslint/parser": ^5.62.0
+    eslint: ^8.57.1
+    eslint-config-prettier: ^8.10.2
+    eslint-plugin-import: ^2.32.0
+    eslint-plugin-react: ^7.37.5
+    eslint-plugin-react-hooks: ^4.6.2
   languageName: unknown
   linkType: soft
 
@@ -1630,7 +1630,7 @@ __metadata:
   dependencies:
     "@tsconfig/recommended": ^1.0.13
     "@types/node": ^24.13.3
-    chokidar: ^3.5.3
+    chokidar: ^3.6.0
     lodash: ^4.18.1
     zx: ^8.8.5
   bin:
@@ -1659,7 +1659,7 @@ __metadata:
     cypress-file-upload: 5.0.8
     cypress-fill-command: ^1.0.2
     lodash: ^4.18.1
-    start-server-and-test: ^2.0.0
+    start-server-and-test: ^2.1.5
   languageName: unknown
   linkType: soft
 
@@ -1692,25 +1692,25 @@ __metadata:
     "@types/uuid": ^11.0.0
     axios-case-converter: ^0.11.1
     camel-case: ^4.1.2
-    cidr-tools: ^12.1.1
-    classnames: ^2.3.1
-    file-saver: ^2.0.2
+    cidr-tools: ^12.1.2
+    classnames: ^2.5.1
+    file-saver: ^2.0.5
     filesize.js: ^2.0.0
-    formik: 2.2.6
-    fuse.js: ^6.4.6
+    formik: 2.4.9
+    fuse.js: ^6.6.2
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
-    ip-address: ^10.1.1
+    ip-address: ^10.2.0
     is-cidr: ^4.0.2
-    is-in-subnet: ^4
-    js-yaml: ^4.2.0
-    lodash-es: ^4.17.23
+    is-in-subnet: ^4.0.1
+    js-yaml: ^4.3.0
+    lodash-es: ^4.18.1
     parse-url: ^9.2.0
-    prism-react-renderer: ^1.1.1
+    prism-react-renderer: ^1.3.5
     react-error-boundary: ^3.1.4
-    swr: ^2
-    tslib: ^2.6.1
-    unique-names-generator: ^4.2.0
+    swr: ^2.4.2
+    tslib: ^2.8.1
+    unique-names-generator: ^4.7.1
   peerDependencies:
     "@reduxjs/toolkit": ^1.9.7
     "@sentry/browser": ^5.9 || ^6
@@ -2435,30 +2435,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-cloud-services/frontend-components@npm:^7.0.0":
-  version: 7.3.1
-  resolution: "@redhat-cloud-services/frontend-components@npm:7.3.1"
+"@redhat-cloud-services/frontend-components@npm:^7.10.2":
+  version: 7.10.2
+  resolution: "@redhat-cloud-services/frontend-components@npm:7.10.2"
   dependencies:
     "@patternfly/react-component-groups": ^6.0.0
     "@redhat-cloud-services/frontend-components-utilities": ^7.0.0
     "@redhat-cloud-services/types": ^3.0.0
-    "@scalprum/core": ^0.9.0
-    "@scalprum/react-core": ^0.11.1
+    "@scalprum/core": ^0.9.2
+    "@scalprum/react-core": ^0.11.2
     classnames: ^2.2.5
     sanitize-html: ^2.13.1
   peerDependencies:
     "@patternfly/react-core": ^6.0.0
+    "@patternfly/react-data-view": ^6.0.0
     "@patternfly/react-icons": ^6.0.0
     "@patternfly/react-table": ^6.0.0
     "@patternfly/react-tokens": ^6.0.0
     lodash: ^4.17.15
-    prop-types: ^15.6.2
-    react: ^18.2.0
+    react: ^18.0.0 || ^19.0.0
     react-content-loader: ^6.2.0
-    react-dom: ^18.2.0
+    react-dom: ^18.0.0 || ^19.0.0
     react-redux: ^7.0.0 || ^8.0.0 || ^9.0.0
     react-router-dom: ^5.0.0 || ^6.0.0
-  checksum: 244fa65c6033e29ba360c5885c63e8eb45709b2b104f3e230f574f8430970515ad34ab5b80102683f83d52035249001f3b9f57968559856a9e27c5b2d6fa8aa7
+  checksum: 7e1eca393f65d07eb6fcebdbe73767fb22a796474ffbcb56f649803d31c38b8854184f946b40a0786d82ea075634b594a4d1e2e01ea0c7150a045a0a176a1bf2
   languageName: node
   linkType: hard
 
@@ -2509,7 +2509,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:^1.9.1":
+"@reduxjs/toolkit@npm:^1.9.7":
   version: 1.9.7
   resolution: "@reduxjs/toolkit@npm:1.9.7"
   dependencies:
@@ -2834,27 +2834,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scalprum/core@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@scalprum/core@npm:0.9.0"
+"@scalprum/core@npm:^0.9.1, @scalprum/core@npm:^0.9.2":
+  version: 0.9.3
+  resolution: "@scalprum/core@npm:0.9.3"
   dependencies:
     "@openshift/dynamic-plugin-sdk": ^5.0.1
     tslib: ^2.6.2
-  checksum: 302d3df87fda872c05a95d8c6b86809f46854f46af8a44b7faa0250de9a0b0ebeaccdcdc69f9767c858fcef2c34c121b3e1087d0781fa1bcd7eee98d244db72b
+  checksum: a2d6b476834298b6cb408cd55ca3c4cc87342c2e9fd279fc9f86a243a4b551eb2e2e9eaf315de777050302bef4ef71dfb13883f23faf0f5001fa65c910ef60b8
   languageName: node
   linkType: hard
 
-"@scalprum/react-core@npm:^0.11.1":
-  version: 0.11.1
-  resolution: "@scalprum/react-core@npm:0.11.1"
+"@scalprum/react-core@npm:^0.11.2":
+  version: 0.11.3
+  resolution: "@scalprum/react-core@npm:0.11.3"
   dependencies:
     "@openshift/dynamic-plugin-sdk": ^5.0.1
-    "@scalprum/core": ^0.9.0
+    "@scalprum/core": ^0.9.1
     lodash: ^4.17.0
   peerDependencies:
     react: ">=16.8.0 || >=17.0.0 || ^18.0.0"
     react-dom: ">=16.8.0 || >=17.0.0 || ^18.0.0"
-  checksum: 2eac484690307aa80ebbaf482f7a9d6b756476bfe4da8722a4be05925c32c3fa5ac31614978cc5197598f19afdf6dbc80cc6f13e6f1b00cdb2a03f61ba6b4ed0
+  checksum: fee53e7349ac6a9ac21a146823baf945eb41d81643eebba0f07c096cac1afed8be18a077fbe159cc4c16d82f1af3f83eb3e5ee84098af73678b23405e1658408
   languageName: node
   linkType: hard
 
@@ -2985,7 +2985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^7.119, @sentry/browser@npm:^7.119.1":
+"@sentry/browser@npm:^7.119.1, @sentry/browser@npm:^7.120.4":
   version: 7.120.4
   resolution: "@sentry/browser@npm:7.120.4"
   dependencies:
@@ -4046,7 +4046,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.54.1":
+"@typescript-eslint/eslint-plugin@npm:^5.62.0":
   version: 5.62.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.62.0"
   dependencies:
@@ -4070,7 +4070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.54.1":
+"@typescript-eslint/parser@npm:^5.62.0":
   version: 5.62.0
   resolution: "@typescript-eslint/parser@npm:5.62.0"
   dependencies:
@@ -5674,16 +5674,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cidr-tools@npm:^12.1.1":
-  version: 12.1.1
-  resolution: "cidr-tools@npm:12.1.1"
+"cidr-tools@npm:^12.1.2":
+  version: 12.1.2
+  resolution: "cidr-tools@npm:12.1.2"
   dependencies:
     ip-bigint: ^9.0.6
-  checksum: a542bfe74f3ade5c6ebac872937fbc751f6286348cda539144f8ef3e72c0a1cd7bb830fc6dd73d86b6ad26e48f0a21924e5f6ac0159022811972895bee4e799a
+  checksum: 10052947f66490222cd4d53024fdebd660f3c0d3085ac92ffff248ba202a061e81065700a80a8370cf2d6e944ccfdad72ddd1d31b2333f5852b5008fc5a308e5
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.5, classnames@npm:^2.3.1":
+"classnames@npm:^2.2.5, classnames@npm:^2.5.1":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: da424a8a6f3a96a2e87d01a432ba19315503294ac7e025f9fece656db6b6a0f7b5003bb1fbb51cbb0d9624d964f1b9bb35a51c73af9b2434c7b292c42231c1e5
@@ -7464,7 +7464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.7.0":
+"eslint-config-prettier@npm:^8.10.2":
   version: 8.10.2
   resolution: "eslint-config-prettier@npm:8.10.2"
   peerDependencies:
@@ -7498,7 +7498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.27.5":
+"eslint-plugin-import@npm:^2.32.0":
   version: 2.32.0
   resolution: "eslint-plugin-import@npm:2.32.0"
   dependencies:
@@ -7547,16 +7547,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^4.6.0":
-  version: 4.6.1
-  resolution: "eslint-plugin-react-hooks@npm:4.6.1"
+"eslint-plugin-react-hooks@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "eslint-plugin-react-hooks@npm:4.6.2"
   peerDependencies:
     eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
-  checksum: 77f3a53f6dd09968062f79e5f873b6a8b22346860bf5874acb08f36f6dff754f061c99e486f83b4946b89127d423f5498b1326f1f95997264e2b9817afce6272
+  checksum: 395c433610f59577cfcf3f2e42bcb130436c8a0b3777ac64f441d88c5275f4fcfc89094cedab270f2822daf29af1079151a7a6579a8e9ea8cee66540ba0384c4
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.32.2, eslint-plugin-react@npm:^7.37.5":
+"eslint-plugin-react@npm:^7.37.5":
   version: 7.37.5
   resolution: "eslint-plugin-react@npm:7.37.5"
   dependencies:
@@ -7625,7 +7625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.36.0, eslint@npm:^8.57.1":
+"eslint@npm:^8.57.1":
   version: 8.57.1
   resolution: "eslint@npm:8.57.1"
   dependencies:
@@ -8100,7 +8100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.2":
+"file-saver@npm:^2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: c62d96e5cebc58b4bdf3ae8a60d5cf9607ad82f75f798c33a4ee63435ac2203002584d5256a2a780eda7feb5e19dc3b6351c2212e58b3f529e63d265a7cc79f7
@@ -8287,20 +8287,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"formik@npm:2.2.6":
-  version: 2.2.6
-  resolution: "formik@npm:2.2.6"
+"formik@npm:2.4.9":
+  version: 2.4.9
+  resolution: "formik@npm:2.4.9"
   dependencies:
+    "@types/hoist-non-react-statics": ^3.3.1
     deepmerge: ^2.1.1
     hoist-non-react-statics: ^3.3.0
-    lodash: ^4.17.14
-    lodash-es: ^4.17.14
+    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     react-fast-compare: ^2.0.1
     tiny-warning: ^1.0.2
-    tslib: ^1.10.0
+    tslib: ^2.0.0
   peerDependencies:
     react: ">=16.8.0"
-  checksum: b3d79717b03e9aadc366bb83d29ef13d800caadd506ed3f097d500dfacf573ae8f7fc7913d6e240f8c6a70b1df925fdceae887be28706822e11b04190c94c95d
+  checksum: c518f055966245b2a120307107a19b3186f554f6218f5cb0fe2d309e5d95722008b361f851eeda2acd2c06441d8d50f7d768c1313c62a2d371f9106b064fbcff
   languageName: node
   linkType: hard
 
@@ -8480,7 +8481,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fuse.js@npm:^6.4.6":
+"fuse.js@npm:^6.6.2":
   version: 6.6.2
   resolution: "fuse.js@npm:6.6.2"
   checksum: 17ae758ce205276ebd88bd9c9f088a100be0b4896abac9f6b09847151269d1690f41d7f98ff5813d4a58973162dbd99d0072ce807020fee6f9de60170f6b08eb
@@ -9302,7 +9303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^6.1.2":
+"i18next-browser-languagedetector@npm:^6.1.8":
   version: 6.1.8
   resolution: "i18next-browser-languagedetector@npm:6.1.8"
   dependencies:
@@ -9799,7 +9800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-in-subnet@npm:^4":
+"is-in-subnet@npm:^4.0.1":
   version: 4.0.1
   resolution: "is-in-subnet@npm:4.0.1"
   checksum: eb0613ed8620aa4ccc26d6067f873e6484f1b8f0e637b38500dfb2be213adc238ec4c2aa15b4d9b14481d2dd4fd026639b26a825f726629a8cb01c61182666b2
@@ -10226,7 +10227,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.1.0, js-yaml@npm:^4.2.0":
+"js-yaml@npm:^4.1.0, js-yaml@npm:^4.2.0, js-yaml@npm:^4.3.0":
   version: 4.3.0
   resolution: "js-yaml@npm:4.3.0"
   dependencies:
@@ -11858,7 +11859,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.55.0":
+"monaco-editor@npm:^0.55.1":
   version: 0.55.1
   resolution: "monaco-editor@npm:0.55.1"
   dependencies:
@@ -12980,7 +12981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prism-react-renderer@npm:^1.1.1":
+"prism-react-renderer@npm:^1.3.5":
   version: 1.3.5
   resolution: "prism-react-renderer@npm:1.3.5"
   peerDependencies:
@@ -13507,7 +13508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4, redux@npm:^4.0.0, redux@npm:^4.2.1":
+"redux@npm:^4.0.0, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
   dependencies:
@@ -14765,7 +14766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"start-server-and-test@npm:^2.0.0":
+"start-server-and-test@npm:^2.1.5":
   version: 2.1.5
   resolution: "start-server-and-test@npm:2.1.5"
   dependencies:
@@ -15139,15 +15140,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^2":
-  version: 2.4.1
-  resolution: "swr@npm:2.4.1"
+"swr@npm:^2.4.2":
+  version: 2.4.2
+  resolution: "swr@npm:2.4.2"
   dependencies:
     dequal: ^2.0.3
     use-sync-external-store: ^1.6.0
   peerDependencies:
     react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: f35d9d6d803d9b793f2e873b7f43943a76eb2278176013ed3de38206a48312803b1663495c477c7facb0245927092b33861cb5fe6b993d3169b00db5a790d18e
+  checksum: a0d71a9ae7102e6f36c052974858149d6c74214745e0966cc8779b81b3cd4413b3f76241c6e1a3f342d010f5c403bd8acf427747dc221f935a1b7e77ce17ffd9
   languageName: node
   linkType: hard
 
@@ -15610,14 +15611,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.4.1, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.7.0, tslib@npm:^2.8.1":
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.4.1, tslib@npm:^2.6.2, tslib@npm:^2.7.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.10.0, tslib@npm:^1.8.1, tslib@npm:^1.9.3":
+"tslib@npm:^1.8.1, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
@@ -15902,7 +15903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unique-names-generator@npm:^4.2.0":
+"unique-names-generator@npm:^4.7.1":
   version: 4.7.1
   resolution: "unique-names-generator@npm:4.7.1"
   checksum: 81b58efee72458fd0c84f54a89d731b2570305d331ce62c4156273e54ece77b6488fc6c607169f4b8f6644fa48b42aef8689dbe7e310ae2c4bafbd5c0a625354
@@ -16105,12 +16106,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:*, uuid@npm:^14.0":
+"uuid@npm:*":
   version: 14.0.0
   resolution: "uuid@npm:14.0.0"
   bin:
     uuid: dist-node/bin/uuid
   checksum: 08608584a79e987cdae000fa8eb724fa51dd8aafc136cd9fa9a8c87d07b246c56eec5fd9027fdb3e49a863eedf758bc19e325909ce281955c7a027fed67dc89e
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^14.0.1":
+  version: 14.0.1
+  resolution: "uuid@npm:14.0.1"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 8c79338151976423c5eff1292bc40efd247a666d32b0913430f130d58db76298d28f8a95d6dad7765194dcc72324849fee8866f3ca90e9c1185ac17bb7b5d97d
   languageName: node
   linkType: hard
 
@@ -17034,7 +17044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yup@npm:^1.4.0, yup@npm:^1.7.1":
+"yup@npm:^1.7.1":
   version: 1.7.1
   resolution: "yup@npm:1.7.1"
   dependencies:
