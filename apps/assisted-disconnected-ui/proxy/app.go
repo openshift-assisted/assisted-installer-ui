@@ -27,6 +27,16 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			h := w.Header()
+			h.Set("X-Frame-Options", "DENY")
+			h.Set("X-Content-Type-Options", "nosniff")
+			h.Set("Referrer-Policy", "no-referrer")
+			h.Set("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'")
+			next.ServeHTTP(w, r)
+		})
+	})
 	router.PathPrefix("/api/{forward:.*}").Handler(apiHandler)
 
 	spa := server.SpaHandler{}
@@ -41,6 +51,7 @@ func main() {
 		}
 		serverTlsconfig = &tls.Config{
 			Certificates: []tls.Certificate{cert},
+			MinVersion:   tls.VersionTLS12,
 		}
 	}
 

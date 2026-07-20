@@ -41,7 +41,7 @@ const SingleClusterFinalizerPage = ({
           {consoleUrl && (
             <Button
               variant="link"
-              onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
+              onClick={() => window.open(consoleUrl, '_blank', 'noopener,noreferrer')}
               isInline
             >
               {consoleUrl}
