@@ -118,7 +118,7 @@ export const getMceDocsLink = (ocpVersion?: string) =>
 export const getLvmsDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/html/storage/configuring-persistent-storage#overview-of-lvm-storage-functionality_ways-to-provision-local-storage`;
+  )}/html-single/storage/index#persistent-storage-using-lvms`;
 
 export const NODE_HEALTHCHECK_LINK =
   'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/node-health-check-operator';
