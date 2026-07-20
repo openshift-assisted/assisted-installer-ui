@@ -53,11 +53,8 @@ import {
   NODE_HEALTHCHECK_LINK,
   NODE_MAINTENANCE_LINK,
   ODF_LINK,
-  ODF_REQUIREMENTS_LINK,
   OPENSHIFT_AI_LINK,
-  OPENSHIFT_AI_REQUIREMENTS_LINK,
   OSC_LINK,
-  OSC_REQUIREMENTS_LINK,
   PIPELINES_OPERATOR_LINK,
   SERVERLESS_OPERATOR_LINK,
   SERVICE_MESH_OPERATOR_LINK,
@@ -183,11 +180,6 @@ export const getOperatorSpecs = (
         title: 'OpenShift Data Foundation',
         featureId: 'ODF',
         descriptionText: DESCRIPTION_ODF,
-        Requirements: () => (
-          <ExternalLink href={ODF_REQUIREMENTS_LINK}>
-            Learn more about the requirements for OpenShift Data Foundation
-          </ExternalLink>
-        ),
         Description: ({ searchTerm }) => (
           <>
             <HighlightedText text={DESCRIPTION_ODF} searchTerm={searchTerm} />{' '}
@@ -246,11 +238,6 @@ export const getOperatorSpecs = (
         title: 'OpenShift sandboxed containers',
         featureId: 'OSC',
         descriptionText: DESCRIPTION_OSC,
-        Requirements: () => (
-          <ExternalLink href={OSC_REQUIREMENTS_LINK}>
-            Learn more about the requirements for OpenShift sandboxed containers
-          </ExternalLink>
-        ),
         Description: ({ searchTerm }) => (
           <>
             <HighlightedText text={DESCRIPTION_OSC} searchTerm={searchTerm} />{' '}
@@ -266,9 +253,6 @@ export const getOperatorSpecs = (
         title: 'OpenShift AI',
         featureId: 'OPENSHIFT_AI',
         descriptionText: DESCRIPTION_OPENSHIFT_AI,
-        Requirements: () => (
-          <ExternalLink href={OPENSHIFT_AI_REQUIREMENTS_LINK}>Learn more</ExternalLink>
-        ),
         Description: ({ searchTerm }) => (
           <>
             <HighlightedText text={DESCRIPTION_OPENSHIFT_AI} searchTerm={searchTerm} />{' '}
