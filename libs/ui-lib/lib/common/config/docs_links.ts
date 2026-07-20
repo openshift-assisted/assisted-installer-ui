@@ -229,7 +229,7 @@ export const getClusterObservabilityLink = (ocpVersion?: string) =>
 export const getLokiLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/html/network_observability/network-observability-overview`;
+  )}/html/network_observability/installing-network-observability-operators#network-observability-loki-installation_network_observability`;
 
 export const getOpenShiftLoggingLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
