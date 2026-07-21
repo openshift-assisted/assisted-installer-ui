@@ -29,7 +29,8 @@
     "shell-quote": "^1.8.4",
     "ip-address": "^10.1.1",
     "@cypress/request/form-data": "2.5.6",
-    "tar": "^7.5.19"
+    "tar": "^7.5.19",
+    "ws": "^8.21.0"
   },
   "scripts": {
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
