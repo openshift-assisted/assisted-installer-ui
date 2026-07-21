@@ -118,7 +118,7 @@ export const getMceDocsLink = (ocpVersion?: string) =>
 export const getLvmsDocsLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/html/storage/configuring-persistent-storage#overview-of-lvm-storage-functionality_ways-to-provision-local-storage`;
+  )}/html-single/storage/index#persistent-storage-using-lvms`;
 
 export const NODE_HEALTHCHECK_LINK =
   'https://docs.redhat.com/en/documentation/workload_availability_for_red_hat_openshift/latest/html/remediation_fencing_and_maintenance/node-health-check-operator';
@@ -229,7 +229,7 @@ export const getClusterObservabilityLink = (ocpVersion?: string) =>
 export const getLokiLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
-  )}/html/network_observability/network-observability-overview`;
+  )}/html/network_observability/installing-network-observability-operators#network-observability-loki-installation_network_observability`;
 
 export const getOpenShiftLoggingLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
