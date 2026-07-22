@@ -1,4 +1,26 @@
+import { isMajorMinorVersionEqualOrGreater } from '../utils';
+
 const DEFAULT_OPENSHIFT_DOCS_VERSION = 4.15;
+
+const LATEST_OPENSHIFT_DOCS_VERSION = '4.21';
+const MIN_OPENSHIFT_DOCS_VERSION = '4.14';
+const getDocsOpenshiftVersion = (ocpVersion?: string): string => {
+  if (!ocpVersion) {
+    return LATEST_OPENSHIFT_DOCS_VERSION;
+  }
+  if (isMajorMinorVersionEqualOrGreater(MIN_OPENSHIFT_DOCS_VERSION, ocpVersion)) {
+    return MIN_OPENSHIFT_DOCS_VERSION;
+  }
+  if (isMajorMinorVersionEqualOrGreater(ocpVersion, LATEST_OPENSHIFT_DOCS_VERSION)) {
+    return LATEST_OPENSHIFT_DOCS_VERSION;
+  }
+
+  const versionParts = ocpVersion.split('.').slice(0, 2).map(Number);
+  if (versionParts.length < 2) {
+    return LATEST_OPENSHIFT_DOCS_VERSION;
+  }
+  return `${versionParts[0]}.${versionParts[1]}`;
+};
 
 export const getShortOpenshiftVersion = (ocpVersion?: string) => {
   if (!ocpVersion) {
@@ -36,14 +58,13 @@ export const getEncryptingDiskDuringInstallationDocsLink = (ocpVersion?: string)
   )}/html/installation_configuration/installing-customizing#installation-special-config-encrypt-disk_installing-customizing`;
 
 //Networking page
-export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) =>
-  `https://docs.redhat.com/en/documentation/openshift_container_platform/${getShortOpenshiftVersion(
-    ocpVersion,
-  )}/html/installing_on_bare_metal/${
-    getShortOpenshiftVersion(ocpVersion) > 4.17
-      ? 'user-provisioned-infrastructure'
-      : 'installing-bare-metal'
-  }#installation-network-user-infra_installing-bare-metal`;
+export const getOpenShiftNetworkingDocsLink = (ocpVersion?: string) => {
+  const validOcpVersion = getDocsOpenshiftVersion(ocpVersion);
+  const variant = isMajorMinorVersionEqualOrGreater(validOcpVersion, '4.18')
+    ? 'user-provisioned-infrastructure'
+    : 'installing-bare-metal';
+  return `https://docs.redhat.com/en/documentation/openshift_container_platform/${validOcpVersion}/html/installing_on_bare_metal/${variant}#installation-network-user-infra_installing-bare-metal`;
+};
 
 export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
 
