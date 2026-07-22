@@ -64,7 +64,7 @@
     "path-to-regexp": "^8.4.2",
     "ws": "^8.21.0",
     "qs": "^6.15.3",
-    "shell-quote": "^1.8.4",
+    "shell-quote": "^1.10.0",
     "dompurify": "^3.4.7"
   },
   "workspaces": [
