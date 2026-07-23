@@ -62,6 +62,7 @@ export type StorageValues = V2ClusterUpdateParams & {
 export type OperatorsValues = {
   selectedBundles: BundleCreateParams[];
   selectedOperators: string[];
+  operatorProperties: Record<string, string>; // operator name -> properties JSON string
 };
 
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix' | 'external'>;

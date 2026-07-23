@@ -155,6 +155,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'numa-resources-requirements-satisfied': t('ai:NUMA Resources requirements'),
   'oadp-requirements-satisfied': t('ai:OADP requirements'),
   'metallb-requirements-satisfied': t('ai:MetalLB requirements'),
+  'network-observability-requirements-satisfied': t('ai:Network Observability requirements'),
 });
 
 export const hostValidationFailureHints = (
@@ -230,6 +231,7 @@ export const hostValidationFailureHints = (
   'numa-resources-requirements-satisfied': '',
   'oadp-requirements-satisfied': '',
   'metallb-requirements-satisfied': '',
+  'network-observability-requirements-satisfied': '',
 });
 
 export const clusterValidationLabels = (
@@ -266,6 +268,7 @@ export const clusterValidationLabels = (
   'numa-resources-requirements-satisfied': t('ai:NUMA Resources requirements'),
   'oadp-requirements-satisfied': t('ai:OADP requirements'),
   'metallb-requirements-satisfied': t('ai:MetalLB requirements'),
+  'network-observability-requirements-satisfied': t('ai:Network Observability requirements'),
 });
 
 export const clusterValidationGroupLabels = (
@@ -388,6 +391,7 @@ export const OPERATOR_NAME_OPENSHIFT_LOGGING = 'openshift-logging';
 export const OPERATOR_NAME_NUMA_RESOURCES = 'numaresources';
 export const OPERATOR_NAME_OADP = 'oadp';
 export const OPERATOR_NAME_METALLB = 'metallb';
+export const OPERATOR_NAME_NETWORK_OBSERVABILITY = 'network-observability';
 
 export const singleClusterOperators = [
   OPERATOR_NAME_CNV,
@@ -399,6 +403,7 @@ export const singleClusterOperators = [
   OPERATOR_NAME_KUBE_DESCHEDULER,
   OPERATOR_NAME_METALLB,
   OPERATOR_NAME_CLUSTER_OBSERVABILITY,
+  OPERATOR_NAME_NETWORK_OBSERVABILITY,
   OPERATOR_NAME_OADP,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_NUMA_RESOURCES,

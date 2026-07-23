@@ -29,6 +29,8 @@ import {
   OperatorSpec,
   useOperatorSpecs,
 } from '../../../../common/components/operators/operatorSpecs';
+import NetworkObservabilityPropertiesForm from './NetworkObservabilityPropertiesForm';
+import { NETWORK_OBSERVABILITY_OPERATOR_ID } from './networkObservabilityProperties';
 
 const OperatorRequirements = ({
   operatorId,
@@ -138,6 +140,7 @@ const OperatorCheckbox = ({
   const { values, setFieldValue } = useFormikContext<OperatorsValues>();
   const fieldId = getFieldId(operatorId, 'input');
   const supportLevel = getFeatureSupportLevel(featureId);
+
   const getDisabledReason = (): string | undefined => {
     const featureDisabledReason = getFeatureDisabledReason(featureId);
     if (featureDisabledReason) {
@@ -220,6 +223,9 @@ const OperatorCheckbox = ({
         }
         data-testid={`operator-checkbox-${operatorId}`}
       />
+      {isChecked && operatorId === NETWORK_OBSERVABILITY_OPERATOR_ID && (
+        <NetworkObservabilityPropertiesForm isDisabled={isViewerMode || !!disabledReason} />
+      )}
     </FormGroup>
   );
 };

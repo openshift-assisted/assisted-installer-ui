@@ -742,7 +742,8 @@ export type ClusterValidationId =
   | 'oadp-requirements-satisfied'
   | 'metallb-requirements-satisfied'
   | 'loki-requirements-satisfied'
-  | 'openshift-logging-requirements-satisfied';
+  | 'openshift-logging-requirements-satisfied'
+  | 'network-observability-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1179,7 +1180,8 @@ export type FeatureSupportLevelId =
   | 'METALLB'
   | 'DUAL_STACK_PRIMARY_IPV6'
   | 'LOKI'
-  | 'OPENSHIFT_LOGGING';
+  | 'OPENSHIFT_LOGGING'
+  | 'NETWORK_OBSERVABILITY';
 export interface FencingCredentialsParams {
   /**
    * The URL of the host's BMC, for example https://bmc1.example.com.
@@ -1779,7 +1781,8 @@ export type HostValidationId =
   | 'oadp-requirements-satisfied'
   | 'metallb-requirements-satisfied'
   | 'loki-requirements-satisfied'
-  | 'openshift-logging-requirements-satisfied';
+  | 'openshift-logging-requirements-satisfied'
+  | 'network-observability-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */

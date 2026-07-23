@@ -20,6 +20,7 @@ import { ClustersService } from '../../services';
 import { setServerUpdateError, updateCluster } from '../../store/slices/current-cluster/slice';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../../common/api';
 import { canNextOperators } from './wizardTransition';
+import { validateOperatorsValues } from './operatorsValidation';
 
 // Balance debounce time: fast clicks should trigger a single API call,
 // but making it shorter will allow us to disable navigation buttons while changes are pending
@@ -33,6 +34,13 @@ const getOperatorsInitialValues = (
   const selectedOperators = olmOperators
     .filter((operator) => operator.name && !operator.sourceBundles?.length)
     .map(({ name }) => name as string);
+
+  const operatorProperties: Record<string, string> = {};
+  olmOperators.forEach((op) => {
+    if (op.name && op.properties) {
+      operatorProperties[op.name] = op.properties;
+    }
+  });
 
   const selectedBundlesFromOperatorBundles = (cluster.operatorBundles || []).map(
     ({ id, optionalOperators }) => ({
@@ -54,6 +62,7 @@ const getOperatorsInitialValues = (
   return {
     selectedBundles,
     selectedOperators,
+    operatorProperties,
   };
 };
 
@@ -111,10 +120,18 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
+    const enabledOperators = values.selectedOperators.map((so) => {
+      const operator: { name: string; properties?: string } = { name: so };
+      if (values.operatorProperties[so]) {
+        operator.properties = values.operatorProperties[so];
+      }
+      return operator;
+    });
+
     try {
       const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
         operatorBundles: values.selectedBundles,
-        olmOperators: values.selectedOperators.map((name) => ({ name })),
+        olmOperators: enabledOperators,
       });
 
       dispatch(updateCluster(updatedCluster));
@@ -143,7 +160,11 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validate={validateOperatorsValues}
+    >
       <OperatorsForm cluster={cluster} />
     </Formik>
   );
