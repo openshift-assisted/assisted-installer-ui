@@ -1,14 +1,14 @@
 import { AxiosResponse } from 'axios';
 import { CpuArchitecture } from '../../common';
 import { InfraEnvsAPI } from './apis';
-import InfraEnvCache from './InfraEnvIdsCacheService';
-import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
+import { InfraEnvIdsCacheService } from './InfraEnvIdsCacheService';
 import {
   Cluster,
   HostStaticNetworkConfig,
   InfraEnv,
   InfraEnvCreateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { getDummyInfraEnvField } from '../components/wizard/steps/staticIp/data';
 
 const InfraEnvsService = {
   async getInfraEnvId(
@@ -16,7 +16,7 @@ const InfraEnvsService = {
     cpuArchitecture: CpuArchitecture,
     isSingleClusterFeatureEnabled?: boolean,
   ): Promise<string | Error> {
-    let infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
+    let infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId instanceof Error) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(
         !isSingleClusterFeatureEnabled ? clusterId : '',
@@ -25,11 +25,11 @@ const InfraEnvsService = {
         return infraEnvs[0].id;
       }
       if (infraEnvs.length > 0 && clusterId) {
-        InfraEnvCache.updateInfraEnvs(clusterId, infraEnvs);
-        infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
+        InfraEnvIdsCacheService.updateInfraEnvs(clusterId, infraEnvs);
+        infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
       }
       if (!infraEnvId) {
-        InfraEnvCache.removeInfraEnvId(clusterId, cpuArchitecture);
+        InfraEnvIdsCacheService.removeInfraEnvId(clusterId, cpuArchitecture);
       }
     }
     return infraEnvId;
@@ -66,7 +66,7 @@ const InfraEnvsService = {
       throw new Error('API returned no ID for the underlying InfraEnv');
     }
 
-    InfraEnvCache.updateInfraEnvs(params.clusterId, [infraEnv]);
+    InfraEnvIdsCacheService.updateInfraEnvs(params.clusterId, [infraEnv]);
     return infraEnv;
   },
 
@@ -77,7 +77,7 @@ const InfraEnvsService = {
       return InfraEnvsAPI.deregister(infraEnv.id);
     });
 
-    InfraEnvCache.removeInfraEnvs(clusterId);
+    InfraEnvIdsCacheService.removeInfraEnvs(clusterId);
 
     return Promise.all(promises);
   },

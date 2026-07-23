@@ -1,27 +1,23 @@
 import React, { PropsWithChildren } from 'react';
 import {
-  ActiveFeatureConfiguration,
-  CpuArchitecture,
-  FeatureId,
-  SupportedCpuArchitecture,
-  getDefaultCpuArchitecture,
-} from '../../../common';
-import { usePullSecret } from '../../hooks';
-import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
-import useInfraEnv from '../../hooks/useInfraEnv';
-import {
-  NewFeatureSupportLevelContextProvider,
-  NewFeatureSupportLevelData,
-  NewFeatureSupportLevelMap,
-} from '../../../common/components/newFeatureSupportLevels';
-import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
-import {
   Cluster,
   PlatformType,
   SupportLevel,
   SupportLevels,
 } from '@openshift-assisted/types/assisted-installer-service';
-import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
+import {
+  ActiveFeatureConfiguration,
+  CpuArchitecture,
+  FeatureId,
+  SupportedCpuArchitecture,
+  getDefaultCpuArchitecture,
+  NewFeatureSupportLevelContextProvider,
+  NewFeatureSupportLevelData,
+  NewFeatureSupportLevelMap,
+} from '../../../common';
+import { useOpenShiftVersionsContext } from '../../contexts';
+import { useSupportLevelsAPI, useInfraEnv, usePullSecret } from '../../hooks';
+import { getNewFeatureDisabledReason, isFeatureSupportedAndAvailable } from './featureStateUtils';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -163,5 +159,3 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     </NewFeatureSupportLevelContextProvider>
   );
 };
-
-export default NewFeatureSupportLevelProvider;

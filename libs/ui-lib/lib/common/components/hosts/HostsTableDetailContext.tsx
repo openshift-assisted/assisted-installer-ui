@@ -1,6 +1,12 @@
 import React from 'react';
-import { OnDiskRoleType } from './DiskRole';
+import { Disk, DiskRole, Host } from '@openshift-assisted/types/assisted-installer-service';
 import { HostsTableActions } from './types';
+
+export type OnDiskRoleType = (
+  hostId: Host['id'],
+  diskId: Disk['id'],
+  role: DiskRole,
+) => Promise<unknown>;
 
 type HostsTableDetailContextValue = {
   onDiskRole: OnDiskRoleType | undefined;
@@ -12,7 +18,7 @@ const HostsTableDetailContext = React.createContext<HostsTableDetailContextValue
   undefined,
 );
 
-const HostsTableDetailContextProvider: React.FC<
+export const HostsTableDetailContextProvider: React.FC<
   React.PropsWithChildren<HostsTableDetailContextValue>
 > = ({ canEditDisks, onDiskRole, updateDiskSkipFormatting, children }) => {
   const context = {
@@ -28,7 +34,7 @@ const HostsTableDetailContextProvider: React.FC<
   );
 };
 
-const useHostsTableDetailContext = () => {
+export const useHostsTableDetailContext = () => {
   const context = React.useContext(HostsTableDetailContext);
   if (context === undefined) {
     throw new Error(
@@ -37,5 +43,3 @@ const useHostsTableDetailContext = () => {
   }
   return context;
 };
-
-export { HostsTableDetailContextProvider, useHostsTableDetailContext };

@@ -1,26 +1,25 @@
 import React from 'react';
+import { TFunction } from 'i18next';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { TableVariant, Tbody, Thead, Table, Th, Tr, Td } from '@patternfly/react-table';
-import { DetailItem, DetailList, DetailListProps } from '../ui';
 import type {
   Disk,
   Host,
   Interface,
   Gpu,
 } from '@openshift-assisted/types/assisted-installer-service';
-import type { ValidationsInfo } from '../../types/hosts';
-import type { WithTestID } from '../../types/index';
-import { DASH } from '../constants';
-import { getHostRowHardwareInfo } from './hardwareInfo';
-import { getHardwareTypeText, getInventory } from './utils';
-import type { ValidationInfoActionProps } from './HostValidationGroups';
-import NtpValidationStatus from './NtpValidationStatus';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import SectionTitle from '../ui/SectionTitle';
-import { OnDiskRoleType } from './DiskRole';
-import StorageDetail from '../storage/StorageDetail';
+import { WithTestID } from '../../types';
+import { ValidationsInfo } from '../../types/hosts';
 import { stringToJSON } from '../../utils';
-import { TFunction } from 'i18next';
+import { useTranslation } from '../../hooks';
+import { DASH } from '../constants';
+import { StorageDetail } from '../storage';
+import { DetailListProps, DetailList, SectionTitle, DetailItem } from '../ui';
+import { ValidationInfoActionProps } from './HostValidationGroups';
+import { NtpValidationStatus } from './NtpValidationStatus';
+import { OnDiskRoleType } from './HostsTableDetailContext';
+import { getHostRowHardwareInfo } from './hardwareInfo';
+import { getInventory, getHardwareTypeText } from './utils';
 
 type HostDetailProps = {
   host: Host;

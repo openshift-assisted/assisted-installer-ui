@@ -61,7 +61,7 @@ type ClusterProgressProps = {
   totalPercentage?: number;
 };
 
-const ClusterProgress = ({
+export const ClusterProgress = ({
   cluster,
   minimizedView = false,
   totalPercentage,
@@ -101,5 +101,3 @@ const ClusterProgress = ({
     </>
   );
 };
-
-export default ClusterProgress;

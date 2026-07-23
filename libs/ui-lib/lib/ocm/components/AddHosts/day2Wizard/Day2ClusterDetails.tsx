@@ -1,6 +1,11 @@
-import { Alert, Grid, GridItem } from '@patternfly/react-core';
-import { Form, Formik } from 'formik';
 import React from 'react';
+import { Form, Formik } from 'formik';
+import { Alert, Grid, GridItem } from '@patternfly/react-core';
+import {
+  Cluster,
+  InfraEnv,
+  InfraEnvCreateParams,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterCpuArchitecture,
   ClusterWizardStep,
@@ -12,25 +17,23 @@ import {
   HOW_TO_KNOW_IF_CLUSTER_SUPPORTS_MULTIPLE_CPU_ARCHS,
   LoadingState,
   SupportedCpuArchitecture,
+  handleApiError,
 } from '../../../../common';
-import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
-import { handleApiError } from '../../../../common/api';
+import {
+  HostsNetworkConfigurationType,
+  InfraEnvsService,
+  mapClusterCpuArchToInfraEnvCpuArch,
+} from '../../../services';
+import { usePullSecret } from '../../../hooks';
+import { useOpenShiftVersionsContext } from '../../../contexts';
+import { isOciPlatformType } from '../../utils';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
+import { CpuArchitectureDropdown } from '../../wizard/wizardFields/CpuArchitectureDropdown';
 import { Day2ClusterDetailValues } from '../types';
 import { useDay2WizardContext } from './Day2WizardContext';
-import Day2WizardNav from './Day2WizardNav';
-import Day2WizardFooter from './Day2WizardFooter';
+import { Day2WizardNav } from './Day2WizardNav';
+import { Day2WizardFooter } from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
-import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
-import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
-import { usePullSecret } from '../../../hooks';
-import { useOpenShiftVersionsContext } from '../../clusterWizard/OpenShiftVersionsContext';
-import {
-  Cluster,
-  InfraEnv,
-  InfraEnvCreateParams,
-} from '@openshift-assisted/types/assisted-installer-service';
-import { isOciPlatformType } from '../../utils';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],

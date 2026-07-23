@@ -17,7 +17,7 @@ const DiscoveryImageTypeControlGroupLabel = ({
   </>
 );
 
-const DiscoveryImageTypeControlGroup = () => {
+export const DiscoveryImageTypeControlGroup = () => {
   const { t } = useTranslation();
   return (
     <Flex>
@@ -54,5 +54,3 @@ const DiscoveryImageTypeControlGroup = () => {
     </Flex>
   );
 };
-
-export default DiscoveryImageTypeControlGroup;

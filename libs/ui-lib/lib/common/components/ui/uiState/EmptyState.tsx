@@ -6,17 +6,16 @@ import {
   EmptyStateActions,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons/dist/js/icons/search-icon';
-import { ComponentType } from 'react';
 
 type Props = {
   title?: string;
   content?: React.ReactNode;
-  icon?: ComponentType;
+  icon?: React.ComponentType;
   primaryAction?: React.ReactNode;
   secondaryActions?: React.ReactNode[];
 };
 
-const EmptyState: React.FC<Props> = ({
+export const EmptyState: React.FC<Props> = ({
   title = 'No results found',
   content,
   icon = SearchIcon,
@@ -31,5 +30,3 @@ const EmptyState: React.FC<Props> = ({
     </PFEmptyState>
   </Bullseye>
 );
-
-export default EmptyState;

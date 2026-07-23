@@ -1,6 +1,7 @@
 import React from 'react';
 import { TFunction } from 'i18next';
 import { Address4, Address6 } from 'ip-address';
+import { LabelGroup, Label } from '@patternfly/react-core';
 import {
   Cluster,
   Host,
@@ -8,16 +9,15 @@ import {
   Interface,
 } from '@openshift-assisted/types/assisted-installer-service';
 import type { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
-import { getSubnet } from '../clusterConfiguration';
-import { LabelGroup, Label } from '@patternfly/react-core';
+import { getSubnet } from '../clusterConfiguration/utils';
 import { selectMachineNetworkCIDR } from '../../selectors';
 import { stringToJSON } from '../../utils';
 import { DASH } from '../constants';
 import { getDateTimeCell } from '../ui';
 import { TableRow } from './AITable';
 import { getHostRowHardwareInfo } from './hardwareInfo';
-import Hostname from './Hostname';
-import HostPropertyValidationPopover from './HostPropertyValidationPopover';
+import { Hostname } from './Hostname';
+import { HostPropertyValidationPopover } from './HostPropertyValidationPopover';
 import HostsCount from './HostsCount';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';

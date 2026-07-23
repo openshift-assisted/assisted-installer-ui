@@ -1,8 +1,15 @@
 export * from './utils';
 export * from './types';
+export * from './AITable';
+export * from './AdditionalNTPSourcesDialog';
 export * from './HostValidationGroups';
+export * from './HostsTable';
+export * from './HostRowDetail';
 export * from './tableColumns';
 export * from './tableUtils';
+export * from './usePagination';
+export * from './HostsTableDetailContext';
+export * from './VMRebootConfigurationInfo';
 
 export { default as RoleCell } from './RoleCell';
 export { default as RoleDropdown } from './RoleDropdown';
@@ -15,5 +22,5 @@ export { default as TableToolbar } from './TableToolbar';
 export { ChangeHostnameAction, DeleteHostAction } from './HostToolbarActions';
 export { default as MassChangeHostnameModal } from './MassChangeHostnameModal';
 export { default as MassDeleteHostModal } from './MassDeleteHostModal';
-export { default as Hostname } from './Hostname';
+export * from './Hostname';
 export * from './status';

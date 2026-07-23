@@ -11,7 +11,7 @@ type ViewClusterEventsProps = {
   onFetchEvents: EventListFetchProps['onFetchEvents'];
 };
 
-const ViewClusterEventsButton = ({ cluster, onFetchEvents }: ViewClusterEventsProps) => {
+export const ViewClusterEventsButton = ({ cluster, onFetchEvents }: ViewClusterEventsProps) => {
   const { t } = useTranslation();
   return (
     <EventsModalButton
@@ -27,5 +27,3 @@ const ViewClusterEventsButton = ({ cluster, onFetchEvents }: ViewClusterEventsPr
     </EventsModalButton>
   );
 };
-
-export default ViewClusterEventsButton;

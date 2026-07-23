@@ -1,0 +1,73 @@
+import React from 'react';
+import { useFormikContext } from 'formik';
+import {
+  OpenshiftVersionOptionType,
+  ClusterDetailsValues,
+  OpenShiftVersionDropdown,
+  OpenShiftVersionModal,
+  getComparableVersionInt,
+  useTranslation,
+  isInOcm,
+} from '../../../../../../common';
+import { useOpenShiftVersionsContext } from '../../../../../contexts/OpenShiftVersionsContext';
+import { getOpenshiftVersionHelperText } from './OpenshiftVersionHelperText';
+
+const filterMinVersions = (versions: OpenshiftVersionOptionType[], minVersion: number) =>
+  versions.filter((v) => getComparableVersionInt(v.value) >= minVersion);
+
+type OcmOpenShiftVersionSelectProps = {
+  minVersionAllowed?: number;
+};
+
+export const OcmOpenShiftVersionSelect = ({
+  minVersionAllowed,
+}: OcmOpenShiftVersionSelectProps) => {
+  const { t } = useTranslation();
+  const {
+    values: { customOpenshiftSelect },
+  } = useFormikContext<ClusterDetailsValues>();
+  const { allVersions: allVersionsCtx, latestVersions } = useOpenShiftVersionsContext();
+
+  const allVersions = minVersionAllowed
+    ? filterMinVersions(allVersionsCtx, minVersionAllowed)
+    : allVersionsCtx;
+  const versions = minVersionAllowed
+    ? filterMinVersions(latestVersions, minVersionAllowed)
+    : latestVersions;
+
+  const [isOpenshiftVersionModalOpen, setIsOpenshiftVersionModalOpen] = React.useState(false);
+
+  const customItem = React.useMemo(() => {
+    if (
+      customOpenshiftSelect &&
+      !versions.some((version) => version.value === customOpenshiftSelect)
+    ) {
+      return allVersions.find((version) => version.value === customOpenshiftSelect);
+    }
+    return undefined;
+  }, [allVersions, customOpenshiftSelect, versions]);
+
+  const getHelperText = (value: string | null, inModal?: boolean) => {
+    return getOpenshiftVersionHelperText(allVersions, value, t, inModal);
+  };
+
+  return (
+    <>
+      <OpenShiftVersionDropdown
+        name="openshiftVersion"
+        versions={versions}
+        getHelperText={getHelperText}
+        showReleasesLink={isInOcm}
+        showOpenshiftVersionModal={() => setIsOpenshiftVersionModalOpen(true)}
+        customVersion={customItem}
+      />
+      {isOpenshiftVersionModalOpen && (
+        <OpenShiftVersionModal
+          allVersions={allVersions}
+          onClose={() => setIsOpenshiftVersionModalOpen(false)}
+          getHelperText={getHelperText}
+        />
+      )}
+    </>
+  );
+};

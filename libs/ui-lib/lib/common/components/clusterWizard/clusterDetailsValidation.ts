@@ -6,7 +6,6 @@ import {
   ManagedDomain,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
-import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { getDefaultOpenShiftVersion } from '../ui';
 import {
   baseDomainValidationSchema,
@@ -15,6 +14,7 @@ import {
   pullSecretValidationSchema,
 } from '../../validationSchemas';
 import { ClusterDetailsValues } from './types';
+import { TangServer } from '../clusterConfiguration';
 
 const emptyTangServers = (): TangServer[] => {
   return [

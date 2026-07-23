@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster } from '@openshift-assisted/types/./assisted-installer-service';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { UISettingService } from '../services';
 import { ClustersAPI } from '../services/apis';
 import { UISettingsValues } from '../../common';

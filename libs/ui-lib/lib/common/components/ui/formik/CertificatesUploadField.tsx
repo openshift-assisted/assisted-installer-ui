@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useField } from 'formik';
+import { FileRejection } from 'react-dropzone';
 import {
   FormGroup,
   FileUpload,
@@ -7,14 +9,12 @@ import {
   HelperTextItem,
   DropEvent,
 } from '@patternfly/react-core';
-import { UploadFieldProps } from './types';
-import { getFieldId } from './utils';
-import { useTranslation } from '../../../hooks/use-translation-wrapper';
-import { useField } from 'formik';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { FileRejection } from 'react-dropzone';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import { getFieldId } from './utils';
+import { UploadFieldProps } from './types';
 
-const CertificatesUploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
+export const CertificatesUploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
   label,
   labelIcon,
   helperText,
@@ -135,5 +135,3 @@ const CertificatesUploadField: React.FC<React.PropsWithChildren<UploadFieldProps
     </FormGroup>
   );
 };
-
-export default CertificatesUploadField;

@@ -4,6 +4,7 @@ import isString from 'lodash-es/isString.js';
 import { loadAll } from 'js-yaml';
 import { TFunction } from 'i18next';
 import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_OFFSET_FACTOR } from './configurations';
+import { MS_PER_DAY, TIME_ZERO } from './config';
 
 export const FILENAME_REGEX = /^[^\/]*\.(json|ya?ml(\.patch_?[a-zA-Z0-9_]*)?)$/;
 
@@ -142,3 +143,17 @@ export const isMajorMinorVersionEqualOrGreater = (checkVersion = '', toVersion: 
 
   return checkVersionNum >= toVersionNum;
 };
+
+function diffInDaysBetweenDates(inputDate: string) {
+  const dateObject = new Date(inputDate);
+  const today = new Date();
+  return Math.floor(Math.abs(today.valueOf() - dateObject.valueOf()) / MS_PER_DAY);
+}
+
+export function calculateClusterDateDiff(inactiveDeletionDays: number, completedAt?: string) {
+  if (completedAt && completedAt !== TIME_ZERO) {
+    return inactiveDeletionDays - diffInDaysBetweenDates(completedAt);
+  } else {
+    return inactiveDeletionDays;
+  }
+}

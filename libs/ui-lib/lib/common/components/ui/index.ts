@@ -11,9 +11,13 @@ export * from './eventsModal';
 export * from './PreviewBadge';
 export * from './TechnologyPreview';
 export * from './DeveloperPreview';
+export * from './CustomToolbarFilter';
 
 export * from './OpenShiftVersionDropdown';
 export * from './OpenShiftVersionModal';
+export * from './ConfirmationModal';
+export * from './SectionTitle';
+export * from './ViewClusterEventsButton';
 
 export * from './utils';
 
@@ -26,5 +30,4 @@ export { default as GridGap } from './GridGap';
 export { default as EventsList } from './EventsList';
 export { default as ClusterEventsToolbar } from './ClusterEventsToolbar';
 export { default as ModalProgress } from './ModalProgress';
-export { default as ConfirmationModal } from './ConfirmationModal';
 export { default as NoPermissionsError } from './NoPermissionsError';

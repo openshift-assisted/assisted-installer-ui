@@ -12,11 +12,11 @@ import {
 import { NetworkConfigurationValues, HostSubnets, NETWORK_TYPE_SDN } from '../../../types';
 import { DUAL_STACK } from '../../../config';
 import { selectMachineNetworkCIDR, selectApiVip, selectIngressVip } from '../../../selectors';
-import { getVipValidationsById } from '../../clusterConfiguration';
+import { getVipValidationsById } from '../../clusterConfiguration/utils';
 import { FormikStaticField, PopoverIcon } from '../../ui';
 import { CheckboxField, InputField } from '../../ui/formik';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
-import NewFeatureSupportLevelBadge from '../../newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { NewFeatureSupportLevelBadge } from '../../newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { Cluster, Ip, SupportLevel } from '@openshift-assisted/types/assisted-installer-service';
 
 interface VipStaticValueProps {

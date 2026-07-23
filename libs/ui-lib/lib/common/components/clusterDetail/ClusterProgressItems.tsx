@@ -1,13 +1,13 @@
-import { getEnabledHosts } from '../hosts';
-import { RenderIf } from '../ui';
-import { Grid, GridItem } from '@patternfly/react-core';
-import { ProgressBarTexts } from './ProgressBarTexts';
-import { FinalizingProgress } from './FinalizingProgress';
-import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
+import { Grid, GridItem } from '@patternfly/react-core';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import { EventListFetchProps } from '../../types';
-import { selectOlmOperators } from '../../../common';
+import { selectOlmOperators } from '../../selectors';
+import { getEnabledHosts } from '../hosts';
+import { RenderIf } from '../ui';
+import { ProgressBarTexts } from './ProgressBarTexts';
+import { FinalizingProgress } from './FinalizingProgress';
+import { OperatorsProgressItem } from './OperatorsProgressItem';
 
 type ClusterProgressItemsProps = {
   cluster: Cluster;
@@ -17,7 +17,7 @@ type ClusterProgressItemsProps = {
   fallbackEventsURL?: string;
 };
 
-const ClusterProgressItems = ({
+export const ClusterProgressItems = ({
   cluster,
   minimizedView = false,
   onFetchEvents,
@@ -58,5 +58,3 @@ const ClusterProgressItems = ({
     </>
   );
 };
-
-export default ClusterProgressItems;

@@ -5,9 +5,9 @@ import {
   InfraEnv,
   ImageType,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { OcmDiscoveryImageFormValues } from '../components';
 import { InfraEnvsAPI } from './apis';
 import ClustersService from './ClustersService';
-import { OcmDiscoveryImageFormValues } from '../components/clusterConfiguration/OcmDiscoveryImageConfigForm';
 
 const DiscoveryImageFormService = {
   async update(

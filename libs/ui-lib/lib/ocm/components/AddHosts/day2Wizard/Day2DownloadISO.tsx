@@ -1,10 +1,15 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { ClusterWizardStep, ClusterWizardStepHeader, DownloadIso, isSNO } from '../../../../common';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import {
+  ClusterWizardStep,
+  ClusterWizardStepHeader,
+  DownloadIso,
+  isSNO,
+  DownloadIpxeScript,
+} from '../../../../common';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
-import Day2WizardNav from './Day2WizardNav';
-import DownloadIpxeScript from '../../../../common/components/clusterConfiguration/DownloadIpxeScript';
+import { Day2WizardNav } from './Day2WizardNav';
 
 const Day2DownloadISO = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
