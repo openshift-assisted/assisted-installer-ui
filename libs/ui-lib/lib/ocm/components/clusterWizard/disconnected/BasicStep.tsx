@@ -2,27 +2,47 @@ import * as React from 'react';
 import {
   ClusterWizardStep,
   TechnologyPreview,
-  ExternalLink,
-  OCP_RELEASES_PAGE,
   StaticTextField,
   useTranslation,
 } from '../../../../common';
+import { getDefaultOpenShiftVersion } from '../../../../common/components/ui/formik/utils';
 import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
-import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
+import OcmOpenShiftVersionSelect from '../../clusterConfiguration/OcmOpenShiftVersionSelect';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
-import { Formik } from 'formik';
+import { Formik, useFormikContext } from 'formik';
+import { useOpenShiftVersionsContext } from '../OpenShiftVersionsContext';
+
+type BasicStepFormikValues = {
+  openshiftVersion: string;
+  customOpenshiftSelect: string | null;
+};
+
+const VersionSyncEffect = () => {
+  const { values } = useFormikContext<BasicStepFormikValues>();
+  const { setDisconnectedOpenshiftVersion } = useClusterWizardContext();
+  React.useEffect(() => {
+    if (values.openshiftVersion) {
+      setDisconnectedOpenshiftVersion(values.openshiftVersion);
+    }
+  }, [values.openshiftVersion, setDisconnectedOpenshiftVersion]);
+  return null;
+};
 
 const BasicStep = () => {
   const { t } = useTranslation();
-  const { moveNext } = useClusterWizardContext();
+  const { moveNext, disconnectedOpenshiftVersion } = useClusterWizardContext();
+  const { latestVersions } = useOpenShiftVersionsContext();
+  const initialVersion =
+    disconnectedOpenshiftVersion || getDefaultOpenShiftVersion(latestVersions);
 
   return (
-    <Formik
-      initialValues={{}}
+    <Formik<BasicStepFormikValues>
+      initialValues={{ openshiftVersion: initialVersion, customOpenshiftSelect: null }}
+      enableReinitialize
       onSubmit={() => {
         // nothing to do
       }}
@@ -31,6 +51,7 @@ const BasicStep = () => {
         navigation={<ClusterWizardNavigation />}
         footer={<ClusterWizardFooter onNext={moveNext} />}
       >
+        <VersionSyncEffect />
         <WithErrorBoundary title="Failed to load Basic step">
           <Grid hasGutter>
             <GridItem>
@@ -47,13 +68,7 @@ const BasicStep = () => {
             </GridItem>
             <GridItem>
               <Form id="wizard-cluster-basic-info__form">
-                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
-                  <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-                    <span data-ouia-id="openshift-releases-link">
-                      {t('ai:Learn more about OpenShift releases')}
-                    </span>
-                  </ExternalLink>
-                </OcmOpenShiftVersion>
+                <OcmOpenShiftVersionSelect />
                 <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
                   x86_64
                 </StaticTextField>
