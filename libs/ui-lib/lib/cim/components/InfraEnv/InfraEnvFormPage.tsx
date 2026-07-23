@@ -42,6 +42,7 @@ import {
   ntpSourceValidationSchema,
   CpuArchitecture,
   getOCPStaticIPDocLink,
+  httpsProxyValidationSchema,
 } from '../../../common';
 
 import './infra-env.css';
@@ -85,7 +86,7 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
         allowEmpty: true,
         t,
       }),
-      httpsProxy: httpProxyValidationSchema({
+      httpsProxy: httpsProxyValidationSchema({
         values,
         pairValueName: 'httpProxy',
         allowEmpty: true,
