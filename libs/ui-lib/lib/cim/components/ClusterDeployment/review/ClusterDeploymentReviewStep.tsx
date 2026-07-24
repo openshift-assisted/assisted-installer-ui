@@ -107,7 +107,7 @@ export const ClusterDeploymentReviewStep = ({
   );
   useWizardFooter(footer);
 
-  const openShiftVersion = getSelectedVersion(clusterImages, agentClusterInstall);
+  const openShiftVersion = getSelectedVersion(clusterImages, agentClusterInstall, t);
   const platform =
     getPlatforms(t)[
       (agentClusterInstall?.spec?.platformType?.toLowerCase() || 'baremetal') as PlatformType

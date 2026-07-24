@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, FormikProps, useFormikContext } from 'formik';
 import { Stack } from '@patternfly/react-core';
 import noop from 'lodash-es/noop.js';
-import { ClusterDetailsValues, getRichTextValidation } from '../../../../common';
+import { ClusterDetailsValues, getRichTextValidation, useTranslation } from '../../../../common';
 import { ClusterImageSetK8sResource } from '../../../types/k8s/cluster-image-set';
 import { useDetailsFormik } from './useDetailsFormik';
 import { ClusterDetailsFormFieldsProps } from './ClusterDetailsFormFields';
@@ -57,8 +57,9 @@ export const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetai
   isNutanix,
   ...rest
 }) => {
-  const ocpVersions = getOCPVersions(clusterImages, !!isNutanix, osImages);
-  const allOcpVersions = getOCPVersions(clusterImages, !!isNutanix, osImages, true);
+  const { t } = useTranslation();
+  const ocpVersions = getOCPVersions(clusterImages, t, !!isNutanix, osImages);
+  const allOcpVersions = getOCPVersions(clusterImages, t, !!isNutanix, osImages, true);
 
   const [initialValues, validationSchema] = useDetailsFormik({
     ocpVersions,

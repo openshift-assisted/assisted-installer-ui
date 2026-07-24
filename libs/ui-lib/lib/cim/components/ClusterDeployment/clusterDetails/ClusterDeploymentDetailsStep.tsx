@@ -29,8 +29,8 @@ export const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStep
   const { addAlert } = useAlerts();
   const { goToNextStep } = useWizardContext();
 
-  const ocpVersions = getOCPVersions(clusterImages, isNutanix);
-  const allOcpVersions = getOCPVersions(clusterImages, isNutanix, undefined, true);
+  const ocpVersions = getOCPVersions(clusterImages, t, isNutanix);
+  const allOcpVersions = getOCPVersions(clusterImages, t, isNutanix, undefined, true);
   const gridSpans = getGridSpans(isPreviewOpen);
 
   const [initialValues, validationSchema] = useDetailsFormik({
