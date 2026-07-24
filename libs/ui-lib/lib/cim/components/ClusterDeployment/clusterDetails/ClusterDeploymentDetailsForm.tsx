@@ -98,13 +98,13 @@ export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsForm
 }) => {
   const { t } = useTranslation();
   const versions = React.useMemo(
-    () => getOCPVersions(clusterImages, isNutanix, osImages),
-    [clusterImages, isNutanix, osImages],
+    () => getOCPVersions(clusterImages, t, isNutanix, osImages),
+    [clusterImages, isNutanix, osImages, t],
   );
 
   const allVersions = React.useMemo(
-    () => getOCPVersions(clusterImages, isNutanix, osImages, true),
-    [clusterImages, isNutanix, osImages],
+    () => getOCPVersions(clusterImages, t, isNutanix, osImages, true),
+    [clusterImages, isNutanix, osImages, t],
   );
 
   const isEditFlow = !!clusterDeployment;

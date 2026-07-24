@@ -2,6 +2,7 @@ import * as React from 'react';
 // import { getErrorMessage } from '../../../../common/utils';
 import { ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
 import { getOCPVersions } from '../../helpers';
+import { TFunction } from 'i18next';
 
 export const getSupportedCM = (configMaps: ConfigMapK8sResource[]) =>
   configMaps.find(
@@ -10,11 +11,12 @@ export const getSupportedCM = (configMaps: ConfigMapK8sResource[]) =>
 
 export const useSupportedOCPVersions = (
   clusterImages: ClusterImageSetK8sResource[],
+  t: TFunction,
   supportedVersionsCM?: ConfigMapK8sResource,
   extended?: boolean,
 ) => {
   return React.useMemo(() => {
-    const ocpVersions = getOCPVersions(clusterImages, false, undefined, extended);
+    const ocpVersions = getOCPVersions(clusterImages, t, false, undefined, extended);
     const supportedVersionsString = supportedVersionsCM?.data?.['supported-versions'];
     if (supportedVersionsString) {
       try {
@@ -26,5 +28,5 @@ export const useSupportedOCPVersions = (
       }
     }
     return ocpVersions;
-  }, [clusterImages, extended, supportedVersionsCM?.data]);
+  }, [clusterImages, extended, supportedVersionsCM?.data, t]);
 };
