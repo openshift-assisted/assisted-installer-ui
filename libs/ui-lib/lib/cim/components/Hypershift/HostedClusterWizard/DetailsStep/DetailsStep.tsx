@@ -53,8 +53,9 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   initPullSecret,
   supportedVersionsCM,
 }) => {
-  const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
-  const allVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM, true);
+  const { t } = useTranslation();
+  const ocpVersions = useSupportedOCPVersions(clusterImages, t, supportedVersionsCM);
+  const allVersions = useSupportedOCPVersions(clusterImages, t, supportedVersionsCM, true);
 
   const [initialValues, validationSchema] = useDetailsFormik({
     ocpVersions,
