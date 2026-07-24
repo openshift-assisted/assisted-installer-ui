@@ -24,11 +24,11 @@ import { useFormikContext } from 'formik';
 import {
   ClusterDetailsValues,
   CpuArchitecture,
+  isMajorMinorVersionEqualOrGreater,
   SupportedCpuArchitecture,
 } from '../../../../common';
 import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
 import { ValidationSection } from '../components/ValidationSection';
-import { toNumber } from 'lodash-es';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -116,7 +116,7 @@ export const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsForm
     const version = allVersions.find((ver) => ver.value === values.openshiftVersion);
     const isMulti = version?.cpuArchitectures?.[0] === CpuArchitecture.MULTI;
 
-    const highlyAvailableSupported = toNumber(version?.version?.split('.')?.[1]) >= 18;
+    const highlyAvailableSupported = isMajorMinorVersionEqualOrGreater(version?.version, '4.18');
     return [
       (isMulti ? cpuArchitectures : version?.cpuArchitectures) as SupportedCpuArchitecture[],
       highlyAvailableSupported && !isMulti,
