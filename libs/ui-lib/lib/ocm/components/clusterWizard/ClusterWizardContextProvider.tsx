@@ -70,7 +70,9 @@ const getWizardStepIds = (
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'custom-manifests', 1);
   }
   if (isSingleClusterFeatureEnabled && !stepsCopy.includes('credentials-download')) {
-    const referenceStep = stepsCopy.includes('custom-manifests') ? 'custom-manifests' : 'networking';
+    const referenceStep = stepsCopy.includes('custom-manifests')
+      ? 'custom-manifests'
+      : 'networking';
     stepsCopy = addStepToClusterWizard(stepsCopy, referenceStep, ['credentials-download']);
   }
 
