@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/RedHatInsights/frontend-components/refs/heads/master/packages/config-utils/src/feo/spec/frontend-crd.schema.json
+---
+apiVersion: v1
+kind: Template
+metadata:
+  name: assisted-installer-app
+objects:
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: Frontend
+    metadata:
+      name: assisted-installer-app
+    spec:
+      feoConfigEnabled: true
+      envName: ${ENV_NAME}
+      title: Assisted Installer
+      deploymentRepo: https://github.com/openshift-assisted/assisted-installer-ui
+      frontend:
+        paths:
+          - /apps/assisted-installer-app
+      searchEntries:
+        - id: assisted-installer-search
+          title: Assisted Installer
+          href: https://console.redhat.com/openshift/assisted-installer/clusters/~new
+          description: Create and manage OpenShift clusters using the assisted installation method.
+          alt_title:
+            - ocm
+            - openshift cluster manager
+            - install openshift
+            - cluster installation
+            - bare metal
+            - Download ISO
+            - OpenShift virtualization
+          permissions:
+            - method: loosePermissions
+              args:
+                - - inventory:*:read
+                - - clusters:*:read
+      API:
+        versions:
+          - v1
+      image: ${IMAGE}:${IMAGE_TAG}
+      module:
+        analytics:
+          APIKey: dDiG16r8ACXqQ1uKlsDpvBVVQKojfQ3Q
+          APIKeyDev: zvqhEZB8cBJe798gf7xqn0Sue8TWqk1v
+        manifestLocation: '/apps/assisted-installer-app/fed-mods.json'
+        moduleConfig:
+          ssoScopes:
+            - rhfull
+        modules:
+          - id: 'assisted-installer-app'
+            module: './RootApp'
+            routes:
+              - pathname: /openshift/assisted-installer
+
+parameters:
+  - name: ENV_NAME
+    required: true
+  - name: IMAGE_TAG
+    required: true
+  - name: IMAGE
+    value: quay.io/app-sre/assisted-installer-app
