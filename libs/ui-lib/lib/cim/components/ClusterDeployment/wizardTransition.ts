@@ -10,14 +10,6 @@ import { AgentK8sResource } from '../../types/k8s/agent';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { ClusterDeploymentWizardStepsType } from './types';
 
-export type ClusterWizardStepsType =
-  | 'cluster-details'
-  | 'hosts-selection'
-  | 'hosts-discovery'
-  | 'networking'
-  | 'custom-manifests'
-  | 'review';
-
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
@@ -85,10 +77,23 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   },
 };
 
+const customManifestsValidationsMap: WizardStepValidationMap = {
+  cluster: {
+    groups: ['network'],
+    validationIds: ['platform-requirements-satisfied', 'custom-manifests-requirements-satisfied'],
+  },
+  host: {
+    allowedStatuses: ['known', 'disabled'],
+    groups: ['network'],
+    validationIds: [],
+  },
+  softValidationIds: ['ntp-synced', 'container-images-available', 'mtu-valid'],
+};
+
 const reviewStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
-    validationIds: ['all-hosts-are-ready-to-install'],
+    validationIds: ['all-hosts-are-ready-to-install', 'custom-manifests-requirements-satisfied'],
   },
   host: {
     allowedStatuses: ['known', 'disabled'],
@@ -98,14 +103,15 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
-  'cluster-details': clusterDetailsStepValidationsMap,
-  'hosts-discovery': hostDiscoveryStepValidationsMap,
-  'hosts-selection': hostDiscoveryStepValidationsMap,
-  networking: networkingStepValidationsMap,
-  'custom-manifests': networkingStepValidationsMap,
-  review: reviewStepValidationsMap,
-};
+export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterDeploymentWizardStepsType> =
+  {
+    'cluster-details': clusterDetailsStepValidationsMap,
+    'host-discovery': hostDiscoveryStepValidationsMap,
+    'host-selection': hostDiscoveryStepValidationsMap,
+    networking: networkingStepValidationsMap,
+    'custom-manifests': customManifestsValidationsMap,
+    review: reviewStepValidationsMap,
+  };
 
 export const allClusterWizardSoftValidationIds =
   getAllClusterWizardSoftValidationIds(wizardStepsValidationsMap);
@@ -140,17 +146,22 @@ const canNextFromClusterDeploymentWizardStep = (
 export const canNextFromHostSelectionStep = (
   agentClusterInstall: AgentClusterInstallK8sResource,
   agents: AgentK8sResource[],
-) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'hosts-selection');
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'host-selection');
 
 export const canNextFromHostDiscoveryStep = (
   agentClusterInstall: AgentClusterInstallK8sResource,
   agents: AgentK8sResource[],
-) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'hosts-discovery');
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'host-discovery');
 
 export const canNextFromNetworkingStep = (
   agentClusterInstall: AgentClusterInstallK8sResource,
   agents: AgentK8sResource[],
 ) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'networking');
+
+export const canNextFromCustomManifestsStep = (
+  agentClusterInstall: AgentClusterInstallK8sResource,
+  agents: AgentK8sResource[],
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'custom-manifests');
 
 export const canNextFromReviewStep = (
   agentClusterInstall: AgentClusterInstallK8sResource,

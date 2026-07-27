@@ -41,8 +41,8 @@ export type AgentTableActions = {
 
 export type ClusterDeploymentWizardStepsType =
   | 'cluster-details'
-  | 'hosts-selection'
-  | 'hosts-discovery'
+  | 'host-selection'
+  | 'host-discovery'
   | 'networking'
   | 'custom-manifests'
   | 'review';
