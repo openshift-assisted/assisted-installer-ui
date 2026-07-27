@@ -96,7 +96,7 @@ export const ClusterDeploymentWizard = ({
               <WizardStep name={stepNames['automation']} id={'automation'} isDisabled />
 
               {isCIMFlow(clusterDeployment) ? (
-                <WizardStep name={stepNames['hosts-selection']} id={'host-selection'}>
+                <WizardStep name={stepNames['host-selection']} id={'host-selection'}>
                   {agentClusterInstall?.metadata?.name ? (
                     <ClusterDeploymentHostSelectionStep
                       clusterDeployment={clusterDeployment}
@@ -113,7 +113,7 @@ export const ClusterDeploymentWizard = ({
                   )}
                 </WizardStep>
               ) : (
-                <WizardStep name={stepNames['hosts-discovery']} id={'host-discovery'}>
+                <WizardStep name={stepNames['host-discovery']} id={'host-discovery'}>
                   {isAIFlow && onSaveISOParams && onCreateBMH ? (
                     <ClusterDeploymentHostsDiscoveryStep
                       clusterDeployment={clusterDeployment}
