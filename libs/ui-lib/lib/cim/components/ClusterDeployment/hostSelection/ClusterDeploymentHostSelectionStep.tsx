@@ -216,7 +216,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   React.useEffect(() => {
     if (nextRequested && !isSubmitting) {
       const agentStatuses = selectedAgents.map(
-        (agent) => getWizardStepAgentStatus(agent, 'hosts-selection', t).status.key,
+        (agent) => getWizardStepAgentStatus(agent, 'host-selection', t).status.key,
       );
       if (
         agentStatuses.some((status) =>
@@ -227,7 +227,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       } else if (
         !!selectedAgents.length &&
         selectedAgents.every(
-          (agent) => getWizardStepAgentStatus(agent, 'hosts-selection', t).status.key === 'known',
+          (agent) => getWizardStepAgentStatus(agent, 'host-selection', t).status.key === 'known',
         )
       ) {
         setShowClusterErrors(true);

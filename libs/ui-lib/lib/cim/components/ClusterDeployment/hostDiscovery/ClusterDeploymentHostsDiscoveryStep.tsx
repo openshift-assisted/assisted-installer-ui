@@ -61,7 +61,7 @@ export const ClusterDeploymentHostsDiscoveryStep = ({
     errors.push(t('ai:Hostnames must be unique.'));
   }
   const agentsNotHealthy = infraEnvAgents
-    .map((agent) => getWizardStepAgentStatus(agent, 'hosts-discovery', t).status.key)
+    .map((agent) => getWizardStepAgentStatus(agent, 'host-discovery', t).status.key)
     .some((status) =>
       ['disconnected', 'disabled', 'error', 'insufficient', 'cancelled'].includes(status),
     );
@@ -173,7 +173,7 @@ export const ClusterDeploymentHostsDiscoveryStep = ({
 
       {!!syncError && (
         <GridItem>
-          <ValidationSection currentStepId={'hosts-selection'} hosts={[]}>
+          <ValidationSection currentStepId={'host-selection'} hosts={[]}>
             <Alert variant={AlertVariant.danger} title={t('ai:An error occurred')} isInline>
               {syncError}
             </Alert>

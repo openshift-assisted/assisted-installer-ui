@@ -105,7 +105,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       agentStatusColumn({
         agents: matchingAgents,
         agentStatuses,
-        wizardStepId: 'hosts-selection',
+        wizardStepId: 'host-selection',
         t,
       }),
       roleColumn(t, actions.canEditRole, actions.onEditRole, undefined, undefined),

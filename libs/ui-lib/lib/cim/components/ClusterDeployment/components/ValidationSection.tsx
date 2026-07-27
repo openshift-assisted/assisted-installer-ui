@@ -4,11 +4,12 @@ import { Cluster } from '@openshift-assisted/types/./assisted-installer-service'
 import { ValidationsInfo, ClusterWizardStepValidationsAlert } from '../../../../common';
 import { ClusterWizardStepHostStatusDeterminationObject } from '../../../../common/types/hosts';
 import ValidationsRunningAlert from '../../common/ValidationsRunningAlert';
-import { ClusterWizardStepsType, wizardStepsValidationsMap } from '../wizardTransition';
+import { wizardStepsValidationsMap } from '../wizardTransition';
+import { ClusterDeploymentWizardStepsType } from '../types';
 
 type ValidationSectionProps = {
   requireProxy?: boolean;
-  currentStepId: ClusterWizardStepsType;
+  currentStepId: ClusterDeploymentWizardStepsType;
   validationsInfo?: ValidationsInfo;
   clusterStatus?: Cluster['status'];
   hosts: ClusterWizardStepHostStatusDeterminationObject[];

@@ -1,22 +1,21 @@
-import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
+import { TFunction } from 'i18next';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
-import { AgentK8sResource } from '../../types/k8s/agent';
-import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
-import { StatusCondition } from '../../types/k8s/shared';
-import { ValidationsInfo } from '../../../common/types/hosts';
+import {
+  AgentClusterInstallK8sResource,
+  AgentK8sResource,
+  BareMetalHostK8sResource,
+  StatusCondition,
+} from '../../types';
+import { HostStatusDef } from '../../../common';
 import {
   areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
 } from '../../../common/components/clusterWizard/validationsInfoUtils';
-import {
-  ClusterWizardStepsType,
-  wizardStepsValidationsMap,
-} from '../ClusterDeployment/wizardTransition';
-import { HostStatusDef } from '../../../common';
-import { agentStatus } from './agentStatus';
-import { TFunction } from 'i18next';
+import { ValidationsInfo } from '../../../common/types/hosts';
 import { HostStatus } from '../../../common/components/hosts/types';
+import { wizardStepsValidationsMap, ClusterDeploymentWizardStepsType } from '../ClusterDeployment';
+import { agentStatus } from './agentStatus';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const conditionsByTypeReducer = <K>(
@@ -82,7 +81,7 @@ export const getAgentStatus = (
 
 export const getWizardStepAgentStatus = (
   agent: AgentK8sResource,
-  wizardStepId: ClusterWizardStepsType,
+  wizardStepId: ClusterDeploymentWizardStepsType,
   t: TFunction,
   excludeDiscovered = false,
 ): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
