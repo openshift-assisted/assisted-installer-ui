@@ -32,6 +32,7 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const errorFields = getFormikErrorFields(errors, touched);
   const isBinding = useLateBinding(cluster);
 
+  const hasHosts = (cluster.hosts?.length ?? 0) > 0;
   const isNextDisabled =
     !isValid ||
     !!alerts.length ||
@@ -40,12 +41,15 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
     isBinding ||
     !canNextHostDiscovery({ cluster });
 
+  const isWaitingForHosts = hasHosts && (isBinding || !canNextHostDiscovery({ cluster }));
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
       isNextDisabled={isNextDisabled}
+      isWaitingForHosts={isWaitingForHosts}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}
