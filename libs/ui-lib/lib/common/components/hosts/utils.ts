@@ -263,7 +263,14 @@ export const areOnlySoftValidationsFailing = (validationsInfo: HostValidationsIn
   );
   if (!failingValidationIds.length) return false;
   for (const id of failingValidationIds) {
-    if (!['ntp-synced', 'container-images-available', 'mtu-valid'].includes(id)) {
+    if (
+      ![
+        'ntp-synced',
+        'container-images-available',
+        'mtu-valid',
+        'inventory-not-partially-truncated',
+      ].includes(id)
+    ) {
       return false;
     }
   }

@@ -1680,6 +1680,8 @@ export type HostValidationId =
   | 'connected'
   | 'media-connected'
   | 'has-inventory'
+  | 'inventory-not-partially-truncated'
+  | 'inventory-not-fully-truncated'
   | 'has-min-cpu-cores'
   | 'has-min-valid-disks'
   | 'has-min-memory'
@@ -2142,6 +2144,13 @@ export interface Inventory {
   gpus?: Gpu[];
   routes?: Route[];
   tpmVersion?: 'none' | '1.2' | '2.0';
+  truncation?: {
+    type: 'partial' | 'full';
+    /**
+     * Reasons for the truncation
+     */
+    reasons?: string[];
+  };
 }
 export interface IoPerf {
   /**

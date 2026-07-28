@@ -242,6 +242,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     'no-skip-missing-disk',
     'compatible-agent',
     'openshift-ai-gpu-requirements-satisfied',
+    'inventory-not-partially-truncated',
   ],
 };
 
@@ -260,7 +261,7 @@ const storageStepValidationsMap: WizardStepValidationMap = {
       'no-skip-missing-disk',
     ],
   },
-  softValidationIds: [],
+  softValidationIds: ['inventory-not-partially-truncated'],
 };
 
 const networkingStepValidationsMap: WizardStepValidationMap = {
