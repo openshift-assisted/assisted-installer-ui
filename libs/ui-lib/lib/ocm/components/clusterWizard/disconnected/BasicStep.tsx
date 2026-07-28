@@ -1,68 +1,47 @@
 import * as React from 'react';
-import {
-  ClusterWizardStep,
-  TechnologyPreview,
-  ExternalLink,
-  OCP_RELEASES_PAGE,
-  StaticTextField,
-  useTranslation,
-} from '../../../../common';
+import { ClusterWizardStep, TechnologyPreview, StaticTextField } from '../../../../common';
 import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
-import OcmOpenShiftVersion from '../../clusterConfiguration/OcmOpenShiftVersion';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
-import { Formik } from 'formik';
+
+export const DISCONNECTED_OPENSHIFT_VERSION = '4.21';
 
 const BasicStep = () => {
-  const { t } = useTranslation();
   const { moveNext } = useClusterWizardContext();
 
   return (
-    <Formik
-      initialValues={{}}
-      onSubmit={() => {
-        // nothing to do
-      }}
+    <ClusterWizardStep
+      navigation={<ClusterWizardNavigation />}
+      footer={<ClusterWizardFooter onNext={moveNext} />}
     >
-      <ClusterWizardStep
-        navigation={<ClusterWizardNavigation />}
-        footer={<ClusterWizardFooter onNext={moveNext} />}
-      >
-        <WithErrorBoundary title="Failed to load Basic step">
-          <Grid hasGutter>
-            <GridItem>
-              <Content component="h2">Basic information</Content>
-            </GridItem>
-            <GridItem>
-              <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
-                <TechnologyPreview />
-                <InstallDisconnectedSwitch />
-                <span>
-                  {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
-                </span>
-              </Flex>
-            </GridItem>
-            <GridItem>
-              <Form id="wizard-cluster-basic-info__form">
-                <OcmOpenShiftVersion openshiftVersion="4.20" withPreviewText withMultiText>
-                  <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-                    <span data-ouia-id="openshift-releases-link">
-                      {t('ai:Learn more about OpenShift releases')}
-                    </span>
-                  </ExternalLink>
-                </OcmOpenShiftVersion>
-                <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
-                  x86_64
-                </StaticTextField>
-              </Form>
-            </GridItem>
-          </Grid>
-        </WithErrorBoundary>
-      </ClusterWizardStep>
-    </Formik>
+      <WithErrorBoundary title="Failed to load Basic step">
+        <Grid hasGutter>
+          <GridItem>
+            <Content component="h2">Basic information</Content>
+          </GridItem>
+          <GridItem>
+            <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
+              <TechnologyPreview />
+              <InstallDisconnectedSwitch />
+              <span>I'm installing on a disconnected/air-gapped/secured environment</span>
+            </Flex>
+          </GridItem>
+          <GridItem>
+            <Form id="wizard-cluster-basic-info__form">
+              <StaticTextField name="openshiftVersion" label="OpenShift version">
+                {DISCONNECTED_OPENSHIFT_VERSION}
+              </StaticTextField>
+              <StaticTextField name="cpuArchitecture" label="CPU architecture">
+                x86_64
+              </StaticTextField>
+            </Form>
+          </GridItem>
+        </Grid>
+      </WithErrorBoundary>
+    </ClusterWizardStep>
   );
 };
 
