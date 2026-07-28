@@ -103,9 +103,23 @@ export interface Bundle {
    */
   description?: string;
   /**
-   * List of operators associated with the bundle.
+   * List of operators always included in the bundle.
    */
   operators?: string[];
+  /**
+   * List of operators that can be optionally selected by the user for this bundle. All are selected by default.
+   */
+  optionalOperators?: string[];
+}
+export interface BundleCreateParams {
+  /**
+   * Bundle identifier (e.g., "openshift-ai").
+   */
+  id: string;
+  /**
+   * List of optional operator names the user selected for this bundle.
+   */
+  optionalOperators?: string[];
 }
 export interface Cluster {
   /**
@@ -333,9 +347,17 @@ export interface Cluster {
    */
   additionalNtpSource?: string;
   /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for the cluster hosts.
+   */
+  ntpSources?: string;
+  /**
    * Operators that are associated with this cluster.
    */
   monitoredOperators?: MonitoredOperator[];
+  /**
+   * Bundles that were selected for this cluster, with the optional operators chosen by the user. Derived from monitored operators' sourceBundles. Not persisted directly.
+   */
+  operatorBundles?: BundleCreateParams[];
   /**
    * Unique identifier of the AMS subscription in OCM.
    */
@@ -494,11 +516,22 @@ export interface ClusterCreateParams {
    */
   additionalNtpSource?: string;
   /**
-   * List of OLM operators to be installed.
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for the cluster hosts.
+   */
+  ntpSources?: string;
+  /**
+   * List of standalone OLM operators to be installed (not part of any bundle).
    * For the full list of supported operators, check the endpoint `/v2/supported-operators`:
    *
    */
   olmOperators?: OperatorCreateParams[];
+  /**
+   * List of operator bundles selected by the user with their optional operator choices.
+   * The backend expands bundles into their required operators, adds selected optional operators,
+   * resolves all dependencies, and tracks bundle membership via sourceBundles on monitored operators.
+   *
+   */
+  operatorBundles?: BundleCreateParams[];
   /**
    * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
@@ -2364,6 +2397,10 @@ export interface MonitoredOperator {
    * Whether the operator can't be installed without being required by another operator.
    */
   dependencyOnly?: boolean;
+  /**
+   * IDs of the bundles this operator was selected through. Empty for standalone selections. An operator can belong to multiple bundles.
+   */
+  sourceBundles?: string[];
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
 export interface MtuReport {
@@ -2933,11 +2970,22 @@ export interface V2ClusterUpdateParams {
    */
   additionalNtpSource?: string;
   /**
-   * List of OLM operators to be installed.
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for the cluster hosts.
+   */
+  ntpSources?: string;
+  /**
+   * List of standalone OLM operators to be installed (not part of any bundle).
    * For the full list of supported operators, check the endpoint `/v2/supported-operators`:
    *
    */
   olmOperators?: OperatorCreateParams[];
+  /**
+   * List of operator bundles selected by the user with their optional operator choices.
+   * The backend expands bundles into their required operators, adds selected optional operators,
+   * resolves all dependencies, and tracks bundle membership via sourceBundles on monitored operators.
+   *
+   */
+  operatorBundles?: BundleCreateParams[];
   /**
    * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */

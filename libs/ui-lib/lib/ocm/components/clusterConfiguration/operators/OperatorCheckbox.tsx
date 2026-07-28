@@ -136,31 +136,51 @@ const OperatorCheckbox = ({
   const fieldId = getFieldId(operatorId, 'input');
   const supportLevel = getFeatureSupportLevel(featureId);
 
-  const isInBundle = values.selectedBundles.some(
-    (sb) => !!bundles.find((b) => b.id === sb)?.operators?.includes(operatorId),
+  const isRequiredByBundle = values.selectedBundles.some(
+    (selectedBundle) =>
+      !!bundles.find((bundle) => bundle.id === selectedBundle.id)?.operators?.includes(operatorId),
   );
+  const isSelectedForBundle = values.selectedBundles.some((selectedBundle) =>
+    selectedBundle.optionalOperators?.includes(operatorId),
+  );
+  const isInBundle = isRequiredByBundle || isSelectedForBundle;
+
+  const isOperatorActive = (opName: string) =>
+    values.selectedOperators.includes(opName) ||
+    values.selectedBundles.some((selectedBundle) => {
+      const bundle = bundles.find(({ id }) => id === selectedBundle.id);
+      return (
+        bundle?.operators?.includes(opName) || selectedBundle.optionalOperators?.includes(opName)
+      );
+    });
 
   const isChecked = values.selectedOperators.includes(operatorId) || isInBundle;
 
-  const parentOperator = preflightRequirements?.operators?.find((op) =>
-    op.dependencies?.includes(operatorId),
+  const parentOperator = preflightRequirements?.operators?.find(
+    (op) =>
+      !!op.operatorName &&
+      op.dependencies?.includes(operatorId) &&
+      isOperatorActive(op.operatorName),
   );
 
-  let parentOperatorName = '';
-  if (
-    parentOperator?.operatorName &&
-    values.selectedOperators.includes(parentOperator.operatorName)
-  ) {
-    parentOperatorName = opSpecs[parentOperator.operatorName]?.title || parentOperator.operatorName;
+  let requiredByOperatorName = '';
+  if (parentOperator?.operatorName) {
+    requiredByOperatorName =
+      opSpecs[parentOperator.operatorName]?.title || parentOperator.operatorName;
   }
 
-  const disabledReason = isInBundle
-    ? 'This operator is part of a bundle and cannot be deselected.'
-    : notStandalone
-    ? 'This operator cannot be installed as a standalone'
-    : parentOperatorName
-    ? `This operator is a dependency of ${parentOperatorName}`
-    : getFeatureDisabledReason(featureId);
+  let disabledReason = getFeatureDisabledReason(featureId);
+
+  if (isRequiredByBundle) {
+    disabledReason = 'This operator is part of a selected bundle and cannot be deselected.';
+  } else if (isSelectedForBundle) {
+    disabledReason =
+      'This optional operator is selected through a bundle. Use the bundle card to change it.';
+  } else if (requiredByOperatorName) {
+    disabledReason = `This operator is required by ${requiredByOperatorName}`;
+  } else if (notStandalone && !values.selectedOperators.includes(operatorId)) {
+    disabledReason = 'This operator cannot be installed as a standalone';
+  }
 
   return (
     <FormGroup fieldId={fieldId} id={`form-control__${fieldId}`}>

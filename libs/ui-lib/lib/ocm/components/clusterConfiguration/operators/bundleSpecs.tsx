@@ -31,10 +31,9 @@ export const bundleSpecs: { [key: string]: BundleSpec } = {
     incompatibleBundles: [],
     Description: () => (
       <List>
-        <ListItem>GPUs are recommended for optimal AI/ML workload performance.</ListItem>
         <ListItem>
-          NVIDIA GPU, AMD GPU and Kernel Module Management may or may not be installed based on the
-          GPU discovered on your hosts.
+          GPUs are recommended for optimal AI/ML workload performance. Please select the GPU
+          operators you want to install.
         </ListItem>
       </List>
     ),

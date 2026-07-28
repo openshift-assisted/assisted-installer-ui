@@ -92,9 +92,9 @@ export const OperatorsStep = ({ cluster }: ClusterOperatorProps) => {
       <StackItem>
         <OperatorsBundle
           bundles={filteredBundles}
-          preflightRequirements={preflightRequirements}
           searchTerm={searchTerm}
           allBundles={allBundles}
+          cluster={cluster}
         />
       </StackItem>
       <StackItem>

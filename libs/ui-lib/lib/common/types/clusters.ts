@@ -1,5 +1,6 @@
 import { IRow } from '@patternfly/react-table';
 import {
+  BundleCreateParams,
   Cluster,
   V2ClusterUpdateParams,
   ClusterValidationId,
@@ -57,8 +58,9 @@ export type HostDiscoveryValues = V2ClusterUpdateParams & {
 export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;
 };
+
 export type OperatorsValues = {
-  selectedBundles: string[];
+  selectedBundles: BundleCreateParams[];
   selectedOperators: string[];
 };
 
