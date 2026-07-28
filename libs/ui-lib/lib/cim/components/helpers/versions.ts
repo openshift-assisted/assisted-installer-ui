@@ -8,6 +8,7 @@ import {
 } from '../../types';
 import { CpuArchitecture, OpenshiftVersionOptionType } from '../../../common';
 import { getComparableVersionInt } from '../../../common/utils';
+import { TFunction } from 'i18next';
 
 export const getVersionFromReleaseString = (value = '') => {
   const match = /(\d+\.\d+(?:\.\d+)?(?:-\w+)?)/gm.exec(value);
@@ -78,12 +79,13 @@ const extractMajorMinor = (version: string): string => {
 // Converts a ClusterImageSet to an OpenshiftVersionOptionType
 const toVersionOption = (
   clusterImageSet: ClusterImageSetK8sResource,
+  t: TFunction,
 ): OpenshiftVersionOptionType => {
   const version = getVersionFromClusterImageSet(clusterImageSet);
   const cpuArch = getCPUArchFromClusterImageSet(clusterImageSet);
 
   return {
-    label: `OpenShift ${version}`,
+    label: `${t('ai:OpenShift')} ${version}`,
     version,
     value: clusterImageSet.metadata?.name as string,
     default: false,
@@ -109,6 +111,7 @@ const supportedNutanixPlatforms = ['x86_64', 'x86-64'];
 
 export const getOCPVersions = (
   clusterImageSets: ClusterImageSetK8sResource[],
+  t: TFunction,
   isNutanix?: boolean,
   osImages?: OsImage[],
   extended?: boolean,
@@ -118,7 +121,7 @@ export const getOCPVersions = (
 
   const versions = clusterImageSets
     .filter((clusterImageSet) => isValidImageSet(clusterImageSet, architectures, extended))
-    .map(toVersionOption)
+    .map((clusterImageSet) => toVersionOption(clusterImageSet, t))
     .filter((v) => hasMatchingOsImage(v, osImageVersions))
     .sort((a, b) => b.label.localeCompare(a.label));
 
@@ -131,13 +134,14 @@ export const getOCPVersions = (
 export const getSelectedVersion = (
   clusterImages: ClusterImageSetK8sResource[],
   agentClusterInstall: AgentClusterInstallK8sResource,
+  t: TFunction,
 ) => {
   const selectedClusterImage = clusterImages.find(
     (ci) => ci.metadata?.name === agentClusterInstall?.spec?.imageSetRef?.name,
   );
 
   return selectedClusterImage
-    ? getOCPVersions([selectedClusterImage], undefined, undefined, true)?.[0]?.version
+    ? getOCPVersions([selectedClusterImage], t, undefined, undefined, true)?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
 };
 
