@@ -5,6 +5,7 @@ import type {
 } from '../components/clusterConfiguration/manifestsConfiguration/data/dataTypes';
 import type {
   Cluster,
+  DisconnectedClusterCreateParams,
   Host,
   InfraEnvCreateParams,
   UpdateManifestParams,
@@ -120,6 +121,10 @@ const ClustersService = {
   async get(clusterId: Cluster['id']) {
     const { data: cluster } = await ClustersAPI.get(clusterId);
     return cluster;
+  },
+
+  registerDisconnected(params: DisconnectedClusterCreateParams) {
+    return ClustersAPI.registerDisconnected(params);
   },
 
   transformFormViewManifest(manifest: CustomManifestValues) {

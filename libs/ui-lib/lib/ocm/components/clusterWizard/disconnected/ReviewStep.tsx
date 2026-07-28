@@ -29,12 +29,10 @@ import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router';
 
 import { getOperatorSpecs } from '../../../../common/components/operators/operatorSpecs';
-
-const downloadUrl =
-  'https://mirror.openshift.com/pub/cgw/assisted-installer-disconnected/latest/agent-ove.x86_64.iso';
+import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 
 const ReviewStep = () => {
-  const { moveBack } = useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const opSpecs = getOperatorSpecs(() => undefined);
   const navigate = useNavigate();
 
@@ -50,7 +48,7 @@ const ReviewStep = () => {
         footer={
           <ClusterWizardFooter
             onNext={() => {
-              downloadUrl && saveAs(downloadUrl);
+              saveAs(disconnectedInfraEnv?.downloadUrl ?? '');
               void navigate('/cluster-list');
             }}
             onBack={moveBack}
@@ -98,11 +96,15 @@ const ReviewStep = () => {
             <DescriptionList isHorizontal>
               <DescriptionListGroup>
                 <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-                <DescriptionListDescription>4.20</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.openshiftVersion ?? DISCONNECTED_OPENSHIFT_VERSION}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>CPU architecture</DescriptionListTerm>
-                <DescriptionListDescription>x86_64</DescriptionListDescription>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv?.cpuArchitecture ?? 'x86_64'}
+                </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
                 <DescriptionListTerm>ISO size</DescriptionListTerm>

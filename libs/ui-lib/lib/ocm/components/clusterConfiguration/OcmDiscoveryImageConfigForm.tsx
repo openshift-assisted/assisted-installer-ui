@@ -106,7 +106,7 @@ export const OcmDiscoveryImageConfigForm = ({
     httpsProxy: httpsProxy || '',
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
-    imageType: imageTypeValue as ImageType,
+    imageType: imageTypeValue as DiscoveryImageType,
     enableCertificate: enableCertificate || false,
     trustBundle: trustBundle || '',
   };
@@ -155,7 +155,7 @@ export const OcmDiscoveryImageConfigForm = ({
                   <Form>
                     <DiscoveryImageTypeDropdown
                       name="imageType"
-                      defaultValue={discoveryImageTypes[imageTypeValue]}
+                      defaultValue={discoveryImageTypes[imageTypeValue as DiscoveryImageType]}
                       onChange={updateDiscoveryButtonAndAlertText}
                       selectedCpuArchitecture={selectedCpuArchitecture}
                       isDisabled={isOracleCloudInfrastructure}

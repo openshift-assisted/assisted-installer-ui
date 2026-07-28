@@ -73,4 +73,4 @@ export const SupportedPlatformIntegrations: SupportedPlatformType[] = [
 ];
 export const NonPlatformIntegrations: PlatformType[] = ['baremetal', 'none'];
 
-export type DiscoveryImageType = ImageType | 'discovery-image-ipxe';
+export type DiscoveryImageType = Exclude<ImageType, 'disconnected-iso'> | 'discovery-image-ipxe';
