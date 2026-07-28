@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
   FormGroup,
-  Tooltip,
   Dropdown,
   DropdownItem,
   MenuToggle,
@@ -63,22 +62,21 @@ const ControlPlaneNodesDropdown = ({
     }
   }, [allowHighlyAvailable, selectedValue, setValue]);
 
+  const disabledReason = t('ai:This option is not available with the selected OpenShift version');
   const dropdownItems = options.map(({ value, label }) => {
     const isEnabled = isItemEnabled(value, allowHighlyAvailable, allowTNA);
 
-    const disabledReason = t('ai:This option is not available with the selected OpenShift version');
     return (
       <DropdownItem
         key={value}
         id={value.toString()}
-        isAriaDisabled={!isItemEnabled}
-        isDisabled={!isItemEnabled}
+        isAriaDisabled={!isEnabled}
+        disabled={!isEnabled}
         selected={selectedValue === value}
         value={value}
+        tooltipProps={{ hidden: isEnabled, content: disabledReason, position: 'top' }}
       >
-        <Tooltip hidden={isEnabled} content={disabledReason} position="top">
-          <div>{label}</div>
-        </Tooltip>
+        {label}
       </DropdownItem>
     );
   });

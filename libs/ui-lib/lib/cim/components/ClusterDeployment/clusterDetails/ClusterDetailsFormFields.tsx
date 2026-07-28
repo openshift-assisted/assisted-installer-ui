@@ -120,9 +120,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       )}
       {isEditFlow ? (
         <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-          {t('ai:OpenShift')}{' '}
-          {allVersions.find((v) => v.value === values.openshiftVersion)?.version ||
-            values.openshiftVersion}
+          {allVersions.find((v) => v.value === values.openshiftVersion)?.label ||
+            `${t('ai:OpenShift')} ${values.openshiftVersion}`}
         </StaticTextField>
       ) : (
         <>
