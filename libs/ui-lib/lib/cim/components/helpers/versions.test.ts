@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { TFunction } from 'react-i18next';
 import { CpuArchitecture } from '../../../common/types/cpuArchitecture';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
@@ -12,6 +13,8 @@ import {
   getVersionFromClusterImageSet,
 } from './versions';
 import { OpenshiftVersionOptionType } from '../../../common/types/versions';
+
+const t: TFunction = (t: string) => t;
 
 const ClusterImageSetApiVersion = 'hive.openshift.io/v1';
 const ClusterImageSetKind = 'ClusterImageSet';
@@ -86,7 +89,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.16.1-x86_64' },
     });
-    expect(getOCPVersions([hidden])).toEqual([]);
+    expect(getOCPVersions([hidden], t)).toEqual([]);
   });
 
   test('includes image sets without visible true when extended is true', () => {
@@ -97,7 +100,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.16.2-x86_64' },
     });
-    const result = getOCPVersions([hidden], undefined, undefined, true);
+    const result = getOCPVersions([hidden], t, undefined, undefined, true);
     expect(result).toHaveLength(1);
     expect(result[0]?.version).toBe('4.16.2');
     expect(result[0]?.default).toBe(true);
@@ -118,7 +121,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.21.0-x86_64' },
     });
-    const result = getOCPVersions([a, b]);
+    const result = getOCPVersions([a, b], t);
     expect(result.map((v) => v.version)).toEqual(['4.21.0', '4.15.0']);
   });
 
@@ -137,7 +140,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.16.0-x86_64' },
     });
-    const result = getOCPVersions([first, second]);
+    const result = getOCPVersions([first, second], t);
     expect(result[0]?.default).toBe(true);
     expect(result[1]?.default).toBe(false);
   });
@@ -164,7 +167,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.16.0-x86_64' },
     });
-    const result = getOCPVersions([dupA, dupB, other]);
+    const result = getOCPVersions([dupA, dupB, other], t);
     expect(result.map((v) => v.value)).toEqual(['dup-a', 'other']);
     expect(result.map((v) => v.version)).toEqual(['4.17.0', '4.16.0']);
   });
@@ -184,7 +187,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.16.1-multi' },
     });
-    const result = getOCPVersions([x86, multi], true);
+    const result = getOCPVersions([x86, multi], t, true);
     expect(result.map((v) => v.value)).toEqual(['nut-x86']);
   });
 
@@ -196,7 +199,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.16.2-multi' },
     });
-    const result = getOCPVersions([cis], true);
+    const result = getOCPVersions([cis], t, true);
     expect(result).toHaveLength(1);
     expect(result[0]?.value).toBe('nut-label');
   });
@@ -217,7 +220,7 @@ describe('getOCPVersions', () => {
       spec: { releaseImage: 'quay.io/ocp/release:4.19.0-x86_64' },
     });
     const osImages = [makeOsImage({ openshiftVersion: '4.18' })];
-    const result = getOCPVersions([inRange, outRange], false, osImages);
+    const result = getOCPVersions([inRange, outRange], t, false, osImages);
     expect(result.map((v) => v.value)).toEqual(['in']);
   });
 
@@ -229,7 +232,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.17.0-multi' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toEqual([CpuArchitecture.x86]);
   });
 
@@ -241,7 +244,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.17.0-multi' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toEqual([CpuArchitecture.ARM]);
   });
 
@@ -253,7 +256,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.17.0-multi' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toEqual([CpuArchitecture.MULTI]);
   });
 
@@ -265,7 +268,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.17.0-multi' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toEqual([CpuArchitecture.s390x]);
   });
 
@@ -280,7 +283,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.17.1-x86-64' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toEqual([CpuArchitecture.x86]);
   });
 
@@ -296,7 +299,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.19.0-multi' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toEqual([CpuArchitecture.x86]);
   });
 
@@ -308,7 +311,7 @@ describe('getOCPVersions', () => {
       },
       spec: { releaseImage: 'quay.io/ocp/release:4.17.0' },
     });
-    const result = getOCPVersions([cis]);
+    const result = getOCPVersions([cis], t);
     expect(result[0]?.cpuArchitectures).toBeUndefined();
   });
 });
@@ -328,7 +331,7 @@ describe('getSelectedVersion', () => {
       metadata: { name: 'aci', namespace: 'ns' },
       spec: { imageSetRef: { name: 'my-imageset' } },
     } as AgentClusterInstallK8sResource;
-    expect(getSelectedVersion([cis], aci)).toBe('4.18.10');
+    expect(getSelectedVersion([cis], aci, t)).toBe('4.18.10');
   });
 
   test('returns imageSetRef name when no cluster image matches', () => {
@@ -338,7 +341,7 @@ describe('getSelectedVersion', () => {
       metadata: { name: 'aci', namespace: 'ns' },
       spec: { imageSetRef: { name: 'missing' } },
     } as AgentClusterInstallK8sResource;
-    expect(getSelectedVersion([], aci)).toBe('missing');
+    expect(getSelectedVersion([], aci, t)).toBe('missing');
   });
 
   test('returns undefined when imageSetRef is missing', () => {
@@ -348,7 +351,7 @@ describe('getSelectedVersion', () => {
       metadata: { name: 'aci', namespace: 'ns' },
       spec: {},
     } as AgentClusterInstallK8sResource;
-    expect(getSelectedVersion([], aci)).toBeUndefined();
+    expect(getSelectedVersion([], aci, t)).toBeUndefined();
   });
 });
 

@@ -1,8 +1,13 @@
 import { clientWithoutCaseConverter } from '../../api/axiosClient';
-import {
-  ArchitecturesSupportsLevel,
-  FeaturesSupportsLevel,
-} from '../../components/featureSupportLevels/types';
+import { ArchitectureSupportLevelMap, NewFeatureSupportLevelMap } from '../../components';
+
+export interface ArchitecturesSupportsLevel {
+  architectures: ArchitectureSupportLevelMap;
+}
+
+export interface FeaturesSupportsLevel {
+  features: NewFeatureSupportLevelMap;
+}
 
 const NewFeatureSupportLevelsAPI = {
   makeBaseURI() {
