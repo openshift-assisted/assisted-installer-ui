@@ -22,7 +22,7 @@ export interface InfoLinkWithModalProps {
   modalId?: string;
 }
 
-const InfoLinkWithModal = ({
+export const InfoLinkWithModal = ({
   linkText,
   infoCircleSize = 'sm',
   modalTitle,
@@ -68,5 +68,3 @@ const InfoLinkWithModal = ({
     </>
   );
 };
-
-export default InfoLinkWithModal;

@@ -13,9 +13,9 @@ import {
   hostValidationLabels,
 } from '../../config';
 import { toSentence } from '../ui';
-import Hostname from './Hostname';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { useTranslation } from '../../hooks';
 import { getKeys } from '../../utils';
+import { Hostname } from './Hostname';
 
 import './HostValidationGroups.css';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';

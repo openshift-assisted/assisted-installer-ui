@@ -1,6 +1,6 @@
 import BundleAPI from '../../common/api/assisted-service/BundleAPI';
 
-const BundleService = {
+export const BundleService = {
   async listBundles(
     openshiftVersion?: string,
     cpuArchitecture?: string,
@@ -20,5 +20,3 @@ const BundleService = {
     return data;
   },
 };
-
-export default BundleService;

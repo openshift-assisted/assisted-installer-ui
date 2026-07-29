@@ -49,7 +49,7 @@ type HostPropertyValidationPopoverProps = {
   showSuccess?: boolean;
 };
 
-const HostPropertyValidationPopover: React.FC<
+export const HostPropertyValidationPopover: React.FC<
   React.PropsWithChildren<HostPropertyValidationPopoverProps>
 > = ({
   validation,
@@ -97,5 +97,3 @@ const HostPropertyValidationPopover: React.FC<
   }
   return <>{children}</>;
 };
-
-export default HostPropertyValidationPopover;

@@ -9,7 +9,7 @@ export type NewSupportLevelBadgeProps = {
   supportLevel: SupportLevel | undefined;
 };
 
-const NewFeatureSupportLevelBadge: React.FC<NewSupportLevelBadgeProps> = ({
+export const NewFeatureSupportLevelBadge: React.FC<NewSupportLevelBadgeProps> = ({
   featureId,
   supportLevel,
 }) => {
@@ -23,5 +23,3 @@ const NewFeatureSupportLevelBadge: React.FC<NewSupportLevelBadgeProps> = ({
     <DeveloperPreview testId={testId} />
   );
 };
-
-export default NewFeatureSupportLevelBadge;

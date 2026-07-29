@@ -1,12 +1,11 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { ClusterWizardStep, ClusterWizardStepHeader } from '../../../../common';
-import DiscoveryImageForm from '../../clusterConfiguration/DiscoveryImageForm';
-import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
+import { useInfraEnvImageUrl, useInfraEnvIpxeImageUrl } from '../../../hooks';
+import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
+import { DiscoveryImageForm } from '../../discoveryImage';
 import { useDay2WizardContext } from './Day2WizardContext';
-import Day2WizardNav from './Day2WizardNav';
-import useInfraEnvImageUrl from '../../../hooks/useInfraEnvImageUrl';
-import useInfraEnvIpxeImageUrl from '../../../hooks/useInfraEnvIpxeImageUrl';
+import { Day2WizardNav } from './Day2WizardNav';
 
 const Day2GenerateISO = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
