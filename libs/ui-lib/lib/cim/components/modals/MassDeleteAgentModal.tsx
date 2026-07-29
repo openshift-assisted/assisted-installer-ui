@@ -12,12 +12,7 @@ import {
 } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import HostsTable from '../../../common/components/hosts/HostsTable';
-import {
-  AgentK8sResource,
-  BareMetalHostK8sResource,
-  InfraEnvK8sResource,
-  NMStateK8sResource,
-} from '../../types';
+import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { useAgentsTable } from '../Agent/tableUtils';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common/constants';
 import AgentStatus from '../Agent/AgentStatus';
@@ -142,13 +137,8 @@ type MassDeleteAgentModalProps = {
   onClose: VoidFunction;
   agents: AgentK8sResource[];
   bmhs: BareMetalHostK8sResource[];
-  nmStates: NMStateK8sResource[];
   // eslint-disable-next-line
-  onDelete: (
-    agent?: AgentK8sResource,
-    bmh?: BareMetalHostK8sResource,
-    nmStates?: NMStateK8sResource[],
-  ) => Promise<unknown>;
+  onDelete: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<unknown>;
   infraEnv: InfraEnvK8sResource;
 };
 
@@ -159,7 +149,6 @@ const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
   agents,
   bmhs,
   infraEnv,
-  nmStates,
 }) => {
   const [hosts] = useAgentsTable({ agents, bmhs, infraEnv });
   const onClick = async (host: Host) => {
@@ -175,7 +164,7 @@ const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
       );
     }
     if (!agent?.spec?.clusterDeploymentName?.name) {
-      return onDelete(agent, bmh, nmStates);
+      return onDelete(agent, bmh);
     }
   };
   const { t } = useTranslation();
