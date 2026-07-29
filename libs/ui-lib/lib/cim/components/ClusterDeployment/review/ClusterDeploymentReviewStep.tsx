@@ -34,15 +34,12 @@ import {
 } from '../../helpers';
 import { isAgentOfCluster } from '../helpers';
 import { wizardStepNames } from '../constants';
-import {
-  wizardStepsValidationsMap,
-  ClusterWizardStepsType,
-  allClusterWizardSoftValidationIds,
-} from '../wizardTransition';
+import { wizardStepsValidationsMap, allClusterWizardSoftValidationIds } from '../wizardTransition';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ClusterDeploymentWizardContext } from '../ClusterDeploymentWizardContext';
 import { ReviewConfigMapsTable } from './ReviewConfigMapsTable';
 import { ValidationSection } from '../components/ValidationSection';
+import { ClusterDeploymentWizardStepsType } from '../types';
 
 type ClusterDeploymentReviewStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -63,7 +60,7 @@ export const ClusterDeploymentReviewStep = ({
   infraEnv,
 }: ClusterDeploymentReviewStepProps) => {
   const { addAlert, clearAlerts } = useAlerts();
-  const { activeStep, goToPrevStep, goToStepByName, close } = useWizardContext();
+  const { activeStep, goToPrevStep, goToStepById, close } = useWizardContext();
   const { syncError } = React.useContext(ClusterDeploymentWizardContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const cdName = clusterDeployment.metadata?.name;
@@ -187,9 +184,9 @@ export const ClusterDeploymentReviewStep = ({
           <DetailItem
             title={t('ai:Cluster validations')}
             value={
-              <ClusterValidations<ClusterWizardStepsType>
+              <ClusterValidations<ClusterDeploymentWizardStepsType>
                 validationsInfo={cluster.validationsInfo}
-                setCurrentStepId={goToStepByName}
+                setCurrentStepId={goToStepById}
                 wizardStepNames={wizardStepNames(t)}
                 wizardStepsValidationsMap={wizardStepsValidationsMap}
               />
@@ -199,9 +196,12 @@ export const ClusterDeploymentReviewStep = ({
           <DetailItem
             title={t('ai:Host validations')}
             value={
-              <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
+              <HostsValidations<
+                ClusterDeploymentWizardStepsType,
+                typeof allClusterWizardSoftValidationIds
+              >
                 hosts={cluster.hosts}
-                setCurrentStepId={goToStepByName}
+                setCurrentStepId={goToStepById}
                 wizardStepNames={wizardStepNames(t)}
                 allClusterWizardSoftValidationIds={allClusterWizardSoftValidationIds}
                 wizardStepsValidationsMap={wizardStepsValidationsMap}
