@@ -63,13 +63,26 @@ export const findValidationFixStep = <ClusterWizardStepsType extends string>(
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): ClusterWizardStepsType | undefined => {
   const keys = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
-  return keys.find((key) => {
-    // find first matching validation-map name
+
+  // find the step based on the validationId first
+  const validationStep = keys.find((key) => {
     const { cluster: clusterValidationMap, host: hostValidationMap } =
       wizardStepsValidationsMap[key];
     return (
       clusterValidationMap.validationIds.includes(validationId as ClusterValidationId) ||
-      hostValidationMap.validationIds.includes(validationId as HostValidationId) ||
+      hostValidationMap.validationIds.includes(validationId as HostValidationId)
+    );
+  });
+
+  if (validationStep) {
+    return validationStep;
+  }
+
+  // find the step based on the cluster/host validation group as a backup
+  return keys.find((key) => {
+    const { cluster: clusterValidationMap, host: hostValidationMap } =
+      wizardStepsValidationsMap[key];
+    return (
       (clusterGroup && clusterValidationMap.groups.includes(clusterGroup)) ||
       (hostGroup && hostValidationMap.groups.includes(hostGroup))
     );
