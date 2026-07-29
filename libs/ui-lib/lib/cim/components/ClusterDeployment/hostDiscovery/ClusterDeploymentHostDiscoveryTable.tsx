@@ -88,7 +88,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         bmhStatuses,
         onEditHostname: onEditHost,
         onApprove,
-        wizardStepId: 'hosts-discovery',
+        wizardStepId: 'host-discovery',
         t,
       }),
       roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
