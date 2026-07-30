@@ -188,7 +188,6 @@ export type InfraEnvAgentTableProps = Pick<
   agentMachines: AgentMachineK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   infraEnv: InfraEnvK8sResource;
-  nmStates: NMStateK8sResource[];
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string;
   onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
   onChangeBMHHostname: (
