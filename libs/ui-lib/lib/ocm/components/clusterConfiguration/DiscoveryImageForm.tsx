@@ -17,9 +17,28 @@ import {
 } from './OcmDiscoveryImageConfigForm';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../services/CpuArchitectureService';
 import { usePullSecret } from '../../hooks';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { isOciPlatformType } from '../utils';
 import { ModalBody } from '@patternfly/react-core';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+import { NtpSourcesFieldsType } from '../../../common/types';
+import { isOciPlatformType } from '../utils';
+
+const getDiscoveryImageNtpFormValues = (
+  cluster: Cluster,
+  infraEnv: InfraEnv,
+): Pick<NtpSourcesFieldsType, 'enableNtpSources' | 'ntpSourcesList'> => {
+  const ntpSources = cluster.ntpSources?.trim() || infraEnv.ntpSources?.trim();
+  if (ntpSources) {
+    return {
+      enableNtpSources: true,
+      ntpSourcesList: ntpSources,
+    };
+  }
+
+  return {
+    enableNtpSources: false,
+    ntpSourcesList: '',
+  };
+};
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -107,6 +126,7 @@ const DiscoveryImageForm = ({
       </ModalBody>
     );
   }
+  const ntpFormValues = getDiscoveryImageNtpFormValues(cluster, infraEnv);
   return (
     <OcmDiscoveryImageConfigForm
       onCancel={handleCancel}
@@ -125,6 +145,7 @@ const DiscoveryImageForm = ({
           : mapClusterCpuArchToInfraEnvCpuArch(cpuArchitecture)
       }
       isOracleCloudInfrastructure={isOciPlatformType(cluster)}
+      {...ntpFormValues}
     />
   );
 };

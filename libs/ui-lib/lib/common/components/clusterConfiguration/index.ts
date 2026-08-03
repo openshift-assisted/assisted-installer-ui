@@ -1,5 +1,6 @@
 export { default as UploadSSH } from './UploadSSH';
 export { default as ProxyFields, ProxyInputFields } from './ProxyFields';
+export { default as NtpSourcesFields } from './NtpSourcesFields';
 export { default as DownloadIsoModal } from './DownloadIsoModal';
 export { default as DownloadIso } from './DownloadIso';
 export { default as DiscoveryInstructions } from './DiscoveryInstructions';

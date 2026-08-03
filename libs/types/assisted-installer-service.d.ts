@@ -1897,6 +1897,10 @@ export interface InfraEnv {
    */
   additionalNtpSources?: string;
   /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for hosts in this infra-env.
+   */
+  ntpSources?: string;
+  /**
    * SSH public key for debugging the installation.
    */
   sshAuthorizedKey?: string;
@@ -1962,6 +1966,10 @@ export interface InfraEnvCreateParams {
    */
   additionalNtpSources?: string;
   /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for hosts in this infra-env.
+   */
+  ntpSources?: string;
+  /**
    * SSH public key for debugging the installation.
    */
   sshAuthorizedKey?: string;
@@ -2009,6 +2017,10 @@ export interface InfraEnvUpdateParams {
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSources?: string;
+  /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for hosts in this infra-env.
+   */
+  ntpSources?: string;
   /**
    * SSH public key for debugging the installation.
    */
