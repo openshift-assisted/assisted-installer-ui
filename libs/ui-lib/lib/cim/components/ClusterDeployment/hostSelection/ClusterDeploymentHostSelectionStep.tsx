@@ -75,7 +75,6 @@ const getInitialValues = ({
   return {
     autoSelectHosts,
     hostCount,
-    useMastersAsWorkers: hostCount === 1 || hostCount === 3, // TODO: Recently not supported - https://issues.redhat.com/browse/MGMT-7677
     agentLabels: agentSelector?.labels || [],
     locations: agentSelector?.locations || [],
     selectedHostIds: selectedIds,
@@ -89,7 +88,6 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
   return Yup.lazy((values: ClusterDeploymentHostsSelectionValues) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>({
       hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema(t),
-      useMastersAsWorkers: Yup.boolean().required(t('ai:Required field')),
       autoSelectedHostIds: values.autoSelectHosts
         ? Yup.array(Yup.string()).min(values.hostCount).max(values.hostCount)
         : Yup.array(Yup.string()),

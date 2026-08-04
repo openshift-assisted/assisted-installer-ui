@@ -1,9 +1,7 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { CheckboxField, NumberInputField } from '../../../../common';
+import { NumberInputField } from '../../../../common';
 import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from '../constants';
-import { useFormikContext } from 'formik';
-import { ClusterDeploymentHostsSelectionValues } from '../types';
 import LocationsSelector from '../LocationsSelector';
 import { AgentK8sResource } from '../../../types';
 import AgentsSelectionHostCountAlerts from '../../Agent/AgentsSelectionHostCountAlerts';
@@ -20,13 +18,8 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
   isSNOCluster,
   availableAgents,
 }) => {
-  const { setFieldValue } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { matchingAgents, selectedAgents, hostCount } = useAgentsAutoSelection(availableAgents);
   const { t } = useTranslation();
-
-  React.useEffect(() => {
-    setFieldValue('useMastersAsWorkers', hostCount === 3);
-  }, [hostCount, setFieldValue]);
 
   return (
     <>
@@ -41,16 +34,6 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
             minValue={isSNOCluster ? 1 : HOSTS_MIN_COUNT}
             maxValue={isSNOCluster ? 1 : HOSTS_MAX_COUNT}
             isDisabled={isSNOCluster}
-          />
-        </GridItem>
-
-        <GridItem>
-          {/* That field is not supported ATM - (requires MGMT-7677) */}
-          <CheckboxField
-            idPostfix="mastersasworkers"
-            name="useMastersAsWorkers"
-            label={t('ai:Run workloads on control plane hosts')}
-            isDisabled={hostCount !== 3}
           />
         </GridItem>
 
