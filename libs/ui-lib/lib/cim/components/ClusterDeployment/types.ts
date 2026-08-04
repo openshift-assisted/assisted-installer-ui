@@ -67,21 +67,18 @@ export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
 export type ClusterDeploymentHostsSelectionValues = {
   autoSelectHosts: boolean;
   hostCount: number;
-  useMastersAsWorkers: boolean;
   agentLabels: string[];
   locations: string[];
   selectedHostIds: string[];
   autoSelectedHostIds: string[];
 };
 export type ClusterDeploymentHostsDiscoveryValues = {
-  useMastersAsWorkers: boolean;
   selectedHostIds: string[];
 };
 
-export type ScaleUpFormValues = Omit<
-  ClusterDeploymentHostsSelectionValues,
-  'useMastersAsWorkers'
-> & { cpuArchitecture: CpuArchitecture };
+export type ScaleUpFormValues = ClusterDeploymentHostsSelectionValues & {
+  cpuArchitecture: CpuArchitecture;
+};
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;
