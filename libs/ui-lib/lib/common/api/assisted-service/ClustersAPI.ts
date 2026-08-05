@@ -3,6 +3,7 @@ import {
   Cluster,
   ClusterCreateParams,
   ClusterDefaultConfig,
+  DisconnectedClusterCreateParams,
   V2ClusterUpdateParams,
   Credentials,
   Host,
@@ -138,6 +139,13 @@ const ClustersAPI = {
   register(params: ClusterCreateParams) {
     return client.post<Cluster, AxiosResponse<Cluster>, ClusterCreateParams>(
       `${ClustersAPI.makeBaseURI()}`,
+      params,
+    );
+  },
+
+  registerDisconnected(params: DisconnectedClusterCreateParams) {
+    return client.post<Cluster, AxiosResponse<Cluster>, DisconnectedClusterCreateParams>(
+      `${ClustersAPI.makeBaseURI()}disconnected`,
       params,
     );
   },

@@ -1843,7 +1843,7 @@ export interface ImageInfo {
   staticNetworkConfig?: string;
   type?: ImageType;
 }
-export type ImageType = 'full-iso' | 'minimal-iso';
+export type ImageType = 'full-iso' | 'minimal-iso' | 'disconnected-iso';
 export interface ImportClusterParams {
   /**
    * OpenShift cluster name.

@@ -3,6 +3,7 @@ import { HostsNetworkConfigurationType } from '../../services';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { ClusterWizardStepsType } from './wizardTransition';
 import { UISettingsValues } from '../../../common';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 
 export type ClusterWizardContextType = {
   currentStepId: ClusterWizardStepsType;
@@ -18,6 +19,10 @@ export type ClusterWizardContextType = {
   uiSettings?: UISettingsValues;
   installDisconnected: boolean;
   setInstallDisconnected: (enabled: boolean) => void;
+  disconnectedCluster?: Cluster;
+  setDisconnectedCluster: (cluster: Cluster | undefined) => void;
+  disconnectedInfraEnv?: InfraEnv;
+  setDisconnectedInfraEnv: (infraEnv: InfraEnv | undefined) => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);

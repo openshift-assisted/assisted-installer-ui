@@ -65,7 +65,10 @@ const GetPullSecretHelperText: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
   );
 };
 
-const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
+const PullSecretField: React.FC<{ isOcm: boolean; isRequired?: boolean }> = ({
+  isOcm,
+  isRequired = true,
+}) => {
   const { t } = useTranslation();
   return (
     <TextAreaField
@@ -75,7 +78,7 @@ const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
       getErrorText={(error) => error}
       helperText={<GetPullSecretHelperText isOcm={isOcm} />}
       rows={10}
-      isRequired
+      isRequired={isRequired}
     />
   );
 };
