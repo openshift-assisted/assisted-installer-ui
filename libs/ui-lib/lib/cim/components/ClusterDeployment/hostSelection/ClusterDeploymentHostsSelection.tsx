@@ -1,13 +1,8 @@
 import React from 'react';
+import { TFunction } from 'i18next';
 import { useFormikContext } from 'formik';
 import { Grid, GridItem, Content, Form } from '@patternfly/react-core';
-import { SwitchField } from '../../../../common';
-import {
-  ClusterDeploymentHostsSelectionProps,
-  ClusterDeploymentHostsSelectionValues,
-} from '../types';
-import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
-import { ClusterDeploymentHostsSelectionAdvanced } from './ClusterDeploymentHostsSelectionAdvanced';
+import { SwitchField, useTranslation } from '../../../../common';
 import {
   getAgentsForSelection,
   getClusterDeploymentCpuArchitecture,
@@ -16,8 +11,12 @@ import {
 } from '../../helpers';
 import MinimalHWRequirements from '../../Agent/MinimalHWRequirements';
 import NoAgentsAlert from '../../Agent/NoAgentsAlert';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
+import {
+  ClusterDeploymentHostsSelectionProps,
+  ClusterDeploymentHostsSelectionValues,
+} from '../types';
+import { ClusterDeploymentHostsSelectionBasic } from './ClusterDeploymentHostsSelectionBasic';
+import { ClusterDeploymentHostsSelectionAdvanced } from './ClusterDeploymentHostsSelectionAdvanced';
 
 const getHostRequirementText = (isSNO: boolean, isTNA: boolean, t: TFunction) => {
   if (isSNO) {
@@ -32,7 +31,7 @@ const getHostRequirementText = (isSNO: boolean, isTNA: boolean, t: TFunction) =>
   return t('ai:At least 3 hosts are required, capable of functioning as control plane nodes.');
 };
 
-const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
+export const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,
   clusterDeployment,
   agents,
@@ -96,6 +95,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               <ClusterDeploymentHostsSelectionBasic
                 availableAgents={availableAgents}
                 isSNOCluster={isSNOCluster}
+                provisionRequirements={agentClusterInstall.spec?.provisionRequirements}
               />
             )}
 
@@ -116,5 +116,3 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
     </Grid>
   );
 };
-
-export default ClusterDeploymentHostsSelection;

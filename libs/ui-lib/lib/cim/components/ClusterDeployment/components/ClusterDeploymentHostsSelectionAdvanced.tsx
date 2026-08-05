@@ -25,7 +25,7 @@ type ClusterDeploymentHostsSelectionAdvancedProps = {
 
 type FormValues = ClusterDeploymentHostsSelectionValues | ScaleUpFormValues;
 
-const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
+export const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
   availableAgents,
   onEditRole,
   onSetInstallationDiskId,
@@ -105,5 +105,3 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
     </>
   );
 };
-
-export default ClusterDeploymentHostsSelectionAdvanced;

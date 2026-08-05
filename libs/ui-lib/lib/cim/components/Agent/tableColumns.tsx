@@ -6,7 +6,7 @@ import { HostsTableActions, getInventory, getHostname, Hostname } from '../../..
 import { TableRow } from '../../../common/components/hosts/AITable';
 import { HostStatus } from '../../../common/components/hosts/types';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
-import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterDeployment';
+import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterDeployment/types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
 import {
   getBMHStatus,
