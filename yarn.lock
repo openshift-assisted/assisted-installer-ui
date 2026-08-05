@@ -1700,7 +1700,7 @@ __metadata:
     fuse.js: ^6.4.6
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
-    ip-address: ^10.3.1
+    ip-address: ^10.4.0
     is-cidr: ^4.0.2
     is-in-subnet: ^4
     js-yaml: ^4.2.0
@@ -9615,7 +9615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^10.3.1":
+"ip-address@npm:^10.4.0":
   version: 10.4.0
   resolution: "ip-address@npm:10.4.0"
   checksum: 04e729990bc597bb0c86a02f71ffb8a19a47cd78e635209923079137fa06b8a27291d62fdddfeaf67b8e710ee51c46d2bbee1d1bf92f5101305e8276359c3df6
