@@ -1,7 +1,6 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
-import { CpuArchitecture } from '../../../common';
-import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
-import { NetworkConfigurationValues } from '../../../common/types/clusters';
+import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { CpuArchitecture, ClusterDetailsValues, NetworkConfigurationValues } from '../../../common';
 import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
@@ -10,14 +9,13 @@ import {
   SecretK8sResource,
   ConfigMapK8sResource,
   NMStateK8sResource,
+  BareMetalHostK8sResource,
+  ClusterImageSetK8sResource,
 } from '../../types';
-import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
-import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { BMCFormProps } from '../Agent/types';
 import { AgentMachineK8sResource } from '../Hypershift/types';
 import { AddHostDropdownProps, ProvisioningConfigResult } from '../InfraEnv/types';
 import { AddHostModalProps, EditBMHModalProps, UploadActionModalProps } from '../modals/types';
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
 
 export type EditAgentModalProps = {
   agent: AgentK8sResource;
@@ -64,6 +62,14 @@ export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
   httpsProxy?: string;
   noProxy?: string;
 };
+
+export type AgentRoleCounts = {
+  master: number;
+  arbiter: number;
+  worker: number;
+  autoAssign: number;
+};
+
 export type ClusterDeploymentHostsSelectionValues = {
   autoSelectHosts: boolean;
   hostCount: number;
@@ -71,14 +77,17 @@ export type ClusterDeploymentHostsSelectionValues = {
   locations: string[];
   selectedHostIds: string[];
   autoSelectedHostIds: string[];
+  selectedRoleCounts: AgentRoleCounts;
 };
+
 export type ClusterDeploymentHostsDiscoveryValues = {
   selectedHostIds: string[];
 };
 
-export type ScaleUpFormValues = ClusterDeploymentHostsSelectionValues & {
-  cpuArchitecture: CpuArchitecture;
-};
+export type ScaleUpFormValues = Omit<
+  ClusterDeploymentHostsSelectionValues,
+  'selectedRoleCounts'
+> & { cpuArchitecture: CpuArchitecture };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;

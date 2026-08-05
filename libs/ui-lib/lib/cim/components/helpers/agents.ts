@@ -1,5 +1,5 @@
 import { AgentStatus, getAgentStatusKey } from './status';
-import { Host } from '@openshift-assisted/types/assisted-installer-service';
+import { Host, HostRole } from '@openshift-assisted/types/assisted-installer-service';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';
 
@@ -28,7 +28,8 @@ export const getAgentsForSelection = (agents: AgentK8sResource[], isSubmitting?:
     return AGENT_FOR_SELECTION_STATUSES.includes(key as AgentStatus);
   });
 
-export const getAgentRole = (agent: AgentK8sResource) => agent.spec.role || agent.status?.role;
+export const getAgentRole = (agent: AgentK8sResource): HostRole =>
+  agent.spec.role || agent.status?.role;
 
 export const getAgentProgress = (agent: AgentK8sResource) => agent.status?.progress;
 
