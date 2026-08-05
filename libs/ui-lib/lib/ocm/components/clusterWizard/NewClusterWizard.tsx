@@ -4,6 +4,7 @@ import ClusterDetails from './ClusterDetails';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ReviewStep from './disconnected/ReviewStep';
 import BasicStep from './disconnected/BasicStep';
+import OptionalConfigurationsStep from './disconnected/OptionalConfigurationsStep';
 import { ClusterWizardStepsType } from './wizardTransition';
 import { useInfraEnv } from '../../hooks';
 import { CpuArchitecture } from '../../../common/types';
@@ -13,6 +14,8 @@ const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraE
   switch (currentStepId) {
     case 'disconnected-review':
       return <ReviewStep />;
+    case 'disconnected-optional-configurations':
+      return <OptionalConfigurationsStep />;
     case 'disconnected-basic':
       return <BasicStep />;
     default:

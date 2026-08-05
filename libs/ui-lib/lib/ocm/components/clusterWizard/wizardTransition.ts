@@ -34,6 +34,7 @@ export type ClusterWizardStepsType =
   | 'custom-manifests'
   | 'credentials-download'
   | 'disconnected-basic'
+  | 'disconnected-optional-configurations'
   | 'disconnected-review';
 
 const wizardStepsOrder: ClusterWizardStepsType[] = [
@@ -52,6 +53,7 @@ const wizardStepsOrder: ClusterWizardStepsType[] = [
 
 export const disconnectedSteps: ClusterWizardStepsType[] = [
   'disconnected-basic',
+  'disconnected-optional-configurations',
   'disconnected-review',
 ];
 
@@ -323,6 +325,7 @@ const credentialsValidationMap = buildEmptyValidationsMap();
 
 const disconnectedReviewValidationsMap = buildEmptyValidationsMap();
 const disconnectedBasicValidationsMap = buildEmptyValidationsMap();
+const disconnectedOptionalConfigurationsValidationsMap = buildEmptyValidationsMap();
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
@@ -338,6 +341,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   review: reviewStepValidationsMap,
   'disconnected-review': disconnectedReviewValidationsMap,
   'disconnected-basic': disconnectedBasicValidationsMap,
+  'disconnected-optional-configurations': disconnectedOptionalConfigurationsValidationsMap,
 };
 
 export const allClusterWizardSoftValidationIds =
