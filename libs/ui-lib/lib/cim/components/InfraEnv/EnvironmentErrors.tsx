@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { Alert, AlertVariant, ModalBody } from '@patternfly/react-core';
 import { getFailingResourceConditions } from '../helpers';
 import { InfraEnvK8sResource } from '../../types';
 import { SingleResourceAlerts } from '../common/ResourceAlerts';
-import { Alert, AlertVariant } from '@patternfly/react-core';
 import { getInfraEnvDocs } from '../common/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
@@ -25,8 +25,8 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
   }
 
   return (
-    <>
-      {!infraEnv.status && (
+    <ModalBody>
+      {!infraEnv.status ? (
         <Alert
           title={t('ai:Central infrastructure management is not running')}
           variant={AlertVariant.warning}
@@ -42,11 +42,12 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
             'ai:It seems the Central infrastructure management is not configured which will prevent its features to be used. Please refer to the documentation for the first time setup steps.',
           )}
         </Alert>
+      ) : (
+        <SingleResourceAlerts
+          title={t('ai:Failing infrastructure environment')}
+          conditions={infraEnvAlerts}
+        />
       )}
-      <SingleResourceAlerts
-        title={t('ai:Failing infrastructure environment')}
-        conditions={infraEnvAlerts}
-      />
-    </>
+    </ModalBody>
   );
 };
