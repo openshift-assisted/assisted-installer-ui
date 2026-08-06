@@ -4,7 +4,9 @@ import * as React from 'react';
 import * as Yup from 'yup';
 import {
   dnsNameValidationSchema,
+  ErrorState,
   getDefaultOpenShiftVersion,
+  LoadingState,
   nameValidationSchema,
   pullSecretValidationSchema,
 } from '../../../../../common';
@@ -12,6 +14,7 @@ import { useTranslation } from '../../../../../common/hooks/use-translation-wrap
 import { useSupportedOCPVersions } from '../../hooks/useSupportedOCPVersions';
 import DetailsForm from './DetailsForm';
 import { DetailsStepProps, UseDetailsFormik } from './types';
+import { useStorageClasses } from '../../../../hooks';
 
 const useDetailsFormik: UseDetailsFormik = ({
   ocpVersions,
@@ -27,6 +30,7 @@ const useDetailsFormik: UseDetailsFormik = ({
       pullSecret: initPullSecret,
       baseDnsDomain: initBaseDomain,
       customOpenshiftSelect: null,
+      storageClass: '',
     }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
@@ -56,6 +60,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   const { t } = useTranslation();
   const ocpVersions = useSupportedOCPVersions(clusterImages, t, supportedVersionsCM);
   const allVersions = useSupportedOCPVersions(clusterImages, t, supportedVersionsCM, true);
+  const [storageClasses, isLoaded, error] = useStorageClasses({ isList: true });
 
   const [initialValues, validationSchema] = useDetailsFormik({
     ocpVersions,
@@ -63,6 +68,12 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
     initPullSecret,
     initBaseDomain,
   });
+
+  if (!isLoaded) {
+    return <LoadingState />;
+  } else if (error) {
+    return <ErrorState />;
+  }
 
   return (
     <Formik
@@ -76,6 +87,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
         ocpVersions={ocpVersions}
         allVersions={allVersions}
         extensionAfter={extensionAfter}
+        storageClasses={storageClasses}
       />
     </Formik>
   );
