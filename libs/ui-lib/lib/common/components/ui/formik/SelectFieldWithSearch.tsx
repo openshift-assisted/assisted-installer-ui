@@ -38,6 +38,7 @@ const SelectFieldWithSearch = ({
   isLoading = false,
   placeholder,
   helperText,
+  onClear,
 }: {
   selectOptions: (SelectOptionProps & { showDivider?: boolean })[];
   filterValue: string;
@@ -46,6 +47,7 @@ const SelectFieldWithSearch = ({
   isLoading?: boolean;
   placeholder?: string;
   helperText?: React.ReactNode;
+  onClear?: VoidFunction;
 } & FieldProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [{ value }, , { setValue }] = useField<unknown | unknown[]>(name);
@@ -185,6 +187,7 @@ const SelectFieldWithSearch = ({
 
   const onClearButtonClick = () => {
     setFilterValue('');
+    onClear?.();
     resetActiveAndFocusedItem();
     textInputRef?.current?.focus();
   };
