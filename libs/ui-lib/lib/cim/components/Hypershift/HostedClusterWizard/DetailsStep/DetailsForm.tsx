@@ -11,12 +11,14 @@ import { useTranslation } from '../../../../../common/hooks/use-translation-wrap
 import { BaseDnsHelperText } from '../../../ClusterDeployment/clusterDetails/ClusterDetailsFormFields';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { DetailsFormProps, DetailsFormValues } from './types';
+import { StorageClassDropdown } from './StorageClassDropdown';
 
 const DetailsForm: React.FC<DetailsFormProps> = ({
   onValuesChanged,
   extensionAfter,
   ocpVersions,
   allVersions,
+  storageClasses,
 }) => {
   const { t } = useTranslation();
   const [openshiftVersionModalOpen, setOpenshiftVersionModalOpen] = React.useState(false);
@@ -68,6 +70,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
           onClose={() => setOpenshiftVersionModalOpen(false)}
         />
       )}
+
+      <StorageClassDropdown storageClasses={storageClasses} />
 
       <PullSecret />
     </Form>
