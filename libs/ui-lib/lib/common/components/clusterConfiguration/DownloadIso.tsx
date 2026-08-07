@@ -12,7 +12,7 @@ import {
 } from '@patternfly/react-core';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
-import { StaticIPInfo } from './DiscoveryImageConfigForm';
+import { StaticIPInfo } from './StaticIPInfo';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { getCiscoIntersightLink } from '../../config';
