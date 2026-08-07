@@ -24,4 +24,3 @@ export const wizardStepNames = (
 
 // TODO(mlibra): what is the limit???
 export const HOSTS_MAX_COUNT = 1024;
-export const HOSTS_MIN_COUNT = 3;
