@@ -53,46 +53,10 @@ between applications and libraries.
 
 ## Integrating with OCM (uhc-portal)
 
-The Assisted Installer UI is consumed as a library at build-time by other applications.  
-The [uhc-portal](https://github.com/RedHatInsights/uhc-portal) is one of them and is the application
-you see at https://console.redhat.com/openshift.
-
-Use this setup if you want to test the `libs/ui-lib` integration with the uhc-portal. These steps
-apply for `libs/locales` as well.
-
-1. In one terminal run the project in [watch mode](#watch-mode).  
-   The script builds and publishes the `@openshift-assisted/ui-lib` and its workspace dependencies
-   to the local registry everytime you'll make a change.
-   ```bash
-   yarn start:watch_mode
-   ```
-2. Fork and clone the
-   [assisted-installer-app](https://github.com/openshift-assisted/assisted-installer-app) project
-   ```bash
-   git clone git@github.com:openshift-assisted/assisted-installer-app.git
-   ```
-3. Inside the assisted-installer-app run the following commands
-
-   ```bash
-   npm ci
-   yalc link @openshift-assisted/ui-lib
-   yalc link @openshift-assisted/locales
-   yalc link @openshift-assisted/types
-   yalc link @openshift-assisted/chatbot
-   ```
-
-   **Note**: `yalc link` needs to be executed following the `npm ci` command.  
-   **Be aware that this command updates the project's `package.json` and `yarn.lock` files**.  
-   **DO NOT COMMIT THESE CHANGES INTO VERSION CONTROL.**
-
-4. Start the assisted-installer-app project:
-
-   ```bash
-   npm run start
-
-   ```
-
-5. Access the page at https://prod.foo.redhat.com:1337/openshift/assisted-installer
+The Assisted Installer UI is consumed by [uhc-portal](https://github.com/RedHatInsights/uhc-portal), the
+application behind [console.redhat.com/openshift](https://console.redhat.com/openshift). See the
+[`assisted-installer-app` README](../apps/assisted-installer-app/README.md) for background and
+step-by-step instructions.
 
 ## Integrating with the OpenShift Console for ACM and MCE (aka CIM)
 
