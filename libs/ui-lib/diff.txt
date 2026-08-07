@@ -1,0 +1,36 @@
+diff --git a/libs/ui-lib/lib/ocm/store/slices/current-cluster/slice.ts b/libs/ui-lib/lib/ocm/store/slices/current-cluster/slice.ts
+index 7069176a..240ca10b 100644
+--- a/libs/ui-lib/lib/ocm/store/slices/current-cluster/slice.ts
++++ b/libs/ui-lib/lib/ocm/store/slices/current-cluster/slice.ts
+@@ -12,8 +12,22 @@ import {
+   FETCH_ABORTED_ERROR_CODE,
+ } from '../../../../common/api/utils';
+ import { ResourceUIState } from '../../../../common/types/resource-ui-state';
++import type { ValidationsInfo } from '../../../../common/types/hosts';
+ import ClustersService from '../../../services/ClustersService';
+ 
++// TODO: remove before commit – dev mock for NTP failure UI
++const mockHostNtpSyncedFailure = (cluster: Cluster): Cluster => ({
++  ...cluster,
++  hosts: cluster.hosts?.map((host) => {
++    const info = JSON.parse(host.validationsInfo || '{}') as ValidationsInfo;
++    info.network = [
++      ...(info.network?.filter((v) => v.id !== 'ntp-synced') ?? []),
++      { id: 'ntp-synced', status: 'failure', message: 'Host NTP is not synced' },
++    ];
++    return { ...host, validationsInfo: JSON.stringify(info) };
++  }),
++});
++
+ export type FetchErrorType = {
+   code: string | number;
+   message: string;
+@@ -39,7 +53,7 @@ export const fetchClusterAsync = createAsyncThunk<
+ >('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
+   try {
+     const cluster = await ClustersService.get(clusterId);
+-    return cluster;
++    return mockHostNtpSyncedFailure(cluster);
+   } catch (e) {
+     return handleApiError(e, () => {
+       return rejectWithValue({

@@ -158,7 +158,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
 });
 
 export const hostValidationFailureHints = (
-  t: TFunction,
+  _t: TFunction,
 ): { [key in HostValidationId]: string } => ({
   'compatible-with-cluster-platform': '',
   'has-default-route': '',
@@ -181,9 +181,7 @@ export const hostValidationFailureHints = (
   'ignition-downloadable': '',
   'belongs-to-majority-group': '',
   'valid-platform-network-settings': '',
-  'ntp-synced': t(
-    "ai:Manually fix the host's NTP configuration or provide additional NTP sources.",
-  ),
+  'ntp-synced': '',
   'time-synced-between-host-and-service': '',
   'container-images-available': '',
   'lso-requirements-satisfied': '',

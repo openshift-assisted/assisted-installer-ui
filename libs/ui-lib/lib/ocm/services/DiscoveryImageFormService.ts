@@ -7,7 +7,19 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import { InfraEnvsAPI } from './apis';
 import ClustersService from './ClustersService';
+import { trimCommaSeparatedList } from '../../common/components/ui/formik/utils';
 import { OcmDiscoveryImageFormValues } from '../components/clusterConfiguration/OcmDiscoveryImageConfigForm';
+
+const getNtpUpdateParams = (formValues: OcmDiscoveryImageFormValues) => {
+  const ntpList =
+    formValues.enableNtpSources && formValues.ntpSourcesList
+      ? trimCommaSeparatedList(formValues.ntpSourcesList)
+      : undefined;
+
+  return ntpList?.length
+    ? { clusterNtpParams: { ntpSources: ntpList }, infraEnvNtpParams: { ntpSources: ntpList } }
+    : { clusterNtpParams: {}, infraEnvNtpParams: {} };
+};
 
 const DiscoveryImageFormService = {
   async update(
@@ -18,6 +30,8 @@ const DiscoveryImageFormService = {
     ocmPullSecret?: string,
     isIpxeImage?: boolean,
   ) {
+    const { clusterNtpParams, infraEnvNtpParams } = getNtpUpdateParams(formValues);
+
     const proxyParams: V2ClusterUpdateParams = {
       httpProxy: formValues.httpProxy,
       httpsProxy: formValues.httpsProxy,
@@ -25,6 +39,7 @@ const DiscoveryImageFormService = {
       // TODO(mlibra): Does the user need to change pull-secret?
       pullSecret: ocmPullSecret || undefined,
       sshPublicKey: formValues.sshPublicKey,
+      ...clusterNtpParams,
     };
 
     const infraEnvParams: InfraEnvUpdateParams = {
@@ -38,6 +53,7 @@ const DiscoveryImageFormService = {
       staticNetworkConfig: formValues.staticNetworkConfig,
       additionalTrustBundle: formValues.trustBundle,
       imageType: isIpxeImage ? undefined : (formValues.imageType as ImageType),
+      ...infraEnvNtpParams,
     };
 
     const { data: updatedCluster } = await ClustersService.update(

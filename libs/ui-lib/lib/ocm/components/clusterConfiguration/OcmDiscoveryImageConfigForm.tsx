@@ -23,12 +23,14 @@ import {
 import { AlertFormikError } from '../../../common/components/ui';
 import {
   DiscoveryImageType,
+  NtpSourcesFieldsType,
   ProxyFieldsType,
   StatusErrorType,
   SupportedCpuArchitecture,
   TrustedCertificateFieldsType,
 } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
+import NtpSourcesFields from '../../../common/components/clusterConfiguration/NtpSourcesFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
@@ -36,6 +38,7 @@ import CertificateFields from '../../../common/components/clusterConfiguration/C
 import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
+  ntpSourceValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common';
 
@@ -53,7 +56,8 @@ export interface OcmImageCreateParams {
 
 export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
   ProxyFieldsType &
-  TrustedCertificateFieldsType;
+  TrustedCertificateFieldsType &
+  NtpSourcesFieldsType;
 
 const validationSchema = (t: TFunction) =>
   Yup.lazy((values: OcmDiscoveryImageFormValues) =>
@@ -62,6 +66,9 @@ const validationSchema = (t: TFunction) =>
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
       httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema(t),
+      ntpSourcesList: values.enableNtpSources
+        ? ntpSourceValidationSchema(t, false)
+        : ntpSourceValidationSchema(t),
     }),
   );
 
@@ -78,6 +85,8 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   trustBundle?: InfraEnv['additionalTrustBundle'];
   selectedCpuArchitecture?: SupportedCpuArchitecture;
   isOracleCloudInfrastructure?: boolean;
+  enableNtpSources?: boolean;
+  ntpSourcesList?: string;
 };
 
 export const OcmDiscoveryImageConfigForm = ({
@@ -93,6 +102,8 @@ export const OcmDiscoveryImageConfigForm = ({
   trustBundle,
   selectedCpuArchitecture,
   isOracleCloudInfrastructure = false,
+  enableNtpSources = false,
+  ntpSourcesList = '',
 }: OcmDiscoveryImageConfigFormProps) => {
   const imageTypeValue = isIpxeSelected
     ? 'discovery-image-ipxe'
@@ -109,6 +120,8 @@ export const OcmDiscoveryImageConfigForm = ({
     imageType: imageTypeValue as DiscoveryImageType,
     enableCertificate: enableCertificate || false,
     trustBundle: trustBundle || '',
+    enableNtpSources,
+    ntpSourcesList,
   };
 
   const { t } = useTranslation();
@@ -166,6 +179,7 @@ export const OcmDiscoveryImageConfigForm = ({
                       )}
                     />
                     <ProxyFields />
+                    <NtpSourcesFields />
                     <CertificateFields />
                   </Form>
                 </StackItem>
