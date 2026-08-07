@@ -8,7 +8,12 @@ import {
   Validation as HostValidation,
 } from '../../../common/types/hosts';
 
-import { canNextClusterDetails, canNextHostDiscovery, canNextStorage } from './wizardTransition';
+import {
+  canNextClusterDetails,
+  canNextHostDiscovery,
+  canNextStorage,
+  isNetworkingStepAwaitingValidations,
+} from './wizardTransition';
 import { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
 
 const clusterBase: Cluster = {
@@ -439,5 +444,247 @@ describe('OCM wizard transition of Storage', () => {
     host0ValidationInfo.operators = host0FlatValidation;
     cluster.hosts[0].validationsInfo = JSON.stringify(host0ValidationInfo);
     expect(canNextStorage({ cluster })).toBe(true);
+  });
+});
+
+const validationInfoNetworkingReady: ValidationsInfo = {
+  network: [
+    {
+      id: 'api-vips-defined',
+      message: 'API virtual IPs are defined.',
+      status: 'success',
+    },
+    {
+      id: 'api-vips-valid',
+      message: 'API VIP is valid.',
+      status: 'success',
+    },
+    {
+      id: 'cluster-cidr-defined',
+      message: 'Cluster Network CIDR is defined.',
+      status: 'success',
+    },
+    {
+      id: 'dns-domain-defined',
+      message: 'Base domain is defined.',
+      status: 'success',
+    },
+    {
+      id: 'ingress-vips-defined',
+      message: 'Ingress virtual IPs are defined.',
+      status: 'success',
+    },
+    {
+      id: 'ingress-vips-valid',
+      message: 'Ingress VIP is valid.',
+      status: 'success',
+    },
+  ],
+};
+
+const hostNetworkValidationReady: HostValidationsInfo = {
+  network: [
+    {
+      id: 'belongs-to-machine-cidr',
+      message: 'Host belongs to machine CIDR.',
+      status: 'success',
+    },
+    {
+      id: 'connected',
+      message: 'Host is connected.',
+      status: 'success',
+    },
+    {
+      id: 'ntp-synced',
+      message: 'NTP is synced.',
+      status: 'success',
+    },
+  ],
+};
+
+const hostNetworkingBase: Host = {
+  kind: 'Host',
+  id: 'host-networking-uuid',
+  href: 'host-networking-href',
+  clusterId: clusterBase.id,
+  status: 'known',
+  statusInfo: 'host status info',
+  validationsInfo: JSON.stringify(hostNetworkValidationReady),
+};
+
+describe('OCM wizard transition of Networking - Next button loader', () => {
+  test('returns false when cluster and hosts are ready', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    cluster.status = 'ready';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [cloneDeep(hostNetworkingBase)];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(false);
+  });
+
+  test('returns true when host network validation is pending only', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    const hostValidations: HostValidationsInfo = {
+      network: [
+        {
+          id: 'belongs-to-machine-cidr',
+          message: 'Host belongs to machine CIDR.',
+          status: 'pending',
+        },
+        { id: 'connected', message: 'Host is connected.', status: 'success' },
+        { id: 'ntp-synced', message: 'NTP is synced.', status: 'success' },
+      ],
+    };
+    cluster.status = 'pending-for-input';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [
+      {
+        ...cloneDeep(hostNetworkingBase),
+        status: 'pending-for-input',
+        validationsInfo: JSON.stringify(hostValidations),
+      },
+    ];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(true);
+  });
+
+  test('returns false when host network validation failed', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    const hostValidations: HostValidationsInfo = {
+      network: [
+        {
+          id: 'belongs-to-machine-cidr',
+          message: 'Host belongs to machine CIDR.',
+          status: 'failure',
+        },
+        { id: 'connected', message: 'Host is connected.', status: 'success' },
+        { id: 'ntp-synced', message: 'NTP is synced.', status: 'success' },
+      ],
+    };
+    cluster.status = 'insufficient';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [
+      {
+        ...cloneDeep(hostNetworkingBase),
+        status: 'insufficient',
+        validationsInfo: JSON.stringify(hostValidations),
+      },
+    ];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(false);
+  });
+
+  test('returns false when host is disconnected', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    cluster.status = 'insufficient';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [{ ...cloneDeep(hostNetworkingBase), status: 'disconnected' }];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(false);
+  });
+
+  test('returns true when host is discovering', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    cluster.status = 'insufficient';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [{ ...cloneDeep(hostNetworkingBase), status: 'discovering' }];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(true);
+  });
+
+  test('returns false when cluster network validation failed', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    const validationInfo: ValidationsInfo = {
+      network: [
+        { id: 'api-vips-defined', message: 'API virtual IPs are defined.', status: 'success' },
+        { id: 'api-vips-valid', message: 'API VIP is valid.', status: 'failure' },
+        {
+          id: 'cluster-cidr-defined',
+          message: 'Cluster Network CIDR is defined.',
+          status: 'success',
+        },
+        { id: 'dns-domain-defined', message: 'Base domain is defined.', status: 'success' },
+        {
+          id: 'ingress-vips-defined',
+          message: 'Ingress virtual IPs are defined.',
+          status: 'success',
+        },
+        { id: 'ingress-vips-valid', message: 'Ingress VIP is valid.', status: 'success' },
+      ],
+    };
+    cluster.status = 'insufficient';
+    cluster.validationsInfo = JSON.stringify(validationInfo);
+    cluster.hosts = [cloneDeep(hostNetworkingBase)];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(false);
+  });
+
+  test('returns true when cluster network validation is pending only', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    const validationInfo: ValidationsInfo = {
+      network: [
+        { id: 'api-vips-defined', message: 'API virtual IPs are defined.', status: 'pending' },
+        { id: 'api-vips-valid', message: 'API VIP is valid.', status: 'success' },
+        {
+          id: 'cluster-cidr-defined',
+          message: 'Cluster Network CIDR is defined.',
+          status: 'success',
+        },
+        { id: 'dns-domain-defined', message: 'Base domain is defined.', status: 'success' },
+        {
+          id: 'ingress-vips-defined',
+          message: 'Ingress virtual IPs are defined.',
+          status: 'success',
+        },
+        { id: 'ingress-vips-valid', message: 'Ingress VIP is valid.', status: 'success' },
+      ],
+    };
+    cluster.status = 'pending-for-input';
+    cluster.validationsInfo = JSON.stringify(validationInfo);
+    cluster.hosts = [cloneDeep(hostNetworkingBase)];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(true);
+  });
+
+  test('returns false when only soft validation failed and nothing is pending', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    const hostValidations: HostValidationsInfo = {
+      network: [
+        {
+          id: 'belongs-to-machine-cidr',
+          message: 'Host belongs to machine CIDR.',
+          status: 'success',
+        },
+        { id: 'connected', message: 'Host is connected.', status: 'success' },
+        { id: 'ntp-synced', message: 'NTP is synced.', status: 'failure' },
+      ],
+    };
+    cluster.status = 'ready';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [
+      {
+        ...cloneDeep(hostNetworkingBase),
+        validationsInfo: JSON.stringify(hostValidations),
+      },
+    ];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(false);
+  });
+
+  test('returns true when soft validation failed and another validation is pending', () => {
+    const cluster: Cluster = cloneDeep(clusterBase);
+    const hostValidations: HostValidationsInfo = {
+      network: [
+        {
+          id: 'belongs-to-machine-cidr',
+          message: 'Host belongs to machine CIDR.',
+          status: 'pending',
+        },
+        { id: 'connected', message: 'Host is connected.', status: 'success' },
+        { id: 'ntp-synced', message: 'NTP is synced.', status: 'failure' },
+      ],
+    };
+    cluster.status = 'pending-for-input';
+    cluster.validationsInfo = JSON.stringify(validationInfoNetworkingReady);
+    cluster.hosts = [
+      {
+        ...cloneDeep(hostNetworkingBase),
+        status: 'pending-for-input',
+        validationsInfo: JSON.stringify(hostValidations),
+      },
+    ];
+    expect(isNetworkingStepAwaitingValidations({ cluster })).toBe(true);
   });
 });
