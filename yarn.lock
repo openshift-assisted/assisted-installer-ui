@@ -1643,7 +1643,7 @@ __metadata:
   resolution: "@openshift-assisted/types@workspace:libs/types"
   dependencies:
     "@types/js-yaml": ^4.0.9
-    js-yaml: ^4.2.0
+    js-yaml: ^4.3.1
     sw2dts: ^2.6.3
   languageName: unknown
   linkType: soft
@@ -1703,7 +1703,7 @@ __metadata:
     ip-address: ^10.4.0
     is-cidr: ^4.0.2
     is-in-subnet: ^4
-    js-yaml: ^4.2.0
+    js-yaml: ^4.3.1
     lodash-es: ^4.17.23
     parse-url: ^9.2.0
     prism-react-renderer: ^1.1.1
@@ -10283,7 +10283,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.1.0, js-yaml@npm:^4.2.0":
+"js-yaml@npm:^4.1.0":
   version: 4.3.0
   resolution: "js-yaml@npm:4.3.0"
   dependencies:
@@ -10291,6 +10291,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 1268fb22ae8504646cedc0823c18816d4af056029578e855b9a4d3e19bcafc3e9ba9e391f70dea4a29b023bb09f23639766071199cb89e853266b90a6ec25f9a
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "js-yaml@npm:4.3.1"
+  dependencies:
+    argparse: ^2.0.1
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 482740e69a1769b355d7182234c0fa197237f02e6a5c8c0b70a763af6a712c9741de350d784a5659e00cf03cedd6ebfa506d59ca45967e3ee50dd4f4df18f2e7
   languageName: node
   linkType: hard
 
