@@ -8,6 +8,12 @@ import {
 import { OcmDiscoveryImageFormValues } from '../components';
 import { InfraEnvsAPI } from './apis';
 import ClustersService from './ClustersService';
+import { trimCommaSeparatedList } from '../../common/components/ui/formik/utils';
+
+const getNtpSources = (formValues: OcmDiscoveryImageFormValues): string =>
+  formValues.enableNtpSources && formValues.ntpSourcesList
+    ? trimCommaSeparatedList(formValues.ntpSourcesList)
+    : '';
 
 const DiscoveryImageFormService = {
   async update(
@@ -18,6 +24,8 @@ const DiscoveryImageFormService = {
     ocmPullSecret?: string,
     isIpxeImage?: boolean,
   ) {
+    const ntpSources = getNtpSources(formValues);
+
     const proxyParams: V2ClusterUpdateParams = {
       httpProxy: formValues.httpProxy,
       httpsProxy: formValues.httpsProxy,
@@ -25,6 +33,7 @@ const DiscoveryImageFormService = {
       // TODO(mlibra): Does the user need to change pull-secret?
       pullSecret: ocmPullSecret || undefined,
       sshPublicKey: formValues.sshPublicKey,
+      ntpSources,
     };
 
     const infraEnvParams: InfraEnvUpdateParams = {
@@ -38,6 +47,7 @@ const DiscoveryImageFormService = {
       staticNetworkConfig: formValues.staticNetworkConfig,
       additionalTrustBundle: formValues.trustBundle,
       imageType: isIpxeImage ? undefined : (formValues.imageType as ImageType),
+      ntpSources,
     };
 
     const { data: updatedCluster } = await ClustersService.update(

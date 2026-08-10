@@ -115,6 +115,7 @@ export const DiscoveryImageForm = ({
       httpProxy={infraEnv.proxy?.httpProxy}
       httpsProxy={infraEnv.proxy?.httpsProxy}
       noProxy={infraEnv.proxy?.noProxy}
+      ntpSources={infraEnv.ntpSources}
       imageType={infraEnv.type}
       enableCertificate={infraEnv.additionalTrustBundle !== undefined}
       trustBundle={infraEnv.additionalTrustBundle}

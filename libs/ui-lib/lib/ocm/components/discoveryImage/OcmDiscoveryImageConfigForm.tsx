@@ -22,6 +22,7 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   DiscoveryImageType,
+  NtpSourcesFieldsType,
   ProxyFieldsType,
   StatusErrorType,
   SupportedCpuArchitecture,
@@ -30,6 +31,7 @@ import {
   useTranslation,
   httpProxyValidationSchema,
   noProxyValidationSchema,
+  ntpSourceValidationSchema,
   sshPublicKeyValidationSchema,
   ProxyFields,
   UploadSSH,
@@ -51,7 +53,8 @@ export interface OcmImageCreateParams {
 
 export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
   ProxyFieldsType &
-  TrustedCertificateFieldsType;
+  TrustedCertificateFieldsType &
+  NtpSourcesFieldsType;
 
 const validationSchema = (t: TFunction) =>
   Yup.lazy((values: OcmDiscoveryImageFormValues) =>
@@ -60,6 +63,9 @@ const validationSchema = (t: TFunction) =>
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
       httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema(t),
+      ntpSourcesList: values.enableNtpSources
+        ? ntpSourceValidationSchema(t, false)
+        : ntpSourceValidationSchema(t),
     }),
   );
 
@@ -76,6 +82,7 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   trustBundle?: InfraEnv['additionalTrustBundle'];
   selectedCpuArchitecture?: SupportedCpuArchitecture;
   isOracleCloudInfrastructure?: boolean;
+  ntpSources?: InfraEnv['ntpSources'];
 };
 
 export const OcmDiscoveryImageConfigForm = ({
@@ -91,6 +98,7 @@ export const OcmDiscoveryImageConfigForm = ({
   trustBundle,
   selectedCpuArchitecture,
   isOracleCloudInfrastructure = false,
+  ntpSources,
 }: OcmDiscoveryImageConfigFormProps) => {
   const imageTypeValue = isIpxeSelected
     ? 'discovery-image-ipxe'
@@ -107,6 +115,8 @@ export const OcmDiscoveryImageConfigForm = ({
     imageType: imageTypeValue as DiscoveryImageType,
     enableCertificate: enableCertificate || false,
     trustBundle: trustBundle || '',
+    enableNtpSources: !!ntpSources?.trim(),
+    ntpSourcesList: ntpSources || '',
   };
 
   const { t } = useTranslation();
@@ -143,7 +153,7 @@ export const OcmDiscoveryImageConfigForm = ({
       {({ submitForm, isSubmitting, status, setStatus }) => {
         return (
           <>
-            <ModalBody style={{ maxHeight: '611px' }}>
+            <ModalBody style={{ maxHeight: '750px' }}>
               <Stack hasGutter>
                 <StackItem>
                   <Alert variant={AlertVariant.info} isInline title={alertDiscoveryText} />
@@ -164,6 +174,7 @@ export const OcmDiscoveryImageConfigForm = ({
                       )}
                     />
                     <ProxyFields />
+                    <NtpSourcesFields />
                     <CertificateFields />
                   </Form>
                 </StackItem>
