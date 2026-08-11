@@ -61,6 +61,48 @@ This project is a user interface backed by Assisted Installer API.
 
 - Open the UI at `http://localhost:3000`
 
+### Use stage as the Assisted Installer service
+
+Use https://api.stage.openshift.com (same backend as https://console.dev.redhat.com/) instead of a
+local assisted-service.
+
+1. Create `apps/assisted-ui/.env.local`:
+
+   ```ini
+   AIUI_APP_API_URL=https://api.stage.openshift.com
+   AIUI_SSO_API_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+   ```
+
+   - `AIUI_APP_API_URL` — Vite proxies `/api` to the stage Assisted Installer API
+   - `AIUI_SSO_API_URL` — Vite proxies `/token` to Red Hat SSO (refresh → access token)
+
+2. Get an OCM refresh token with the [ocm CLI](https://github.com/openshift-online/ocm-cli):
+
+   ```bash
+   # Fedora
+   sudo dnf copr enable ocm/tools && sudo dnf install ocm-cli
+
+   ocm login --use-auth-code --url=https://api.stage.openshift.com
+   jq -r .refresh_token ~/.config/ocm/ocm.json
+   ```
+
+3. Set the refresh token locally in `apps/assisted-ui/public/env.js`. Keep the committed value empty
+   (`''`) — never commit a real token:
+
+   ```js
+   window.OCM_REFRESH_TOKEN = '<paste-refresh-token>';
+   ```
+
+4. From the monorepo root, start the UI and open http://localhost:5173:
+
+   ```bash
+   yarn start:assisted_ui
+   ```
+
+On startup, `src/main.tsx` exchanges the refresh token for a short-lived access token and attaches
+`Authorization: Bearer …` to Assisted API requests. Leave `OCM_REFRESH_TOKEN` empty when using a
+local assisted-service that does not require OCM auth.
+
 ## Running integration tests
 
 TBD
