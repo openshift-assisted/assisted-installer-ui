@@ -5,5 +5,6 @@ export { default as ClustersAPI } from './ClustersAPI';
 export { default as HostsAPI } from './HostsAPI';
 export { default as InfraEnvsAPI } from './InfraEnvsAPI';
 export { default as EventsAPI } from './EventsAPI';
-export { default as NewFeatureSupportLevelsAPI } from './NewFeatureSupportLevelsAPI';
 export { default as UISettingsAPI } from './UISettingsAPI';
+
+export * from './NewFeatureSupportLevelsAPI';

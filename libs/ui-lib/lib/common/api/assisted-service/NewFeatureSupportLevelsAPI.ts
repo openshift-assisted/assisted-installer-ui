@@ -9,7 +9,7 @@ export interface FeaturesSupportsLevel {
   features: NewFeatureSupportLevelMap;
 }
 
-const NewFeatureSupportLevelsAPI = {
+export const NewFeatureSupportLevelsAPI = {
   makeBaseURI() {
     return `/v2/support-levels`;
   },
@@ -36,5 +36,3 @@ const NewFeatureSupportLevelsAPI = {
     );
   },
 };
-
-export default NewFeatureSupportLevelsAPI;
