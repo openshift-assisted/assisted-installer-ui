@@ -80,10 +80,6 @@ const NetworkConfigurationForm: React.FC<{
     }
   }, [isHostsPlatformTypeNutanix, setFieldValue, values.vipDhcpAllocation]);
 
-  const onNext = React.useCallback(() => {
-    clusterWizardContext.moveNext();
-  }, [clusterWizardContext]);
-
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
@@ -96,7 +92,7 @@ const NetworkConfigurationForm: React.FC<{
         !isValid ||
         !canNextNetwork({ cluster })
       }
-      onNext={onNext}
+      onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
