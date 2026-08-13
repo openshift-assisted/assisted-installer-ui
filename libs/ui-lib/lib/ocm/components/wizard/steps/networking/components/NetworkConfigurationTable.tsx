@@ -7,6 +7,7 @@ import {
   AdditionalNTPSourcesDialogToggle,
 } from '../../../../hostsTable';
 import { NetworkConfigurationTableBase } from './NetworkConfigurationTableBase';
+import { NtpSyncFailureMessage } from '../../../../hostsTable/components/NtpSyncFailureMessage';
 
 export const NetworkConfigurationTable = ({ cluster }: { cluster: Cluster }) => {
   const { actionChecks, onEditHost, actionResolver, ...modalProps } = useHostsTable(cluster);
@@ -16,6 +17,7 @@ export const NetworkConfigurationTable = ({ cluster }: { cluster: Cluster }) => 
       <NetworkConfigurationTableBase
         cluster={cluster}
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+        NtpSyncFailureMessageComponent={NtpSyncFailureMessage}
         onEditHost={onEditHost}
         canEditHostname={actionChecks.canEditHostname}
         actionResolver={actionResolver}

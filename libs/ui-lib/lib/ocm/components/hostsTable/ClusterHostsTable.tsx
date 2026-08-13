@@ -28,6 +28,8 @@ import {
 } from './components';
 import { HostsTableModals } from './modals';
 import { useHostsTable } from './use-hosts-table';
+import { NtpSyncFailureMessage } from './components/NtpSyncFailureMessage';
+
 
 export const ExpandComponent = ({ obj: host }: ExpandComponentProps<Host>) => {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -35,6 +37,7 @@ export const ExpandComponent = ({ obj: host }: ExpandComponentProps<Host>) => {
     <HostDetail
       host={host}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      NtpSyncFailureMessageComponent={NtpSyncFailureMessage}
       hideNTPStatus
       onDiskRole={onDiskRole}
       canEditDisks={canEditDisks}
@@ -76,6 +79,7 @@ export const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTablePr
         AdditionalNTPSourcesDialogToggle,
         onEditHost,
         UpdateDay2ApiVipDialogToggle,
+        NtpSyncFailureMessage,
       ),
       discoveredAtColumn(t),
       cpuCoresColumn(t),

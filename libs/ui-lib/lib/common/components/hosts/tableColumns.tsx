@@ -129,6 +129,7 @@ export const statusColumn = (
   AdditionalNTPSourcesDialogToggleComponent?: React.FC,
   onEditHostname?: HostsTableActions['onEditHost'],
   UpdateDay2ApiVipDialogToggleComponent?: React.FC,
+  NtpSyncFailureMessageComponent?: React.FC,
 ): TableRow<Host> => {
   return {
     header: {
@@ -157,6 +158,7 @@ export const statusColumn = (
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+            NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
             UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
           />
         ),

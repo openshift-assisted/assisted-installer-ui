@@ -2,24 +2,24 @@ import React from 'react';
 import { Button, ButtonVariant, Flex, Icon, Popover } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { PendingIcon } from '@patternfly/react-icons/dist/js/icons/pending-icon';
 import { toSentence } from '../ui';
-import { hostValidationFailureHints, hostValidationLabels } from '../../config';
+import { hostValidationLabels } from '../../config';
 import { Validation } from '../../types/hosts';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ValidationPopoverProps = {
   validation: Validation;
   actions?: React.ReactNode[];
+  additionalBodyContent?: React.ReactNode;
 };
 
 const ValidationPopover: React.FC<React.PropsWithChildren<ValidationPopoverProps>> = ({
   validation,
   actions,
+  additionalBodyContent,
   children,
 }) => {
   const { t } = useTranslation();
-  const failedValidationHint = hostValidationFailureHints(t)[validation.id];
 
   return (
     <Popover
@@ -27,7 +27,8 @@ const ValidationPopover: React.FC<React.PropsWithChildren<ValidationPopoverProps
       bodyContent={
         <div>
           {toSentence(validation.message)}
-          {validation.status === 'failure' && failedValidationHint && ` ${failedValidationHint}`}
+          {additionalBodyContent && ' '}
+          {additionalBodyContent}
         </div>
       }
       footerContent={actions}
@@ -43,9 +44,8 @@ const ValidationPopover: React.FC<React.PropsWithChildren<ValidationPopoverProps
 type HostPropertyValidationPopoverProps = {
   validation?: Validation;
   failureActions?: React.ReactNode[];
-  pendingActions?: React.ReactNode[];
+  failureBodyContent?: React.ReactNode;
   showFailure?: boolean;
-  showPending?: boolean;
   showSuccess?: boolean;
 };
 
@@ -54,30 +54,24 @@ export const HostPropertyValidationPopover: React.FC<
 > = ({
   validation,
   failureActions,
-  pendingActions,
+  failureBodyContent,
   children,
   showFailure = true,
-  showPending = false,
   showSuccess = false,
 }) => {
   if (validation) {
     if (showFailure && validation.status === 'failure') {
       return (
-        <ValidationPopover validation={validation} actions={failureActions}>
+        <ValidationPopover
+          validation={validation}
+          actions={failureActions}
+          additionalBodyContent={failureBodyContent}
+        >
           <Flex columnGap={{ default: 'columnGapSm' }} alignItems={{ default: 'alignItemsCenter' }}>
             <Icon status="danger">
               <ExclamationCircleIcon />
             </Icon>{' '}
             {children}
-          </Flex>
-        </ValidationPopover>
-      );
-    }
-    if (showPending && validation.status === 'pending') {
-      return (
-        <ValidationPopover validation={validation} actions={pendingActions}>
-          <Flex columnGap={{ default: 'columnGapSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-            <PendingIcon /> {children}
           </Flex>
         </ValidationPopover>
       );

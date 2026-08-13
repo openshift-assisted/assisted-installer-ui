@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
-// TODO we should use hostValidationFailureHints instead of passing this 'action' which is actually a hint
 export const AdditionalNTPSourcesDialogToggle: React.FC = () => {
   const { t } = useTranslation();
   return (

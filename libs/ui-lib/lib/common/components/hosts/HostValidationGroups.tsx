@@ -6,12 +6,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/e
 
 import { Host, HostValidationId } from '@openshift-assisted/types/assisted-installer-service';
 import { Validation, ValidationsInfo } from '../../types/hosts';
-import {
-  getMtuLink,
-  hostValidationFailureHints,
-  hostValidationGroupLabels,
-  hostValidationLabels,
-} from '../../config';
+import { getMtuLink, hostValidationGroupLabels, hostValidationLabels } from '../../config';
 import { toSentence } from '../ui';
 import { useTranslation } from '../../hooks';
 import { getKeys } from '../../utils';
@@ -22,6 +17,7 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/exter
 
 export type AdditionNtpSourcePropsType = {
   AdditionalNTPSourcesDialogToggleComponent?: React.FC;
+  NtpSyncFailureMessageComponent?: React.FC;
 };
 
 export type UpdateDay2ApiVipPropsType = {
@@ -69,8 +65,7 @@ const ValidationsAlert = ({
               {hostValidationLabels(t)[v.id] || v.id}:
             </span>
             &nbsp;
-            {toSentence(v.message.replace(/\\n/, ' '))}{' '}
-            {v.status === 'failure' && hostValidationFailureHints(t)[v.id]}
+            {toSentence(v.message.replace(/\\n/, ' '))}
           </li>
         ))}
       </ul>
@@ -113,10 +108,16 @@ const HostnameAlert = ({
 
 const NtpSyncAlert = ({
   AdditionalNTPSourcesDialogToggleComponent,
+  NtpSyncFailureMessageComponent,
   variant,
   validation,
-}: Required<AdditionNtpSourcePropsType> & { variant: AlertVariant; validation: Validation }) => {
-  const actionLinks = [<AdditionalNTPSourcesDialogToggleComponent key="add-ntp-sources" />];
+}: AdditionNtpSourcePropsType & {
+  variant: AlertVariant;
+  validation: Validation;
+}) => {
+  const actionLinks = AdditionalNTPSourcesDialogToggleComponent
+    ? [<AdditionalNTPSourcesDialogToggleComponent key="add-ntp-sources" />]
+    : [];
   const { t } = useTranslation();
   return (
     <Alert
@@ -125,7 +126,13 @@ const NtpSyncAlert = ({
       actionLinks={actionLinks}
       isInline
     >
-      {toSentence(validation.message)} {hostValidationFailureHints(t)[validation.id]}
+      {toSentence(validation.message)}
+      {NtpSyncFailureMessageComponent && (
+        <>
+          {' '}
+          <NtpSyncFailureMessageComponent />
+        </>
+      )}
     </Alert>
   );
 };
@@ -170,7 +177,7 @@ const MtuSyncAlert = ({
   const { t } = useTranslation();
   return (
     <Alert title={t('ai:MTU (maximum transmission unit) failure')} variant={variant} isInline>
-      {toSentence(validation.message)} {hostValidationFailureHints(t)[validation.id]}
+      {toSentence(validation.message)}
       <br />
       {<MtuInfoLink docsVersion={docsVersion} />}
     </Alert>
@@ -183,6 +190,7 @@ const ValidationGroupAlerts = ({
   variant,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
+  NtpSyncFailureMessageComponent,
   UpdateDay2ApiVipDialogToggleComponent,
   host,
   openshiftVersion,
@@ -234,10 +242,14 @@ const ValidationGroupAlerts = ({
       />,
     );
   }
-  if (validationsWithActions['ntp-synced'] && AdditionalNTPSourcesDialogToggleComponent) {
+  if (
+    validationsWithActions['ntp-synced'] &&
+    (AdditionalNTPSourcesDialogToggleComponent || NtpSyncFailureMessageComponent)
+  ) {
     alerts.push(
       <NtpSyncAlert
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+        NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
         validation={validationsWithActions['ntp-synced']}
         variant={variant}
         key="ntp-sync-alert"

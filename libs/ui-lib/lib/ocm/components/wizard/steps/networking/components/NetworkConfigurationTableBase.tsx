@@ -49,6 +49,7 @@ export const networkingStatusColumn = (
 type NetworkConfigurationTableProps = {
   cluster: Cluster;
   AdditionalNTPSourcesDialogToggleComponent: React.FC;
+  NtpSyncFailureMessageComponent?: React.FC;
   actionResolver: ActionsResolver<Host>;
   children: React.ReactNode;
   onEditHost?: HostsTableActions['onEditHost'];
@@ -62,6 +63,7 @@ type NetworkConfigurationTableProps = {
 export const NetworkConfigurationTableBase = ({
   cluster,
   AdditionalNTPSourcesDialogToggleComponent,
+  NtpSyncFailureMessageComponent,
   onEditHost,
   onEditRole,
   canEditRole,
@@ -97,10 +99,11 @@ export const NetworkConfigurationTableBase = ({
         <HostDetail
           host={obj}
           AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+          NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
         />
       );
     },
-    [AdditionalNTPSourcesDialogToggleComponent],
+    [AdditionalNTPSourcesDialogToggleComponent, NtpSyncFailureMessageComponent],
   );
 
   return (

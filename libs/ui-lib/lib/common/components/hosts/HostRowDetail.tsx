@@ -26,6 +26,7 @@ type HostDetailProps = {
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
+  NtpSyncFailureMessageComponent?: ValidationInfoActionProps['NtpSyncFailureMessageComponent'];
   hideNTPStatus?: boolean;
   updateDiskSkipFormatting?: (
     shouldFormatDisk: boolean,
@@ -172,6 +173,7 @@ export const HostDetail = ({
   canEditDisks,
   onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
+  NtpSyncFailureMessageComponent,
   hideNTPStatus = false,
   updateDiskSkipFormatting,
 }: HostDetailProps) => {
@@ -198,10 +200,11 @@ export const HostDetail = ({
     () => (
       <NtpValidationStatus
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+        NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
         validationsInfo={validationsInfo}
       />
     ),
-    [AdditionalNTPSourcesDialogToggleComponent, validationsInfo],
+    [AdditionalNTPSourcesDialogToggleComponent, NtpSyncFailureMessageComponent, validationsInfo],
   );
 
   return (
