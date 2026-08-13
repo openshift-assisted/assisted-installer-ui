@@ -1493,6 +1493,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@openshift-assisted/assisted-installer-app@workspace:apps/assisted-installer-app":
+  version: 0.0.0-use.local
+  resolution: "@openshift-assisted/assisted-installer-app@workspace:apps/assisted-installer-app"
+  dependencies:
+    "@openshift-assisted/locales": "workspace:*"
+    "@openshift-assisted/types": "workspace:*"
+    "@openshift-assisted/ui-lib": "workspace:*"
+    "@patternfly/patternfly": 6.4.0
+    "@patternfly/react-core": 6.4.1
+    "@patternfly/react-icons": 6.4.0
+    "@patternfly/react-styles": 6.4.0
+    "@patternfly/react-tokens": 6.4.0
+    "@redhat-cloud-services/frontend-components": ^7.0.0
+    "@redhat-cloud-services/frontend-components-config": ^6.0.17
+    "@redhat-cloud-services/tsc-transform-imports": ^1.0.4
+    "@types/react": ^18.2.37
+    "@types/react-dom": ^18.2.15
+    axios: ^1.16.1
+    i18next: ^20.4 || ^21
+    monaco-editor: ^0.44.0 || ^0.55.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-i18next: ^11.18.6
+    react-monaco-editor: ^0.55.0
+    react-router: ^7.17.0
+    ts-patch: ^3.0.2
+    typescript: ^5.9.3
+  languageName: unknown
+  linkType: soft
+
 "@openshift-assisted/assisted-installer-ui-chatbot@workspace:apps/assisted-chatbot":
   version: 0.0.0-use.local
   resolution: "@openshift-assisted/assisted-installer-ui-chatbot@workspace:apps/assisted-chatbot"
@@ -3820,7 +3850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.0":
+"@types/react-dom@npm:^18.2.0, @types/react-dom@npm:^18.2.15":
   version: 18.3.7
   resolution: "@types/react-dom@npm:18.3.7"
   peerDependencies:
@@ -3858,6 +3888,16 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 2d2599f1a09e4f678509161fea8baeaf76d21deee460f4f3ccc1ca431ebe85f896d7d0b906127de17e97ed57240cec61955eb97d0b5d9cbf4e97fd6620b1acdb
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.2.37":
+  version: 18.3.31
+  resolution: "@types/react@npm:18.3.31"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^3.2.2
+  checksum: fe17985f3debdc83e1804102b51e0a59ba64295c2f10de92ba8c7c8276b70ac3b11bf19870d31279feaa20b00e8d77fa7a17852137a2beba8fad45350bc66d76
   languageName: node
   linkType: hard
 
@@ -5058,7 +5098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.2, axios@npm:^1.13.5, axios@npm:^1.14.0, axios@npm:^1.18.1, axios@npm:^1.6.1":
+"axios@npm:^1.12.2, axios@npm:^1.13.5, axios@npm:^1.14.0, axios@npm:^1.16.1, axios@npm:^1.18.1, axios@npm:^1.6.1":
   version: 1.18.1
   resolution: "axios@npm:1.18.1"
   dependencies:
@@ -11915,7 +11955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.55.0":
+"monaco-editor@npm:^0.44.0 || ^0.55.0, monaco-editor@npm:^0.55.0":
   version: 0.55.1
   resolution: "monaco-editor@npm:0.55.1"
   dependencies:
@@ -12739,10 +12779,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^8.4.2":
-  version: 8.4.2
-  resolution: "path-to-regexp@npm:8.4.2"
-  checksum: c30fba443e413cc736b7b28056a4b60b537ae1caa80152da21e8093bd41deba7c408a4ac6f11a1bf594e089d8fd8d87ed31476c55c50983719fb355826370ade
+"path-to-regexp@npm:0.1.13":
+  version: 0.1.13
+  resolution: "path-to-regexp@npm:0.1.13"
+  checksum: 0bf61c6068a0d92dbd3c2f4b24a9b8f153be2d8ec13c99bb7a45f31e5f7e153b91811e63b895ac9e0942ae16890ee15526e842f6f1b4920aa01335f94f6ce58e
   languageName: node
   linkType: hard
 
@@ -13347,7 +13387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^11.11.4":
+"react-i18next@npm:^11.11.4, react-i18next@npm:^11.18.6":
   version: 11.18.6
   resolution: "react-i18next@npm:11.18.6"
   dependencies:
@@ -13429,6 +13469,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-monaco-editor@npm:^0.55.0":
+  version: 0.55.0
+  resolution: "react-monaco-editor@npm:0.55.0"
+  dependencies:
+    prop-types: ^15.8.1
+  peerDependencies:
+    "@types/react": ">=16 <= 18"
+    monaco-editor: ^0.44.0
+    react: ">=16 <= 18"
+  checksum: c7c7f5b0849e057701836029552fcea409a03086d69c6c4925f8eeb81442b50ae5f63f65d8174aefe9fd051027d221ef2d88540abc0c9a66f9b6a91f60b79d0d
+  languageName: node
+  linkType: hard
+
 "react-monaco-editor@npm:^0.59.0":
   version: 0.59.0
   resolution: "react-monaco-editor@npm:0.59.0"
@@ -13476,6 +13529,22 @@ __metadata:
   version: 0.14.2
   resolution: "react-refresh@npm:0.14.2"
   checksum: d80db4bd40a36dab79010dc8aa317a5b931f960c0d83c4f3b81f0552cbcf7f29e115b84bb7908ec6a1eb67720fff7023084eff73ece8a7ddc694882478464382
+  languageName: node
+  linkType: hard
+
+"react-router@npm:^7.17.0":
+  version: 7.18.2
+  resolution: "react-router@npm:7.18.2"
+  dependencies:
+    cookie: ^1.0.1
+    set-cookie-parser: ^2.6.0
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+  checksum: 945d24fd3ec7f113f384fde00463fd75b7f1cf5bf76fc2cd1f46cfc2c5610516c538ec55f9294d11a72988179949ed1b8470e4b2571d4b7031016f83c55f51cc
   languageName: node
   linkType: hard
 
@@ -16950,7 +17019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.21.2":
+"ws@npm:^8.21.0":
   version: 8.21.3
   resolution: "ws@npm:8.21.3"
   peerDependencies:
