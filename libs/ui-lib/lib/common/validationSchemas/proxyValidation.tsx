@@ -5,26 +5,32 @@ import { trimCommaSeparatedList } from '../components/ui/formik/utils';
 import { PROXY_DNS_REGEX } from './regexes';
 import { isIPorDN } from './utils';
 
-export const httpProxyValidationSchema = ({
-  values,
-  pairValueName,
-  allowEmpty,
-  t,
-}: {
+type ProxyUrlValidationParams = {
   values: ProxyFieldsType;
   pairValueName: 'httpProxy' | 'httpsProxy';
   allowEmpty?: boolean;
   t: TFunction;
-}) => {
+  allowedProtocols: string[];
+  formatErrorMessage: string;
+};
+
+const proxyUrlValidationSchema = ({
+  values,
+  pairValueName,
+  allowEmpty,
+  t,
+  allowedProtocols,
+  formatErrorMessage,
+}: ProxyUrlValidationParams) => {
   const validation = Yup.string().test(
     'http-proxy-validation',
-    t('ai:Provide a valid HTTP URL.'),
+    formatErrorMessage,
     (value?: string) => {
       if (!value) {
         return true;
       }
 
-      if (!value.startsWith('http://')) {
+      if (!allowedProtocols.some((protocol) => value.startsWith(protocol))) {
         return false;
       }
 
@@ -48,48 +54,23 @@ export const httpProxyValidationSchema = ({
   );
 };
 
-export const httpsProxyValidationSchema = ({
-  values,
-  pairValueName,
-  allowEmpty,
-  t,
-}: {
-  values: ProxyFieldsType;
-  pairValueName: 'httpProxy' | 'httpsProxy';
-  allowEmpty?: boolean;
-  t: TFunction;
-}) => {
-  const validation = Yup.string().test(
-    'http-proxy-validation',
-    t('ai:Provide a valid HTTP or HTTPS URL.'),
-    (value?: string) => {
-      if (!value) {
-        return true;
-      }
+export const httpProxyValidationSchema = (
+  params: Omit<ProxyUrlValidationParams, 'allowedProtocols' | 'formatErrorMessage'>,
+) =>
+  proxyUrlValidationSchema({
+    ...params,
+    allowedProtocols: ['http://'],
+    formatErrorMessage: params.t('ai:Provide a valid HTTP URL.'),
+  });
 
-      if (!['http://', 'https://'].some((protocol) => value.startsWith(protocol))) {
-        return false;
-      }
-
-      try {
-        new URL(value);
-      } catch {
-        return false;
-      }
-      return true;
-    },
-  );
-
-  if (allowEmpty) {
-    return validation;
-  }
-
-  return validation.test(
-    'http-proxy-no-empty-validation',
-    t('ai:At least one of the HTTP or HTTPS proxy URLs is required.'),
-    (value) => !values.enableProxy || !!value || !!values[pairValueName],
-  );
-};
+export const httpsProxyValidationSchema = (
+  params: Omit<ProxyUrlValidationParams, 'allowedProtocols' | 'formatErrorMessage'>,
+) =>
+  proxyUrlValidationSchema({
+    ...params,
+    allowedProtocols: ['http://', 'https://'],
+    formatErrorMessage: params.t('ai:Provide a valid HTTP or HTTPS URL.'),
+  });
 
 export const noProxyValidationSchema = (t: TFunction) =>
   Yup.string().test(

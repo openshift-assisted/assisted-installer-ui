@@ -30,7 +30,7 @@ import {
   UploadSSH,
   useTranslation,
 } from '../../../common';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon';
 import { DiscoveryImageTypeControlGroup } from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 
 export const StaticIPInfo = ({ docVersion }: { docVersion?: string }) => {
