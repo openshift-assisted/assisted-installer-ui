@@ -57,7 +57,9 @@
     "basic-ftp": "^5.3.1",
     "ws": "^8.21.0",
     "dompurify": "^3.4.7",
-    "webpack-dev-server": "^5.2.5"
+    "webpack-dev-server": "^5.2.5",
+    "minimatch": "^10.2.6",
+    "brace-expansion": "^5.0.9"
   },
   "workspaces": [
     "apps/*",
