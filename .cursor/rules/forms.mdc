@@ -1,0 +1,120 @@
+---
+description:
+  Building and changing forms in libs/ui-lib—reuse the formik/ field wrappers and
+  common/validationSchemas; <Formik> + Yup t-factories; OCM vs CIM wizard chassis differs.
+  Complements code-style, variable-naming, imports, translations.
+globs:
+  - libs/ui-lib/**/*.ts
+  - libs/ui-lib/**/*.tsx
+alwaysApply: false
+---
+
+# Forms
+
+Forms in **`libs/ui-lib`** are built with **Formik + Yup + PatternFly** on top of a shared set of
+field wrappers and validators. **Reuse them**—do not hand-roll `FormGroup`/`TextInput` markup or
+re-implement validators that already exist.
+
+**Precedence:** match the file you edit; defaults here are for new code (no drive-by rewrites). Lint
+and formatting follow `code-style`; ESLint remains the authority.
+
+## Reuse before building
+
+Prefer the field wrappers in **`libs/ui-lib/lib/common/components/ui/formik/`** over raw PatternFly
+controls. The input wrappers (the `*Field` components below) are `useField`-based and render their
+own `FormGroup`, helper text, and error state; the array-row and error helpers (`AddButton`,
+`RemovableField`, `AlertFormikError`) are layout/utility pieces, not field wrappers. They re-export
+up through the `common/components/ui` and top-level `common` barrels (most call sites use `../ui` or
+`common`, not the `formik/` index directly)—pick the barrel per `imports`.
+
+| Need                             | Component                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Text / number input              | `InputField`, `NumberInputField`                                                                  |
+| Inline click-to-edit text        | `PencilEditField`                                                                                 |
+| Multi-line / secret text         | `TextAreaField`, `TextAreaSecretField`                                                            |
+| Boolean                          | `CheckboxField`, `SwitchField`                                                                    |
+| Choice                           | `RadioField`, `RadioFieldWithTooltip`, `SelectField`, `MultiSelectField`, `SelectFieldWithSearch` |
+| Live per-rule validation popover | `RichInputField`                                                                                  |
+| Code / file upload               | `CodeField`, `UploadField`, `CertificatesUploadField`                                             |
+| Domain-specific                  | `PullSecretField`, `LabelField`, `AdditionalNTPSourcesField`                                      |
+| Array row controls               | Formik `<FieldArray>` + `AddButton`, `RemovableField`                                             |
+| Formik error banner              | `AlertFormikError`                                                                                |
+
+If none fits, add a new wrapper by mirroring an existing one (extend `FieldProps` from
+`formik/types.ts`)—don't inline bare PatternFly controls in a form.
+
+## Composing a form
+
+- Use the **`<Formik>`** component—**not** the `useFormik` hook (unused in this repo). Two shapes: a
+  **render-prop child** (`{({ submitForm, isValid, dirty, errors }) => …}`) when the child needs
+  form state, or a **child component that reads `useFormikContext`**.
+- The form element is **PatternFly's `<Form onSubmit={handleSubmit}>`**, not Formik's `<Form>`.
+- Set **`validateOnMount`** when footer/submit gating reads `isValid` (or `errorFields`) on first
+  render—otherwise the initial disabled state is wrong until the first change.
+- Fields consume Formik via **`useField`**—never single-`Field` render props or HOCs. For arrays of
+  rows, wrap the rows in Formik's **`<FieldArray name=…>`** (its `push`/`remove` drive
+  `AddButton`/`RemovableField`), e.g. `CustomManifestsForm.tsx`, `StaticIpHostsArray.tsx`.
+
+## Validation (Yup)
+
+- **Reuse** validators from **`libs/ui-lib/lib/common/validationSchemas/`** (IP/CIDR/VIP/MAC,
+  hostname, cluster name / DNS / base domain, networking, ssh, proxy, pull secret, ntp). Shared
+  regexes and message maps live in `regexes.tsx` / `constants.tsx`. Add genuinely reusable
+  validators here; keep form-specific schemas co-located with the form.
+- Validators are **i18n factories taking `t: TFunction`**, e.g. `ipValidationSchema(t)`. Naming:
+  field validators `*ValidationSchema`, aggregate builders `get*ValidationSchema`.
+- Cross-field or value-dependent rules can use `Yup.lazy` / `.when` / `.concat` **when needed**—see
+  `ocm/components/clusterConfiguration/networkConfiguration/networkConfigurationValidation.ts`.
+  These are not required for simple schemas.
+- Pass validation as either `validationSchema` or, for rich per-field error arrays (drives
+  `RichInputField`), `validate={getRichTextValidation(schema)}` from `formik/utils.ts`.
+
+## Initial values and types
+
+- Build initial values with a **`get*InitialValues`** factory that returns a typed **`*Values`** /
+  **`*FormValues`** object.
+- Define that value type in a **`types.ts`** next to the form, and name it per `variable-naming`.
+- **Memoize initial values once** (`useMemo(…, [])`)—Formik does not reinitialize by default. Only
+  use `enableReinitialize` when the form genuinely must reset from changing props (rare).
+
+## Submission and errors
+
+Pick the channel by context; **avoid `setFieldError`**:
+
+- **Backend-persisting wizard steps** → `useAlerts().addAlert` / `clearAlerts` (from
+  `common/components/AlertsContextProvider`) with `handleApiError` / `getApiErrorMessage` /
+  `isUnknownServerError` (`common/api`), rendered by `<Alerts />`.
+- **Modals / dialogs** → Formik `setStatus({ error })`, surfaced via `AlertFormikError`;
+  `setStatus({ error: null })` clears it.
+- Feed `getFormikErrorFields(errors, touched)` (`formik/utils.ts`) to the footer's `errorFields` for
+  the invalid-fields banner (labels from `clusterFieldLabels`).
+
+## Wizard steps — OCM vs CIM differ
+
+Both integrations **share** the primitives above (Formik + Yup, field wrappers, the cluster-details
+schema, `useAlerts` + `getFormikErrorFields`, `ClusterWizardStepHeader`). The **wizard chassis
+differs**—do not mix them:
+
+| Aspect     | OCM (`lib/ocm`)                                                                                                                                                                           | CIM (`lib/cim`)                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Shell      | custom `common/components/clusterWizard/ClusterWizardStep.tsx`, steps switch-rendered                                                                                                     | PatternFly `<Wizard>/<WizardStep>`                                                                  |
+| Footer     | `ocm/components/clusterWizard/ClusterWizardFooter.tsx` (wraps `common/components/ui/WizardFooter.tsx`), passed as `footer` prop                                                           | PatternFly `WizardFooter` via `useWizardFooter(...)`                                                |
+| Navigation | self-owned `ClusterWizardContext` (`moveNext`/`moveBack`), gated by `wizardTransition.ts`                                                                                                 | PatternFly `useWizardContext` (`goToNextStep`/`goToPrevStep`); CIM context only carries `syncError` |
+| Save       | internal REST service `ClusterDetailsService`, called from component-local `handleClusterUpdate`/`handleClusterCreate` `useCallback`s (`ocm/components/clusterWizard/ClusterDetails.tsx`) | consumer `onSave*` prop callbacks (`cim/components/ClusterDeployment/types.ts`)                     |
+
+Guidance that names `ClusterWizardContext`, `ClusterWizardFooter`, or internal service calls is
+**OCM-only**. CIM delegates saving and navigation to PatternFly's wizard and the host consumer.
+
+## Auto-save (opt-in)
+
+**Not every form auto-saves.** For forms that should persist on change (mostly OCM steps that PATCH
+an existing cluster on change), call **`useFormikAutoSave()`** (from the formik barrel) inside a
+`useFormikContext` child—it returns a bare **`boolean`** (conventionally assigned to
+`isAutoSaveRunning`)—and fold that into `isNextDisabled` / `isBackDisabled`. Modals, create-style
+forms, and most CIM steps **submit explicitly** via the footer's Next button instead.
+
+## Copy and i18n
+
+Field labels, helper text, and validator messages are user-visible: sentence case
+(`patternfly-ux-capitalization`) and, outside `lib/ocm/**`, wrapped in `t('ai:…')` with the
+`process_new_strings` workflow (`translations`). `lib/ocm/**` uses plain English strings.
