@@ -36,6 +36,7 @@ import {
   ProxyFields,
   UploadSSH,
   CertificateFields,
+  NtpSourcesFields,
 } from '../../../common';
 import { DiscoveryImageTypeDropdown, discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 

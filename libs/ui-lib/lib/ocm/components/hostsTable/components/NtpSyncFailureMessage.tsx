@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentCluster } from '../../store/slices/current-cluster/selectors';
-import { AddHostsContext } from '../../../common/components/AddHosts/AddHostsContext';
+import { selectCurrentCluster } from '../../../store/slices/current-cluster/selectors';
+import { AddHostsContext } from '../../../../common';
 
 export const NtpSyncFailureMessage = () => {
   const reduxCluster = useSelector(selectCurrentCluster);
@@ -12,7 +12,7 @@ export const NtpSyncFailureMessage = () => {
     return (
       <>
         This cluster replaces default NTP sources with a custom list. To update the list, change NTP
-        sources in the Add hosts dialog, generate a new discovery ISO, and reboot discovery hosts.
+        sources in the Add hosts dialog, generate a new discovery ISO, and reboot the hosts.
       </>
     );
   }

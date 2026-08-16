@@ -786,7 +786,7 @@
   "ai:Removing from cluster": "Removing from cluster",
   "ai:Rename hostnames using the custom template:": "Rename hostnames using the custom template:",
   "ai:Replace default NTP sources": "Replace default NTP sources",
-  "ai:Replaces default public NTP pools. Only the specified sources are used on discovery hosts and during installation. Use in air-gapped or restricted networks where default pools are unreachable or not permitted.": "Replaces default public NTP pools. Only the specified sources are used on discovery hosts and during installation. Use in air-gapped or restricted networks where default pools are unreachable or not permitted.",
+  "ai:Replaces default public NTP pools. Only the specified sources are used. Use in air-gapped or restricted networks where default pools are unreachable or not permitted.": "Replaces default public NTP pools. Only the specified sources are used. Use in air-gapped or restricted networks where default pools are unreachable or not permitted.",
   "ai:Report a bug": "Report a bug",
   "ai:Required field": "Required field",
   "ai:Requirements for Two Node control plane OpenShift": "Requirements for Two Node control plane OpenShift",

@@ -30,7 +30,6 @@ import { HostsTableModals } from './modals';
 import { useHostsTable } from './use-hosts-table';
 import { NtpSyncFailureMessage } from './components/NtpSyncFailureMessage';
 
-
 export const ExpandComponent = ({ obj: host }: ExpandComponentProps<Host>) => {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
   return (
