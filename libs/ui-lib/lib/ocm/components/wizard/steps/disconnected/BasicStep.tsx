@@ -5,7 +5,6 @@ import {
   ClusterWizardStep,
   TechnologyPreview,
   StaticTextField,
-  useTranslation,
   WithErrorBoundary,
 } from '../../../../../common';
 import { useClusterWizardContext } from '../../clusterWizardContext';
@@ -15,7 +14,6 @@ import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
 export const DISCONNECTED_OPENSHIFT_VERSION = '4.21';
 
 export const BasicStep = () => {
-  const { t } = useTranslation();
   const { moveNext } = useClusterWizardContext();
 
   return (
