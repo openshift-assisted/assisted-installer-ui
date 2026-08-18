@@ -12,9 +12,6 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import { getApiErrorMessage, handleApiError } from '../../../common/api';
-import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
-import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
   ToolbarButton,
   getReadyHostCount,
@@ -22,14 +19,16 @@ import {
   AddHostsContext,
   alertsSlice,
   canInstallHost,
+  getApiErrorMessage,
+  handleApiError,
+  ViewClusterEventsButton,
 } from '../../../common';
-import InventoryAddHosts from './InventoryAddHost';
-import { onFetchEvents } from '../fetching/fetchEvents';
 import { HostsService } from '../../services';
-import ClusterDetailStatusVarieties, {
-  useClusterStatusVarieties,
-} from '../clusterDetail/ClusterDetailStatusVarieties';
-import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
+import { DiscoveryImageModal } from '../discoveryImage';
+import { ModalDialogsContextProvider } from '../hostsTable/modals/ModalDialogsContext';
+import { ClusterDetailStatusVarieties, useClusterStatusVarieties } from '../clusterDetail';
+import { onFetchEvents } from '../fetching/fetchEvents';
+import { InventoryAddHosts } from './InventoryAddHost';
 
 const { addAlert } = alertsSlice.actions;
 

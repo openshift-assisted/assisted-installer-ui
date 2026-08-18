@@ -9,13 +9,17 @@ import {
   ModalVariant,
   Spinner,
 } from '@patternfly/react-core';
-import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
-import { AddHostModalProps } from './types';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
+import {
+  DownloadIso,
+  useTranslation,
+  DownloadIpxeScript,
+  DiscoveryImageFormValues,
+  DiscoveryImageConfigForm,
+} from '../../../common';
 import { InfraEnvK8sResource } from '../../types';
-import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
 import { useAgentServiceConfig } from '../../hooks';
+import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
+import { AddHostModalProps } from './types';
 
 type AddHostModalStepType = 'config' | 'download';
 

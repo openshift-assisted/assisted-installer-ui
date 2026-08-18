@@ -1,0 +1,50 @@
+import * as React from 'react';
+import { Grid, GridItem, Content, Flex } from '@patternfly/react-core';
+import { Form } from 'react-router';
+import {
+  ClusterWizardStep,
+  TechnologyPreview,
+  StaticTextField,
+  WithErrorBoundary,
+} from '../../../../../common';
+import { useClusterWizardContext } from '../../clusterWizardContext';
+import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
+import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
+
+export const DISCONNECTED_OPENSHIFT_VERSION = '4.21';
+
+export const BasicStep = () => {
+  const { moveNext } = useClusterWizardContext();
+
+  return (
+    <ClusterWizardStep
+      navigation={<ClusterWizardNavigation />}
+      footer={<ClusterWizardFooter onNext={moveNext} />}
+    >
+      <WithErrorBoundary title="Failed to load Basic step">
+        <Grid hasGutter>
+          <GridItem>
+            <Content component="h2">Basic information</Content>
+          </GridItem>
+          <GridItem>
+            <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
+              <TechnologyPreview />
+              <InstallDisconnectedSwitch />
+              <span>I'm installing on a disconnected/air-gapped/secured environment</span>
+            </Flex>
+          </GridItem>
+          <GridItem>
+            <Form id="wizard-cluster-basic-info__form">
+              <StaticTextField name="openshiftVersion" label="OpenShift version">
+                {DISCONNECTED_OPENSHIFT_VERSION}
+              </StaticTextField>
+              <StaticTextField name="cpuArchitecture" label="CPU architecture">
+                x86_64
+              </StaticTextField>
+            </Form>
+          </GridItem>
+        </Grid>
+      </WithErrorBoundary>
+    </ClusterWizardStep>
+  );
+};

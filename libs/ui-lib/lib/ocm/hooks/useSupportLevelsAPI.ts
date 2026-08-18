@@ -6,7 +6,7 @@ import {
 } from '../../common/components/newFeatureSupportLevels';
 import { getApiErrorMessage, handleApiError } from '../../common/api';
 import NewFeatureSupportLevelsAPI from '../../common/api/assisted-service/NewFeatureSupportLevelsAPI';
-import { PlatformType } from '@openshift-assisted/types/./assisted-installer-service';
+import { PlatformType } from '@openshift-assisted/types/assisted-installer-service';
 
 type SupportLevelAPIResources = 'architectures' | 'features' | 'featureForAllCpus';
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'
@@ -17,13 +17,13 @@ type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 
   ? Record<SupportedCpuArchitecture, NewFeatureSupportLevelMap | null> | null
   : null;
 
-export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
+export const useSupportLevelsAPI = <T extends SupportLevelAPIResources>(
   resourceKind: T,
   openshiftVersion?: string,
   cpuArchitecture?: CpuArchitecture,
   platformType?: PlatformType,
   supportedCpuArchitectures?: SupportedCpuArchitecture[],
-): UseSupportLevelAPIResponse<T> | null {
+): UseSupportLevelAPIResponse<T> | null => {
   const [cpuArchitectures, setCpuArchitectures] =
     React.useState<ArchitectureSupportLevelMap | null>(null);
   const [features, setFeatures] = React.useState<NewFeatureSupportLevelMap | null>(null);
@@ -146,4 +146,4 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   } else {
     return features as UseSupportLevelAPIResponse<T>;
   }
-}
+};

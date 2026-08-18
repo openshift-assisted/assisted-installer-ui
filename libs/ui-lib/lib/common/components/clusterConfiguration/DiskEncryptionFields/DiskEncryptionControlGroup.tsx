@@ -34,7 +34,7 @@ export interface DiskEncryptionControlGroupProps {
   docVersion?: string;
 }
 
-const DiskEncryptionControlGroup = ({
+export const DiskEncryptionControlGroup = ({
   values,
   isSNO = false,
   isArbiterEncryptionAvailable = true,
@@ -168,5 +168,3 @@ const DiskEncryptionControlGroup = ({
     </FormGroup>
   );
 };
-
-export default DiskEncryptionControlGroup;

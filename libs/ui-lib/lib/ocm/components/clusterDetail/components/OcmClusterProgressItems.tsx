@@ -1,0 +1,62 @@
+import React from 'react';
+import { Grid, GridItem } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  EventListFetchProps,
+  getEnabledHosts,
+  OperatorsProgressItem,
+  RenderIf,
+  selectAllOlmOperators,
+  FinalizingProgress,
+  ProgressBarTexts,
+} from '../../../../common';
+
+type OcmClusterProgressItemsProps = {
+  cluster: Cluster;
+  minimizedView?: boolean;
+  onFetchEvents: EventListFetchProps['onFetchEvents'];
+  totalPercentage?: number;
+  fallbackEventsURL?: string;
+};
+
+export const OcmClusterProgressItems = ({
+  cluster,
+  minimizedView = false,
+  onFetchEvents,
+  fallbackEventsURL,
+}: OcmClusterProgressItemsProps) => {
+  const enabledHosts = getEnabledHosts(cluster.hosts);
+  const olmOperators = selectAllOlmOperators(cluster);
+
+  const masterHosts = enabledHosts.filter((host) => host.role && 'master' === host.role);
+  const workerHosts = enabledHosts.filter((host) => host.role && 'worker' === host.role);
+
+  return (
+    <>
+      <RenderIf condition={!minimizedView}>
+        <Grid hasGutter>
+          <GridItem span={3}>
+            <ProgressBarTexts hosts={masterHosts} hostRole="master" />
+          </GridItem>
+          <RenderIf condition={workerHosts.length > 0}>
+            <GridItem span={3}>
+              <ProgressBarTexts hosts={workerHosts} hostRole="worker" />
+            </GridItem>
+          </RenderIf>
+          <GridItem span={3}>
+            <FinalizingProgress
+              cluster={cluster}
+              onFetchEvents={onFetchEvents}
+              fallbackEventsURL={fallbackEventsURL}
+            />
+          </GridItem>
+          <RenderIf condition={olmOperators.length > 0}>
+            <GridItem span={3}>
+              <OperatorsProgressItem operators={olmOperators} />
+            </GridItem>
+          </RenderIf>
+        </Grid>
+      </RenderIf>
+    </>
+  );
+};

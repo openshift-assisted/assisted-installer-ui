@@ -1,4 +1,5 @@
 import React from 'react';
+import { TFunction } from 'i18next';
 import {
   Content,
   ContentVariants,
@@ -8,20 +9,19 @@ import {
   Icon,
 } from '@patternfly/react-core';
 import { TableVariant, Thead, Tbody, Table, Th, Tr, Td } from '@patternfly/react-table';
-import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
-import type { WithTestID } from '../../types/index';
-import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
-import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 
-import FormatDiskCheckbox, {
-  DiskFormattingType,
-  isInDiskSkipFormattingList,
-} from '../hosts/FormatDiskCheckbox';
+import type { Disk, Host } from '@openshift-assisted/types/assisted-installer-service';
+import { WithTestID } from '../../types';
 import { fileSize } from '../../utils';
+import { useTranslation } from '../../hooks';
+import { OnDiskRoleType } from '../hosts';
 import { PopoverIcon } from '../ui';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
+import { FormatDiskCheckbox } from './FormatDiskCheckbox';
+import { DiskLimitations } from './DiskLimitations';
+import { getDiskLimitation, isInDiskSkipFormattingList } from './utils';
+import { DiskRole } from './DiskRole';
+import { DiskFormattingType } from './types';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
@@ -57,31 +57,6 @@ const diskColumns = (t: TFunction, showFormat: boolean) =>
 const SkipFormattingDisk = () => (
   <Content component={ContentVariants.p}>This bootable disk will skip formatting</Content>
 );
-
-const getDiskLimitation = (
-  diskName: Disk['name'],
-  hostName: Host['requestedHostname'],
-  holder: Disk,
-) => {
-  if (holder.driveType) {
-    switch (holder.driveType) {
-      case 'LVM':
-        return `LVM logical volumes were found on the installation disk ${
-          diskName as string
-        } selected for host ${hostName as string} and will be deleted during installation.`;
-      case 'RAID':
-        return `The installation disk ${diskName as string} selected for host ${
-          hostName as string
-        }, is part of a software RAID that will be deleted during the installation.`;
-      case 'Multipath':
-        return `The installation disk ${diskName as string} selected for host ${
-          hostName as string
-        } is managed by multipath. We strongly recommend using the multipath device ${
-          holder.name as string
-        } to improve reliability.`;
-    }
-  }
-};
 
 const DiskName = ({
   disk,
@@ -136,7 +111,7 @@ const DiskName = ({
   );
 };
 
-const DisksTable = ({
+export const DisksTable = ({
   canEditDisks,
   host,
   disks,
@@ -233,5 +208,3 @@ const DisksTable = ({
     </Table>
   );
 };
-
-export { DisksTable, getDiskLimitation };

@@ -6,12 +6,10 @@ interface SectionTitleProps extends WithTestID {
   title: string;
 }
 
-const SectionTitle = ({ title, testId }: SectionTitleProps) => (
+export const SectionTitle = ({ title, testId }: SectionTitleProps) => (
   <GridItem>
     <Content data-testid={testId} component={ContentVariants.h3}>
       {title}
     </Content>
   </GridItem>
 );
-
-export default SectionTitle;

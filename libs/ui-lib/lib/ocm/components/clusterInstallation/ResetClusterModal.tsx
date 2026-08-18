@@ -1,0 +1,134 @@
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalVariant,
+} from '@patternfly/react-core';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
+import {
+  ClustersAPI,
+  handleApiError,
+  getApiErrorMessage,
+  LoadingState,
+  ErrorState,
+} from '../../../common';
+import { updateCluster } from '../../store';
+import { calculateCollectedLogsCount } from '../clusters';
+import { useModalDialogsContext } from '../hostsTable';
+
+export const ResetClusterModal: React.FC = () => {
+  const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
+  const { resetClusterDialog } = useModalDialogsContext();
+  const { data, isOpen, close: onClose } = resetClusterDialog;
+  const cluster = data?.cluster;
+
+  if (!cluster) {
+    return null;
+  }
+
+  const handleClose = () => {
+    setIsSubmitting(false);
+    setError(null);
+    onClose();
+  };
+
+  const handleReset = () => {
+    const doItAsync = async () => {
+      setIsSubmitting(true);
+      try {
+        setError(null);
+        const { data } = await ClustersAPI.reset(cluster.id);
+        dispatch(updateCluster(data));
+        onClose();
+      } catch (e) {
+        handleApiError(e, () => {
+          setError({
+            title: 'Failed to reset cluster installation',
+            message: getApiErrorMessage(e),
+          });
+        });
+      }
+      setIsSubmitting(false);
+    };
+    void doItAsync();
+  };
+
+  const collectedLogsPercentage = `${Math.round(
+    (calculateCollectedLogsCount(cluster) / ((cluster.hosts?.length || 0) + 1)) * 100,
+  )} `;
+
+  const getModalContent = () => {
+    if (isSubmitting) {
+      return <LoadingState content="Resetting cluster installation..." />;
+    }
+
+    if (error) {
+      return <ErrorState title={error.title} content={error.message} />;
+    }
+
+    return (
+      <>
+        <Content component="p">
+          This will reset the installation and return to the cluster configuration. Some hosts may
+          need to be re-registered by rebooting into the Discovery ISO.
+        </Content>
+
+        <Content component="p">
+          <span className="pf-v6-u-font-weight-bold">Download the installation logs</span> to
+          troubleshoot or report a bug.
+          <br />
+          Currently, {collectedLogsPercentage}% of the installation logs were collected and are
+          ready for download.
+        </Content>
+
+        <Content component="p">
+          <Icon size="sm" status="warning">
+            <ExclamationTriangleIcon />
+          </Icon>{' '}
+          Logs won't be available after the installation is reset.
+        </Content>
+
+        <Content component="p">Are you sure you want to reset the cluster?</Content>
+      </>
+    );
+  };
+
+  const actions = [
+    <Button
+      key="reset"
+      variant={ButtonVariant.danger}
+      onClick={handleReset}
+      isDisabled={isSubmitting}
+    >
+      Reset Cluster
+    </Button>,
+  ];
+
+  actions.push(
+    <Button
+      key="cancel"
+      variant={ButtonVariant.link}
+      onClick={handleClose}
+      isDisabled={isSubmitting}
+    >
+      Cancel
+    </Button>,
+  );
+
+  return (
+    <Modal isOpen={isOpen} variant={ModalVariant.small} onClose={handleClose}>
+      <ModalHeader title="Reset Cluster Installation" />
+      <ModalBody>{getModalContent()}</ModalBody>
+      <ModalFooter>{actions}</ModalFooter>
+    </Modal>
+  );
+};

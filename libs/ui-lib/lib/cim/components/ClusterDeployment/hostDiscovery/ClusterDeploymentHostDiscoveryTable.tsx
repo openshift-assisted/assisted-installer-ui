@@ -7,11 +7,10 @@ import {
   discoveryTypeColumn,
   agentStatusColumn,
 } from '../../Agent';
-import HostsTable, {
+import {
+  HostsTable,
   DefaultExpandComponent,
   HostsTableEmptyState,
-} from '../../../../common/components/hosts/HostsTable';
-import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
@@ -24,16 +23,17 @@ import {
   ChangeHostnameAction,
   MassChangeHostnameModal,
   TableToolbar,
+  usePagination,
+  useTranslation,
+  HostsTableDetailContextProvider,
+  HostsNotShowingLink,
 } from '../../../../common';
-import { ClusterDeploymentHostDiscoveryTableProps } from '../types';
 import MassApproveAgentModal from '../../modals/MassApproveAgentModal';
 import MassApproveAction from '../../modals/MassApproveAction';
-import { usePagination } from '../../../../common/components/hosts/usePagination';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ExpandComponent } from '../../Agent/AgentsSelectionTable';
-import { HostsTableDetailContextProvider } from '../../../../common/components/hosts/HostsTableDetailContext';
 import { agentStatus, bmhStatus } from '../../helpers/agentStatus';
 import { onAgentChangeHostname } from '../../helpers';
+import { ClusterDeploymentHostDiscoveryTableProps } from '../types';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -162,7 +162,16 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
               ExpandComponent={hostActions.onDiskRole ? ExpandComponent : DefaultExpandComponent}
               {...paginationProps}
             >
-              <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+              <HostsTableEmptyState
+                secondaryActions={
+                  setDiscoveryHintModalOpen && [
+                    <HostsNotShowingLink
+                      key="hosts-not-showing"
+                      setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+                    />,
+                  ]
+                }
+              />
             </HostsTable>
           </HostsTableDetailContextProvider>
         </StackItem>

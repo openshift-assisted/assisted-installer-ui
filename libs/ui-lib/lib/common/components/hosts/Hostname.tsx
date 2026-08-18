@@ -18,7 +18,7 @@ type HostnameProps = {
   readonly?: boolean;
 };
 
-const Hostname: React.FC<HostnameProps> = ({
+export const Hostname: React.FC<HostnameProps> = ({
   host,
   inventory = {},
   onEditHostname,
@@ -96,4 +96,3 @@ const Hostname: React.FC<HostnameProps> = ({
     body
   );
 };
-export default Hostname;

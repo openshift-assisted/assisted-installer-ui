@@ -1,27 +1,24 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons/dist/js/icons/connected-icon';
-import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { Host } from '@openshift-assisted/types/assisted-installer-service';
-import AITable, {
-  ExpandComponentProps,
-  AITableProps,
-} from '../../../common/components/hosts/AITable';
-import { HostDetail } from './HostRowDetail';
-import { WithTestID } from '../../types';
-import EmptyState from '../ui/uiState/EmptyState';
-import { usePagination } from './usePagination';
+
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { WithTestID } from '../../types';
+import { EmptyState } from '../ui';
+import { HostDetail } from './HostRowDetail';
+import { usePagination } from './usePagination';
+import { AITable, AITableProps, ExpandComponentProps } from './AITable';
 
 const getHostId = (host: Host) => host.id;
 
 type HostsTableEmptyStateProps = {
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
   isSNO?: boolean;
+  secondaryActions?: React.ReactNode[];
 };
 
 export const HostsTableEmptyState = ({
-  setDiscoveryHintModalOpen,
   isSNO = false,
+  secondaryActions,
 }: HostsTableEmptyStateProps) => {
   const { t } = useTranslation();
   return (
@@ -29,15 +26,7 @@ export const HostsTableEmptyState = ({
       icon={ConnectedIcon}
       title={t('ai:Waiting for host...', { count: +isSNO })}
       content={t('ai:Hosts may take a few minutes to appear here after booting.')}
-      secondaryActions={
-        setDiscoveryHintModalOpen && [
-          <HostsNotShowingLink
-            key="hosts-not-showing"
-            isSNO={isSNO}
-            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-          />,
-        ]
-      }
+      secondaryActions={secondaryActions}
     />
   );
 };
@@ -65,7 +54,7 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     children: React.ReactNode;
   };
 
-const HostsTable = ({
+export const HostsTable = ({
   hosts,
   skipDisabled,
   alreadySorted,
@@ -87,5 +76,3 @@ const HostsTable = ({
     <AITable<Host> getDataId={getHostId} data={data} alreadySorted={alreadySorted} {...rest} />
   );
 };
-
-export default HostsTable;

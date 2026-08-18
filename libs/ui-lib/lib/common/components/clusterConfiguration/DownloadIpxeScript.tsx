@@ -11,9 +11,9 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { DetailItem, DetailList } from '../ui';
-import DiscoveryIpxeInstructions from './DiscoveryIpxeInstructions';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { DetailItem, DetailList } from '../ui';
+import { DiscoveryIpxeInstructions } from './DiscoveryIpxeInstructions';
 
 export type DownloadISOProps = {
   isSNO?: boolean;
@@ -23,7 +23,7 @@ export type DownloadISOProps = {
   onReset?: () => void;
 };
 
-const DownloadIpxeScript = ({
+export const DownloadIpxeScript = ({
   fileName = 'ipxe-script.txt',
   downloadUrl,
   onClose,
@@ -96,5 +96,3 @@ const DownloadIpxeScript = ({
     </>
   );
 };
-
-export default DownloadIpxeScript;

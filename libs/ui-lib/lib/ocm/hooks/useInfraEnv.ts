@@ -1,16 +1,15 @@
 import React from 'react';
-import useInfraEnvId from './useInfraEnvId';
-import { CpuArchitecture } from '../../common';
-import { getErrorMessage } from '../../common/utils';
-import { InfraEnvsAPI } from '../services/apis';
-import InfraEnvIdsCacheService from '../services/InfraEnvIdsCacheService';
 import {
   Cluster,
   InfraEnv,
   InfraEnvUpdateParams,
 } from '@openshift-assisted/types/assisted-installer-service';
+import { CpuArchitecture, getErrorMessage } from '../../common';
+import { InfraEnvsAPI } from '../services/apis';
+import { InfraEnvIdsCacheService } from '../services/InfraEnvIdsCacheService';
+import { useInfraEnvId } from './useInfraEnvId';
 
-export default function useInfraEnv(
+export const useInfraEnv = (
   clusterId: Cluster['id'],
   cpuArchitecture: CpuArchitecture,
   clusterName?: string,
@@ -21,7 +20,7 @@ export default function useInfraEnv(
   error?: string;
   isLoading: boolean;
   updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
-} {
+} => {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [error, setError] = React.useState('');
   const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(
@@ -69,4 +68,4 @@ export default function useInfraEnv(
   }, [getInfraEnv, infraEnv, infraEnvId, infraEnvIdError]);
 
   return { infraEnv, error, isLoading: !infraEnv && !error, updateInfraEnv };
-}
+};
