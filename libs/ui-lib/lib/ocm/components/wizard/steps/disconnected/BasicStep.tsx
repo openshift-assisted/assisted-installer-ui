@@ -28,9 +28,9 @@ export const BasicStep = () => {
           </GridItem>
           <GridItem>
             <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
-              <TechnologyPreview />
               <InstallDisconnectedSwitch />
               <span>I'm installing on a disconnected/air-gapped/secured environment</span>
+              <TechnologyPreview />
             </Flex>
           </GridItem>
           <GridItem>
