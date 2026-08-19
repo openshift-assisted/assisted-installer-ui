@@ -5,26 +5,32 @@ import { trimCommaSeparatedList } from '../components/ui/formik/utils';
 import { PROXY_DNS_REGEX } from './regexes';
 import { isIPorDN } from './utils';
 
-export const httpProxyValidationSchema = ({
-  values,
-  pairValueName,
-  allowEmpty,
-  t,
-}: {
+type ProxyUrlValidationParams = {
   values: ProxyFieldsType;
   pairValueName: 'httpProxy' | 'httpsProxy';
   allowEmpty?: boolean;
   t: TFunction;
-}) => {
+  allowedProtocols: string[];
+  formatErrorMessage: string;
+};
+
+const proxyUrlValidationSchema = ({
+  values,
+  pairValueName,
+  allowEmpty,
+  t,
+  allowedProtocols,
+  formatErrorMessage,
+}: ProxyUrlValidationParams) => {
   const validation = Yup.string().test(
     'http-proxy-validation',
-    t('ai:Provide a valid HTTP URL.'),
+    formatErrorMessage,
     (value?: string) => {
       if (!value) {
         return true;
       }
 
-      if (!value.startsWith('http://')) {
+      if (!allowedProtocols.some((protocol) => value.startsWith(protocol))) {
         return false;
       }
 
@@ -47,6 +53,24 @@ export const httpProxyValidationSchema = ({
     (value) => !values.enableProxy || !!value || !!values[pairValueName],
   );
 };
+
+export const httpProxyValidationSchema = (
+  params: Omit<ProxyUrlValidationParams, 'allowedProtocols' | 'formatErrorMessage'>,
+) =>
+  proxyUrlValidationSchema({
+    ...params,
+    allowedProtocols: ['http://'],
+    formatErrorMessage: params.t('ai:Provide a valid HTTP URL.'),
+  });
+
+export const httpsProxyValidationSchema = (
+  params: Omit<ProxyUrlValidationParams, 'allowedProtocols' | 'formatErrorMessage'>,
+) =>
+  proxyUrlValidationSchema({
+    ...params,
+    allowedProtocols: ['http://', 'https://'],
+    formatErrorMessage: params.t('ai:Provide a valid HTTP or HTTPS URL.'),
+  });
 
 export const noProxyValidationSchema = (t: TFunction) =>
   Yup.string().test(

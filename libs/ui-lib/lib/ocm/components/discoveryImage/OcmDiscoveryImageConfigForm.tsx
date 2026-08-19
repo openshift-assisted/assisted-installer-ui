@@ -30,6 +30,7 @@ import {
   AlertFormikError,
   useTranslation,
   httpProxyValidationSchema,
+  httpsProxyValidationSchema,
   noProxyValidationSchema,
   ntpSourceValidationSchema,
   sshPublicKeyValidationSchema,
@@ -62,7 +63,7 @@ const validationSchema = (t: TFunction) =>
     Yup.object<OcmDiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
-      httpsProxy: httpProxyValidationSchema({ values, pairValueName: 'httpProxy', t }), // share the schema, httpS is currently not supported
+      httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
       noProxy: noProxyValidationSchema(t),
       ntpSourcesList: values.enableNtpSources
         ? ntpSourceValidationSchema(t, false)

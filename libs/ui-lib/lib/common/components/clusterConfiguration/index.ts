@@ -13,4 +13,3 @@ export * from './DiscoveryTroubleshootingModal';
 export * from './ExternalPlatformsDropdown';
 export * from './DiskEncryptionFields';
 export * from './DownloadIpxeScript';
-export * from './DiscoveryImageConfigForm';
