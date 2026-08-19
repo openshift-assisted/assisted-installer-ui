@@ -66,14 +66,14 @@ export const AITableMemo = React.memo(
         >
           <Thead>
             <Tr>
-              {onCollapse && <Th />}
+              {onCollapse && <Th screenReaderText="Expand row" />}
               {cols.map((col, i) => (
                 <Th key={`col-${i}`} {...col.props} sort={col.sort ? getSortParams(i) : undefined}>
                   {col.title}
                 </Th>
               ))}
             </Tr>
-            <Tr isBorderRow />
+            <Tr isBorderRow aria-label="border-row" />
           </Thead>
           <Tbody>
             {rows.map((row, i) => (
