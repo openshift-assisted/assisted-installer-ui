@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Grid, GridItem, Content, Flex } from '@patternfly/react-core';
-import { Form } from 'react-router';
+import { Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
   TechnologyPreview,
