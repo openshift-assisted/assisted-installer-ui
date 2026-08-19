@@ -173,6 +173,7 @@ export const AITable = <R extends any>({
           header: {
             title: canSelectAll ? <SelectAllCheckbox onSelect={onSelectAll} /> : '',
             sort: false,
+            props: { 'aria-label': 'select-button-column' },
           },
           cell: (obj) => {
             const id = getDataId(obj);

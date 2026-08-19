@@ -19,7 +19,6 @@ import {
   getFormikErrorFields,
   ClusterWizardStep,
   ClusterWizardStepHeader,
-  TechnologyPreview,
   isInOcm,
   useTranslation,
 } from '../../../../../common';
@@ -103,8 +102,10 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       cluster?: Cluster,
     ): (() => void) => {
       if (isViewerMode || (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster }))) {
-        clearAlerts();
-        return moveNext;
+        return () => {
+          clearAlerts();
+          moveNext();
+        };
       }
 
       return () => {
@@ -181,10 +182,6 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                 <GridItem>
                   <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
                     <InstallDisconnectedSwitch isDisabled={!!cluster} />
-                    <span>
-                      {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
-                    </span>
-                    <TechnologyPreview />
                   </Flex>
                 </GridItem>
               )}
