@@ -19,25 +19,29 @@ const getLabel = (t: TFunction, validationStatus?: Validation['status']) => {
 type NtpValidationsStatusProps = {
   validationsInfo: ValidationsInfo;
   AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
+  NtpSyncFailureMessageComponent?: ValidationInfoActionProps['NtpSyncFailureMessageComponent'];
 };
 
 export const NtpValidationStatus: React.FC<NtpValidationsStatusProps> = ({
   validationsInfo,
   AdditionalNTPSourcesDialogToggleComponent,
+  NtpSyncFailureMessageComponent,
 }) => {
   const ntpSyncedValidation = validationsInfo.network?.find((v) => v.id === 'ntp-synced');
   const actions = [];
   if (AdditionalNTPSourcesDialogToggleComponent) {
     actions.push(<AdditionalNTPSourcesDialogToggleComponent key="add-ntp-sources" />);
   }
+  const bodyContent = NtpSyncFailureMessageComponent ? (
+    <NtpSyncFailureMessageComponent />
+  ) : undefined;
   const { t } = useTranslation();
   return (
     <HostPropertyValidationPopover
       validation={ntpSyncedValidation}
       failureActions={actions}
-      pendingActions={actions}
+      failureBodyContent={bodyContent}
       showSuccess
-      showPending
     >
       {getLabel(t, ntpSyncedValidation?.status)}
     </HostPropertyValidationPopover>

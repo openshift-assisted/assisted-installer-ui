@@ -10,6 +10,7 @@ import {
 } from '../../../../../../common';
 import { wizardStepsValidationsMap } from '../../../utils/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from '../../../../hostsTable';
+import { NtpSyncFailureMessage } from '../../../../hostsTable/components/NtpSyncFailureMessage';
 
 export const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ export const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (p
       status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      NtpSyncFailureMessageComponent={NtpSyncFailureMessage}
     />
   );
 };

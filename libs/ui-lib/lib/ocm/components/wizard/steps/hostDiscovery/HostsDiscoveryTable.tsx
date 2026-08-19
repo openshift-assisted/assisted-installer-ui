@@ -31,12 +31,14 @@ import {
   HostsDiscoveryTroubleshootingInfoLinkWithModal,
 } from '../../../hostsTable';
 import { useClusterWizardContext } from '../../clusterWizardContext';
+import { NtpSyncFailureMessage } from '../../../hostsTable/components/NtpSyncFailureMessage';
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
   <HostDetail
     key={host.id}
     host={host}
     AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+    NtpSyncFailureMessageComponent={NtpSyncFailureMessage}
   />
 );
 

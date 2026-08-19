@@ -53,7 +53,7 @@ const AdditionalNTPSourcesForm = ({
       const onError = (message: string) =>
         formikHelpers.setStatus({
           error: {
-            title: 'Failed to add NTP sources',
+            title: t('ai:Failed to add NTP sources'),
             message,
           },
         });
@@ -120,18 +120,22 @@ export const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProp
   isOpen,
   onClose,
   onAdditionalNtpSource,
-}) => (
-  <Modal
-    aria-label="Add NTP sources"
-    isOpen={isOpen}
-    onClose={onClose}
-    variant={ModalVariant.small}
-  >
-    <ModalHeader title="Add NTP sources" />
-    <AdditionalNTPSourcesForm
-      additionalNtpSource={additionalNtpSource}
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal
+      aria-label={t('ai:Add NTP sources')}
+      isOpen={isOpen}
       onClose={onClose}
-      onAdditionalNtpSource={onAdditionalNtpSource}
-    />
-  </Modal>
-);
+      variant={ModalVariant.small}
+    >
+      <ModalHeader title={t('ai:Add NTP sources')} />
+      <AdditionalNTPSourcesForm
+        additionalNtpSource={additionalNtpSource}
+        onClose={onClose}
+        onAdditionalNtpSource={onAdditionalNtpSource}
+      />
+    </Modal>
+  );
+};
