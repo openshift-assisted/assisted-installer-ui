@@ -240,3 +240,6 @@ export const getNumaResourcesLink = (ocpVersion?: string) =>
   `https://docs.redhat.com/en/documentation/openshift_container_platform/${getDocsOpenshiftVersion(
     ocpVersion,
   )}/html/scalability_and_performance/cnf-numa-aware-scheduling`;
+
+export const getDisconnectedDocsLink = (ocpVersion: string) =>
+  `https://docs.redhat.com/en/documentation/openshift_container_platform/${ocpVersion}/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installing-ove`;
