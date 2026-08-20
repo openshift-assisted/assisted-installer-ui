@@ -5,7 +5,8 @@ import * as OCM from '@openshift-assisted/ui-lib/ocm';
 import { Header } from './Header';
 import '../i18n';
 
-const { HostsClusterDetailTabMock, UILibRoutes, Features, Config } = OCM;
+const { HostsClusterDetailTabMock, UILibRoutes, Config, STANDALONE_DEPLOYMENT_ENABLED_FEATURES } =
+  OCM;
 window.__app__ = { OCM };
 
 // Add PropsWithChildren to bypass the React 18 type mismatch
@@ -17,7 +18,7 @@ const BrowserRouter18 = BrowserRouter as any as React.FC<
 export const App: React.FC = () => (
   <BrowserRouter18 basename={Config.routeBasePath}>
     <Page masthead={<Header />} isManagedSidebar defaultManagedSidebarIsOpen={false}>
-      <UILibRoutes allEnabledFeatures={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES}>
+      <UILibRoutes allEnabledFeatures={STANDALONE_DEPLOYMENT_ENABLED_FEATURES}>
         <Route path={'/day2-flow-mock'} element={<HostsClusterDetailTabMock />} />
       </UILibRoutes>
     </Page>

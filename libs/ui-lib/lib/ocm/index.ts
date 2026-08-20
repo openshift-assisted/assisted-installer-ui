@@ -11,7 +11,6 @@ export * from './pages';
 export * from './contexts';
 
 // re-export selected from common
-export * as Features from '../common/features';
 export * as Constants from '../common/config';
 export * as Reducers from '../common/reducers';
 

@@ -1,8 +1,8 @@
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   AssistedInstallerOCMPermissionTypesListType,
   AssistedInstallerPermissionTypesListType,
-} from '../../common';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
+} from '../hooks';
 
 /* Used from Integration tests so we can mock the permissions */
 export type ExtendedCluster = Cluster & {
