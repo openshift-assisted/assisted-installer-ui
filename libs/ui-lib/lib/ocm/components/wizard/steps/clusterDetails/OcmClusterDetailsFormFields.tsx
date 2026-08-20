@@ -9,7 +9,6 @@ import {
 import {
   OpenshiftVersionOptionType,
   ClusterDetailsValues,
-  useFeature,
   SupportedCpuArchitecture,
   getSupportedCpuArchitectures,
   architectureData,
@@ -22,7 +21,7 @@ import {
   DiskEncryptionControlGroup,
   useNewFeatureSupportLevel,
 } from '../../../../../common';
-import { useSupportLevelsAPI } from '../../../../hooks';
+import { useFeature, useSupportLevelsAPI } from '../../../../hooks';
 import { HostsNetworkConfigurationType } from '../../../../services';
 
 import { useOpenShiftVersionsContext } from '../../../../contexts/OpenShiftVersionsContext';

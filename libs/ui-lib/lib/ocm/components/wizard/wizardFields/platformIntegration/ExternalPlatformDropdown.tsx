@@ -25,13 +25,13 @@ import {
   CpuArchitecture,
   FeatureId,
   GetFeatureSupportLevel,
-  useFeature,
   architectureData,
   useNewFeatureSupportLevel,
   ExternalLink,
   VSPHERE_LIMITATIONS_LINK,
 } from '../../../../../common';
 import { NewFeatureSupportLevelBadge } from '../../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
+import { useFeature } from '../../../../hooks';
 import { ExternalPlatformLabels, ExternalPlaformIds, ExternalPlatformLinks } from './constants';
 
 const INPUT_NAME = 'platform';

@@ -1,14 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import Day2WizardContext, { Day2WizardContextType } from './Day2WizardContext';
 import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import {
-  AssistedInstallerOCMPermissionTypesListType,
-  CpuArchitecture,
-  getDefaultCpuArchitecture,
-} from '../../../../common';
+import { CpuArchitecture, getDefaultCpuArchitecture } from '../../../../common';
 import { HostsNetworkConfigurationType } from '../../../services';
 import { StaticIpView } from '../../wizard/steps/staticIp';
 import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
+import { AssistedInstallerOCMPermissionTypesListType } from '../../../hooks';
 
 const getWizardStepIds = (staticIpView?: string): Day2WizardStepsType[] => {
   const stepIds: Day2WizardStepsType[] = [...defaultWizardSteps];
