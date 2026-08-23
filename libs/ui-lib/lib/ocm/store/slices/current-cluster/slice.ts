@@ -4,7 +4,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import type { AnyAction, Dispatch, PayloadAction, ThunkDispatch } from '@reduxjs/toolkit';
 import type { Cluster, Host } from '@openshift-assisted/types/assisted-installer-service';
-import type { AssistedInstallerPermissionTypesListType } from '../../../../common/features/featureGate';
 import {
   handleApiError,
   getApiErrorMessage,
@@ -12,6 +11,7 @@ import {
   FETCH_ABORTED_ERROR_CODE,
 } from '../../../../common/api/utils';
 import { ResourceUIState } from '../../../../common/types/resource-ui-state';
+import { AssistedInstallerPermissionTypesListType } from '../../../hooks';
 import ClustersService from '../../../services/ClustersService';
 
 export type FetchErrorType = {

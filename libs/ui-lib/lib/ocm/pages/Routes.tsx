@@ -8,10 +8,9 @@ import {
   unstable_HistoryRouter as HistoryRouter,
   HistoryRouterProps,
 } from 'react-router';
-import type { FeatureListType } from '../../common/features/featureGate';
 import { storeDay1 } from '../store';
 import { AssistedUILibVersion } from '../components';
-import { useFeatureDetection } from '../hooks';
+import { FeatureListType, useFeatureDetection } from '../hooks';
 import { NewClusterPage } from './newClusterPage';
 import { ClusterPage } from './clusterPage';
 import { ClusterListPage } from './clusterListPage';

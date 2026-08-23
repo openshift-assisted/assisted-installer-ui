@@ -1,5 +1,5 @@
 import { HistoryRouterProps } from 'react-router';
-import { AssistedInstallerOCMPermissionTypesListType, FeatureListType } from '../../../common';
+import { AssistedInstallerOCMPermissionTypesListType, FeatureListType } from '../../hooks';
 
 export type AssistedInstallerDetailCardProps = {
   aiClusterId: string;

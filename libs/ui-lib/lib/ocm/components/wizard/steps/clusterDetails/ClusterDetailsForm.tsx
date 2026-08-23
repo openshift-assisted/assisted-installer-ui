@@ -13,7 +13,6 @@ import {
 import {
   OpenshiftVersionOptionType,
   useAlerts,
-  useFeature,
   getClusterDetailsValidationSchema,
   getRichTextValidation,
   getFormikErrorFields,
@@ -28,6 +27,7 @@ import {
   OcmClusterDetailsValues,
   ClusterDetailsService,
 } from '../../../../services';
+import { useFeature } from '../../../../hooks';
 import { selectCurrentClusterPermissionsState } from '../../../../store';
 import { canNextClusterDetails } from '../../utils';
 import { InstallDisconnectedSwitch } from '../disconnected';

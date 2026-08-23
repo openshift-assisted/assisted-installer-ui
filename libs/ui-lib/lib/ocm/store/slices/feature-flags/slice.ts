@@ -1,9 +1,8 @@
 import type { PayloadAction, SerializedError } from '@reduxjs/toolkit';
-import type { StateSliceWithMeta } from '../../types/state-slice';
-import type { FeatureListType } from '../../../../common/features/featureGate';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../../../common/features/featureGate';
+import type { StateSliceWithMeta } from '../../types/state-slice';
 import { currentUserAsyncActions } from '../current-user/slice';
+import { FeatureListType, STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../../hooks/types';
 
 const featureFlagsAsyncActions = {
   detectFeaturesAsync: createAsyncThunk(
