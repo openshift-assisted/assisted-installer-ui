@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { InfraEnv, Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   useAlerts,
-  useFeature,
   handleApiError,
   getApiErrorMessage,
   isUnknownServerError,
@@ -13,7 +12,12 @@ import {
   LoadingState,
   ErrorState,
 } from '../../../../../common';
-import { useManagedDomains, useUsedClusterNames, usePullSecret } from '../../../../hooks';
+import {
+  useManagedDomains,
+  useUsedClusterNames,
+  useFeature,
+  usePullSecret,
+} from '../../../../hooks';
 import {
   ClusterDetailsUpdateParams,
   ClustersService,

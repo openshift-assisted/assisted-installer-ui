@@ -1,4 +1,4 @@
-import { AssistedInstallerPermissionTypesListType } from '../../../../common';
+import { AssistedInstallerPermissionTypesListType } from '../../../hooks';
 import { RootStateDay1 } from '../../store-day1';
 
 export const selectCurrentClusterState = (state: RootStateDay1) => state.currentCluster;

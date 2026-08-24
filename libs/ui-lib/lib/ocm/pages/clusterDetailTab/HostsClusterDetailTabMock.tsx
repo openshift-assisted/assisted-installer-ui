@@ -6,15 +6,12 @@ import {
   Grid,
   PageSection,
 } from '@patternfly/react-core';
-import {
-  OcmCpuArchitecture,
-  STANDALONE_DEPLOYMENT_ENABLED_FEATURES,
-  ToolbarButton,
-} from '../../../common';
+import { OcmCpuArchitecture, ToolbarButton } from '../../../common';
 import clustersAPI from '../../../common/api/assisted-service/ClustersAPI';
 import { HostsClusterDetailTab } from './HostsClusterDetailTab';
 import { OpenShiftVersionsContextProvider } from '../../contexts';
 import { OcmClusterType } from '../../components';
+import { STANDALONE_DEPLOYMENT_ENABLED_FEATURES } from '../../hooks';
 
 const clusterWithoutMetrics = {
   id: 'ocm-cluster-id',

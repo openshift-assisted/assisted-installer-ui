@@ -1,7 +1,7 @@
-import type { FeatureListType } from '../../common/features/featureGate';
+import { useEffect } from 'react';
 import { featureFlagsAsyncActions } from '../store/slices/feature-flags/slice';
 import { storeDay1 } from '../store/store-day1';
-import { useEffect } from 'react';
+import { FeatureListType } from './types';
 
 export function useFeatureDetection<T extends Partial<Record<string, boolean> & FeatureListType>>(
   overrides: T | null = null,

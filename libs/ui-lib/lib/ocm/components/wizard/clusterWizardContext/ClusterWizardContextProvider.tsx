@@ -1,25 +1,29 @@
 import React, { PropsWithChildren } from 'react';
 import { useLocation } from 'react-router';
-import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
+import { AlertVariant } from '@patternfly/react-core';
+import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
+
+import { useAlerts, isThirdPartyCNI } from '../../../../common';
 import {
-  ClusterWizardFlowStateType,
+  AssistedInstallerOCMPermissionTypesListType,
+  useFeature,
+  useUISettings,
+} from '../../../hooks';
+import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
+import { HostsNetworkConfigurationType } from '../../../services';
+import { isOciPlatformType } from '../../utils';
+import { defaultWizardSteps, staticIpFormViewSubSteps } from '../constants';
+import { StaticIpView } from '../steps/staticIp/data/dataTypes';
+import { getStaticIpInfo } from '../steps/staticIp/data/fromInfraEnv';
+import {
   ClusterWizardStepsType,
+  ClusterWizardFlowStateType,
   disconnectedSteps,
   getClusterWizardFirstStep,
-  isStaticIpStep,
   isStepAfter,
-} from '../utils/wizardTransition';
-import { HostsNetworkConfigurationType } from '../../../services';
-import { defaultWizardSteps, staticIpFormViewSubSteps } from '../constants';
-import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../../common';
-import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
-import { Cluster, InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
-import { useUISettings } from '../../../hooks';
-import { AlertVariant } from '@patternfly/react-core';
-import { useFeature } from '../../../hooks/use-feature';
-import { isThirdPartyCNI } from '../../../../common/types/networkType';
-import { isOciPlatformType } from '../../utils';
-import { StaticIpView, getStaticIpInfo } from '../steps/staticIp/data';
+  isStaticIpStep,
+} from '../utils';
+import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
 import { DISCONNECTED_OPENSHIFT_VERSION } from '../steps/disconnected/constants';
 
 const addStepToClusterWizard = (

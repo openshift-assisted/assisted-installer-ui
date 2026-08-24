@@ -1,5 +1,5 @@
-import { FeatureListType } from '../../../common';
 import { OcmClusterType } from '../../components';
+import { FeatureListType } from '../../hooks';
 
 export type HostsClusterDetailTabProps = {
   cluster: OcmClusterType;

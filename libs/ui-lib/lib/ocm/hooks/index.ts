@@ -6,6 +6,7 @@ export { default as useUISettings } from './useUISettings';
 export { default as useInfraEnvHosts } from './useInfraEnvHosts';
 export { useFeatureDetection } from './use-feature-detection';
 
+export * from './types';
 export * from './useInfraEnvId';
 export * from './useInfraEnv';
 export * from './use-feature';
