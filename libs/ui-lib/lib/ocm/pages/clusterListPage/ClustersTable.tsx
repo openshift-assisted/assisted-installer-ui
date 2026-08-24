@@ -51,7 +51,6 @@ const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undef
 const getRowProps = (props?: ClusterRowDataProps) => {
   const name = props?.name || '';
   return {
-    ...props,
     id: `cluster-row-${name}`,
     'data-testid': `cluster-row-${name}`,
   } as Omit<TrProps, 'ref'>;
@@ -177,7 +176,7 @@ export const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
                   <TableText>{col.title}</TableText>
                 </Th>
               ))}
-              <Th key="col-action" />
+              <Th key="col-action" screenReaderText="Actions" />
             </Tr>
           </Thead>
           <Tbody>
@@ -191,7 +190,7 @@ export const ClustersTable = ({ rows, deleteCluster }: ClustersTableProps) => {
                     </Td>
                   );
                 })}
-                <Td isActionCell>
+                <Td isActionCell key={`cell-${i}-action`}>
                   <ActionsColumn
                     items={[
                       {
