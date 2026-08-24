@@ -20,6 +20,7 @@ import { useFeature } from '../../../hooks/use-feature';
 import { isThirdPartyCNI } from '../../../../common/types/networkType';
 import { isOciPlatformType } from '../../utils';
 import { StaticIpView, getStaticIpInfo } from '../steps/staticIp/data';
+import { DISCONNECTED_OPENSHIFT_VERSION } from '../steps/disconnected/constants';
 
 const addStepToClusterWizard = (
   wizardStepIds: ClusterWizardStepsType[],
@@ -89,6 +90,9 @@ export const ClusterWizardContextProvider = ({
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
   const [disconnectedCluster, setDisconnectedCluster] = React.useState<Cluster | undefined>();
   const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>();
+  const [disconnectedOpenshiftVersion, setDisconnectedOpenshiftVersion] = React.useState(
+    DISCONNECTED_OPENSHIFT_VERSION,
+  );
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -233,6 +237,8 @@ export const ClusterWizardContextProvider = ({
       setDisconnectedCluster,
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
+      disconnectedOpenshiftVersion,
+      setDisconnectedOpenshiftVersion,
     };
   }, [
     wizardStepIds,
@@ -248,6 +254,7 @@ export const ClusterWizardContextProvider = ({
     disconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
+    disconnectedOpenshiftVersion,
   ]);
 
   if (!contextValue) {

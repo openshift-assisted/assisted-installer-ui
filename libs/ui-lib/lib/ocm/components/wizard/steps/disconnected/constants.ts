@@ -1,0 +1,1 @@
+export const DISCONNECTED_OPENSHIFT_VERSION = '4.21';

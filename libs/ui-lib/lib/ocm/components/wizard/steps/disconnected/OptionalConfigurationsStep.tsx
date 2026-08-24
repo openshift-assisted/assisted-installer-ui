@@ -22,7 +22,6 @@ import {
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -81,6 +80,7 @@ export const OptionalConfigurationsStep = () => {
     setDisconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
+    disconnectedOpenshiftVersion,
   } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -115,7 +115,7 @@ export const OptionalConfigurationsStep = () => {
         } else {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            openshiftVersion: disconnectedOpenshiftVersion,
           });
           setDisconnectedCluster(cluster);
 
@@ -124,7 +124,7 @@ export const OptionalConfigurationsStep = () => {
             pullSecret: pullSecretToUse,
             clusterId: cluster.id,
             imageType: DISCONNECTED_IMAGE_TYPE,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            openshiftVersion: disconnectedOpenshiftVersion,
             sshAuthorizedKey: values.sshPublicKey || undefined,
           });
           setDisconnectedInfraEnv(createdInfraEnv);
@@ -148,6 +148,7 @@ export const OptionalConfigurationsStep = () => {
       defaultPullSecret,
       disconnectedCluster,
       disconnectedInfraEnv,
+      disconnectedOpenshiftVersion,
       setDisconnectedCluster,
       setDisconnectedInfraEnv,
       addAlert,
