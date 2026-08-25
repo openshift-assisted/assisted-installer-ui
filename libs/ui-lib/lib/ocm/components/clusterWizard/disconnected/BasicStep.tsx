@@ -7,7 +7,7 @@ import ClusterWizardNavigation from '../ClusterWizardNavigation';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
 
-export const DISCONNECTED_OPENSHIFT_VERSION = '4.21';
+export const DISCONNECTED_OPENSHIFT_VERSION = '4.21.27';
 
 const BasicStep = () => {
   const { moveNext } = useClusterWizardContext();
