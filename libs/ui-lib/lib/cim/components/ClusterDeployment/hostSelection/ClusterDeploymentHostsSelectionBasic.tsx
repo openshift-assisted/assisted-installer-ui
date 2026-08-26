@@ -1,32 +1,30 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { CheckboxField, NumberInputField } from '../../../../common';
-import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from '../constants';
-import { useFormikContext } from 'formik';
-import { ClusterDeploymentHostsSelectionValues } from '../types';
+import { NumberInputField, useTranslation } from '../../../../common';
 import LocationsSelector from '../LocationsSelector';
 import { AgentK8sResource } from '../../../types';
 import AgentsSelectionHostCountAlerts from '../../Agent/AgentsSelectionHostCountAlerts';
 import AgentsSelectionHostCountLabelIcon from '../../Agent/AgentsSelectionHostCountLabelIcon';
 import { useAgentsAutoSelection } from '../../Agent/AgentsSelectionUtils';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { HOSTS_MAX_COUNT } from '../constants';
+import { ProvisionRequirements } from './utils';
 
 type ClusterDeploymentHostsSelectionBasicProps = {
   availableAgents: AgentK8sResource[];
   isSNOCluster: boolean;
+  provisionRequirements?: ProvisionRequirements;
 };
 
-const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelectionBasicProps> = ({
-  isSNOCluster,
-  availableAgents,
-}) => {
-  const { setFieldValue } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-  const { matchingAgents, selectedAgents, hostCount } = useAgentsAutoSelection(availableAgents);
+export const ClusterDeploymentHostsSelectionBasic: React.FC<
+  ClusterDeploymentHostsSelectionBasicProps
+> = ({ isSNOCluster, availableAgents, provisionRequirements }) => {
   const { t } = useTranslation();
-
-  React.useEffect(() => {
-    setFieldValue('useMastersAsWorkers', hostCount === 3);
-  }, [hostCount, setFieldValue]);
+  const { matchingAgents, selectedAgents, hostCount } = useAgentsAutoSelection(
+    availableAgents,
+    provisionRequirements,
+  );
+  const minHosts =
+    (provisionRequirements?.controlPlaneAgents || 0) + (provisionRequirements?.arbiterAgents || 0);
 
   return (
     <>
@@ -38,19 +36,9 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
             idPostfix="hostcount"
             name="hostCount"
             isRequired
-            minValue={isSNOCluster ? 1 : HOSTS_MIN_COUNT}
+            minValue={minHosts}
             maxValue={isSNOCluster ? 1 : HOSTS_MAX_COUNT}
             isDisabled={isSNOCluster}
-          />
-        </GridItem>
-
-        <GridItem>
-          {/* That field is not supported ATM - (requires MGMT-7677) */}
-          <CheckboxField
-            idPostfix="mastersasworkers"
-            name="useMastersAsWorkers"
-            label={t('ai:Run workloads on control plane hosts')}
-            isDisabled={hostCount !== 3}
           />
         </GridItem>
 
@@ -67,5 +55,3 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
     </>
   );
 };
-
-export default ClusterDeploymentHostsSelectionBasic;
