@@ -282,7 +282,11 @@ const ValidationGroupAlerts = ({
 export const HostValidationGroups = ({
   validationsInfo,
   openshiftVersion,
-  ...props
+  host,
+  onEditHostname,
+  AdditionalNTPSourcesDialogToggleComponent,
+  NtpSyncFailureMessageComponent,
+  UpdateDay2ApiVipDialogToggleComponent,
 }: HostValidationGroupsProps) => {
   const { t } = useTranslation();
   return (
@@ -341,14 +345,26 @@ export const HostValidationGroups = ({
                     title={t('ai:Pending validations:')}
                     validations={pendingValidations}
                     openshiftVersion={openshiftVersion}
-                    {...props}
+                    host={host}
+                    onEditHostname={onEditHostname}
+                    AdditionalNTPSourcesDialogToggleComponent={
+                      AdditionalNTPSourcesDialogToggleComponent
+                    }
+                    NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
+                    UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
                   />
                   <ValidationGroupAlerts
                     variant={AlertVariant.info}
                     validations={softValidations}
                     openshiftVersion={openshiftVersion}
                     title={''}
-                    {...props}
+                    host={host}
+                    onEditHostname={onEditHostname}
+                    AdditionalNTPSourcesDialogToggleComponent={
+                      AdditionalNTPSourcesDialogToggleComponent
+                    }
+                    NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
+                    UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
                   />
                 </>
               )
@@ -358,7 +374,11 @@ export const HostValidationGroups = ({
               title={t('ai:Failed validations:')}
               validations={failedValidations}
               openshiftVersion={openshiftVersion}
-              {...props}
+              host={host}
+              onEditHostname={onEditHostname}
+              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+              NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
+              UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
             />
           </Fragment>
         );
