@@ -397,40 +397,48 @@ const addDisconnectedStep = (
   return copy;
 };
 
-const removeDisconnectedStep = (
-  stepIds: ClusterWizardStepsType[],
-  stepToRemove: ClusterWizardStepsType,
-  count: number,
-): ClusterWizardStepsType[] => {
-  const copy = [...stepIds];
-  const pos = copy.indexOf(stepToRemove);
-  if (pos !== -1) {
-    copy.splice(pos, count);
-  }
-  return copy;
-};
-
 export const getDisconnectedWizardStepIds = (
-  stepIds: ClusterWizardStepsType[] | undefined,
   staticIpView?: StaticIpView | 'dhcp-selected',
 ): ClusterWizardStepsType[] => {
-  let copy = stepIds ? [...stepIds] : [...disconnectedSteps];
+  // Always rebuild from the base disconnected steps so toggling static IP / DHCP
+  // cannot leave leftover sub-steps in the list.
+  const copy = [...disconnectedSteps];
 
   if (staticIpView === StaticIpView.YAML) {
-    copy = removeDisconnectedStep(copy, 'static-ip-network-wide-configurations', 2);
-    copy = addDisconnectedStep(copy, 'disconnected-optional-configurations', [
+    return addDisconnectedStep(copy, 'disconnected-optional-configurations', [
       'static-ip-yaml-view',
     ]);
-  } else if (staticIpView === StaticIpView.FORM) {
-    copy = removeDisconnectedStep(copy, 'static-ip-yaml-view', 1);
-    copy = addDisconnectedStep(copy, 'disconnected-optional-configurations', [
+  }
+  if (staticIpView === StaticIpView.FORM) {
+    return addDisconnectedStep(copy, 'disconnected-optional-configurations', [
       'static-ip-network-wide-configurations',
       'static-ip-host-configurations',
     ]);
-  } else if (staticIpView === 'dhcp-selected') {
-    copy = removeDisconnectedStep(copy, 'static-ip-network-wide-configurations', 2);
-    copy = removeDisconnectedStep(copy, 'static-ip-yaml-view', 1);
   }
 
   return copy;
+};
+
+export type WizardNavEntry = {
+  stepId: ClusterWizardStepsType;
+  visualNumber: number;
+  isStaticIpFormGroup: boolean;
+};
+
+export const getWizardNavEntries = (wizardStepIds: ClusterWizardStepsType[]): WizardNavEntry[] => {
+  const entries: WizardNavEntry[] = [];
+  let i = 0;
+  let visualNumber = 1;
+  while (i < wizardStepIds.length) {
+    const stepId = wizardStepIds[i];
+    if (stepId === 'static-ip-network-wide-configurations') {
+      entries.push({ stepId, visualNumber, isStaticIpFormGroup: true });
+      i += 2;
+    } else {
+      entries.push({ stepId, visualNumber, isStaticIpFormGroup: false });
+      i += 1;
+    }
+    visualNumber += 1;
+  }
+  return entries;
 };

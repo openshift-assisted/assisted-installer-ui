@@ -6,6 +6,7 @@ import {
   canNextNetwork,
   canNextStorage,
   ClusterWizardStepsType,
+  getWizardNavEntries,
   isStaticIpStep,
 } from '../utils/wizardTransition';
 import { useClusterWizardContext } from '../clusterWizardContext/ClusterWizardContext';
@@ -48,7 +49,11 @@ export const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
     return stepId === 'cluster-details' ? false : isStepIdxAfterCurrent(idx);
   };
 
-  const getNavItem = (idx: number, stepId: ClusterWizardStepsType): ReactNode => {
+  const getNavItem = (
+    idx: number,
+    stepId: ClusterWizardStepsType,
+    visualNumber: number,
+  ): ReactNode => {
     return (
       <WizardNavItem
         stepIndex={idx}
@@ -60,11 +65,12 @@ export const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
         isDisabled={isStepDisabled(idx, stepId)}
         isValid={() => isStepValid(stepId, cluster)}
         data-testid={`cluster-wizard-nav-item-${stepId}`}
+        style={{ '--cluster-wizard-step-number': `"${visualNumber}"` } as React.CSSProperties}
       />
     );
   };
 
-  const getStaticIpFormViewNavItem = (idx: number): ReactNode => {
+  const getStaticIpFormViewNavItem = (idx: number, visualNumber: number): ReactNode => {
     return (
       <WizardNavItem
         stepIndex={idx}
@@ -74,13 +80,14 @@ export const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
         isCurrent={isStaticIpStep(clusterWizardContext.currentStepId)}
         isDisabled={isStepIdxAfterCurrent(idx)}
         data-testid={`cluster-wizard-nav-item-static-network-configuration-form-view`}
+        style={{ '--cluster-wizard-step-number': `"${visualNumber}"` } as React.CSSProperties}
       >
         <WizardNav
           isInnerList
           data-testid="cluster-wizard-nav-item-static-network-configuration-form-view-inner-list"
         >
           {staticIpFormViewSubSteps.map((stepId, subIdx) => {
-            return getNavItem(idx + subIdx, stepId);
+            return getNavItem(idx + subIdx, stepId, visualNumber);
           })}
         </WizardNav>
       </WizardNavItem>
@@ -88,20 +95,13 @@ export const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   };
 
   const getWizardNavItems = (): ReactNode[] => {
-    const navItems: ReactNode[] = [];
-    let i = 0;
-    while (i < clusterWizardContext.wizardStepIds.length) {
-      const stepId = clusterWizardContext.wizardStepIds[i];
-      if (stepId !== 'static-ip-network-wide-configurations') {
-        navItems.push(getNavItem(i, stepId));
-        i += 1;
-      } else {
-        navItems.push(getStaticIpFormViewNavItem(i));
-        //skip iteration on form view sub steps
-        i += 2;
+    return getWizardNavEntries(clusterWizardContext.wizardStepIds).map((entry) => {
+      const idx = clusterWizardContext.wizardStepIds.indexOf(entry.stepId);
+      if (entry.isStaticIpFormGroup) {
+        return getStaticIpFormViewNavItem(idx, entry.visualNumber);
       }
-    }
-    return navItems;
+      return getNavItem(idx, entry.stepId, entry.visualNumber);
+    });
   };
 
   return <WizardNav data-testid="cluster-wizard-nav">{getWizardNavItems()}</WizardNav>;

@@ -176,9 +176,7 @@ export const ClusterWizardContextProvider = ({
           // Keep the current disconnectedWizardStepIds as-is so the user can still navigate back.
           return;
         }
-        setDisconnectedWizardStepIds(
-          getDisconnectedWizardStepIds(disconnectedWizardStepIds, staticIpInfo.view),
-        );
+        setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(staticIpInfo.view));
       } else {
         const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
         if (!staticIpInfo) {
@@ -223,9 +221,7 @@ export const ClusterWizardContextProvider = ({
           setCurrentStepId('static-ip-network-wide-configurations');
         }
         if (installDisconnected) {
-          setDisconnectedWizardStepIds(
-            getDisconnectedWizardStepIds(disconnectedWizardStepIds, view),
-          );
+          setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(view));
         } else {
           setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
         }
@@ -233,13 +229,9 @@ export const ClusterWizardContextProvider = ({
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (installDisconnected) {
           if (type === HostsNetworkConfigurationType.STATIC) {
-            setDisconnectedWizardStepIds(
-              getDisconnectedWizardStepIds(disconnectedWizardStepIds, StaticIpView.FORM),
-            );
+            setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(StaticIpView.FORM));
           } else {
-            setDisconnectedWizardStepIds(
-              getDisconnectedWizardStepIds(disconnectedWizardStepIds, 'dhcp-selected'),
-            );
+            setDisconnectedWizardStepIds(getDisconnectedWizardStepIds('dhcp-selected'));
           }
         } else {
           if (type === HostsNetworkConfigurationType.STATIC) {
@@ -289,7 +281,6 @@ export const ClusterWizardContextProvider = ({
     updateUISettings,
     installDisconnected,
     connectedWizardStepIds,
-    disconnectedWizardStepIds,
     disconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
