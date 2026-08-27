@@ -183,8 +183,7 @@ export const OptionalConfigurationsStep = () => {
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
             sshAuthorizedKey: values.sshPublicKey || undefined,
             ...(values.rendezvousIp && { rendezvousIp: values.rendezvousIp }),
-            ...(values.hostsNetworkConfigurationType ===
-              HostsNetworkConfigurationType.STATIC && {
+            ...(values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC && {
               staticNetworkConfig: getDummyInfraEnvField(),
             }),
           });
