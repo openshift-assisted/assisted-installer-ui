@@ -410,10 +410,6 @@ const removeDisconnectedStep = (
   return copy;
 };
 
-/**
- * Computes the disconnected wizard step list, inserting static IP sub-steps after
- * 'disconnected-optional-configurations' when the user selects static networking.
- */
 export const getDisconnectedWizardStepIds = (
   stepIds: ClusterWizardStepsType[] | undefined,
   staticIpView?: StaticIpView | 'dhcp-selected',
