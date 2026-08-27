@@ -2,8 +2,6 @@ import * as React from 'react';
 import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router';
 import {
-  Split,
-  SplitItem,
   Alert,
   Grid,
   DescriptionList,
@@ -18,7 +16,6 @@ import {
 } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
-  TechnologyPreview,
   PULL_SECRET_INFO_LINK,
   singleClusterOperators,
   WithErrorBoundary,
@@ -52,14 +49,7 @@ export const DisconnectedReviewStep = () => {
     >
       <WithErrorBoundary title="Failed to load Review step">
         <Grid hasGutter>
-          <Split>
-            <SplitItem>
-              <Content component="h2">Review and download ISO</Content>
-            </SplitItem>
-            <SplitItem>
-              <TechnologyPreview />
-            </SplitItem>
-          </Split>
+          <Content component="h2">Review and download ISO</Content>
           <Alert isInline variant="info" title="ISO boot instructions">
             <List component={ListComponent.ol} type={OrderType.number}>
               <ListItem>Download the ISO.</ListItem>
@@ -91,6 +81,14 @@ export const DisconnectedReviewStep = () => {
             </List>
           </Alert>
           <DescriptionList isHorizontal>
+            {disconnectedInfraEnv?.rendezvousIp && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>Rendezvous IP</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv.rendezvousIp}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
             <DescriptionListGroup>
               <DescriptionListTerm>OpenShift version</DescriptionListTerm>
               <DescriptionListDescription>

@@ -20,6 +20,7 @@ import {
   ClusterWizardFlowStateType,
   disconnectedSteps,
   getClusterWizardFirstStep,
+  getDisconnectedWizardStepIds,
   isStepAfter,
   isStaticIpStep,
 } from '../utils';
@@ -93,6 +94,10 @@ export const ClusterWizardContextProvider = ({
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
   const [disconnectedCluster, setDisconnectedCluster] = React.useState<Cluster | undefined>();
   const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>();
+  const [disconnectedHostsNetworkConfigurationType, setDisconnectedHostsNetworkConfigurationType] =
+    React.useState<'dhcp' | 'static'>('dhcp');
+  const [disconnectedWizardStepIds, setDisconnectedWizardStepIds] =
+    React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const location = useLocation();
   const locationState = location.state as ClusterWizardFlowStateType | undefined;
   const {
@@ -104,7 +109,7 @@ export const ClusterWizardContextProvider = ({
   const { clearAlerts, addAlert, alerts } = useAlerts();
   const setClusterPermissions = useSetClusterPermissions();
 
-  const wizardStepIds = installDisconnected ? disconnectedSteps : connectedWizardStepIds;
+  const wizardStepIds = installDisconnected ? disconnectedWizardStepIds : connectedWizardStepIds;
 
   React.useEffect(() => {
     if (!UISettingsLoading) {
@@ -162,17 +167,30 @@ export const ClusterWizardContextProvider = ({
 
     const handleMoveFromStaticIp = () => {
       //if static ip view change wasn't persisted, moving from static ip step should change the wizard steps to match the view in the infra env
-      const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-      if (!staticIpInfo) {
-        throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
+      if (installDisconnected) {
+        const staticIpInfo = disconnectedInfraEnv
+          ? getStaticIpInfo(disconnectedInfraEnv)
+          : undefined;
+        if (!staticIpInfo) {
+          // No static config persisted yet (e.g. first pass before API round-trip completes).
+          // Keep the current disconnectedWizardStepIds as-is so the user can still navigate back.
+          return;
+        }
+        setDisconnectedWizardStepIds(
+          getDisconnectedWizardStepIds(disconnectedWizardStepIds, staticIpInfo.view),
+        );
+      } else {
+        const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
+        if (!staticIpInfo) {
+          throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
+        }
+        const newStepIds = getWizardStepIds(
+          wizardStepIds,
+          staticIpInfo.view,
+          isSingleClusterFeatureEnabled,
+        );
+        setWizardStepIds(newStepIds);
       }
-
-      const newStepIds = getWizardStepIds(
-        wizardStepIds,
-        staticIpInfo.view,
-        isSingleClusterFeatureEnabled,
-      );
-      setWizardStepIds(newStepIds);
     };
 
     const onSetCurrentStepId = (stepId: ClusterWizardStepsType) => {
@@ -204,17 +222,35 @@ export const ClusterWizardContextProvider = ({
         } else {
           setCurrentStepId('static-ip-network-wide-configurations');
         }
-        setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
-      },
-      onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
-        if (type === HostsNetworkConfigurationType.STATIC) {
-          setWizardStepIds(
-            getWizardStepIds(wizardStepIds, StaticIpView.FORM, isSingleClusterFeatureEnabled),
+        if (installDisconnected) {
+          setDisconnectedWizardStepIds(
+            getDisconnectedWizardStepIds(disconnectedWizardStepIds, view),
           );
         } else {
-          setWizardStepIds(
-            getWizardStepIds(wizardStepIds, 'dhcp-selected', isSingleClusterFeatureEnabled),
-          );
+          setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
+        }
+      },
+      onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
+        if (installDisconnected) {
+          if (type === HostsNetworkConfigurationType.STATIC) {
+            setDisconnectedWizardStepIds(
+              getDisconnectedWizardStepIds(disconnectedWizardStepIds, StaticIpView.FORM),
+            );
+          } else {
+            setDisconnectedWizardStepIds(
+              getDisconnectedWizardStepIds(disconnectedWizardStepIds, 'dhcp-selected'),
+            );
+          }
+        } else {
+          if (type === HostsNetworkConfigurationType.STATIC) {
+            setWizardStepIds(
+              getWizardStepIds(wizardStepIds, StaticIpView.FORM, isSingleClusterFeatureEnabled),
+            );
+          } else {
+            setWizardStepIds(
+              getWizardStepIds(wizardStepIds, 'dhcp-selected', isSingleClusterFeatureEnabled),
+            );
+          }
         }
       },
       wizardStepIds: wizardStepIds,
@@ -228,6 +264,8 @@ export const ClusterWizardContextProvider = ({
       setInstallDisconnected: (enabled: boolean) => {
         setInstallDisconnected(enabled);
         if (enabled) {
+          setDisconnectedWizardStepIds(disconnectedSteps);
+          setDisconnectedHostsNetworkConfigurationType('dhcp');
           onSetCurrentStepId(disconnectedSteps[0]);
         } else {
           connectedWizardStepIds?.length && onSetCurrentStepId(connectedWizardStepIds[0]);
@@ -237,6 +275,8 @@ export const ClusterWizardContextProvider = ({
       setDisconnectedCluster,
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
+      disconnectedHostsNetworkConfigurationType,
+      setDisconnectedHostsNetworkConfigurationType,
     };
   }, [
     wizardStepIds,
@@ -249,9 +289,12 @@ export const ClusterWizardContextProvider = ({
     updateUISettings,
     installDisconnected,
     connectedWizardStepIds,
+    disconnectedWizardStepIds,
     disconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
+    disconnectedHostsNetworkConfigurationType,
+    setDisconnectedHostsNetworkConfigurationType,
   ]);
 
   if (!contextValue) {

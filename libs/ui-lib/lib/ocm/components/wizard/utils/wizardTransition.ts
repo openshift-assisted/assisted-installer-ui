@@ -382,3 +382,59 @@ export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
 export const isStaticIpStep = (stepId: ClusterWizardStepsType | Day2WizardStepsType) => {
   return stepId.startsWith('static-ip');
 };
+
+const addDisconnectedStep = (
+  stepIds: ClusterWizardStepsType[],
+  afterStep: ClusterWizardStepsType,
+  toAdd: ClusterWizardStepsType[],
+): ClusterWizardStepsType[] => {
+  const copy = [...stepIds];
+  const pos = copy.indexOf(afterStep);
+  const alreadyPresent = copy.includes(toAdd[0]);
+  if (pos !== -1 && !alreadyPresent) {
+    copy.splice(pos + 1, 0, ...toAdd);
+  }
+  return copy;
+};
+
+const removeDisconnectedStep = (
+  stepIds: ClusterWizardStepsType[],
+  stepToRemove: ClusterWizardStepsType,
+  count: number,
+): ClusterWizardStepsType[] => {
+  const copy = [...stepIds];
+  const pos = copy.indexOf(stepToRemove);
+  if (pos !== -1) {
+    copy.splice(pos, count);
+  }
+  return copy;
+};
+
+/**
+ * Computes the disconnected wizard step list, inserting static IP sub-steps after
+ * 'disconnected-optional-configurations' when the user selects static networking.
+ */
+export const getDisconnectedWizardStepIds = (
+  stepIds: ClusterWizardStepsType[] | undefined,
+  staticIpView?: StaticIpView | 'dhcp-selected',
+): ClusterWizardStepsType[] => {
+  let copy = stepIds ? [...stepIds] : [...disconnectedSteps];
+
+  if (staticIpView === StaticIpView.YAML) {
+    copy = removeDisconnectedStep(copy, 'static-ip-network-wide-configurations', 2);
+    copy = addDisconnectedStep(copy, 'disconnected-optional-configurations', [
+      'static-ip-yaml-view',
+    ]);
+  } else if (staticIpView === StaticIpView.FORM) {
+    copy = removeDisconnectedStep(copy, 'static-ip-yaml-view', 1);
+    copy = addDisconnectedStep(copy, 'disconnected-optional-configurations', [
+      'static-ip-network-wide-configurations',
+      'static-ip-host-configurations',
+    ]);
+  } else if (staticIpView === 'dhcp-selected') {
+    copy = removeDisconnectedStep(copy, 'static-ip-network-wide-configurations', 2);
+    copy = removeDisconnectedStep(copy, 'static-ip-yaml-view', 1);
+  }
+
+  return copy;
+};
