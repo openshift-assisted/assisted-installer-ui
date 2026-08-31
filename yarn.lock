@@ -1725,7 +1725,7 @@ __metadata:
     react-router: ^7.18.1
     redux: ^4.2.1
     uuid: ^8.1
-    yup: ^1.4.0
+    yup: ^1.7.1
   languageName: unknown
   linkType: soft
 
