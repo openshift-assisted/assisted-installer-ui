@@ -45,7 +45,7 @@ describe(`Create cluster with MTV operator enabled`, () => {
     });
     it('Selecting MTV checks dependency operators and sends only MTV to the API', () => {
       OperatorsForm.assertOperatorCheckbox('cnv', { checked: false, disabled: false });
-      OperatorsForm.assertOperatorCheckbox('lso', { checked: false, disabled: true });
+      OperatorsForm.assertOperatorCheckbox('lso', { checked: false, disabled: false });
 
       OperatorsForm.mtvOperatorControl.findLabel().click({ force: true });
 
