@@ -404,6 +404,7 @@ export const singleClusterOperators = [
   OPERATOR_NAME_NUMA_RESOURCES,
   OPERATOR_NAME_LOKI,
   OPERATOR_NAME_OPENSHIFT_LOGGING,
+  OPERATOR_NAME_LVM,
 ];
 
 export const singleClusterBundles = ['virtualization'];
