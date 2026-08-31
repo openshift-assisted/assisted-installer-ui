@@ -67,7 +67,7 @@
     "qs": "^6.15.3",
     "shell-quote": "^1.10.0",
     "dompurify": "^3.4.14",
-    "js-cookie": "^3.0.7",
+    "js-cookie": "^3.0.8",
     "basic-ftp": "^5.3.1"
   },
   "workspaces": [
