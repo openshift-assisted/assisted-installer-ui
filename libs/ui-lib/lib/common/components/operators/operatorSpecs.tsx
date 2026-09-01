@@ -154,7 +154,6 @@ export const getOperatorSpecs = (
             <ExternalLink href={getLsoLink(openshiftVersion)}>Learn more</ExternalLink>
           </>
         ),
-        notStandalone: true,
         supportLevel: getFeatureSupportLevel('LSO'),
       },
       {
