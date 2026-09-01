@@ -217,7 +217,6 @@ export const OptionalConfigurationsStep = () => {
   return (
     <Formik<OptionalConfigurationsValues>
       initialValues={initialValues}
-      enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => void handleNext(values)}
     >

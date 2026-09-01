@@ -118,9 +118,7 @@ export const ClusterWizardContextProvider = ({
           ? getStaticIpInfo(disconnectedInfraEnv)
           : undefined;
         if (!staticIpInfo) {
-          // No static config persisted yet (e.g. first pass before API round-trip completes).
-          // Keep the current disconnectedWizardStepIds as-is so the user can still navigate back.
-          return;
+          throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
         }
         setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(staticIpInfo.view));
       } else {
