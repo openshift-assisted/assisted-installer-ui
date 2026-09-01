@@ -383,42 +383,6 @@ export const isStaticIpStep = (stepId: ClusterWizardStepsType | Day2WizardStepsT
   return stepId.startsWith('static-ip');
 };
 
-const addDisconnectedStep = (
-  stepIds: ClusterWizardStepsType[],
-  afterStep: ClusterWizardStepsType,
-  toAdd: ClusterWizardStepsType[],
-): ClusterWizardStepsType[] => {
-  const copy = [...stepIds];
-  const pos = copy.indexOf(afterStep);
-  const alreadyPresent = copy.includes(toAdd[0]);
-  if (pos !== -1 && !alreadyPresent) {
-    copy.splice(pos + 1, 0, ...toAdd);
-  }
-  return copy;
-};
-
-export const getDisconnectedWizardStepIds = (
-  staticIpView?: StaticIpView | 'dhcp-selected',
-): ClusterWizardStepsType[] => {
-  // Always rebuild from the base disconnected steps so toggling static IP / DHCP
-  // cannot leave leftover sub-steps in the list.
-  const copy = [...disconnectedSteps];
-
-  if (staticIpView === StaticIpView.YAML) {
-    return addDisconnectedStep(copy, 'disconnected-optional-configurations', [
-      'static-ip-yaml-view',
-    ]);
-  }
-  if (staticIpView === StaticIpView.FORM) {
-    return addDisconnectedStep(copy, 'disconnected-optional-configurations', [
-      'static-ip-network-wide-configurations',
-      'static-ip-host-configurations',
-    ]);
-  }
-
-  return copy;
-};
-
 export type WizardNavEntry = {
   stepId: ClusterWizardStepsType;
   visualNumber: number;

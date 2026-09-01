@@ -13,11 +13,7 @@ import {
 import { useClusterWizardContext } from './clusterWizardContext';
 import { ClusterWizardStepsType } from './utils';
 
-const getCurrentStep = (
-  currentStepId: ClusterWizardStepsType,
-  installDisconnected: boolean,
-  infraEnv?: InfraEnv,
-) => {
+const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraEnv) => {
   switch (currentStepId) {
     case 'disconnected-review':
       return <DisconnectedReviewStep />;
@@ -28,10 +24,7 @@ const getCurrentStep = (
     case 'static-ip-yaml-view':
     case 'static-ip-network-wide-configurations':
     case 'static-ip-host-configurations':
-      if (installDisconnected) {
-        return <DisconnectedStaticIp />;
-      }
-      return <ClusterDetails infraEnv={infraEnv} />;
+      return <DisconnectedStaticIp />;
     default:
       return <ClusterDetails infraEnv={infraEnv} />;
   }
@@ -39,11 +32,11 @@ const getCurrentStep = (
 
 export const NewClusterWizard: React.FC = () => {
   const { infraEnv } = useInfraEnv('', CpuArchitecture.USE_DAY1_ARCHITECTURE);
-  const { currentStepId, installDisconnected } = useClusterWizardContext();
+  const { currentStepId } = useClusterWizardContext();
 
   return (
     <div className={classNames('pf-v6-c-wizard', 'cluster-wizard')}>
-      {getCurrentStep(currentStepId, installDisconnected, infraEnv)}
+      {getCurrentStep(currentStepId, infraEnv)}
     </div>
   );
 };

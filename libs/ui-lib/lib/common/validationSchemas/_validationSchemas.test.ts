@@ -131,6 +131,7 @@ describe('validationSchemas', () => {
 
   test('ipValidationSchema', async () => {
     const valid = [
+      '',
       '1.1.1.1',
       '0.0.0.0',
       '255.255.255.255',
@@ -139,7 +140,6 @@ describe('validationSchemas', () => {
       '::',
     ];
     const invalid = [
-      '',
       '1.1.1.1.',
       '1.1.1',
       '1.1.1.',

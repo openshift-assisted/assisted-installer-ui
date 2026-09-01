@@ -81,6 +81,12 @@ export const DisconnectedReviewStep = () => {
             </List>
           </Alert>
           <DescriptionList isHorizontal>
+            <DescriptionListGroup>
+              <DescriptionListTerm>OpenShift version</DescriptionListTerm>
+              <DescriptionListDescription>
+                {disconnectedInfraEnv?.openshiftVersion ?? DISCONNECTED_OPENSHIFT_VERSION}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
             {disconnectedInfraEnv?.rendezvousIp && (
               <DescriptionListGroup>
                 <DescriptionListTerm>Rendezvous IP</DescriptionListTerm>
@@ -89,12 +95,6 @@ export const DisconnectedReviewStep = () => {
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-              <DescriptionListDescription>
-                {disconnectedInfraEnv?.openshiftVersion ?? DISCONNECTED_OPENSHIFT_VERSION}
-              </DescriptionListDescription>
-            </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>CPU architecture</DescriptionListTerm>
               <DescriptionListDescription>

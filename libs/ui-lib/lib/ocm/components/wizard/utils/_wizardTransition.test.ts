@@ -13,9 +13,9 @@ import {
   canNextHostDiscovery,
   canNextStorage,
   disconnectedSteps,
-  getDisconnectedWizardStepIds,
   getWizardNavEntries,
 } from './wizardTransition';
+import { getDisconnectedWizardStepIds } from '../clusterWizardContext/utils';
 import { StaticIpView } from '../steps/staticIp/data';
 
 const clusterBase: Cluster = {

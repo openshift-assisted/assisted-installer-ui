@@ -81,7 +81,6 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 label="Rendezvous IP"
                 name="rendezvousIp"
                 helperText="The IP address that hosts will use to communicate with the bootstrap node during installation."
-                placeholder="e.g., 192.168.1.10"
                 maxLength={45}
               />
               <UploadSSH />
@@ -108,23 +107,22 @@ const buildInfraEnvUpdateParams = (
   values: OptionalConfigurationsValues,
   disconnectedInfraEnv: InfraEnv | undefined,
 ): InfraEnvUpdateParams => ({
-  sshAuthorizedKey: values.sshPublicKey || undefined,
-  ...(values.rendezvousIp && { rendezvousIp: values.rendezvousIp }),
-  ...(shouldSendDummyStaticConfig(values, disconnectedInfraEnv) && {
-    staticNetworkConfig: getDummyInfraEnvField(),
-  }),
+  sshAuthorizedKey: values.sshPublicKey,
+  rendezvousIp: values.rendezvousIp,
+  staticNetworkConfig: shouldSendDummyStaticConfig(values, disconnectedInfraEnv)
+    ? getDummyInfraEnvField()
+    : [],
 });
 
 export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
   const {
     moveNext,
+    wizardStepIds,
     disconnectedCluster,
     setDisconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
-    disconnectedHostsNetworkConfigurationType,
-    setDisconnectedHostsNetworkConfigurationType,
   } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -137,13 +135,7 @@ export const OptionalConfigurationsStep = () => {
         pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
         rendezvousIp: Yup.string()
           .max(45, 'IP address must be at most 45 characters')
-          .test('ip-validation', 'Not a valid IP address', (value) => {
-            if (!value) return true;
-            return ipValidationSchema(t).isValidSync(value);
-          }),
-        hostsNetworkConfigurationType: Yup.string()
-          .oneOf(Object.values(HostsNetworkConfigurationType))
-          .required(),
+          .concat(ipValidationSchema(t)),
       }),
     [t],
   );
@@ -152,10 +144,9 @@ export const OptionalConfigurationsStep = () => {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
     pullSecret: defaultPullSecret ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
-    hostsNetworkConfigurationType:
-      disconnectedHostsNetworkConfigurationType === 'static'
-        ? HostsNetworkConfigurationType.STATIC
-        : HostsNetworkConfigurationType.DHCP,
+    hostsNetworkConfigurationType: wizardStepIds.some((id) => id.startsWith('static-ip'))
+      ? HostsNetworkConfigurationType.STATIC
+      : HostsNetworkConfigurationType.DHCP,
   };
 
   const handleNext = React.useCallback(
@@ -182,10 +173,11 @@ export const OptionalConfigurationsStep = () => {
             imageType: DISCONNECTED_IMAGE_TYPE,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
             sshAuthorizedKey: values.sshPublicKey || undefined,
-            ...(values.rendezvousIp && { rendezvousIp: values.rendezvousIp }),
-            ...(values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC && {
-              staticNetworkConfig: getDummyInfraEnvField(),
-            }),
+            rendezvousIp: values.rendezvousIp || undefined,
+            staticNetworkConfig:
+              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
+                ? getDummyInfraEnvField()
+                : undefined,
           });
           infraEnvToUse = createdInfraEnv;
         } else {
@@ -196,20 +188,7 @@ export const OptionalConfigurationsStep = () => {
           infraEnvToUse = updatedInfraEnv;
         }
 
-        setDisconnectedInfraEnv({
-          ...infraEnvToUse,
-          sshAuthorizedKey: values.sshPublicKey || undefined,
-          rendezvousIp: values.rendezvousIp || undefined,
-          ...(values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC &&
-            !infraEnvToUse.staticNetworkConfig && {
-              staticNetworkConfig: JSON.stringify(getDummyInfraEnvField()),
-            }),
-        });
-        setDisconnectedHostsNetworkConfigurationType(
-          values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
-            ? 'static'
-            : 'dhcp',
-        );
+        setDisconnectedInfraEnv(infraEnvToUse);
         moveNext();
       } catch (error) {
         handleApiError(error, () => {
@@ -230,7 +209,6 @@ export const OptionalConfigurationsStep = () => {
       disconnectedInfraEnv,
       setDisconnectedCluster,
       setDisconnectedInfraEnv,
-      setDisconnectedHostsNetworkConfigurationType,
       addAlert,
       moveNext,
     ],

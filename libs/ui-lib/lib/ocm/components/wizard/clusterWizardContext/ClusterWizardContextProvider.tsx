@@ -12,7 +12,6 @@ import {
 import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
 import { HostsNetworkConfigurationType } from '../../../services';
 import { isOciPlatformType } from '../../utils';
-import { defaultWizardSteps, staticIpFormViewSubSteps } from '../constants';
 import { StaticIpView } from '../steps/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../steps/staticIp/data/fromInfraEnv';
 import {
@@ -20,62 +19,11 @@ import {
   ClusterWizardFlowStateType,
   disconnectedSteps,
   getClusterWizardFirstStep,
-  getDisconnectedWizardStepIds,
   isStepAfter,
   isStaticIpStep,
 } from '../utils';
 import { ClusterWizardContextType, ClusterWizardContext } from './ClusterWizardContext';
-
-const addStepToClusterWizard = (
-  wizardStepIds: ClusterWizardStepsType[],
-  addAfterStep: ClusterWizardStepsType,
-  itemsToAdd: ClusterWizardStepsType[],
-) => {
-  const stepsIds = [...wizardStepIds];
-  const referencePosition = stepsIds.findIndex((step) => step === addAfterStep);
-  const found = wizardStepIds.filter((step) => step === itemsToAdd[0]);
-  if (referencePosition !== -1 && found.length === 0) {
-    stepsIds.splice(referencePosition + 1, 0, ...itemsToAdd);
-  }
-  return stepsIds;
-};
-
-const removeStepFromClusterWizard = (
-  wizardStepIds: ClusterWizardStepsType[],
-  itemToRemove: ClusterWizardStepsType,
-  numberItemsToRemove: number,
-) => {
-  const stepsIds = [...wizardStepIds];
-  const position = stepsIds.findIndex((step) => step === itemToRemove);
-  if (position !== -1) {
-    stepsIds.splice(position, numberItemsToRemove);
-  }
-  return stepsIds;
-};
-
-const getWizardStepIds = (
-  wizardStepIds: ClusterWizardStepsType[] | undefined,
-  staticIpView?: StaticIpView | 'dhcp-selected',
-
-  isSingleClusterFeatureEnabled?: boolean,
-): ClusterWizardStepsType[] => {
-  let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
-  if (staticIpView === StaticIpView.YAML) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['static-ip-yaml-view']);
-  } else if (staticIpView === StaticIpView.FORM) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-yaml-view', 1);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', staticIpFormViewSubSteps);
-  } else if (staticIpView === 'dhcp-selected') {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-  }
-
-  if (isSingleClusterFeatureEnabled && !stepsCopy.includes('credentials-download')) {
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'custom-manifests', ['credentials-download']);
-  }
-
-  return stepsCopy;
-};
+import { getDisconnectedWizardStepIds, getWizardStepIds } from './utils';
 
 export const ClusterWizardContextProvider = ({
   children,
@@ -94,8 +42,6 @@ export const ClusterWizardContextProvider = ({
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
   const [disconnectedCluster, setDisconnectedCluster] = React.useState<Cluster | undefined>();
   const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>();
-  const [disconnectedHostsNetworkConfigurationType, setDisconnectedHostsNetworkConfigurationType] =
-    React.useState<'dhcp' | 'static'>('dhcp');
   const [disconnectedWizardStepIds, setDisconnectedWizardStepIds] =
     React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const location = useLocation();
@@ -257,7 +203,6 @@ export const ClusterWizardContextProvider = ({
         setInstallDisconnected(enabled);
         if (enabled) {
           setDisconnectedWizardStepIds(disconnectedSteps);
-          setDisconnectedHostsNetworkConfigurationType('dhcp');
           onSetCurrentStepId(disconnectedSteps[0]);
         } else {
           connectedWizardStepIds?.length && onSetCurrentStepId(connectedWizardStepIds[0]);
@@ -267,8 +212,6 @@ export const ClusterWizardContextProvider = ({
       setDisconnectedCluster,
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
-      disconnectedHostsNetworkConfigurationType,
-      setDisconnectedHostsNetworkConfigurationType,
     };
   }, [
     wizardStepIds,
@@ -284,8 +227,6 @@ export const ClusterWizardContextProvider = ({
     disconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
-    disconnectedHostsNetworkConfigurationType,
-    setDisconnectedHostsNetworkConfigurationType,
   ]);
 
   if (!contextValue) {
