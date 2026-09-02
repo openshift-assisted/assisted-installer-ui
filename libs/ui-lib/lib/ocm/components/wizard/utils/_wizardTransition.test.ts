@@ -13,8 +13,8 @@ import {
   canNextHostDiscovery,
   canNextStorage,
   disconnectedSteps,
-  getWizardNavEntries,
 } from './wizardTransition';
+import { getWizardNavEntries } from '../wizardComponents/ClusterWizardNavigation';
 import { getDisconnectedWizardStepIds } from '../clusterWizardContext/utils';
 import { StaticIpView } from '../steps/staticIp/data';
 

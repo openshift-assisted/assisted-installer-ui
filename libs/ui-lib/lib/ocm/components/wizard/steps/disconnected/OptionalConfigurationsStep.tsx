@@ -118,7 +118,6 @@ export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
   const {
     moveNext,
-    wizardStepIds,
     disconnectedCluster,
     setDisconnectedCluster,
     disconnectedInfraEnv,
@@ -144,7 +143,7 @@ export const OptionalConfigurationsStep = () => {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
     pullSecret: defaultPullSecret ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
-    hostsNetworkConfigurationType: wizardStepIds.some((id) => id.startsWith('static-ip'))
+    hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
   };

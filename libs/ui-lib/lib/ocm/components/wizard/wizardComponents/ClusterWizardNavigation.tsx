@@ -6,9 +6,32 @@ import {
   canNextNetwork,
   canNextStorage,
   ClusterWizardStepsType,
-  getWizardNavEntries,
   isStaticIpStep,
 } from '../utils/wizardTransition';
+
+export type WizardNavEntry = {
+  stepId: ClusterWizardStepsType;
+  visualNumber: number;
+  isStaticIpFormGroup: boolean;
+};
+
+export const getWizardNavEntries = (wizardStepIds: ClusterWizardStepsType[]): WizardNavEntry[] => {
+  const entries: WizardNavEntry[] = [];
+  let i = 0;
+  let visualNumber = 1;
+  while (i < wizardStepIds.length) {
+    const stepId = wizardStepIds[i];
+    if (stepId === 'static-ip-network-wide-configurations') {
+      entries.push({ stepId, visualNumber, isStaticIpFormGroup: true });
+      i += 2;
+    } else {
+      entries.push({ stepId, visualNumber, isStaticIpFormGroup: false });
+      i += 1;
+    }
+    visualNumber += 1;
+  }
+  return entries;
+};
 import { useClusterWizardContext } from '../clusterWizardContext/ClusterWizardContext';
 import { staticIpFormViewSubSteps, wizardStepNames } from '../constants';
 import WizardNavItem from '../../../../common/components/ui/WizardNavItem';
