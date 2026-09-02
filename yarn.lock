@@ -7584,6 +7584,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.7":
+  version: 1.11.23
+  resolution: "dayjs@npm:1.11.23"
+  checksum: 2149ddb54548066e892a35099c7d90cba3eb467fe717b5df16f04ff4225e64bd653e14e7b420dd02bcf10566c1879508705798ca604f91c2424cc10de9135e84
+  languageName: node
+  linkType: hard
+
 "debounce-promise@npm:^3.1.0":
   version: 3.1.2
   resolution: "debounce-promise@npm:3.1.2"
@@ -10641,18 +10648,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^8.0.0":
-  version: 8.0.2
-  resolution: "htmlparser2@npm:8.0.2"
-  dependencies:
-    domelementtype: ^2.3.0
-    domhandler: ^5.0.3
-    domutils: ^3.0.1
-    entities: ^4.4.0
-  checksum: 29167a0f9282f181da8a6d0311b76820c8a59bc9e3c87009e21968264c2987d2723d6fde5a964d4b7b6cba663fca96ffb373c06d8223a85f52a6089ced942700
-  languageName: node
-  linkType: hard
-
 "http-cache-semantics@npm:^4.1.1":
   version: 4.1.1
   resolution: "http-cache-semantics@npm:4.1.1"
@@ -12309,6 +12304,15 @@ __metadata:
     picocolors: ^1.1.1
     shell-quote: ^1.8.4
   checksum: 232ea8a80146e7fec6c8ece7ebb600d58a82e9938f36111194980188d276935f424754b18e37d5b098f596d30580def723b231e093c27c3bcd703418278afc4c
+  languageName: node
+  linkType: hard
+
+"launder@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "launder@npm:1.7.1"
+  dependencies:
+    dayjs: ^1.11.7
+  checksum: d9b9f33b12a69b95523e48f0541f0ab2179d8af8bfa386dd9fa91dd95db46b21f430d0000a82e94505473fabc05fd55802a90ea006c50e3b0ef9773a1b0d6dc6
   languageName: node
   linkType: hard
 
@@ -16181,16 +16185,17 @@ __metadata:
   linkType: hard
 
 "sanitize-html@npm:^2.13.1":
-  version: 2.17.0
-  resolution: "sanitize-html@npm:2.17.0"
+  version: 2.17.4
+  resolution: "sanitize-html@npm:2.17.4"
   dependencies:
     deepmerge: ^4.2.2
     escape-string-regexp: ^4.0.0
-    htmlparser2: ^8.0.0
+    htmlparser2: ^10.1.0
     is-plain-object: ^5.0.0
+    launder: ^1.7.1
     parse-srcset: ^1.0.2
     postcss: ^8.3.11
-  checksum: 15de8f6dd1f093330fd156cfbb8f8fcee24073869ce55ab07c20c09e21e98619679566ff45670e1e8ef17acc761e7be8429add20b42c5d6208f997a6dcd25a6d
+  checksum: f4dff95bb57d57d37b2aa5b2419aadc6a4f8e98ed6d9ca45bf6a1be1c2aa411b8196e7b764fd2f572bd086021720573939c7ce20d1d70903c3b025c039681cc4
   languageName: node
   linkType: hard
 
