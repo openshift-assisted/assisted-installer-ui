@@ -32,7 +32,8 @@
     "tar": "^7.5.21",
     "ws": "^8.21.0",
     "minimatch": "^10.2.6",
-    "brace-expansion": "^5.0.9"
+    "brace-expansion": "^5.0.9",
+    "tmp": "^0.2.6"
   },
   "scripts": {
     "_build:lib": "yarn workspace @openshift-assisted/ui-lib build && yarn workspace @openshift-assisted/chatbot build",
