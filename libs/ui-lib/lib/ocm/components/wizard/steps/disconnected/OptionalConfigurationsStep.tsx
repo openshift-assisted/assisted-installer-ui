@@ -1,9 +1,13 @@
 import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
-import { AlertVariant } from '@patternfly/react-core';
-import { Form, Grid, GridItem, Content } from '@patternfly/react-core';
-import { ImageType } from '@openshift-assisted/types/assisted-installer-service';
+import { AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
+import {
+  HostStaticNetworkConfig,
+  InfraEnv,
+  InfraEnvUpdateParams,
+  ImageType,
+} from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStep,
   WithErrorBoundary,
@@ -18,11 +22,18 @@ import {
   handleApiError,
   getApiErrorMessage,
   useTranslation,
+  InputField,
+  ipValidationSchema,
+  getFormikErrorFields,
 } from '../../../../../common';
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
 import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
+import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
+import { HostsNetworkConfigurationType } from '../../../../services/types';
+import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
+import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -30,6 +41,8 @@ const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
   pullSecret: string;
+  rendezvousIp: string;
+  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
 };
 
 type OptionalConfigurationsFormProps = {
@@ -42,7 +55,8 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
   isSubmitting,
 }) => {
   const { moveBack } = useClusterWizardContext();
-  const { isValid, submitForm } = useFormikContext<OptionalConfigurationsValues>();
+  const { isValid, submitForm, errors, touched } = useFormikContext<OptionalConfigurationsValues>();
+  const errorFields = getFormikErrorFields(errors, touched);
 
   return (
     <ClusterWizardStep
@@ -53,6 +67,7 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
           onBack={moveBack}
           isSubmitting={isSubmitting}
           isNextDisabled={!isValid}
+          errorFields={errorFields}
         />
       }
     >
@@ -63,8 +78,15 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
           </GridItem>
           <GridItem>
             <Form id="wizard-cluster-optional-config__form">
+              <InputField
+                label="Rendezvous IP"
+                name="rendezvousIp"
+                helperText="The IP address that hosts will use to communicate with the bootstrap node during installation."
+                maxLength={45}
+              />
               <UploadSSH />
               {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
+              <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
             </Form>
           </GridItem>
         </Grid>
@@ -72,6 +94,29 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
     </ClusterWizardStep>
   );
 };
+
+const getStaticNetworkConfigUpdate = (
+  values: OptionalConfigurationsValues,
+  infraEnv: InfraEnv | undefined,
+): HostStaticNetworkConfig[] => {
+  if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP) {
+    return [];
+  }
+  // Static IP selected — resend existing config, or seed with dummy if none exists yet.
+  if (!infraEnv?.staticNetworkConfig) {
+    return getDummyInfraEnvField();
+  }
+  return getStaticNetworkConfig(infraEnv) ?? getDummyInfraEnvField();
+};
+
+const buildInfraEnvUpdateParams = (
+  values: OptionalConfigurationsValues,
+  disconnectedInfraEnv: InfraEnv | undefined,
+): InfraEnvUpdateParams => ({
+  sshAuthorizedKey: values.sshPublicKey,
+  rendezvousIp: values.rendezvousIp,
+  staticNetworkConfig: getStaticNetworkConfigUpdate(values, disconnectedInfraEnv),
+});
 
 export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
@@ -91,6 +136,9 @@ export const OptionalConfigurationsStep = () => {
       Yup.object({
         sshPublicKey: sshPublicKeyValidationSchema(t),
         pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
+        rendezvousIp: Yup.string()
+          .max(45, 'IP address must be at most 45 characters')
+          .concat(ipValidationSchema(t)),
       }),
     [t],
   );
@@ -98,6 +146,10 @@ export const OptionalConfigurationsStep = () => {
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
     pullSecret: defaultPullSecret ?? '',
+    rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
+    hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
+      ? HostsNetworkConfigurationType.STATIC
+      : HostsNetworkConfigurationType.DHCP,
   };
 
   const handleNext = React.useCallback(
@@ -107,12 +159,9 @@ export const OptionalConfigurationsStep = () => {
       try {
         const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
 
-        if (disconnectedCluster?.id && disconnectedInfraEnv?.id) {
-          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, {
-            sshAuthorizedKey: values.sshPublicKey,
-          });
-          setDisconnectedInfraEnv(updatedInfraEnv);
-        } else {
+        let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
+
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
@@ -126,10 +175,22 @@ export const OptionalConfigurationsStep = () => {
             imageType: DISCONNECTED_IMAGE_TYPE,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
             sshAuthorizedKey: values.sshPublicKey || undefined,
+            rendezvousIp: values.rendezvousIp || undefined,
+            staticNetworkConfig:
+              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
+                ? getDummyInfraEnvField()
+                : undefined,
           });
-          setDisconnectedInfraEnv(createdInfraEnv);
+          infraEnvToUse = createdInfraEnv;
+        } else {
+          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
+            infraEnvToUse.id,
+            buildInfraEnvUpdateParams(values, infraEnvToUse),
+          );
+          infraEnvToUse = updatedInfraEnv;
         }
 
+        setDisconnectedInfraEnv(infraEnvToUse);
         moveNext();
       } catch (error) {
         handleApiError(error, () => {
@@ -158,7 +219,6 @@ export const OptionalConfigurationsStep = () => {
   return (
     <Formik<OptionalConfigurationsValues>
       initialValues={initialValues}
-      enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => void handleNext(values)}
     >

@@ -25,7 +25,7 @@ const getInitialFormStateProps = () => {
   };
 };
 
-export const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
+export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
   cluster,
   infraEnv,
   updateInfraEnv,
