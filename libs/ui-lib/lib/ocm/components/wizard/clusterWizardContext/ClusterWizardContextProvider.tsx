@@ -173,15 +173,19 @@ export const ClusterWizardContextProvider = ({
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (installDisconnected) {
           if (type === HostsNetworkConfigurationType.STATIC) {
-            setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(StaticIpView.FORM));
+            const staticIpInfo = disconnectedInfraEnv
+              ? getStaticIpInfo(disconnectedInfraEnv)
+              : undefined;
+            const view = staticIpInfo?.view ?? StaticIpView.FORM;
+            setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(view));
           } else {
             setDisconnectedWizardStepIds(getDisconnectedWizardStepIds('dhcp-selected'));
           }
         } else {
           if (type === HostsNetworkConfigurationType.STATIC) {
-            setWizardStepIds(
-              getWizardStepIds(wizardStepIds, StaticIpView.FORM, isSingleClusterFeatureEnabled),
-            );
+            const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
+            const view = staticIpInfo?.view ?? StaticIpView.FORM;
+            setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
           } else {
             setWizardStepIds(
               getWizardStepIds(wizardStepIds, 'dhcp-selected', isSingleClusterFeatureEnabled),

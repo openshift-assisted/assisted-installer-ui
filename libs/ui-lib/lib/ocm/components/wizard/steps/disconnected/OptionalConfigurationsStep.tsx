@@ -33,7 +33,8 @@ import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardCompon
 import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
-import { getDummyInfraEnvField, isDummyYaml } from '../staticIp/data/dummyData';
+import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
+import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -98,18 +99,18 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
 const getStaticNetworkConfigUpdate = (
   values: OptionalConfigurationsValues,
   infraEnv: InfraEnv | undefined,
-): HostStaticNetworkConfig[] | undefined => {
+): HostStaticNetworkConfig[] => {
   if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP) {
-    return []; // clear any existing static config
+    return [];
   }
-  // Static IP selected — only seed with dummy if no real config exists yet
-  if (
-    !infraEnv?.staticNetworkConfig ||
-    (typeof infraEnv.staticNetworkConfig === 'string' && isDummyYaml(infraEnv.staticNetworkConfig))
-  ) {
+  // Static IP selected — resend existing config, or seed with dummy if none exists yet.
+  // Note: we intentionally skip isDummyYaml here. Partially-filled configs (e.g. network-wide
+  // values set but no host IPs yet) also contain DUMMY NIC names and would be misidentified
+  // as dummy, causing real data to be overwritten.
+  if (!infraEnv?.staticNetworkConfig) {
     return getDummyInfraEnvField();
   }
-  return undefined; // real config already present — omit from PATCH to preserve it
+  return getStaticNetworkConfig(infraEnv) ?? getDummyInfraEnvField();
 };
 
 const buildInfraEnvUpdateParams = (
