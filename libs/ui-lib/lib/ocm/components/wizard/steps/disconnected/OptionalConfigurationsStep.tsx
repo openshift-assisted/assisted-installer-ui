@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
 import { AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
 import {
-  Cluster,
   HostStaticNetworkConfig,
   InfraEnv,
   InfraEnvUpdateParams,
@@ -104,9 +103,6 @@ const getStaticNetworkConfigUpdate = (
     return [];
   }
   // Static IP selected — resend existing config, or seed with dummy if none exists yet.
-  // Note: we intentionally skip isDummyYaml here. Partially-filled configs (e.g. network-wide
-  // values set but no host IPs yet) also contain DUMMY NIC names and would be misidentified
-  // as dummy, causing real data to be overwritten.
   if (!infraEnv?.staticNetworkConfig) {
     return getDummyInfraEnvField();
   }
@@ -163,25 +159,19 @@ export const OptionalConfigurationsStep = () => {
       try {
         const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
 
-        let clusterToUse: Cluster | undefined = disconnectedCluster;
         let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
 
-        // Create the cluster only if one doesn't exist yet
-        if (!clusterToUse?.id) {
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
           });
           setDisconnectedCluster(cluster);
-          clusterToUse = cluster;
-        }
 
-        // Create the infraEnv if one doesn't exist yet; otherwise update the existing one
-        if (!infraEnvToUse?.id) {
           const { data: createdInfraEnv } = await InfraEnvsAPI.register({
             name: 'disconnected-infra-env',
             pullSecret: pullSecretToUse,
-            clusterId: clusterToUse.id,
+            clusterId: cluster.id,
             imageType: DISCONNECTED_IMAGE_TYPE,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
             sshAuthorizedKey: values.sshPublicKey || undefined,

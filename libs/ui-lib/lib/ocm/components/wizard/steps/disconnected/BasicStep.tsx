@@ -5,7 +5,7 @@ import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
 
-export const DISCONNECTED_OPENSHIFT_VERSION = '4.21.27';
+export const DISCONNECTED_OPENSHIFT_VERSION = '4.22.13';
 
 export const BasicStep = () => {
   const { moveNext } = useClusterWizardContext();
