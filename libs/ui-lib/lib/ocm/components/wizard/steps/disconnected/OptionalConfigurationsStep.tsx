@@ -4,6 +4,7 @@ import { Formik, useFormikContext } from 'formik';
 import { AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
 import {
   Cluster,
+  HostStaticNetworkConfig,
   InfraEnv,
   InfraEnvUpdateParams,
   ImageType,
@@ -94,14 +95,22 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
   );
 };
 
-const shouldSendDummyStaticConfig = (
+const getStaticNetworkConfigUpdate = (
   values: OptionalConfigurationsValues,
   infraEnv: InfraEnv | undefined,
-): boolean =>
-  values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC &&
-  (!infraEnv?.staticNetworkConfig ||
-    (typeof infraEnv.staticNetworkConfig === 'string' &&
-      isDummyYaml(infraEnv.staticNetworkConfig)));
+): HostStaticNetworkConfig[] | undefined => {
+  if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP) {
+    return []; // clear any existing static config
+  }
+  // Static IP selected — only seed with dummy if no real config exists yet
+  if (
+    !infraEnv?.staticNetworkConfig ||
+    (typeof infraEnv.staticNetworkConfig === 'string' && isDummyYaml(infraEnv.staticNetworkConfig))
+  ) {
+    return getDummyInfraEnvField();
+  }
+  return undefined; // real config already present — omit from PATCH to preserve it
+};
 
 const buildInfraEnvUpdateParams = (
   values: OptionalConfigurationsValues,
@@ -109,9 +118,7 @@ const buildInfraEnvUpdateParams = (
 ): InfraEnvUpdateParams => ({
   sshAuthorizedKey: values.sshPublicKey,
   rendezvousIp: values.rendezvousIp,
-  staticNetworkConfig: shouldSendDummyStaticConfig(values, disconnectedInfraEnv)
-    ? getDummyInfraEnvField()
-    : [],
+  staticNetworkConfig: getStaticNetworkConfigUpdate(values, disconnectedInfraEnv),
 });
 
 export const OptionalConfigurationsStep = () => {
@@ -155,20 +162,25 @@ export const OptionalConfigurationsStep = () => {
       try {
         const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
 
-        const clusterToUse: Cluster | undefined = disconnectedCluster;
+        let clusterToUse: Cluster | undefined = disconnectedCluster;
         let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
 
-        if (!clusterToUse?.id || !infraEnvToUse?.id) {
+        // Create the cluster only if one doesn't exist yet
+        if (!clusterToUse?.id) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
           });
           setDisconnectedCluster(cluster);
+          clusterToUse = cluster;
+        }
 
+        // Create the infraEnv if one doesn't exist yet; otherwise update the existing one
+        if (!infraEnvToUse?.id) {
           const { data: createdInfraEnv } = await InfraEnvsAPI.register({
             name: 'disconnected-infra-env',
             pullSecret: pullSecretToUse,
-            clusterId: cluster.id,
+            clusterId: clusterToUse.id,
             imageType: DISCONNECTED_IMAGE_TYPE,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
             sshAuthorizedKey: values.sshPublicKey || undefined,
