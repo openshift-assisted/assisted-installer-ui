@@ -7,7 +7,7 @@ import { getAIHosts } from '../helpers/toAssisted';
 import { getAgentStatus, getWizardStepAgentStatus } from '../helpers/status';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
-import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/components/AdditionalNTPSourcesDialogToggle';
+import { CimNtpSyncFailureMessage } from '../ClusterDeployment/components/CimNtpSyncFailureMessage';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ValidationsRunningAlert from '../common/ValidationsRunningAlert';
 import { agentStatus } from '../helpers/agentStatus';
@@ -54,7 +54,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       host={host}
       onEditHostname={editHostname}
       zIndex={zIndex}
-      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      NtpSyncFailureMessageComponent={CimNtpSyncFailureMessage}
       autoCSR
       additionalPopoverContent={
         status.status.key === 'specSyncErr' ? (
