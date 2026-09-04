@@ -31,6 +31,9 @@ export const clusterDetailsPage = {
       cy.get('li').contains('Show all available versions').click();
     });
   },
+  getPullSecretCheckbox: () => {
+    return cy.get('#checkbox-pull-secret');
+  },
   getPullSecret: () => {
     return cy.get(Cypress.env('pullSecretFieldId'));
   },
