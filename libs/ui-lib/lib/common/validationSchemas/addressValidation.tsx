@@ -17,13 +17,13 @@ export const ipValidationSchema = (t: TFunction) =>
   Yup.string().test(
     'ip-validation',
     t('ai:Not a valid IP address'),
-    (value?: string) => Address4.isValid(value || '') || Address6.isValid(value || ''),
+    (value?: string) => !value || Address4.isValid(value) || Address6.isValid(value),
   );
 
 export const ipNoSuffixValidationSchema = (t: TFunction) =>
   Yup.string().test('ip-validation-no-suffix', t('ai:Not a valid IP address'), (value?: string) => {
     if (!value) return true;
-    const address = getAddress(value || '');
+    const address = getAddress(value);
     return !!address && address.address === address.addressMinusSuffix;
   });
 

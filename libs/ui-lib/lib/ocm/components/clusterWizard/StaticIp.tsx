@@ -23,7 +23,7 @@ const getInitialFormStateProps = () => {
     isEmpty: true,
   };
 };
-const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
+const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
   cluster,
   infraEnv,
   updateInfraEnv,
