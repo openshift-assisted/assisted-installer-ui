@@ -5,6 +5,7 @@ import { useClusterWizardContext } from './ClusterWizardContext';
 import ReviewStep from './disconnected/ReviewStep';
 import BasicStep from './disconnected/BasicStep';
 import OptionalConfigurationsStep from './disconnected/OptionalConfigurationsStep';
+import DisconnectedStaticIp from './disconnected/DisconnectedStaticIp';
 import { ClusterWizardStepsType } from './wizardTransition';
 import { useInfraEnv } from '../../hooks';
 import { CpuArchitecture } from '../../../common/types';
@@ -18,6 +19,10 @@ const getCurrentStep = (currentStepId: ClusterWizardStepsType, infraEnv?: InfraE
       return <OptionalConfigurationsStep />;
     case 'disconnected-basic':
       return <BasicStep />;
+    case 'static-ip-yaml-view':
+    case 'static-ip-network-wide-configurations':
+    case 'static-ip-host-configurations':
+      return <DisconnectedStaticIp />;
     default:
       return <ClusterDetails infraEnv={infraEnv} />;
   }
