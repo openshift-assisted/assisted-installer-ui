@@ -1,25 +1,17 @@
 import React from 'react';
 import { Content, Split, SplitItem } from '@patternfly/react-core';
-import {
-  ASSISTED_INSTALLER_DOCUMENTATION_LINK,
-  TechnologyPreview,
-  ExternalLink,
-  isInOcm,
-} from '../../../common';
-import { useFeature } from '../../hooks/use-feature';
+import { ASSISTED_INSTALLER_DOCUMENTATION_LINK, ExternalLink, isInOcm } from '../../../common';
 
 type AssistedInstallerHeaderProps = {
   clusterName?: string;
 };
 
 export const AssistedInstallerHeader = ({ clusterName }: AssistedInstallerHeaderProps) => {
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   return (
     <>
       <Content component="h1" className="pf-v6-u-display-inline">
         {clusterName || 'Install OpenShift with the Assisted Installer'}
       </Content>
-      {isSingleClusterFeatureEnabled && <TechnologyPreview />}
       <Split hasGutter>
         <SplitItem>
           <ExternalLink href={ASSISTED_INSTALLER_DOCUMENTATION_LINK}>
