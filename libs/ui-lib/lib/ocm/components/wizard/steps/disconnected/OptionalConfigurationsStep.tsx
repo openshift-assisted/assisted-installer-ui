@@ -29,7 +29,6 @@ import {
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
@@ -76,7 +75,7 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
           <GridItem>
             <Content component="h2">Optional configurations</Content>
           </GridItem>
-          <GridItem>
+          <GridItem span={12} lg={10} xl={9} xl2={7}>
             <Form id="wizard-cluster-optional-config__form">
               <InputField
                 label="Rendezvous IP"
@@ -126,6 +125,7 @@ export const OptionalConfigurationsStep = () => {
     setDisconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
+    disconnectedOpenshiftVersion,
   } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -159,12 +159,21 @@ export const OptionalConfigurationsStep = () => {
       try {
         const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
 
+        if (!disconnectedOpenshiftVersion) {
+          addAlert({
+            title: 'Failed to save optional configurations',
+            message: 'OpenShift version is required.',
+            variant: AlertVariant.danger,
+          });
+          return;
+        }
+
         let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
 
         if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            openshiftVersion: disconnectedOpenshiftVersion,
           });
           setDisconnectedCluster(cluster);
 
@@ -173,7 +182,7 @@ export const OptionalConfigurationsStep = () => {
             pullSecret: pullSecretToUse,
             clusterId: cluster.id,
             imageType: DISCONNECTED_IMAGE_TYPE,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            openshiftVersion: disconnectedOpenshiftVersion,
             sshAuthorizedKey: values.sshPublicKey || undefined,
             rendezvousIp: values.rendezvousIp || undefined,
             staticNetworkConfig:
@@ -213,6 +222,7 @@ export const OptionalConfigurationsStep = () => {
       setDisconnectedInfraEnv,
       addAlert,
       moveNext,
+      disconnectedOpenshiftVersion,
     ],
   );
 
