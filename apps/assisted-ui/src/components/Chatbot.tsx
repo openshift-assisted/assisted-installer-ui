@@ -7,7 +7,7 @@ import '@patternfly/chatbot/dist/css/main.css';
 import '@patternfly-6/patternfly/patternfly-addons.css';
 
 export const refreshToken =
-  (import.meta.env.AIUI_OCM_REFRESH_TOKEN as string | undefined) || window.OCM_REFRESH_TOKEN;
+  import.meta.env.AIUI_OCM_REFRESH_TOKEN || window.OCM_REFRESH_TOKEN;
 let expiration = Date.now();
 let token = '';
 
