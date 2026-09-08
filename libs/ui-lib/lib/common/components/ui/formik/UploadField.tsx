@@ -32,6 +32,8 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
 
   const [filename, setFilename] = React.useState<string>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
+  const currentFileReadRef = React.useRef<{ file: File; isFinished: boolean }>();
+  const pendingFileReadsRef = React.useRef(0);
 
   const [field, { touched, error }, { setValue, setTouched }] = useField<string | File>(name);
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -62,10 +64,15 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
         filename={filename}
         data-testid={`upload-field-${fieldId}`}
         onDataChange={(_event, file: string) => {
+          if (!currentFileReadRef.current?.isFinished) {
+            return;
+          }
+          currentFileReadRef.current = undefined;
           setValue(file);
           setTouched(true);
         }}
         onTextChange={(_event, file: string) => {
+          currentFileReadRef.current = undefined;
           setValue(file);
           setTouched(true);
         }}
@@ -91,8 +98,18 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
             onBlur && onBlur(e, file);
           }
         }}
-        onReadStarted={() => setIsFileUploading(true)}
-        onReadFinished={() => setIsFileUploading(false)}
+        onReadStarted={(_event, file) => {
+          currentFileReadRef.current = { file, isFinished: false };
+          pendingFileReadsRef.current += 1;
+          setIsFileUploading(true);
+        }}
+        onReadFinished={(_event, file) => {
+          if (currentFileReadRef.current?.file === file) {
+            currentFileReadRef.current.isFinished = true;
+          }
+          pendingFileReadsRef.current = Math.max(pendingFileReadsRef.current - 1, 0);
+          setIsFileUploading(pendingFileReadsRef.current > 0);
+        }}
         isLoading={isFileUploading}
         disabled={isDisabled}
         allowEditingUploadedText={allowEdittingUploadedText}
@@ -101,6 +118,7 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
           maxSize: MAX_FILE_SIZE,
         }}
         onClearClick={() => {
+          currentFileReadRef.current = undefined;
           setFilename('');
           setValue('');
         }}
