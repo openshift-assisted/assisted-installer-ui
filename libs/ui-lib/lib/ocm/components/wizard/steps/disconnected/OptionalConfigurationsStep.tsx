@@ -111,10 +111,12 @@ const getStaticNetworkConfigUpdate = (
 const buildInfraEnvUpdateParams = (
   values: OptionalConfigurationsValues,
   disconnectedInfraEnv: InfraEnv | undefined,
+  openshiftVersion: string,
 ): InfraEnvUpdateParams => ({
   sshAuthorizedKey: values.sshPublicKey,
   rendezvousIp: values.rendezvousIp,
   staticNetworkConfig: getStaticNetworkConfigUpdate(values, disconnectedInfraEnv),
+  openshiftVersion,
 });
 
 export const OptionalConfigurationsStep = () => {
@@ -194,7 +196,7 @@ export const OptionalConfigurationsStep = () => {
         } else {
           const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
             infraEnvToUse.id,
-            buildInfraEnvUpdateParams(values, infraEnvToUse),
+            buildInfraEnvUpdateParams(values, infraEnvToUse, disconnectedOpenshiftVersion),
           );
           infraEnvToUse = updatedInfraEnv;
         }

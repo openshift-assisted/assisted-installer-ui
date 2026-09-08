@@ -1,16 +1,7 @@
 import * as React from 'react';
-import {
-  Alert,
-  AlertVariant,
-  FormGroup,
-  FormSelect,
-  FormSelectOption,
-  Grid,
-  GridItem,
-  Content,
-  Flex,
-  Form,
-} from '@patternfly/react-core';
+import * as Yup from 'yup';
+import { Formik, useFormikContext } from 'formik';
+import { Alert, AlertVariant, Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
 import { OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
 import OfflineOpenshiftVersionsAPI from '../../../../../common/api/assisted-service/OfflineOpenshiftVersionsAPI';
 import {
@@ -18,6 +9,7 @@ import {
   StaticTextField,
   WithErrorBoundary,
   LoadingState,
+  SelectField,
   getKeys,
   handleApiError,
   getApiErrorMessage,
@@ -29,6 +21,10 @@ import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardCompon
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
 
 export const DISCONNECTED_BASE_VERSION = '4.22';
+
+type BasicStepValues = {
+  openshiftVersion: string;
+};
 
 const sortVersions = (versions: OpenshiftVersionOptionType[]) =>
   [...versions].sort((version1, version2) =>
@@ -55,63 +51,45 @@ const mapOfflineVersions = (
   return sortVersions(versions);
 };
 
-export const BasicStep = () => {
-  const { moveNext, disconnectedOpenshiftVersion, setDisconnectedOpenshiftVersion } =
-    useClusterWizardContext();
-  const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string>();
-  const [selectedVersion, setSelectedVersion] = React.useState<string>(
-    disconnectedOpenshiftVersion,
-  );
+type BasicStepFormProps = {
+  versions: OpenshiftVersionOptionType[];
+  loading: boolean;
+  error?: string;
+};
+
+const BasicStepForm: React.FC<BasicStepFormProps> = ({ versions, loading, error }) => {
+  const { setDisconnectedOpenshiftVersion } = useClusterWizardContext();
+  const { values, setFieldValue, isValid, submitForm } = useFormikContext<BasicStepValues>();
 
   React.useEffect(() => {
-    const fetchVersions = async () => {
-      setLoading(true);
-      setError(undefined);
-      try {
-        const { data } = await OfflineOpenshiftVersionsAPI.list(DISCONNECTED_BASE_VERSION);
-        const mappedVersions = mapOfflineVersions(data);
-        setVersions(mappedVersions);
-        if (mappedVersions.length === 0) {
-          setError('No OpenShift versions available.');
-        }
-      } catch (e) {
-        handleApiError(e, (err) => {
-          setError(getApiErrorMessage(err));
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchVersions();
-  }, []);
-
-  React.useEffect(() => {
-    if (!selectedVersion && versions.length > 0) {
+    if (!values.openshiftVersion && versions.length > 0) {
       const defaultVersion =
         versions.find((version) => version.default) ?? versions[versions.length - 1];
-      setSelectedVersion(defaultVersion.value);
+      void setFieldValue('openshiftVersion', defaultVersion.value);
     }
-  }, [selectedVersion, versions]);
+  }, [values.openshiftVersion, versions, setFieldValue]);
 
   React.useEffect(() => {
-    if (selectedVersion) {
-      setDisconnectedOpenshiftVersion(selectedVersion);
+    if (values.openshiftVersion) {
+      setDisconnectedOpenshiftVersion(values.openshiftVersion);
     }
-  }, [selectedVersion, setDisconnectedOpenshiftVersion]);
+  }, [values.openshiftVersion, setDisconnectedOpenshiftVersion]);
 
-  const selectedVersionItem = versions.find((version) => version.value === selectedVersion);
+  const selectedVersionItem = versions.find((version) => version.value === values.openshiftVersion);
   const cpuArchitecture = selectedVersionItem?.cpuArchitectures?.[0] ?? 'x86_64';
+
+  const selectOptions = versions.map((version) => ({
+    value: version.value,
+    label: version.version,
+  }));
 
   return (
     <ClusterWizardStep
       navigation={<ClusterWizardNavigation />}
       footer={
         <ClusterWizardFooter
-          onNext={moveNext}
-          isNextDisabled={loading || !!error || !selectedVersion}
+          onNext={() => void submitForm()}
+          isNextDisabled={loading || !!error || !isValid || !values.openshiftVersion}
         />
       }
     >
@@ -138,27 +116,12 @@ export const BasicStep = () => {
             )}
             {!loading && !error && (
               <Form id="wizard-cluster-basic-info__form">
-                <FormGroup
-                  fieldId="disconnected-openshift-version"
+                <SelectField
+                  name="openshiftVersion"
                   label="OpenShift version"
+                  options={selectOptions}
                   isRequired
-                >
-                  <FormSelect
-                    id="disconnected-openshift-version"
-                    value={selectedVersion}
-                    onChange={(_event, value) => setSelectedVersion(value)}
-                    isRequired
-                    aria-label="OpenShift version"
-                  >
-                    {versions.map((version) => (
-                      <FormSelectOption
-                        key={version.value}
-                        value={version.value}
-                        label={version.version}
-                      />
-                    ))}
-                  </FormSelect>
-                </FormGroup>
+                />
                 <StaticTextField name="cpuArchitecture" label="CPU architecture">
                   {cpuArchitecture}
                 </StaticTextField>
@@ -168,5 +131,48 @@ export const BasicStep = () => {
         </Grid>
       </WithErrorBoundary>
     </ClusterWizardStep>
+  );
+};
+
+export const BasicStep = () => {
+  const { moveNext, disconnectedOpenshiftVersion } = useClusterWizardContext();
+  const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string>();
+
+  React.useEffect(() => {
+    const fetchVersions = async () => {
+      setLoading(true);
+      setError(undefined);
+      try {
+        const { data } = await OfflineOpenshiftVersionsAPI.list(DISCONNECTED_BASE_VERSION);
+        const mappedVersions = mapOfflineVersions(data);
+        setVersions(mappedVersions);
+        if (mappedVersions.length === 0) {
+          setError('No OpenShift versions available.');
+        }
+      } catch (e) {
+        handleApiError(e, (err) => {
+          setError(getApiErrorMessage(err));
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchVersions();
+  }, []);
+
+  return (
+    <Formik<BasicStepValues>
+      initialValues={{ openshiftVersion: disconnectedOpenshiftVersion }}
+      validationSchema={Yup.object({
+        openshiftVersion: Yup.string().required('OpenShift version is required'),
+      })}
+      validateOnMount
+      onSubmit={() => moveNext()}
+    >
+      <BasicStepForm versions={versions} loading={loading} error={error} />
+    </Formik>
   );
 };
