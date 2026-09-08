@@ -10,16 +10,16 @@ import {
 } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { Address4, Address6 } from 'ip-address';
-import { getFieldId } from '../../ui';
+import { getFieldId, TechnologyPreview, PreviewBadgePosition } from '../../ui';
 import { HostSubnet } from '../../../types';
 import { NO_SUBNET_SET } from '../../../config';
-import { TechnologyPreview, PreviewBadgePosition } from '../../ui';
 
 type SubnetsDropdownProps = {
   name: string;
   machineSubnets: HostSubnet[];
   isDisabled: boolean;
   onAfterSelect?: (selectedValue: string) => void;
+  showIpv6TechPreviewBadge?: boolean;
 };
 
 const toFormSelectOptions = (subnets: HostSubnet[]) => {
@@ -50,6 +50,7 @@ export const SubnetsDropdown = ({
   machineSubnets,
   isDisabled,
   onAfterSelect,
+  showIpv6TechPreviewBadge = true,
   ...props
 }: SubnetsDropdownProps & MenuToggleProps) => {
   const [field, , { setValue }] = useField(name);
@@ -126,7 +127,10 @@ export const SubnetsDropdown = ({
         <DropdownGroup label="IPv4" key="ipv4-group">
           {ipv4Items}
         </DropdownGroup>,
-        <DropdownGroup label="IPv6 (Technology Preview)" key="ipv6-group">
+        <DropdownGroup
+          label={showIpv6TechPreviewBadge ? 'IPv6 (Technology Preview)' : 'IPv6'}
+          key="ipv6-group"
+        >
           {ipv6Items}
         </DropdownGroup>,
       ];
@@ -138,7 +142,7 @@ export const SubnetsDropdown = ({
         {label}
       </DropdownItem>
     ));
-  }, [machineSubnets, ipv4Subnets, ipv6Subnets, itemsSubnets]);
+  }, [machineSubnets, ipv4Subnets, ipv6Subnets, itemsSubnets, showIpv6TechPreviewBadge]);
 
   const onSelect = (event?: React.MouseEvent<Element, MouseEvent>): void => {
     const nextValue = event?.currentTarget.id;
@@ -152,7 +156,10 @@ export const SubnetsDropdown = ({
   const currentItem = itemsSubnets.find((i) => i.label === currentDisplayValue);
   const isPrimaryMachineNetwork = name === 'machineNetworks.0.cidr';
   const showBadge = Boolean(
-    isPrimaryMachineNetwork && currentItem && Address6.isValid(currentItem.value),
+    showIpv6TechPreviewBadge &&
+      isPrimaryMachineNetwork &&
+      currentItem &&
+      Address6.isValid(currentItem.value),
   );
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (

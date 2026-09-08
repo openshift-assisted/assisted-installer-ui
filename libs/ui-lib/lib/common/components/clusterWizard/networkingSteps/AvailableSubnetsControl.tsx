@@ -32,6 +32,7 @@ export interface AvailableSubnetsControlProps {
   hosts?: Host[];
   isMultiNodeCluster?: boolean;
   allowSingleStackIPv6?: boolean;
+  showIpv6TechPreviewBadge?: boolean;
 }
 
 export const AvailableSubnetsControl = ({
@@ -44,6 +45,7 @@ export const AvailableSubnetsControl = ({
   hosts,
   isMultiNodeCluster = true,
   allowSingleStackIPv6 = false,
+  showIpv6TechPreviewBadge = true,
 }: AvailableSubnetsControlProps) => {
   const { t } = useTranslation();
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
@@ -229,6 +231,7 @@ export const AvailableSubnetsControl = ({
                   onAfterSelect={(newSelection) => {
                     reorderNetworksForPrimary(newSelection, values, setFieldValue);
                   }}
+                  showIpv6TechPreviewBadge={showIpv6TechPreviewBadge}
                   data-testid="subnets-dropdown-toggle-primary"
                 />
               </StackItem>
@@ -249,6 +252,7 @@ export const AvailableSubnetsControl = ({
             name="machineNetworks.1.cidr"
             machineSubnets={secondaryMachineSubnets}
             isDisabled={isDisabled}
+            showIpv6TechPreviewBadge={showIpv6TechPreviewBadge}
             data-testid="subnets-dropdown-toggle-secondary"
           />
         </FormGroup>
