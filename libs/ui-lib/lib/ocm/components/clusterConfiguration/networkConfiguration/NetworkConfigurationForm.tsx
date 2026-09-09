@@ -25,6 +25,7 @@ import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
+import { useFeature } from '../../../hooks/use-feature';
 import { selectCurrentClusterPermissionsState } from '../../../store/slices/current-cluster/selectors';
 import {
   getNetworkConfigurationValidationSchema,
@@ -62,6 +63,7 @@ const NetworkConfigurationForm: React.FC<{
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const isSingleClusterMode = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { errors, touched, isSubmitting, isValid, setFieldValue, values } =
     useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
@@ -117,6 +119,7 @@ const NetworkConfigurationForm: React.FC<{
                 clusterSshKey={cluster.sshPublicKey}
                 imageSshKey={infraEnv?.sshAuthorizedKey}
                 isDisabled={isViewerMode}
+                isSingleClusterMode={isSingleClusterMode}
               />
             </Grid>
           </GridItem>
