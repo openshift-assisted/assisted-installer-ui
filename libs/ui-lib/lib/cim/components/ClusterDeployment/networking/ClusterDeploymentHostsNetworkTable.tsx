@@ -19,7 +19,7 @@ import {
 import { getAICluster, getIsSNOCluster } from '../../helpers';
 import { agentStatus } from '../../helpers/agentStatus';
 import { agentStatusColumn, useAgentsTable } from '../../Agent';
-import { AdditionalNTPSourcesDialogToggle } from '../components/AdditionalNTPSourcesDialogToggle';
+import { CimNtpSyncFailureMessage } from '../components/CimNtpSyncFailureMessage';
 import { AgentTableActions } from '../types';
 
 type ExpandComponentContextType = {
@@ -43,7 +43,7 @@ const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => {
   return (
     <HostDetail
       host={obj}
-      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      NtpSyncFailureMessageComponent={CimNtpSyncFailureMessage}
       canEditDisks={() => true}
       onDiskRole={
         onSetInstallationDiskId
