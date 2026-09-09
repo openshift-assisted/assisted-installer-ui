@@ -35,6 +35,7 @@ interface SecurityFieldsFieldsProps {
   imageSshKey?: Cluster['imageInfo']['sshPublicKey'];
   isDisabled?: boolean;
   allowMultipleKeys?: boolean;
+  isSingleClusterMode?: boolean;
 }
 
 const SecurityFields = ({
@@ -42,6 +43,7 @@ const SecurityFields = ({
   imageSshKey,
   isDisabled = false,
   allowMultipleKeys = false,
+  isSingleClusterMode = false,
 }: SecurityFieldsFieldsProps) => {
   //shareSshKey shouldn't response to changes. imageSshKey stays the same, there's a loading state while it's requested
   //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
@@ -74,7 +76,11 @@ const SecurityFields = ({
           <Checkbox
             name="shareDiscoverySshKey"
             id={fieldId}
-            label={t('ai:Use the same host discovery SSH key')}
+            label={
+              isSingleClusterMode
+                ? t('ai:Use the same host SSH key')
+                : t('ai:Use the same host discovery SSH key')
+            }
             aria-describedby={`${fieldId}-helper`}
             isChecked={shareSshKey}
             isDisabled={isDisabled}
