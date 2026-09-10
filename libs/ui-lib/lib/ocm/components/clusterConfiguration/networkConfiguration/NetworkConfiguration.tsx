@@ -341,6 +341,7 @@ const NetworkConfiguration = ({
             openshiftVersion={cluster.openshiftVersion}
             isViewerMode={isViewerMode}
             allowSingleStackIPv6={isSingleClusterFeature}
+            showIpv6TechPreviewBadge={!isSingleClusterFeature}
           />
         </StackItem>
       )}
