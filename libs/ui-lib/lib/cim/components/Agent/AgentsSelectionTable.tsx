@@ -25,7 +25,7 @@ import {
 import { agentStatus } from '../helpers/agentStatus';
 import { agentHostnameColumn, infraEnvColumn, agentStatusColumn } from './tableColumns';
 import { useAgentsTable } from './tableUtils';
-import { CimNtpSyncFailureMessage } from '../ClusterDeployment';
+import { CimNtpSyncFailureMessage } from '../ClusterDeployment/components/CimNtpSyncFailureMessage';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
