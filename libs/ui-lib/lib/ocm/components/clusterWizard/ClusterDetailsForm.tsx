@@ -10,7 +10,6 @@ import {
   getClusterDetailsValidationSchema,
   getRichTextValidation,
   useAlerts,
-  TechnologyPreview,
   OpenshiftVersionOptionType,
   getFormikErrorFields,
 } from '../../../common';
