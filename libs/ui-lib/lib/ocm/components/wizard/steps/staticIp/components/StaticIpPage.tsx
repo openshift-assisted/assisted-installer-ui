@@ -108,7 +108,10 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
           onChangeView={onChangeView}
         />
       )}
-      {initialStaticIpInfo.isDataComplete && isoRegenerationAlert}
+      {/* Disconnected flow has no Host discovery step; the ISO is generated at the end */}
+      {!clusterWizardContext.installDisconnected &&
+        initialStaticIpInfo.isDataComplete &&
+        isoRegenerationAlert}
       {content}
     </Grid>
   );

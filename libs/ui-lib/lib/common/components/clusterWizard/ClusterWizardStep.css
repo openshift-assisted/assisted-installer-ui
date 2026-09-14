@@ -2,6 +2,15 @@
   white-space: nowrap;
 }
 
+/* PatternFly CSS counters do not re-sequence when nav items are added or removed */
+.cluster-wizard-step
+  .pf-v6-c-wizard__nav
+  > .pf-v6-c-wizard__nav-list
+  > .pf-v6-c-wizard__nav-item
+  > .pf-v6-c-wizard__nav-link::before {
+  content: var(--cluster-wizard-step-number, counter(wizard-nav-count));
+}
+
 .wizard-nav-item-warning-icon {
   margin-left: var(--pf-v6-global--spacer--sm);
 }

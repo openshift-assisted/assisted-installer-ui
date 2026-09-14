@@ -14,6 +14,7 @@ export const InstallDisconnectedSwitch = ({ isDisabled }: { isDisabled?: boolean
       onChange={(_, checked) => setInstallDisconnected(checked)}
       ouiaId="DisconnectedInstall"
       isDisabled={isDisabled}
+      label={<>{"I'm installing on a disconnected/air-gapped/secured environment"}</>}
     />
   );
 

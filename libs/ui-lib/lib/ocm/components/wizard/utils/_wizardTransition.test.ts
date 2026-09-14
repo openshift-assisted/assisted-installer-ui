@@ -8,7 +8,15 @@ import {
   Validation as HostValidation,
 } from '../../../../common/types/hosts';
 
-import { canNextClusterDetails, canNextHostDiscovery, canNextStorage } from './wizardTransition';
+import {
+  canNextClusterDetails,
+  canNextHostDiscovery,
+  canNextStorage,
+  disconnectedSteps,
+} from './wizardTransition';
+import { getWizardNavEntries } from '../wizardComponents/ClusterWizardNavigation';
+import { getDisconnectedWizardStepIds } from '../clusterWizardContext/utils';
+import { StaticIpView } from '../steps/staticIp/data';
 
 const clusterBase: Cluster = {
   kind: 'Cluster',
@@ -438,5 +446,56 @@ describe('OCM wizard transition of Storage', () => {
     host0ValidationInfo.operators = host0FlatValidation;
     cluster.hosts[0].validationsInfo = JSON.stringify(host0ValidationInfo);
     expect(canNextStorage({ cluster })).toBe(true);
+  });
+});
+
+describe('Disconnected wizard step ids', () => {
+  test('starts with the three base disconnected steps', () => {
+    expect(getDisconnectedWizardStepIds()).toEqual(disconnectedSteps);
+    expect(getDisconnectedWizardStepIds('dhcp-selected')).toEqual(disconnectedSteps);
+  });
+
+  test('inserts static IP form steps and removes them again for DHCP', () => {
+    const withStatic = getDisconnectedWizardStepIds(StaticIpView.FORM);
+    expect(withStatic).toEqual([
+      'disconnected-basic',
+      'disconnected-optional-configurations',
+      'static-ip-network-wide-configurations',
+      'static-ip-host-configurations',
+      'disconnected-review',
+    ]);
+    expect(getDisconnectedWizardStepIds('dhcp-selected')).toEqual(disconnectedSteps);
+  });
+
+  test('inserts the YAML static IP step', () => {
+    expect(getDisconnectedWizardStepIds(StaticIpView.YAML)).toEqual([
+      'disconnected-basic',
+      'disconnected-optional-configurations',
+      'static-ip-yaml-view',
+      'disconnected-review',
+    ]);
+  });
+});
+
+describe('Wizard nav visual numbers', () => {
+  test('numbers review as 3 when static IP steps are absent', () => {
+    const entries = getWizardNavEntries(disconnectedSteps);
+    expect(entries.map((entry) => [entry.stepId, entry.visualNumber])).toEqual([
+      ['disconnected-basic', 1],
+      ['disconnected-optional-configurations', 2],
+      ['disconnected-review', 3],
+    ]);
+  });
+
+  test('keeps a single number for form-view static IP and numbers review as 4', () => {
+    const entries = getWizardNavEntries(getDisconnectedWizardStepIds(StaticIpView.FORM));
+    expect(
+      entries.map((entry) => [entry.stepId, entry.visualNumber, entry.isStaticIpFormGroup]),
+    ).toEqual([
+      ['disconnected-basic', 1, false],
+      ['disconnected-optional-configurations', 2, false],
+      ['static-ip-network-wide-configurations', 3, true],
+      ['disconnected-review', 4, false],
+    ]);
   });
 });
