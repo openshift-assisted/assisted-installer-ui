@@ -19,7 +19,6 @@ import {
   getFormikErrorFields,
   ClusterWizardStep,
   ClusterWizardStepHeader,
-  TechnologyPreview,
   isInOcm,
   useTranslation,
 } from '../../../../../common';
@@ -184,7 +183,6 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                     <span>
                       {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
                     </span>
-                    <TechnologyPreview />
                   </Flex>
                 </GridItem>
               )}
