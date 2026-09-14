@@ -9,6 +9,7 @@ import { ClustersAPI } from '../services/apis';
 import { getApiErrorMessage, handleApiError } from '../../common/api';
 import { getErrorMessage } from '../../common/utils';
 import { ListManifestsExtended } from '../components/wizard/steps/customManifests/components/types';
+import { useFeature } from './use-feature';
 
 const { addAlert } = alertsSlice.actions;
 
@@ -51,22 +52,38 @@ const getManifestsInfo = async (customManifests: ListManifests, clusterId: strin
   return manifestsExtended;
 };
 
+// Temporary fix for OCPBUGS-121378: Do not show IRI custom manifests in the disconnected UI
+const iriManifestFileNames = new Set([
+  'internalreleaseimage.yaml',
+  'idms-oc-mirror-0.yaml',
+  'idms-oc-mirror-1.yaml',
+  'idms-oc-mirror-2.yaml',
+  'itms-oc-mirror-0.yaml',
+  'cs-redhat-operator-index-v4-22-0.yaml',
+  'operatorhub-cluster.yaml',
+]);
+
+const filterIriManifests = (manifests: ListManifests): ListManifests =>
+  manifests.filter((m) => !iriManifestFileNames.has(m.fileName || ''));
+
 export const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: boolean) => {
   const [customManifests, setCustomManifests] = React.useState<ListManifestsExtended>();
   const [error, setError] = React.useState('');
   const [extendedManifestsLoaded, setExtendedManifestsLoaded] = React.useState<boolean>(false);
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const fetchCustomManifests = React.useCallback(async () => {
     try {
       if (clusterId !== '') {
         const { data } = await ClustersAPI.getManifests(clusterId);
+        const filteredData = isSingleClusterFeatureEnabled ? filterIriManifests(data) : data;
         if (extendedVersion) {
-          await getManifestsInfo(data, clusterId).then((manifests) => {
+          await getManifestsInfo(filteredData, clusterId).then((manifests) => {
             setCustomManifests(manifests);
             setExtendedManifestsLoaded(true);
           });
         } else {
-          const manifestsExtended = data.map((manifest: Manifest) => ({
+          const manifestsExtended = filteredData.map((manifest: Manifest) => ({
             ...manifest,
             folder: manifest.folder || 'manifests',
             fileName: manifest.fileName || '',
@@ -85,7 +102,7 @@ export const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVers
         }),
       );
     }
-  }, [clusterId, extendedVersion]);
+  }, [clusterId, extendedVersion, isSingleClusterFeatureEnabled]);
 
   React.useEffect(() => {
     void fetchCustomManifests();
