@@ -53,18 +53,19 @@ const getManifestsInfo = async (customManifests: ListManifests, clusterId: strin
 };
 
 // Temporary fix for OCPBUGS-121378: Do not show IRI custom manifests in the disconnected UI
-const iriManifestFileNames = new Set([
-  'internalreleaseimage.yaml',
-  'idms-oc-mirror-0.yaml',
-  'idms-oc-mirror-1.yaml',
-  'idms-oc-mirror-2.yaml',
-  'itms-oc-mirror-0.yaml',
-  'cs-redhat-operator-index-v4-22-0.yaml',
-  'operatorhub-cluster.yaml',
-]);
+const iriManifestPatterns = [
+  /^idms-oc-mirror-.*\.yaml$/,
+  /^itms-oc-mirror-.*\.yaml$/,
+  /^cs-redhat-operator-index-.*\.yaml$/,
+  /^internalreleaseimage\.yaml$/,
+  /^operatorhub-cluster\.yaml$/,
+];
+
+const isIriManifest = (fileName: string): boolean =>
+  iriManifestPatterns.some((pattern) => pattern.test(fileName));
 
 const filterIriManifests = (manifests: ListManifests): ListManifests =>
-  manifests.filter((m) => !iriManifestFileNames.has(m.fileName || ''));
+  manifests.filter((m) => !isIriManifest(m.fileName || ''));
 
 export const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: boolean) => {
   const [customManifests, setCustomManifests] = React.useState<ListManifestsExtended>();
