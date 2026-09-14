@@ -10,7 +10,6 @@ import {
   getClusterDetailsValidationSchema,
   getRichTextValidation,
   useAlerts,
-  TechnologyPreview,
   OpenshiftVersionOptionType,
   getFormikErrorFields,
 } from '../../../common';
@@ -184,7 +183,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                     <span>
                       {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
                     </span>
-                    <TechnologyPreview />
                   </Flex>
                 </GridItem>
               )}
