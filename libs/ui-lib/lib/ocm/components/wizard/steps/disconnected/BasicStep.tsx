@@ -1,11 +1,6 @@
 import * as React from 'react';
 import { Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
-import {
-  ClusterWizardStep,
-  TechnologyPreview,
-  StaticTextField,
-  WithErrorBoundary,
-} from '../../../../../common';
+import { ClusterWizardStep, StaticTextField, WithErrorBoundary } from '../../../../../common';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
@@ -29,7 +24,6 @@ export const BasicStep = () => {
             <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
               <InstallDisconnectedSwitch />
               <span>I'm installing on a disconnected/air-gapped/secured environment</span>
-              <TechnologyPreview />
             </Flex>
           </GridItem>
           <GridItem>
