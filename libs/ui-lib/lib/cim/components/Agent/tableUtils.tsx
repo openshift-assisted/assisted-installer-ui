@@ -332,7 +332,7 @@ export const filterHosts = (
   return { hosts: byLabels, sorted };
 };
 
-const getAllLabels = (hosts: Host[]) => {
+const getAllLabels = (hosts: Host[]): Record<string, number> => {
   const labelArray = hosts
     .map((host) => {
       const labels = getHostLabels(host);
