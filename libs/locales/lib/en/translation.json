@@ -674,7 +674,7 @@
   "ai:Not ready": "Not ready",
   "ai:NTP server": "NTP server",
   "ai:NTP sources": "NTP sources",
-  "ai:NTP sources can be edited in Host's Infrastructure environment. After updating the NTP  sources, make sure to restart the host.": "NTP sources can be edited in Host's Infrastructure environment. After updating the NTP sources, restart the host.",
+  "ai:NTP sources can be edited in Host's Infrastructure environment. After updating the NTP sources, make sure to restart the host.": "NTP sources can be edited in Host's Infrastructure environment. After updating the NTP sources, make sure to restart the host.",
   "ai:NTP status": "NTP status",
   "ai:NTP synchronization": "NTP synchronization",
   "ai:NTP synchronization failure": "NTP synchronization failure",
