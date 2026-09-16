@@ -103,7 +103,7 @@ export const DisconnectedReviewStep = () => {
             </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>ISO size</DescriptionListTerm>
-              <DescriptionListDescription>approx. 50+GB</DescriptionListDescription>
+              <DescriptionListDescription>approx. 60+GB</DescriptionListDescription>
             </DescriptionListGroup>
           </DescriptionList>
         </Grid>

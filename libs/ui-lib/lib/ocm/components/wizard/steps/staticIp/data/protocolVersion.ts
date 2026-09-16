@@ -1,14 +1,12 @@
 import { Address4, Address6 } from 'ip-address';
 import { ProtocolVersion, StaticProtocolType } from './dataTypes';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const showIpv4 = (protocolType: StaticProtocolType) => {
-  //always true untill we allow only ipv6
-  return true;
+  return protocolType !== 'ipv6';
 };
 
 export const showIpv6 = (protocolType: StaticProtocolType) => {
-  return protocolType === 'dualStack';
+  return protocolType !== 'ipv4';
 };
 
 export const showProtocolVersion = (
@@ -22,9 +20,13 @@ export const showProtocolVersion = (
 };
 
 export const getShownProtocolVersions = (protocolType: StaticProtocolType): ProtocolVersion[] => {
-  return protocolType === 'dualStack'
-    ? [ProtocolVersion.ipv4, ProtocolVersion.ipv6]
-    : [ProtocolVersion.ipv4];
+  if (protocolType === 'dualStack') {
+    return [ProtocolVersion.ipv4, ProtocolVersion.ipv6];
+  }
+  if (protocolType === 'ipv6') {
+    return [ProtocolVersion.ipv6];
+  }
+  return [ProtocolVersion.ipv4];
 };
 
 export const getProtocolVersionLabel = (protocolVersion: ProtocolVersion) =>

@@ -15,6 +15,7 @@ import {
   HelperTextItem,
 } from '@patternfly/react-core';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
+import { Address4, Address6 } from 'ip-address';
 import { useField, useFormikContext } from 'formik';
 import {
   ConfirmationModal,
@@ -23,7 +24,12 @@ import {
   PopoverIcon,
   useFieldErrorMsg,
 } from '../../../../../../../common';
-import { OcmCheckboxField, OcmInputField, OcmRadioField } from '../../../../../ui/OcmFormFields';
+import {
+  OcmCheckboxField,
+  OcmInputField,
+  OcmRadio,
+  OcmRadioField,
+} from '../../../../../ui/OcmFormFields';
 import {
   getAddressObject,
   getProtocolVersionLabel,
@@ -43,6 +49,7 @@ import {
   MAX_VLAN_ID,
   MIN_VLAN_ID,
 } from './formViewNetworkWideValidationSchema';
+import { useClusterWizardContext } from '../../../../clusterWizardContext';
 
 import '../staticIp.css';
 
@@ -155,7 +162,7 @@ const ipv6ValuesEmpty = (values: FormViewNetworkWideValues) =>
   values.ipConfigs.ipv6.machineNetwork.ip === '' &&
   values.ipConfigs.ipv6.machineNetwork.prefixLength === '';
 
-export const ProtocolTypeSelect = () => {
+const ConnectedProtocolTypeSelect = () => {
   const selectFieldName = 'protocolType';
   const [{ value: protocolType }, , { setValue: setProtocolType }] =
     useField<StaticProtocolType>(selectFieldName);
@@ -171,7 +178,6 @@ export const ProtocolTypeSelect = () => {
     if (newProtocolType === 'ipv4' && !ipv6ValuesEmpty(values)) {
       setConfirmModal(true);
     } else {
-      //no need to empty ipv4, when switching back dual stack ipv4 remains as is
       setIpv6(getEmptyIpConfig());
       setProtocolType(newProtocolType);
     }
@@ -239,6 +245,7 @@ export const ProtocolTypeSelect = () => {
           }}
           onConfirm={() => {
             setConfirmModal(false);
+            setIpv6(getEmptyIpConfig());
             setProtocolType('ipv4');
           }}
         />
@@ -246,8 +253,164 @@ export const ProtocolTypeSelect = () => {
     </>
   );
 };
-export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
+
+const DisconnectedProtocolTypeSelect = () => {
+  const selectFieldName = 'protocolType';
+  const [{ value: protocolType }, , { setValue: setProtocolType }] =
+    useField<StaticProtocolType>(selectFieldName);
+  const [, , { setValue: setIpv6 }] = useField<IpConfig>(`ipConfigs.ipv6`);
+  const [openConfirmModal, setConfirmModal] = React.useState(false);
+  const { values } = useFormikContext<FormViewNetworkWideValues>();
+
+  const isDualStack = protocolType === 'dualStack';
+  const singleStackRadioId = getFieldId(selectFieldName, 'radio', 'singleStack');
+  const dualStackRadioId = getFieldId(selectFieldName, 'radio', 'dualStack');
+
+  const switchToSingleStack = () => {
+    if (protocolType !== 'dualStack') {
+      return;
+    }
+    if (!ipv6ValuesEmpty(values)) {
+      setConfirmModal(true);
+      return;
+    }
+    setIpv6(getEmptyIpConfig());
+    setProtocolType('ipv4');
+  };
+
+  const switchToDualStack = () => {
+    if (protocolType === 'dualStack') {
+      return;
+    }
+    setProtocolType('dualStack');
+  };
+
+  return (
+    <>
+      <FormGroup
+        fieldId={getFieldId(selectFieldName, 'radio')}
+        isInline
+        label="Networking stack type"
+        isRequired
+      >
+        <OcmRadio
+          id={singleStackRadioId}
+          name={`${selectFieldName}-stack-level`}
+          data-testid="select-single-stack"
+          label={
+            <>
+              {'Single stack\u00A0'}
+              <PopoverIcon
+                noVerticalAlign
+                bodyContent="Use either IPv4 or IPv6 for all network-wide and host addresses. The address family is determined from the subnet you enter below."
+              />
+            </>
+          }
+          isChecked={!isDualStack}
+          onChange={() => switchToSingleStack()}
+        />
+        <OcmRadio
+          id={dualStackRadioId}
+          name={`${selectFieldName}-stack-level`}
+          data-testid="select-dual-stack"
+          label={
+            <>
+              {'Dual-stack'}{' '}
+              <PopoverIcon
+                noVerticalAlign
+                bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
+              />
+            </>
+          }
+          isChecked={isDualStack}
+          onChange={() => switchToDualStack()}
+        />
+      </FormGroup>
+
+      {openConfirmModal && (
+        <ConfirmationModal
+          title={'Change networking stack type?'}
+          titleIconVariant={'warning'}
+          confirmationButtonText={'Change'}
+          confirmationButtonVariant={ButtonVariant.primary}
+          content={<p>All data and configuration done for &apos;Dual-stack&apos; will be lost.</p>}
+          onClose={() => setConfirmModal(false)}
+          onConfirm={() => {
+            setConfirmModal(false);
+            setIpv6(getEmptyIpConfig());
+            setProtocolType('ipv4');
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+const useDisconnectedSingleStackFamilyFromSubnet = () => {
+  const { installDisconnected } = useClusterWizardContext();
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
+
+  React.useEffect(() => {
+    if (!installDisconnected || values.protocolType === 'dualStack') {
+      return;
+    }
+    if (values.protocolType === 'ipv4') {
+      const ip = values.ipConfigs.ipv4.machineNetwork.ip;
+      if (ip && Address6.isValid(ip) && !Address4.isValid(ip)) {
+        setFieldValue('ipConfigs.ipv6', {
+          machineNetwork: { ...values.ipConfigs.ipv4.machineNetwork },
+          gateway: '',
+        });
+        setFieldValue('ipConfigs.ipv4', getEmptyIpConfig());
+        setFieldValue('dns', '');
+        setFieldValue('protocolType', 'ipv6');
+      }
+      return;
+    }
+    const ip = values.ipConfigs.ipv6.machineNetwork.ip;
+    if (ip && Address4.isValid(ip) && !Address6.isValid(ip)) {
+      setFieldValue('ipConfigs.ipv4', {
+        machineNetwork: { ...values.ipConfigs.ipv6.machineNetwork },
+        gateway: '',
+      });
+      setFieldValue('ipConfigs.ipv6', getEmptyIpConfig());
+      setFieldValue('dns', '');
+      setFieldValue('protocolType', 'ipv4');
+    }
+  }, [
+    installDisconnected,
+    setFieldValue,
+    values.protocolType,
+    values.ipConfigs.ipv4.gateway,
+    values.ipConfigs.ipv4.machineNetwork,
+    values.ipConfigs.ipv6.gateway,
+    values.ipConfigs.ipv6.machineNetwork,
+  ]);
+};
+
+export const ProtocolTypeSelect = () => {
+  const { installDisconnected } = useClusterWizardContext();
+  if (installDisconnected) {
+    return <DisconnectedProtocolTypeSelect />;
+  }
+  return <ConnectedProtocolTypeSelect />;
+};
+const getIpConfigSectionLabel = (
+  protocolVersion: ProtocolVersion,
+  protocolType: StaticProtocolType,
+  installDisconnected: boolean,
+): string => {
+  if (installDisconnected && protocolType !== 'dualStack') {
+    return 'Single stack';
+  }
+  return getProtocolVersionLabel(protocolVersion);
+};
+
+export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
+  const { installDisconnected } = useClusterWizardContext();
+  const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
+  useDisconnectedSingleStackFamilyFromSubnet();
+
   return (
     <>
       <Content>
@@ -300,7 +463,7 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
       {getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
         <FormGroup
           key={protocolVersion}
-          label={getProtocolVersionLabel(protocolVersion)}
+          label={getIpConfigSectionLabel(protocolVersion, values.protocolType, installDisconnected)}
           fieldId={getFieldId(`ip-configs-${protocolVersion}`, 'input')}
         >
           <IpConfigFields

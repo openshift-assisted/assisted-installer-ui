@@ -80,6 +80,11 @@ const getDNSValidationSchema = (protocolType: StaticProtocolType) => {
       .required(REQUIRED_MESSAGE)
       .concat(isNotReservedHostDNSAddress());
   }
+  if (protocolType === 'ipv6') {
+    return getMultipleIpAddressValidationSchema(ProtocolVersion.ipv6)
+      .required(REQUIRED_MESSAGE)
+      .concat(isNotReservedHostDNSAddress(ProtocolVersion.ipv6));
+  }
   return getMultipleIpAddressValidationSchema(ProtocolVersion.ipv4)
     .required(REQUIRED_MESSAGE)
     .concat(isNotReservedHostDNSAddress(ProtocolVersion.ipv4));
@@ -96,7 +101,9 @@ const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConf
 
 export const networkWideValidationSchema = Yup.lazy((values: FormViewNetworkWideValues) => {
   const ipConfigsValidationSchemas = Yup.object({
-    ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
+    ipv4: showProtocolVersion(values.protocolType, ProtocolVersion.ipv4)
+      ? getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4)
+      : Yup.object<IpConfig>(),
     ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
       ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
       : Yup.object<IpConfig>(),
