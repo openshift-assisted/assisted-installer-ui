@@ -65,7 +65,8 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     return featureSupportLevels;
   }, [featureSupportLevels]);
 
-  const isLoading = !supportLevelData || loadingOCPVersions || isInfraEnvLoading;
+  const isLoading =
+    (!!openshiftVersion && !featureSupportLevels) || loadingOCPVersions || isInfraEnvLoading;
 
   const activeFeatureConfiguration = React.useMemo<NewActiveFeatureConfiguration>(
     () => ({
