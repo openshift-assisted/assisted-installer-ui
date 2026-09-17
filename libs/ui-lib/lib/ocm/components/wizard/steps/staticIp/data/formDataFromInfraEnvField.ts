@@ -9,7 +9,7 @@ import {
   StaticProtocolType,
 } from './dataTypes';
 import {
-  getProtocolVersionIdx,
+  getRouteGateway,
   YAML_COMMENT_CHAR,
   getMachineNetworks,
   getProtocolType,
@@ -89,7 +89,11 @@ const getGateway = (nmstate: Nmstate, protocolVersion: ProtocolVersion): string 
   if (!routesConfig) {
     throw `Nmstate yaml doesn't contain routes section`;
   }
-  return routesConfig[getProtocolVersionIdx(protocolVersion)]['next-hop-address'];
+  const gateway = getRouteGateway(routesConfig, protocolVersion);
+  if (!gateway) {
+    throw `Nmstate yaml doesn't contain a route for protocol version ${protocolVersion}`;
+  }
+  return gateway;
 };
 
 const getNetworkWideConfigurations = (

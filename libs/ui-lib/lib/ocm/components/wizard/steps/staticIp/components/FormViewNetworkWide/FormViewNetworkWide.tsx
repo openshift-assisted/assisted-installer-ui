@@ -5,15 +5,20 @@ import {
   getFormViewNetworkWideValues,
   getEmptyNetworkWideConfigurations,
   networkWideToInfraEnvField,
+  disconnectedNetworkWideToInfraEnvField,
+  getDisconnectedFormViewNetworkWideValues,
   FormViewHost,
   FormViewNetworkWideValues,
 } from '../../data';
 import { StaticIpForm } from '../StaticIpForm';
 import { StaticIpFormProps, StaticIpViewProps } from '../propTypes';
 import { networkWideValidationSchema } from './formViewNetworkWideValidationSchema';
+import { disconnectedNetworkWideValidationSchema } from './disconnectedNetworkWideValidationSchema';
 import { FormViewNetworkWideFields } from './FormViewNetworkWideFields';
+import { useClusterWizardContext } from '../../../../clusterWizardContext';
 
 export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
+  const { installDisconnected } = useClusterWizardContext();
   const [formProps, setFormProps] = React.useState<StaticIpFormProps<FormViewNetworkWideValues>>();
   const [hosts, setHosts] = React.useState<FormViewHost[]>();
 
@@ -26,16 +31,22 @@ export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...
     setFormProps({
       infraEnv,
       ...props,
-      validationSchema: networkWideValidationSchema,
+      validationSchema: installDisconnected
+        ? disconnectedNetworkWideValidationSchema
+        : networkWideValidationSchema,
       getInitialValues: (infraEnv: InfraEnv) => {
-        return getFormViewNetworkWideValues(infraEnv);
+        return installDisconnected
+          ? getDisconnectedFormViewNetworkWideValues(infraEnv)
+          : getFormViewNetworkWideValues(infraEnv);
       },
       getUpdateParams: (currentInfraEnv: InfraEnv, values: FormViewNetworkWideValues) =>
-        networkWideToInfraEnvField(currentInfraEnv, values),
+        installDisconnected
+          ? disconnectedNetworkWideToInfraEnvField(currentInfraEnv, values)
+          : networkWideToInfraEnvField(currentInfraEnv, values),
       getEmptyValues: () => getEmptyNetworkWideConfigurations(),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [installDisconnected]);
   if (!hosts || !formProps) {
     return null;
   }
