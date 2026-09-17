@@ -33,7 +33,11 @@ import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
-import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
+import {
+  canonicalizeIp,
+  getHostIpsFromInfraEnv,
+  getStaticNetworkConfig,
+} from '../staticIp/data/fromInfraEnv';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -131,17 +135,27 @@ export const OptionalConfigurationsStep = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const defaultPullSecret = usePullSecret();
 
-  const validationSchema = React.useMemo(
-    () =>
-      Yup.object({
-        sshPublicKey: sshPublicKeyValidationSchema(t),
-        pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
-        rendezvousIp: Yup.string()
-          .max(45, 'IP address must be at most 45 characters')
-          .concat(ipValidationSchema(t)),
-      }),
-    [t],
-  );
+  const validationSchema = React.useMemo(() => {
+    const staticHostIps = getHostIpsFromInfraEnv(disconnectedInfraEnv);
+    return Yup.object({
+      sshPublicKey: sshPublicKeyValidationSchema(t),
+      pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
+      rendezvousIp: Yup.string()
+        .max(45, 'IP address must be at most 45 characters')
+        .concat(ipValidationSchema(t))
+        .test(
+          'rendezvous-ip-matches-static-ip',
+          'The rendezvous IP must match one of the defined static IPs',
+          (value) => {
+            if (!value || staticHostIps.length === 0) {
+              return true;
+            }
+            const canonicalValue = canonicalizeIp(value);
+            return staticHostIps.some((ip) => canonicalizeIp(ip) === canonicalValue);
+          },
+        ),
+    });
+  }, [t, disconnectedInfraEnv]);
 
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
