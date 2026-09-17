@@ -2,7 +2,8 @@ import * as Yup from 'yup';
 import { isInSubnet } from 'is-in-subnet';
 import { Address4, Address6 } from 'ip-address';
 import { getDuplicates } from '../../../../../common';
-import { getAddressObject, ProtocolVersion } from './data';
+import { ProtocolVersion } from './data/dataTypes';
+import { getAddressObject } from './data/protocolVersion';
 
 const RESERVED_IPS = ['127.0.0.0', '127.0.0.1', '0.0.0.0', '255.255.255.255'];
 

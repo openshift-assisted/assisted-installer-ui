@@ -4,13 +4,10 @@ import { FormViewNetworkWideValues, ProtocolVersion } from './dataTypes';
 import { getEmptyIpConfig } from './emptyData';
 import { getFormViewNetworkWideValues } from './fromInfraEnv';
 import { networkWideToInfraEnvField } from './formDataToInfraEnvField';
-import { detectProtocolVersionFromIp } from '../commonValidationSchemas';
 
 export const DISCONNECTED_SINGLE_STACK_FIELD = ProtocolVersion.ipv4;
 
 const isIpv6OnlyAddress = (ip: string): boolean => Address6.isValid(ip) && !Address4.isValid(ip);
-
-const isIpv4OnlyAddress = (ip: string): boolean => Address4.isValid(ip) && !Address6.isValid(ip);
 
 export const normalizeDisconnectedNetworkWideForLoad = (
   values: FormViewNetworkWideValues,
@@ -46,26 +43,14 @@ export const normalizeDisconnectedNetworkWideForSave = (
 
   const singleStackConfig = values.ipConfigs[DISCONNECTED_SINGLE_STACK_FIELD];
   const subnetIp = singleStackConfig.machineNetwork.ip;
-  const detectedFamily = detectProtocolVersionFromIp(subnetIp);
 
-  if (detectedFamily === ProtocolVersion.ipv6 || isIpv6OnlyAddress(subnetIp)) {
+  if (subnetIp && isIpv6OnlyAddress(subnetIp)) {
     return {
       ...values,
       protocolType: 'ipv6',
       ipConfigs: {
         ipv4: getEmptyIpConfig(),
         ipv6: { ...singleStackConfig },
-      },
-    };
-  }
-
-  if (detectedFamily === ProtocolVersion.ipv4 || isIpv4OnlyAddress(subnetIp) || !subnetIp) {
-    return {
-      ...values,
-      protocolType: 'ipv4',
-      ipConfigs: {
-        ipv4: { ...singleStackConfig },
-        ipv6: getEmptyIpConfig(),
       },
     };
   }
