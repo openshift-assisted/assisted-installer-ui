@@ -15,7 +15,6 @@ import {
   HelperTextItem,
 } from '@patternfly/react-core';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
-import { Address4, Address6 } from 'ip-address';
 import { useField, useFormikContext } from 'formik';
 import {
   ConfirmationModal,
@@ -42,7 +41,9 @@ import {
   ProtocolVersion,
   StaticProtocolType,
   getMachineNetworkCidr,
+  DISCONNECTED_SINGLE_STACK_FIELD,
 } from '../../data';
+import { detectProtocolVersionFromIp } from '../../commonValidationSchemas';
 import {
   MIN_PREFIX_LENGTH,
   MAX_PREFIX_LENGTH,
@@ -131,6 +132,92 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
         </FormHelperText>
       )}
     </FormGroup>
+  );
+};
+
+const SingleStackMachineNetwork: React.FC<{ fieldName: string }> = ({ fieldName }) => {
+  const [{ value }] = useField<Cidr>(fieldName);
+  const ipFieldName = `${fieldName}.ip`;
+  const prefixLengthFieldName = `${fieldName}.prefixLength`;
+  const ipErrorMessage = useFieldErrorMsg({ name: ipFieldName });
+  const prefixLengthErrorMessage = useFieldErrorMsg({ name: prefixLengthFieldName });
+  const errorMessage = ipErrorMessage || prefixLengthErrorMessage;
+  const protocolVersion = detectProtocolVersionFromIp(value.ip) ?? ProtocolVersion.ipv4;
+  const machineNetworkHelptext = React.useMemo(() => {
+    if (errorMessage) {
+      return '';
+    }
+    const cidr = getMachineNetworkCidr(value);
+    return getHumanizedSubnetRange(getAddressObject(cidr, protocolVersion));
+  }, [value, protocolVersion, errorMessage]);
+  const fieldId = getFieldId(`${fieldName}`, 'input');
+  return (
+    <FormGroup
+      labelHelp={
+        <PopoverIcon noVerticalAlign bodyContent="The range of IP addresses of the hosts." />
+      }
+      label="Subnet"
+      fieldId={fieldId}
+      isRequired
+      className="subnet"
+    >
+      <Flex>
+        <FlexItem spacer={{ default: 'spacerSm' }}>
+          <OcmInputField
+            name={`${fieldName}.ip`}
+            isRequired={true}
+            data-testid="single-stack-machine-network-ip"
+            showErrorMessage={false}
+          />
+        </FlexItem>
+        <FlexItem spacer={{ default: 'spacerSm' }}>{'/'}</FlexItem>
+        <FlexItem>
+          <OcmInputField
+            name={`${fieldName}.prefixLength`}
+            isRequired={true}
+            data-testid="single-stack-machine-network-prefix-length"
+            type={TextInputTypes.number}
+            showErrorMessage={false}
+            min={MIN_PREFIX_LENGTH}
+            max={MAX_PREFIX_LENGTH.ipv6}
+          />
+        </FlexItem>
+      </Flex>
+      {(errorMessage || machineNetworkHelptext) && (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              icon={errorMessage ? <ExclamationCircleIcon /> : null}
+              variant={errorMessage ? 'error' : 'default'}
+              id={errorMessage ? `${fieldId}-helper-error` : `${fieldId}-helper`}
+              data-testid={`input-machine-network-${fieldId}-helper-text`}
+            >
+              {errorMessage ? errorMessage : machineNetworkHelptext}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
+    </FormGroup>
+  );
+};
+
+const SingleStackIpConfigFields: React.FC<{ fieldName: string }> = ({ fieldName }) => {
+  return (
+    <Grid hasGutter>
+      <SingleStackMachineNetwork fieldName={`${fieldName}.machineNetwork`} />
+      <OcmInputField
+        isRequired
+        label="Default gateway"
+        labelIcon={
+          <PopoverIcon
+            noVerticalAlign
+            bodyContent="An IP address to where any IP packet should be forwarded in case there is no other routing rule configured for a destination IP."
+          />
+        }
+        name={`${fieldName}.gateway`}
+        data-testid="single-stack-gateway"
+      />
+    </Grid>
   );
 };
 
@@ -346,48 +433,6 @@ const DisconnectedProtocolTypeSelect = () => {
   );
 };
 
-const useDisconnectedSingleStackFamilyFromSubnet = () => {
-  const { installDisconnected } = useClusterWizardContext();
-  const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
-
-  React.useEffect(() => {
-    if (!installDisconnected || values.protocolType === 'dualStack') {
-      return;
-    }
-    if (values.protocolType === 'ipv4') {
-      const ip = values.ipConfigs.ipv4.machineNetwork.ip;
-      if (ip && Address6.isValid(ip) && !Address4.isValid(ip)) {
-        setFieldValue('ipConfigs.ipv6', {
-          machineNetwork: { ...values.ipConfigs.ipv4.machineNetwork },
-          gateway: '',
-        });
-        setFieldValue('ipConfigs.ipv4', getEmptyIpConfig());
-        setFieldValue('dns', '');
-        setFieldValue('protocolType', 'ipv6');
-      }
-      return;
-    }
-    const ip = values.ipConfigs.ipv6.machineNetwork.ip;
-    if (ip && Address4.isValid(ip) && !Address6.isValid(ip)) {
-      setFieldValue('ipConfigs.ipv4', {
-        machineNetwork: { ...values.ipConfigs.ipv6.machineNetwork },
-        gateway: '',
-      });
-      setFieldValue('ipConfigs.ipv6', getEmptyIpConfig());
-      setFieldValue('dns', '');
-      setFieldValue('protocolType', 'ipv4');
-    }
-  }, [
-    installDisconnected,
-    setFieldValue,
-    values.protocolType,
-    values.ipConfigs.ipv4.gateway,
-    values.ipConfigs.ipv4.machineNetwork,
-    values.ipConfigs.ipv6.gateway,
-    values.ipConfigs.ipv6.machineNetwork,
-  ]);
-};
-
 export const ProtocolTypeSelect = () => {
   const { installDisconnected } = useClusterWizardContext();
   if (installDisconnected) {
@@ -409,7 +454,7 @@ const getIpConfigSectionLabel = (
 export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
   const { installDisconnected } = useClusterWizardContext();
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
-  useDisconnectedSingleStackFamilyFromSubnet();
+  const isDisconnectedSingleStack = installDisconnected && values.protocolType !== 'dualStack';
 
   return (
     <>
@@ -460,18 +505,28 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
         helperText={'List of your DNS server addresses, separated by commas.'}
       />
 
-      {getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
-        <FormGroup
-          key={protocolVersion}
-          label={getIpConfigSectionLabel(protocolVersion, values.protocolType, installDisconnected)}
-          fieldId={getFieldId(`ip-configs-${protocolVersion}`, 'input')}
-        >
-          <IpConfigFields
-            fieldName={`ipConfigs.${protocolVersion}`}
-            protocolVersion={protocolVersion}
-          />
+      {isDisconnectedSingleStack ? (
+        <FormGroup label="Single stack" fieldId={getFieldId('ip-configs-single-stack', 'input')}>
+          <SingleStackIpConfigFields fieldName={`ipConfigs.${DISCONNECTED_SINGLE_STACK_FIELD}`} />
         </FormGroup>
-      ))}
+      ) : (
+        getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
+          <FormGroup
+            key={protocolVersion}
+            label={getIpConfigSectionLabel(
+              protocolVersion,
+              values.protocolType,
+              installDisconnected,
+            )}
+            fieldId={getFieldId(`ip-configs-${protocolVersion}`, 'input')}
+          >
+            <IpConfigFields
+              fieldName={`ipConfigs.${protocolVersion}`}
+              protocolVersion={protocolVersion}
+            />
+          </FormGroup>
+        ))
+      )}
     </>
   );
 };
