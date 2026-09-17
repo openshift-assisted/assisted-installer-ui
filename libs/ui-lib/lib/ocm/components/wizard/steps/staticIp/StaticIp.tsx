@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Alert, AlertVariant } from '@patternfly/react-core';
 
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
@@ -25,10 +26,11 @@ const getInitialFormStateProps = () => {
   };
 };
 
-export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
+export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster; crossStepError?: string }> = ({
   cluster,
   infraEnv,
   updateInfraEnv,
+  crossStepError,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -44,7 +46,11 @@ export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
   };
 
   const isNextDisabled =
-    formState.isAutoSaveRunning || !formState.isValid || !!alerts.length || formState.isSubmitting;
+    formState.isAutoSaveRunning ||
+    !formState.isValid ||
+    !!alerts.length ||
+    formState.isSubmitting ||
+    !!crossStepError;
   const errorFields = getFormikErrorFields<object>(formState.errors, formState.touched);
   const footer = (
     <ClusterWizardFooter
@@ -63,6 +69,7 @@ export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
   return (
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
       <WithErrorBoundary title="Failed to load Static IP step">
+        {crossStepError && <Alert variant={AlertVariant.danger} isInline title={crossStepError} />}
         <StaticIpPage {...{ infraEnv, updateInfraEnv, onFormStateChange }} />
       </WithErrorBoundary>
     </ClusterWizardStep>

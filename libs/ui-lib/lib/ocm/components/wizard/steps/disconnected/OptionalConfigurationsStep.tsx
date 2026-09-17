@@ -33,7 +33,11 @@ import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
-import { getHostIpsFromInfraEnv, getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
+import {
+  canonicalizeIp,
+  getHostIpsFromInfraEnv,
+  getStaticNetworkConfig,
+} from '../staticIp/data/fromInfraEnv';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -146,7 +150,8 @@ export const OptionalConfigurationsStep = () => {
             if (!value || staticHostIps.length === 0) {
               return true;
             }
-            return staticHostIps.includes(value);
+            const canonicalValue = canonicalizeIp(value);
+            return staticHostIps.some((ip) => canonicalizeIp(ip) === canonicalValue);
           },
         ),
     });

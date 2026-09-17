@@ -1,3 +1,4 @@
+import { Address6 } from 'ip-address';
 import {
   HostStaticNetworkConfig,
   InfraEnv,
@@ -99,6 +100,13 @@ export const getYamlViewValues = (infraEnv: InfraEnv): YamlViewValues => {
   return { hosts: staticNetworkConfig };
 };
 
+export const canonicalizeIp = (ip: string): string => {
+  if (Address6.isValid(ip)) {
+    return new Address6(ip).correctForm();
+  }
+  return ip;
+};
+
 const getIpsFromInterface = (networkInterface: NmstateInterface): string[] => {
   const ips: string[] = [];
   for (const protocolVersion of [ProtocolVersion.ipv4, ProtocolVersion.ipv6]) {
@@ -119,16 +127,13 @@ export const getHostIpsFromInfraEnv = (infraEnv: InfraEnv | undefined): string[]
     return [];
   }
   const staticNetworkConfig = getStaticNetworkConfig(infraEnv);
-  if (!staticNetworkConfig?.length || !staticNetworkConfig[0].networkYaml) {
-    return [];
-  }
-  if (isDummyYaml(staticNetworkConfig[0].networkYaml)) {
+  if (!staticNetworkConfig?.length) {
     return [];
   }
 
   const hostIps: string[] = [];
   for (const hostConfig of staticNetworkConfig) {
-    if (!hostConfig.networkYaml) {
+    if (!hostConfig.networkYaml || isDummyYaml(hostConfig.networkYaml)) {
       continue;
     }
     const nmstate = yamlToNmstateObject(hostConfig.networkYaml);
