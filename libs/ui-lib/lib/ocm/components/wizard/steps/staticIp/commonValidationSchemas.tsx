@@ -2,7 +2,8 @@ import * as Yup from 'yup';
 import { isInSubnet } from 'is-in-subnet';
 import { Address4, Address6 } from 'ip-address';
 import { getDuplicates } from '../../../../../common';
-import { getAddressObject, ProtocolVersion } from './data';
+import { ProtocolVersion } from './data/dataTypes';
+import { getAddressObject } from './data/protocolVersion';
 
 const RESERVED_IPS = ['127.0.0.0', '127.0.0.1', '0.0.0.0', '255.255.255.255'];
 
@@ -41,7 +42,7 @@ export const getUniqueValidationSchema = <FormValues,>(
   );
 };
 
-const isValidIPv4Address = (addressStr: string) => {
+export const isValidIPv4Address = (addressStr: string) => {
   try {
     // ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
     // Can't use Address4.isValid()
@@ -52,7 +53,7 @@ const isValidIPv4Address = (addressStr: string) => {
   }
 };
 
-const isValidIPv6Address = (addressStr: string) => {
+export const isValidIPv6Address = (addressStr: string) => {
   try {
     // ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
     // Can't use Address6.isValid()
@@ -85,6 +86,44 @@ const isReservedAddress = (addressStr: string, protocolVersion?: ProtocolVersion
   } catch (e) {
     return false;
   }
+};
+
+export const detectProtocolVersionFromIp = (ip?: string): ProtocolVersion | undefined => {
+  if (!ip) {
+    return undefined;
+  }
+  if (isValidIPv4Address(ip)) {
+    return ProtocolVersion.ipv4;
+  }
+  if (isValidIPv6Address(ip)) {
+    return ProtocolVersion.ipv6;
+  }
+  return undefined;
+};
+
+export const getFamilyAgnosticIpValidationSchema = () => {
+  return Yup.string().test(
+    'ipv4-or-ipv6',
+    'Value ${value} is not a valid IPv4 or IPv6 address',
+    (value?: string) => {
+      if (!value) {
+        return true;
+      }
+      return isValidIPv4Address(value) || isValidIPv6Address(value);
+    },
+  );
+};
+
+export const getDnsMatchingSubnetFamilyValidationSchema = (subnetIp: string) => {
+  const family = detectProtocolVersionFromIp(subnetIp);
+  if (!family) {
+    return getFamilyAgnosticIpValidationSchema()
+      .required('A value is required')
+      .concat(isNotReservedHostDNSAddress());
+  }
+  return getMultipleIpAddressValidationSchema(family)
+    .required('A value is required')
+    .concat(isNotReservedHostDNSAddress(family));
 };
 
 export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) => {

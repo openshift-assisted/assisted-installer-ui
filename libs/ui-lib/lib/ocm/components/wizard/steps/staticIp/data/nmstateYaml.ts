@@ -37,6 +37,19 @@ export const getProtocolVersionIdx = (protocolVersion: ProtocolVersion): number 
   return protocolVersion === ProtocolVersion.ipv4 ? 0 : 1;
 };
 
+export const getRouteGateway = (
+  routesConfig: NmstateRoutesConfig[],
+  protocolVersion: ProtocolVersion,
+): string => {
+  const route = routesConfig.find(
+    (config) => config.destination === ROUTE_DESTINATIONS[protocolVersion],
+  );
+  if (!route) {
+    return '';
+  }
+  return route['next-hop-address'];
+};
+
 export const yamlToNmstateObject = (yaml: string): Nmstate => {
   return load(yaml) as Nmstate;
 };
@@ -73,6 +86,9 @@ export const getProtocolType = (comments: string[]): StaticProtocolType | null =
   }
   if (machineNetworks[ProtocolVersion.ipv4]) {
     return 'ipv4';
+  }
+  if (machineNetworks[ProtocolVersion.ipv6]) {
+    return 'ipv6';
   }
   return null;
 };

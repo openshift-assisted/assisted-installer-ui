@@ -19,7 +19,7 @@ import {
 } from '../../commonValidationSchemas';
 
 const REQUIRED_MESSAGE = 'A value is required';
-const MUST_BE_A_NUMBER = 'Must be a number';
+export const MUST_BE_A_NUMBER = 'Must be a number';
 const ONLY_DIGITS_REGEX = /^\d+$/;
 
 export const MIN_PREFIX_LENGTH = 1;
@@ -68,7 +68,7 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
-const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
+export const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
   return getIpAddressValidationSchema(protocolVersion)
     .required(REQUIRED_MESSAGE)
     .concat(isNotReservedHostIPAddress(protocolVersion));
@@ -79,6 +79,11 @@ const getDNSValidationSchema = (protocolType: StaticProtocolType) => {
     return getMultipleIpAddressValidationSchema()
       .required(REQUIRED_MESSAGE)
       .concat(isNotReservedHostDNSAddress());
+  }
+  if (protocolType === 'ipv6') {
+    return getMultipleIpAddressValidationSchema(ProtocolVersion.ipv6)
+      .required(REQUIRED_MESSAGE)
+      .concat(isNotReservedHostDNSAddress(ProtocolVersion.ipv6));
   }
   return getMultipleIpAddressValidationSchema(ProtocolVersion.ipv4)
     .required(REQUIRED_MESSAGE)
@@ -94,9 +99,11 @@ const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConf
   });
 };
 
-export const networkWideValidationSchema = Yup.lazy((values: FormViewNetworkWideValues) => {
+export const buildNetworkWideValidationSchema = (values: FormViewNetworkWideValues) => {
   const ipConfigsValidationSchemas = Yup.object({
-    ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
+    ipv4: showProtocolVersion(values.protocolType, ProtocolVersion.ipv4)
+      ? getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4)
+      : Yup.object<IpConfig>(),
     ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
       ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
       : Yup.object<IpConfig>(),
@@ -119,7 +126,9 @@ export const networkWideValidationSchema = Yup.lazy((values: FormViewNetworkWide
     dns: getDNSValidationSchema(values.protocolType),
     ipConfigs: ipConfigsValidationSchemas,
   });
-});
+};
+
+export const networkWideValidationSchema = Yup.lazy(buildNetworkWideValidationSchema);
 
 export const validateNumber = (vlanId: FormViewNetworkWideValues['vlanId']) => {
   //We need to validate that value is a number(without letters) and is not an exponential number (ex: 1e2)
