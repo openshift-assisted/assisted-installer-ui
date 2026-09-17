@@ -7,6 +7,7 @@ import {
   NewFeatureSupportLevelProvider,
   NewClusterWizard,
   ModalDialogsContextProvider,
+  DISCONNECTED_OPENSHIFT_VERSION,
 } from '@openshift-assisted/ui-lib/ocm';
 import { Alert, PageSection } from '@patternfly/react-core';
 import { useNavigate } from 'react-router';
@@ -36,7 +37,10 @@ const CreateClusterWizard = () => {
       <ClusterWizardContextProvider>
         <ModalDialogsContextProvider>
           <OpenShiftVersionsContextProvider>
-            <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
+            <NewFeatureSupportLevelProvider
+              loadingUi={<ClusterLoading />}
+              openshiftVersion={DISCONNECTED_OPENSHIFT_VERSION}
+            >
               <NewClusterWizard />
               <ResetSingleClusterModal />
             </NewFeatureSupportLevelProvider>
