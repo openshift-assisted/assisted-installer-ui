@@ -55,6 +55,15 @@ const versions: Record<string, Version> = {
   },
 };
 
+const oveVersions = {
+  '4.21.27': {
+    cpu_architectures: [x86],
+    default: true,
+    display_name: '4.21.27',
+    support_level: 'production',
+  },
+};
+
 expect(
   Object.entries(versions).filter(([_, versionItem]) => versionItem.default === true),
 ).to.have.length(1);
@@ -67,6 +76,7 @@ const getDefaultOpenShiftVersion = (): string => '4.11';
 
 export {
   versions as openShiftVersions,
+  oveVersions,
   getExpectedVersionIds,
   getVersionWithNoArmSupport,
   getVersionWithArmSupport,
