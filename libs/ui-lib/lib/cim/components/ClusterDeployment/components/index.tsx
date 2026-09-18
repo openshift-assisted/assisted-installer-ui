@@ -1,2 +1,2 @@
-export * from './AdditionalNTPSourcesDialogToggle';
+export * from './CimNtpSyncFailureMessage';
 export * from './ClusterDeploymentHostsSelectionAdvanced';
