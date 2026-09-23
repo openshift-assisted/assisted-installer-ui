@@ -97,6 +97,38 @@ const ReviewStep = () => {
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
+            {disconnectedInfraEnv?.proxy?.httpProxy && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>HTTP proxy</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv.proxy.httpProxy}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+            {disconnectedInfraEnv?.proxy?.httpsProxy && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>HTTPS proxy</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv.proxy.httpsProxy}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+            {disconnectedInfraEnv?.proxy?.noProxy && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>No proxy</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv.proxy.noProxy}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+            {disconnectedInfraEnv?.ntpSources && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>NTP sources</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {disconnectedInfraEnv.ntpSources}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
             <DescriptionListGroup>
               <DescriptionListTerm>CPU architecture</DescriptionListTerm>
               <DescriptionListDescription>
