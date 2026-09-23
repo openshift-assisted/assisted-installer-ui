@@ -54,7 +54,7 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
   defaultPullSecret,
   isSubmitting,
 }) => {
-  const { moveBack } = useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const { isValid, submitForm, errors, touched } = useFormikContext<OptionalConfigurationsValues>();
   const errorFields = getFormikErrorFields(errors, touched);
 
@@ -85,7 +85,9 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 maxLength={45}
               />
               <UploadSSH />
-              {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
+              {!isInOcm && !disconnectedInfraEnv?.pullSecretSet && (
+                <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />
+              )}
               <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
             </Form>
           </GridItem>
