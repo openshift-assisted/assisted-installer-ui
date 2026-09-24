@@ -7,11 +7,25 @@ import {
   NewFeatureSupportLevelProvider,
   NewClusterWizard,
   ModalDialogsContextProvider,
-  DISCONNECTED_OPENSHIFT_VERSION,
+  useClusterWizardContext,
 } from '@openshift-assisted/ui-lib/ocm';
 import { Alert, PageSection } from '@patternfly/react-core';
 import { useNavigate } from 'react-router';
 import ResetSingleClusterModal from './ResetSingleClusterModal';
+
+const DisconnectedWizardContent = () => {
+  const { disconnectedOpenshiftVersion } = useClusterWizardContext();
+
+  return (
+    <NewFeatureSupportLevelProvider
+      loadingUi={<ClusterLoading />}
+      openshiftVersion={disconnectedOpenshiftVersion}
+    >
+      <NewClusterWizard />
+      <ResetSingleClusterModal />
+    </NewFeatureSupportLevelProvider>
+  );
+};
 
 const CreateClusterWizard = () => {
   const [clusterId, isLoading, error] = useCluster();
@@ -37,13 +51,7 @@ const CreateClusterWizard = () => {
       <ClusterWizardContextProvider>
         <ModalDialogsContextProvider>
           <OpenShiftVersionsContextProvider>
-            <NewFeatureSupportLevelProvider
-              loadingUi={<ClusterLoading />}
-              openshiftVersion={DISCONNECTED_OPENSHIFT_VERSION}
-            >
-              <NewClusterWizard />
-              <ResetSingleClusterModal />
-            </NewFeatureSupportLevelProvider>
+            <DisconnectedWizardContent />
           </OpenShiftVersionsContextProvider>
         </ModalDialogsContextProvider>
       </ClusterWizardContextProvider>

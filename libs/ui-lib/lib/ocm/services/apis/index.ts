@@ -1,6 +1,7 @@
 export {
   ManagedDomainsAPI,
   SupportedOpenshiftVersionsAPI,
+  OfflineOpenshiftVersionsAPI,
   ComponentVersionsAPI,
   ClustersAPI,
   HostsAPI,
