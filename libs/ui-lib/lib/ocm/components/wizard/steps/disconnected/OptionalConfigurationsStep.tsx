@@ -5,7 +5,6 @@ import { Alert, AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/
 import {
   InfraEnv,
   InfraEnvUpdateParams,
-  ImageType,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStep,
@@ -17,7 +16,6 @@ import {
   sshPublicKeyValidationSchema,
   pullSecretValidationSchema,
   InfraEnvsAPI,
-  ClustersAPI,
   handleApiError,
   getApiErrorMessage,
   useTranslation,
@@ -34,7 +32,6 @@ import {
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
 import {
@@ -42,9 +39,6 @@ import {
   getHostIpsFromInfraEnv,
   getStaticNetworkConfig,
 } from '../staticIp/data/fromInfraEnv';
-
-const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
-const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
 
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
@@ -145,12 +139,12 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
 
 const getStaticNetworkConfigUpdate = (
   hostsNetworkConfigurationType: HostsNetworkConfigurationType,
-  infraEnv: InfraEnv | undefined,
+  infraEnv: InfraEnv,
 ) => {
   if (hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP) {
     return [];
   }
-  if (!infraEnv?.staticNetworkConfig) {
+  if (!infraEnv.staticNetworkConfig) {
     return getDummyInfraEnvField();
   }
   return getStaticNetworkConfig(infraEnv) ?? getDummyInfraEnvField();
@@ -158,8 +152,9 @@ const getStaticNetworkConfigUpdate = (
 
 const buildInfraEnvUpdateParams = (
   values: OptionalConfigurationsValues,
-  disconnectedInfraEnv: InfraEnv | undefined,
+  disconnectedInfraEnv: InfraEnv,
   hostsNetworkConfigurationType: HostsNetworkConfigurationType,
+  pullSecretToUse: string,
 ): InfraEnvUpdateParams => ({
   sshAuthorizedKey: values.sshPublicKey,
   rendezvousIp: values.rendezvousIp,
@@ -173,18 +168,13 @@ const buildInfraEnvUpdateParams = (
     noProxy: values.noProxy,
   },
   ntpSources: values.enableNtpSources ? values.ntpSourcesList : '',
+  ...(!isInOcm && pullSecretToUse ? { pullSecret: pullSecretToUse } : {}),
 });
 
 export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
-  const {
-    moveNext,
-    disconnectedCluster,
-    setDisconnectedCluster,
-    disconnectedInfraEnv,
-    setDisconnectedInfraEnv,
-    hostsNetworkConfigurationType,
-  } = useClusterWizardContext();
+  const { moveNext, disconnectedInfraEnv, setDisconnectedInfraEnv, hostsNetworkConfigurationType } =
+    useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const defaultPullSecret = usePullSecret();
@@ -240,44 +230,21 @@ export const OptionalConfigurationsStep = () => {
       clearAlerts();
       setIsSubmitting(true);
       try {
-        const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
-        const isStatic = hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC;
-
-        let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
-
-        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
-          const { data: cluster } = await ClustersAPI.registerDisconnected({
-            name: DISCONNECTED_CLUSTER_NAME,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
-          });
-          setDisconnectedCluster(cluster);
-
-          const { data: createdInfraEnv } = await InfraEnvsAPI.register({
-            name: 'disconnected-infra-env',
-            pullSecret: pullSecretToUse,
-            clusterId: cluster.id,
-            imageType: DISCONNECTED_IMAGE_TYPE,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
-            sshAuthorizedKey: values.sshPublicKey || undefined,
-            rendezvousIp: values.rendezvousIp || undefined,
-            staticNetworkConfig: isStatic ? getDummyInfraEnvField() : undefined,
-            proxy: {
-              httpProxy: values.httpProxy || undefined,
-              httpsProxy: values.httpsProxy || undefined,
-              noProxy: values.noProxy || undefined,
-            },
-            ntpSources: values.enableNtpSources ? values.ntpSourcesList : undefined,
-          });
-          infraEnvToUse = createdInfraEnv;
-        } else {
-          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvToUse.id, {
-            ...buildInfraEnvUpdateParams(values, infraEnvToUse, hostsNetworkConfigurationType),
-            ...(!isInOcm && pullSecretToUse ? { pullSecret: pullSecretToUse } : {}),
-          });
-          infraEnvToUse = updatedInfraEnv;
+        if (!disconnectedInfraEnv?.id) {
+          throw new Error('No disconnected infraEnv available');
         }
 
-        setDisconnectedInfraEnv(infraEnvToUse);
+        const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
+        const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
+          disconnectedInfraEnv.id,
+          buildInfraEnvUpdateParams(
+            values,
+            disconnectedInfraEnv,
+            hostsNetworkConfigurationType,
+            pullSecretToUse,
+          ),
+        );
+        setDisconnectedInfraEnv(updatedInfraEnv);
         moveNext();
       } catch (error) {
         handleApiError(error, () => {
@@ -294,10 +261,8 @@ export const OptionalConfigurationsStep = () => {
     [
       clearAlerts,
       defaultPullSecret,
-      disconnectedCluster,
       disconnectedInfraEnv,
       hostsNetworkConfigurationType,
-      setDisconnectedCluster,
       setDisconnectedInfraEnv,
       addAlert,
       moveNext,

@@ -95,42 +95,35 @@ export const BasicStep = () => {
       try {
         const isStatic =
           values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC;
+        let infraEnvToUse = disconnectedInfraEnv;
 
-        // Static IP steps need an infraEnv before navigation; DHCP creates it on Optional.
-        if (isStatic) {
-          let infraEnvToUse = disconnectedInfraEnv;
-
-          if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
-            const { data: cluster } = await ClustersAPI.registerDisconnected({
-              name: DISCONNECTED_CLUSTER_NAME,
-              openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
-            });
-            setDisconnectedCluster(cluster);
-
-            const { data: createdInfraEnv } = await InfraEnvsAPI.register({
-              name: 'disconnected-infra-env',
-              pullSecret: defaultPullSecret ?? '',
-              clusterId: cluster.id,
-              imageType: DISCONNECTED_IMAGE_TYPE,
-              openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
-              staticNetworkConfig: getDummyInfraEnvField(),
-            });
-            infraEnvToUse = createdInfraEnv;
-          } else if (!getStaticNetworkConfig(infraEnvToUse)) {
-            const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvToUse.id, {
-              staticNetworkConfig: getDummyInfraEnvField(),
-            });
-            infraEnvToUse = updatedInfraEnv;
-          }
-
-          setDisconnectedInfraEnv(infraEnvToUse);
-        } else if (disconnectedInfraEnv?.id && disconnectedInfraEnv.staticNetworkConfig) {
-          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, {
-            staticNetworkConfig: [],
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
+          const { data: cluster } = await ClustersAPI.registerDisconnected({
+            name: DISCONNECTED_CLUSTER_NAME,
+            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
           });
-          setDisconnectedInfraEnv(updatedInfraEnv);
+          setDisconnectedCluster(cluster);
+
+          const { data: createdInfraEnv } = await InfraEnvsAPI.register({
+            name: 'disconnected-infra-env',
+            pullSecret: defaultPullSecret ?? '',
+            clusterId: cluster.id,
+            imageType: DISCONNECTED_IMAGE_TYPE,
+            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            staticNetworkConfig: isStatic ? getDummyInfraEnvField() : undefined,
+          });
+          infraEnvToUse = createdInfraEnv;
+        } else {
+          const staticNetworkConfig = isStatic
+            ? getStaticNetworkConfig(infraEnvToUse) ?? getDummyInfraEnvField()
+            : [];
+          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvToUse.id, {
+            staticNetworkConfig,
+          });
+          infraEnvToUse = updatedInfraEnv;
         }
 
+        setDisconnectedInfraEnv(infraEnvToUse);
         moveNext();
       } catch (error) {
         handleApiError(error, () => {
