@@ -42,8 +42,6 @@ export const ClusterWizardContextProvider = ({
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
   const [disconnectedCluster, setDisconnectedCluster] = React.useState<Cluster | undefined>();
   const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>();
-  const [hostsNetworkConfigurationType, setHostsNetworkConfigurationType] =
-    React.useState<HostsNetworkConfigurationType>(HostsNetworkConfigurationType.DHCP);
   const [disconnectedWizardStepIds, setDisconnectedWizardStepIds] =
     React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const location = useLocation();
@@ -173,7 +171,6 @@ export const ClusterWizardContextProvider = ({
         }
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
-        setHostsNetworkConfigurationType(type);
         if (installDisconnected) {
           if (type === HostsNetworkConfigurationType.STATIC) {
             const staticIpInfo = disconnectedInfraEnv
@@ -196,7 +193,6 @@ export const ClusterWizardContextProvider = ({
           }
         }
       },
-      hostsNetworkConfigurationType,
       wizardStepIds: wizardStepIds,
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
@@ -208,7 +204,6 @@ export const ClusterWizardContextProvider = ({
       setInstallDisconnected: (enabled: boolean) => {
         setInstallDisconnected(enabled);
         if (enabled) {
-          setHostsNetworkConfigurationType(HostsNetworkConfigurationType.DHCP);
           setDisconnectedWizardStepIds(disconnectedSteps);
           onSetCurrentStepId(disconnectedSteps[0]);
         } else {
@@ -234,7 +229,6 @@ export const ClusterWizardContextProvider = ({
     disconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
-    hostsNetworkConfigurationType,
   ]);
 
   if (!contextValue) {

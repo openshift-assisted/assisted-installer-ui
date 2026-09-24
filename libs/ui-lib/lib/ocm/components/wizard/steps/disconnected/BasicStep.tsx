@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
 import { AlertVariant, Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
 import { ImageType } from '@openshift-assisted/types/assisted-installer-service';
@@ -11,6 +12,11 @@ import {
   InfraEnvsAPI,
   handleApiError,
   getApiErrorMessage,
+  isInOcm,
+  PullSecret,
+  pullSecretValidationSchema,
+  useTranslation,
+  getFormikErrorFields,
 } from '../../../../../common';
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
@@ -28,10 +34,15 @@ const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
 
 type BasicStepValues = {
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
+  pullSecret: string;
 };
 
-const BasicStepForm: React.FC<{ isSubmitting: boolean }> = ({ isSubmitting }) => {
-  const { submitForm } = useFormikContext<BasicStepValues>();
+const BasicStepForm: React.FC<{
+  isSubmitting: boolean;
+  defaultPullSecret?: string;
+}> = ({ isSubmitting, defaultPullSecret }) => {
+  const { submitForm, isValid, errors, touched } = useFormikContext<BasicStepValues>();
+  const errorFields = getFormikErrorFields(errors, touched);
 
   return (
     <ClusterWizardStep
@@ -40,7 +51,8 @@ const BasicStepForm: React.FC<{ isSubmitting: boolean }> = ({ isSubmitting }) =>
         <ClusterWizardFooter
           onNext={() => void submitForm()}
           isSubmitting={isSubmitting}
-          isNextDisabled={isSubmitting}
+          isNextDisabled={!isValid || isSubmitting}
+          errorFields={errorFields}
         />
       }
     >
@@ -63,6 +75,7 @@ const BasicStepForm: React.FC<{ isSubmitting: boolean }> = ({ isSubmitting }) =>
                 x86_64
               </StaticTextField>
               <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
+              {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
             </Form>
           </GridItem>
         </Grid>
@@ -72,9 +85,9 @@ const BasicStepForm: React.FC<{ isSubmitting: boolean }> = ({ isSubmitting }) =>
 };
 
 export const BasicStep = () => {
+  const { t } = useTranslation();
   const {
     moveNext,
-    hostsNetworkConfigurationType,
     disconnectedCluster,
     setDisconnectedCluster,
     disconnectedInfraEnv,
@@ -84,8 +97,19 @@ export const BasicStep = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const defaultPullSecret = usePullSecret();
 
+  const validationSchema = React.useMemo(
+    () =>
+      Yup.object({
+        pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
+      }),
+    [t],
+  );
+
   const initialValues: BasicStepValues = {
-    hostsNetworkConfigurationType,
+    hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
+      ? HostsNetworkConfigurationType.STATIC
+      : HostsNetworkConfigurationType.DHCP,
+    pullSecret: defaultPullSecret ?? '',
   };
 
   const handleNext = React.useCallback(
@@ -104,9 +128,10 @@ export const BasicStep = () => {
           });
           setDisconnectedCluster(cluster);
 
+          const pullSecret = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
           const { data: createdInfraEnv } = await InfraEnvsAPI.register({
             name: 'disconnected-infra-env',
-            pullSecret: defaultPullSecret ?? '',
+            pullSecret,
             clusterId: cluster.id,
             imageType: DISCONNECTED_IMAGE_TYPE,
             openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
@@ -152,10 +177,10 @@ export const BasicStep = () => {
   return (
     <Formik<BasicStepValues>
       initialValues={initialValues}
+      validationSchema={validationSchema}
       onSubmit={(values) => void handleNext(values)}
-      enableReinitialize
     >
-      <BasicStepForm isSubmitting={isSubmitting} />
+      <BasicStepForm isSubmitting={isSubmitting} defaultPullSecret={defaultPullSecret} />
     </Formik>
   );
 };

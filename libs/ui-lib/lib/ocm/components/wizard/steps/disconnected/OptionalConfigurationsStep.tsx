@@ -10,11 +10,8 @@ import {
   ClusterWizardStep,
   WithErrorBoundary,
   UploadSSH,
-  isInOcm,
-  PullSecret,
   useAlerts,
   sshPublicKeyValidationSchema,
-  pullSecretValidationSchema,
   InfraEnvsAPI,
   handleApiError,
   getApiErrorMessage,
@@ -29,10 +26,8 @@ import {
   ProxyFields,
   NtpSourcesFields,
 } from '../../../../../common';
-import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
 import {
   canonicalizeIp,
@@ -42,7 +37,6 @@ import {
 
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
-  pullSecret: string;
   rendezvousIp: string;
   enableProxy: boolean;
   httpProxy: string;
@@ -53,7 +47,6 @@ type OptionalConfigurationsValues = {
 };
 
 type OptionalConfigurationsFormProps = {
-  defaultPullSecret?: string;
   isSubmitting: boolean;
 };
 
@@ -73,17 +66,15 @@ const isRendezvousIpInStaticHostList = (
 };
 
 const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
-  defaultPullSecret,
   isSubmitting,
 }) => {
-  const { moveBack, disconnectedInfraEnv, hostsNetworkConfigurationType } =
-    useClusterWizardContext();
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const { isValid, submitForm, errors, touched, values } =
     useFormikContext<OptionalConfigurationsValues>();
   const errorFields = getFormikErrorFields(errors, touched);
 
   const showRendezvousIpMismatchWarning =
-    hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC &&
+    !!disconnectedInfraEnv?.staticNetworkConfig &&
     !!values.rendezvousIp.trim() &&
     !isRendezvousIpInStaticHostList(values.rendezvousIp, disconnectedInfraEnv);
 
@@ -124,9 +115,6 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 </Alert>
               )}
               <UploadSSH />
-              {!isInOcm && !disconnectedInfraEnv?.pullSecretSet && (
-                <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />
-              )}
               <ProxyFields />
               <NtpSourcesFields />
             </Form>
@@ -137,15 +125,9 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
   );
 };
 
-const getStaticNetworkConfigUpdate = (
-  hostsNetworkConfigurationType: HostsNetworkConfigurationType,
-  infraEnv: InfraEnv,
-) => {
-  if (hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP) {
-    return [];
-  }
+const getStaticNetworkConfigUpdate = (infraEnv: InfraEnv) => {
   if (!infraEnv.staticNetworkConfig) {
-    return getDummyInfraEnvField();
+    return [];
   }
   return getStaticNetworkConfig(infraEnv) ?? getDummyInfraEnvField();
 };
@@ -153,38 +135,29 @@ const getStaticNetworkConfigUpdate = (
 const buildInfraEnvUpdateParams = (
   values: OptionalConfigurationsValues,
   disconnectedInfraEnv: InfraEnv,
-  hostsNetworkConfigurationType: HostsNetworkConfigurationType,
-  pullSecretToUse: string,
 ): InfraEnvUpdateParams => ({
   sshAuthorizedKey: values.sshPublicKey,
   rendezvousIp: values.rendezvousIp,
-  staticNetworkConfig: getStaticNetworkConfigUpdate(
-    hostsNetworkConfigurationType,
-    disconnectedInfraEnv,
-  ),
+  staticNetworkConfig: getStaticNetworkConfigUpdate(disconnectedInfraEnv),
   proxy: {
     httpProxy: values.httpProxy,
     httpsProxy: values.httpsProxy,
     noProxy: values.noProxy,
   },
   ntpSources: values.enableNtpSources ? values.ntpSourcesList : '',
-  ...(!isInOcm && pullSecretToUse ? { pullSecret: pullSecretToUse } : {}),
 });
 
 export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
-  const { moveNext, disconnectedInfraEnv, setDisconnectedInfraEnv, hostsNetworkConfigurationType } =
-    useClusterWizardContext();
+  const { moveNext, disconnectedInfraEnv, setDisconnectedInfraEnv } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const defaultPullSecret = usePullSecret();
 
   const validationSchema = React.useMemo(
     () =>
       Yup.lazy((values: OptionalConfigurationsValues) =>
         Yup.object({
           sshPublicKey: sshPublicKeyValidationSchema(t),
-          pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
           rendezvousIp: Yup.string()
             .max(45, 'IP address must be at most 45 characters')
             .concat(ipValidationSchema(t)),
@@ -211,7 +184,6 @@ export const OptionalConfigurationsStep = () => {
 
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
-    pullSecret: defaultPullSecret ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
     enableProxy: !!(
       disconnectedInfraEnv?.proxy?.httpProxy ||
@@ -234,15 +206,9 @@ export const OptionalConfigurationsStep = () => {
           throw new Error('No disconnected infraEnv available');
         }
 
-        const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
         const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
           disconnectedInfraEnv.id,
-          buildInfraEnvUpdateParams(
-            values,
-            disconnectedInfraEnv,
-            hostsNetworkConfigurationType,
-            pullSecretToUse,
-          ),
+          buildInfraEnvUpdateParams(values, disconnectedInfraEnv),
         );
         setDisconnectedInfraEnv(updatedInfraEnv);
         moveNext();
@@ -258,15 +224,7 @@ export const OptionalConfigurationsStep = () => {
         setIsSubmitting(false);
       }
     },
-    [
-      clearAlerts,
-      defaultPullSecret,
-      disconnectedInfraEnv,
-      hostsNetworkConfigurationType,
-      setDisconnectedInfraEnv,
-      addAlert,
-      moveNext,
-    ],
+    [clearAlerts, disconnectedInfraEnv, setDisconnectedInfraEnv, addAlert, moveNext],
   );
 
   return (
@@ -274,12 +232,8 @@ export const OptionalConfigurationsStep = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => void handleNext(values)}
-      enableReinitialize
     >
-      <OptionalConfigurationsForm
-        defaultPullSecret={defaultPullSecret}
-        isSubmitting={isSubmitting}
-      />
+      <OptionalConfigurationsForm isSubmitting={isSubmitting} />
     </Formik>
   );
 };
