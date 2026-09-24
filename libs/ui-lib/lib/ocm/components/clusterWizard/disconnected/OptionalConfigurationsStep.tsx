@@ -22,6 +22,12 @@ import {
   InputField,
   ipValidationSchema,
   getFormikErrorFields,
+  httpProxyValidationSchema,
+  httpsProxyValidationSchema,
+  noProxyValidationSchema,
+  ntpSourceValidationSchema,
+  ProxyFields,
+  NtpSourcesFields,
 } from '../../../../common';
 import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useClusterWizardContext } from '../ClusterWizardContext';
@@ -43,6 +49,12 @@ type OptionalConfigurationsValues = {
   pullSecret: string;
   rendezvousIp: string;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
+  enableProxy: boolean;
+  httpProxy: string;
+  httpsProxy: string;
+  noProxy: string;
+  enableNtpSources: boolean;
+  ntpSourcesList: string;
 };
 
 type OptionalConfigurationsFormProps = {
@@ -86,6 +98,8 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
               />
               <UploadSSH />
               {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
+              <ProxyFields />
+              <NtpSourcesFields />
               <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
             </Form>
           </GridItem>
@@ -116,6 +130,12 @@ const buildInfraEnvUpdateParams = (
   sshAuthorizedKey: values.sshPublicKey,
   rendezvousIp: values.rendezvousIp,
   staticNetworkConfig: getStaticNetworkConfigUpdate(values, disconnectedInfraEnv),
+  proxy: {
+    httpProxy: values.httpProxy,
+    httpsProxy: values.httpsProxy,
+    noProxy: values.noProxy,
+  },
+  ntpSources: values.enableNtpSources ? values.ntpSourcesList : '',
 });
 
 const OptionalConfigurationsStep = () => {
@@ -133,13 +153,31 @@ const OptionalConfigurationsStep = () => {
 
   const validationSchema = React.useMemo(
     () =>
-      Yup.object({
-        sshPublicKey: sshPublicKeyValidationSchema(t),
-        pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
-        rendezvousIp: Yup.string()
-          .max(45, 'IP address must be at most 45 characters')
-          .concat(ipValidationSchema(t)),
-      }),
+      Yup.lazy((values: OptionalConfigurationsValues) =>
+        Yup.object({
+          sshPublicKey: sshPublicKeyValidationSchema(t),
+          pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
+          rendezvousIp: Yup.string()
+            .max(45, 'IP address must be at most 45 characters')
+            .concat(ipValidationSchema(t)),
+          httpProxy: httpProxyValidationSchema({
+            values,
+            pairValueName: 'httpsProxy',
+            allowEmpty: true,
+            t,
+          }),
+          httpsProxy: httpsProxyValidationSchema({
+            values,
+            pairValueName: 'httpProxy',
+            allowEmpty: true,
+            t,
+          }),
+          noProxy: noProxyValidationSchema(t),
+          ntpSourcesList: values.enableNtpSources
+            ? ntpSourceValidationSchema(t, false)
+            : ntpSourceValidationSchema(t),
+        }),
+      ),
     [t],
   );
 
@@ -150,6 +188,16 @@ const OptionalConfigurationsStep = () => {
     hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
+    enableProxy: !!(
+      disconnectedInfraEnv?.proxy?.httpProxy ||
+      disconnectedInfraEnv?.proxy?.httpsProxy ||
+      disconnectedInfraEnv?.proxy?.noProxy
+    ),
+    httpProxy: disconnectedInfraEnv?.proxy?.httpProxy ?? '',
+    httpsProxy: disconnectedInfraEnv?.proxy?.httpsProxy ?? '',
+    noProxy: disconnectedInfraEnv?.proxy?.noProxy ?? '',
+    enableNtpSources: !!disconnectedInfraEnv?.ntpSources?.trim(),
+    ntpSourcesList: disconnectedInfraEnv?.ntpSources ?? '',
   };
 
   const handleNext = React.useCallback(
@@ -180,6 +228,12 @@ const OptionalConfigurationsStep = () => {
               values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
                 ? getDummyInfraEnvField()
                 : undefined,
+            proxy: {
+              httpProxy: values.httpProxy || undefined,
+              httpsProxy: values.httpsProxy || undefined,
+              noProxy: values.noProxy || undefined,
+            },
+            ntpSources: values.enableNtpSources ? values.ntpSourcesList : undefined,
           });
           infraEnvToUse = createdInfraEnv;
         } else {
