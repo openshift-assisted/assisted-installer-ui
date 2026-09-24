@@ -13,6 +13,7 @@ export type ClusterWizardContextType = {
   wizardStepIds: ClusterWizardStepsType[];
   onUpdateStaticIpView(view: StaticIpView): void;
   onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
+  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
   wizardPerPage: number;
   setWizardPerPage: (perPage: number) => void;
   updateUISettings: (data: UISettingsValues) => Promise<void>;

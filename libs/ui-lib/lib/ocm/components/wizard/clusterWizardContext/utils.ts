@@ -60,12 +60,10 @@ export const getDisconnectedWizardStepIds = (
   const copy = [...disconnectedSteps];
 
   if (staticIpView === StaticIpView.YAML) {
-    return addStepToClusterWizard(copy, 'disconnected-optional-configurations', [
-      'static-ip-yaml-view',
-    ]);
+    return addStepToClusterWizard(copy, 'disconnected-basic', ['static-ip-yaml-view']);
   }
   if (staticIpView === StaticIpView.FORM) {
-    return addStepToClusterWizard(copy, 'disconnected-optional-configurations', [
+    return addStepToClusterWizard(copy, 'disconnected-basic', [
       'static-ip-network-wide-configurations',
       'static-ip-host-configurations',
     ]);
