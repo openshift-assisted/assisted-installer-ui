@@ -20,8 +20,6 @@ import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
 
-export const DISCONNECTED_BASE_VERSION = '4.22';
-
 type BasicStepValues = {
   openshiftVersion: string;
 };
@@ -145,7 +143,7 @@ export const BasicStep = () => {
       setLoading(true);
       setError(undefined);
       try {
-        const { data } = await OfflineOpenshiftVersionsAPI.list(DISCONNECTED_BASE_VERSION);
+        const { data } = await OfflineOpenshiftVersionsAPI.list();
         const mappedVersions = mapOfflineVersions(data);
         setVersions(mappedVersions);
         if (mappedVersions.length === 0) {
