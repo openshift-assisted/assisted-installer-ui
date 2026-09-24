@@ -1,24 +1,18 @@
 import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
-import { AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
+import { Alert, AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
 import {
-  HostStaticNetworkConfig,
   InfraEnv,
   InfraEnvUpdateParams,
-  ImageType,
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStep,
   WithErrorBoundary,
   UploadSSH,
-  isInOcm,
-  PullSecret,
   useAlerts,
   sshPublicKeyValidationSchema,
-  pullSecretValidationSchema,
   InfraEnvsAPI,
-  ClustersAPI,
   handleApiError,
   getApiErrorMessage,
   useTranslation,
@@ -32,23 +26,18 @@ import {
   ProxyFields,
   NtpSourcesFields,
 } from '../../../../../common';
-import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
-import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
-import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
-import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
-
-const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
-const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
+import {
+  canonicalizeIp,
+  getHostIpsFromInfraEnv,
+  getStaticNetworkConfig,
+} from '../staticIp/data/fromInfraEnv';
 
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
-  pullSecret: string;
   rendezvousIp: string;
-  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
   enableProxy: boolean;
   httpProxy: string;
   httpsProxy: string;
@@ -58,17 +47,36 @@ type OptionalConfigurationsValues = {
 };
 
 type OptionalConfigurationsFormProps = {
-  defaultPullSecret?: string;
   isSubmitting: boolean;
 };
 
+const isRendezvousIpInStaticHostList = (
+  rendezvousIp: string | undefined,
+  infraEnv: InfraEnv | undefined,
+): boolean => {
+  if (!rendezvousIp?.trim()) {
+    return true;
+  }
+  const staticHostIps = getHostIpsFromInfraEnv(infraEnv);
+  if (!staticHostIps.length) {
+    return true;
+  }
+  const canonicalRendezvousIp = canonicalizeIp(rendezvousIp.trim());
+  return staticHostIps.some((ip) => canonicalizeIp(ip) === canonicalRendezvousIp);
+};
+
 const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
-  defaultPullSecret,
   isSubmitting,
 }) => {
   const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
-  const { isValid, submitForm, errors, touched } = useFormikContext<OptionalConfigurationsValues>();
+  const { isValid, submitForm, errors, touched, values } =
+    useFormikContext<OptionalConfigurationsValues>();
   const errorFields = getFormikErrorFields(errors, touched);
+
+  const showRendezvousIpMismatchWarning =
+    !!disconnectedInfraEnv?.staticNetworkConfig &&
+    !!values.rendezvousIp.trim() &&
+    !isRendezvousIpInStaticHostList(values.rendezvousIp, disconnectedInfraEnv);
 
   return (
     <ClusterWizardStep
@@ -96,13 +104,19 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 helperText="The IP address that hosts will use to communicate with the bootstrap node during installation."
                 maxLength={45}
               />
-              <UploadSSH />
-              {!isInOcm && !disconnectedInfraEnv?.pullSecretSet && (
-                <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />
+              {showRendezvousIpMismatchWarning && (
+                <Alert
+                  isInline
+                  variant="warning"
+                  title="Rendezvous IP does not match a configured static IP"
+                >
+                  The rendezvous IP does not match any of the configured static IP addresses. The
+                  installation may fail if the rendezvous IP is unreachable.
+                </Alert>
               )}
+              <UploadSSH />
               <ProxyFields />
               <NtpSourcesFields />
-              <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
             </Form>
           </GridItem>
         </Grid>
@@ -111,27 +125,20 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
   );
 };
 
-const getStaticNetworkConfigUpdate = (
-  values: OptionalConfigurationsValues,
-  infraEnv: InfraEnv | undefined,
-): HostStaticNetworkConfig[] => {
-  if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP) {
+const getStaticNetworkConfigUpdate = (infraEnv: InfraEnv) => {
+  if (!infraEnv.staticNetworkConfig) {
     return [];
-  }
-  // Static IP selected — resend existing config, or seed with dummy if none exists yet.
-  if (!infraEnv?.staticNetworkConfig) {
-    return getDummyInfraEnvField();
   }
   return getStaticNetworkConfig(infraEnv) ?? getDummyInfraEnvField();
 };
 
 const buildInfraEnvUpdateParams = (
   values: OptionalConfigurationsValues,
-  disconnectedInfraEnv: InfraEnv | undefined,
+  disconnectedInfraEnv: InfraEnv,
 ): InfraEnvUpdateParams => ({
   sshAuthorizedKey: values.sshPublicKey,
   rendezvousIp: values.rendezvousIp,
-  staticNetworkConfig: getStaticNetworkConfigUpdate(values, disconnectedInfraEnv),
+  staticNetworkConfig: getStaticNetworkConfigUpdate(disconnectedInfraEnv),
   proxy: {
     httpProxy: values.httpProxy,
     httpsProxy: values.httpsProxy,
@@ -142,23 +149,15 @@ const buildInfraEnvUpdateParams = (
 
 export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
-  const {
-    moveNext,
-    disconnectedCluster,
-    setDisconnectedCluster,
-    disconnectedInfraEnv,
-    setDisconnectedInfraEnv,
-  } = useClusterWizardContext();
+  const { moveNext, disconnectedInfraEnv, setDisconnectedInfraEnv } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const defaultPullSecret = usePullSecret();
 
   const validationSchema = React.useMemo(
     () =>
       Yup.lazy((values: OptionalConfigurationsValues) =>
         Yup.object({
           sshPublicKey: sshPublicKeyValidationSchema(t),
-          pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
           rendezvousIp: Yup.string()
             .max(45, 'IP address must be at most 45 characters')
             .concat(ipValidationSchema(t)),
@@ -185,11 +184,7 @@ export const OptionalConfigurationsStep = () => {
 
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
-    pullSecret: defaultPullSecret ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
-    hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
-      ? HostsNetworkConfigurationType.STATIC
-      : HostsNetworkConfigurationType.DHCP,
     enableProxy: !!(
       disconnectedInfraEnv?.proxy?.httpProxy ||
       disconnectedInfraEnv?.proxy?.httpsProxy ||
@@ -207,46 +202,15 @@ export const OptionalConfigurationsStep = () => {
       clearAlerts();
       setIsSubmitting(true);
       try {
-        const pullSecretToUse = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
-
-        let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
-
-        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
-          const { data: cluster } = await ClustersAPI.registerDisconnected({
-            name: DISCONNECTED_CLUSTER_NAME,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
-          });
-          setDisconnectedCluster(cluster);
-
-          const { data: createdInfraEnv } = await InfraEnvsAPI.register({
-            name: 'disconnected-infra-env',
-            pullSecret: pullSecretToUse,
-            clusterId: cluster.id,
-            imageType: DISCONNECTED_IMAGE_TYPE,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
-            sshAuthorizedKey: values.sshPublicKey || undefined,
-            rendezvousIp: values.rendezvousIp || undefined,
-            staticNetworkConfig:
-              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
-                ? getDummyInfraEnvField()
-                : undefined,
-            proxy: {
-              httpProxy: values.httpProxy || undefined,
-              httpsProxy: values.httpsProxy || undefined,
-              noProxy: values.noProxy || undefined,
-            },
-            ntpSources: values.enableNtpSources ? values.ntpSourcesList : undefined,
-          });
-          infraEnvToUse = createdInfraEnv;
-        } else {
-          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
-            infraEnvToUse.id,
-            buildInfraEnvUpdateParams(values, infraEnvToUse),
-          );
-          infraEnvToUse = updatedInfraEnv;
+        if (!disconnectedInfraEnv?.id) {
+          throw new Error('No disconnected infraEnv available');
         }
 
-        setDisconnectedInfraEnv(infraEnvToUse);
+        const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
+          disconnectedInfraEnv.id,
+          buildInfraEnvUpdateParams(values, disconnectedInfraEnv),
+        );
+        setDisconnectedInfraEnv(updatedInfraEnv);
         moveNext();
       } catch (error) {
         handleApiError(error, () => {
@@ -260,16 +224,7 @@ export const OptionalConfigurationsStep = () => {
         setIsSubmitting(false);
       }
     },
-    [
-      clearAlerts,
-      defaultPullSecret,
-      disconnectedCluster,
-      disconnectedInfraEnv,
-      setDisconnectedCluster,
-      setDisconnectedInfraEnv,
-      addAlert,
-      moveNext,
-    ],
+    [clearAlerts, disconnectedInfraEnv, setDisconnectedInfraEnv, addAlert, moveNext],
   );
 
   return (
@@ -278,10 +233,7 @@ export const OptionalConfigurationsStep = () => {
       validationSchema={validationSchema}
       onSubmit={(values) => void handleNext(values)}
     >
-      <OptionalConfigurationsForm
-        defaultPullSecret={defaultPullSecret}
-        isSubmitting={isSubmitting}
-      />
+      <OptionalConfigurationsForm isSubmitting={isSubmitting} />
     </Formik>
   );
 };
