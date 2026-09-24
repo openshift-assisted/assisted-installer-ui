@@ -1,9 +1,15 @@
+import { Address6 } from 'ip-address';
 import {
   HostStaticNetworkConfig,
   InfraEnv,
 } from '@openshift-assisted/types/assisted-installer-service';
 import { stringToJSON } from '../../../../../../common';
-import { FORM_VIEW_PREFIX, getProtocolType, getYamlComments } from './nmstateYaml';
+import {
+  FORM_VIEW_PREFIX,
+  getProtocolType,
+  getYamlComments,
+  yamlToNmstateObject,
+} from './nmstateYaml';
 import {
   StaticIpInfo,
   StaticIpView,
@@ -11,8 +17,10 @@ import {
   FormViewHostsValues,
   FormViewNetworkWideValues,
   YamlViewValues,
+  ProtocolVersion,
 } from './dataTypes';
-import { isDummyYaml } from './dummyData';
+import { isDummyInterface, isDummyYaml } from './dummyData';
+import { NmstateInterface } from './nmstateTypes';
 import { formDataFromInfraEnvField } from './formDataFromInfraEnvField';
 import { getEmptyFormViewHost } from './emptyData';
 
@@ -90,4 +98,51 @@ export const getYamlViewValues = (infraEnv: InfraEnv): YamlViewValues => {
     throw `Infra env doesn't contain static ip data`;
   }
   return { hosts: staticNetworkConfig };
+};
+
+export const canonicalizeIp = (ip: string): string => {
+  if (Address6.isValid(ip)) {
+    return new Address6(ip).correctForm();
+  }
+  return ip;
+};
+
+const getIpsFromInterface = (networkInterface: NmstateInterface): string[] => {
+  const ips: string[] = [];
+  for (const protocolVersion of [ProtocolVersion.ipv4, ProtocolVersion.ipv6]) {
+    const addresses = networkInterface[protocolVersion]?.address;
+    if (addresses?.length) {
+      for (const entry of addresses) {
+        if (entry.ip) {
+          ips.push(entry.ip);
+        }
+      }
+    }
+  }
+  return ips;
+};
+
+export const getHostIpsFromInfraEnv = (infraEnv: InfraEnv | undefined): string[] => {
+  if (!infraEnv) {
+    return [];
+  }
+  const staticNetworkConfig = getStaticNetworkConfig(infraEnv);
+  if (!staticNetworkConfig?.length) {
+    return [];
+  }
+
+  const hostIps: string[] = [];
+  for (const hostConfig of staticNetworkConfig) {
+    if (!hostConfig.networkYaml || isDummyYaml(hostConfig.networkYaml)) {
+      continue;
+    }
+    const nmstate = yamlToNmstateObject(hostConfig.networkYaml);
+    for (const networkInterface of nmstate.interfaces) {
+      if (isDummyInterface(networkInterface.name)) {
+        continue;
+      }
+      hostIps.push(...getIpsFromInterface(networkInterface));
+    }
+  }
+  return hostIps;
 };
