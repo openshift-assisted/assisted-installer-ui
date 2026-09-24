@@ -1,21 +1,61 @@
 import * as React from 'react';
-import { ClusterWizardStep, StaticTextField } from '../../../../common';
-import { Flex, Grid, GridItem, Form, Content } from '@patternfly/react-core';
+import * as Yup from 'yup';
+import { Formik, useFormikContext } from 'formik';
+import { AlertVariant, Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
+import { ImageType } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  ClusterWizardStep,
+  StaticTextField,
+  useAlerts,
+  ClustersAPI,
+  InfraEnvsAPI,
+  handleApiError,
+  getApiErrorMessage,
+  isInOcm,
+  PullSecret,
+  pullSecretValidationSchema,
+  useTranslation,
+  getFormikErrorFields,
+} from '../../../../common';
+import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
+import { usePullSecret } from '../../../hooks';
 import { useClusterWizardContext } from '../ClusterWizardContext';
 import ClusterWizardFooter from '../ClusterWizardFooter';
 import ClusterWizardNavigation from '../ClusterWizardNavigation';
-import { WithErrorBoundary } from '../../../../common/components/ErrorHandling/WithErrorBoundary';
+import { HostsNetworkConfigurationControlGroup } from '../../clusterConfiguration/HostsNetworkConfigurationControlGroup';
+import { HostsNetworkConfigurationType } from '../../../services/types';
+import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
+import { getStaticNetworkConfig } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
 import InstallDisconnectedSwitch from './InstallDisconnectedSwitch';
 
 export const DISCONNECTED_OPENSHIFT_VERSION = '4.22.13';
 
-const BasicStep = () => {
-  const { moveNext } = useClusterWizardContext();
+const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
+const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
+
+type BasicStepValues = {
+  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
+  pullSecret: string;
+};
+
+const BasicStepForm: React.FC<{
+  isSubmitting: boolean;
+  defaultPullSecret?: string;
+}> = ({ isSubmitting, defaultPullSecret }) => {
+  const { submitForm, isValid, errors, touched } = useFormikContext<BasicStepValues>();
+  const errorFields = getFormikErrorFields(errors, touched);
 
   return (
     <ClusterWizardStep
       navigation={<ClusterWizardNavigation />}
-      footer={<ClusterWizardFooter onNext={moveNext} />}
+      footer={
+        <ClusterWizardFooter
+          onNext={() => void submitForm()}
+          isSubmitting={isSubmitting}
+          isNextDisabled={!isValid || isSubmitting}
+          errorFields={errorFields}
+        />
+      }
     >
       <WithErrorBoundary title="Failed to load Basic step">
         <Grid hasGutter>
@@ -36,11 +76,114 @@ const BasicStep = () => {
               <StaticTextField name="cpuArchitecture" label="CPU architecture">
                 x86_64
               </StaticTextField>
+              <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
+              {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
             </Form>
           </GridItem>
         </Grid>
       </WithErrorBoundary>
     </ClusterWizardStep>
+  );
+};
+
+const BasicStep = () => {
+  const { t } = useTranslation();
+  const {
+    moveNext,
+    disconnectedCluster,
+    setDisconnectedCluster,
+    disconnectedInfraEnv,
+    setDisconnectedInfraEnv,
+  } = useClusterWizardContext();
+  const { addAlert, clearAlerts } = useAlerts();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const defaultPullSecret = usePullSecret();
+
+  const validationSchema = React.useMemo(
+    () =>
+      Yup.object({
+        pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
+      }),
+    [t],
+  );
+
+  const initialValues: BasicStepValues = {
+    hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
+      ? HostsNetworkConfigurationType.STATIC
+      : HostsNetworkConfigurationType.DHCP,
+    pullSecret: defaultPullSecret ?? '',
+  };
+
+  const handleNext = React.useCallback(
+    async (values: BasicStepValues) => {
+      clearAlerts();
+      setIsSubmitting(true);
+      try {
+        const isStatic =
+          values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC;
+        let infraEnvToUse = disconnectedInfraEnv;
+
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
+          const { data: cluster } = await ClustersAPI.registerDisconnected({
+            name: DISCONNECTED_CLUSTER_NAME,
+            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+          });
+          setDisconnectedCluster(cluster);
+
+          const pullSecret = isInOcm ? defaultPullSecret ?? '' : values.pullSecret;
+          const { data: createdInfraEnv } = await InfraEnvsAPI.register({
+            name: 'disconnected-infra-env',
+            pullSecret,
+            clusterId: cluster.id,
+            imageType: DISCONNECTED_IMAGE_TYPE,
+            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            staticNetworkConfig: isStatic ? getDummyInfraEnvField() : undefined,
+          });
+          infraEnvToUse = createdInfraEnv;
+        } else {
+          const staticNetworkConfig = isStatic
+            ? getStaticNetworkConfig(infraEnvToUse) ?? getDummyInfraEnvField()
+            : [];
+          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvToUse.id, {
+            staticNetworkConfig,
+          });
+          infraEnvToUse = updatedInfraEnv;
+        }
+
+        setDisconnectedInfraEnv(infraEnvToUse);
+        moveNext();
+      } catch (error) {
+        handleApiError(error, () => {
+          addAlert({
+            title: 'Failed to save basic information',
+            message: getApiErrorMessage(error),
+            variant: AlertVariant.danger,
+          });
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [
+      clearAlerts,
+      defaultPullSecret,
+      disconnectedCluster,
+      disconnectedInfraEnv,
+      setDisconnectedCluster,
+      setDisconnectedInfraEnv,
+      addAlert,
+      moveNext,
+    ],
+  );
+
+  return (
+    <Formik<BasicStepValues>
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values) => void handleNext(values)}
+    >
+      <BasicStepForm isSubmitting={isSubmitting} defaultPullSecret={defaultPullSecret} />
+    </Formik>
   );
 };
 
