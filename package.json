@@ -36,6 +36,8 @@
     "test:open:dev": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:dev",
     "test:open": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open",
     "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
+    "test:open:disconnected": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:disconnected",
+    "test:run:disconnected": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run:disconnected",
     "test:unit": "yarn workspaces foreach -v run test",
     "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
     "start:assisted_disconnected_ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui serve",
