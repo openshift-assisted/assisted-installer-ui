@@ -11,47 +11,58 @@ import {
   FormViewNetworkWideValues,
 } from '../../data';
 import { StaticIpForm } from '../StaticIpForm';
-import { StaticIpFormProps, StaticIpViewProps } from '../propTypes';
+import { StaticIpViewProps } from '../propTypes';
 import { networkWideValidationSchema } from './formViewNetworkWideValidationSchema';
 import { disconnectedNetworkWideValidationSchema } from './disconnectedNetworkWideValidationSchema';
 import { FormViewNetworkWideFields } from './FormViewNetworkWideFields';
 import { useClusterWizardContext } from '../../../../clusterWizardContext';
+import { useFeature } from '../../../../../../hooks';
 
 export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
   const { installDisconnected } = useClusterWizardContext();
-  const [formProps, setFormProps] = React.useState<StaticIpFormProps<FormViewNetworkWideValues>>();
+  const isSingleClusterFeature = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  const useDisconnectedSingleStack = installDisconnected || isSingleClusterFeature;
   const [hosts, setHosts] = React.useState<FormViewHost[]>();
 
   React.useEffect(() => {
-    const _hosts = getFormData(infraEnv).hosts;
-    setHosts(_hosts);
-    if (!_hosts) {
-      return;
-    }
-    setFormProps({
-      infraEnv,
-      ...props,
-      validationSchema: installDisconnected
-        ? disconnectedNetworkWideValidationSchema
-        : networkWideValidationSchema,
-      getInitialValues: (infraEnv: InfraEnv) => {
-        return installDisconnected
-          ? getDisconnectedFormViewNetworkWideValues(infraEnv)
-          : getFormViewNetworkWideValues(infraEnv);
-      },
-      getUpdateParams: (currentInfraEnv: InfraEnv, values: FormViewNetworkWideValues) =>
-        installDisconnected
-          ? disconnectedNetworkWideToInfraEnvField(currentInfraEnv, values)
-          : networkWideToInfraEnvField(currentInfraEnv, values),
-      getEmptyValues: () => getEmptyNetworkWideConfigurations(),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [installDisconnected]);
-  if (!hosts || !formProps) {
+    setHosts(getFormData(infraEnv).hosts);
+  }, [infraEnv]);
+
+  const getInitialValues = React.useCallback(
+    (currentInfraEnv: InfraEnv) => {
+      return useDisconnectedSingleStack
+        ? getDisconnectedFormViewNetworkWideValues(currentInfraEnv)
+        : getFormViewNetworkWideValues(currentInfraEnv);
+    },
+    [useDisconnectedSingleStack],
+  );
+
+  const getUpdateParams = React.useCallback(
+    (currentInfraEnv: InfraEnv, values: FormViewNetworkWideValues) =>
+      useDisconnectedSingleStack
+        ? disconnectedNetworkWideToInfraEnvField(currentInfraEnv, values)
+        : networkWideToInfraEnvField(currentInfraEnv, values),
+    [useDisconnectedSingleStack],
+  );
+
+  if (!hosts) {
     return null;
   }
+
   return (
-    <StaticIpForm<FormViewNetworkWideValues> {...formProps}>
+    <StaticIpForm<FormViewNetworkWideValues>
+      key={useDisconnectedSingleStack ? 'disconnected-single-stack' : 'connected'}
+      infraEnv={infraEnv}
+      {...props}
+      validationSchema={
+        useDisconnectedSingleStack
+          ? disconnectedNetworkWideValidationSchema
+          : networkWideValidationSchema
+      }
+      getInitialValues={getInitialValues}
+      getUpdateParams={getUpdateParams}
+      getEmptyValues={getEmptyNetworkWideConfigurations}
+    >
       <FormViewNetworkWideFields hosts={hosts} />
     </StaticIpForm>
   );
