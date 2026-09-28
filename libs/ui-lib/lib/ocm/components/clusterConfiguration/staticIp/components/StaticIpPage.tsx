@@ -95,8 +95,10 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
       <GridItem>
         <ClusterWizardStepHeader>Static network configurations</ClusterWizardStepHeader>
         <Content component={ContentVariants.small}>
-          Network configuration can be done using either the form view or YAML view. Configurations
-          done in this step are for discovering hosts.
+          Network configuration can be done using either the form view or YAML view.
+          {clusterWizardContext.installDisconnected
+            ? ' Configurations done in this step are for hosts.'
+            : ' Configurations done in this step are for discovering hosts.'}
         </Content>
       </GridItem>
 
