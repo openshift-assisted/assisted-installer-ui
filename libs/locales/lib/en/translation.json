@@ -67,7 +67,6 @@
   "ai:Add more": "Add more",
   "ai:Add nodepool": "Add nodepool",
   "ai:Add NTP sources": "Add NTP sources",
-  "ai:Add your own NTP (Network Time Protocol) sources": "Add your own NTP (Network Time Protocol) sources",
   "ai:Adding hosts": "Adding hosts",
   "ai:Adding hosts instructions": "Adding hosts instructions",
   "ai:Adding...": "Adding...",
@@ -119,7 +118,7 @@
   "ai:At least one config map is required": "At least one config map is required",
   "ai:At least one of the HTTP or HTTPS proxy URLs is required.": "At least one of the HTTP or HTTPS proxy URLs is required.",
   "ai:Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.": "Authentication is provided by the Discovery ISO, so a password is not required when you access your host using SSH. The optional -i parameter can be used to specify the private key that matches the public key that is provided when generating Discovery ISO.",
-  "ai:Auto synchronized NTP (Network Time Protocol) sources": "Auto synchronized NTP (Network Time Protocol) sources",
+  "ai:Auto synchronized NTP sources": "Auto synchronized NTP sources",
   "ai:Auto-assign": "Auto-assign",
   "ai:Auto-select hosts": "Auto-select hosts",
   "ai:Automation": "Automation",
@@ -223,7 +222,6 @@
   "ai:Configure host inventory settings": "Configure host inventory settings",
   "ai:Configure load balancer on Amazon Web Services for me.": "Configure load balancer on Amazon Web Services for me.",
   "ai:Configure the SSH key and proxy settings after the modal appears (optional).": "Configure the SSH key and proxy settings after the modal appears (optional).",
-  "ai:Configure your own NTP sources to sychronize the time between the hosts that will be added to this infrastructure environment.": "Configure your own NTP sources to sychronize the time between the hosts that will be added to this infrastructure environment.",
   "ai:Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.": "Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.",
   "ai:Configuring the host inventory settings will enable the Central Infrastructure Management.": "Configuring the host inventory settings will enable the Central Infrastructure Management.",
   "ai:Connected": "Connected",
@@ -672,6 +670,7 @@
   "ai:Not changeable": "Not changeable",
   "ai:Not configured": "Not configured",
   "ai:Not ready": "Not ready",
+  "ai:NTP (Network Time Protocol) sources": "NTP (Network Time Protocol) sources",
   "ai:NTP server": "NTP server",
   "ai:NTP sources": "NTP sources",
   "ai:NTP sources can be edited in Host's Infrastructure environment. After updating the NTP sources, make sure to restart the host.": "NTP sources can be edited in Host's Infrastructure environment. After updating the NTP sources, make sure to restart the host.",
@@ -1045,5 +1044,5 @@
   "ai:You're using an external platform": "You're using an external platform",
   "ai:You're using an external platform and a third-party CNI": "You're using an external platform and a third-party CNI",
   "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
-  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources"
+  "ai:Your own NTP sources": "Your own NTP sources"
 }
