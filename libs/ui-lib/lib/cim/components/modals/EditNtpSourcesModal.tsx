@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Yup from 'yup';
 import {
   Alert,
   Button,
@@ -14,10 +15,28 @@ import {
 } from '@patternfly/react-core';
 import { Formik, FormikProps } from 'formik';
 import { InfraEnvK8sResource } from '../../types';
-import { RadioField, AdditionalNTPSourcesField } from '../../../common';
+import {
+  getRichTextValidation,
+  InfraEnvNtpSourcesFields,
+  ntpSourceValidationSchema,
+} from '../../../common';
 import { EditNtpSourcesFormikValues } from './types';
 import { getErrorMessage } from '../../../common/utils';
+import { getWarningMessage } from './utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
+
+const validationSchema = (t: TFunction) =>
+  Yup.lazy((values: EditNtpSourcesFormikValues) =>
+    Yup.object<EditNtpSourcesFormikValues>().shape({
+      additionalNTPSources: values.useAdditionalNTPSources
+        ? ntpSourceValidationSchema(t, false)
+        : ntpSourceValidationSchema(t),
+      ntpSources: values.useNTPSources
+        ? ntpSourceValidationSchema(t, false)
+        : ntpSourceValidationSchema(t),
+    }),
+  );
 
 export type EditNtpSourcesModalProps = {
   onSubmit: (
@@ -27,6 +46,22 @@ export type EditNtpSourcesModalProps = {
   isOpen: boolean;
   infraEnv: InfraEnvK8sResource;
   onClose: VoidFunction;
+  hasAgents: boolean;
+  hasBMHs: boolean;
+};
+
+const getEditNtpSourcesInitialValues = (
+  infraEnv: InfraEnvK8sResource,
+): EditNtpSourcesFormikValues => {
+  const hasExclusive = !!infraEnv.spec?.ntpSources?.length;
+  const hasAdditional = !!infraEnv.spec?.additionalNTPSources?.length;
+
+  return {
+    useNTPSources: hasExclusive,
+    ntpSources: infraEnv.spec?.ntpSources?.join(',') || '',
+    useAdditionalNTPSources: !hasExclusive && hasAdditional,
+    additionalNTPSources: infraEnv.spec?.additionalNTPSources?.join(',') || '',
+  };
 };
 
 const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
@@ -34,9 +69,12 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
   onClose,
   onSubmit,
   infraEnv,
+  hasAgents,
+  hasBMHs,
 }) => {
   const [error, setError] = React.useState<string>();
   const { t } = useTranslation();
+  const warningMsg = getWarningMessage(hasAgents, hasBMHs, t);
   return (
     <Modal
       aria-label={t('ai:Edit Ntp sources dialog')}
@@ -46,75 +84,37 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
       id="edit-ntp-sources-modal"
     >
       <ModalHeader title={t('ai:Edit NTP sources')} />
-      <Formik<EditNtpSourcesFormikValues>
-        initialValues={{
-          enableNtpSources: infraEnv.spec?.additionalNTPSources ? 'additional' : 'auto',
-          additionalNtpSources: infraEnv.spec?.additionalNTPSources?.join(',') || '',
-        }}
-        onSubmit={async (values) => {
-          try {
-            await onSubmit(values, infraEnv);
-            onClose();
-          } catch (err) {
-            setError(getErrorMessage(err));
-          }
-        }}
-        validateOnMount
-      >
-        {({
-          isSubmitting,
-          isValid,
-          values,
-          submitForm,
-        }: FormikProps<EditNtpSourcesFormikValues>) => {
-          return (
+      {isOpen && (
+        <Formik<EditNtpSourcesFormikValues>
+          initialValues={getEditNtpSourcesInitialValues(infraEnv)}
+          validate={getRichTextValidation(validationSchema(t))}
+          onSubmit={async (values) => {
+            try {
+              await onSubmit(values, infraEnv);
+              onClose();
+            } catch (err) {
+              setError(getErrorMessage(err));
+            }
+          }}
+          validateOnMount
+        >
+          {({ isSubmitting, isValid, submitForm }: FormikProps<EditNtpSourcesFormikValues>) => (
             <>
               <ModalBody>
-                <Form>
-                  <Stack hasGutter>
-                    <StackItem>
-                      <RadioField
-                        label={t('ai:Auto synchronized NTP (Network Time Protocol) sources')}
-                        value="auto"
-                        name="enableNtpSources"
-                      />
-                    </StackItem>
-                    <StackItem>
-                      <RadioField
-                        name="enableNtpSources"
-                        value="additional"
-                        description={
-                          <Stack hasGutter>
-                            <StackItem>
-                              {t(
-                                'ai:Configure your own NTP sources to sychronize the time between the hosts that will be added to this infrastructure environment.',
-                              )}
-                            </StackItem>
-                            <StackItem>
-                              <AdditionalNTPSourcesField
-                                name="additionalNtpSources"
-                                isDisabled={values.enableNtpSources === 'auto'}
-                                helperText={t(
-                                  'ai:A comma separated list of IP or domain names of the NTP pools or servers.',
-                                )}
-                              />
-                            </StackItem>
-                          </Stack>
-                        }
-                        label={t('ai:Your own NTP (Network Time Protocol) sources')}
-                      />
-                    </StackItem>
-                    {error && (
-                      <StackItem>
-                        <Alert variant="danger" title={error} />
-                      </StackItem>
-                    )}
-                  </Stack>
-                </Form>
+                <Stack hasGutter>
+                  <StackItem>
+                    <Alert isInline variant="warning" title={warningMsg} />
+                  </StackItem>
+                  <StackItem>
+                    <Form>
+                      <InfraEnvNtpSourcesFields />
+                      {error && <Alert variant="danger" title={error} />}
+                    </Form>
+                  </StackItem>
+                </Stack>
               </ModalBody>
               <ModalFooter>
-                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
+                <Button onClick={() => void submitForm()} isDisabled={isSubmitting || !isValid}>
                   {t('ai:Save')}
                 </Button>
                 <Button onClick={onClose} variant={ButtonVariant.secondary}>
@@ -122,9 +122,9 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                 </Button>
               </ModalFooter>
             </>
-          );
-        }}
-      </Formik>
+          )}
+        </Formik>
+      )}
     </Modal>
   );
 };
