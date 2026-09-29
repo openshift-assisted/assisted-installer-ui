@@ -56,7 +56,7 @@
     "del": "^6.1.1",
     "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
-    "ip-address": "^10.4.0",
+    "ip-address": "^10.5.1",
     "postcss": "^8.5.28",
     "minimatch": "^10.2.6",
     "brace-expansion": "^5.0.12",
