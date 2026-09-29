@@ -27,7 +27,7 @@ import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
 import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
 
-export const DISCONNECTED_OPENSHIFT_VERSION = '4.22.13';
+export const DISCONNECTED_OPENSHIFT_VERSION = '4.22.16';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
