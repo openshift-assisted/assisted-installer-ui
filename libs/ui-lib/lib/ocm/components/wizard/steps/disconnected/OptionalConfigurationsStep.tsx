@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
-import { AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
+import { Alert, AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
 import {
   HostStaticNetworkConfig,
   InfraEnv,
@@ -38,7 +38,11 @@ import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardCompon
 import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
-import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
+import {
+  canonicalizeIp,
+  getHostIpsFromInfraEnv,
+  getStaticNetworkConfig,
+} from '../staticIp/data/fromInfraEnv';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -61,13 +65,34 @@ type OptionalConfigurationsFormProps = {
   isSubmitting: boolean;
 };
 
+const isRendezvousIpInStaticHostList = (
+  rendezvousIp: string | undefined,
+  infraEnv: InfraEnv | undefined,
+): boolean => {
+  if (!rendezvousIp?.trim()) {
+    return true;
+  }
+  const staticHostIps = getHostIpsFromInfraEnv(infraEnv);
+  if (!staticHostIps.length) {
+    return true;
+  }
+  const canonicalRendezvousIp = canonicalizeIp(rendezvousIp.trim());
+  return staticHostIps.some((ip) => canonicalizeIp(ip) === canonicalRendezvousIp);
+};
+
 const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
   defaultPullSecret,
   isSubmitting,
 }) => {
   const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
-  const { isValid, submitForm, errors, touched } = useFormikContext<OptionalConfigurationsValues>();
+  const { isValid, submitForm, errors, touched, values } =
+    useFormikContext<OptionalConfigurationsValues>();
   const errorFields = getFormikErrorFields(errors, touched);
+
+  const showRendezvousIpMismatchWarning =
+    !!disconnectedInfraEnv?.staticNetworkConfig &&
+    !!values.rendezvousIp.trim() &&
+    !isRendezvousIpInStaticHostList(values.rendezvousIp, disconnectedInfraEnv);
 
   return (
     <ClusterWizardStep
@@ -95,6 +120,16 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 helperText="The IP address that hosts will use to communicate with the bootstrap node during installation."
                 maxLength={45}
               />
+              {showRendezvousIpMismatchWarning && (
+                <Alert
+                  isInline
+                  variant="warning"
+                  title="Rendezvous IP does not match a configured static IP"
+                >
+                  The rendezvous IP does not match any of the configured static IP addresses. The
+                  installation may fail if the rendezvous IP is unreachable.
+                </Alert>
+              )}
               <UploadSSH />
               {!isInOcm && !disconnectedInfraEnv?.pullSecretSet && (
                 <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />
@@ -222,7 +257,23 @@ export const OptionalConfigurationsStep = () => {
 
         let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
 
-        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
+        // The cluster's openshiftVersion cannot be patched (it is not part of
+        // V2ClusterUpdateParams), so when the user changes the version after the cluster and
+        // InfraEnv were already registered we must recreate them to keep both in sync.
+        const versionChanged =
+          !!disconnectedCluster?.openshiftVersion &&
+          disconnectedCluster.openshiftVersion !== disconnectedOpenshiftVersion;
+
+        if (versionChanged && disconnectedCluster?.id && infraEnvToUse?.id) {
+          // Tear down the stale resources (infra-env first, then cluster) before re-registering.
+          await InfraEnvsAPI.deregister(infraEnvToUse.id);
+          await ClustersAPI.deregister(disconnectedCluster.id);
+          setDisconnectedCluster(undefined);
+          setDisconnectedInfraEnv(undefined);
+          infraEnvToUse = undefined;
+        }
+
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id || versionChanged) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
             openshiftVersion: disconnectedOpenshiftVersion,
