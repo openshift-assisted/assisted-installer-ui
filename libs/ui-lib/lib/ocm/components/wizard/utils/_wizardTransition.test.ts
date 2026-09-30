@@ -459,9 +459,9 @@ describe('Disconnected wizard step ids', () => {
     const withStatic = getDisconnectedWizardStepIds(StaticIpView.FORM);
     expect(withStatic).toEqual([
       'disconnected-basic',
-      'disconnected-optional-configurations',
       'static-ip-network-wide-configurations',
       'static-ip-host-configurations',
+      'disconnected-optional-configurations',
       'disconnected-review',
     ]);
     expect(getDisconnectedWizardStepIds('dhcp-selected')).toEqual(disconnectedSteps);
@@ -470,8 +470,8 @@ describe('Disconnected wizard step ids', () => {
   test('inserts the YAML static IP step', () => {
     expect(getDisconnectedWizardStepIds(StaticIpView.YAML)).toEqual([
       'disconnected-basic',
-      'disconnected-optional-configurations',
       'static-ip-yaml-view',
+      'disconnected-optional-configurations',
       'disconnected-review',
     ]);
   });
@@ -493,8 +493,8 @@ describe('Wizard nav visual numbers', () => {
       entries.map((entry) => [entry.stepId, entry.visualNumber, entry.isStaticIpFormGroup]),
     ).toEqual([
       ['disconnected-basic', 1, false],
-      ['disconnected-optional-configurations', 2, false],
-      ['static-ip-network-wide-configurations', 3, true],
+      ['static-ip-network-wide-configurations', 2, true],
+      ['disconnected-optional-configurations', 3, false],
       ['disconnected-review', 4, false],
     ]);
   });

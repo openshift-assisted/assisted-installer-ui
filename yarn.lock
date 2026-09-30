@@ -1397,7 +1397,7 @@ __metadata:
     "@redhat-cloud-services/ai-client-state": ^0.15.0
     "@redhat-cloud-services/lightspeed-client": ^0.15.0
     "@tsconfig/recommended": ^1.0.13
-    "@types/node": ^24.13.5
+    "@types/node": ^24.13.6
     "@types/react": 18.2.37
     "@types/react-dom": ^18.2.0
     file-saver: ^2.0.2
@@ -1447,7 +1447,7 @@ __metadata:
   resolution: "@openshift-assisted/toolbox@workspace:tools/toolbox"
   dependencies:
     "@tsconfig/recommended": ^1.0.13
-    "@types/node": ^24.13.5
+    "@types/node": ^24.13.6
     chokidar: ^3.5.3
     lodash: ^4.18.1
     zx: ^8.8.5
@@ -1502,7 +1502,7 @@ __metadata:
     "@types/humanize-plus": ^1.8.2
     "@types/js-yaml": ^4.0.9
     "@types/lodash-es": ^4.17.12
-    "@types/node": ^24.13.5
+    "@types/node": ^24.13.6
     "@types/react": 18.2.37
     "@types/react-autosuggest": ^10.1.5
     "@types/react-dom": 18.2.15
@@ -1518,7 +1518,7 @@ __metadata:
     fuse.js: ^6.4.6
     human-date: ^1.4.0
     humanize-plus: ^1.8.2
-    ip-address: ^10.4.0
+    ip-address: ^10.5.1
     is-cidr: ^4.0.2
     is-in-subnet: ^4
     js-yaml: ^4.3.2
@@ -3527,12 +3527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.13.5":
-  version: 24.13.6
-  resolution: "@types/node@npm:24.13.6"
+"@types/node@npm:^24.13.6":
+  version: 24.19.0
+  resolution: "@types/node@npm:24.19.0"
   dependencies:
-    undici-types: ~7.18.0
-  checksum: 503acaddfe1fdbaf894c1d4be792d62f69b573fa70644f4d3bfd5e830f4071d9ec4dcc8d6394312e49e9b0acda41e8980fd921b07ab950c1fe70866a703f07d6
+    undici-types: ">=7.24.0 <7.24.7"
+  checksum: 17381039ae34c5a34fc78b28614c5ecc66bd7092df93a235ea74b77ffa313f0e757373d23f9567dfe7f1cdb52a94260583f7f654919ec086cf7fe19e60e30294
   languageName: node
   linkType: hard
 
@@ -4379,7 +4379,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^8.18.0":
+"ajv@npm:^8.20.0":
   version: 8.20.0
   resolution: "ajv@npm:8.20.0"
   dependencies:
@@ -9128,9 +9128,9 @@ __metadata:
   linkType: hard
 
 "immutable@npm:^3.8.3":
-  version: 3.8.3
-  resolution: "immutable@npm:3.8.3"
-  checksum: 3c668e4e92d77876f95081ed695c594f802fc8f88dc888e562ce70d26eb92596c65fbd64caad8fef054358c21990d52c77b28e9dc7bd6c8f53cf44775cfb44f9
+  version: 3.8.4
+  resolution: "immutable@npm:3.8.4"
+  checksum: 28e645aac74e6c0f2e9767cdb729c3958410946099a65d4a2329ad1b7b2f73b9847990a08bbbe891a267e40e9621ff4831a3e834bbd39d97a9c4098dd25f0a7b
   languageName: node
   linkType: hard
 
@@ -9253,10 +9253,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^10.4.0":
-  version: 10.4.0
-  resolution: "ip-address@npm:10.4.0"
-  checksum: 04e729990bc597bb0c86a02f71ffb8a19a47cd78e635209923079137fa06b8a27291d62fdddfeaf67b8e710ee51c46d2bbee1d1bf92f5101305e8276359c3df6
+"ip-address@npm:^10.5.1":
+  version: 10.7.2
+  resolution: "ip-address@npm:10.7.2"
+  checksum: 4b734e61a63e4301221fb5e1cd8a4a7e44114a80268825799c54fbd3df13bc536acc3e0b4129bec2ee860e26985faf370b00a2ac9bdab05d1f61698315395fdd
   languageName: node
   linkType: hard
 
@@ -15598,6 +15598,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:>=7.24.0 <7.24.7":
+  version: 7.24.6
+  resolution: "undici-types@npm:7.24.6"
+  checksum: e79802e37dc472c6324850d938b5df6b9e796f6a1bb5f8ccd24f3a6d17eae94a9cc125506c8b339a3293ffbad81daeba30b843e564c1d237b3c8deafd98b6267
+  languageName: node
+  linkType: hard
+
 "undici-types@npm:~6.21.0":
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
@@ -15613,9 +15620,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^7.19.0":
-  version: 7.29.0
-  resolution: "undici@npm:7.29.0"
-  checksum: b3327e05259e66c61d3e05242bf63899c68d277302208f4fc1c7c0b880a9ba82651b8b3215584ffd424d8c8410f0114b6c3a89e6af604c703dc33009daa99ed3
+  version: 7.30.0
+  resolution: "undici@npm:7.30.0"
+  checksum: 9138ee032f1d9133ee0cae068147a1c7eb9e514f07f012450a30d48896ee922c6cc2ad5c292cc35805712b80d7be3d5365af1af7df9f6aed1fd7a49175fc6105
   languageName: node
   linkType: hard
 
