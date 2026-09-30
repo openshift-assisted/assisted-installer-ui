@@ -257,7 +257,23 @@ export const OptionalConfigurationsStep = () => {
 
         let infraEnvToUse: InfraEnv | undefined = disconnectedInfraEnv;
 
-        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
+        // The cluster's openshiftVersion cannot be patched (it is not part of
+        // V2ClusterUpdateParams), so when the user changes the version after the cluster and
+        // InfraEnv were already registered we must recreate them to keep both in sync.
+        const versionChanged =
+          !!disconnectedCluster?.openshiftVersion &&
+          disconnectedCluster.openshiftVersion !== disconnectedOpenshiftVersion;
+
+        if (versionChanged && disconnectedCluster?.id && infraEnvToUse?.id) {
+          // Tear down the stale resources (infra-env first, then cluster) before re-registering.
+          await InfraEnvsAPI.deregister(infraEnvToUse.id);
+          await ClustersAPI.deregister(disconnectedCluster.id);
+          setDisconnectedCluster(undefined);
+          setDisconnectedInfraEnv(undefined);
+          infraEnvToUse = undefined;
+        }
+
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id || versionChanged) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
             openshiftVersion: disconnectedOpenshiftVersion,
