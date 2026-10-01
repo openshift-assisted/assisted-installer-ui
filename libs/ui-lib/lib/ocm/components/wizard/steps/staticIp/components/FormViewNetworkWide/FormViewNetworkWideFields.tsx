@@ -51,6 +51,7 @@ import {
   MIN_VLAN_ID,
 } from './formViewNetworkWideValidationSchema';
 import { useClusterWizardContext } from '../../../../clusterWizardContext';
+import { useFeature } from '../../../../../../hooks';
 
 import '../staticIp.css';
 
@@ -435,7 +436,8 @@ const DisconnectedProtocolTypeSelect = () => {
 
 export const ProtocolTypeSelect = () => {
   const { installDisconnected } = useClusterWizardContext();
-  if (installDisconnected) {
+  const isSingleClusterFeature = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+  if (installDisconnected || isSingleClusterFeature) {
     return <DisconnectedProtocolTypeSelect />;
   }
   return <ConnectedProtocolTypeSelect />;
@@ -444,8 +446,9 @@ const getIpConfigSectionLabel = (
   protocolVersion: ProtocolVersion,
   protocolType: StaticProtocolType,
   installDisconnected: boolean,
+  isSingleClusterFeature: boolean,
 ): string => {
-  if (installDisconnected && protocolType !== 'dualStack') {
+  if ((installDisconnected || isSingleClusterFeature) && protocolType !== 'dualStack') {
     return 'Single stack';
   }
   return getProtocolVersionLabel(protocolVersion);
@@ -453,8 +456,10 @@ const getIpConfigSectionLabel = (
 
 export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
   const { installDisconnected } = useClusterWizardContext();
+  const isSingleClusterFeature = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
-  const isDisconnectedSingleStack = installDisconnected && values.protocolType !== 'dualStack';
+  const isDisconnectedSingleStack =
+    (installDisconnected || isSingleClusterFeature) && values.protocolType !== 'dualStack';
 
   return (
     <>
@@ -517,6 +522,7 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
               protocolVersion,
               values.protocolType,
               installDisconnected,
+              isSingleClusterFeature,
             )}
             fieldId={getFieldId(`ip-configs-${protocolVersion}`, 'input')}
           >
