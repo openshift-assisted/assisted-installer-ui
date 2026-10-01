@@ -1,27 +1,23 @@
 import React from 'react';
+import { TFunction } from 'i18next';
 import { CheckCircleIcon } from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
 import { InfoCircleIcon } from '@patternfly/react-icons/dist/js/icons/info-circle-icon';
 import { Content, Icon } from '@patternfly/react-core';
+import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
 import {
   FeatureId,
   FeatureIdToSupportLevel,
   PreviewSupportLevel,
   isPreviewSupportLevel,
 } from '../../../common/types';
-import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/docs_links';
-import ExternalLink from '../../../common/components/ui/ExternalLink';
-import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
-import { DetailItem } from '../../../common';
-import { getLimitedFeatureSupportLevels } from '../../../common/components/newFeatureSupportLevels/utils';
+import { DetailItem, TECH_SUPPORT_LEVEL_LINK, useTranslation, ExternalLink } from '../../../common';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { useOpenShiftVersionsContext } from '../clusterWizard/OpenShiftVersionsContext';
-import { TFunction } from 'i18next';
 import {
+  getLimitedFeatureSupportLevels,
   NewFeatureSupportLevelData,
   useNewFeatureSupportLevel,
 } from '../../../common/components/newFeatureSupportLevels';
-import { useFeature } from '../../hooks/use-feature';
 
 const getFeatureReviewText = (featureId: FeatureId): string => {
   switch (featureId) {
@@ -132,7 +128,6 @@ export const getSupportLevelInfo = (
   featureSupportLevelData: NewFeatureSupportLevelData,
   isSupportedOpenShiftVersion: (version?: string) => boolean,
   t: TFunction,
-  isSingleClusterFeatureEnabled?: boolean,
 ) => {
   const limitedClusterFeatures = getLimitedFeatureSupportLevels(
     cluster,
@@ -143,10 +138,7 @@ export const getSupportLevelInfo = (
   return {
     limitedClusterFeatures,
     hasSupportedVersion,
-    isFullySupported:
-      hasSupportedVersion &&
-      Object.keys(limitedClusterFeatures || {}).length === 0 &&
-      !isSingleClusterFeatureEnabled,
+    isFullySupported: hasSupportedVersion && Object.keys(limitedClusterFeatures).length === 0,
   };
 };
 
@@ -154,30 +146,12 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useNewFeatureSupportLevel();
   const { isSupportedOpenShiftVersion } = useOpenShiftVersionsContext();
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
     React.useMemo<SupportLevelMemo>(
-      () =>
-        getSupportLevelInfo(
-          cluster,
-          featureSupportLevelData,
-          isSupportedOpenShiftVersion,
-          t,
-          isSingleClusterFeatureEnabled,
-        ),
-      [
-        cluster,
-        featureSupportLevelData,
-        t,
-        isSupportedOpenShiftVersion,
-        isSingleClusterFeatureEnabled,
-      ],
+      () => getSupportLevelInfo(cluster, featureSupportLevelData, isSupportedOpenShiftVersion, t),
+      [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion],
     );
-
-  if (!limitedClusterFeatures) {
-    return null;
-  }
 
   return (
     <DetailItem
@@ -188,7 +162,7 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
         ) : (
           <LimitedSupportedCluster
             clusterFeatureSupportLevels={limitedClusterFeatures}
-            showVersionWarning={!hasSupportedVersion || isSingleClusterFeatureEnabled}
+            showVersionWarning={!hasSupportedVersion}
           />
         )
       }
