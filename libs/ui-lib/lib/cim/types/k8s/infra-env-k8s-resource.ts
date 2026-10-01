@@ -22,6 +22,7 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
       noProxy: string;
     };
     nmStateConfigLabelSelector?: Selector;
+    ntpSources?: string[];
     additionalNTPSources?: string[];
     cpuArchitecture?: 'x86_64' | 'arm64' | 's390x';
     osImageVersion?: string;

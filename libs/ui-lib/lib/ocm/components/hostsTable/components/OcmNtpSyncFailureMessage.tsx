@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentCluster } from '../../../store/slices/current-cluster/selectors';
 import { AddHostsContext } from '../../../../common';
 
-export const NtpSyncFailureMessage = () => {
+export const OcmNtpSyncFailureMessage = () => {
   const reduxCluster = useSelector(selectCurrentCluster);
   const { cluster: day2Cluster } = React.useContext(AddHostsContext);
   const cluster = day2Cluster || reduxCluster;
