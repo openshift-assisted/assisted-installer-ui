@@ -22,7 +22,6 @@ There are 3 possible releases, driven by the suffix in the release name:
 
 - OCM - no suffix
 - CIM - suffix `-cim`
-- Chatbot - suffix `-chatbot`
 
 ## Instructions
 
@@ -44,5 +43,4 @@ There are 3 possible releases, driven by the suffix in the release name:
 - [@openshift-assisted/ui-lib](https://www.npmjs.com/package/@openshift-assisted/ui-lib)
 - [@openshift-assisted/types](https://www.npmjs.com/package/@openshift-assisted/types)
 - [@openshift-assisted/locales](https://www.npmjs.com/package/@openshift-assisted/locales)
-- [@openshift-assisted/chatbot](https://www.npmjs.com/package/@openshift-assisted/chatbot)
 - https://quay.io/repository/edge-infrastructure/assisted-installer-ui?tab=tags
