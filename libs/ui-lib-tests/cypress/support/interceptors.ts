@@ -78,6 +78,9 @@ const getScenarioFixtureMapping = () => {
     case 'AI_CREATE_CUSTOM_MANIFESTS':
       fixtureMapping = fixtures.createCustomManifestsFixtureMapping;
       break;
+    case 'AI_OVE_CREATE_MULTINODE':
+      fixtureMapping = fixtures.createOveMultinodeFixtureMapping;
+      break;
     default:
       break;
   }
@@ -120,6 +123,11 @@ const mockInfraEnvResponse: HttpRequestInterceptor = (req) => {
   } else {
     req.reply(fixtures.baseInfraEnv);
   }
+};
+
+const mockInfraEnvListResponse: HttpRequestInterceptor = (req) => {
+  const fixtureMapping = getScenarioFixtureMapping();
+  req.reply(fixtureMapping?.infraEnvs ? [transformInfraEnvFixture(fixtureMapping.infraEnvs)] : []);
 };
 
 const mockCustomManifestResponse: HttpRequestInterceptor = (req) => {
@@ -190,6 +198,9 @@ const setScenarioEnvVars = (activeScenario) => {
     case 'AI_CREATE_CUSTOM_MANIFESTS':
       Cypress.env('CLUSTER_NAME', 'ai-e2e-custom-manifests');
       break;
+    case 'AI_OVE_CREATE_MULTINODE':
+      Cypress.env('CLUSTER_NAME', 'ai-ove-mno');
+      break;
     default:
       break;
   }
@@ -202,9 +213,13 @@ const addClusterCreationIntercepts = () => {
 const addClusterListIntercepts = () => {
   cy.intercept('GET', allClustersApiPath, (req) => {
     const { initialClusterList, updatedClusterList } = fixtures;
-    const fixture = hasWizardSignal('CLUSTER_CREATED') ? updatedClusterList() : initialClusterList;
+
+    let fixture = Cypress.env('AI_SINGLE_CLUSTER') ? [] : initialClusterList;
+    if (hasWizardSignal('CLUSTER_CREATED')) {
+      fixture = updatedClusterList();
+    }
     req.reply(fixture);
-  });
+  }).as('clusters');
 };
 
 const addPreflightRequirementsIntercepts = () => {
@@ -254,6 +269,8 @@ const addDay1InfraEnvIntercepts = () => {
   );
 
   // Actions on all the infraEnvs
+  cy.intercept('GET', allInfraEnvsApiPath, mockInfraEnvListResponse).as('infra-envs');
+
   cy.intercept('PATCH', infraEnvApiPath, mockInfraEnvResponse).as('update-infra-env');
 
   cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${Cypress.env('clusterId')}`, [
@@ -392,8 +409,12 @@ const addCustomManifestsIntercepts = () => {
 
 const addPlatformFeatureIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/openshift-versions*', (req) => {
+    const versions = Cypress.env('AI_SINGLE_CLUSTER')
+      ? fixtures.oveVersions
+      : fixtures.openShiftVersions;
+
     req.reply({
-      body: fixtures.openShiftVersions,
+      body: versions,
     });
   }).as('openshift-versions');
 
@@ -431,9 +452,15 @@ const addAdditionalIntercepts = () => {
   cy.intercept('POST', '/api/accounts_mgmt/v1/access_token', (req) => {
     req.reply(fixtures.pullSecret);
   });
+
+  cy.intercept('GET', '/api/pull-secret', (req) => {
+    req.reply(fixtures.pullSecret);
+  });
+
   cy.intercept('GET', '/api/accounts_mgmt/v1/current_account', (req) => {
     req.reply(fixtures.ocmUserAccount);
   });
+
   cy.intercept('GET', '/api/assisted-install/v2/operators/bundles*', mockBundlesResponse).as(
     'bundles',
   );
@@ -508,7 +535,8 @@ const loadAiAPIIntercepts = () => {
   }
 };
 
-const setTestEnvironment = ({ activeSignal, activeScenario }) => {
+const setTestEnvironment = ({ activeSignal, activeScenario, singleCluster = false }) => {
+  Cypress.env('AI_SINGLE_CLUSTER', singleCluster);
   setLastWizardSignal(activeSignal);
   setScenarioEnvVars(activeScenario);
   setEntityIds(activeScenario);
