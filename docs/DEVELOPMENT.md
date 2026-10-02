@@ -78,7 +78,6 @@ apply for `libs/locales` as well.
    yalc link @openshift-assisted/ui-lib
    yalc link @openshift-assisted/locales
    yalc link @openshift-assisted/types
-   yalc link @openshift-assisted/chatbot
    ```
 
    **Note**: `yalc link` needs to be executed following the `npm ci` command.  
