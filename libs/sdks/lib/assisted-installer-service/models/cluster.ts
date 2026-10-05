@@ -14,481 +14,317 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ApiVip } from './api-vip';
+import type { ApiVip } from './api-vip';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterNetwork } from './cluster-network';
+import type { BundleCreateParams } from './bundle-create-params';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterProgressInfo } from './cluster-progress-info';
+import type { ClusterNetwork } from './cluster-network';
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskEncryption } from './disk-encryption';
+import type { ClusterProgressInfo } from './cluster-progress-info';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Host } from './host';
+import type { DiskEncryption } from './disk-encryption';
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostNetwork } from './host-network';
+import type { Host } from './host';
 // May contain unused imports in some cases
 // @ts-ignore
-import { IgnitionEndpoint } from './ignition-endpoint';
+import type { HostNetwork } from './host-network';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ImageInfo } from './image-info';
+import type { IgnitionEndpoint } from './ignition-endpoint';
 // May contain unused imports in some cases
 // @ts-ignore
-import { IngressVip } from './ingress-vip';
+import type { ImageInfo } from './image-info';
 // May contain unused imports in some cases
 // @ts-ignore
-import { LogsState } from './logs-state';
+import type { IngressVip } from './ingress-vip';
 // May contain unused imports in some cases
 // @ts-ignore
-import { MachineNetwork } from './machine-network';
+import type { LastInstallationPreparation } from './last-installation-preparation';
 // May contain unused imports in some cases
 // @ts-ignore
-import { MonitoredOperator } from './monitored-operator';
+import type { LoadBalancer } from './load-balancer';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Platform } from './platform';
+import type { LogsState } from './logs-state';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ServiceNetwork } from './service-network';
+import type { MachineNetwork } from './machine-network';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { MonitoredOperator } from './monitored-operator';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { Platform } from './platform';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ServiceNetwork } from './service-network';
 
-/**
- *
- * @export
- * @interface Cluster
- */
 export interface Cluster {
   /**
    * Self link.
-   * @type {string}
-   * @memberof Cluster
    */
   href: string;
   /**
    * Unique identifier of the object.
-   * @type {string}
-   * @memberof Cluster
    */
   id: string;
-  /**
-   *
-   * @type {ImageInfo}
-   * @memberof Cluster
-   */
   image_info: ImageInfo;
   /**
-   * Indicates the type of this object. Will be \'Cluster\' if this is a complete object, \'AddHostsCluster\' for cluster that add hosts to existing OCP cluster,
-   * @type {string}
-   * @memberof Cluster
+   * Indicates the type of this object. Will be \'Cluster\' if this is a complete object, \'AddHostsCluster\' for cluster that add hosts to existing OCP cluster, \'DisconnectedCluster\' for clusters with embedded ignition for offline installation,
    */
   kind: ClusterKindEnum;
   /**
    * Status of the OpenShift cluster.
-   * @type {string}
-   * @memberof Cluster
    */
   status: ClusterStatusEnum;
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
-   * @type {string}
-   * @memberof Cluster
    */
   status_info: string;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   * @type {string}
-   * @memberof Cluster
    */
   additional_ntp_source?: string;
   /**
    * Unique identifier of the AMS subscription in OCM.
-   * @type {string}
-   * @memberof Cluster
    */
   ams_subscription_id?: string;
   /**
-   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster\'s API.
-   * @type {string}
-   * @memberof Cluster
-   */
-  api_vip?: string;
-  /**
    * The domain name used to reach the OpenShift cluster API.
-   * @type {string}
-   * @memberof Cluster
    */
   api_vip_dns_name?: string | null;
   /**
    * The virtual IPs used to reach the OpenShift cluster\'s API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
-   * @type {Array<ApiVip>}
-   * @memberof Cluster
    */
   api_vips?: Array<ApiVip> | null;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
-   * @type {string}
-   * @memberof Cluster
    */
   base_dns_domain?: string;
   /**
    * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
-   * @type {string}
-   * @memberof Cluster
    */
   cluster_network_cidr?: string;
   /**
    * The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.
-   * @type {number}
-   * @memberof Cluster
    */
   cluster_network_host_prefix?: number;
   /**
    * Cluster networks that are associated with this cluster.
-   * @type {Array<ClusterNetwork>}
-   * @memberof Cluster
    */
   cluster_networks?: Array<ClusterNetwork> | null;
   /**
    * Json formatted string containing the majority groups for connectivity checks.
-   * @type {string}
-   * @memberof Cluster
    */
   connectivity_majority_groups?: string;
   /**
-   *
-   * @type {string}
-   * @memberof Cluster
+   * Specifies the required number of control plane nodes that should be part of the cluster.
    */
+  control_plane_count?: number;
   controller_logs_collected_at?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Cluster
-   */
   controller_logs_started_at?: string;
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
-   * @type {string}
-   * @memberof Cluster
    */
   cpu_architecture?: ClusterCpuArchitectureEnum;
   /**
    * The time that this cluster was created.
-   * @type {string}
-   * @memberof Cluster
    */
   created_at?: string;
   /**
    * swagger:ignore
-   * @type {object}
-   * @memberof Cluster
    */
   deleted_at?: object;
-  /**
-   *
-   * @type {DiskEncryption}
-   * @memberof Cluster
-   */
   disk_encryption?: DiskEncryption;
-  /**
-   *
-   * @type {string}
-   * @memberof Cluster
-   */
   email_domain?: string;
   /**
    * hosts associated to this cluster that are not in \'disabled\' state.
-   * @type {number}
-   * @memberof Cluster
    */
   enabled_host_count?: number;
   /**
    * JSON-formatted string containing the usage information by feature name
-   * @type {string}
-   * @memberof Cluster
    */
   feature_usage?: string;
   /**
-   * Guaranteed availability of the installed cluster. \'Full\' installs a Highly-Available cluster over multiple master nodes whereas \'None\' installs a full cluster over one node.
-   * @type {string}
-   * @memberof Cluster
+   * (DEPRECATED) Please use \'control_plane_count\' instead. Guaranteed availability of the installed cluster. \'Full\' installs a Highly-Available cluster over multiple master nodes whereas \'None\' installs a full cluster over one node.
    */
   high_availability_mode?: ClusterHighAvailabilityModeEnum;
   /**
    * List of host networks to be filled during query.
-   * @type {Array<HostNetwork>}
-   * @memberof Cluster
    */
   host_networks?: Array<HostNetwork> | null;
   /**
    * Hosts that are associated with this cluster.
-   * @type {Array<Host>}
-   * @memberof Cluster
    */
   hosts?: Array<Host>;
   /**
    * A proxy URL to use for creating HTTP connections outside the cluster. http://\\<username\\>:\\<pswd\\>@\\<ip\\>:\\<port\\>
-   * @type {string}
-   * @memberof Cluster
    */
   http_proxy?: string;
   /**
    * A proxy URL to use for creating HTTPS connections outside the cluster. http://\\<username\\>:\\<pswd\\>@\\<ip\\>:\\<port\\>
-   * @type {string}
-   * @memberof Cluster
    */
   https_proxy?: string;
   /**
-   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes
-   * @type {string}
-   * @memberof Cluster
+   * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   hyperthreading?: ClusterHyperthreadingEnum;
-  /**
-   *
-   * @type {IgnitionEndpoint}
-   * @memberof Cluster
-   */
   ignition_endpoint?: IgnitionEndpoint;
   /**
    * Json formatted string containing a list of cluster validations to be ignored. May also contain a list with a single string \"all\" to ignore all cluster validations. Some validations cannot be ignored.
-   * @type {string}
-   * @memberof Cluster
    */
   ignored_cluster_validations?: string;
   /**
    * Json formatted string containing a list of host validations to be ignored. May also contain a list with a single string \"all\" to ignore all host validations. Some validations cannot be ignored.
-   * @type {string}
-   * @memberof Cluster
    */
   ignored_host_validations?: string;
   /**
    * Indicates whether this cluster is an imported day-2 cluster or a regular cluster. Clusters are considered imported when they are created via the ../clusters/import endpoint. Day-2 clusters converted from day-1 clusters by kube-api controllers or the ../clusters/<cluster_id>/actions/allow-add-hosts endpoint are not considered imported. Imported clusters usually lack a lot of information and are filled with default values that don\'t necessarily reflect the actual cluster they represent
-   * @type {boolean}
-   * @memberof Cluster
    */
   imported?: boolean;
   /**
-   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
-   * @type {string}
-   * @memberof Cluster
-   */
-  ingress_vip?: string;
-  /**
    * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
-   * @type {Array<IngressVip>}
-   * @memberof Cluster
    */
   ingress_vips?: Array<IngressVip> | null;
   /**
    * The time that this cluster completed installation.
-   * @type {string}
-   * @memberof Cluster
    */
   install_completed_at?: string;
   /**
    * JSON-formatted string containing the user overrides for the install-config.yaml file.
-   * @type {string}
-   * @memberof Cluster
    */
   install_config_overrides?: string;
   /**
    * The time that this cluster started installation.
-   * @type {string}
-   * @memberof Cluster
    */
   install_started_at?: string;
   /**
    * Json formatted string containing ip collisions detected in the cluster.
-   * @type {string}
-   * @memberof Cluster
    */
   ip_collisions?: string;
-  /**
-   *
-   * @type {LogsState}
-   * @memberof Cluster
-   */
+  'last-installation-preparation'?: LastInstallationPreparation;
+  load_balancer?: LoadBalancer;
   logs_info?: LogsState;
   /**
    * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The api_vip belongs to this CIDR.
-   * @type {string}
-   * @memberof Cluster
    */
   machine_network_cidr?: string;
   /**
    * Machine networks that are associated with this cluster.
-   * @type {Array<MachineNetwork>}
-   * @memberof Cluster
    */
   machine_networks?: Array<MachineNetwork> | null;
   /**
    * Operators that are associated with this cluster.
-   * @type {Array<MonitoredOperator>}
-   * @memberof Cluster
    */
   monitored_operators?: Array<MonitoredOperator>;
   /**
    * Name of the OpenShift cluster.
-   * @type {string}
-   * @memberof Cluster
    */
   name?: string;
   /**
-   * The desired network type used.
-   * @type {string}
-   * @memberof Cluster
+   * The desired network type used. - OVNKubernetes: Default CNI for OpenShift (recommended) - OpenShiftSDN: Legacy SDN (deprecated in newer versions) - CiscoACI: Cisco ACI CNI (requires custom manifests) - Cilium: Isovalent Cilium CNI (requires custom manifests) - Calico: Tigera Calico CNI (requires custom manifests) - None: No CNI - user must provide custom CNI manifests
    */
-  network_type?: ClusterNetworkTypeEnum;
+  network_type?: ClusterNetworkTypeEnum | null;
   /**
    * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
-   * @type {string}
-   * @memberof Cluster
    */
   no_proxy?: string;
   /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for the cluster hosts.
+   */
+  ntp_sources?: string;
+  /**
    * OpenShift release image URI.
-   * @type {string}
-   * @memberof Cluster
    */
   ocp_release_image?: string;
   /**
    * Cluster ID on OCP system.
-   * @type {string}
-   * @memberof Cluster
    */
   openshift_cluster_id?: string;
   /**
    * Version of the OpenShift cluster.
-   * @type {string}
-   * @memberof Cluster
    */
   openshift_version?: string;
   /**
-   *
-   * @type {string}
-   * @memberof Cluster
+   * Bundles that were selected for this cluster, with the optional operators chosen by the user. Derived from monitored operators\' source_bundles. Not persisted directly.
    */
+  operator_bundles?: Array<BundleCreateParams>;
   org_id?: string;
   /**
-   *
-   * @type {Platform}
-   * @memberof Cluster
+   * Indication if organization soft timeouts is enabled for the cluster.
    */
+  org_soft_timeouts_enabled?: boolean;
   platform?: Platform;
-  /**
-   *
-   * @type {ClusterProgressInfo}
-   * @memberof Cluster
-   */
   progress?: ClusterProgressInfo;
   /**
    * True if the pull secret has been added to the cluster.
-   * @type {boolean}
-   * @memberof Cluster
    */
   pull_secret_set?: boolean;
   /**
    * hosts associated to this cluster that are in \'known\' state.
-   * @type {number}
-   * @memberof Cluster
    */
   ready_host_count?: number;
   /**
    * Schedule workloads on masters
-   * @type {boolean}
-   * @memberof Cluster
    */
   schedulable_masters?: boolean;
   /**
    * Indicates if schedule workloads on masters will be enabled regardless the value of \'schedulable_masters\' property. Set to \'true\' when not enough hosts are associated with this cluster to disable the scheduling on masters.
-   * @type {boolean}
-   * @memberof Cluster
    */
   schedulable_masters_forced_true?: boolean;
   /**
    * The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
-   * @type {string}
-   * @memberof Cluster
    */
   service_network_cidr?: string;
   /**
    * Service networks that are associated with this cluster.
-   * @type {Array<ServiceNetwork>}
-   * @memberof Cluster
    */
   service_networks?: Array<ServiceNetwork> | null;
   /**
    * SSH public key for debugging OpenShift nodes.
-   * @type {string}
-   * @memberof Cluster
    */
   ssh_public_key?: string;
   /**
    * The last time that the cluster status was updated.
-   * @type {string}
-   * @memberof Cluster
    */
   status_updated_at?: string;
   /**
    * A comma-separated list of tags that are associated to the cluster.
-   * @type {string}
-   * @memberof Cluster
    */
   tags?: string;
   /**
    * All hosts associated to this cluster.
-   * @type {number}
-   * @memberof Cluster
    */
   total_host_count?: number;
   /**
    * The last time that this cluster was updated.
-   * @type {string}
-   * @memberof Cluster
    */
   updated_at?: string;
   /**
    * (DEPRECATED) Indicate if the networking is managed by the user.
-   * @type {boolean}
-   * @memberof Cluster
    */
   user_managed_networking?: boolean | null;
-  /**
-   *
-   * @type {string}
-   * @memberof Cluster
-   */
   user_name?: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hosts-data, etc.)
-   * @type {string}
-   * @memberof Cluster
    */
   validations_info?: string;
   /**
    * Indicate if virtual IP DHCP allocation mode is enabled.
-   * @type {boolean}
-   * @memberof Cluster
    */
   vip_dhcp_allocation?: boolean | null;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterKindEnum {
   Cluster = 'Cluster',
   AddHostsCluster = 'AddHostsCluster',
+  DisconnectedCluster = 'DisconnectedCluster',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterStatusEnum {
   Insufficient = 'insufficient',
   Ready = 'ready',
@@ -501,11 +337,8 @@ export enum ClusterStatusEnum {
   AddingHosts = 'adding-hosts',
   Cancelled = 'cancelled',
   InstallingPendingUserAction = 'installing-pending-user-action',
+  Unmonitored = 'unmonitored',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterCpuArchitectureEnum {
   X8664 = 'x86_64',
   Aarch64 = 'aarch64',
@@ -514,29 +347,26 @@ export enum ClusterCpuArchitectureEnum {
   S390x = 's390x',
   Multi = 'multi',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterHighAvailabilityModeEnum {
   Full = 'Full',
   None = 'None',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterHyperthreadingEnum {
-  Masters = 'masters',
-  Workers = 'workers',
-  All = 'all',
   None = 'none',
+  Masters = 'masters',
+  Arbiters = 'arbiters',
+  Workers = 'workers',
+  Mastersarbiters = 'masters,arbiters',
+  Mastersworkers = 'masters,workers',
+  Arbitersworkers = 'arbiters,workers',
+  Mastersarbitersworkers = 'masters,arbiters,workers',
+  All = 'all',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterNetworkTypeEnum {
   OpenShiftSdn = 'OpenShiftSDN',
   OvnKubernetes = 'OVNKubernetes',
+  CiscoAci = 'CiscoACI',
+  Cilium = 'Cilium',
+  Calico = 'Calico',
+  None = 'None',
 }

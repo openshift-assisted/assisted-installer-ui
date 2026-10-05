@@ -14,180 +14,102 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ImageType } from './image-type';
+import type { ImageType } from './image-type';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Proxy } from './proxy';
+import type { Proxy } from './proxy';
 
-/**
- *
- * @export
- * @interface InfraEnv
- */
 export interface InfraEnv {
-  /**
-   *
-   * @type {string}
-   * @memberof InfraEnv
-   */
   created_at: string;
   /**
    * Self link.
-   * @type {string}
-   * @memberof InfraEnv
    */
   href: string;
   /**
    * Unique identifier of the object.
-   * @type {string}
-   * @memberof InfraEnv
    */
   id: string;
   /**
    * Indicates the type of this object.
-   * @type {string}
-   * @memberof InfraEnv
    */
   kind: InfraEnvKindEnum;
   /**
    * Name of the infra-env.
-   * @type {string}
-   * @memberof InfraEnv
    */
   name: string;
-  /**
-   *
-   * @type {ImageType}
-   * @memberof InfraEnv
-   */
   type: ImageType;
   /**
    * The last time that this infra-env was updated.
-   * @type {string}
-   * @memberof InfraEnv
    */
   updated_at: string;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   * @type {string}
-   * @memberof InfraEnv
    */
   additional_ntp_sources?: string;
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this infra-env will trust the certificates in this bundle. Clusters formed from the hosts discovered by this infra-env will also trust the certificates in this bundle.
-   * @type {string}
-   * @memberof InfraEnv
    */
   additional_trust_bundle?: string;
   /**
    * If set, all hosts that register will be associated with the specified cluster.
-   * @type {string}
-   * @memberof InfraEnv
    */
   cluster_id?: string;
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
-   * @type {string}
-   * @memberof InfraEnv
    */
   cpu_architecture?: InfraEnvCpuArchitectureEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof InfraEnv
-   */
   download_url?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof InfraEnv
-   */
   email_domain?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof InfraEnv
-   */
   expires_at?: string;
   /**
    * Image generator version.
-   * @type {string}
-   * @memberof InfraEnv
    */
   generator_version?: string;
   /**
    * Json formatted string containing the user overrides for the initial ignition config.
-   * @type {string}
-   * @memberof InfraEnv
    */
   ignition_config_override?: string;
   /**
    * JSON formatted string array representing the discovery image kernel arguments.
-   * @type {string}
-   * @memberof InfraEnv
    */
   kernel_arguments?: string | null;
   /**
+   * The number of seconds to wait before mapping host MACs to interfaces when applying static network config on minimal ISO. This can be used on hosts that need time to discover their NICs.
+   */
+  network_discovery_delay_seconds?: number | null;
+  /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for hosts in this infra-env.
+   */
+  ntp_sources?: string;
+  /**
    * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
-   * @type {string}
-   * @memberof InfraEnv
    */
   openshift_version?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof InfraEnv
-   */
   org_id?: string;
-  /**
-   *
-   * @type {Proxy}
-   * @memberof InfraEnv
-   */
   proxy?: Proxy;
   /**
    * True if the pull secret has been added to the cluster.
-   * @type {boolean}
-   * @memberof InfraEnv
    */
   pull_secret_set?: boolean;
   /**
-   *
-   * @type {number}
-   * @memberof InfraEnv
+   * The IP address of the host that will act as the rendezvous (bootstrap) node for agent-based installations. This is optional for disconnected-iso image type and specifies which host will run the assisted service during the bootstrap phase. All other hosts will connect to this IP to coordinate the installation.
    */
+  rendezvous_ip?: string | null;
   size_bytes?: number;
   /**
    * SSH public key for debugging the installation.
-   * @type {string}
-   * @memberof InfraEnv
    */
   ssh_authorized_key?: string;
   /**
    * static network configuration string in the format expected by discovery ignition generation.
-   * @type {string}
-   * @memberof InfraEnv
    */
   static_network_config?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof InfraEnv
-   */
   user_name?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum InfraEnvKindEnum {
   InfraEnv = 'InfraEnv',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum InfraEnvCpuArchitectureEnum {
   X8664 = 'x86_64',
   Aarch64 = 'aarch64',

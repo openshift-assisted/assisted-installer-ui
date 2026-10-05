@@ -14,27 +14,15 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostTypeHardwareRequirementsWrapper } from './host-type-hardware-requirements-wrapper';
+import type { HostTypeHardwareRequirementsWrapper } from './host-type-hardware-requirements-wrapper';
 // May contain unused imports in some cases
 // @ts-ignore
-import { OperatorHardwareRequirements } from './operator-hardware-requirements';
+import type { OperatorHardwareRequirements } from './operator-hardware-requirements';
 
-/**
- *
- * @export
- * @interface PreflightHardwareRequirements
- */
 export interface PreflightHardwareRequirements {
-  /**
-   *
-   * @type {HostTypeHardwareRequirementsWrapper}
-   * @memberof PreflightHardwareRequirements
-   */
   ocp?: HostTypeHardwareRequirementsWrapper;
   /**
    * Preflight operators hardware requirements
-   * @type {Array<OperatorHardwareRequirements>}
-   * @memberof PreflightHardwareRequirements
    */
   operators?: Array<OperatorHardwareRequirements>;
 }

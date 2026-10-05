@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterResourceTotal
- */
 export interface ClusterResourceTotal {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterResourceTotal
-   */
   unit: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterResourceTotal
-   */
   value: number;
 }

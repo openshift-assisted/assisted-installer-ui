@@ -14,75 +14,56 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostStaticNetworkConfig } from './host-static-network-config';
+import type { HostStaticNetworkConfig } from './host-static-network-config';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ImageType } from './image-type';
+import type { ImageType } from './image-type';
 // May contain unused imports in some cases
 // @ts-ignore
-import { KernelArguments } from './kernel-arguments';
+import type { KernelArguments } from './kernel-arguments';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Proxy } from './proxy';
+import type { Proxy } from './proxy';
 
-/**
- *
- * @export
- * @interface InfraEnvUpdateParams
- */
 export interface InfraEnvUpdateParams {
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   * @type {string}
-   * @memberof InfraEnvUpdateParams
    */
   additional_ntp_sources?: string | null;
   /**
    * Allows users to change the additional_trust_bundle infra-env field
-   * @type {string}
-   * @memberof InfraEnvUpdateParams
    */
   additional_trust_bundle?: string | null;
   /**
    * JSON formatted string containing the user overrides for the initial ignition config.
-   * @type {string}
-   * @memberof InfraEnvUpdateParams
    */
   ignition_config_override?: string;
-  /**
-   *
-   * @type {ImageType}
-   * @memberof InfraEnvUpdateParams
-   */
   image_type?: ImageType;
-  /**
-   *
-   * @type {KernelArguments}
-   * @memberof InfraEnvUpdateParams
-   */
   kernel_arguments?: KernelArguments;
   /**
-   *
-   * @type {Proxy}
-   * @memberof InfraEnvUpdateParams
+   * The number of seconds to wait before mapping host MACs to interfaces when applying static network config on minimal ISO. This can be used on hosts that need time to discover their NICs.
    */
+  network_discovery_delay_seconds?: number | null;
+  /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for hosts in this infra-env.
+   */
+  ntp_sources?: string | null;
+  /**
+   * Version of the OS image
+   */
+  openshift_version?: string | null;
   proxy?: Proxy;
   /**
    * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
-   * @type {string}
-   * @memberof InfraEnvUpdateParams
    */
   pull_secret?: string;
   /**
+   * The IP address of the host that will act as the rendezvous (bootstrap) node for agent-based installations. This is optional for disconnected-iso image type and specifies which host will run the assisted service during the bootstrap phase. All other hosts will connect to this IP to coordinate the installation.
+   */
+  rendezvous_ip?: string | null;
+  /**
    * SSH public key for debugging the installation.
-   * @type {string}
-   * @memberof InfraEnvUpdateParams
    */
   ssh_authorized_key?: string | null;
-  /**
-   *
-   * @type {Array<HostStaticNetworkConfig>}
-   * @memberof InfraEnvUpdateParams
-   */
   static_network_config?: Array<HostStaticNetworkConfig>;
 }

@@ -12,34 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterUpgrade
- */
 export interface ClusterUpgrade {
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClusterUpgrade
-   */
   available?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterUpgrade
-   */
   state?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterUpgrade
-   */
   updated_timestamp?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterUpgrade
-   */
   version?: string;
 }

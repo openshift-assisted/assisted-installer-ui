@@ -12,28 +12,17 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface NextStepCmdRequest
- */
 export interface NextStepCmdRequest {
   /**
    * Agent image version
-   * @type {string}
-   * @memberof NextStepCmdRequest
    */
   agent_version: string;
   /**
    * Host id
-   * @type {string}
-   * @memberof NextStepCmdRequest
    */
   host_id: string;
   /**
    * Infra env id
-   * @type {string}
-   * @memberof NextStepCmdRequest
    */
   infra_env_id: string;
 }

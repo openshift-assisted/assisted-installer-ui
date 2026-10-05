@@ -12,12 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum LogsState {
   Requested = 'requested',
   Collecting = 'collecting',

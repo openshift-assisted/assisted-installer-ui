@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SelfTermsReview
- */
 export interface SelfTermsReview {
-  /**
-   *
-   * @type {boolean}
-   * @memberof SelfTermsReview
-   */
   check_optional_terms?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfTermsReview
-   */
   event_code?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfTermsReview
-   */
   site_code?: string;
 }

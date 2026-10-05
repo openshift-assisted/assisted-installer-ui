@@ -12,40 +12,25 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Route
- */
 export interface Route {
   /**
    * The destination network or destination host
-   * @type {string}
-   * @memberof Route
    */
   destination?: string;
   /**
    * Defines whether this is an IPv4 (4) or IPv6 route (6)
-   * @type {number}
-   * @memberof Route
    */
   family?: number;
   /**
    * Gateway address where the packets are sent
-   * @type {string}
-   * @memberof Route
    */
   gateway?: string;
   /**
    * Interface to which packets for this route will be sent
-   * @type {string}
-   * @memberof Route
    */
   interface?: string;
   /**
    * Route priority metric
-   * @type {number}
-   * @memberof Route
    */
   metric?: number;
 }

@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface CapabilityReview
- */
 export interface CapabilityReview {
-  /**
-   *
-   * @type {string}
-   * @memberof CapabilityReview
-   */
   result: string;
 }

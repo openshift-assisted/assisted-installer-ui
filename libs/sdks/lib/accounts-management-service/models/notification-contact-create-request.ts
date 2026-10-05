@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface NotificationContactCreateRequest
- */
 export interface NotificationContactCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof NotificationContactCreateRequest
-   */
   account_identifier?: string;
 }

@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterRegistrationRequest
- */
 export interface ClusterRegistrationRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterRegistrationRequest
-   */
   authorization_token?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterRegistrationRequest
-   */
   cluster_id?: string;
 }

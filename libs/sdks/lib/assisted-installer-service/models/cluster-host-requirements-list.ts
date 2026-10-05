@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterHostRequirements } from './cluster-host-requirements';
+import type { ClusterHostRequirements } from './cluster-host-requirements';
 
-/**
- *
- * @export
- * @interface ClusterHostRequirementsList
- */
 export interface ClusterHostRequirementsList extends Array<ClusterHostRequirements> {}

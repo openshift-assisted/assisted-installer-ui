@@ -14,39 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ExcessResource } from './excess-resource';
+import type { ExcessResource } from './excess-resource';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 
-/**
- *
- * @export
- * @interface ClusterAuthorizationResponse
- */
 export interface ClusterAuthorizationResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClusterAuthorizationResponse
-   */
   allowed: boolean;
-  /**
-   *
-   * @type {Array<ExcessResource>}
-   * @memberof ClusterAuthorizationResponse
-   */
   excess_resources: Array<ExcessResource>;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationResponse
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {ObjectReference}
-   * @memberof ClusterAuthorizationResponse
-   */
   subscription?: ObjectReference;
 }

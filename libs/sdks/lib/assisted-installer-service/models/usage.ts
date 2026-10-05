@@ -12,28 +12,17 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Usage
- */
 export interface Usage {
   /**
    * additional properties of the feature
-   * @type {{ [key: string]: object; }}
-   * @memberof Usage
    */
   data?: { [key: string]: object };
   /**
    * Unique idenftifier of the feature
-   * @type {string}
-   * @memberof Usage
    */
   id?: string;
   /**
    * name of the feature to track
-   * @type {string}
-   * @memberof Usage
    */
   name?: string;
 }

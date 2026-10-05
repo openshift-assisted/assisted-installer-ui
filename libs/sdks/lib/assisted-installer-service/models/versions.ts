@@ -12,11 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Versions
- */
 export interface Versions {
   [key: string]: string;
 }

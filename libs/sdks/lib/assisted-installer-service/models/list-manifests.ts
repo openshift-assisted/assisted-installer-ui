@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Manifest } from './manifest';
+import type { Manifest } from './manifest';
 
-/**
- *
- * @export
- * @interface ListManifests
- */
 export interface ListManifests extends Array<Manifest> {}

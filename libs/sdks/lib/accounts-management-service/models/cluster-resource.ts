@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterResourceTotal } from './cluster-resource-total';
+import type { ClusterResourceTotal } from './cluster-resource-total';
 
-/**
- *
- * @export
- * @interface ClusterResource
- */
 export interface ClusterResource {
-  /**
-   *
-   * @type {ClusterResourceTotal}
-   * @memberof ClusterResource
-   */
   total: ClusterResourceTotal;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterResource
-   */
   updated_timestamp: string;
-  /**
-   *
-   * @type {ClusterResourceTotal}
-   * @memberof ClusterResource
-   */
   used: ClusterResourceTotal;
 }

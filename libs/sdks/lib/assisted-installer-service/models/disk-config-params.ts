@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskRole } from './disk-role';
+import type { DiskRole } from './disk-role';
 
-/**
- *
- * @export
- * @interface DiskConfigParams
- */
 export interface DiskConfigParams {
-  /**
-   *
-   * @type {string}
-   * @memberof DiskConfigParams
-   */
   id: string;
-  /**
-   *
-   * @type {DiskRole}
-   * @memberof DiskConfigParams
-   */
   role?: DiskRole;
 }

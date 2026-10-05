@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostTypeHardwareRequirements } from './host-type-hardware-requirements';
+import type { HostTypeHardwareRequirements } from './host-type-hardware-requirements';
 
-/**
- *
- * @export
- * @interface HostTypeHardwareRequirementsWrapper
- */
 export interface HostTypeHardwareRequirementsWrapper {
-  /**
-   *
-   * @type {HostTypeHardwareRequirements}
-   * @memberof HostTypeHardwareRequirementsWrapper
-   */
   master?: HostTypeHardwareRequirements;
-  /**
-   *
-   * @type {HostTypeHardwareRequirements}
-   * @memberof HostTypeHardwareRequirementsWrapper
-   */
   worker?: HostTypeHardwareRequirements;
 }

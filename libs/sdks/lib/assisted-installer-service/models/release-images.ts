@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ReleaseImage } from './release-image';
+import type { ReleaseImage } from './release-image';
 
-/**
- *
- * @export
- * @interface ReleaseImages
- */
 export interface ReleaseImages extends Array<ReleaseImage> {}

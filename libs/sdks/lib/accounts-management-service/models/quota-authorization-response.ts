@@ -14,39 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ExcessResource } from './excess-resource';
+import type { ExcessResource } from './excess-resource';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 
-/**
- *
- * @export
- * @interface QuotaAuthorizationResponse
- */
 export interface QuotaAuthorizationResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof QuotaAuthorizationResponse
-   */
   allowed: boolean;
-  /**
-   *
-   * @type {Array<ExcessResource>}
-   * @memberof QuotaAuthorizationResponse
-   */
   excess_resources: Array<ExcessResource>;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationResponse
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {ObjectReference}
-   * @memberof QuotaAuthorizationResponse
-   */
   subscription?: ObjectReference;
 }

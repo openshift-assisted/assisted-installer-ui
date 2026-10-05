@@ -14,8 +14,6 @@
 
 /**
  * Image availability result.
- * @export
- * @enum {string}
  */
 
 export enum ContainerImageAvailabilityResult {

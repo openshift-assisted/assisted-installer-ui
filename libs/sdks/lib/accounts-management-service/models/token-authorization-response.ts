@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Account } from './account';
+import type { Account } from './account';
 
-/**
- *
- * @export
- * @interface TokenAuthorizationResponse
- */
 export interface TokenAuthorizationResponse {
-  /**
-   *
-   * @type {Account}
-   * @memberof TokenAuthorizationResponse
-   */
   account?: Account;
 }

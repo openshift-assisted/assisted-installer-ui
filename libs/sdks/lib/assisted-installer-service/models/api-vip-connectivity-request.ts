@@ -12,34 +12,29 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ApiVipConnectivityRequest
- */
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ApiVipConnectivityAdditionalRequestHeader } from './api-vip-connectivity-additional-request-header';
+
 export interface ApiVipConnectivityRequest {
   /**
    * URL address of the API.
-   * @type {string}
-   * @memberof ApiVipConnectivityRequest
    */
   url: string;
   /**
    * A CA certficate to be used when contacting the URL via https.
-   * @type {string}
-   * @memberof ApiVipConnectivityRequest
    */
   ca_certificate?: string | null;
   /**
-   * A string which will be used as Authorization Bearer token to fetch the ignition from ignition_endpoint_url.
-   * @type {string}
-   * @memberof ApiVipConnectivityRequest
+   * A string which will be used as Authorization Bearer token to fetch the ignition from ignition_endpoint_url (DEPRECATED use request_headers to pass this token).
    */
   ignition_endpoint_token?: string | null;
   /**
+   * Additional request headers to include when fetching the ignition from ignition_endpoint_url.
+   */
+  request_headers?: Array<ApiVipConnectivityAdditionalRequestHeader> | null;
+  /**
    * Whether to verify if the API VIP belongs to one of the interfaces (DEPRECATED).
-   * @type {boolean}
-   * @memberof ApiVipConnectivityRequest
    */
   verify_cidr?: boolean;
 }

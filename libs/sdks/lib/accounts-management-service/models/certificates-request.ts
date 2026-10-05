@@ -12,37 +12,14 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface CertificatesRequest
- */
 export interface CertificatesRequest {
+  arch: CertificatesRequestArchEnum;
   /**
-   *
-   * @type {string}
-   * @memberof CertificatesRequest
+   * @deprecated
    */
-  type: CertificatesRequestTypeEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof CertificatesRequest
-   */
-  arch?: CertificatesRequestArchEnum;
+  type?: CertificatesRequestTypeEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
-export enum CertificatesRequestTypeEnum {
-  Sca = 'sca',
-}
-/**
- * @export
- * @enum {string}
- */
 export enum CertificatesRequestArchEnum {
   X86 = 'x86',
   X8664 = 'x86_64',
@@ -53,4 +30,7 @@ export enum CertificatesRequestArchEnum {
   S390x = 's390x',
   Ia64 = 'ia64',
   Aarch64 = 'aarch64',
+}
+export enum CertificatesRequestTypeEnum {
+  Sca = 'sca',
 }

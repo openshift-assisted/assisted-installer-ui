@@ -12,22 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface OperatorCreateParams
- */
 export interface OperatorCreateParams {
-  /**
-   *
-   * @type {string}
-   * @memberof OperatorCreateParams
-   */
   name?: string;
   /**
    * Blob of operator-dependent parameters that are required for installation.
-   * @type {string}
-   * @memberof OperatorCreateParams
    */
   properties?: string;
 }

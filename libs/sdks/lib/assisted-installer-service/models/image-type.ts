@@ -12,13 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum ImageType {
   FullIso = 'full-iso',
   MinimalIso = 'minimal-iso',
+  DisconnectedIso = 'disconnected-iso',
 }

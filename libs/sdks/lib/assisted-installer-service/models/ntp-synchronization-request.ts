@@ -12,16 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface NtpSynchronizationRequest
- */
 export interface NtpSynchronizationRequest {
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   * @type {string}
-   * @memberof NtpSynchronizationRequest
    */
   ntp_source: string;
 }

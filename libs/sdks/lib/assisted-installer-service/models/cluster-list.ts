@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Cluster } from './cluster';
+import type { Cluster } from './cluster';
 
-/**
- *
- * @export
- * @interface ClusterList
- */
 export interface ClusterList extends Array<Cluster> {}

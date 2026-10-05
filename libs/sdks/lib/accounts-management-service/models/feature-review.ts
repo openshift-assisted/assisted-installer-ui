@@ -12,28 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface FeatureReview
- */
 export interface FeatureReview {
-  /**
-   *
-   * @type {string}
-   * @memberof FeatureReview
-   */
   feature: string;
-  /**
-   *
-   * @type {string}
-   * @memberof FeatureReview
-   */
   account_username?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof FeatureReview
-   */
+  cluster_id?: string;
   organization_id?: string;
 }

@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { MemoryMethod } from './memory-method';
+import type { MemoryMethod } from './memory-method';
 
-/**
- *
- * @export
- * @interface Memory
- */
 export interface Memory {
-  /**
-   *
-   * @type {number}
-   * @memberof Memory
-   */
   physical_bytes?: number;
-  /**
-   *
-   * @type {MemoryMethod}
-   * @memberof Memory
-   */
   physical_bytes_method?: MemoryMethod;
-  /**
-   *
-   * @type {number}
-   * @memberof Memory
-   */
   usable_bytes?: number;
 }

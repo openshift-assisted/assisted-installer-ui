@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DiskSpeedCheckResponse
- */
 export interface DiskSpeedCheckResponse {
   /**
    * The 99th percentile of fdatasync durations in milliseconds.
-   * @type {number}
-   * @memberof DiskSpeedCheckResponse
    */
   io_sync_duration?: number;
   /**
    * The device path.
-   * @type {string}
-   * @memberof DiskSpeedCheckResponse
    */
   path?: string;
 }

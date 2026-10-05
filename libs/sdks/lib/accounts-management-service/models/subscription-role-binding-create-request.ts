@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SubscriptionRoleBindingCreateRequest
- */
 export interface SubscriptionRoleBindingCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionRoleBindingCreateRequest
-   */
   account_username: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionRoleBindingCreateRequest
-   */
   role_id: string;
 }

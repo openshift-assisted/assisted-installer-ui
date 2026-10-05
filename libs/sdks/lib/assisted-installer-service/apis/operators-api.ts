@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,25 +28,155 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { InfraError } from '../models';
+import type { ApiError } from '../models';
 // @ts-ignore
-import { ModelError } from '../models';
+import type { Bundle } from '../models';
 // @ts-ignore
-import { MonitoredOperatorsList } from '../models';
+import type { InfraError } from '../models';
 // @ts-ignore
-import { OperatorMonitorReport } from '../models';
+import type { MonitoredOperatorsList } from '../models';
 // @ts-ignore
-import { OperatorProperties } from '../models';
+import type { OperatorMonitorReport } from '../models';
+// @ts-ignore
+import type { OperatorProperties } from '../models';
 /**
  * OperatorsApi - axios parameter creator
- * @export
  */
 export const OperatorsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * Retrieves an array of operator properties for the specified bundle when some features are activated.
+     * @summary Get operator properties for a bundle
+     * @param {string} id Identifier of the bundle, for example, &#x60;virtualization&#x60; or &#x60;openshift-ai&#x60;.
+     * @param {Array<V2GetBundleFeatureIdsEnum>} [featureIds] Array of feature IDs that affect bundle composition (e.g., [\&quot;SNO\&quot;] for Single Node OpenShift).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2GetBundle: async (
+      id: string,
+      featureIds?: Array<V2GetBundleFeatureIdsEnum>,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('v2GetBundle', 'id', id);
+      const localVarPath = `/v2/operators/bundles/{id}`.replace(
+        '{id}',
+        encodeURIComponent(String(id)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication userAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      if (featureIds) {
+        localVarQueryParameter['feature_ids'] = featureIds;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * Retrieves a list of available bundles filtered by support level.
+     * @summary Get list of available bundles
+     * @param {string} [openshiftVersion] Version of the OpenShift cluster. If the parameter is not specified, no filtering is applied.
+     * @param {V2ListBundlesCpuArchitectureEnum} [cpuArchitecture] The CPU architecture of the image (x86_64/arm64/etc). openshift_version must be set.
+     * @param {V2ListBundlesPlatformTypeEnum} [platformType] The provider platform type. openshift_version must be set.
+     * @param {string} [externalPlatformName] External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external or if openshift_version is not set.
+     * @param {Array<V2ListBundlesFeatureIdsEnum>} [featureIds] Array of feature IDs that affect bundle composition (e.g., [\&quot;SNO\&quot;] for Single Node OpenShift).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2ListBundles: async (
+      openshiftVersion?: string,
+      cpuArchitecture?: V2ListBundlesCpuArchitectureEnum,
+      platformType?: V2ListBundlesPlatformTypeEnum,
+      externalPlatformName?: string,
+      featureIds?: Array<V2ListBundlesFeatureIdsEnum>,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v2/operators/bundles`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication userAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      if (openshiftVersion !== undefined) {
+        localVarQueryParameter['openshift_version'] = openshiftVersion;
+      }
+
+      if (cpuArchitecture !== undefined) {
+        localVarQueryParameter['cpu_architecture'] = cpuArchitecture;
+      }
+
+      if (platformType !== undefined) {
+        localVarQueryParameter['platform_type'] = platformType;
+      }
+
+      if (externalPlatformName !== undefined) {
+        localVarQueryParameter['external_platform_name'] = externalPlatformName;
+      }
+
+      if (featureIds) {
+        localVarQueryParameter['feature_ids'] = featureIds;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      * Lists operators to be monitored for a cluster.
      * @param {string} clusterId The cluster to return operators for.
@@ -57,12 +187,12 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
     v2ListOfClusterOperators: async (
       clusterId: string,
       operatorName?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2ListOfClusterOperators', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/monitored-operators`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -82,6 +212,8 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
       if (operatorName !== undefined) {
         localVarQueryParameter['operator_name'] = operatorName;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -104,12 +236,12 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
      */
     v2ListOperatorProperties: async (
       operatorName: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'operatorName' is not null or undefined
       assertParamExists('v2ListOperatorProperties', 'operatorName', operatorName);
       const localVarPath = `/v2/supported-operators/{operator_name}`.replace(
-        `{${'operator_name'}}`,
+        '{operator_name}',
         encodeURIComponent(String(operatorName)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -125,6 +257,8 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -144,7 +278,7 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2ListSupportedOperators: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    v2ListSupportedOperators: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/v2/supported-operators`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -159,6 +293,8 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -183,14 +319,14 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
     v2ReportMonitoredOperatorStatus: async (
       clusterId: string,
       reportParams: OperatorMonitorReport,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2ReportMonitoredOperatorStatus', 'clusterId', clusterId);
       // verify required parameter 'reportParams' is not null or undefined
       assertParamExists('v2ReportMonitoredOperatorStatus', 'reportParams', reportParams);
       const localVarPath = `/v2/clusters/{cluster_id}/monitored-operators`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -208,6 +344,7 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -232,11 +369,77 @@ export const OperatorsApiAxiosParamCreator = function (configuration?: Configura
 
 /**
  * OperatorsApi - functional programming interface
- * @export
  */
 export const OperatorsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = OperatorsApiAxiosParamCreator(configuration);
   return {
+    /**
+     * Retrieves an array of operator properties for the specified bundle when some features are activated.
+     * @summary Get operator properties for a bundle
+     * @param {string} id Identifier of the bundle, for example, &#x60;virtualization&#x60; or &#x60;openshift-ai&#x60;.
+     * @param {Array<V2GetBundleFeatureIdsEnum>} [featureIds] Array of feature IDs that affect bundle composition (e.g., [\&quot;SNO\&quot;] for Single Node OpenShift).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v2GetBundle(
+      id: string,
+      featureIds?: Array<V2GetBundleFeatureIdsEnum>,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Bundle>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetBundle(
+        id,
+        featureIds,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['OperatorsApi.v2GetBundle']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     * Retrieves a list of available bundles filtered by support level.
+     * @summary Get list of available bundles
+     * @param {string} [openshiftVersion] Version of the OpenShift cluster. If the parameter is not specified, no filtering is applied.
+     * @param {V2ListBundlesCpuArchitectureEnum} [cpuArchitecture] The CPU architecture of the image (x86_64/arm64/etc). openshift_version must be set.
+     * @param {V2ListBundlesPlatformTypeEnum} [platformType] The provider platform type. openshift_version must be set.
+     * @param {string} [externalPlatformName] External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external or if openshift_version is not set.
+     * @param {Array<V2ListBundlesFeatureIdsEnum>} [featureIds] Array of feature IDs that affect bundle composition (e.g., [\&quot;SNO\&quot;] for Single Node OpenShift).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v2ListBundles(
+      openshiftVersion?: string,
+      cpuArchitecture?: V2ListBundlesCpuArchitectureEnum,
+      platformType?: V2ListBundlesPlatformTypeEnum,
+      externalPlatformName?: string,
+      featureIds?: Array<V2ListBundlesFeatureIdsEnum>,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Bundle>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListBundles(
+        openshiftVersion,
+        cpuArchitecture,
+        platformType,
+        externalPlatformName,
+        featureIds,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['OperatorsApi.v2ListBundles']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
     /**
      * Lists operators to be monitored for a cluster.
      * @param {string} clusterId The cluster to return operators for.
@@ -247,14 +450,24 @@ export const OperatorsApiFp = function (configuration?: Configuration) {
     async v2ListOfClusterOperators(
       clusterId: string,
       operatorName?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MonitoredOperatorsList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListOfClusterOperators(
         clusterId,
         operatorName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['OperatorsApi.v2ListOfClusterOperators']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Lists properties for an operator.
@@ -264,13 +477,23 @@ export const OperatorsApiFp = function (configuration?: Configuration) {
      */
     async v2ListOperatorProperties(
       operatorName: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OperatorProperties>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListOperatorProperties(
         operatorName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['OperatorsApi.v2ListOperatorProperties']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the list of supported operators.
@@ -278,10 +501,20 @@ export const OperatorsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async v2ListSupportedOperators(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListSupportedOperators(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['OperatorsApi.v2ListSupportedOperators']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Controller API to report of monitored operators.
@@ -293,21 +526,31 @@ export const OperatorsApiFp = function (configuration?: Configuration) {
     async v2ReportMonitoredOperatorStatus(
       clusterId: string,
       reportParams: OperatorMonitorReport,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ReportMonitoredOperatorStatus(
         clusterId,
         reportParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['OperatorsApi.v2ReportMonitoredOperatorStatus']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * OperatorsApi - factory interface
- * @export
  */
 export const OperatorsApiFactory = function (
   configuration?: Configuration,
@@ -317,6 +560,43 @@ export const OperatorsApiFactory = function (
   const localVarFp = OperatorsApiFp(configuration);
   return {
     /**
+     * Retrieves an array of operator properties for the specified bundle when some features are activated.
+     * @summary Get operator properties for a bundle
+     * @param {OperatorsApiV2GetBundleRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2GetBundle(
+      requestParameters: OperatorsApiV2GetBundleRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Bundle> {
+      return localVarFp
+        .v2GetBundle(requestParameters.id, requestParameters.featureIds, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     * Retrieves a list of available bundles filtered by support level.
+     * @summary Get list of available bundles
+     * @param {OperatorsApiV2ListBundlesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2ListBundles(
+      requestParameters: OperatorsApiV2ListBundlesRequest = {},
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<Bundle>> {
+      return localVarFp
+        .v2ListBundles(
+          requestParameters.openshiftVersion,
+          requestParameters.cpuArchitecture,
+          requestParameters.platformType,
+          requestParameters.externalPlatformName,
+          requestParameters.featureIds,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
      * Lists operators to be monitored for a cluster.
      * @param {OperatorsApiV2ListOfClusterOperatorsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -324,7 +604,7 @@ export const OperatorsApiFactory = function (
      */
     v2ListOfClusterOperators(
       requestParameters: OperatorsApiV2ListOfClusterOperatorsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<MonitoredOperatorsList> {
       return localVarFp
         .v2ListOfClusterOperators(
@@ -342,7 +622,7 @@ export const OperatorsApiFactory = function (
      */
     v2ListOperatorProperties(
       requestParameters: OperatorsApiV2ListOperatorPropertiesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<OperatorProperties> {
       return localVarFp
         .v2ListOperatorProperties(requestParameters.operatorName, options)
@@ -353,7 +633,7 @@ export const OperatorsApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2ListSupportedOperators(options?: AxiosRequestConfig): AxiosPromise<Array<string>> {
+    v2ListSupportedOperators(options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
       return localVarFp
         .v2ListSupportedOperators(options)
         .then((request) => request(axios, basePath));
@@ -366,7 +646,7 @@ export const OperatorsApiFactory = function (
      */
     v2ReportMonitoredOperatorStatus(
       requestParameters: OperatorsApiV2ReportMonitoredOperatorStatusRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2ReportMonitoredOperatorStatus(
@@ -380,78 +660,142 @@ export const OperatorsApiFactory = function (
 };
 
 /**
+ * Request parameters for v2GetBundle operation in OperatorsApi.
+ */
+export interface OperatorsApiV2GetBundleRequest {
+  /**
+   * Identifier of the bundle, for example, &#x60;virtualization&#x60; or &#x60;openshift-ai&#x60;.
+   */
+  readonly id: string;
+
+  /**
+   * Array of feature IDs that affect bundle composition (e.g., [\&quot;SNO\&quot;] for Single Node OpenShift).
+   */
+  readonly featureIds?: Array<V2GetBundleFeatureIdsEnum>;
+}
+
+/**
+ * Request parameters for v2ListBundles operation in OperatorsApi.
+ */
+export interface OperatorsApiV2ListBundlesRequest {
+  /**
+   * Version of the OpenShift cluster. If the parameter is not specified, no filtering is applied.
+   */
+  readonly openshiftVersion?: string;
+
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc). openshift_version must be set.
+   */
+  readonly cpuArchitecture?: V2ListBundlesCpuArchitectureEnum;
+
+  /**
+   * The provider platform type. openshift_version must be set.
+   */
+  readonly platformType?: V2ListBundlesPlatformTypeEnum;
+
+  /**
+   * External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external or if openshift_version is not set.
+   */
+  readonly externalPlatformName?: string;
+
+  /**
+   * Array of feature IDs that affect bundle composition (e.g., [\&quot;SNO\&quot;] for Single Node OpenShift).
+   */
+  readonly featureIds?: Array<V2ListBundlesFeatureIdsEnum>;
+}
+
+/**
  * Request parameters for v2ListOfClusterOperators operation in OperatorsApi.
- * @export
- * @interface OperatorsApiV2ListOfClusterOperatorsRequest
  */
 export interface OperatorsApiV2ListOfClusterOperatorsRequest {
   /**
    * The cluster to return operators for.
-   * @type {string}
-   * @memberof OperatorsApiV2ListOfClusterOperators
    */
   readonly clusterId: string;
 
   /**
    * An operator in the specified cluster to return its data.
-   * @type {string}
-   * @memberof OperatorsApiV2ListOfClusterOperators
    */
   readonly operatorName?: string;
 }
 
 /**
  * Request parameters for v2ListOperatorProperties operation in OperatorsApi.
- * @export
- * @interface OperatorsApiV2ListOperatorPropertiesRequest
  */
 export interface OperatorsApiV2ListOperatorPropertiesRequest {
   /**
    * The operator name.
-   * @type {string}
-   * @memberof OperatorsApiV2ListOperatorProperties
    */
   readonly operatorName: string;
 }
 
 /**
  * Request parameters for v2ReportMonitoredOperatorStatus operation in OperatorsApi.
- * @export
- * @interface OperatorsApiV2ReportMonitoredOperatorStatusRequest
  */
 export interface OperatorsApiV2ReportMonitoredOperatorStatusRequest {
   /**
    * The cluster whose operators are being monitored.
-   * @type {string}
-   * @memberof OperatorsApiV2ReportMonitoredOperatorStatus
    */
   readonly clusterId: string;
 
   /**
    * The operators monitor report.
-   * @type {OperatorMonitorReport}
-   * @memberof OperatorsApiV2ReportMonitoredOperatorStatus
    */
   readonly reportParams: OperatorMonitorReport;
 }
 
 /**
  * OperatorsApi - object-oriented interface
- * @export
- * @class OperatorsApi
- * @extends {BaseAPI}
  */
 export class OperatorsApi extends BaseAPI {
+  /**
+   * Retrieves an array of operator properties for the specified bundle when some features are activated.
+   * @summary Get operator properties for a bundle
+   * @param {OperatorsApiV2GetBundleRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public v2GetBundle(
+    requestParameters: OperatorsApiV2GetBundleRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OperatorsApiFp(this.configuration)
+      .v2GetBundle(requestParameters.id, requestParameters.featureIds, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Retrieves a list of available bundles filtered by support level.
+   * @summary Get list of available bundles
+   * @param {OperatorsApiV2ListBundlesRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public v2ListBundles(
+    requestParameters: OperatorsApiV2ListBundlesRequest = {},
+    options?: RawAxiosRequestConfig,
+  ) {
+    return OperatorsApiFp(this.configuration)
+      .v2ListBundles(
+        requestParameters.openshiftVersion,
+        requestParameters.cpuArchitecture,
+        requestParameters.platformType,
+        requestParameters.externalPlatformName,
+        requestParameters.featureIds,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    * Lists operators to be monitored for a cluster.
    * @param {OperatorsApiV2ListOfClusterOperatorsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof OperatorsApi
    */
   public v2ListOfClusterOperators(
     requestParameters: OperatorsApiV2ListOfClusterOperatorsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return OperatorsApiFp(this.configuration)
       .v2ListOfClusterOperators(
@@ -467,11 +811,10 @@ export class OperatorsApi extends BaseAPI {
    * @param {OperatorsApiV2ListOperatorPropertiesRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof OperatorsApi
    */
   public v2ListOperatorProperties(
     requestParameters: OperatorsApiV2ListOperatorPropertiesRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return OperatorsApiFp(this.configuration)
       .v2ListOperatorProperties(requestParameters.operatorName, options)
@@ -482,9 +825,8 @@ export class OperatorsApi extends BaseAPI {
    * Retrieves the list of supported operators.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof OperatorsApi
    */
-  public v2ListSupportedOperators(options?: AxiosRequestConfig) {
+  public v2ListSupportedOperators(options?: RawAxiosRequestConfig) {
     return OperatorsApiFp(this.configuration)
       .v2ListSupportedOperators(options)
       .then((request) => request(this.axios, this.basePath));
@@ -495,11 +837,10 @@ export class OperatorsApi extends BaseAPI {
    * @param {OperatorsApiV2ReportMonitoredOperatorStatusRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof OperatorsApi
    */
   public v2ReportMonitoredOperatorStatus(
     requestParameters: OperatorsApiV2ReportMonitoredOperatorStatusRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return OperatorsApiFp(this.configuration)
       .v2ReportMonitoredOperatorStatus(
@@ -509,4 +850,26 @@ export class OperatorsApi extends BaseAPI {
       )
       .then((request) => request(this.axios, this.basePath));
   }
+}
+
+export enum V2GetBundleFeatureIdsEnum {
+  Sno = 'SNO',
+}
+export enum V2ListBundlesCpuArchitectureEnum {
+  X8664 = 'x86_64',
+  Aarch64 = 'aarch64',
+  Arm64 = 'arm64',
+  Ppc64le = 'ppc64le',
+  S390x = 's390x',
+  Multi = 'multi',
+}
+export enum V2ListBundlesPlatformTypeEnum {
+  Baremetal = 'baremetal',
+  None = 'none',
+  Nutanix = 'nutanix',
+  Vsphere = 'vsphere',
+  External = 'external',
+}
+export enum V2ListBundlesFeatureIdsEnum {
+  Sno = 'SNO',
 }

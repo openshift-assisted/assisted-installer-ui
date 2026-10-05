@@ -14,20 +14,11 @@
 
 /**
  * IP address block for service IP blocks.
- * @export
- * @interface ServiceNetwork
  */
 export interface ServiceNetwork {
-  /**
-   *
-   * @type {string}
-   * @memberof ServiceNetwork
-   */
   cidr?: string;
   /**
    * A network to use for service IP addresses. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
-   * @type {string}
-   * @memberof ServiceNetwork
    */
   cluster_id?: string;
 }

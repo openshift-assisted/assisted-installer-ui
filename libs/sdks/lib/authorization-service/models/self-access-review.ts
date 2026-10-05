@@ -12,54 +12,15 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SelfAccessReview
- */
 export interface SelfAccessReview {
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   action: SelfAccessReviewActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   resource_type: SelfAccessReviewResourceTypeEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   subscription_id?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum SelfAccessReviewActionEnum {
   Get = 'get',
   List = 'list',
@@ -67,10 +28,6 @@ export enum SelfAccessReviewActionEnum {
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum SelfAccessReviewResourceTypeEnum {
   AddOn = 'AddOn',
   Flavour = 'Flavour',

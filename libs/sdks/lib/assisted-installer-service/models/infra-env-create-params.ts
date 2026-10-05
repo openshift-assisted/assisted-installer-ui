@@ -14,107 +14,72 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostStaticNetworkConfig } from './host-static-network-config';
+import type { HostStaticNetworkConfig } from './host-static-network-config';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ImageType } from './image-type';
+import type { ImageType } from './image-type';
 // May contain unused imports in some cases
 // @ts-ignore
-import { KernelArguments } from './kernel-arguments';
+import type { KernelArguments } from './kernel-arguments';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Proxy } from './proxy';
+import type { Proxy } from './proxy';
 
-/**
- *
- * @export
- * @interface InfraEnvCreateParams
- */
 export interface InfraEnvCreateParams {
   /**
    * Name of the infra-env.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   name: string;
   /**
    * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   pull_secret: string;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   additional_ntp_sources?: string | null;
   /**
    * PEM-encoded X.509 certificate bundle. Hosts discovered by this infra-env will trust the certificates in this bundle. Clusters formed from the hosts discovered by this infra-env will also trust the certificates in this bundle.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   additional_trust_bundle?: string;
   /**
    * If set, all hosts that register will be associated with the specified cluster.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   cluster_id?: string | null;
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   cpu_architecture?: InfraEnvCreateParamsCpuArchitectureEnum;
   /**
    * JSON formatted string containing the user overrides for the initial ignition config.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   ignition_config_override?: string;
-  /**
-   *
-   * @type {ImageType}
-   * @memberof InfraEnvCreateParams
-   */
   image_type?: ImageType;
-  /**
-   *
-   * @type {KernelArguments}
-   * @memberof InfraEnvCreateParams
-   */
   kernel_arguments?: KernelArguments;
   /**
+   * The number of seconds to wait before mapping host MACs to interfaces when applying static network config on minimal ISO. This can be used on hosts that need time to discover their NICs.
+   */
+  network_discovery_delay_seconds?: number | null;
+  /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for hosts in this infra-env.
+   */
+  ntp_sources?: string | null;
+  /**
    * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   openshift_version?: string;
-  /**
-   *
-   * @type {Proxy}
-   * @memberof InfraEnvCreateParams
-   */
   proxy?: Proxy;
   /**
+   * The IP address of the host that will act as the rendezvous (bootstrap) node for agent-based installations. This is optional for disconnected-iso image type and specifies which host will run the assisted service during the bootstrap phase. All other hosts will connect to this IP to coordinate the installation.
+   */
+  rendezvous_ip?: string | null;
+  /**
    * SSH public key for debugging the installation.
-   * @type {string}
-   * @memberof InfraEnvCreateParams
    */
   ssh_authorized_key?: string | null;
-  /**
-   *
-   * @type {Array<HostStaticNetworkConfig>}
-   * @memberof InfraEnvCreateParams
-   */
   static_network_config?: Array<HostStaticNetworkConfig>;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum InfraEnvCreateParamsCpuArchitectureEnum {
   X8664 = 'x86_64',
   Aarch64 = 'aarch64',

@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ContractDimension } from './contract-dimension';
+import type { ContractDimension } from './contract-dimension';
 
-/**
- *
- * @export
- * @interface Contract
- */
 export interface Contract {
-  /**
-   *
-   * @type {Array<ContractDimension>}
-   * @memberof Contract
-   */
   dimensions?: Array<ContractDimension>;
-  /**
-   *
-   * @type {string}
-   * @memberof Contract
-   */
   end_date?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Contract
-   */
   start_date?: string;
 }

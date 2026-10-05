@@ -14,8 +14,6 @@
 
 /**
  * The vip type.
- * @export
- * @enum {string}
  */
 
 export enum VipType {

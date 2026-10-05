@@ -12,28 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterTransferRequest
- */
 export interface ClusterTransferRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterTransferRequest
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterTransferRequest
-   */
   owner?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterTransferRequest
-   */
   recipient?: string;
+  recipient_ebs_account_id?: string;
+  recipient_external_org_id?: string;
 }

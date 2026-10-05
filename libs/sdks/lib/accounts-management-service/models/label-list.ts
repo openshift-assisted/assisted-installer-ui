@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Label } from './label';
+import type { Label } from './label';
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 
 /**
  * @type LabelList
- * @export
  */
 export type LabelList = List;

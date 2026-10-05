@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { StepReply } from './step-reply';
+import type { StepReply } from './step-reply';
 
-/**
- *
- * @export
- * @interface StepsReply
- */
 export interface StepsReply extends Array<StepReply> {}

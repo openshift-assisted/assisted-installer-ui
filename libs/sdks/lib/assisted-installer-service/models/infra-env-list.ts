@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { InfraEnv } from './infra-env';
+import type { InfraEnv } from './infra-env';
 
-/**
- *
- * @export
- * @interface InfraEnvList
- */
 export interface InfraEnvList extends Array<InfraEnv> {}

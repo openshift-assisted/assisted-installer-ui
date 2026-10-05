@@ -14,10 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 
 /**
  * @type Capability
- * @export
  */
 export type Capability = ObjectReference;

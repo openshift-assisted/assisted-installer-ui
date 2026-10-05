@@ -12,16 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DiskSpeedCheckRequest
- */
 export interface DiskSpeedCheckRequest {
   /**
    * --filename argument for fio (expects a file or a block device path).
-   * @type {string}
-   * @memberof DiskSpeedCheckRequest
    */
   path: string;
 }

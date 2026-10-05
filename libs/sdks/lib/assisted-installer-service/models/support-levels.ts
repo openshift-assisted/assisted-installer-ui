@@ -14,12 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { SupportLevel } from './support-level';
+import type { SupportLevel } from './support-level';
 
 /**
  * Map of feature ID or CPU architecture alongside their support level
- * @export
- * @interface SupportLevels
  */
 export interface SupportLevels {
   [key: string]: SupportLevel;

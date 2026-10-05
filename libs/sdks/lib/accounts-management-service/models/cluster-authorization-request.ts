@@ -14,129 +14,38 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ReservedResource } from './reserved-resource';
+import type { ReservedResource } from './reserved-resource';
 
-/**
- *
- * @export
- * @interface ClusterAuthorizationRequest
- */
 export interface ClusterAuthorizationRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   account_username: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   cluster_id: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   availability_zone?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClusterAuthorizationRequest
-   */
   byoc?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   cloud_account_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   cloud_provider_id?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClusterAuthorizationRequest
-   */
   disconnected?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   display_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   external_cluster_id?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClusterAuthorizationRequest
-   */
   managed?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   product_category?: ClusterAuthorizationRequestProductCategoryEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   product_id?: ClusterAuthorizationRequestProductIdEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
   quota_version?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof ClusterAuthorizationRequest
-   */
   reserve?: boolean;
-  /**
-   *
-   * @type {Array<ReservedResource>}
-   * @memberof ClusterAuthorizationRequest
-   */
   resources?: Array<ReservedResource>;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterAuthorizationRequest
-   */
-  xcm_id?: string;
+  rh_region_id?: string;
+  scope?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterAuthorizationRequestProductCategoryEnum {
   AssistedInstall = 'assistedInstall',
   HostedControlPlane = 'HostedControlPlane',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterAuthorizationRequestProductIdEnum {
   Ocp = 'OCP',
   Osd = 'OSD',
   OsdTrial = 'OSDTrial',
   Moa = 'MOA',
+  MoaHostedControlPlane = 'MOA-HostedControlPlane',
   Rhmi = 'RHMI',
   Rhosak = 'RHOSAK',
   RhosakTrial = 'RHOSAKTrial',
@@ -147,4 +56,7 @@ export enum ClusterAuthorizationRequestProductIdEnum {
   Rhacs = 'RHACS',
   RhacsTrial = 'RHACSTrial',
   Aro = 'ARO',
+  Rhoic = 'RHOIC',
+  OcpAssistedInstall = 'OCP-AssistedInstall',
+  Rovs = 'ROVS',
 }

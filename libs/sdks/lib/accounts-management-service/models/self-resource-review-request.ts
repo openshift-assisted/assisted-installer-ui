@@ -12,39 +12,16 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SelfResourceReviewRequest
- */
 export interface SelfResourceReviewRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof SelfResourceReviewRequest
-   */
   action?: SelfResourceReviewRequestActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfResourceReviewRequest
-   */
   resource_type?: SelfResourceReviewRequestResourceTypeEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum SelfResourceReviewRequestActionEnum {
   Get = 'get',
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum SelfResourceReviewRequestResourceTypeEnum {
   Cluster = 'Cluster',
   Subscription = 'Subscription',

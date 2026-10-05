@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ObjectReference
- */
 export interface ObjectReference {
-  /**
-   *
-   * @type {string}
-   * @memberof ObjectReference
-   */
   href?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ObjectReference
-   */
   id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ObjectReference
-   */
   kind?: string;
 }

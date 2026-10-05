@@ -12,46 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface EphemeralResourceQuota
- */
 export interface EphemeralResourceQuota {
-  /**
-   *
-   * @type {string}
-   * @memberof EphemeralResourceQuota
-   */
   availability_zone_type?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof EphemeralResourceQuota
-   */
   byoc?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof EphemeralResourceQuota
-   */
   resource_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof EphemeralResourceQuota
-   */
   resource_type?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof EphemeralResourceQuota
-   */
   sku?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof EphemeralResourceQuota
-   */
   sku_count?: number;
 }

@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { LandingPageEstateItem } from './landing-page-estate-item';
+import type { LandingPageEstateItem } from './landing-page-estate-item';
 
-/**
- *
- * @export
- * @interface SelfServiceLandingPageSchemaEstate
- */
 export interface SelfServiceLandingPageSchemaEstate {
-  /**
-   *
-   * @type {Array<LandingPageEstateItem>}
-   * @memberof SelfServiceLandingPageSchemaEstate
-   */
   items?: Array<LandingPageEstateItem>;
 }

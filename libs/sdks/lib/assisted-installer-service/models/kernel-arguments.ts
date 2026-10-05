@@ -14,11 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { KernelArgument } from './kernel-argument';
+import type { KernelArgument } from './kernel-argument';
 
 /**
  * List of kernel arugment objects that define the operations and values to be applied.
- * @export
- * @interface KernelArguments
  */
 export interface KernelArguments extends Array<KernelArgument> {}

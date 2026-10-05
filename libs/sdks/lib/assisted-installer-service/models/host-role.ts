@@ -12,15 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum HostRole {
   AutoAssign = 'auto-assign',
   Master = 'master',
+  Arbiter = 'arbiter',
   Worker = 'worker',
   Bootstrap = 'bootstrap',
 }

@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { LandingPageCTLItemShape } from './landing-page-ctlitem-shape';
+import type { LandingPageCTLItemShape } from './landing-page-ctlitem-shape';
 
-/**
- *
- * @export
- * @interface LandingPageCTLItem
- */
 export interface LandingPageCTLItem {
-  /**
-   *
-   * @type {LandingPageCTLItemShape}
-   * @memberof LandingPageCTLItem
-   */
   shape?: LandingPageCTLItemShape;
 }

@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PresignedUrl
- */
 export interface PresignedUrl {
   /**
    * Pre-signed URL for downloading the infra-env discovery image.
-   * @type {string}
-   * @memberof PresignedUrl
    */
   url: string;
   /**
    * Expiration time for the URL token.
-   * @type {string}
-   * @memberof PresignedUrl
    */
   expires_at?: string;
 }

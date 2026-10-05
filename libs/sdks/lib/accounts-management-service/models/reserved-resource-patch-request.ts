@@ -12,24 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ReservedResourcePatchRequest
- */
 export interface ReservedResourcePatchRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ReservedResourcePatchRequest
-   */
   billing_model?: ReservedResourcePatchRequestBillingModelEnum;
+  scope?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ReservedResourcePatchRequestBillingModelEnum {
   Standard = 'standard',
   Marketplace = 'marketplace',

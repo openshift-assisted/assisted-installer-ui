@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterTransferPatchRequest
- */
 export interface ClusterTransferPatchRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterTransferPatchRequest
-   */
   status?: string;
 }

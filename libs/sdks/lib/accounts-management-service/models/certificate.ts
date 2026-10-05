@@ -14,48 +14,13 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { CertificateSerial } from './certificate-serial';
+import type { CertificateSerial } from './certificate-serial';
 
-/**
- *
- * @export
- * @interface Certificate
- */
 export interface Certificate {
-  /**
-   *
-   * @type {string}
-   * @memberof Certificate
-   */
   cert: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Certificate
-   */
   id: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Certificate
-   */
   key: string;
-  /**
-   *
-   * @type {{ [key: string]: string; }}
-   * @memberof Certificate
-   */
   metadata: { [key: string]: string };
-  /**
-   *
-   * @type {string}
-   * @memberof Certificate
-   */
   organization_id: string;
-  /**
-   *
-   * @type {CertificateSerial}
-   * @memberof Certificate
-   */
   serial: CertificateSerial;
 }

@@ -14,26 +14,12 @@
 
 /**
  * Command for starting the next step runner
- * @export
- * @interface HostRegistrationResponseAllOfNextStepRunnerCommand
  */
 export interface HostRegistrationResponseAllOfNextStepRunnerCommand {
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof HostRegistrationResponseAllOfNextStepRunnerCommand
-   */
   args?: Array<string>;
-  /**
-   *
-   * @type {string}
-   * @memberof HostRegistrationResponseAllOfNextStepRunnerCommand
-   */
   command?: string;
   /**
    * How long in seconds to wait before retrying registration if the command fails
-   * @type {number}
-   * @memberof HostRegistrationResponseAllOfNextStepRunnerCommand
    */
   retry_seconds?: number;
 }

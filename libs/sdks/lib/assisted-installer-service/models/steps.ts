@@ -14,38 +14,17 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Step } from './step';
+import type { Step } from './step';
 
-/**
- *
- * @export
- * @interface Steps
- */
 export interface Steps {
-  /**
-   *
-   * @type {Array<Step>}
-   * @memberof Steps
-   */
   instructions?: Array<Step>;
-  /**
-   *
-   * @type {number}
-   * @memberof Steps
-   */
   next_instruction_seconds?: number;
   /**
    * What to do after finishing to run step instructions
-   * @type {string}
-   * @memberof Steps
    */
   post_step_action?: StepsPostStepActionEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum StepsPostStepActionEnum {
   Exit = 'exit',
   Continue = 'continue',

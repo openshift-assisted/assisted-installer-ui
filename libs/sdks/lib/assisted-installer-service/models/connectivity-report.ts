@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ConnectivityRemoteHost } from './connectivity-remote-host';
+import type { ConnectivityRemoteHost } from './connectivity-remote-host';
 
-/**
- *
- * @export
- * @interface ConnectivityReport
- */
 export interface ConnectivityReport {
-  /**
-   *
-   * @type {Array<ConnectivityRemoteHost>}
-   * @memberof ConnectivityReport
-   */
   remote_hosts?: Array<ConnectivityRemoteHost>;
 }

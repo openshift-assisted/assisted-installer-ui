@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface TangConnectivityResponseTangServerResponseInnerSignaturesInner
- */
 export interface TangConnectivityResponseTangServerResponseInnerSignaturesInner {
-  /**
-   *
-   * @type {string}
-   * @memberof TangConnectivityResponseTangServerResponseInnerSignaturesInner
-   */
   protected?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof TangConnectivityResponseTangServerResponseInnerSignaturesInner
-   */
   signature?: string;
 }

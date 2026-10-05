@@ -14,16 +14,15 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { CloudAccount } from './cloud-account';
+import type { CloudAccount } from './cloud-account';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 // May contain unused imports in some cases
 // @ts-ignore
-import { RelatedResource } from './related-resource';
+import type { RelatedResource } from './related-resource';
 
 /**
  * @type QuotaCost
- * @export
  */
 export type QuotaCost = ObjectReference;

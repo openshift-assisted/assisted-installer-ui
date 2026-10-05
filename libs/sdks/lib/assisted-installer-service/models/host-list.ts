@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Host } from './host';
+import type { Host } from './host';
 
-/**
- *
- * @export
- * @interface HostList
- */
 export interface HostList extends Array<Host> {}

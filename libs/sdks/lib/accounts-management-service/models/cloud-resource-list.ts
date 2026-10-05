@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { CloudResource } from './cloud-resource';
+import type { CloudResource } from './cloud-resource';
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 
 /**
  * @type CloudResourceList
- * @export
  */
 export type CloudResourceList = List;

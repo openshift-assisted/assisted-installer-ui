@@ -12,12 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum ClusterValidationId {
   MachineCidrDefined = 'machine-cidr-defined',
   ClusterCidrDefined = 'cluster-cidr-defined',
@@ -41,6 +35,31 @@ export enum ClusterValidationId {
   CnvRequirementsSatisfied = 'cnv-requirements-satisfied',
   LvmRequirementsSatisfied = 'lvm-requirements-satisfied',
   MceRequirementsSatisfied = 'mce-requirements-satisfied',
+  MtvRequirementsSatisfied = 'mtv-requirements-satisfied',
+  OscRequirementsSatisfied = 'osc-requirements-satisfied',
   NetworkTypeValid = 'network-type-valid',
+  CustomManifestsRequirementsSatisfied = 'custom-manifests-requirements-satisfied',
   PlatformRequirementsSatisfied = 'platform-requirements-satisfied',
+  NodeFeatureDiscoveryRequirementsSatisfied = 'node-feature-discovery-requirements-satisfied',
+  NvidiaGpuRequirementsSatisfied = 'nvidia-gpu-requirements-satisfied',
+  PipelinesRequirementsSatisfied = 'pipelines-requirements-satisfied',
+  ServicemeshRequirementsSatisfied = 'servicemesh-requirements-satisfied',
+  ServerlessRequirementsSatisfied = 'serverless-requirements-satisfied',
+  OpenshiftAiRequirementsSatisfied = 'openshift-ai-requirements-satisfied',
+  OpenshiftAiGpuRequirementsSatisfied = 'openshift-ai-gpu-requirements-satisfied',
+  AuthorinoRequirementsSatisfied = 'authorino-requirements-satisfied',
+  NmstateRequirementsSatisfied = 'nmstate-requirements-satisfied',
+  AmdGpuRequirementsSatisfied = 'amd-gpu-requirements-satisfied',
+  KmmRequirementsSatisfied = 'kmm-requirements-satisfied',
+  NodeHealthcheckRequirementsSatisfied = 'node-healthcheck-requirements-satisfied',
+  SelfNodeRemediationRequirementsSatisfied = 'self-node-remediation-requirements-satisfied',
+  FenceAgentsRemediationRequirementsSatisfied = 'fence-agents-remediation-requirements-satisfied',
+  NodeMaintenanceRequirementsSatisfied = 'node-maintenance-requirements-satisfied',
+  KubeDeschedulerRequirementsSatisfied = 'kube-descheduler-requirements-satisfied',
+  ClusterObservabilityRequirementsSatisfied = 'cluster-observability-requirements-satisfied',
+  NumaResourcesRequirementsSatisfied = 'numa-resources-requirements-satisfied',
+  OadpRequirementsSatisfied = 'oadp-requirements-satisfied',
+  MetallbRequirementsSatisfied = 'metallb-requirements-satisfied',
+  LokiRequirementsSatisfied = 'loki-requirements-satisfied',
+  OpenshiftLoggingRequirementsSatisfied = 'openshift-logging-requirements-satisfied',
 }

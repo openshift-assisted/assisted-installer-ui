@@ -14,8 +14,6 @@
 
 /**
  * vip verification result.
- * @export
- * @enum {string}
  */
 
 export enum VipVerification {

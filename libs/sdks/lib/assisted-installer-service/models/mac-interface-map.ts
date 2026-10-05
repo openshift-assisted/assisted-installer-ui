@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { MacInterfaceMapInner } from './mac-interface-map-inner';
+import type { MacInterfaceMapInner } from './mac-interface-map-inner';
 
-/**
- *
- * @export
- * @interface MacInterfaceMap
- */
 export interface MacInterfaceMap extends Array<MacInterfaceMapInner> {}

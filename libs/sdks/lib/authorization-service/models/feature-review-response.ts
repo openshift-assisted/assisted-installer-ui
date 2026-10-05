@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface FeatureReviewResponse
- */
 export interface FeatureReviewResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof FeatureReviewResponse
-   */
   enabled: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof FeatureReviewResponse
-   */
   feature_id: string;
 }

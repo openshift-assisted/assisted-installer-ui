@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { SKU } from './sku';
+import type { SKU } from './sku';
 
 /**
  * @type SkuList
- * @export
  */
 export type SkuList = List;

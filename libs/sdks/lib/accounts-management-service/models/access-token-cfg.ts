@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface AccessTokenCfg
- */
 export interface AccessTokenCfg {
-  /**
-   *
-   * @type {{ [key: string]: any; }}
-   * @memberof AccessTokenCfg
-   */
   auths: { [key: string]: any };
 }

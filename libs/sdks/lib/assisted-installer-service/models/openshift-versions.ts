@@ -14,13 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { OpenshiftVersion } from './openshift-version';
+import type { OpenshiftVersion } from './openshift-version';
 
-/**
- *
- * @export
- * @interface OpenshiftVersions
- */
 export interface OpenshiftVersions {
   [key: string]: OpenshiftVersion;
 }

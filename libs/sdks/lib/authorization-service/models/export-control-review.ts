@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ExportControlReview
- */
 export interface ExportControlReview {
-  /**
-   *
-   * @type {boolean}
-   * @memberof ExportControlReview
-   */
   restricted: boolean;
 }

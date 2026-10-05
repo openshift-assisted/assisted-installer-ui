@@ -12,40 +12,25 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Gpu
- */
 export interface Gpu {
   /**
    * Device address (for example \"0000:00:02.0\")
-   * @type {string}
-   * @memberof Gpu
    */
   address?: string;
   /**
    * ID of the device (for example \"3ea0\")
-   * @type {string}
-   * @memberof Gpu
    */
   device_id?: string;
   /**
    * Product name of the device (for example \"UHD Graphics 620 (Whiskey Lake)\")
-   * @type {string}
-   * @memberof Gpu
    */
   name?: string;
   /**
    * The name of the device vendor (for example \"Intel Corporation\")
-   * @type {string}
-   * @memberof Gpu
    */
   vendor?: string;
   /**
    * ID of the vendor (for example \"8086\")
-   * @type {string}
-   * @memberof Gpu
    */
   vendor_id?: string;
 }

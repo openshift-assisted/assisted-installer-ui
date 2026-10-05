@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { AccountGroup } from './account-group';
+import type { AccountGroup } from './account-group';
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 
 /**
  * @type AccountGroupList
- * @export
  */
 export type AccountGroupList = List;

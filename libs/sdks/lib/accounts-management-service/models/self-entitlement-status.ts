@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SelfEntitlementStatus
- */
 export interface SelfEntitlementStatus {
-  /**
-   *
-   * @type {string}
-   * @memberof SelfEntitlementStatus
-   */
   product?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfEntitlementStatus
-   */
   status?: string;
 }

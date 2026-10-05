@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,24 +28,31 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { CreateManifestParams } from '../models';
+import type { ApiError } from '../models';
 // @ts-ignore
-import { InfraError } from '../models';
+import type { CreateManifestParams } from '../models';
 // @ts-ignore
-import { ListManifests } from '../models';
+import type { InfraError } from '../models';
 // @ts-ignore
-import { Manifest } from '../models';
+import type { ListManifests } from '../models';
 // @ts-ignore
-import { ModelError } from '../models';
+import type { Manifest } from '../models';
 // @ts-ignore
-import { UpdateManifestParams } from '../models';
+import type { UpdateManifestParams } from '../models';
 /**
  * ManifestsApi - axios parameter creator
- * @export
  */
 export const ManifestsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -59,14 +66,14 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
     v2CreateClusterManifest: async (
       clusterId: string,
       createManifestParams: CreateManifestParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2CreateClusterManifest', 'clusterId', clusterId);
       // verify required parameter 'createManifestParams' is not null or undefined
       assertParamExists('v2CreateClusterManifest', 'createManifestParams', createManifestParams);
       const localVarPath = `/v2/clusters/{cluster_id}/manifests`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -84,6 +91,7 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -115,14 +123,14 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
       clusterId: string,
       fileName: string,
       folder?: V2DeleteClusterManifestFolderEnum,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2DeleteClusterManifest', 'clusterId', clusterId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2DeleteClusterManifest', 'fileName', fileName);
       const localVarPath = `/v2/clusters/{cluster_id}/manifests`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -146,6 +154,8 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
       if (fileName !== undefined) {
         localVarQueryParameter['file_name'] = fileName;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -172,14 +182,14 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
       clusterId: string,
       fileName: string,
       folder?: V2DownloadClusterManifestFolderEnum,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2DownloadClusterManifest', 'clusterId', clusterId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2DownloadClusterManifest', 'fileName', fileName);
       const localVarPath = `/v2/clusters/{cluster_id}/manifests/files`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -204,6 +214,8 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['file_name'] = fileName;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -220,17 +232,19 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
     /**
      * Lists manifests for customizing cluster installation.
      * @param {string} clusterId The cluster for which the manifests should be listed.
+     * @param {boolean} [includeSystemGenerated] Include system generated manifests in results? Default is false.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v2ListClusterManifests: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      includeSystemGenerated?: boolean,
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2ListClusterManifests', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/manifests`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -246,6 +260,12 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      if (includeSystemGenerated !== undefined) {
+        localVarQueryParameter['include_system_generated'] = includeSystemGenerated;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -270,14 +290,14 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
     v2UpdateClusterManifest: async (
       clusterId: string,
       updateManifestParams: UpdateManifestParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UpdateClusterManifest', 'clusterId', clusterId);
       // verify required parameter 'updateManifestParams' is not null or undefined
       assertParamExists('v2UpdateClusterManifest', 'updateManifestParams', updateManifestParams);
       const localVarPath = `/v2/clusters/{cluster_id}/manifests`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -295,6 +315,7 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -319,7 +340,6 @@ export const ManifestsApiAxiosParamCreator = function (configuration?: Configura
 
 /**
  * ManifestsApi - functional programming interface
- * @export
  */
 export const ManifestsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ManifestsApiAxiosParamCreator(configuration);
@@ -334,14 +354,24 @@ export const ManifestsApiFp = function (configuration?: Configuration) {
     async v2CreateClusterManifest(
       clusterId: string,
       createManifestParams: CreateManifestParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Manifest>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2CreateClusterManifest(
         clusterId,
         createManifestParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ManifestsApi.v2CreateClusterManifest']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Deletes a manifest from the cluster.
@@ -355,7 +385,7 @@ export const ManifestsApiFp = function (configuration?: Configuration) {
       clusterId: string,
       fileName: string,
       folder?: V2DeleteClusterManifestFolderEnum,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DeleteClusterManifest(
         clusterId,
@@ -363,7 +393,17 @@ export const ManifestsApiFp = function (configuration?: Configuration) {
         folder,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ManifestsApi.v2DeleteClusterManifest']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Downloads cluster manifest.
@@ -377,7 +417,7 @@ export const ManifestsApiFp = function (configuration?: Configuration) {
       clusterId: string,
       fileName: string,
       folder?: V2DownloadClusterManifestFolderEnum,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DownloadClusterManifest(
         clusterId,
@@ -385,23 +425,46 @@ export const ManifestsApiFp = function (configuration?: Configuration) {
         folder,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ManifestsApi.v2DownloadClusterManifest']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Lists manifests for customizing cluster installation.
      * @param {string} clusterId The cluster for which the manifests should be listed.
+     * @param {boolean} [includeSystemGenerated] Include system generated manifests in results? Default is false.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v2ListClusterManifests(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      includeSystemGenerated?: boolean,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListManifests>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListClusterManifests(
         clusterId,
+        includeSystemGenerated,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ManifestsApi.v2ListClusterManifests']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Updates a manifest for customizing cluster installation.
@@ -413,21 +476,30 @@ export const ManifestsApiFp = function (configuration?: Configuration) {
     async v2UpdateClusterManifest(
       clusterId: string,
       updateManifestParams: UpdateManifestParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Manifest>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateClusterManifest(
         clusterId,
         updateManifestParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ManifestsApi.v2UpdateClusterManifest']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * ManifestsApi - factory interface
- * @export
  */
 export const ManifestsApiFactory = function (
   configuration?: Configuration,
@@ -444,7 +516,7 @@ export const ManifestsApiFactory = function (
      */
     v2CreateClusterManifest(
       requestParameters: ManifestsApiV2CreateClusterManifestRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Manifest> {
       return localVarFp
         .v2CreateClusterManifest(
@@ -462,7 +534,7 @@ export const ManifestsApiFactory = function (
      */
     v2DeleteClusterManifest(
       requestParameters: ManifestsApiV2DeleteClusterManifestRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2DeleteClusterManifest(
@@ -481,7 +553,7 @@ export const ManifestsApiFactory = function (
      */
     v2DownloadClusterManifest(
       requestParameters: ManifestsApiV2DownloadClusterManifestRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .v2DownloadClusterManifest(
@@ -500,10 +572,14 @@ export const ManifestsApiFactory = function (
      */
     v2ListClusterManifests(
       requestParameters: ManifestsApiV2ListClusterManifestsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ListManifests> {
       return localVarFp
-        .v2ListClusterManifests(requestParameters.clusterId, options)
+        .v2ListClusterManifests(
+          requestParameters.clusterId,
+          requestParameters.includeSystemGenerated,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -514,7 +590,7 @@ export const ManifestsApiFactory = function (
      */
     v2UpdateClusterManifest(
       requestParameters: ManifestsApiV2UpdateClusterManifestRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Manifest> {
       return localVarFp
         .v2UpdateClusterManifest(
@@ -529,121 +605,91 @@ export const ManifestsApiFactory = function (
 
 /**
  * Request parameters for v2CreateClusterManifest operation in ManifestsApi.
- * @export
- * @interface ManifestsApiV2CreateClusterManifestRequest
  */
 export interface ManifestsApiV2CreateClusterManifestRequest {
   /**
    * The cluster for which a new manifest should be created.
-   * @type {string}
-   * @memberof ManifestsApiV2CreateClusterManifest
    */
   readonly clusterId: string;
 
   /**
    * The new manifest to create.
-   * @type {CreateManifestParams}
-   * @memberof ManifestsApiV2CreateClusterManifest
    */
   readonly createManifestParams: CreateManifestParams;
 }
 
 /**
  * Request parameters for v2DeleteClusterManifest operation in ManifestsApi.
- * @export
- * @interface ManifestsApiV2DeleteClusterManifestRequest
  */
 export interface ManifestsApiV2DeleteClusterManifestRequest {
   /**
    * The cluster whose manifest should be deleted.
-   * @type {string}
-   * @memberof ManifestsApiV2DeleteClusterManifest
    */
   readonly clusterId: string;
 
   /**
    * The manifest file name to delete from the cluster.
-   * @type {string}
-   * @memberof ManifestsApiV2DeleteClusterManifest
    */
   readonly fileName: string;
 
   /**
    * The folder that contains the files. Manifests can be placed in \&#39;manifests\&#39; or \&#39;openshift\&#39; directories.
-   * @type {'manifests' | 'openshift'}
-   * @memberof ManifestsApiV2DeleteClusterManifest
    */
   readonly folder?: V2DeleteClusterManifestFolderEnum;
 }
 
 /**
  * Request parameters for v2DownloadClusterManifest operation in ManifestsApi.
- * @export
- * @interface ManifestsApiV2DownloadClusterManifestRequest
  */
 export interface ManifestsApiV2DownloadClusterManifestRequest {
   /**
    * The cluster whose manifest should be downloaded.
-   * @type {string}
-   * @memberof ManifestsApiV2DownloadClusterManifest
    */
   readonly clusterId: string;
 
   /**
    * The manifest file name to download.
-   * @type {string}
-   * @memberof ManifestsApiV2DownloadClusterManifest
    */
   readonly fileName: string;
 
   /**
    * The folder that contains the files. Manifests can be placed in \&#39;manifests\&#39; or \&#39;openshift\&#39; directories.
-   * @type {'manifests' | 'openshift'}
-   * @memberof ManifestsApiV2DownloadClusterManifest
    */
   readonly folder?: V2DownloadClusterManifestFolderEnum;
 }
 
 /**
  * Request parameters for v2ListClusterManifests operation in ManifestsApi.
- * @export
- * @interface ManifestsApiV2ListClusterManifestsRequest
  */
 export interface ManifestsApiV2ListClusterManifestsRequest {
   /**
    * The cluster for which the manifests should be listed.
-   * @type {string}
-   * @memberof ManifestsApiV2ListClusterManifests
    */
   readonly clusterId: string;
+
+  /**
+   * Include system generated manifests in results? Default is false.
+   */
+  readonly includeSystemGenerated?: boolean;
 }
 
 /**
  * Request parameters for v2UpdateClusterManifest operation in ManifestsApi.
- * @export
- * @interface ManifestsApiV2UpdateClusterManifestRequest
  */
 export interface ManifestsApiV2UpdateClusterManifestRequest {
   /**
    * The cluster for which a new manifest should be updated.
-   * @type {string}
-   * @memberof ManifestsApiV2UpdateClusterManifest
    */
   readonly clusterId: string;
 
   /**
    * The manifest to be updated.
-   * @type {UpdateManifestParams}
-   * @memberof ManifestsApiV2UpdateClusterManifest
    */
   readonly updateManifestParams: UpdateManifestParams;
 }
 
 /**
  * ManifestsApi - object-oriented interface
- * @export
- * @class ManifestsApi
- * @extends {BaseAPI}
  */
 export class ManifestsApi extends BaseAPI {
   /**
@@ -651,11 +697,10 @@ export class ManifestsApi extends BaseAPI {
    * @param {ManifestsApiV2CreateClusterManifestRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManifestsApi
    */
   public v2CreateClusterManifest(
     requestParameters: ManifestsApiV2CreateClusterManifestRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ManifestsApiFp(this.configuration)
       .v2CreateClusterManifest(
@@ -671,11 +716,10 @@ export class ManifestsApi extends BaseAPI {
    * @param {ManifestsApiV2DeleteClusterManifestRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManifestsApi
    */
   public v2DeleteClusterManifest(
     requestParameters: ManifestsApiV2DeleteClusterManifestRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ManifestsApiFp(this.configuration)
       .v2DeleteClusterManifest(
@@ -692,11 +736,10 @@ export class ManifestsApi extends BaseAPI {
    * @param {ManifestsApiV2DownloadClusterManifestRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManifestsApi
    */
   public v2DownloadClusterManifest(
     requestParameters: ManifestsApiV2DownloadClusterManifestRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ManifestsApiFp(this.configuration)
       .v2DownloadClusterManifest(
@@ -713,14 +756,17 @@ export class ManifestsApi extends BaseAPI {
    * @param {ManifestsApiV2ListClusterManifestsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManifestsApi
    */
   public v2ListClusterManifests(
     requestParameters: ManifestsApiV2ListClusterManifestsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ManifestsApiFp(this.configuration)
-      .v2ListClusterManifests(requestParameters.clusterId, options)
+      .v2ListClusterManifests(
+        requestParameters.clusterId,
+        requestParameters.includeSystemGenerated,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -729,11 +775,10 @@ export class ManifestsApi extends BaseAPI {
    * @param {ManifestsApiV2UpdateClusterManifestRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManifestsApi
    */
   public v2UpdateClusterManifest(
     requestParameters: ManifestsApiV2UpdateClusterManifestRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ManifestsApiFp(this.configuration)
       .v2UpdateClusterManifest(
@@ -745,18 +790,10 @@ export class ManifestsApi extends BaseAPI {
   }
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum V2DeleteClusterManifestFolderEnum {
   Manifests = 'manifests',
   Openshift = 'openshift',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadClusterManifestFolderEnum {
   Manifests = 'manifests',
   Openshift = 'openshift',

@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ConnectivityCheckNic
- */
 export interface ConnectivityCheckNic {
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof ConnectivityCheckNic
-   */
   ip_addresses?: Array<string>;
-  /**
-   *
-   * @type {string}
-   * @memberof ConnectivityCheckNic
-   */
   mac?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ConnectivityCheckNic
-   */
   name?: string;
 }

@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { TangConnectivityResponseTangServerResponseInner } from './tang-connectivity-response-tang-server-response-inner';
+import type { TangConnectivityResponseTangServerResponseInner } from './tang-connectivity-response-tang-server-response-inner';
 
-/**
- *
- * @export
- * @interface TangConnectivityResponse
- */
 export interface TangConnectivityResponse {
   /**
    * Tang check result.
-   * @type {boolean}
-   * @memberof TangConnectivityResponse
    */
   is_success?: boolean;
-  /**
-   *
-   * @type {Array<TangConnectivityResponseTangServerResponseInner>}
-   * @memberof TangConnectivityResponse
-   */
   tang_server_response?: Array<TangConnectivityResponseTangServerResponseInner>;
 }

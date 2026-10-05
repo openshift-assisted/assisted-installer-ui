@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface CertificateSerial
- */
 export interface CertificateSerial {
-  /**
-   *
-   * @type {string}
-   * @memberof CertificateSerial
-   */
   created: string;
-  /**
-   *
-   * @type {string}
-   * @memberof CertificateSerial
-   */
   expiration: string;
-  /**
-   *
-   * @type {number}
-   * @memberof CertificateSerial
-   */
   id: number;
-  /**
-   *
-   * @type {number}
-   * @memberof CertificateSerial
-   */
   serial: number;
-  /**
-   *
-   * @type {string}
-   * @memberof CertificateSerial
-   */
   updated: string;
 }

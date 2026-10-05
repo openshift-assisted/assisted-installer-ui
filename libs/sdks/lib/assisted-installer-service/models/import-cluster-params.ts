@@ -12,34 +12,21 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ImportClusterParams
- */
 export interface ImportClusterParams {
   /**
    * The domain name used to reach the OpenShift cluster API.
-   * @type {string}
-   * @memberof ImportClusterParams
    */
   api_vip_dnsname: string;
   /**
    * OpenShift cluster name.
-   * @type {string}
-   * @memberof ImportClusterParams
    */
   name: string;
   /**
    * The id of the OCP cluster, that hosts will be added to
-   * @type {string}
-   * @memberof ImportClusterParams
    */
   openshift_cluster_id: string;
   /**
    * Version of the OpenShift cluster.
-   * @type {string}
-   * @memberof ImportClusterParams
    */
   openshift_version?: string;
 }

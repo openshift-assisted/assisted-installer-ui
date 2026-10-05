@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface HostNetwork
- */
 export interface HostNetwork {
-  /**
-   *
-   * @type {string}
-   * @memberof HostNetwork
-   */
   cidr?: string;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof HostNetwork
-   */
   host_ids?: Array<string>;
 }

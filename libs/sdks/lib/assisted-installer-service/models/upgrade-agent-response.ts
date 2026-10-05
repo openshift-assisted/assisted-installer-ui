@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UpgradeAgentResult } from './upgrade-agent-result';
+import type { UpgradeAgentResult } from './upgrade-agent-result';
 
-/**
- *
- * @export
- * @interface UpgradeAgentResponse
- */
 export interface UpgradeAgentResponse {
   /**
    * Full image reference of the image that the agent has upgraded to, for example `quay.io/registry-proxy.engineering.redhat.com/rh-osbs/openshift4-assisted-installer-agent-rhel8:v1.0.0-142`.
-   * @type {string}
-   * @memberof UpgradeAgentResponse
    */
   agent_image?: string;
-  /**
-   *
-   * @type {UpgradeAgentResult}
-   * @memberof UpgradeAgentResponse
-   */
   result?: UpgradeAgentResult;
 }

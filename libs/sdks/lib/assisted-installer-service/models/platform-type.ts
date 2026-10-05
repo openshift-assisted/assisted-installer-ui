@@ -12,16 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum PlatformType {
   Baremetal = 'baremetal',
   Nutanix = 'nutanix',
   Vsphere = 'vsphere',
   None = 'none',
-  Oci = 'oci',
+  External = 'external',
 }

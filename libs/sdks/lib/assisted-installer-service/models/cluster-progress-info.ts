@@ -12,34 +12,16 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterProgressInfo
- */
+// May contain unused imports in some cases
+// @ts-ignore
+import type { FinalizingStage } from './finalizing-stage';
+
 export interface ClusterProgressInfo {
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterProgressInfo
-   */
+  finalizing_stage?: FinalizingStage;
   finalizing_stage_percentage?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterProgressInfo
-   */
+  finalizing_stage_started_at?: string;
+  finalizing_stage_timed_out?: boolean;
   installing_stage_percentage?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterProgressInfo
-   */
   preparing_for_installation_stage_percentage?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterProgressInfo
-   */
   total_percentage?: number;
 }

@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface HostIgnitionParams
- */
 export interface HostIgnitionParams {
-  /**
-   *
-   * @type {string}
-   * @memberof HostIgnitionParams
-   */
   config?: string;
 }

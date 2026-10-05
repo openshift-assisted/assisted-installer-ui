@@ -14,8 +14,6 @@
 
 /**
  * Represents the operator state.
- * @export
- * @enum {string}
  */
 
 export enum OperatorStatus {

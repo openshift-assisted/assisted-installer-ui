@@ -14,33 +14,17 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { L2Connectivity } from './l2-connectivity';
+import type { L2Connectivity } from './l2-connectivity';
 // May contain unused imports in some cases
 // @ts-ignore
-import { L3Connectivity } from './l3-connectivity';
+import type { L3Connectivity } from './l3-connectivity';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { MtuReport } from './mtu-report';
 
-/**
- *
- * @export
- * @interface ConnectivityRemoteHost
- */
 export interface ConnectivityRemoteHost {
-  /**
-   *
-   * @type {string}
-   * @memberof ConnectivityRemoteHost
-   */
   host_id?: string;
-  /**
-   *
-   * @type {Array<L2Connectivity>}
-   * @memberof ConnectivityRemoteHost
-   */
   l2_connectivity?: Array<L2Connectivity>;
-  /**
-   *
-   * @type {Array<L3Connectivity>}
-   * @memberof ConnectivityRemoteHost
-   */
   l3_connectivity?: Array<L3Connectivity>;
+  mtu_report?: Array<MtuReport>;
 }

@@ -14,126 +14,84 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostRole } from './host-role';
+import type { HostRole } from './host-role';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Proxy } from './proxy';
+import type { Proxy } from './proxy';
 
-/**
- *
- * @export
- * @interface InstallCmdRequest
- */
 export interface InstallCmdRequest {
   /**
    * Boot device to write image on
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   boot_device: string;
   /**
    * Cluster id
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   cluster_id: string;
   /**
    * Assisted installer controller image
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   controller_image: string;
   /**
    * Host id
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   host_id: string;
   /**
    * Infra env id
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   infra_env_id: string;
   /**
    * Assisted installer image
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   installer_image: string;
-  /**
-   *
-   * @type {HostRole}
-   * @memberof InstallCmdRequest
-   */
   role: HostRole;
   /**
    * Check CVO status if needed
-   * @type {boolean}
-   * @memberof InstallCmdRequest
    */
   check_cvo?: boolean;
   /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  control_plane_count?: number;
+  /**
+   * CoreOS container image to use if installing to the local device
+   */
+  coreos_image?: string;
+  /**
    * List of disks to format
-   * @type {Array<string>}
-   * @memberof InstallCmdRequest
    */
   disks_to_format?: Array<string>;
   /**
-   * Guaranteed availability of the installed cluster. \'Full\' installs a Highly-Available cluster over multiple master nodes whereas \'None\' installs a full cluster over one node.
-   * @type {string}
-   * @memberof InstallCmdRequest
+   * If true, assisted service will attempt to skip MCO reboot
    */
-  high_availability_mode?: InstallCmdRequestHighAvailabilityModeEnum;
+  enable_skip_mco_reboot?: boolean;
   /**
    * Core-os installer addtional args
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   installer_args?: string;
   /**
    * Machine config operator image
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   mco_image?: string;
   /**
    * Must-gather images to use
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   must_gather_image?: string;
   /**
+   * If true, notify number of reboots by assisted controller
+   */
+  notify_num_reboots?: boolean;
+  /**
    * Version of the OpenShift cluster.
-   * @type {string}
-   * @memberof InstallCmdRequest
    */
   openshift_version?: string;
-  /**
-   *
-   * @type {Proxy}
-   * @memberof InstallCmdRequest
-   */
   proxy?: Proxy;
   /**
    * List of service ips
-   * @type {Array<string>}
-   * @memberof InstallCmdRequest
    */
   service_ips?: Array<string>;
   /**
    * Skip formatting installation disk
-   * @type {boolean}
-   * @memberof InstallCmdRequest
    */
   skip_installation_disk_cleanup?: boolean;
-}
-
-/**
- * @export
- * @enum {string}
- */
-export enum InstallCmdRequestHighAvailabilityModeEnum {
-  Full = 'Full',
-  None = 'None',
 }

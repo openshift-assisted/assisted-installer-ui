@@ -14,19 +14,18 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Capability } from './capability';
+import type { Capability } from './capability';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Label } from './label';
+import type { Label } from './label';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Organization } from './organization';
+import type { Organization } from './organization';
 
 /**
  * @type Account
- * @export
  */
 export type Account = ObjectReference;

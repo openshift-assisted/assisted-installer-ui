@@ -12,34 +12,12 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterRegistrationResponse
- */
 export interface ClusterRegistrationResponse {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterRegistrationResponse
-   */
   account_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterRegistrationResponse
-   */
   authorization_token?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterRegistrationResponse
-   */
   cluster_id?: string;
   /**
    * Cluster Registration expiration in Unix time
-   * @type {string}
-   * @memberof ClusterRegistrationResponse
    */
   expires_at?: string;
 }

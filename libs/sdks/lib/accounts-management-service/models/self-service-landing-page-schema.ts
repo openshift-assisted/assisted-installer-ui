@@ -14,27 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { SelfServiceLandingPageSchemaConfigTryLearn } from './self-service-landing-page-schema-config-try-learn';
+import type { SelfServiceLandingPageSchemaConfigTryLearn } from './self-service-landing-page-schema-config-try-learn';
 // May contain unused imports in some cases
 // @ts-ignore
-import { SelfServiceLandingPageSchemaEstate } from './self-service-landing-page-schema-estate';
+import type { SelfServiceLandingPageSchemaEstate } from './self-service-landing-page-schema-estate';
 
-/**
- *
- * @export
- * @interface SelfServiceLandingPageSchema
- */
 export interface SelfServiceLandingPageSchema {
-  /**
-   *
-   * @type {SelfServiceLandingPageSchemaConfigTryLearn}
-   * @memberof SelfServiceLandingPageSchema
-   */
   configTryLearn?: SelfServiceLandingPageSchemaConfigTryLearn;
-  /**
-   *
-   * @type {SelfServiceLandingPageSchemaEstate}
-   * @memberof SelfServiceLandingPageSchema
-   */
   estate?: SelfServiceLandingPageSchemaEstate;
 }

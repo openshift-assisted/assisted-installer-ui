@@ -12,96 +12,22 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SupportCasesRequest
- */
 export interface SupportCasesRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   description: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   severity: SupportCasesRequestSeverityEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   summary: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   account_number?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   case_language?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   contact_sso_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   event_stream_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   openshift_cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   product?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   subscription_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SupportCasesRequest
-   */
   version?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum SupportCasesRequestSeverityEnum {
   _1Urgent = '1 (Urgent)',
   _2High = '2 (High)',

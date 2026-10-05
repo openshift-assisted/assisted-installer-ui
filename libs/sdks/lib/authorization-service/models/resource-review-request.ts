@@ -12,45 +12,17 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ResourceReviewRequest
- */
 export interface ResourceReviewRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ResourceReviewRequest
-   */
   account_username?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResourceReviewRequest
-   */
   action?: ResourceReviewRequestActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof ResourceReviewRequest
-   */
   resource_type?: ResourceReviewRequestResourceTypeEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ResourceReviewRequestActionEnum {
   Get = 'get',
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ResourceReviewRequestResourceTypeEnum {
   Cluster = 'Cluster',
   Subscription = 'Subscription',

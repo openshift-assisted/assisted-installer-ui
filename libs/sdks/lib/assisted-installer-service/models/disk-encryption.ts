@@ -12,46 +12,32 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DiskEncryption
- */
 export interface DiskEncryption {
   /**
-   * Enable/disable disk encryption on master nodes, worker nodes, or all nodes.
-   * @type {string}
-   * @memberof DiskEncryption
+   * Enable/disable disk encryption on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   enable_on?: DiskEncryptionEnableOnEnum;
   /**
    * The disk encryption mode to use.
-   * @type {string}
-   * @memberof DiskEncryption
    */
   mode?: DiskEncryptionModeEnum;
   /**
    * JSON-formatted string containing additional information regarding tang\'s configuration
-   * @type {string}
-   * @memberof DiskEncryption
    */
   tang_servers?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum DiskEncryptionEnableOnEnum {
   None = 'none',
-  All = 'all',
   Masters = 'masters',
+  Arbiters = 'arbiters',
   Workers = 'workers',
+  Mastersarbiters = 'masters,arbiters',
+  Mastersworkers = 'masters,workers',
+  Arbitersworkers = 'arbiters,workers',
+  Mastersarbitersworkers = 'masters,arbiters,workers',
+  All = 'all',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum DiskEncryptionModeEnum {
   Tpmv2 = 'tpmv2',
   Tang = 'tang',

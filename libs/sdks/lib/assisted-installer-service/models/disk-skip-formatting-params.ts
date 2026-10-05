@@ -14,20 +14,14 @@
 
 /**
  * Allows an addition or removal of a host disk from the host\'s skip_formatting_disks list
- * @export
- * @interface DiskSkipFormattingParams
  */
 export interface DiskSkipFormattingParams {
   /**
    * The ID of the disk that is being added to or removed from the host\'s skip_formatting_disks list
-   * @type {string}
-   * @memberof DiskSkipFormattingParams
    */
   disk_id: string;
   /**
    * True if you wish to add the disk to the skip_formatting_disks list, false if you wish to remove it
-   * @type {boolean}
-   * @memberof DiskSkipFormattingParams
    */
   skip_formatting: boolean;
 }

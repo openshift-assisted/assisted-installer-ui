@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface TokenAuthorizationRequest
- */
 export interface TokenAuthorizationRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof TokenAuthorizationRequest
-   */
   authorization_token?: string;
 }

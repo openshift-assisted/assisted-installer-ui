@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Cpu
- */
 export interface Cpu {
-  /**
-   *
-   * @type {string}
-   * @memberof Cpu
-   */
   architecture?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof Cpu
-   */
   count?: number;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof Cpu
-   */
   flags?: Array<string>;
-  /**
-   *
-   * @type {number}
-   * @memberof Cpu
-   */
   frequency?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof Cpu
-   */
   model_name?: string;
 }

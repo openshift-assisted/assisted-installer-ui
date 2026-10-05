@@ -14,70 +14,47 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskConfigParams } from './disk-config-params';
+import type { DiskConfigParams } from './disk-config-params';
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskSkipFormattingParams } from './disk-skip-formatting-params';
+import type { DiskSkipFormattingParams } from './disk-skip-formatting-params';
 // May contain unused imports in some cases
 // @ts-ignore
-import { NodeLabelParams } from './node-label-params';
+import type { FencingCredentialsParams } from './fencing-credentials-params';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { IgnitionEndpointHttpHeadersParams } from './ignition-endpoint-http-headers-params';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { NodeLabelParams } from './node-label-params';
 
-/**
- *
- * @export
- * @interface HostUpdateParams
- */
 export interface HostUpdateParams {
-  /**
-   *
-   * @type {Array<DiskConfigParams>}
-   * @memberof HostUpdateParams
-   */
   disks_selected_config?: Array<DiskConfigParams> | null;
   /**
    * Allows changing the host\'s skip_formatting_disks parameter
-   * @type {Array<DiskSkipFormattingParams>}
-   * @memberof HostUpdateParams
    */
   disks_skip_formatting?: Array<DiskSkipFormattingParams> | null;
-  /**
-   *
-   * @type {string}
-   * @memberof HostUpdateParams
-   */
+  fencing_credentials?: FencingCredentialsParams;
   host_name?: string | null;
+  host_role?: HostUpdateParamsHostRoleEnum | null;
   /**
-   *
-   * @type {string}
-   * @memberof HostUpdateParams
+   * JSON-formatted string of additional HTTP headers when fetching the ignition.
    */
-  host_role?: HostUpdateParamsHostRoleEnum;
+  ignition_endpoint_http_headers?: Array<IgnitionEndpointHttpHeadersParams> | null;
   /**
    * A string which will be used as Authorization Bearer token to fetch the ignition from ignition_endpoint_url.
-   * @type {string}
-   * @memberof HostUpdateParams
    */
   ignition_endpoint_token?: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof HostUpdateParams
-   */
   machine_config_pool_name?: string | null;
   /**
    * Labels to be added to the corresponding node.
-   * @type {Array<NodeLabelParams>}
-   * @memberof HostUpdateParams
    */
   node_labels?: Array<NodeLabelParams> | null;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum HostUpdateParamsHostRoleEnum {
   AutoAssign = 'auto-assign',
   Master = 'master',
+  Arbiter = 'arbiter',
   Worker = 'worker',
 }

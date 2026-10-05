@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { VipType } from './vip-type';
+import type { VipType } from './vip-type';
 
 /**
  * Request to verify single vip.
- * @export
- * @interface VerifyVip
  */
 export interface VerifyVip {
-  /**
-   *
-   * @type {string}
-   * @memberof VerifyVip
-   */
   vip?: string;
-  /**
-   *
-   * @type {VipType}
-   * @memberof VerifyVip
-   */
   vip_type?: VipType;
 }

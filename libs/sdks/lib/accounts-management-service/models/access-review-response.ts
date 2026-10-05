@@ -12,78 +12,19 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface AccessReviewResponse
- */
 export interface AccessReviewResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof AccessReviewResponse
-   */
   allowed: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   account_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   action?: AccessReviewResponseActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof AccessReviewResponse
-   */
   is_ocm_internal?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   reason?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   resource_type?: AccessReviewResponseResourceTypeEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   subscription_id?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum AccessReviewResponseActionEnum {
   Get = 'get',
   List = 'list',
@@ -91,10 +32,6 @@ export enum AccessReviewResponseActionEnum {
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum AccessReviewResponseResourceTypeEnum {
   AddOn = 'AddOn',
   Flavour = 'Flavour',
@@ -111,7 +48,7 @@ export enum AccessReviewResponseResourceTypeEnum {
   RegistryCredential = 'RegistryCredential',
   CurrentAccount = 'CurrentAccount',
   AccessReview = 'AccessReview',
-  SelfAcccessReview = 'SelfAcccessReview',
+  SelfAccessReview = 'SelfAccessReview',
   ResourceReview = 'ResourceReview',
   SelfResourceReview = 'SelfResourceReview',
   ClusterRegistration = 'ClusterRegistration',
@@ -133,11 +70,15 @@ export enum AccessReviewResponseResourceTypeEnum {
   SubscriptionLabel = 'SubscriptionLabel',
   OrganizationLabel = 'OrganizationLabel',
   SubscriptionLabelInternal = 'SubscriptionLabelInternal',
-  SelfAccessReview = 'SelfAccessReview',
   SubscriptionInternal = 'SubscriptionInternal',
   SubscriptionRoleBinding = 'SubscriptionRoleBinding',
   ClusterSelfManaged = 'ClusterSelfManaged',
   ClusterSelfManagedAddon = 'ClusterSelfManagedAddon',
   ClusterSelfManagedLabel = 'ClusterSelfManagedLabel',
   ClusterSelfManagedStatus = 'ClusterSelfManagedStatus',
+  OsdTrialProtectedCluster = 'OsdTrialProtectedCluster',
+  ManifestWorkSync = 'ManifestWorkSync',
+  ClusterForcedUpgrade = 'ClusterForcedUpgrade',
+  DeleteProtection = 'DeleteProtection',
+  ScheduledUpgrade = 'ScheduledUpgrade',
 }

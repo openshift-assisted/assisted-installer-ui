@@ -14,33 +14,16 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { VipType } from './vip-type';
+import type { VipType } from './vip-type';
 // May contain unused imports in some cases
 // @ts-ignore
-import { VipVerification } from './vip-verification';
+import type { VipVerification } from './vip-verification';
 
 /**
  * Single VIP verification result.
- * @export
- * @interface VerifiedVip
  */
 export interface VerifiedVip {
-  /**
-   *
-   * @type {VipVerification}
-   * @memberof VerifiedVip
-   */
   verification?: VipVerification;
-  /**
-   *
-   * @type {string}
-   * @memberof VerifiedVip
-   */
   vip?: string;
-  /**
-   *
-   * @type {VipType}
-   * @memberof VerifiedVip
-   */
   vip_type?: VipType;
 }

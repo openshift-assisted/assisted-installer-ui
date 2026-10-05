@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
+import type { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
 
-/**
- *
- * @export
- * @interface HostTypeHardwareRequirements
- */
 export interface HostTypeHardwareRequirements {
   /**
    * Host requirements that cannot be quantified at the time of calculation. Descriptions or formulas of requiements
-   * @type {Array<string>}
-   * @memberof HostTypeHardwareRequirements
    */
   qualitative?: Array<string>;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof HostTypeHardwareRequirements
-   */
   quantitative?: ClusterHostRequirementsDetails;
 }

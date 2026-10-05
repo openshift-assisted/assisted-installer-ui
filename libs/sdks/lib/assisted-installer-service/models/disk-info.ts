@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskSpeed } from './disk-speed';
+import type { DiskSpeed } from './disk-speed';
 
-/**
- *
- * @export
- * @interface DiskInfo
- */
 export interface DiskInfo {
-  /**
-   *
-   * @type {DiskSpeed}
-   * @memberof DiskInfo
-   */
   disk_speed?: DiskSpeed;
-  /**
-   *
-   * @type {string}
-   * @memberof DiskInfo
-   */
   id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof DiskInfo
-   */
   path?: string;
 }

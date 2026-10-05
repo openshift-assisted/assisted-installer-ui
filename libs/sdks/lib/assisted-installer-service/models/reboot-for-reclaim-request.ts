@@ -14,14 +14,10 @@
 
 /**
  * Information sent to the agent for rebooting a host into discovery.
- * @export
- * @interface RebootForReclaimRequest
  */
 export interface RebootForReclaimRequest {
   /**
    * The base directory on the host that contains the /boot folder. The host needs to chroot into this directory in order to properly reboot.
-   * @type {string}
-   * @memberof RebootForReclaimRequest
    */
   host_fs_mount_dir: string;
 }

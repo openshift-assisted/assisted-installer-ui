@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RegistryAddressValue
- */
 export interface RegistryAddressValue {
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryAddressValue
-   */
   auth?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryAddressValue
-   */
   email?: string;
 }

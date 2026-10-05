@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface HostCreateParams
- */
 export interface HostCreateParams {
-  /**
-   *
-   * @type {string}
-   * @memberof HostCreateParams
-   */
   host_id: string;
-  /**
-   *
-   * @type {string}
-   * @memberof HostCreateParams
-   */
   discovery_agent_version?: string;
 }

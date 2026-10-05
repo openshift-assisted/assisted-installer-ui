@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ManagedDomain } from './managed-domain';
+import type { ManagedDomain } from './managed-domain';
 
-/**
- *
- * @export
- * @interface ListManagedDomains
- */
 export interface ListManagedDomains extends Array<ManagedDomain> {}

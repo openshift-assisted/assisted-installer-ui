@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DiskSpeed
- */
 export interface DiskSpeed {
-  /**
-   *
-   * @type {number}
-   * @memberof DiskSpeed
-   */
   exit_code?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof DiskSpeed
-   */
   speed_ms?: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof DiskSpeed
-   */
   tested?: boolean;
 }

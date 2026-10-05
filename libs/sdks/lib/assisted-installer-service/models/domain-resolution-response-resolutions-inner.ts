@@ -12,28 +12,21 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DomainResolutionResponseResolutionsInner
- */
 export interface DomainResolutionResponseResolutionsInner {
   /**
    * The domain that was resolved
-   * @type {string}
-   * @memberof DomainResolutionResponseResolutionsInner
    */
   domain_name: string;
   /**
+   * The cnames that were resolved for the domain, empty if none
+   */
+  cnames?: Array<string>;
+  /**
    * The IPv4 addresses of the domain, empty if none
-   * @type {Array<string>}
-   * @memberof DomainResolutionResponseResolutionsInner
    */
   ipv4_addresses?: Array<string>;
   /**
    * The IPv6 addresses of the domain, empty if none
-   * @type {Array<string>}
-   * @memberof DomainResolutionResponseResolutionsInner
    */
   ipv6_addresses?: Array<string>;
 }

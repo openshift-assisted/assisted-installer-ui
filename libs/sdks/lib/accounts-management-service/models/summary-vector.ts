@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SummaryVector
- */
 export interface SummaryVector {
-  /**
-   *
-   * @type {string}
-   * @memberof SummaryVector
-   */
   time?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof SummaryVector
-   */
   value?: number;
 }

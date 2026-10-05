@@ -14,42 +14,22 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostStage } from './host-stage';
+import type { HostStage } from './host-stage';
 
-/**
- *
- * @export
- * @interface HostProgressInfo
- */
 export interface HostProgressInfo {
-  /**
-   *
-   * @type {HostStage}
-   * @memberof HostProgressInfo
-   */
   current_stage?: HostStage;
-  /**
-   *
-   * @type {number}
-   * @memberof HostProgressInfo
-   */
   installation_percentage?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof HostProgressInfo
-   */
   progress_info?: string;
   /**
    * Time at which the current progress stage started.
-   * @type {string}
-   * @memberof HostProgressInfo
    */
   stage_started_at?: string;
   /**
+   * Indicate of the current stage has been timed out.
+   */
+  stage_timed_out?: boolean;
+  /**
    * Time at which the current progress stage was last updated.
-   * @type {string}
-   * @memberof HostProgressInfo
    */
   stage_updated_at?: string;
 }

@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,18 +28,27 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { ListVersions } from '../models';
+import type { ApiError } from '../models';
 // @ts-ignore
-import { ModelError } from '../models';
+import type { ListVersions } from '../models';
 // @ts-ignore
-import { OpenshiftVersions } from '../models';
+import type { OpenshiftVersions } from '../models';
+// @ts-ignore
+import type { ReleaseSources } from '../models';
 /**
  * VersionsApi - axios parameter creator
- * @export
  */
 export const VersionsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -48,7 +57,7 @@ export const VersionsApiAxiosParamCreator = function (configuration?: Configurat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2ListComponentVersions: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    v2ListComponentVersions: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/v2/component-versions`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -63,6 +72,44 @@ export const VersionsApiAxiosParamCreator = function (configuration?: Configurat
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * Retrieves openshift release sources configuration.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2ListReleaseSources: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v2/release-sources`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication userAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -79,11 +126,15 @@ export const VersionsApiAxiosParamCreator = function (configuration?: Configurat
     },
     /**
      * Retrieves the list of OpenShift supported versions.
+     * @param {string} [version] Retrieves only the versions that contain the specified substring in their display name.
+     * @param {boolean} [onlyLatest] If true, returns only the latest version for each minor.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v2ListSupportedOpenshiftVersions: async (
-      options: AxiosRequestConfig = {},
+      version?: string,
+      onlyLatest?: boolean,
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/v2/openshift-versions`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -99,6 +150,16 @@ export const VersionsApiAxiosParamCreator = function (configuration?: Configurat
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      if (version !== undefined) {
+        localVarQueryParameter['version'] = version;
+      }
+
+      if (onlyLatest !== undefined) {
+        localVarQueryParameter['only_latest'] = onlyLatest;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -118,7 +179,6 @@ export const VersionsApiAxiosParamCreator = function (configuration?: Configurat
 
 /**
  * VersionsApi - functional programming interface
- * @export
  */
 export const VersionsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = VersionsApiAxiosParamCreator(configuration);
@@ -129,30 +189,76 @@ export const VersionsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async v2ListComponentVersions(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListVersions>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListComponentVersions(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['VersionsApi.v2ListComponentVersions']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     * Retrieves openshift release sources configuration.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v2ListReleaseSources(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReleaseSources>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListReleaseSources(options);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['VersionsApi.v2ListReleaseSources']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the list of OpenShift supported versions.
+     * @param {string} [version] Retrieves only the versions that contain the specified substring in their display name.
+     * @param {boolean} [onlyLatest] If true, returns only the latest version for each minor.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v2ListSupportedOpenshiftVersions(
-      options?: AxiosRequestConfig,
+      version?: string,
+      onlyLatest?: boolean,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenshiftVersions>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListSupportedOpenshiftVersions(
+        version,
+        onlyLatest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['VersionsApi.v2ListSupportedOpenshiftVersions']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * VersionsApi - factory interface
- * @export
  */
 export const VersionsApiFactory = function (
   configuration?: Configuration,
@@ -166,54 +272,97 @@ export const VersionsApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2ListComponentVersions(options?: AxiosRequestConfig): AxiosPromise<ListVersions> {
+    v2ListComponentVersions(options?: RawAxiosRequestConfig): AxiosPromise<ListVersions> {
       return localVarFp
         .v2ListComponentVersions(options)
         .then((request) => request(axios, basePath));
     },
     /**
+     * Retrieves openshift release sources configuration.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2ListReleaseSources(options?: RawAxiosRequestConfig): AxiosPromise<ReleaseSources> {
+      return localVarFp.v2ListReleaseSources(options).then((request) => request(axios, basePath));
+    },
+    /**
      * Retrieves the list of OpenShift supported versions.
+     * @param {VersionsApiV2ListSupportedOpenshiftVersionsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v2ListSupportedOpenshiftVersions(
-      options?: AxiosRequestConfig,
+      requestParameters: VersionsApiV2ListSupportedOpenshiftVersionsRequest = {},
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<OpenshiftVersions> {
       return localVarFp
-        .v2ListSupportedOpenshiftVersions(options)
+        .v2ListSupportedOpenshiftVersions(
+          requestParameters.version,
+          requestParameters.onlyLatest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
   };
 };
 
 /**
+ * Request parameters for v2ListSupportedOpenshiftVersions operation in VersionsApi.
+ */
+export interface VersionsApiV2ListSupportedOpenshiftVersionsRequest {
+  /**
+   * Retrieves only the versions that contain the specified substring in their display name.
+   */
+  readonly version?: string;
+
+  /**
+   * If true, returns only the latest version for each minor.
+   */
+  readonly onlyLatest?: boolean;
+}
+
+/**
  * VersionsApi - object-oriented interface
- * @export
- * @class VersionsApi
- * @extends {BaseAPI}
  */
 export class VersionsApi extends BaseAPI {
   /**
    * List of component versions.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof VersionsApi
    */
-  public v2ListComponentVersions(options?: AxiosRequestConfig) {
+  public v2ListComponentVersions(options?: RawAxiosRequestConfig) {
     return VersionsApiFp(this.configuration)
       .v2ListComponentVersions(options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
-   * Retrieves the list of OpenShift supported versions.
+   * Retrieves openshift release sources configuration.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof VersionsApi
    */
-  public v2ListSupportedOpenshiftVersions(options?: AxiosRequestConfig) {
+  public v2ListReleaseSources(options?: RawAxiosRequestConfig) {
     return VersionsApiFp(this.configuration)
-      .v2ListSupportedOpenshiftVersions(options)
+      .v2ListReleaseSources(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Retrieves the list of OpenShift supported versions.
+   * @param {VersionsApiV2ListSupportedOpenshiftVersionsRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public v2ListSupportedOpenshiftVersions(
+    requestParameters: VersionsApiV2ListSupportedOpenshiftVersionsRequest = {},
+    options?: RawAxiosRequestConfig,
+  ) {
+    return VersionsApiFp(this.configuration)
+      .v2ListSupportedOpenshiftVersions(
+        requestParameters.version,
+        requestParameters.onlyLatest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }

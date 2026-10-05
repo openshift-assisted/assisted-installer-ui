@@ -14,30 +14,16 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { VipVerification } from './vip-verification';
+import type { VipVerification } from './vip-verification';
 
 /**
  * The virtual IP used to reach the OpenShift cluster\'s API.
- * @export
- * @interface ApiVip
  */
 export interface ApiVip {
   /**
    * The cluster that this VIP is associated with.
-   * @type {string}
-   * @memberof ApiVip
    */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ApiVip
-   */
   ip?: string;
-  /**
-   *
-   * @type {VipVerification}
-   * @memberof ApiVip
-   */
   verification?: VipVerification;
 }

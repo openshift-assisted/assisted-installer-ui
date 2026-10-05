@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { OperatorProperty } from './operator-property';
+import type { OperatorProperty } from './operator-property';
 
-/**
- *
- * @export
- * @interface OperatorProperties
- */
 export interface OperatorProperties extends Array<OperatorProperty> {}

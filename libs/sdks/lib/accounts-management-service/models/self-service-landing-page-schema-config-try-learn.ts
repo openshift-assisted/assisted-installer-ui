@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { LandingPageCTLItem } from './landing-page-ctlitem';
+import type { LandingPageCTLItem } from './landing-page-ctlitem';
 
-/**
- *
- * @export
- * @interface SelfServiceLandingPageSchemaConfigTryLearn
- */
 export interface SelfServiceLandingPageSchemaConfigTryLearn {
-  /**
-   *
-   * @type {Array<LandingPageCTLItem>}
-   * @memberof SelfServiceLandingPageSchemaConfigTryLearn
-   */
   configure?: Array<LandingPageCTLItem>;
-  /**
-   *
-   * @type {Array<LandingPageCTLItem>}
-   * @memberof SelfServiceLandingPageSchemaConfigTryLearn
-   */
   try?: Array<LandingPageCTLItem>;
 }

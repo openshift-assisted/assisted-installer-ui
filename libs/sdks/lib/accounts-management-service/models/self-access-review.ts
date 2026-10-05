@@ -12,54 +12,15 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SelfAccessReview
- */
 export interface SelfAccessReview {
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   action: SelfAccessReviewActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   resource_type: SelfAccessReviewResourceTypeEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SelfAccessReview
-   */
   subscription_id?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum SelfAccessReviewActionEnum {
   Get = 'get',
   List = 'list',
@@ -67,10 +28,6 @@ export enum SelfAccessReviewActionEnum {
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum SelfAccessReviewResourceTypeEnum {
   AddOn = 'AddOn',
   Flavour = 'Flavour',
@@ -87,7 +44,7 @@ export enum SelfAccessReviewResourceTypeEnum {
   RegistryCredential = 'RegistryCredential',
   CurrentAccount = 'CurrentAccount',
   AccessReview = 'AccessReview',
-  SelfAcccessReview = 'SelfAcccessReview',
+  SelfAccessReview = 'SelfAccessReview',
   ResourceReview = 'ResourceReview',
   SelfResourceReview = 'SelfResourceReview',
   ClusterRegistration = 'ClusterRegistration',
@@ -109,11 +66,22 @@ export enum SelfAccessReviewResourceTypeEnum {
   SubscriptionLabel = 'SubscriptionLabel',
   OrganizationLabel = 'OrganizationLabel',
   SubscriptionLabelInternal = 'SubscriptionLabelInternal',
-  SelfAccessReview = 'SelfAccessReview',
   SubscriptionInternal = 'SubscriptionInternal',
   SubscriptionRoleBinding = 'SubscriptionRoleBinding',
   ClusterSelfManaged = 'ClusterSelfManaged',
   ClusterSelfManagedAddon = 'ClusterSelfManagedAddon',
   ClusterSelfManagedLabel = 'ClusterSelfManagedLabel',
   ClusterSelfManagedStatus = 'ClusterSelfManagedStatus',
+  ClusterKubeletConfig = 'ClusterKubeletConfig',
+  ClusterBreakGlassCredential = 'ClusterBreakGlassCredential',
+  AccessRequestDecision = 'AccessRequestDecision',
+  Idp = 'Idp',
+  ClusterAutoscaler = 'ClusterAutoscaler',
+  MachinePool = 'MachinePool',
+  OsdTrialProtectedCluster = 'OsdTrialProtectedCluster',
+  ManifestWorkSync = 'ManifestWorkSync',
+  ClusterForcedUpgrade = 'ClusterForcedUpgrade',
+  DeletedCluster = 'DeletedCluster',
+  DeleteProtection = 'DeleteProtection',
+  ScheduledUpgrade = 'ScheduledUpgrade',
 }
