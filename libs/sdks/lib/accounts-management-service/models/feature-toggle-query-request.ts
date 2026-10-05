@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface FeatureToggleQueryRequest
- */
 export interface FeatureToggleQueryRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof FeatureToggleQueryRequest
-   */
   organization_id: string;
 }

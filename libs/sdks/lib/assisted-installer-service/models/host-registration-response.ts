@@ -14,25 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Host } from './host';
+import type { Host } from './host';
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostProgressInfo } from './host-progress-info';
+import type { HostProgressInfo } from './host-progress-info';
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostRegistrationResponseAllOfNextStepRunnerCommand } from './host-registration-response-all-of-next-step-runner-command';
+import type { HostRegistrationResponseAllOfNextStepRunnerCommand } from './host-registration-response-all-of-next-step-runner-command';
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostRole } from './host-role';
+import type { HostRole } from './host-role';
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostStage } from './host-stage';
+import type { HostStage } from './host-stage';
 // May contain unused imports in some cases
 // @ts-ignore
-import { LogsState } from './logs-state';
+import type { LogsState } from './logs-state';
 
 /**
  * @type HostRegistrationResponse
- * @export
  */
 export type HostRegistrationResponse = Host;

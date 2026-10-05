@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ExportControlReviewRequest
- */
 export interface ExportControlReviewRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ExportControlReviewRequest
-   */
   account_username: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof ExportControlReviewRequest
-   */
   ignore_cache?: boolean;
 }

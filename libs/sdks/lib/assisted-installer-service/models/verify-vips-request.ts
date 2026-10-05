@@ -14,11 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { VerifyVip } from './verify-vip';
+import type { VerifyVip } from './verify-vip';
 
 /**
  * list of vips to be verified.
- * @export
- * @interface VerifyVipsRequest
  */
 export interface VerifyVipsRequest extends Array<VerifyVip> {}

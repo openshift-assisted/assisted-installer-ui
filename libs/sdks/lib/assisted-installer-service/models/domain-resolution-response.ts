@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { DomainResolutionResponseResolutionsInner } from './domain-resolution-response-resolutions-inner';
+import type { DomainResolutionResponseResolutionsInner } from './domain-resolution-response-resolutions-inner';
 
-/**
- *
- * @export
- * @interface DomainResolutionResponse
- */
 export interface DomainResolutionResponse {
-  /**
-   *
-   * @type {Array<DomainResolutionResponseResolutionsInner>}
-   * @memberof DomainResolutionResponse
-   */
   resolutions: Array<DomainResolutionResponseResolutionsInner>;
 }

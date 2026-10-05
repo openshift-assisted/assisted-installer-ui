@@ -14,36 +14,20 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { OperatorStatus } from './operator-status';
+import type { OperatorStatus } from './operator-status';
 
-/**
- *
- * @export
- * @interface OperatorMonitorReport
- */
 export interface OperatorMonitorReport {
   /**
    * Unique name of the operator.
-   * @type {string}
-   * @memberof OperatorMonitorReport
    */
   name?: string;
-  /**
-   *
-   * @type {OperatorStatus}
-   * @memberof OperatorMonitorReport
-   */
   status?: OperatorStatus;
   /**
    * Detailed information about the operator state.
-   * @type {string}
-   * @memberof OperatorMonitorReport
    */
   status_info?: string;
   /**
    * operator version.
-   * @type {string}
-   * @memberof OperatorMonitorReport
    */
   version?: string;
 }

@@ -12,40 +12,16 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface L3Connectivity
- */
 export interface L3Connectivity {
   /**
    * Average round trip time in milliseconds.
-   * @type {number}
-   * @memberof L3Connectivity
    */
   average_rtt_ms?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof L3Connectivity
-   */
   outgoing_nic?: string;
   /**
    * Percentage of packets lost during connectivity check.
-   * @type {number}
-   * @memberof L3Connectivity
    */
   packet_loss_percentage?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof L3Connectivity
-   */
   remote_ip_address?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof L3Connectivity
-   */
   successful?: boolean;
 }

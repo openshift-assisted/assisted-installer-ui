@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { SupportLevels } from './support-levels';
+import type { SupportLevels } from './support-levels';
 
-/**
- *
- * @export
- * @interface GetSupportedArchitectures200Response
- */
 export interface GetSupportedArchitectures200Response {
-  /**
-   *
-   * @type {SupportLevels}
-   * @memberof GetSupportedArchitectures200Response
-   */
   architectures?: SupportLevels;
 }

@@ -12,14 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum HostRoleUpdateParams {
   AutoAssign = 'auto-assign',
   Master = 'master',
+  Arbiter = 'arbiter',
   Worker = 'worker',
 }

@@ -12,16 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface TangConnectivityRequest
- */
 export interface TangConnectivityRequest {
   /**
    * JSON-formatted string containing additional information regarding tang\'s configuration
-   * @type {string}
-   * @memberof TangConnectivityRequest
    */
   tang_servers: string;
 }

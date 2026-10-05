@@ -12,16 +12,12 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum HostValidationId {
   Connected = 'connected',
   MediaConnected = 'media-connected',
   HasInventory = 'has-inventory',
+  InventoryNotPartiallyTruncated = 'inventory-not-partially-truncated',
+  InventoryNotFullyTruncated = 'inventory-not-fully-truncated',
   HasMinCpuCores = 'has-min-cpu-cores',
   HasMinValidDisks = 'has-min-valid-disks',
   HasMinMemory = 'has-min-memory',
@@ -42,6 +38,8 @@ export enum HostValidationId {
   OdfRequirementsSatisfied = 'odf-requirements-satisfied',
   LvmRequirementsSatisfied = 'lvm-requirements-satisfied',
   MceRequirementsSatisfied = 'mce-requirements-satisfied',
+  MtvRequirementsSatisfied = 'mtv-requirements-satisfied',
+  OscRequirementsSatisfied = 'osc-requirements-satisfied',
   SufficientInstallationDiskSpeed = 'sufficient-installation-disk-speed',
   CnvRequirementsSatisfied = 'cnv-requirements-satisfied',
   SufficientNetworkLatencyRequirementForRole = 'sufficient-network-latency-requirement-for-role',
@@ -60,4 +58,27 @@ export enum HostValidationId {
   NoSkipInstallationDisk = 'no-skip-installation-disk',
   NoSkipMissingDisk = 'no-skip-missing-disk',
   NoIpCollisionsInNetwork = 'no-ip-collisions-in-network',
+  NoIscsiNicBelongsToMachineCidr = 'no-iscsi-nic-belongs-to-machine-cidr',
+  NodeFeatureDiscoveryRequirementsSatisfied = 'node-feature-discovery-requirements-satisfied',
+  NvidiaGpuRequirementsSatisfied = 'nvidia-gpu-requirements-satisfied',
+  PipelinesRequirementsSatisfied = 'pipelines-requirements-satisfied',
+  ServicemeshRequirementsSatisfied = 'servicemesh-requirements-satisfied',
+  ServerlessRequirementsSatisfied = 'serverless-requirements-satisfied',
+  OpenshiftAiRequirementsSatisfied = 'openshift-ai-requirements-satisfied',
+  AuthorinoRequirementsSatisfied = 'authorino-requirements-satisfied',
+  MtuValid = 'mtu-valid',
+  NmstateRequirementsSatisfied = 'nmstate-requirements-satisfied',
+  AmdGpuRequirementsSatisfied = 'amd-gpu-requirements-satisfied',
+  KmmRequirementsSatisfied = 'kmm-requirements-satisfied',
+  NodeHealthcheckRequirementsSatisfied = 'node-healthcheck-requirements-satisfied',
+  SelfNodeRemediationRequirementsSatisfied = 'self-node-remediation-requirements-satisfied',
+  FenceAgentsRemediationRequirementsSatisfied = 'fence-agents-remediation-requirements-satisfied',
+  NodeMaintenanceRequirementsSatisfied = 'node-maintenance-requirements-satisfied',
+  KubeDeschedulerRequirementsSatisfied = 'kube-descheduler-requirements-satisfied',
+  ClusterObservabilityRequirementsSatisfied = 'cluster-observability-requirements-satisfied',
+  NumaResourcesRequirementsSatisfied = 'numa-resources-requirements-satisfied',
+  OadpRequirementsSatisfied = 'oadp-requirements-satisfied',
+  MetallbRequirementsSatisfied = 'metallb-requirements-satisfied',
+  LokiRequirementsSatisfied = 'loki-requirements-satisfied',
+  OpenshiftLoggingRequirementsSatisfied = 'openshift-logging-requirements-satisfied',
 }

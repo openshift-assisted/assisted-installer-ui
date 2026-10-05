@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { DefaultCapability } from './default-capability';
+import type { DefaultCapability } from './default-capability';
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 
 /**
  * @type DefaultCapabilityList
- * @export
  */
 export type DefaultCapabilityList = List;

@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DiskInstallationEligibility
- */
 export interface DiskInstallationEligibility {
   /**
    * Whether the disk is eligible for installation or not.
-   * @type {boolean}
-   * @memberof DiskInstallationEligibility
    */
   eligible?: boolean;
   /**
    * Reasons for why this disk is not eligible for installation.
-   * @type {Array<string>}
-   * @memberof DiskInstallationEligibility
    */
   not_eligible_reasons?: Array<string>;
 }

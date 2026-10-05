@@ -14,33 +14,16 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostStaticNetworkConfig } from './host-static-network-config';
+import type { HostStaticNetworkConfig } from './host-static-network-config';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ImageType } from './image-type';
+import type { ImageType } from './image-type';
 
-/**
- *
- * @export
- * @interface ImageCreateParams
- */
 export interface ImageCreateParams {
-  /**
-   *
-   * @type {ImageType}
-   * @memberof ImageCreateParams
-   */
   image_type?: ImageType;
   /**
    * SSH public key for debugging the installation.
-   * @type {string}
-   * @memberof ImageCreateParams
    */
   ssh_public_key?: string;
-  /**
-   *
-   * @type {Array<HostStaticNetworkConfig>}
-   * @memberof ImageCreateParams
-   */
   static_network_config?: Array<HostStaticNetworkConfig>;
 }

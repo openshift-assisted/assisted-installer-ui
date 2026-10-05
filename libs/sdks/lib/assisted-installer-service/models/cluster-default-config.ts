@@ -14,75 +14,23 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterNetwork } from './cluster-network';
+import type { ClusterNetwork } from './cluster-network';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ServiceNetwork } from './service-network';
+import type { ServiceNetwork } from './service-network';
 
-/**
- *
- * @export
- * @interface ClusterDefaultConfig
- */
 export interface ClusterDefaultConfig {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterDefaultConfig
-   */
   cluster_network_cidr?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterDefaultConfig
-   */
   cluster_network_host_prefix?: number;
-  /**
-   *
-   * @type {Array<ClusterNetwork>}
-   * @memberof ClusterDefaultConfig
-   */
   cluster_networks_dualstack?: Array<ClusterNetwork>;
-  /**
-   *
-   * @type {Array<ClusterNetwork>}
-   * @memberof ClusterDefaultConfig
-   */
   cluster_networks_ipv4?: Array<ClusterNetwork>;
   /**
    * This provides a list of forbidden hostnames. If this list is empty or not present, this implies that the UI should fall back to a hard coded list.
-   * @type {Array<string>}
-   * @memberof ClusterDefaultConfig
    */
   forbidden_hostnames?: Array<string>;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterDefaultConfig
-   */
   inactive_deletion_hours?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterDefaultConfig
-   */
   ntp_source?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterDefaultConfig
-   */
   service_network_cidr?: string;
-  /**
-   *
-   * @type {Array<ServiceNetwork>}
-   * @memberof ClusterDefaultConfig
-   */
   service_networks_dualstack?: Array<ServiceNetwork>;
-  /**
-   *
-   * @type {Array<ServiceNetwork>}
-   * @memberof ClusterDefaultConfig
-   */
   service_networks_ipv4?: Array<ServiceNetwork>;
 }

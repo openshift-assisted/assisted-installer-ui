@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ConnectivityCheckNic } from './connectivity-check-nic';
+import type { ConnectivityCheckNic } from './connectivity-check-nic';
 
-/**
- *
- * @export
- * @interface ConnectivityCheckHost
- */
 export interface ConnectivityCheckHost {
-  /**
-   *
-   * @type {string}
-   * @memberof ConnectivityCheckHost
-   */
   host_id?: string;
-  /**
-   *
-   * @type {Array<ConnectivityCheckNic>}
-   * @memberof ConnectivityCheckHost
-   */
   nics?: Array<ConnectivityCheckNic>;
 }

@@ -12,9 +12,4 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface FreeAddressesList
- */
 export interface FreeAddressesList extends Array<string> {}

@@ -14,10 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { SubscriptionCommonFields } from './subscription-common-fields';
+import type { Organization } from './organization';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { SubscriptionCommonFields } from './subscription-common-fields';
 
 /**
  * @type DeletedSubscription
- * @export
  */
 export type DeletedSubscription = SubscriptionCommonFields;

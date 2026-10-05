@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { MonitoredOperator } from './monitored-operator';
+import type { MonitoredOperator } from './monitored-operator';
 
-/**
- *
- * @export
- * @interface MonitoredOperatorsList
- */
 export interface MonitoredOperatorsList extends Array<MonitoredOperator> {}

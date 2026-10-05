@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { LogsState } from './logs-state';
+import type { LogsState } from './logs-state';
 
-/**
- *
- * @export
- * @interface LogsProgressParams
- */
 export interface LogsProgressParams {
-  /**
-   *
-   * @type {LogsState}
-   * @memberof LogsProgressParams
-   */
   logs_state: LogsState;
 }

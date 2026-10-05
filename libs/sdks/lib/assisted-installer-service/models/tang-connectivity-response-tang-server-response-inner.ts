@@ -14,30 +14,16 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { TangConnectivityResponseTangServerResponseInnerSignaturesInner } from './tang-connectivity-response-tang-server-response-inner-signatures-inner';
+import type { TangConnectivityResponseTangServerResponseInnerSignaturesInner } from './tang-connectivity-response-tang-server-response-inner-signatures-inner';
 
-/**
- *
- * @export
- * @interface TangConnectivityResponseTangServerResponseInner
- */
 export interface TangConnectivityResponseTangServerResponseInner {
   /**
    * Tang response payload.
-   * @type {string}
-   * @memberof TangConnectivityResponseTangServerResponseInner
    */
   payload?: string;
-  /**
-   *
-   * @type {Array<TangConnectivityResponseTangServerResponseInnerSignaturesInner>}
-   * @memberof TangConnectivityResponseTangServerResponseInner
-   */
   signatures?: Array<TangConnectivityResponseTangServerResponseInnerSignaturesInner>;
   /**
    * Tang URL.
-   * @type {string}
-   * @memberof TangConnectivityResponseTangServerResponseInner
    */
   tang_url?: string;
 }

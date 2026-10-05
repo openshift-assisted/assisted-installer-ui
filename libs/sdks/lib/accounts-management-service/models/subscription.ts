@@ -14,28 +14,33 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Account } from './account';
+import type { Account } from './account';
 // May contain unused imports in some cases
 // @ts-ignore
-import { AccountReference } from './account-reference';
+import type { AccountReference } from './account-reference';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Capability } from './capability';
+import type { Capability } from './capability';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Label } from './label';
+import type { ClusterTransfer } from './cluster-transfer';
 // May contain unused imports in some cases
 // @ts-ignore
-import { OneMetric } from './one-metric';
+import type { Label } from './label';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Plan } from './plan';
+import type { OneMetric } from './one-metric';
 // May contain unused imports in some cases
 // @ts-ignore
-import { SubscriptionCommonFields } from './subscription-common-fields';
+import type { Organization } from './organization';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { Plan } from './plan';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { SubscriptionCommonFields } from './subscription-common-fields';
 
 /**
  * @type Subscription
- * @export
  */
 export type Subscription = SubscriptionCommonFields;

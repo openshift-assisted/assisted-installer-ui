@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Capability } from './capability';
+import type { Capability } from './capability';
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 
 /**
  * @type CapabilityList
- * @export
  */
 export type CapabilityList = List;

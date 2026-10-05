@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ContractDimension
- */
 export interface ContractDimension {
-  /**
-   *
-   * @type {string}
-   * @memberof ContractDimension
-   */
   name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ContractDimension
-   */
   value?: string;
 }

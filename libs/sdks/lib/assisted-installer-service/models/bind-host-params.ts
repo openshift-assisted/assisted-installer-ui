@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface BindHostParams
- */
 export interface BindHostParams {
-  /**
-   *
-   * @type {string}
-   * @memberof BindHostParams
-   */
   cluster_id: string;
 }

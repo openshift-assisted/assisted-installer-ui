@@ -12,44 +12,28 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface OpenshiftVersion
- */
 export interface OpenshiftVersion {
   /**
    * Available CPU architectures.
-   * @type {Array<string>}
-   * @memberof OpenshiftVersion
    */
   cpu_architectures: Array<string>;
   /**
    * Name of the version to be presented to the user.
-   * @type {string}
-   * @memberof OpenshiftVersion
    */
   display_name: string;
   /**
    * Level of support of the version.
-   * @type {string}
-   * @memberof OpenshiftVersion
    */
   support_level: OpenshiftVersionSupportLevelEnum;
   /**
    * Indication that the version is the recommended one.
-   * @type {boolean}
-   * @memberof OpenshiftVersion
    */
   default?: boolean;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum OpenshiftVersionSupportLevelEnum {
   Beta = 'beta',
   Production = 'production',
   Maintenance = 'maintenance',
+  EndOfLife = 'end-of-life',
 }

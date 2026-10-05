@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,46 +28,53 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { AccessReview } from '../models';
+import type { AccessReview } from '../models';
 // @ts-ignore
-import { AccessReviewResponse } from '../models';
+import type { AccessReviewResponse } from '../models';
 // @ts-ignore
-import { CapabilityReview } from '../models';
+import type { CapabilityReview } from '../models';
 // @ts-ignore
-import { CapabilityReviewRequest } from '../models';
+import type { CapabilityReviewRequest } from '../models';
 // @ts-ignore
-import { ExportControlReview } from '../models';
+import type { ExportControlReview } from '../models';
 // @ts-ignore
-import { ExportControlReviewRequest } from '../models';
+import type { ExportControlReviewRequest } from '../models';
 // @ts-ignore
-import { FeatureReview } from '../models';
+import type { FeatureReview } from '../models';
 // @ts-ignore
-import { FeatureReviewResponse } from '../models';
+import type { FeatureReviewResponse } from '../models';
 // @ts-ignore
-import { ResourceReview } from '../models';
+import type { ResourceReview } from '../models';
 // @ts-ignore
-import { ResourceReviewRequest } from '../models';
+import type { ResourceReviewRequest } from '../models';
 // @ts-ignore
-import { SelfAccessReview } from '../models';
+import type { SelfAccessReview } from '../models';
 // @ts-ignore
-import { SelfFeatureReview } from '../models';
+import type { SelfFeatureReview } from '../models';
 // @ts-ignore
-import { SelfResourceReview } from '../models';
+import type { SelfResourceReview } from '../models';
 // @ts-ignore
-import { SelfResourceReviewRequest } from '../models';
+import type { SelfResourceReviewRequest } from '../models';
 // @ts-ignore
-import { SelfTermsReview } from '../models';
+import type { SelfTermsReview } from '../models';
 // @ts-ignore
-import { TermsReview } from '../models';
+import type { TermsReview } from '../models';
 // @ts-ignore
-import { TermsReviewResponse } from '../models';
+import type { TermsReviewResponse } from '../models';
 /**
  * DefaultApi - axios parameter creator
- * @export
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -80,7 +87,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1AccessReviewPost: async (
       accessReview: AccessReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'accessReview' is not null or undefined
       assertParamExists('apiAuthorizationsV1AccessReviewPost', 'accessReview', accessReview);
@@ -101,6 +108,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -129,7 +137,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1CapabilityReviewPost: async (
       capabilityReviewRequest: CapabilityReviewRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'capabilityReviewRequest' is not null or undefined
       assertParamExists(
@@ -154,6 +162,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -182,7 +191,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1ExportControlReviewPost: async (
       exportControlReviewRequest: ExportControlReviewRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'exportControlReviewRequest' is not null or undefined
       assertParamExists(
@@ -207,6 +216,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -235,7 +245,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1FeatureReviewPost: async (
       featureReview: FeatureReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'featureReview' is not null or undefined
       assertParamExists('apiAuthorizationsV1FeatureReviewPost', 'featureReview', featureReview);
@@ -256,6 +266,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -291,7 +302,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'resourceReviewRequest' is not null or undefined
       assertParamExists(
@@ -328,6 +339,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -356,7 +368,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1SelfAccessReviewPost: async (
       selfAccessReview: SelfAccessReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfAccessReview' is not null or undefined
       assertParamExists(
@@ -381,6 +393,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -409,7 +422,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1SelfFeatureReviewPost: async (
       selfFeatureReview: SelfFeatureReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfFeatureReview' is not null or undefined
       assertParamExists(
@@ -434,6 +447,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -468,7 +482,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfResourceReviewRequest' is not null or undefined
       assertParamExists(
@@ -505,6 +519,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -533,7 +548,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1SelfTermsReviewPost: async (
       selfTermsReview: SelfTermsReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfTermsReview' is not null or undefined
       assertParamExists(
@@ -558,6 +573,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -586,7 +602,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1TermsReviewPost: async (
       termsReview: TermsReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'termsReview' is not null or undefined
       assertParamExists('apiAuthorizationsV1TermsReviewPost', 'termsReview', termsReview);
@@ -607,6 +623,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -631,7 +648,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 
 /**
  * DefaultApi - functional programming interface
- * @export
  */
 export const DefaultApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration);
@@ -645,13 +661,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1AccessReviewPost(
       accessReview: AccessReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessReviewResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthorizationsV1AccessReviewPost(
         accessReview,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1AccessReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -662,14 +689,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1CapabilityReviewPost(
       capabilityReviewRequest: CapabilityReviewRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CapabilityReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1CapabilityReviewPost(
           capabilityReviewRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1CapabilityReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -680,14 +718,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1ExportControlReviewPost(
       exportControlReviewRequest: ExportControlReviewRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExportControlReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1ExportControlReviewPost(
           exportControlReviewRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1ExportControlReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -698,14 +747,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1FeatureReviewPost(
       featureReview: FeatureReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeatureReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1FeatureReviewPost(
           featureReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1FeatureReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -723,7 +783,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1ResourceReviewPost(
@@ -733,7 +793,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           includeSubscriptionStatuses,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1ResourceReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -744,14 +815,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1SelfAccessReviewPost(
       selfAccessReview: SelfAccessReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfAccessReviewPost(
           selfAccessReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfAccessReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -762,14 +844,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1SelfFeatureReviewPost(
       selfFeatureReview: SelfFeatureReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeatureReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfFeatureReviewPost(
           selfFeatureReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfFeatureReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -786,7 +879,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SelfResourceReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfResourceReviewPost(
@@ -796,7 +889,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           includeSubscriptionStatuses,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfResourceReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -807,14 +911,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1SelfTermsReviewPost(
       selfTermsReview: SelfTermsReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TermsReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfTermsReviewPost(
           selfTermsReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfTermsReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -825,20 +940,30 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1TermsReviewPost(
       termsReview: TermsReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TermsReviewResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthorizationsV1TermsReviewPost(
         termsReview,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1TermsReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * DefaultApi - factory interface
- * @export
  */
 export const DefaultApiFactory = function (
   configuration?: Configuration,
@@ -856,7 +981,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1AccessReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1AccessReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccessReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1AccessReviewPost(requestParameters.accessReview, options)
@@ -871,7 +996,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1CapabilityReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CapabilityReview> {
       return localVarFp
         .apiAuthorizationsV1CapabilityReviewPost(requestParameters.capabilityReviewRequest, options)
@@ -886,7 +1011,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1ExportControlReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ExportControlReview> {
       return localVarFp
         .apiAuthorizationsV1ExportControlReviewPost(
@@ -904,7 +1029,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1FeatureReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1FeatureReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<FeatureReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1FeatureReviewPost(requestParameters.featureReview, options)
@@ -920,7 +1045,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1ResourceReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1ResourceReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceReview> {
       return localVarFp
         .apiAuthorizationsV1ResourceReviewPost(
@@ -941,7 +1066,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfAccessReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccessReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1SelfAccessReviewPost(requestParameters.selfAccessReview, options)
@@ -956,7 +1081,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfFeatureReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<FeatureReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1SelfFeatureReviewPost(requestParameters.selfFeatureReview, options)
@@ -971,7 +1096,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfResourceReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SelfResourceReview> {
       return localVarFp
         .apiAuthorizationsV1SelfResourceReviewPost(
@@ -992,7 +1117,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfTermsReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TermsReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1SelfTermsReviewPost(requestParameters.selfTermsReview, options)
@@ -1007,7 +1132,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1TermsReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1TermsReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TermsReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1TermsReviewPost(requestParameters.termsReview, options)
@@ -1018,191 +1143,136 @@ export const DefaultApiFactory = function (
 
 /**
  * Request parameters for apiAuthorizationsV1AccessReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1AccessReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1AccessReviewPostRequest {
   /**
    * Access review data
-   * @type {AccessReview}
-   * @memberof DefaultApiApiAuthorizationsV1AccessReviewPost
    */
   readonly accessReview: AccessReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1CapabilityReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest {
   /**
    * Capability review data
-   * @type {CapabilityReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1CapabilityReviewPost
    */
   readonly capabilityReviewRequest: CapabilityReviewRequest;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1ExportControlReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest {
   /**
    * Export control review data
-   * @type {ExportControlReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1ExportControlReviewPost
    */
   readonly exportControlReviewRequest: ExportControlReviewRequest;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1FeatureReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1FeatureReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1FeatureReviewPostRequest {
   /**
    * Feature review data
-   * @type {FeatureReview}
-   * @memberof DefaultApiApiAuthorizationsV1FeatureReviewPost
    */
   readonly featureReview: FeatureReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1ResourceReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1ResourceReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1ResourceReviewPostRequest {
   /**
    * Resource review data
-   * @type {ResourceReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly resourceReviewRequest: ResourceReviewRequest;
 
   /**
    * If true, When returning a list of cluster_ids/cluster_uuids/subscription_ids, if those are already included in one of the organizations provided in organization_ids, do not include it in the list.
-   * @type {boolean}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly reduceClusterList?: boolean;
 
   /**
    * A comma-separated list of subscription statuses. Subscriptions with these statuses will be excluded from results. This options is mutually exclusive with includeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly excludeSubscriptionStatuses?: string;
 
   /**
    * A comma-separated list of subscription statuses. Only subscriptions with these statuses will be included into results. This options is mutually exclusive with excludeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly includeSubscriptionStatuses?: string;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfAccessReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest {
   /**
    * Self access review data
-   * @type {SelfAccessReview}
-   * @memberof DefaultApiApiAuthorizationsV1SelfAccessReviewPost
    */
   readonly selfAccessReview: SelfAccessReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfFeatureReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest {
   /**
    * Self feature review data
-   * @type {SelfFeatureReview}
-   * @memberof DefaultApiApiAuthorizationsV1SelfFeatureReviewPost
    */
   readonly selfFeatureReview: SelfFeatureReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfResourceReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest {
   /**
    * Self resource review data
-   * @type {SelfResourceReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly selfResourceReviewRequest: SelfResourceReviewRequest;
 
   /**
    * If true, When returning a list of cluster_ids/cluster_uuids/subscription_ids, if those are already included in one of the organizations provided in organization_ids, do not include it in the list.
-   * @type {boolean}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly reduceClusterList?: boolean;
 
   /**
    * A comma-separated list of subscription statuses. Subscriptions with these statuses will be excluded from results. This options is mutually exclusive with includeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly excludeSubscriptionStatuses?: string;
 
   /**
    * A comma-separated list of subscription statuses. Only subscriptions with these statuses will be included into results. This options is mutually exclusive with excludeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly includeSubscriptionStatuses?: string;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfTermsReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest {
   /**
    * Data to check self terms for
-   * @type {SelfTermsReview}
-   * @memberof DefaultApiApiAuthorizationsV1SelfTermsReviewPost
    */
   readonly selfTermsReview: SelfTermsReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1TermsReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1TermsReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1TermsReviewPostRequest {
   /**
    * Data to check terms for
-   * @type {TermsReview}
-   * @memberof DefaultApiApiAuthorizationsV1TermsReviewPost
    */
   readonly termsReview: TermsReview;
 }
 
 /**
  * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
   /**
@@ -1211,11 +1281,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1AccessReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1AccessReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1AccessReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1AccessReviewPost(requestParameters.accessReview, options)
@@ -1228,11 +1297,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1CapabilityReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1CapabilityReviewPost(requestParameters.capabilityReviewRequest, options)
@@ -1245,11 +1313,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1ExportControlReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1ExportControlReviewPost(
@@ -1265,11 +1332,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1FeatureReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1FeatureReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1FeatureReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1FeatureReviewPost(requestParameters.featureReview, options)
@@ -1283,11 +1349,10 @@ export class DefaultApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1ResourceReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1ResourceReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1ResourceReviewPost(
@@ -1306,11 +1371,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfAccessReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfAccessReviewPost(requestParameters.selfAccessReview, options)
@@ -1323,11 +1387,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfFeatureReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfFeatureReviewPost(requestParameters.selfFeatureReview, options)
@@ -1340,11 +1403,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfResourceReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfResourceReviewPost(
@@ -1363,11 +1425,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfTermsReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfTermsReviewPost(requestParameters.selfTermsReview, options)
@@ -1380,11 +1441,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1TermsReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1TermsReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1TermsReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1TermsReviewPost(requestParameters.termsReview, options)

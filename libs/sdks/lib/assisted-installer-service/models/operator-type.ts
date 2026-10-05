@@ -14,8 +14,6 @@
 
 /**
  * Kind of operator. Different types are monitored by the service differently.
- * @export
- * @enum {string}
  */
 
 export enum OperatorType {

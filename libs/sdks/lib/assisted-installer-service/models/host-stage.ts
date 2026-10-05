@@ -12,12 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum HostStage {
   StartingInstallation = 'Starting installation',
   WaitingForControlPlane = 'Waiting for control plane',
@@ -25,6 +19,7 @@ export enum HostStage {
   WaitingForController = 'Waiting for controller',
   Installing = 'Installing',
   WritingImageToDisk = 'Writing image to disk',
+  CopyingRegistryDataToDisk = 'Copying registry data to disk',
   Rebooting = 'Rebooting',
   WaitingForIgnition = 'Waiting for ignition',
   Configuring = 'Configuring',

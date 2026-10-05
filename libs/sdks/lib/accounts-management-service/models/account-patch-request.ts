@@ -12,58 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface AccountPatchRequest
- */
 export interface AccountPatchRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof AccountPatchRequest
-   */
   ban_code?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccountPatchRequest
-   */
   ban_description?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof AccountPatchRequest
-   */
   banned?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof AccountPatchRequest
-   */
   email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccountPatchRequest
-   */
   first_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccountPatchRequest
-   */
   last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccountPatchRequest
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof AccountPatchRequest
-   */
   service_account?: boolean;
 }

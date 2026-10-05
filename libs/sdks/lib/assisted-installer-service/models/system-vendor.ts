@@ -12,34 +12,12 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SystemVendor
- */
 export interface SystemVendor {
-  /**
-   *
-   * @type {string}
-   * @memberof SystemVendor
-   */
   manufacturer?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SystemVendor
-   */
   product_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SystemVendor
-   */
   serial_number?: string;
   /**
    * Whether the machine appears to be a virtual machine or not
-   * @type {boolean}
-   * @memberof SystemVendor
    */
   virtual?: boolean;
 }

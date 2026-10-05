@@ -12,40 +12,25 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DhcpAllocationRequest
- */
 export interface DhcpAllocationRequest {
   /**
    * MAC address for the API virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationRequest
    */
   api_vip_mac: string;
   /**
    * MAC address for the Ingress virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationRequest
    */
   ingress_vip_mac: string;
   /**
    * The network interface (NIC) to run the DHCP requests on.
-   * @type {string}
-   * @memberof DhcpAllocationRequest
    */
   interface: string;
   /**
    * Contents of lease file to be used for API virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationRequest
    */
   api_vip_lease?: string;
   /**
    * Contents of lease file to be used for for Ingress virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationRequest
    */
   ingress_vip_lease?: string;
 }

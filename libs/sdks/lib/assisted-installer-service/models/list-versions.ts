@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Versions } from './versions';
+import type { Versions } from './versions';
 
-/**
- *
- * @export
- * @interface ListVersions
- */
 export interface ListVersions {
-  /**
-   *
-   * @type {string}
-   * @memberof ListVersions
-   */
   release_tag?: string;
-  /**
-   *
-   * @type {Versions}
-   * @memberof ListVersions
-   */
   versions?: Versions;
 }

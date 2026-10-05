@@ -12,16 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface InstallerArgsParams
- */
 export interface InstallerArgsParams {
   /**
    * List of additional arguments passed to coreos-installer
-   * @type {Array<string>}
-   * @memberof InstallerArgsParams
    */
   args?: Array<string>;
 }

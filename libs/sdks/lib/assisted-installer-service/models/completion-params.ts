@@ -12,28 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface CompletionParams
- */
 export interface CompletionParams {
-  /**
-   *
-   * @type {boolean}
-   * @memberof CompletionParams
-   */
   is_success: boolean;
   /**
    * additional data from the cluster
-   * @type {{ [key: string]: object; }}
-   * @memberof CompletionParams
    */
   data?: { [key: string]: object };
-  /**
-   *
-   * @type {string}
-   * @memberof CompletionParams
-   */
   error_info?: string;
 }

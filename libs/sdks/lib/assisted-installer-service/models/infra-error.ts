@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface InfraError
- */
 export interface InfraError {
   /**
    * Numeric identifier of the error.
-   * @type {number}
-   * @memberof InfraError
    */
   code: number;
   /**
    * Human-readable description of the error.
-   * @type {string}
-   * @memberof InfraError
    */
   message: string;
 }

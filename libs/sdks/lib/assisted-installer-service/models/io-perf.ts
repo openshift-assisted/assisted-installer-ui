@@ -12,16 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface IoPerf
- */
 export interface IoPerf {
   /**
    * 99th percentile of fsync duration in milliseconds
-   * @type {number}
-   * @memberof IoPerf
    */
   sync_duration?: number;
 }

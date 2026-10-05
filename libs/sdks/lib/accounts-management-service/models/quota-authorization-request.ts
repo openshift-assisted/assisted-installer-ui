@@ -14,72 +14,17 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ReservedResource } from './reserved-resource';
+import type { ReservedResource } from './reserved-resource';
 
-/**
- *
- * @export
- * @interface QuotaAuthorizationRequest
- */
 export interface QuotaAuthorizationRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   account_username: string;
-  /**
-   *
-   * @type {Array<ReservedResource>}
-   * @memberof QuotaAuthorizationRequest
-   */
   resources: Array<ReservedResource>;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   availability_zone?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   cloud_provider_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   display_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   product_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   quota_version?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof QuotaAuthorizationRequest
-   */
   reserve?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   resource_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof QuotaAuthorizationRequest
-   */
   subscription_id?: string;
 }

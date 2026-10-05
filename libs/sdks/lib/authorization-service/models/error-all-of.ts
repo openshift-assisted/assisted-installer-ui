@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ErrorAllOf
- */
 export interface ErrorAllOf {
-  /**
-   *
-   * @type {string}
-   * @memberof ErrorAllOf
-   */
   code?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ErrorAllOf
-   */
   operation_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ErrorAllOf
-   */
   reason?: string;
 }

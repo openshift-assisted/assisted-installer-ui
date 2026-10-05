@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostStage } from './host-stage';
+import type { HostStage } from './host-stage';
 
-/**
- *
- * @export
- * @interface HostProgress
- */
 export interface HostProgress {
-  /**
-   *
-   * @type {HostStage}
-   * @memberof HostProgress
-   */
   current_stage?: HostStage;
-  /**
-   *
-   * @type {string}
-   * @memberof HostProgress
-   */
   progress_info?: string;
 }

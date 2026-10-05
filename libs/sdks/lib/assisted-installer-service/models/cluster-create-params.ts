@@ -14,236 +14,165 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ApiVip } from './api-vip';
+import type { ApiVip } from './api-vip';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterNetwork } from './cluster-network';
+import type { BundleCreateParams } from './bundle-create-params';
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskEncryption } from './disk-encryption';
+import type { ClusterNetwork } from './cluster-network';
 // May contain unused imports in some cases
 // @ts-ignore
-import { IgnitionEndpoint } from './ignition-endpoint';
+import type { DiskEncryption } from './disk-encryption';
 // May contain unused imports in some cases
 // @ts-ignore
-import { IngressVip } from './ingress-vip';
+import type { IgnitionEndpoint } from './ignition-endpoint';
 // May contain unused imports in some cases
 // @ts-ignore
-import { MachineNetwork } from './machine-network';
+import type { IngressVip } from './ingress-vip';
 // May contain unused imports in some cases
 // @ts-ignore
-import { OperatorCreateParams } from './operator-create-params';
+import type { LoadBalancer } from './load-balancer';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Platform } from './platform';
+import type { MachineNetwork } from './machine-network';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ServiceNetwork } from './service-network';
+import type { OperatorCreateParams } from './operator-create-params';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { Platform } from './platform';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { ServiceNetwork } from './service-network';
 
-/**
- *
- * @export
- * @interface ClusterCreateParams
- */
 export interface ClusterCreateParams {
   /**
    * Name of the OpenShift cluster.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   name: string;
   /**
    * Version of the OpenShift cluster.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   openshift_version: string;
   /**
    * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   pull_secret: string;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   additional_ntp_source?: string | null;
   /**
-   * (DEPRECATED) The virtual IP used to reach the OpenShift cluster\'s API.
-   * @type {string}
-   * @memberof ClusterCreateParams
-   */
-  api_vip?: string;
-  /**
    * The virtual IPs used to reach the OpenShift cluster\'s API. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
-   * @type {Array<ApiVip>}
-   * @memberof ClusterCreateParams
    */
   api_vips?: Array<ApiVip>;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   base_dns_domain?: string;
   /**
    * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   cluster_network_cidr?: string;
   /**
    * The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.
-   * @type {number}
-   * @memberof ClusterCreateParams
    */
   cluster_network_host_prefix?: number;
   /**
    * Cluster networks that are associated with this cluster.
-   * @type {Array<ClusterNetwork>}
-   * @memberof ClusterCreateParams
    */
   cluster_networks?: Array<ClusterNetwork> | null;
   /**
+   * Specifies the required number of control plane nodes that should be part of the cluster.
+   */
+  control_plane_count?: number | null;
+  /**
    * The CPU architecture of the image (x86_64/arm64/etc).
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   cpu_architecture?: ClusterCreateParamsCpuArchitectureEnum;
-  /**
-   *
-   * @type {DiskEncryption}
-   * @memberof ClusterCreateParams
-   */
   disk_encryption?: DiskEncryption;
   /**
-   * Guaranteed availability of the installed cluster. \'Full\' installs a Highly-Available cluster over multiple master nodes whereas \'None\' installs a full cluster over one node.
-   * @type {string}
-   * @memberof ClusterCreateParams
+   * (DEPRECATED) Please use \'control_plane_count\' instead. Guaranteed availability of the installed cluster. \'Full\' installs a Highly-Available cluster over multiple master nodes whereas \'None\' installs a full cluster over one node.
    */
   high_availability_mode?: ClusterCreateParamsHighAvailabilityModeEnum;
   /**
    * A proxy URL to use for creating HTTP connections outside the cluster. http://\\<username\\>:\\<pswd\\>@\\<ip\\>:\\<port\\>
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   http_proxy?: string | null;
   /**
    * A proxy URL to use for creating HTTPS connections outside the cluster. http://\\<username\\>:\\<pswd\\>@\\<ip\\>:\\<port\\>
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   https_proxy?: string | null;
   /**
-   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
-   * @type {string}
-   * @memberof ClusterCreateParams
+   * Enable/disable hyperthreading on master nodes, arbiter nodes, worker nodes, or a combination of them.
    */
   hyperthreading?: ClusterCreateParamsHyperthreadingEnum;
-  /**
-   *
-   * @type {IgnitionEndpoint}
-   * @memberof ClusterCreateParams
-   */
   ignition_endpoint?: IgnitionEndpoint;
   /**
-   * (DEPRECATED) The virtual IP used for cluster ingress traffic.
-   * @type {string}
-   * @memberof ClusterCreateParams
-   */
-  ingress_vip?: string;
-  /**
    * The virtual IPs used for cluster ingress traffic. Enter one IP address for single-stack clusters, or up to two for dual-stack clusters (at most one IP address per IP stack used). The order of stacks should be the same as order of subnets in Cluster Networks, Service Networks, and Machine Networks.
-   * @type {Array<IngressVip>}
-   * @memberof ClusterCreateParams
    */
   ingress_vips?: Array<IngressVip>;
+  load_balancer?: LoadBalancer;
   /**
    * Machine networks that are associated with this cluster.
-   * @type {Array<MachineNetwork>}
-   * @memberof ClusterCreateParams
    */
   machine_networks?: Array<MachineNetwork> | null;
   /**
-   * The desired network type used.
-   * @type {string}
-   * @memberof ClusterCreateParams
+   * The desired network type used. - OVNKubernetes: Default CNI for OpenShift (recommended) - OpenShiftSDN: Legacy SDN (deprecated in newer versions) - CiscoACI: Cisco ACI CNI (requires custom manifests) - Cilium: Isovalent Cilium CNI (requires custom manifests) - Calico: Tigera Calico CNI (requires custom manifests) - None: No CNI - user must provide custom CNI manifests Note: Third-party CNIs (CiscoACI, Cilium, Calico, None) require uploading CNI manifests via the custom manifests API before installation.
    */
-  network_type?: ClusterCreateParamsNetworkTypeEnum;
+  network_type?: ClusterCreateParamsNetworkTypeEnum | null;
   /**
    * An \"*\" or a comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   no_proxy?: string | null;
   /**
+   * A comma-separated list of NTP sources (name or IP) to be used as the only NTP configuration for the cluster hosts.
+   */
+  ntp_sources?: string | null;
+  /**
    * OpenShift release image URI.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   ocp_release_image?: string;
   /**
-   * List of OLM operators to be installed.
-   * @type {Array<OperatorCreateParams>}
-   * @memberof ClusterCreateParams
+   * List of standalone OLM operators to be installed (not part of any bundle). For the full list of supported operators, check the endpoint `/v2/supported-operators`:
    */
   olm_operators?: Array<OperatorCreateParams>;
   /**
-   *
-   * @type {Platform}
-   * @memberof ClusterCreateParams
+   * List of operator bundles selected by the user with their optional operator choices. The backend expands bundles into their required operators, adds selected optional operators, resolves all dependencies, and tracks bundle membership via source_bundles on monitored operators.
    */
+  operator_bundles?: Array<BundleCreateParams>;
   platform?: Platform;
   /**
    * Schedule workloads on masters
-   * @type {boolean}
-   * @memberof ClusterCreateParams
    */
   schedulable_masters?: boolean;
   /**
    * The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   service_network_cidr?: string;
   /**
    * Service networks that are associated with this cluster.
-   * @type {Array<ServiceNetwork>}
-   * @memberof ClusterCreateParams
    */
   service_networks?: Array<ServiceNetwork> | null;
   /**
    * SSH public key for debugging OpenShift nodes.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   ssh_public_key?: string;
   /**
    * A comma-separated list of tags that are associated to the cluster.
-   * @type {string}
-   * @memberof ClusterCreateParams
    */
   tags?: string | null;
   /**
    * (DEPRECATED) Indicate if the networking is managed by the user.
-   * @type {boolean}
-   * @memberof ClusterCreateParams
    */
   user_managed_networking?: boolean | null;
   /**
    * Indicate if virtual IP DHCP allocation mode is enabled.
-   * @type {boolean}
-   * @memberof ClusterCreateParams
    */
   vip_dhcp_allocation?: boolean | null;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterCreateParamsCpuArchitectureEnum {
   X8664 = 'x86_64',
   Aarch64 = 'aarch64',
@@ -252,29 +181,26 @@ export enum ClusterCreateParamsCpuArchitectureEnum {
   S390x = 's390x',
   Multi = 'multi',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterCreateParamsHighAvailabilityModeEnum {
   Full = 'Full',
   None = 'None',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterCreateParamsHyperthreadingEnum {
-  Masters = 'masters',
-  Workers = 'workers',
   None = 'none',
+  Masters = 'masters',
+  Arbiters = 'arbiters',
+  Workers = 'workers',
+  Mastersarbiters = 'masters,arbiters',
+  Mastersworkers = 'masters,workers',
+  Arbitersworkers = 'arbiters,workers',
+  Mastersarbitersworkers = 'masters,arbiters,workers',
   All = 'all',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum ClusterCreateParamsNetworkTypeEnum {
   OpenShiftSdn = 'OpenShiftSDN',
   OvnKubernetes = 'OVNKubernetes',
+  CiscoAci = 'CiscoACI',
+  Cilium = 'Cilium',
+  Calico = 'Calico',
+  None = 'None',
 }

@@ -14,18 +14,11 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ContainerImageAvailability } from './container-image-availability';
+import type { ContainerImageAvailability } from './container-image-availability';
 
-/**
- *
- * @export
- * @interface ContainerImageAvailabilityResponse
- */
 export interface ContainerImageAvailabilityResponse {
   /**
    * List of images that were checked.
-   * @type {Array<ContainerImageAvailability>}
-   * @memberof ContainerImageAvailabilityResponse
    */
   images: Array<ContainerImageAvailability>;
 }

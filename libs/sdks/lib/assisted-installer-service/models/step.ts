@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { StepType } from './step-type';
+import type { StepType } from './step-type';
 
-/**
- *
- * @export
- * @interface Step
- */
 export interface Step {
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof Step
-   */
   args?: Array<string>;
-  /**
-   *
-   * @type {string}
-   * @memberof Step
-   */
   step_id?: string;
-  /**
-   *
-   * @type {StepType}
-   * @memberof Step
-   */
   step_type?: StepType;
 }

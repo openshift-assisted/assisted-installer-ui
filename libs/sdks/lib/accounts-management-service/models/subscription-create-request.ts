@@ -12,55 +12,17 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SubscriptionCreateRequest
- */
 export interface SubscriptionCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionCreateRequest
-   */
   cluster_uuid: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionCreateRequest
-   */
   plan_id: SubscriptionCreateRequestPlanIdEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionCreateRequest
-   */
   status: SubscriptionCreateRequestStatusEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionCreateRequest
-   */
   console_url?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionCreateRequest
-   */
   display_name?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum SubscriptionCreateRequestPlanIdEnum {
   Ocp = 'OCP',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum SubscriptionCreateRequestStatusEnum {
   Disconnected = 'Disconnected',
 }

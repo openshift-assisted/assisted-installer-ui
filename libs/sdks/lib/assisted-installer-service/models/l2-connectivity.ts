@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface L2Connectivity
- */
 export interface L2Connectivity {
-  /**
-   *
-   * @type {string}
-   * @memberof L2Connectivity
-   */
   outgoing_ip_address?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof L2Connectivity
-   */
   outgoing_nic?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof L2Connectivity
-   */
   remote_ip_address?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof L2Connectivity
-   */
   remote_mac?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof L2Connectivity
-   */
   successful?: boolean;
 }

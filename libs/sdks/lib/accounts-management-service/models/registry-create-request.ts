@@ -14,10 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RegistryRequest } from './registry-request';
+import type { RegistryRequest } from './registry-request';
 
 /**
  * @type RegistryCreateRequest
- * @export
  */
 export type RegistryCreateRequest = RegistryRequest;

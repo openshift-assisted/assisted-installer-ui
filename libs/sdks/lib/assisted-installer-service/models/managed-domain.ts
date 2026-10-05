@@ -12,30 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ManagedDomain
- */
 export interface ManagedDomain {
-  /**
-   *
-   * @type {string}
-   * @memberof ManagedDomain
-   */
   domain?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ManagedDomain
-   */
   provider?: ManagedDomainProviderEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ManagedDomainProviderEnum {
   Route53 = 'route53',
 }

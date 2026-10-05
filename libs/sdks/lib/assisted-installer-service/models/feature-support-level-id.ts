@@ -12,14 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum FeatureSupportLevelId {
   Sno = 'SNO',
+  Tna = 'TNA',
+  Tnf = 'TNF',
   VipAutoAlloc = 'VIP_AUTO_ALLOC',
   CustomManifest = 'CUSTOM_MANIFEST',
   SingleNodeExpansion = 'SINGLE_NODE_EXPANSION',
@@ -28,7 +24,11 @@ export enum FeatureSupportLevelId {
   Lso = 'LSO',
   Cnv = 'CNV',
   Mce = 'MCE',
+  Mtv = 'MTV',
+  Osc = 'OSC',
   NutanixIntegration = 'NUTANIX_INTEGRATION',
+  BaremetalPlatform = 'BAREMETAL_PLATFORM',
+  NonePlatform = 'NONE_PLATFORM',
   VsphereIntegration = 'VSPHERE_INTEGRATION',
   DualStackVips = 'DUAL_STACK_VIPS',
   ClusterManagedNetworking = 'CLUSTER_MANAGED_NETWORKING',
@@ -37,4 +37,36 @@ export enum FeatureSupportLevelId {
   FullIso = 'FULL_ISO',
   ExternalPlatformOci = 'EXTERNAL_PLATFORM_OCI',
   DualStack = 'DUAL_STACK',
+  PlatformManagedNetworking = 'PLATFORM_MANAGED_NETWORKING',
+  ExternalPlatform = 'EXTERNAL_PLATFORM',
+  OvnNetworkType = 'OVN_NETWORK_TYPE',
+  SdnNetworkType = 'SDN_NETWORK_TYPE',
+  CiliumNetworkType = 'CILIUM_NETWORK_TYPE',
+  CalicoNetworkType = 'CALICO_NETWORK_TYPE',
+  CiscoAciNetworkType = 'CISCO_ACI_NETWORK_TYPE',
+  NoneNetworkType = 'NONE_NETWORK_TYPE',
+  NodeFeatureDiscovery = 'NODE_FEATURE_DISCOVERY',
+  NvidiaGpu = 'NVIDIA_GPU',
+  Pipelines = 'PIPELINES',
+  Servicemesh = 'SERVICEMESH',
+  Serverless = 'SERVERLESS',
+  OpenshiftAi = 'OPENSHIFT_AI',
+  NonStandardHaControlPlane = 'NON_STANDARD_HA_CONTROL_PLANE',
+  Authorino = 'AUTHORINO',
+  UserManagedLoadBalancer = 'USER_MANAGED_LOAD_BALANCER',
+  Nmstate = 'NMSTATE',
+  AmdGpu = 'AMD_GPU',
+  Kmm = 'KMM',
+  NodeHealthcheck = 'NODE_HEALTHCHECK',
+  SelfNodeRemediation = 'SELF_NODE_REMEDIATION',
+  FenceAgentsRemediation = 'FENCE_AGENTS_REMEDIATION',
+  NodeMaintenance = 'NODE_MAINTENANCE',
+  KubeDescheduler = 'KUBE_DESCHEDULER',
+  ClusterObservability = 'CLUSTER_OBSERVABILITY',
+  NumaResources = 'NUMA_RESOURCES',
+  Oadp = 'OADP',
+  Metallb = 'METALLB',
+  DualStackPrimaryIpv6 = 'DUAL_STACK_PRIMARY_IPV6',
+  Loki = 'LOKI',
+  OpenshiftLogging = 'OPENSHIFT_LOGGING',
 }

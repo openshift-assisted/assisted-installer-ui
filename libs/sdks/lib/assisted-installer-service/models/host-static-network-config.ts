@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { MacInterfaceMap } from './mac-interface-map';
+import type { MacInterfaceMap } from './mac-interface-map';
 
-/**
- *
- * @export
- * @interface HostStaticNetworkConfig
- */
 export interface HostStaticNetworkConfig {
-  /**
-   *
-   * @type {MacInterfaceMap}
-   * @memberof HostStaticNetworkConfig
-   */
   mac_interface_map?: MacInterfaceMap;
   /**
    * yaml string that can be processed by nmstate
-   * @type {string}
-   * @memberof HostStaticNetworkConfig
    */
   network_yaml?: string;
 }

@@ -12,22 +12,19 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Boot
- */
+// May contain unused imports in some cases
+// @ts-ignore
+import type { SecureBootState } from './secure-boot-state';
+
 export interface Boot {
-  /**
-   *
-   * @type {string}
-   * @memberof Boot
-   */
+  command_line?: string;
   current_boot_mode?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Boot
-   */
+  device_type?: BootDeviceTypeEnum;
   pxe_interface?: string;
+  secure_boot_state?: SecureBootState;
+}
+
+export enum BootDeviceTypeEnum {
+  Persistent = 'persistent',
+  Ephemeral = 'ephemeral',
 }

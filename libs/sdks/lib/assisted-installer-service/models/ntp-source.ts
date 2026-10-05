@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { SourceState } from './source-state';
+import type { SourceState } from './source-state';
 
-/**
- *
- * @export
- * @interface NtpSource
- */
 export interface NtpSource {
   /**
    * NTP source name or IP.
-   * @type {string}
-   * @memberof NtpSource
    */
   source_name?: string;
-  /**
-   *
-   * @type {SourceState}
-   * @memberof NtpSource
-   */
   source_state?: SourceState;
 }

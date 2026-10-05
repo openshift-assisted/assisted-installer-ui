@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SelfFeatureReview
- */
 export interface SelfFeatureReview {
-  /**
-   *
-   * @type {string}
-   * @memberof SelfFeatureReview
-   */
   feature: string;
 }

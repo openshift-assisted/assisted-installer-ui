@@ -12,88 +12,18 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Interface
- */
 export interface Interface {
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   biosdevname?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   client_id?: string;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof Interface
-   */
   flags?: Array<string>;
-  /**
-   *
-   * @type {boolean}
-   * @memberof Interface
-   */
   has_carrier?: boolean;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof Interface
-   */
   ipv4_addresses?: Array<string>;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof Interface
-   */
   ipv6_addresses?: Array<string>;
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   mac_address?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof Interface
-   */
   mtu?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   product?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof Interface
-   */
   speed_mbps?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   type?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Interface
-   */
   vendor?: string;
 }

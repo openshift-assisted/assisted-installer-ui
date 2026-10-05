@@ -14,20 +14,14 @@
 
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
- * @export
- * @interface IgnitionEndpoint
  */
 export interface IgnitionEndpoint {
   /**
    * base64 encoded CA certficate to be used when contacting the URL via https.
-   * @type {string}
-   * @memberof IgnitionEndpoint
    */
   ca_certificate?: string | null;
   /**
    * The URL for the ignition endpoint.
-   * @type {string}
-   * @memberof IgnitionEndpoint
    */
   url?: string | null;
 }

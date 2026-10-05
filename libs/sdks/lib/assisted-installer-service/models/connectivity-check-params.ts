@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ConnectivityCheckHost } from './connectivity-check-host';
+import type { ConnectivityCheckHost } from './connectivity-check-host';
 
-/**
- *
- * @export
- * @interface ConnectivityCheckParams
- */
 export interface ConnectivityCheckParams extends Array<ConnectivityCheckHost> {}

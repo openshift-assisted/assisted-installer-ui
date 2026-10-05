@@ -12,58 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RoleBindingRequest
- */
 export interface RoleBindingRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   account_group_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   account_id?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof RoleBindingRequest
-   */
   config_managed?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   managed_by?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   role_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   subscription_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RoleBindingRequest
-   */
   type?: string;
 }

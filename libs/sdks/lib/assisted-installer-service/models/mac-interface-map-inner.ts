@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface MacInterfaceMapInner
- */
 export interface MacInterfaceMapInner {
   /**
+   * mac address present on the host
+   */
+  mac_address: string;
+  /**
    * nic name used in the yaml, which relates 1:1 to the mac address
-   * @type {string}
-   * @memberof MacInterfaceMapInner
    */
   logical_nic_name?: string;
-  /**
-   * mac address present on the host
-   * @type {string}
-   * @memberof MacInterfaceMapInner
-   */
-  mac_address?: string;
 }

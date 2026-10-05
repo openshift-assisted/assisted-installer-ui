@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { FreeNetworkAddresses } from './free-network-addresses';
+import type { FreeNetworkAddresses } from './free-network-addresses';
 
-/**
- *
- * @export
- * @interface FreeNetworksAddresses
- */
 export interface FreeNetworksAddresses extends Array<FreeNetworkAddresses> {}

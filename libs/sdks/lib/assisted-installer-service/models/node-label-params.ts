@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface NodeLabelParams
- */
 export interface NodeLabelParams {
   /**
    * The key for the label\'s key-value pair.
-   * @type {string}
-   * @memberof NodeLabelParams
    */
   key: string;
   /**
    * The value for the label\'s key-value pair.
-   * @type {string}
-   * @memberof NodeLabelParams
    */
   value: string;
 }

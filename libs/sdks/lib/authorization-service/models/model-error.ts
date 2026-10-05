@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ErrorAllOf } from './error-all-of';
+import type { ErrorAllOf } from './error-all-of';
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 
 /**
  * @type ModelError
- * @export
  */
 export type ModelError = ErrorAllOf & ObjectReference;

@@ -14,138 +14,53 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { DiskInstallationEligibility } from './disk-installation-eligibility';
+import type { DiskInstallationEligibility } from './disk-installation-eligibility';
 // May contain unused imports in some cases
 // @ts-ignore
-import { DriveType } from './drive-type';
+import type { DriveType } from './drive-type';
 // May contain unused imports in some cases
 // @ts-ignore
-import { IoPerf } from './io-perf';
+import type { IoPerf } from './io-perf';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { Iscsi } from './iscsi';
 
-/**
- *
- * @export
- * @interface Disk
- */
 export interface Disk {
-  /**
-   *
-   * @type {boolean}
-   * @memberof Disk
-   */
   bootable?: boolean;
   /**
    * by-id is the World Wide Number of the device which guaranteed to be unique for every storage device
-   * @type {string}
-   * @memberof Disk
    */
   by_id?: string;
   /**
    * by-path is the shortest physical path to the device
-   * @type {string}
-   * @memberof Disk
    */
   by_path?: string;
-  /**
-   *
-   * @type {DriveType}
-   * @memberof Disk
-   */
   drive_type?: DriveType;
-  /**
-   *
-   * @type {boolean}
-   * @memberof Disk
-   */
   has_uuid?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
   hctl?: string;
   /**
    * A comma-separated list of disk names that this disk belongs to
-   * @type {string}
-   * @memberof Disk
    */
   holders?: string;
   /**
    * Determine the disk\'s unique identifier which is the by-id field if it exists and fallback to the by-path field otherwise
-   * @type {string}
-   * @memberof Disk
    */
   id?: string;
-  /**
-   *
-   * @type {DiskInstallationEligibility}
-   * @memberof Disk
-   */
   installation_eligibility?: DiskInstallationEligibility;
-  /**
-   *
-   * @type {IoPerf}
-   * @memberof Disk
-   */
   io_perf?: IoPerf;
   /**
    * Whether the disk appears to be an installation media or not
-   * @type {boolean}
-   * @memberof Disk
    */
   is_installation_media?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
+  iscsi?: Iscsi;
   model?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
   name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
+  partitionTypes?: string;
   path?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof Disk
-   */
   removable?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
   serial?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof Disk
-   */
   size_bytes?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
   smart?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
   vendor?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Disk
-   */
   wwn?: string;
 }

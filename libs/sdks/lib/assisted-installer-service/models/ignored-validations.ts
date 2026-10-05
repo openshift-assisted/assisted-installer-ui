@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface IgnoredValidations
- */
 export interface IgnoredValidations {
   /**
    * JSON-formatted list of cluster validation IDs that will be ignored for all hosts that belong to this cluster. It may also contain a list with a single string \"all\" to ignore all cluster validations. Some validations cannot be ignored.
-   * @type {string}
-   * @memberof IgnoredValidations
    */
   'cluster-validation-ids'?: string;
   /**
    * JSON-formatted list of host validation IDs that will be ignored for all hosts that belong to this cluster. It may also contain a list with a single string \"all\" to ignore all host validations. Some validations cannot be ignored.
-   * @type {string}
-   * @memberof IgnoredValidations
    */
   'host-validation-ids'?: string;
 }

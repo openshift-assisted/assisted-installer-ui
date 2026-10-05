@@ -12,66 +12,17 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface AccessReviewResponse
- */
 export interface AccessReviewResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof AccessReviewResponse
-   */
   allowed: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   account_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   action?: AccessReviewResponseActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   resource_type?: AccessReviewResponseResourceTypeEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReviewResponse
-   */
   subscription_id?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum AccessReviewResponseActionEnum {
   Get = 'get',
   List = 'list',
@@ -79,10 +30,6 @@ export enum AccessReviewResponseActionEnum {
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum AccessReviewResponseResourceTypeEnum {
   AddOn = 'AddOn',
   Flavour = 'Flavour',

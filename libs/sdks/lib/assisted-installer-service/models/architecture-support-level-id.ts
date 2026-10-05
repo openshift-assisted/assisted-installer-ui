@@ -12,12 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @enum {string}
- */
-
 export enum ArchitectureSupportLevelId {
   X8664Architecture = 'X86_64_ARCHITECTURE',
   Arm64Architecture = 'ARM64_ARCHITECTURE',

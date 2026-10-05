@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Contract } from './contract';
+import type { Contract } from './contract';
 
-/**
- *
- * @export
- * @interface CloudAccount
- */
 export interface CloudAccount {
-  /**
-   *
-   * @type {string}
-   * @memberof CloudAccount
-   */
   cloud_account_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof CloudAccount
-   */
   cloud_provider_id?: string;
-  /**
-   *
-   * @type {Array<Contract>}
-   * @memberof CloudAccount
-   */
   contracts?: Array<Contract>;
 }

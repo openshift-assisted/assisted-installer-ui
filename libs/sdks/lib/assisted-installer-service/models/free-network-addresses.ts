@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface FreeNetworkAddresses
- */
 export interface FreeNetworkAddresses {
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof FreeNetworkAddresses
-   */
   free_addresses?: Array<string>;
-  /**
-   *
-   * @type {string}
-   * @memberof FreeNetworkAddresses
-   */
   network?: string;
 }

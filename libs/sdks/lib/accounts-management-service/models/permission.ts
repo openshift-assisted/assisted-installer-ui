@@ -12,30 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Permission
- */
 export interface Permission {
-  /**
-   *
-   * @type {string}
-   * @memberof Permission
-   */
   action?: PermissionActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof Permission
-   */
   resource?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum PermissionActionEnum {
   Get = 'get',
   List = 'list',

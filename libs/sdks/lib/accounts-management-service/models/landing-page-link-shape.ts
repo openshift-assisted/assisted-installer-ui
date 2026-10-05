@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface LandingPageLinkShape
- */
 export interface LandingPageLinkShape {
-  /**
-   *
-   * @type {string}
-   * @memberof LandingPageLinkShape
-   */
   href?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof LandingPageLinkShape
-   */
   title?: string;
 }

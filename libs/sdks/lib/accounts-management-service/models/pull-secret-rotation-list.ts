@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { PullSecretRotation } from './pull-secret-rotation';
+import type { PullSecretRotation } from './pull-secret-rotation';
 
 /**
  * @type PullSecretRotationList
- * @export
  */
 export type PullSecretRotationList = List;

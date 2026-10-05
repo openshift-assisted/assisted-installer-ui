@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { RegistryCredential } from './registry-credential';
+import type { RegistryCredential } from './registry-credential';
 
 /**
  * @type RegistryCredentialList
- * @export
  */
 export type RegistryCredentialList = List;

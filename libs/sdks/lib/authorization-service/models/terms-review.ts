@@ -12,34 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface TermsReview
- */
 export interface TermsReview {
-  /**
-   *
-   * @type {string}
-   * @memberof TermsReview
-   */
   account_username: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof TermsReview
-   */
   check_optional_terms?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof TermsReview
-   */
   event_code?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof TermsReview
-   */
   site_code?: string;
 }

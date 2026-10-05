@@ -12,31 +12,26 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Manifest
- */
 export interface Manifest {
   /**
    * The file name prefaced by the folder that contains it.
-   * @type {string}
-   * @memberof Manifest
    */
   file_name?: string;
   /**
    * The folder that contains the files. Manifests can be placed in \'manifests\' or \'openshift\' directories.
-   * @type {string}
-   * @memberof Manifest
    */
   folder?: ManifestFolderEnum;
+  /**
+   * Describes whether manifest is sourced from a user or created by the system.
+   */
+  manifest_source?: ManifestManifestSourceEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ManifestFolderEnum {
   Manifests = 'manifests',
   Openshift = 'openshift',
+}
+export enum ManifestManifestSourceEnum {
+  User = 'user',
+  System = 'system',
 }

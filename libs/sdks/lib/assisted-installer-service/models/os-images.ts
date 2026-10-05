@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { OsImage } from './os-image';
+import type { OsImage } from './os-image';
 
-/**
- *
- * @export
- * @interface OsImages
- */
 export interface OsImages extends Array<OsImage> {}

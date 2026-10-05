@@ -12,34 +12,21 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface DhcpAllocationResponse
- */
 export interface DhcpAllocationResponse {
   /**
    * The IPv4 address that was allocated by DHCP for the API virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationResponse
    */
   api_vip_address: string;
   /**
    * The IPv4 address that was allocated by DHCP for the Ingress virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationResponse
    */
   ingress_vip_address: string;
   /**
    * Contents of last acquired lease for API virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationResponse
    */
   api_vip_lease?: string;
   /**
    * Contents of last acquired lease for Ingress virtual IP.
-   * @type {string}
-   * @memberof DhcpAllocationResponse
    */
   ingress_vip_lease?: string;
 }

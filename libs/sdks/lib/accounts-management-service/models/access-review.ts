@@ -12,60 +12,16 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface AccessReview
- */
 export interface AccessReview {
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   account_username: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   action: AccessReviewActionEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   resource_type: AccessReviewResourceTypeEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   cluster_uuid?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   organization_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AccessReview
-   */
   subscription_id?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum AccessReviewActionEnum {
   Get = 'get',
   List = 'list',
@@ -73,10 +29,6 @@ export enum AccessReviewActionEnum {
   Delete = 'delete',
   Update = 'update',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum AccessReviewResourceTypeEnum {
   AddOn = 'AddOn',
   Flavour = 'Flavour',
@@ -93,7 +45,7 @@ export enum AccessReviewResourceTypeEnum {
   RegistryCredential = 'RegistryCredential',
   CurrentAccount = 'CurrentAccount',
   AccessReview = 'AccessReview',
-  SelfAcccessReview = 'SelfAcccessReview',
+  SelfAccessReview = 'SelfAccessReview',
   ResourceReview = 'ResourceReview',
   SelfResourceReview = 'SelfResourceReview',
   ClusterRegistration = 'ClusterRegistration',
@@ -115,11 +67,16 @@ export enum AccessReviewResourceTypeEnum {
   SubscriptionLabel = 'SubscriptionLabel',
   OrganizationLabel = 'OrganizationLabel',
   SubscriptionLabelInternal = 'SubscriptionLabelInternal',
-  SelfAccessReview = 'SelfAccessReview',
   SubscriptionInternal = 'SubscriptionInternal',
   SubscriptionRoleBinding = 'SubscriptionRoleBinding',
   ClusterSelfManaged = 'ClusterSelfManaged',
   ClusterSelfManagedAddon = 'ClusterSelfManagedAddon',
   ClusterSelfManagedLabel = 'ClusterSelfManagedLabel',
   ClusterSelfManagedStatus = 'ClusterSelfManagedStatus',
+  OsdTrialProtectedCluster = 'OsdTrialProtectedCluster',
+  ManifestWorkSync = 'ManifestWorkSync',
+  ClusterForcedUpgrade = 'ClusterForcedUpgrade',
+  DeletedCluster = 'DeletedCluster',
+  DeleteProtection = 'DeleteProtection',
+  ScheduledUpgrade = 'ScheduledUpgrade',
 }

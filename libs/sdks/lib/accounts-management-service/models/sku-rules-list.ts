@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { SkuRules } from './sku-rules';
+import type { SkuRules } from './sku-rules';
 
 /**
  * @type SkuRulesList
- * @export
  */
 export type SkuRulesList = List;

@@ -14,60 +14,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ImageType } from './image-type';
+import type { ImageType } from './image-type';
 
-/**
- *
- * @export
- * @interface ImageInfo
- */
 export interface ImageInfo {
-  /**
-   *
-   * @type {string}
-   * @memberof ImageInfo
-   */
   created_at?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ImageInfo
-   */
   download_url?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ImageInfo
-   */
   expires_at?: string;
   /**
    * Image generator version.
-   * @type {string}
-   * @memberof ImageInfo
    */
   generator_version?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ImageInfo
-   */
   size_bytes?: number;
   /**
    * SSH public key for debugging the installation.
-   * @type {string}
-   * @memberof ImageInfo
    */
   ssh_public_key?: string;
   /**
    * static network configuration string in the format expected by discovery ignition generation
-   * @type {string}
-   * @memberof ImageInfo
    */
   static_network_config?: string;
-  /**
-   *
-   * @type {ImageType}
-   * @memberof ImageInfo
-   */
   type?: ImageType;
 }

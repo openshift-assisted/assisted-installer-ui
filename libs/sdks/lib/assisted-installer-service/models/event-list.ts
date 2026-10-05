@@ -14,11 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Event } from './event';
+import type { Event } from './event';
 
-/**
- *
- * @export
- * @interface EventList
- */
 export interface EventList extends Array<Event> {}

@@ -14,30 +14,16 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { VipVerification } from './vip-verification';
+import type { VipVerification } from './vip-verification';
 
 /**
  * The virtual IP used for cluster ingress traffic.
- * @export
- * @interface IngressVip
  */
 export interface IngressVip {
   /**
    * The cluster that this VIP is associated with.
-   * @type {string}
-   * @memberof IngressVip
    */
   cluster_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof IngressVip
-   */
   ip?: string;
-  /**
-   *
-   * @type {VipVerification}
-   * @memberof IngressVip
-   */
   verification?: VipVerification;
 }

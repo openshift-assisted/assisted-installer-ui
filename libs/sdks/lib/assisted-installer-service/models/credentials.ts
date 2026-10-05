@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Credentials
- */
 export interface Credentials {
-  /**
-   *
-   * @type {string}
-   * @memberof Credentials
-   */
   console_url?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Credentials
-   */
   password?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Credentials
-   */
   username?: string;
 }

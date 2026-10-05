@@ -14,18 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { NtpSource } from './ntp-source';
+import type { NtpSource } from './ntp-source';
 
-/**
- *
- * @export
- * @interface NtpSynchronizationResponse
- */
 export interface NtpSynchronizationResponse {
-  /**
-   *
-   * @type {Array<NtpSource>}
-   * @memberof NtpSynchronizationResponse
-   */
   ntp_sources?: Array<NtpSource>;
 }

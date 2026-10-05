@@ -14,42 +14,25 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
+import type { VersionedClusterHostRequirementsDetails } from './versioned-cluster-host-requirements-details';
 
-/**
- *
- * @export
- * @interface VersionedHostRequirements
- */
 export interface VersionedHostRequirements {
+  arbiter?: VersionedClusterHostRequirementsDetails;
+  'edge-worker'?: VersionedClusterHostRequirementsDetails;
+  master?: VersionedClusterHostRequirementsDetails;
   /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof VersionedHostRequirements
+   * Determines how the version field is matched. \"exact\" applies only to the specified version (default). \"min_version\" applies to the specified version and all later versions.
    */
-  'edge-worker'?: ClusterHostRequirementsDetails;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof VersionedHostRequirements
-   */
-  master?: ClusterHostRequirementsDetails;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof VersionedHostRequirements
-   */
-  sno?: ClusterHostRequirementsDetails;
+  match_type?: VersionedHostRequirementsMatchTypeEnum;
+  sno?: VersionedClusterHostRequirementsDetails;
   /**
    * Version of the component for which requirements are defined
-   * @type {string}
-   * @memberof VersionedHostRequirements
    */
   version?: string;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof VersionedHostRequirements
-   */
-  worker?: ClusterHostRequirementsDetails;
+  worker?: VersionedClusterHostRequirementsDetails;
+}
+
+export enum VersionedHostRequirementsMatchTypeEnum {
+  Exact = 'exact',
+  MinVersion = 'min_version',
 }

@@ -14,10 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { Organization } from './organization';
 
 /**
  * @type SubscriptionCommonFields
- * @export
  */
 export type SubscriptionCommonFields = ObjectReference;

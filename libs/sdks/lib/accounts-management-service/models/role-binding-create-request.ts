@@ -14,10 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RoleBindingRequest } from './role-binding-request';
+import type { RoleBindingRequest } from './role-binding-request';
 
 /**
  * @type RoleBindingCreateRequest
- * @export
  */
 export type RoleBindingCreateRequest = RoleBindingRequest;

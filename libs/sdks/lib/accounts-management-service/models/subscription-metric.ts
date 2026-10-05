@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SubscriptionMetric
- */
 export interface SubscriptionMetric {
-  /**
-   *
-   * @type {string}
-   * @memberof SubscriptionMetric
-   */
   _id?: string;
 }

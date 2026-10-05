@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PullSecretRequest
- */
 export interface PullSecretRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof PullSecretRequest
-   */
   external_resource_id: string;
 }

@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,222 +28,241 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { AccessReview } from '../models';
+import type { AccessReview } from '../models';
 // @ts-ignore
-import { AccessReviewResponse } from '../models';
+import type { AccessReviewResponse } from '../models';
 // @ts-ignore
-import { AccessTokenCfg } from '../models';
+import type { AccessTokenCfg } from '../models';
 // @ts-ignore
-import { Account } from '../models';
+import type { Account } from '../models';
 // @ts-ignore
-import { AccountGroup } from '../models';
+import type { AccountGroup } from '../models';
 // @ts-ignore
-import { AccountGroupAssignment } from '../models';
+import type { AccountGroupAssignment } from '../models';
 // @ts-ignore
-import { AccountGroupAssignmentList } from '../models';
+import type { AccountGroupAssignmentList } from '../models';
 // @ts-ignore
-import { AccountGroupList } from '../models';
+import type { AccountGroupList } from '../models';
 // @ts-ignore
-import { AccountGroupRequest } from '../models';
+import type { AccountGroupRequest } from '../models';
 // @ts-ignore
-import { AccountList } from '../models';
+import type { AccountList } from '../models';
 // @ts-ignore
-import { AccountPatchRequest } from '../models';
+import type { AccountPatchRequest } from '../models';
 // @ts-ignore
-import { BillingModel } from '../models';
+import type { BillingModel } from '../models';
 // @ts-ignore
-import { BillingModelList } from '../models';
+import type { BillingModelList } from '../models';
 // @ts-ignore
-import { CapabilityList } from '../models';
+import type { CapabilityList } from '../models';
 // @ts-ignore
-import { CapabilityReview } from '../models';
+import type { CapabilityReview } from '../models';
 // @ts-ignore
-import { CapabilityReviewRequest } from '../models';
+import type { CapabilityReviewRequest } from '../models';
 // @ts-ignore
-import { Certificate } from '../models';
+import type { Certificate } from '../models';
 // @ts-ignore
-import { CertificatesRequest } from '../models';
+import type { CertificatesRequest } from '../models';
 // @ts-ignore
-import { CloudResource } from '../models';
+import type { CloudResource } from '../models';
 // @ts-ignore
-import { CloudResourceList } from '../models';
+import type { CloudResourceList } from '../models';
 // @ts-ignore
-import { ClusterAuthorizationRequest } from '../models';
+import type { ClusterAuthorizationRequest } from '../models';
 // @ts-ignore
-import { ClusterAuthorizationResponse } from '../models';
+import type { ClusterAuthorizationResponse } from '../models';
 // @ts-ignore
-import { ClusterRegistrationRequest } from '../models';
+import type { ClusterRegistrationRequest } from '../models';
 // @ts-ignore
-import { ClusterRegistrationResponse } from '../models';
+import type { ClusterRegistrationResponse } from '../models';
 // @ts-ignore
-import { ClusterTransfer } from '../models';
+import type { ClusterTransfer } from '../models';
 // @ts-ignore
-import { ClusterTransferList } from '../models';
+import type { ClusterTransferList } from '../models';
 // @ts-ignore
-import { ClusterTransferPatchRequest } from '../models';
+import type { ClusterTransferPatchRequest } from '../models';
 // @ts-ignore
-import { ClusterTransferRequest } from '../models';
+import type { ClusterTransferRequest } from '../models';
 // @ts-ignore
-import { ConsumedQuotaList } from '../models';
+import type { ConsumedQuotaList } from '../models';
 // @ts-ignore
-import { DefaultCapability } from '../models';
+import type { DefaultCapability } from '../models';
 // @ts-ignore
-import { DefaultCapabilityList } from '../models';
+import type { DefaultCapabilityList } from '../models';
 // @ts-ignore
-import { DeletedSubscription } from '../models';
+import type { DeletedSubscription } from '../models';
 // @ts-ignore
-import { DeletedSubscriptionList } from '../models';
+import type { DeletedSubscriptionList } from '../models';
 // @ts-ignore
-import { ErrorList } from '../models';
+import type { EntitlementCertificatesList } from '../models';
 // @ts-ignore
-import { ExportControlReview } from '../models';
+import type { EntitlementCertificatesRequest } from '../models';
 // @ts-ignore
-import { ExportControlReviewRequest } from '../models';
+import type { ErrorList } from '../models';
 // @ts-ignore
-import { FeatureReview } from '../models';
+import type { ExportControlReview } from '../models';
 // @ts-ignore
-import { FeatureReviewResponse } from '../models';
+import type { ExportControlReviewRequest } from '../models';
 // @ts-ignore
-import { FeatureToggle } from '../models';
+import type { FeatureReview } from '../models';
 // @ts-ignore
-import { FeatureToggleQueryRequest } from '../models';
+import type { FeatureReviewResponse } from '../models';
 // @ts-ignore
-import { Label } from '../models';
+import type { FeatureToggle } from '../models';
 // @ts-ignore
-import { LabelList } from '../models';
+import type { FeatureToggleQueryRequest } from '../models';
 // @ts-ignore
-import { MetricsList } from '../models';
+import type { Label } from '../models';
 // @ts-ignore
-import { NotificationContactCreateRequest } from '../models';
+import type { LabelList } from '../models';
 // @ts-ignore
-import { NotificationRequest } from '../models';
+import type { MetricsList } from '../models';
 // @ts-ignore
-import { Organization } from '../models';
+import type { NotificationContactCreateRequest } from '../models';
 // @ts-ignore
-import { OrganizationList } from '../models';
+import type { NotifyDetailsRequest } from '../models';
 // @ts-ignore
-import { OrganizationPatchRequest } from '../models';
+import type { NotifyDetailsResponseList } from '../models';
 // @ts-ignore
-import { Plan } from '../models';
+import type { OndemandMetrics } from '../models';
 // @ts-ignore
-import { PlanList } from '../models';
+import type { Organization } from '../models';
 // @ts-ignore
-import { PullSecretRequest } from '../models';
+import type { OrganizationList } from '../models';
 // @ts-ignore
-import { PullSecretRotation } from '../models';
+import type { OrganizationPatchRequest } from '../models';
 // @ts-ignore
-import { PullSecretRotationList } from '../models';
+import type { Plan } from '../models';
 // @ts-ignore
-import { PullSecretRotationRequest } from '../models';
+import type { PlanList } from '../models';
 // @ts-ignore
-import { Quota } from '../models';
+import type { PullSecretRequest } from '../models';
 // @ts-ignore
-import { QuotaAuthorizationRequest } from '../models';
+import type { PullSecretRotation } from '../models';
 // @ts-ignore
-import { QuotaAuthorizationResponse } from '../models';
+import type { PullSecretRotationList } from '../models';
 // @ts-ignore
-import { QuotaCostList } from '../models';
+import type { PullSecretRotationRequest } from '../models';
 // @ts-ignore
-import { QuotaList } from '../models';
+import type { Quota } from '../models';
 // @ts-ignore
-import { QuotaRulesList } from '../models';
+import type { QuotaAuthorizationRequest } from '../models';
 // @ts-ignore
-import { Registry } from '../models';
+import type { QuotaAuthorizationResponse } from '../models';
 // @ts-ignore
-import { RegistryCredential } from '../models';
+import type { QuotaCostList } from '../models';
 // @ts-ignore
-import { RegistryCredentialList } from '../models';
+import type { QuotaList } from '../models';
 // @ts-ignore
-import { RegistryCredentialPatchRequest } from '../models';
+import type { QuotaRulesList } from '../models';
 // @ts-ignore
-import { RegistryList } from '../models';
+import type { RegionList } from '../models';
 // @ts-ignore
-import { ReservedResource } from '../models';
+import type { RegionSummaryList } from '../models';
 // @ts-ignore
-import { ReservedResourceList } from '../models';
+import type { Registry } from '../models';
 // @ts-ignore
-import { ReservedResourcePatchRequest } from '../models';
+import type { RegistryCredential } from '../models';
 // @ts-ignore
-import { ResourceQuota } from '../models';
+import type { RegistryCredentialList } from '../models';
 // @ts-ignore
-import { ResourceQuotaList } from '../models';
+import type { RegistryCredentialPatchRequest } from '../models';
 // @ts-ignore
-import { ResourceQuotaRequest } from '../models';
+import type { RegistryList } from '../models';
 // @ts-ignore
-import { ResourceReview } from '../models';
+import type { ReservedResource } from '../models';
 // @ts-ignore
-import { ResourceReviewRequest } from '../models';
+import type { ReservedResourceList } from '../models';
 // @ts-ignore
-import { Role } from '../models';
+import type { ReservedResourcePatchRequest } from '../models';
 // @ts-ignore
-import { RoleBinding } from '../models';
+import type { ResourceQuota } from '../models';
 // @ts-ignore
-import { RoleBindingCreateRequest } from '../models';
+import type { ResourceQuotaList } from '../models';
 // @ts-ignore
-import { RoleBindingList } from '../models';
+import type { ResourceQuotaRequest } from '../models';
 // @ts-ignore
-import { RoleBindingRequest } from '../models';
+import type { ResourceReview } from '../models';
 // @ts-ignore
-import { RoleList } from '../models';
+import type { ResourceReviewRequest } from '../models';
 // @ts-ignore
-import { SKU } from '../models';
+import type { Role } from '../models';
 // @ts-ignore
-import { SelfAccessReview } from '../models';
+import type { RoleBinding } from '../models';
 // @ts-ignore
-import { SelfEntitlementStatus } from '../models';
+import type { RoleBindingCreateRequest } from '../models';
 // @ts-ignore
-import { SelfFeatureReview } from '../models';
+import type { RoleBindingList } from '../models';
 // @ts-ignore
-import { SelfResourceReview } from '../models';
+import type { RoleBindingRequest } from '../models';
 // @ts-ignore
-import { SelfResourceReviewRequest } from '../models';
+import type { RoleList } from '../models';
 // @ts-ignore
-import { SelfServiceLandingPageSchema } from '../models';
+import type { SKU } from '../models';
 // @ts-ignore
-import { SelfTermsReview } from '../models';
+import type { SelfAccessReview } from '../models';
 // @ts-ignore
-import { SkuList } from '../models';
+import type { SelfEntitlementStatus } from '../models';
 // @ts-ignore
-import { SkuRules } from '../models';
+import type { SelfFeatureReview } from '../models';
 // @ts-ignore
-import { SkuRulesList } from '../models';
+import type { SelfResourceReview } from '../models';
 // @ts-ignore
-import { Subscription } from '../models';
+import type { SelfResourceReviewRequest } from '../models';
 // @ts-ignore
-import { SubscriptionCreateRequest } from '../models';
+import type { SelfServiceLandingPageSchema } from '../models';
 // @ts-ignore
-import { SubscriptionList } from '../models';
+import type { SelfTermsReview } from '../models';
 // @ts-ignore
-import { SubscriptionMetricList } from '../models';
+import type { SkuList } from '../models';
 // @ts-ignore
-import { SubscriptionPatchRequest } from '../models';
+import type { SkuRules } from '../models';
 // @ts-ignore
-import { SubscriptionRoleBinding } from '../models';
+import type { SkuRulesList } from '../models';
 // @ts-ignore
-import { SubscriptionRoleBindingCreateRequest } from '../models';
+import type { Subscription } from '../models';
 // @ts-ignore
-import { SubscriptionRoleBindingList } from '../models';
+import type { SubscriptionCreateRequest } from '../models';
 // @ts-ignore
-import { Summary } from '../models';
+import type { SubscriptionList } from '../models';
 // @ts-ignore
-import { SupportCasesCreatedResponse } from '../models';
+import type { SubscriptionMetricList } from '../models';
 // @ts-ignore
-import { SupportCasesRequest } from '../models';
+import type { SubscriptionPatchRequest } from '../models';
 // @ts-ignore
-import { TermsReview } from '../models';
+import type { SubscriptionRoleBinding } from '../models';
 // @ts-ignore
-import { TermsReviewResponse } from '../models';
+import type { SubscriptionRoleBindingCreateRequest } from '../models';
 // @ts-ignore
-import { TokenAuthorizationRequest } from '../models';
+import type { SubscriptionRoleBindingList } from '../models';
 // @ts-ignore
-import { TokenAuthorizationResponse } from '../models';
+import type { Summary } from '../models';
+// @ts-ignore
+import type { SupportCasesCreatedResponse } from '../models';
+// @ts-ignore
+import type { SupportCasesRequest } from '../models';
+// @ts-ignore
+import type { TermsReview } from '../models';
+// @ts-ignore
+import type { TermsReviewResponse } from '../models';
+// @ts-ignore
+import type { TokenAuthorizationRequest } from '../models';
+// @ts-ignore
+import type { TokenAuthorizationResponse } from '../models';
 /**
  * DefaultApi - axios parameter creator
- * @export
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -254,7 +273,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1AccessTokenPost: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/access_token`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -271,6 +290,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -290,7 +311,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of accounts
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {string} [fields] Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
@@ -306,7 +327,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       fields?: string,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/accounts`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -352,6 +373,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchCapabilities'] = fetchCapabilities;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -376,12 +399,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdDelete: async (
       id: string,
       deleteAssociatedResources?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -402,6 +425,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       if (deleteAssociatedResources !== undefined) {
         localVarQueryParameter['deleteAssociatedResources'] = deleteAssociatedResources;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -431,12 +456,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
       fetchRhit?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -466,6 +491,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchRhit'] = fetchRhit;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -485,7 +512,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -496,12 +523,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/labels`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -535,6 +562,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -559,15 +588,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdLabelsKeyDelete: async (
       id: string,
       key: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsKeyDelete', 'id', id);
       // verify required parameter 'key' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsKeyDelete', 'key', key);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -582,6 +611,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -607,15 +638,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdLabelsKeyGet: async (
       id: string,
       key: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsKeyGet', 'id', id);
       // verify required parameter 'key' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsKeyGet', 'key', key);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -630,6 +661,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -657,7 +690,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       id: string,
       key: string,
       label: Label,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsKeyPatch', 'id', id);
@@ -666,8 +699,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'label' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsKeyPatch', 'label', label);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -684,6 +717,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -714,14 +748,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdLabelsPost: async (
       id: string,
       label: Label,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsPost', 'id', id);
       // verify required parameter 'label' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdLabelsPost', 'label', label);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/labels`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -740,6 +774,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -770,7 +805,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdPatch: async (
       id: string,
       accountPatchRequest: AccountPatchRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdPatch', 'id', id);
@@ -781,7 +816,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         accountPatchRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -800,6 +835,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -825,7 +861,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -836,12 +872,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdPullSecretRotationGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/pull_secret_rotation`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -878,6 +914,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -902,12 +940,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdPullSecretRotationPost: async (
       id: string,
       pullSecretRotationRequest?: PullSecretRotationRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdPullSecretRotationPost', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/pull_secret_rotation`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -926,6 +964,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -956,7 +995,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete: async (
       id: string,
       rotationId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete', 'id', id);
@@ -967,8 +1006,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         rotationId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/pull_secret_rotation/{rotationId}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'rotationId'}}`, encodeURIComponent(String(rotationId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{rotationId}', encodeURIComponent(String(rotationId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -983,6 +1022,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1008,7 +1049,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet: async (
       id: string,
       rotationId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet', 'id', id);
@@ -1019,8 +1060,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         rotationId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/accounts/{id}/pull_secret_rotation/{rotationId}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'rotationId'}}`, encodeURIComponent(String(rotationId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{rotationId}', encodeURIComponent(String(rotationId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1035,6 +1076,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1060,7 +1103,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1AccountsPost: async (
       account: Account,
       dryRun?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'account' is not null or undefined
       assertParamExists('apiAccountsMgmtV1AccountsPost', 'account', account);
@@ -1085,6 +1128,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1115,7 +1159,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1BillingModelsGet: async (
       page?: number,
       size?: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/billing_models`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1141,6 +1185,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['size'] = size;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1163,12 +1209,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1BillingModelsIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1BillingModelsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/billing_models/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1185,6 +1231,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1204,7 +1252,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of available capabilities
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1212,7 +1260,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/capabilities`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1242,6 +1290,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1258,13 +1308,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @summary Fetch certificates of a particular type
-     * @param {CertificatesRequest} certificatesRequest # The payload depends on the type of the requested certificate The examples for supported types: * {\&quot;type\&quot;: \&quot;sca\&quot;, \&quot;arch\&quot;: \&quot;x86_64\&quot;}
+     * @param {CertificatesRequest} certificatesRequest # The payload depends on sca as the requested certificates.   The &#x60;type&#x60; field is now deprecated and will now be defaulted to &#x60;sca&#x60; type. * {\&quot;arch\&quot;: \&quot;x86_64\&quot;}
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1CertificatesPost: async (
       certificatesRequest: CertificatesRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'certificatesRequest' is not null or undefined
       assertParamExists(
@@ -1292,6 +1342,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1316,7 +1367,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of cloud resources
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1324,7 +1375,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/cloud_resources`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1354,6 +1405,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1376,12 +1429,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1CloudResourcesIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1CloudResourcesIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/cloud_resources/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1398,6 +1451,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1421,12 +1476,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1CloudResourcesIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1CloudResourcesIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/cloud_resources/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1443,6 +1498,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1468,14 +1525,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1CloudResourcesIdPatch: async (
       id: string,
       cloudResource: CloudResource,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1CloudResourcesIdPatch', 'id', id);
       // verify required parameter 'cloudResource' is not null or undefined
       assertParamExists('apiAccountsMgmtV1CloudResourcesIdPatch', 'cloudResource', cloudResource);
       const localVarPath = `/api/accounts_mgmt/v1/cloud_resources/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1494,6 +1551,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1522,7 +1580,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1CloudResourcesPost: async (
       cloudResource: CloudResource,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'cloudResource' is not null or undefined
       assertParamExists('apiAccountsMgmtV1CloudResourcesPost', 'cloudResource', cloudResource);
@@ -1543,6 +1601,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1571,7 +1630,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ClusterAuthorizationsPost: async (
       clusterAuthorizationRequest: ClusterAuthorizationRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterAuthorizationRequest' is not null or undefined
       assertParamExists(
@@ -1596,6 +1655,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1624,7 +1684,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ClusterRegistrationsPost: async (
       clusterRegistrationRequest: ClusterRegistrationRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterRegistrationRequest' is not null or undefined
       assertParamExists(
@@ -1649,6 +1709,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1673,7 +1734,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary List cluster transfers - returns either an empty result set or a valid ClusterTransfer instance that is within a valid transfer window.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1683,7 +1744,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/cluster_transfers`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1720,6 +1781,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1744,7 +1807,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1ClusterTransfersIdPatch: async (
       id: string,
       clusterTransferPatchRequest: ClusterTransferPatchRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ClusterTransfersIdPatch', 'id', id);
@@ -1755,7 +1818,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         clusterTransferPatchRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/cluster_transfers/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1774,6 +1837,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1802,7 +1866,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ClusterTransfersPost: async (
       clusterTransferRequest: ClusterTransferRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterTransferRequest' is not null or undefined
       assertParamExists(
@@ -1827,6 +1891,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1851,7 +1916,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of skus
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1859,7 +1924,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/config/skus`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1889,6 +1954,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1911,12 +1978,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ConfigSkusIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ConfigSkusIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/config/skus/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1933,6 +2000,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1956,12 +2025,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ConfigSkusIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ConfigSkusIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/config/skus/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1978,6 +2047,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2003,14 +2074,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1ConfigSkusIdPatch: async (
       id: string,
       sKU: SKU,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ConfigSkusIdPatch', 'id', id);
       // verify required parameter 'sKU' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ConfigSkusIdPatch', 'sKU', sKU);
       const localVarPath = `/api/accounts_mgmt/v1/config/skus/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2029,6 +2100,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2057,7 +2129,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ConfigSkusPost: async (
       sKU: SKU,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'sKU' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ConfigSkusPost', 'sKU', sKU);
@@ -2078,6 +2150,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2106,7 +2179,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1CurrentAccountGet: async (
       fetchLabels?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/current_account`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2131,6 +2204,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchLabels'] = fetchLabels;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2151,7 +2226,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1DefaultCapabilitiesGet: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/default_capabilities`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2168,6 +2243,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2191,12 +2268,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1DefaultCapabilitiesNameDelete: async (
       name: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'name' is not null or undefined
       assertParamExists('apiAccountsMgmtV1DefaultCapabilitiesNameDelete', 'name', name);
       const localVarPath = `/api/accounts_mgmt/v1/default_capabilities/{name}`.replace(
-        `{${'name'}}`,
+        '{name}',
         encodeURIComponent(String(name)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2213,6 +2290,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2236,12 +2315,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1DefaultCapabilitiesNameGet: async (
       name: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'name' is not null or undefined
       assertParamExists('apiAccountsMgmtV1DefaultCapabilitiesNameGet', 'name', name);
       const localVarPath = `/api/accounts_mgmt/v1/default_capabilities/{name}`.replace(
-        `{${'name'}}`,
+        '{name}',
         encodeURIComponent(String(name)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2258,6 +2337,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2283,7 +2364,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1DefaultCapabilitiesNamePatch: async (
       name: string,
       defaultCapability: DefaultCapability,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'name' is not null or undefined
       assertParamExists('apiAccountsMgmtV1DefaultCapabilitiesNamePatch', 'name', name);
@@ -2294,7 +2375,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         defaultCapability,
       );
       const localVarPath = `/api/accounts_mgmt/v1/default_capabilities/{name}`.replace(
-        `{${'name'}}`,
+        '{name}',
         encodeURIComponent(String(name)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2313,6 +2394,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2341,7 +2423,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1DefaultCapabilitiesPost: async (
       defaultCapability: DefaultCapability,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'defaultCapability' is not null or undefined
       assertParamExists(
@@ -2366,6 +2448,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2390,7 +2473,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of deleted subscriptions
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2400,7 +2483,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/deleted_subscriptions`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2434,6 +2517,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2456,12 +2541,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1DeletedSubscriptionsIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1DeletedSubscriptionsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/deleted_subscriptions/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2479,6 +2564,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2494,10 +2581,67 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @summary Fetch all certificates of a sca type based on the architectures
+     * @param {EntitlementCertificatesRequest} entitlementCertificatesRequest # The payload depends on sca as the requested certificates.   The &#x60;type&#x60; field is now deprecated and will now be defaulted to &#x60;sca&#x60; type. * {\&quot;arch\&quot;: [\&quot;x86\&quot;,\&quot;x86_64\&quot;,\&quot;ppc\&quot;]}
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiAccountsMgmtV1EntitlementCertificatesPost: async (
+      entitlementCertificatesRequest: EntitlementCertificatesRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'entitlementCertificatesRequest' is not null or undefined
+      assertParamExists(
+        'apiAccountsMgmtV1EntitlementCertificatesPost',
+        'entitlementCertificatesRequest',
+        entitlementCertificatesRequest,
+      );
+      const localVarPath = `/api/accounts_mgmt/v1/entitlement_certificates`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication AccessToken required
+      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      // authentication Bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        entitlementCertificatesRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Returns a list of errors
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2505,7 +2649,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/errors`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2531,6 +2675,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2553,12 +2699,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1ErrorsIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1ErrorsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/errors/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2571,6 +2717,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2597,7 +2745,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1FeatureTogglesIdQueryPost: async (
       id: string,
       featureToggleQueryRequest: FeatureToggleQueryRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1FeatureTogglesIdQueryPost', 'id', id);
@@ -2608,7 +2756,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         featureToggleQueryRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/feature_toggles/{id}/query`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2627,6 +2775,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2651,7 +2800,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of labels
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2661,7 +2810,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/labels`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2695,6 +2844,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2715,7 +2866,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1LandingPageSelfServiceGet: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/landing_page/self_service`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2733,6 +2884,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2749,13 +2902,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @summary Returns a list of metrics
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1MetricsGet: async (
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/metrics`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2777,6 +2930,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2792,18 +2947,22 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @summary Notify the owner of cluster/subscription
-     * @param {NotificationRequest} notificationRequest The contents of the notification to send to the owner of a cluster/subscription in addition to the set of template parameters which are sent automatically ACCOUNT_USERNAME, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME, ORGANIZATION_EXTERNAL_ID
+     * @summary Get and validate notification details
+     * @param {NotifyDetailsRequest} notifyDetailsRequest The notification parameters such as bcc_address,cluster_id etc
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiAccountsMgmtV1NotifyPost: async (
-      notificationRequest: NotificationRequest,
-      options: AxiosRequestConfig = {},
+    apiAccountsMgmtV1NotifyDetailsPost: async (
+      notifyDetailsRequest: NotifyDetailsRequest,
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'notificationRequest' is not null or undefined
-      assertParamExists('apiAccountsMgmtV1NotifyPost', 'notificationRequest', notificationRequest);
-      const localVarPath = `/api/accounts_mgmt/v1/notify`;
+      // verify required parameter 'notifyDetailsRequest' is not null or undefined
+      assertParamExists(
+        'apiAccountsMgmtV1NotifyDetailsPost',
+        'notifyDetailsRequest',
+        notifyDetailsRequest,
+      );
+      const localVarPath = `/api/accounts_mgmt/v1/notify_details`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2820,6 +2979,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2829,7 +2989,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        notificationRequest,
+        notifyDetailsRequest,
         localVarRequestOptions,
         configuration,
       );
@@ -2844,7 +3004,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of organizations
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
      * @param {boolean} [fetchCapabilities] If true, includes the capabilities on a subscription in the output. Could slow request response time.
@@ -2860,7 +3020,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
       fields?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/organizations`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2906,6 +3066,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fields'] = fields;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2932,12 +3094,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       id: string,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2963,6 +3125,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchCapabilities'] = fetchCapabilities;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2982,7 +3146,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2993,12 +3157,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}/labels`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3032,6 +3196,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -3056,15 +3222,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete: async (
       id: string,
       key: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete', 'id', id);
       // verify required parameter 'key' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete', 'key', key);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3079,6 +3245,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3104,15 +3272,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsIdLabelsKeyGet: async (
       id: string,
       key: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsKeyGet', 'id', id);
       // verify required parameter 'key' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsKeyGet', 'key', key);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3127,6 +3295,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3154,7 +3324,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       id: string,
       key: string,
       label: Label,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch', 'id', id);
@@ -3163,8 +3333,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'label' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch', 'label', label);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3181,6 +3351,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3211,14 +3382,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsIdLabelsPost: async (
       id: string,
       label: Label,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsPost', 'id', id);
       // verify required parameter 'label' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdLabelsPost', 'label', label);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}/labels`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3237,6 +3408,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3267,7 +3439,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsIdPatch: async (
       id: string,
       organizationPatchRequest: OrganizationPatchRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdPatch', 'id', id);
@@ -3278,7 +3450,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         organizationPatchRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3297,6 +3469,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3325,12 +3498,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{id}/summary_dashboard`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3347,6 +3520,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3372,7 +3547,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete: async (
       orgId: string,
       acctGrpAsgnId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3388,8 +3563,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/organizations/{orgId}/account_group_assignments/{acctGrpAsgnId}`
-          .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-          .replace(`{${'acctGrpAsgnId'}}`, encodeURIComponent(String(acctGrpAsgnId)));
+          .replace('{orgId}', encodeURIComponent(String(orgId)))
+          .replace('{acctGrpAsgnId}', encodeURIComponent(String(acctGrpAsgnId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3404,6 +3579,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3429,7 +3606,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet: async (
       orgId: string,
       acctGrpAsgnId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3445,8 +3622,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/organizations/{orgId}/account_group_assignments/{acctGrpAsgnId}`
-          .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-          .replace(`{${'acctGrpAsgnId'}}`, encodeURIComponent(String(acctGrpAsgnId)));
+          .replace('{orgId}', encodeURIComponent(String(orgId)))
+          .replace('{acctGrpAsgnId}', encodeURIComponent(String(acctGrpAsgnId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3461,6 +3638,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3481,7 +3660,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} orgId The id of organization
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3492,7 +3671,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3502,7 +3681,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/organizations/{orgId}/account_group_assignments`.replace(
-          `{${'orgId'}}`,
+          '{orgId}',
           encodeURIComponent(String(orgId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3536,6 +3715,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -3560,7 +3741,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost: async (
       orgId: string,
       accountGroupAssignment: AccountGroupAssignment,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3576,7 +3757,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/organizations/{orgId}/account_group_assignments`.replace(
-          `{${'orgId'}}`,
+          '{orgId}',
           encodeURIComponent(String(orgId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3595,6 +3776,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3625,7 +3807,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete: async (
       orgId: string,
       acctGrpId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3640,8 +3822,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         acctGrpId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/account_groups/{acctGrpId}`
-        .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-        .replace(`{${'acctGrpId'}}`, encodeURIComponent(String(acctGrpId)));
+        .replace('{orgId}', encodeURIComponent(String(orgId)))
+        .replace('{acctGrpId}', encodeURIComponent(String(acctGrpId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3656,6 +3838,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3681,7 +3865,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet: async (
       orgId: string,
       acctGrpId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3696,8 +3880,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         acctGrpId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/account_groups/{acctGrpId}`
-        .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-        .replace(`{${'acctGrpId'}}`, encodeURIComponent(String(acctGrpId)));
+        .replace('{orgId}', encodeURIComponent(String(orgId)))
+        .replace('{acctGrpId}', encodeURIComponent(String(acctGrpId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3712,6 +3896,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3739,7 +3925,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       orgId: string,
       acctGrpId: string,
       accountGroupRequest: AccountGroupRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -3760,8 +3946,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         accountGroupRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/account_groups/{acctGrpId}`
-        .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-        .replace(`{${'acctGrpId'}}`, encodeURIComponent(String(acctGrpId)));
+        .replace('{orgId}', encodeURIComponent(String(orgId)))
+        .replace('{acctGrpId}', encodeURIComponent(String(acctGrpId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3778,6 +3964,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3803,7 +3990,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} orgId The id of organization
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3814,12 +4001,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet', 'orgId', orgId);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/account_groups`.replace(
-        `{${'orgId'}}`,
+        '{orgId}',
         encodeURIComponent(String(orgId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3853,6 +4040,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -3877,7 +4066,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost: async (
       orgId: string,
       accountGroupRequest: AccountGroupRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost', 'orgId', orgId);
@@ -3888,7 +4077,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         accountGroupRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/account_groups`.replace(
-        `{${'orgId'}}`,
+        '{orgId}',
         encodeURIComponent(String(orgId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3907,6 +4096,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3937,12 +4127,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet: async (
       orgId: string,
       forceRecalc?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet', 'orgId', orgId);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/consumed_quota`.replace(
-        `{${'orgId'}}`,
+        '{orgId}',
         encodeURIComponent(String(orgId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3964,6 +4154,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['forceRecalc'] = forceRecalc;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -3981,7 +4173,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      *
      * @summary Returns a summary of quota cost
      * @param {string} orgId The id of organization
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
      * @param {boolean} [fetchRelatedResources] If true, includes the related resources in the output. Could slow request response time.
@@ -3998,12 +4190,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       fetchRelatedResources?: boolean,
       forceRecalc?: boolean,
       fetchCloudAccounts?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet', 'orgId', orgId);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/quota_cost`.replace(
-        `{${'orgId'}}`,
+        '{orgId}',
         encodeURIComponent(String(orgId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4045,6 +4237,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchCloudAccounts'] = fetchCloudAccounts;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -4064,7 +4258,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} orgId The id of organization
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4075,12 +4269,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet', 'orgId', orgId);
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/resource_quota`.replace(
-        `{${'orgId'}}`,
+        '{orgId}',
         encodeURIComponent(String(orgId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4114,6 +4308,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -4138,7 +4334,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost: async (
       orgId: string,
       resourceQuotaRequest: ResourceQuotaRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost', 'orgId', orgId);
@@ -4149,7 +4345,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         resourceQuotaRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/resource_quota`.replace(
-        `{${'orgId'}}`,
+        '{orgId}',
         encodeURIComponent(String(orgId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4168,6 +4364,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4198,7 +4395,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete: async (
       orgId: string,
       quotaId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -4213,8 +4410,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         quotaId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/resource_quota/{quotaId}`
-        .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-        .replace(`{${'quotaId'}}`, encodeURIComponent(String(quotaId)));
+        .replace('{orgId}', encodeURIComponent(String(orgId)))
+        .replace('{quotaId}', encodeURIComponent(String(quotaId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -4229,6 +4426,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4254,7 +4453,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet: async (
       orgId: string,
       quotaId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -4269,8 +4468,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         quotaId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/resource_quota/{quotaId}`
-        .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-        .replace(`{${'quotaId'}}`, encodeURIComponent(String(quotaId)));
+        .replace('{orgId}', encodeURIComponent(String(orgId)))
+        .replace('{quotaId}', encodeURIComponent(String(quotaId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -4285,6 +4484,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4312,7 +4513,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       orgId: string,
       quotaId: string,
       resourceQuotaRequest: ResourceQuotaRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'orgId' is not null or undefined
       assertParamExists(
@@ -4333,8 +4534,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         resourceQuotaRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/organizations/{orgId}/resource_quota/{quotaId}`
-        .replace(`{${'orgId'}}`, encodeURIComponent(String(orgId)))
-        .replace(`{${'quotaId'}}`, encodeURIComponent(String(quotaId)));
+        .replace('{orgId}', encodeURIComponent(String(orgId)))
+        .replace('{quotaId}', encodeURIComponent(String(quotaId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -4351,6 +4552,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4379,7 +4581,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1OrganizationsPost: async (
       organization: Organization,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'organization' is not null or undefined
       assertParamExists('apiAccountsMgmtV1OrganizationsPost', 'organization', organization);
@@ -4400,6 +4602,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4424,7 +4627,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Get all plans
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4432,7 +4635,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/plans`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4462,6 +4665,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -4484,12 +4689,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1PlansIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1PlansIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/plans/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4506,6 +4711,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4529,7 +4736,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1PullSecretsExternalResourceIdDelete: async (
       externalResourceId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'externalResourceId' is not null or undefined
       assertParamExists(
@@ -4538,7 +4745,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         externalResourceId,
       );
       const localVarPath = `/api/accounts_mgmt/v1/pull_secrets/{externalResourceId}`.replace(
-        `{${'externalResourceId'}}`,
+        '{externalResourceId}',
         encodeURIComponent(String(externalResourceId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4555,6 +4762,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4578,7 +4787,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1PullSecretsPost: async (
       pullSecretRequest: PullSecretRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'pullSecretRequest' is not null or undefined
       assertParamExists('apiAccountsMgmtV1PullSecretsPost', 'pullSecretRequest', pullSecretRequest);
@@ -4599,6 +4808,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4627,7 +4837,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1QuotaAuthorizationsPost: async (
       quotaAuthorizationRequest: QuotaAuthorizationRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'quotaAuthorizationRequest' is not null or undefined
       assertParamExists(
@@ -4652,6 +4862,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4674,7 +4885,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @summary Returns a summary of quota cost for the authenticated user
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
      * @param {boolean} [fetchRelatedResources] If true, includes the related resources in the output. Could slow request response time.
@@ -4688,7 +4899,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       fetchRelatedResources?: boolean,
       fetchCloudAccounts?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/quota_cost`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4726,6 +4937,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchCloudAccounts'] = fetchCloudAccounts;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -4744,7 +4957,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of UHC product Quota Rules
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4752,7 +4965,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/quota_rules`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4782,6 +4995,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -4800,7 +5015,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of quotas
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4808,7 +5023,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/quotas`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4838,6 +5053,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -4860,12 +5077,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1QuotasIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1QuotasIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/quotas/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4882,6 +5099,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4905,12 +5124,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1QuotasIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1QuotasIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/quotas/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4927,6 +5146,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4952,14 +5173,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1QuotasIdPatch: async (
       id: string,
       quota: Quota,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1QuotasIdPatch', 'id', id);
       // verify required parameter 'quota' is not null or undefined
       assertParamExists('apiAccountsMgmtV1QuotasIdPatch', 'quota', quota);
       const localVarPath = `/api/accounts_mgmt/v1/quotas/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4978,6 +5199,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5006,7 +5228,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1QuotasPost: async (
       quota: Quota,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'quota' is not null or undefined
       assertParamExists('apiAccountsMgmtV1QuotasPost', 'quota', quota);
@@ -5027,6 +5249,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5048,10 +5271,90 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @summary Returns a list of regions to which a user has access
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiAccountsMgmtV1RegionsGet: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/accounts_mgmt/v1/regions`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication Bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns a summary of clusters by region
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiAccountsMgmtV1RegionsSummaryGet: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/accounts_mgmt/v1/regions/summary`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication Bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Returns a list of registries
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5061,7 +5364,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/registries`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5095,6 +5398,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5117,12 +5422,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RegistriesIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RegistriesIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/registries/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5139,6 +5444,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5157,7 +5464,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * List Registry Credentials
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5167,7 +5474,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/registry_credentials`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5197,6 +5504,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5219,12 +5528,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RegistryCredentialsIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RegistryCredentialsIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/registry_credentials/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5241,6 +5550,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5264,12 +5575,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RegistryCredentialsIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RegistryCredentialsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/registry_credentials/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5286,6 +5597,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5311,7 +5624,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1RegistryCredentialsIdPatch: async (
       id: string,
       registryCredentialPatchRequest: RegistryCredentialPatchRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RegistryCredentialsIdPatch', 'id', id);
@@ -5322,7 +5635,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         registryCredentialPatchRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/registry_credentials/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5341,6 +5654,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5369,7 +5683,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RegistryCredentialsPost: async (
       registryCredential: RegistryCredential,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'registryCredential' is not null or undefined
       assertParamExists(
@@ -5394,6 +5708,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5418,7 +5733,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of reserved resources
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5428,7 +5743,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/reserved_resources`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5462,6 +5777,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5480,7 +5797,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of resource quota objects
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5490,7 +5807,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/resource_quota`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5524,6 +5841,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5542,7 +5861,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of role bindings
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5552,7 +5871,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/role_bindings`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5586,6 +5905,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5608,12 +5929,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RoleBindingsIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RoleBindingsIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/role_bindings/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5630,6 +5951,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5653,12 +5976,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RoleBindingsIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RoleBindingsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/role_bindings/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5675,6 +5998,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5700,7 +6025,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1RoleBindingsIdPatch: async (
       id: string,
       roleBindingRequest: RoleBindingRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RoleBindingsIdPatch', 'id', id);
@@ -5711,7 +6036,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         roleBindingRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/role_bindings/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5730,6 +6055,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5758,7 +6084,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RoleBindingsPost: async (
       roleBindingCreateRequest: RoleBindingCreateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'roleBindingCreateRequest' is not null or undefined
       assertParamExists(
@@ -5783,6 +6109,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5807,7 +6134,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of roles
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5815,7 +6142,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       page?: number,
       size?: number,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/roles`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5845,6 +6172,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5867,12 +6196,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1RolesIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1RolesIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/roles/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5889,6 +6218,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5912,12 +6243,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SelfEntitlementProductPost: async (
       product: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'product' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SelfEntitlementProductPost', 'product', product);
       const localVarPath = `/api/accounts_mgmt/v1/self_entitlement/{product}`.replace(
-        `{${'product'}}`,
+        '{product}',
         encodeURIComponent(String(product)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5935,6 +6266,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -5951,7 +6284,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @summary Returns a list of UHC product SKU Rules
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
      * @param {*} [options] Override http request option.
@@ -5961,7 +6294,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       search?: string,
       page?: number,
       size?: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/sku_rules`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5991,6 +6324,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['size'] = size;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -6013,12 +6348,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SkuRulesIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SkuRulesIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/sku_rules/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6035,6 +6370,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6058,12 +6395,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SkuRulesIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SkuRulesIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/sku_rules/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6080,6 +6417,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6105,14 +6444,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SkuRulesIdPatch: async (
       id: string,
       skuRules: SkuRules,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SkuRulesIdPatch', 'id', id);
       // verify required parameter 'skuRules' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SkuRulesIdPatch', 'skuRules', skuRules);
       const localVarPath = `/api/accounts_mgmt/v1/sku_rules/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6131,6 +6470,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6159,7 +6499,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SkuRulesPost: async (
       skuRules: SkuRules,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'skuRules' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SkuRulesPost', 'skuRules', skuRules);
@@ -6180,6 +6520,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6202,14 +6543,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @summary Returns a list of UHC product SKUs
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @deprecated
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1SkusGet: async (
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/skus`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6230,6 +6571,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       if (search !== undefined) {
         localVarQueryParameter['search'] = search;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6254,12 +6597,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SkusIdGet: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SkusIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/skus/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6276,6 +6619,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6295,10 +6640,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @summary Returns a list of subscriptions
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {boolean} [fetchAccounts] If true, includes the account reference information in the output. Could slow request response time.
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
      * @param {boolean} [fetchCapabilities] If true, includes the capabilities on a subscription in the output. Could slow request response time.
+     * @param {boolean} [fetchOrganization] If true, includes the organization object on a subscription in the output. Could slow request response time.
      * @param {string} [fields] Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {string} [labels] Specifies the criteria to filter the subscription resource based on their labels. A label is represented as a &#x60;key&#x3D;value&#x60; pair,  &#x60;&#x60;&#x60; labels &#x3D; \&quot;foo&#x3D;bar\&quot; &#x60;&#x60;&#x60;  and multiple labels are separated by comma,  &#x60;&#x60;&#x60; labels &#x3D; \&quot;foo&#x3D;bar,fooz&#x3D;barz\&quot; &#x60;&#x60;&#x60;
@@ -6312,10 +6658,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       fetchAccounts?: boolean,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
+      fetchOrganization?: boolean,
       fields?: string,
       orderBy?: string,
       labels?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6360,6 +6707,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchCapabilities'] = fetchCapabilities;
       }
 
+      if (fetchOrganization !== undefined) {
+        localVarQueryParameter['fetchOrganization'] = fetchOrganization;
+      }
+
       if (fields !== undefined) {
         localVarQueryParameter['fields'] = fields;
       }
@@ -6371,6 +6722,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       if (labels !== undefined) {
         localVarQueryParameter['labels'] = labels;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6394,12 +6747,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SubscriptionsIdDelete: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdDelete', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6416,6 +6769,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6437,6 +6792,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {boolean} [fetchAccounts] If true, includes the account reference information in the output. Could slow request response time.
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
      * @param {boolean} [fetchCapabilities] If true, includes the capabilities on a subscription in the output. Could slow request response time.
+     * @param {boolean} [fetchClusterTransfers] If true, returns either an empty result set or a valid ClusterTransfer list on a subscription in the output. Could slow request response time.
      * @param {boolean} [fetchCpuAndSocket] If true, fetches, from the clusters service, the total numbers of CPU\&#39;s and sockets under an obligation, and includes in the output. Could slow request response time.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6446,13 +6802,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       fetchAccounts?: boolean,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
+      fetchClusterTransfers?: boolean,
       fetchCpuAndSocket?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6482,9 +6839,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchCapabilities'] = fetchCapabilities;
       }
 
+      if (fetchClusterTransfers !== undefined) {
+        localVarQueryParameter['fetchClusterTransfers'] = fetchClusterTransfers;
+      }
+
       if (fetchCpuAndSocket !== undefined) {
         localVarQueryParameter['fetchCpuAndSocket'] = fetchCpuAndSocket;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6505,7 +6868,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6516,12 +6879,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/labels`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6555,6 +6918,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -6579,15 +6944,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete: async (
       id: string,
       key: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete', 'id', id);
       // verify required parameter 'key' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete', 'key', key);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -6602,6 +6967,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6627,15 +6994,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet: async (
       id: string,
       key: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet', 'id', id);
       // verify required parameter 'key' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet', 'key', key);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -6650,6 +7017,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6677,7 +7046,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       id: string,
       key: string,
       label: Label,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch', 'id', id);
@@ -6686,8 +7055,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'label' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch', 'label', label);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/labels/{key}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'key'}}`, encodeURIComponent(String(key)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{key}', encodeURIComponent(String(key)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -6704,6 +7073,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6734,14 +7104,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsIdLabelsPost: async (
       id: string,
       label: Label,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsPost', 'id', id);
       // verify required parameter 'label' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdLabelsPost', 'label', label);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/labels`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6760,6 +7130,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6794,7 +7165,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       metricName: string,
       search?: string,
       fields?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet', 'id', id);
@@ -6805,8 +7176,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         metricName,
       );
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/metrics/{metric_name}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'metric_name'}}`, encodeURIComponent(String(metricName)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{metric_name}', encodeURIComponent(String(metricName)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -6830,6 +7201,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fields'] = fields;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -6845,27 +7218,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @summary Notify the owner of a subscription
+     * @summary Get an ondemand metrics of a subscription by id
      * @param {string} id The id of record
-     * @param {NotificationRequest} notificationRequest The contents of the notification to send to the owner of a subscription in addition to the set of template parameters which are sent automatically ACCOUNT_USERNAME, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME, ORGANIZATION_EXTERNAL_ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiAccountsMgmtV1SubscriptionsIdNotifyPost: async (
+    apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet: async (
       id: string,
-      notificationRequest: NotificationRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
-      assertParamExists('apiAccountsMgmtV1SubscriptionsIdNotifyPost', 'id', id);
-      // verify required parameter 'notificationRequest' is not null or undefined
-      assertParamExists(
-        'apiAccountsMgmtV1SubscriptionsIdNotifyPost',
-        'notificationRequest',
-        notificationRequest,
-      );
-      const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/notify`.replace(
-        `{${'id'}}`,
+      assertParamExists('apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet', 'id', id);
+      const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/ondemand_metrics`.replace(
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6875,7 +7240,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -6883,7 +7248,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
-      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6892,11 +7257,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        notificationRequest,
-        localVarRequestOptions,
-        configuration,
-      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -6914,7 +7274,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsIdPatch: async (
       id: string,
       subscriptionPatchRequest: SubscriptionPatchRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdPatch', 'id', id);
@@ -6925,7 +7285,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         subscriptionPatchRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6944,6 +7304,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -6969,7 +7330,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6980,12 +7341,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       size?: number,
       search?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/reserved_resources`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7019,6 +7380,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -7045,12 +7408,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       id: string,
       page?: number,
       size?: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsIdSupportCasesGet', 'id', id);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{id}/support_cases`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7076,6 +7439,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['size'] = size;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -7098,7 +7463,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SubscriptionsPost: async (
       subscriptionCreateRequest: SubscriptionCreateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subscriptionCreateRequest' is not null or undefined
       assertParamExists(
@@ -7123,6 +7488,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7153,7 +7519,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete: async (
       subId: string,
       accountId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists(
@@ -7169,8 +7535,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/subscriptions/{subId}/notification_contacts/{accountId}`
-          .replace(`{${'subId'}}`, encodeURIComponent(String(subId)))
-          .replace(`{${'accountId'}}`, encodeURIComponent(String(accountId)));
+          .replace('{subId}', encodeURIComponent(String(subId)))
+          .replace('{accountId}', encodeURIComponent(String(accountId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7185,6 +7551,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7205,7 +7573,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} subId The id of subscription
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [fields] Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
@@ -7218,7 +7586,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       search?: string,
       fields?: string,
       orderBy?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists(
@@ -7228,7 +7596,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/subscriptions/{subId}/notification_contacts`.replace(
-          `{${'subId'}}`,
+          '{subId}',
           encodeURIComponent(String(subId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7266,6 +7634,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['orderBy'] = orderBy;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -7290,7 +7660,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost: async (
       subId: string,
       notificationContactCreateRequest: NotificationContactCreateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists(
@@ -7306,7 +7676,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/subscriptions/{subId}/notification_contacts`.replace(
-          `{${'subId'}}`,
+          '{subId}',
           encodeURIComponent(String(subId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7325,6 +7695,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7355,7 +7726,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete: async (
       subId: string,
       reservedResourceId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists(
@@ -7371,8 +7742,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/subscriptions/{subId}/reserved_resources/{reservedResourceId}`
-          .replace(`{${'subId'}}`, encodeURIComponent(String(subId)))
-          .replace(`{${'reservedResourceId'}}`, encodeURIComponent(String(reservedResourceId)));
+          .replace('{subId}', encodeURIComponent(String(subId)))
+          .replace('{reservedResourceId}', encodeURIComponent(String(reservedResourceId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7387,6 +7758,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7412,7 +7785,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet: async (
       subId: string,
       reservedResourceId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists(
@@ -7428,8 +7801,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/subscriptions/{subId}/reserved_resources/{reservedResourceId}`
-          .replace(`{${'subId'}}`, encodeURIComponent(String(subId)))
-          .replace(`{${'reservedResourceId'}}`, encodeURIComponent(String(reservedResourceId)));
+          .replace('{subId}', encodeURIComponent(String(subId)))
+          .replace('{reservedResourceId}', encodeURIComponent(String(reservedResourceId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7444,6 +7817,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7471,7 +7846,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       subId: string,
       reservedResourceId: string,
       reservedResourcePatchRequest: ReservedResourcePatchRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists(
@@ -7493,8 +7868,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       );
       const localVarPath =
         `/api/accounts_mgmt/v1/subscriptions/{subId}/reserved_resources/{reservedResourceId}`
-          .replace(`{${'subId'}}`, encodeURIComponent(String(subId)))
-          .replace(`{${'reservedResourceId'}}`, encodeURIComponent(String(reservedResourceId)));
+          .replace('{subId}', encodeURIComponent(String(subId)))
+          .replace('{reservedResourceId}', encodeURIComponent(String(reservedResourceId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7511,6 +7886,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7536,7 +7912,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} subId The id of subscription
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {boolean} [fetchAccounts] If true, includes the account reference information in the output. Could slow request response time.
      * @param {*} [options] Override http request option.
@@ -7549,12 +7925,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       search?: string,
       orderBy?: string,
       fetchAccounts?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet', 'subId', subId);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{subId}/role_bindings`.replace(
-        `{${'subId'}}`,
+        '{subId}',
         encodeURIComponent(String(subId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7592,6 +7968,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarQueryParameter['fetchAccounts'] = fetchAccounts;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -7616,15 +7994,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete: async (
       id: string,
       subId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete', 'id', id);
       // verify required parameter 'subId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete', 'subId', subId);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{subId}/role_bindings/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'subId'}}`, encodeURIComponent(String(subId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{subId}', encodeURIComponent(String(subId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7639,6 +8017,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7664,15 +8044,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet: async (
       id: string,
       subId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet', 'id', id);
       // verify required parameter 'subId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet', 'subId', subId);
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{subId}/role_bindings/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'subId'}}`, encodeURIComponent(String(subId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{subId}', encodeURIComponent(String(subId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7687,6 +8067,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7712,7 +8094,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost: async (
       subId: string,
       subscriptionRoleBindingCreateRequest: SubscriptionRoleBindingCreateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'subId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost', 'subId', subId);
@@ -7723,7 +8105,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         subscriptionRoleBindingCreateRequest,
       );
       const localVarPath = `/api/accounts_mgmt/v1/subscriptions/{subId}/role_bindings`.replace(
-        `{${'subId'}}`,
+        '{subId}',
         encodeURIComponent(String(subId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7742,6 +8124,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7770,12 +8153,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SupportCasesCaseIdDelete: async (
       caseId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'caseId' is not null or undefined
       assertParamExists('apiAccountsMgmtV1SupportCasesCaseIdDelete', 'caseId', caseId);
       const localVarPath = `/api/accounts_mgmt/v1/support_cases/{caseId}`.replace(
-        `{${'caseId'}}`,
+        '{caseId}',
         encodeURIComponent(String(caseId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7792,6 +8175,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       // authentication Bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7815,7 +8200,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1SupportCasesPost: async (
       supportCasesRequest: SupportCasesRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'supportCasesRequest' is not null or undefined
       assertParamExists(
@@ -7840,6 +8225,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7868,7 +8254,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAccountsMgmtV1TokenAuthorizationPost: async (
       tokenAuthorizationRequest: TokenAuthorizationRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'tokenAuthorizationRequest' is not null or undefined
       assertParamExists(
@@ -7893,6 +8279,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7921,7 +8308,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1AccessReviewPost: async (
       accessReview: AccessReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'accessReview' is not null or undefined
       assertParamExists('apiAuthorizationsV1AccessReviewPost', 'accessReview', accessReview);
@@ -7942,6 +8329,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -7970,7 +8358,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1CapabilityReviewPost: async (
       capabilityReviewRequest: CapabilityReviewRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'capabilityReviewRequest' is not null or undefined
       assertParamExists(
@@ -7995,6 +8383,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8023,7 +8412,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1ExportControlReviewPost: async (
       exportControlReviewRequest: ExportControlReviewRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'exportControlReviewRequest' is not null or undefined
       assertParamExists(
@@ -8048,6 +8437,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8076,7 +8466,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1FeatureReviewPost: async (
       featureReview: FeatureReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'featureReview' is not null or undefined
       assertParamExists('apiAuthorizationsV1FeatureReviewPost', 'featureReview', featureReview);
@@ -8097,6 +8487,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8132,7 +8523,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'resourceReviewRequest' is not null or undefined
       assertParamExists(
@@ -8169,6 +8560,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8197,7 +8589,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1SelfAccessReviewPost: async (
       selfAccessReview: SelfAccessReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfAccessReview' is not null or undefined
       assertParamExists(
@@ -8222,6 +8614,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8250,7 +8643,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1SelfFeatureReviewPost: async (
       selfFeatureReview: SelfFeatureReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfFeatureReview' is not null or undefined
       assertParamExists(
@@ -8275,6 +8668,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8309,7 +8703,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfResourceReviewRequest' is not null or undefined
       assertParamExists(
@@ -8346,6 +8740,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       }
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8374,7 +8769,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1SelfTermsReviewPost: async (
       selfTermsReview: SelfTermsReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'selfTermsReview' is not null or undefined
       assertParamExists(
@@ -8399,6 +8794,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8427,7 +8823,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     apiAuthorizationsV1TermsReviewPost: async (
       termsReview: TermsReview,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'termsReview' is not null or undefined
       assertParamExists('apiAuthorizationsV1TermsReviewPost', 'termsReview', termsReview);
@@ -8448,6 +8844,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -8472,7 +8869,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 
 /**
  * DefaultApi - functional programming interface
- * @export
  */
 export const DefaultApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration);
@@ -8484,19 +8880,30 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async apiAccountsMgmtV1AccessTokenPost(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessTokenCfg>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccessTokenPost(
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccessTokenPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of accounts
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {string} [fields] Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
@@ -8512,7 +8919,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       fields?: string,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsGet(
         page,
@@ -8524,7 +8931,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         fetchCapabilities,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8537,14 +8955,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdDelete(
       id: string,
       deleteAssociatedResources?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdDelete(
         id,
         deleteAssociatedResources,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8561,7 +8990,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
       fetchRhit?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdGet(
         id,
@@ -8570,7 +8999,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         fetchRhit,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8578,7 +9018,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8589,7 +9029,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LabelList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdLabelsGet(
@@ -8600,7 +9040,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdLabelsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8613,7 +9064,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdLabelsKeyDelete(
       id: string,
       key: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdLabelsKeyDelete(
@@ -8621,7 +9072,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           key,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdLabelsKeyDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8634,11 +9096,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdLabelsKeyGet(
       id: string,
       key: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdLabelsKeyGet(id, key, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdLabelsKeyGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8653,7 +9126,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       id: string,
       key: string,
       label: Label,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdLabelsKeyPatch(
@@ -8662,7 +9135,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           label,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdLabelsKeyPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8675,11 +9159,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdLabelsPost(
       id: string,
       label: Label,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdLabelsPost(id, label, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdLabelsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8692,14 +9187,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdPatch(
       id: string,
       accountPatchRequest: AccountPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdPatch(
         id,
         accountPatchRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8707,7 +9213,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8718,7 +9224,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PullSecretRotationList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdPullSecretRotationGet(
@@ -8729,7 +9235,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdPullSecretRotationGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8742,7 +9259,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdPullSecretRotationPost(
       id: string,
       pullSecretRotationRequest?: PullSecretRotationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PullSecretRotation>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdPullSecretRotationPost(
@@ -8750,7 +9267,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           pullSecretRotationRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsIdPullSecretRotationPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8763,7 +9291,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete(
       id: string,
       rotationId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete(
@@ -8771,7 +9299,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           rotationId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8784,7 +9323,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet(
       id: string,
       rotationId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PullSecretRotation>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet(
@@ -8792,7 +9331,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           rotationId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8805,14 +9355,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1AccountsPost(
       account: Account,
       dryRun?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1AccountsPost(
         account,
         dryRun,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1AccountsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8825,14 +9386,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1BillingModelsGet(
       page?: number,
       size?: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BillingModelList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1BillingModelsGet(
         page,
         size,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1BillingModelsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8843,20 +9415,31 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1BillingModelsIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BillingModel>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1BillingModelsIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1BillingModelsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of available capabilities
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8864,7 +9447,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CapabilityList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1CapabilitiesGet(
         page,
@@ -8872,31 +9455,53 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CapabilitiesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Fetch certificates of a particular type
-     * @param {CertificatesRequest} certificatesRequest # The payload depends on the type of the requested certificate The examples for supported types: * {\&quot;type\&quot;: \&quot;sca\&quot;, \&quot;arch\&quot;: \&quot;x86_64\&quot;}
+     * @param {CertificatesRequest} certificatesRequest # The payload depends on sca as the requested certificates.   The &#x60;type&#x60; field is now deprecated and will now be defaulted to &#x60;sca&#x60; type. * {\&quot;arch\&quot;: \&quot;x86_64\&quot;}
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async apiAccountsMgmtV1CertificatesPost(
       certificatesRequest: CertificatesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Certificate>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1CertificatesPost(
         certificatesRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CertificatesPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of cloud resources
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8904,7 +9509,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudResourceList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1CloudResourcesGet(
         page,
@@ -8912,7 +9517,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CloudResourcesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8923,11 +9539,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1CloudResourcesIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1CloudResourcesIdDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CloudResourcesIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8938,11 +9565,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1CloudResourcesIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudResource>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1CloudResourcesIdGet(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CloudResourcesIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8955,7 +9593,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1CloudResourcesIdPatch(
       id: string,
       cloudResource: CloudResource,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudResource>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1CloudResourcesIdPatch(
@@ -8963,7 +9601,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           cloudResource,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CloudResourcesIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8974,13 +9623,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1CloudResourcesPost(
       cloudResource: CloudResource,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudResource>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1CloudResourcesPost(
         cloudResource,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CloudResourcesPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -8991,7 +9651,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ClusterAuthorizationsPost(
       clusterAuthorizationRequest: ClusterAuthorizationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterAuthorizationResponse>
     > {
@@ -9000,7 +9660,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           clusterAuthorizationRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ClusterAuthorizationsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9011,7 +9682,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ClusterRegistrationsPost(
       clusterRegistrationRequest: ClusterRegistrationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterRegistrationResponse>
     > {
@@ -9020,14 +9691,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           clusterRegistrationRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ClusterRegistrationsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary List cluster transfers - returns either an empty result set or a valid ClusterTransfer instance that is within a valid transfer window.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9037,7 +9719,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterTransferList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1ClusterTransfersGet(
@@ -9047,7 +9729,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ClusterTransfersGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9060,7 +9753,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1ClusterTransfersIdPatch(
       id: string,
       clusterTransferPatchRequest: ClusterTransferPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterTransfer>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1ClusterTransfersIdPatch(
@@ -9068,7 +9761,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           clusterTransferPatchRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ClusterTransfersIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9079,21 +9783,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ClusterTransfersPost(
       clusterTransferRequest: ClusterTransferRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterTransfer>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1ClusterTransfersPost(
           clusterTransferRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ClusterTransfersPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of skus
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -9101,7 +9816,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SkuList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ConfigSkusGet(
         page,
@@ -9109,7 +9824,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ConfigSkusGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9120,13 +9846,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ConfigSkusIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ConfigSkusIdDelete(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ConfigSkusIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9137,13 +9874,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ConfigSkusIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SKU>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ConfigSkusIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ConfigSkusIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9156,14 +9904,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1ConfigSkusIdPatch(
       id: string,
       sKU: SKU,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SKU>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ConfigSkusIdPatch(
         id,
         sKU,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ConfigSkusIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9174,13 +9933,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ConfigSkusPost(
       sKU: SKU,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SKU>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ConfigSkusPost(
         sKU,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ConfigSkusPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9191,13 +9961,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1CurrentAccountGet(
       fetchLabels?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1CurrentAccountGet(
         fetchLabels,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1CurrentAccountGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9206,11 +9987,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async apiAccountsMgmtV1DefaultCapabilitiesGet(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DefaultCapabilityList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1DefaultCapabilitiesGet(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DefaultCapabilitiesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9221,14 +10013,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1DefaultCapabilitiesNameDelete(
       name: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1DefaultCapabilitiesNameDelete(
           name,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DefaultCapabilitiesNameDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9239,11 +10042,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1DefaultCapabilitiesNameGet(
       name: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DefaultCapability>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1DefaultCapabilitiesNameGet(name, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DefaultCapabilitiesNameGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9256,7 +10070,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1DefaultCapabilitiesNamePatch(
       name: string,
       defaultCapability: DefaultCapability,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DefaultCapability>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1DefaultCapabilitiesNamePatch(
@@ -9264,7 +10078,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           defaultCapability,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DefaultCapabilitiesNamePatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9275,21 +10100,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1DefaultCapabilitiesPost(
       defaultCapability: DefaultCapability,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DefaultCapability>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1DefaultCapabilitiesPost(
           defaultCapability,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DefaultCapabilitiesPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of deleted subscriptions
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9299,7 +10135,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeletedSubscriptionList>
     > {
@@ -9311,7 +10147,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DeletedSubscriptionsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9322,18 +10169,60 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1DeletedSubscriptionsIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeletedSubscription>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1DeletedSubscriptionsIdGet(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1DeletedSubscriptionsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @summary Fetch all certificates of a sca type based on the architectures
+     * @param {EntitlementCertificatesRequest} entitlementCertificatesRequest # The payload depends on sca as the requested certificates.   The &#x60;type&#x60; field is now deprecated and will now be defaulted to &#x60;sca&#x60; type. * {\&quot;arch\&quot;: [\&quot;x86\&quot;,\&quot;x86_64\&quot;,\&quot;ppc\&quot;]}
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiAccountsMgmtV1EntitlementCertificatesPost(
+      entitlementCertificatesRequest: EntitlementCertificatesRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<EntitlementCertificatesList>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.apiAccountsMgmtV1EntitlementCertificatesPost(
+          entitlementCertificatesRequest,
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1EntitlementCertificatesPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of errors
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -9341,7 +10230,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ErrorList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ErrorsGet(
         page,
@@ -9349,7 +10238,17 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ErrorsGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9360,13 +10259,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1ErrorsIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ErrorsIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ErrorsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9380,7 +10290,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1FeatureTogglesIdQueryPost(
       id: string,
       featureToggleQueryRequest: FeatureToggleQueryRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeatureToggle>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1FeatureTogglesIdQueryPost(
@@ -9388,14 +10298,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           featureToggleQueryRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1FeatureTogglesIdQueryPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of labels
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9405,7 +10326,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LabelList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1LabelsGet(
         page,
@@ -9414,7 +10335,17 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         orderBy,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1LabelsGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9423,54 +10354,88 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async apiAccountsMgmtV1LandingPageSelfServiceGet(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SelfServiceLandingPageSchema>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1LandingPageSelfServiceGet(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1LandingPageSelfServiceGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of metrics
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async apiAccountsMgmtV1MetricsGet(
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MetricsList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1MetricsGet(
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1MetricsGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
-     * @summary Notify the owner of cluster/subscription
-     * @param {NotificationRequest} notificationRequest The contents of the notification to send to the owner of a cluster/subscription in addition to the set of template parameters which are sent automatically ACCOUNT_USERNAME, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME, ORGANIZATION_EXTERNAL_ID
+     * @summary Get and validate notification details
+     * @param {NotifyDetailsRequest} notifyDetailsRequest The notification parameters such as bcc_address,cluster_id etc
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async apiAccountsMgmtV1NotifyPost(
-      notificationRequest: NotificationRequest,
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1NotifyPost(
-        notificationRequest,
+    async apiAccountsMgmtV1NotifyDetailsPost(
+      notifyDetailsRequest: NotifyDetailsRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<NotifyDetailsResponseList>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1NotifyDetailsPost(
+        notifyDetailsRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1NotifyDetailsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of organizations
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
      * @param {boolean} [fetchCapabilities] If true, includes the capabilities on a subscription in the output. Could slow request response time.
@@ -9486,7 +10451,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
       fields?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrganizationList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsGet(
         page,
@@ -9498,7 +10463,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         fields,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9513,7 +10489,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       id: string,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Organization>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdGet(
         id,
@@ -9521,7 +10497,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         fetchCapabilities,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9529,7 +10516,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9540,7 +10527,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LabelList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdLabelsGet(
@@ -9551,7 +10538,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdLabelsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9564,7 +10562,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete(
       id: string,
       key: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete(
@@ -9572,7 +10570,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           key,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9585,7 +10594,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsIdLabelsKeyGet(
       id: string,
       key: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdLabelsKeyGet(
@@ -9593,7 +10602,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           key,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdLabelsKeyGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9608,7 +10628,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       id: string,
       key: string,
       label: Label,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch(
@@ -9617,7 +10637,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           label,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9630,7 +10661,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsIdLabelsPost(
       id: string,
       label: Label,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdLabelsPost(
@@ -9638,7 +10669,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           label,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdLabelsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9651,7 +10693,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsIdPatch(
       id: string,
       organizationPatchRequest: OrganizationPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Organization>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdPatch(
@@ -9659,7 +10701,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           organizationPatchRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9670,14 +10723,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Summary>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet(
           id,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9690,7 +10754,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete(
       orgId: string,
       acctGrpAsgnId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete(
@@ -9698,7 +10762,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           acctGrpAsgnId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9711,7 +10786,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet(
       orgId: string,
       acctGrpAsgnId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroupAssignment>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet(
@@ -9719,7 +10794,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           acctGrpAsgnId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9727,7 +10813,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} orgId The id of organization
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9738,7 +10824,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroupAssignmentList>
     > {
@@ -9751,7 +10837,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9764,7 +10861,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost(
       orgId: string,
       accountGroupAssignment: AccountGroupAssignment,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroupAssignment>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost(
@@ -9772,7 +10869,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           accountGroupAssignment,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9785,7 +10893,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete(
       orgId: string,
       acctGrpId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete(
@@ -9793,7 +10901,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           acctGrpId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9806,7 +10925,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet(
       orgId: string,
       acctGrpId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroup>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet(
@@ -9814,7 +10933,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           acctGrpId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9829,7 +10959,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       orgId: string,
       acctGrpId: string,
       accountGroupRequest: AccountGroupRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroup>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch(
@@ -9838,7 +10968,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           accountGroupRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9846,7 +10987,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} orgId The id of organization
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9857,7 +10998,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroupList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet(
@@ -9868,7 +11009,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9881,7 +11033,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost(
       orgId: string,
       accountGroupRequest: AccountGroupRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountGroup>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost(
@@ -9889,7 +11041,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           accountGroupRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9902,7 +11065,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet(
       orgId: string,
       forceRecalc?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConsumedQuotaList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet(
@@ -9910,13 +11073,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           forceRecalc,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a summary of quota cost
      * @param {string} orgId The id of organization
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
      * @param {boolean} [fetchRelatedResources] If true, includes the related resources in the output. Could slow request response time.
@@ -9933,7 +11107,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       fetchRelatedResources?: boolean,
       forceRecalc?: boolean,
       fetchCloudAccounts?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QuotaCostList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet(
@@ -9946,7 +11120,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           fetchCloudAccounts,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9954,7 +11139,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} orgId The id of organization
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9965,7 +11150,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceQuotaList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet(
@@ -9976,7 +11161,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -9989,7 +11185,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost(
       orgId: string,
       resourceQuotaRequest: ResourceQuotaRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceQuota>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost(
@@ -9997,7 +11193,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           resourceQuotaRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10010,7 +11217,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete(
       orgId: string,
       quotaId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete(
@@ -10018,7 +11225,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           quotaId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10031,7 +11249,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet(
       orgId: string,
       quotaId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceQuota>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet(
@@ -10039,7 +11257,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           quotaId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10054,7 +11283,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       orgId: string,
       quotaId: string,
       resourceQuotaRequest: ResourceQuotaRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceQuota>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch(
@@ -10063,7 +11292,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           resourceQuotaRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10074,20 +11314,31 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1OrganizationsPost(
       organization: Organization,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Organization>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1OrganizationsPost(
         organization,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1OrganizationsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Get all plans
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -10095,7 +11346,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PlanList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1PlansGet(
         page,
@@ -10103,7 +11354,17 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1PlansGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10114,13 +11375,23 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1PlansIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Plan>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1PlansIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1PlansIdGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10131,14 +11402,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1PullSecretsExternalResourceIdDelete(
       externalResourceId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1PullSecretsExternalResourceIdDelete(
           externalResourceId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1PullSecretsExternalResourceIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10149,13 +11431,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1PullSecretsPost(
       pullSecretRequest: PullSecretRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessTokenCfg>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1PullSecretsPost(
         pullSecretRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1PullSecretsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10166,7 +11459,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1QuotaAuthorizationsPost(
       quotaAuthorizationRequest: QuotaAuthorizationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<QuotaAuthorizationResponse>
     > {
@@ -10175,12 +11468,23 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           quotaAuthorizationRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotaAuthorizationsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a summary of quota cost for the authenticated user
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
      * @param {boolean} [fetchRelatedResources] If true, includes the related resources in the output. Could slow request response time.
@@ -10194,7 +11498,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       fetchRelatedResources?: boolean,
       fetchCloudAccounts?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QuotaCostList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotaCostGet(
         search,
@@ -10204,14 +11508,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         fetchCloudAccounts,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotaCostGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of UHC product Quota Rules
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -10219,7 +11534,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QuotaRulesList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotaRulesGet(
         page,
@@ -10227,14 +11542,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotaRulesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of quotas
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -10242,7 +11568,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QuotaList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotasGet(
         page,
@@ -10250,7 +11576,17 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotasGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10261,13 +11597,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1QuotasIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotasIdDelete(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotasIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10278,13 +11625,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1QuotasIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quota>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotasIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotasIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10297,14 +11655,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1QuotasIdPatch(
       id: string,
       quota: Quota,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quota>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotasIdPatch(
         id,
         quota,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotasIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10315,20 +11684,79 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1QuotasPost(
       quota: Quota,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quota>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1QuotasPost(
         quota,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1QuotasPost']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @summary Returns a list of regions to which a user has access
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiAccountsMgmtV1RegionsGet(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegionList>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RegionsGet(
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegionsGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @summary Returns a summary of clusters by region
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiAccountsMgmtV1RegionsSummaryGet(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegionSummaryList>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RegionsSummaryGet(
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegionsSummaryGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of registries
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10338,7 +11766,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegistryList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RegistriesGet(
         page,
@@ -10347,7 +11775,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         orderBy,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistriesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10358,19 +11797,30 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RegistriesIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Registry>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RegistriesIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistriesIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * List Registry Credentials
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10380,7 +11830,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegistryCredentialList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RegistryCredentialsGet(
@@ -10390,7 +11840,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistryCredentialsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10401,11 +11862,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RegistryCredentialsIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RegistryCredentialsIdDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistryCredentialsIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10416,11 +11888,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RegistryCredentialsIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegistryCredential>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RegistryCredentialsIdGet(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistryCredentialsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10433,7 +11916,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1RegistryCredentialsIdPatch(
       id: string,
       registryCredentialPatchRequest: RegistryCredentialPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegistryCredential>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RegistryCredentialsIdPatch(
@@ -10441,7 +11924,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           registryCredentialPatchRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistryCredentialsIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10452,21 +11946,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RegistryCredentialsPost(
       registryCredential: RegistryCredential,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegistryCredential>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RegistryCredentialsPost(
           registryCredential,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RegistryCredentialsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of reserved resources
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10476,7 +11981,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservedResourceList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1ReservedResourcesGet(
@@ -10486,14 +11991,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ReservedResourcesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of resource quota objects
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10503,7 +12019,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceQuotaList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1ResourceQuotaGet(
         page,
@@ -10512,14 +12028,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         orderBy,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1ResourceQuotaGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of role bindings
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10529,7 +12056,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleBindingList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RoleBindingsGet(
         page,
@@ -10538,7 +12065,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         orderBy,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RoleBindingsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10549,11 +12087,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RoleBindingsIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RoleBindingsIdDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RoleBindingsIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10564,13 +12113,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RoleBindingsIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleBinding>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RoleBindingsIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RoleBindingsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10583,7 +12143,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1RoleBindingsIdPatch(
       id: string,
       roleBindingRequest: RoleBindingRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleBinding>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1RoleBindingsIdPatch(
@@ -10591,7 +12151,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           roleBindingRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RoleBindingsIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10602,20 +12173,31 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RoleBindingsPost(
       roleBindingCreateRequest: RoleBindingCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleBinding>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RoleBindingsPost(
         roleBindingCreateRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RoleBindingsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of roles
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -10623,7 +12205,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       page?: number,
       size?: number,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RoleList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RolesGet(
         page,
@@ -10631,7 +12213,17 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RolesGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10642,13 +12234,23 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1RolesIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Role>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1RolesIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1RolesIdGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10659,19 +12261,30 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SelfEntitlementProductPost(
       product: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SelfEntitlementStatus>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SelfEntitlementProductPost(
           product,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SelfEntitlementProductPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of UHC product SKU Rules
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
      * @param {*} [options] Override http request option.
@@ -10681,7 +12294,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       search?: string,
       page?: number,
       size?: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SkuRulesList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkuRulesGet(
         search,
@@ -10689,7 +12302,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         size,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkuRulesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10700,13 +12324,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SkuRulesIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkuRulesIdDelete(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkuRulesIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10717,13 +12352,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SkuRulesIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SkuRules>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkuRulesIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkuRulesIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10736,14 +12382,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SkuRulesIdPatch(
       id: string,
       skuRules: SkuRules,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SkuRules>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkuRulesIdPatch(
         id,
         skuRules,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkuRulesIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10754,31 +12411,52 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SkuRulesPost(
       skuRules: SkuRules,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SkuRules>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkuRulesPost(
         skuRules,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkuRulesPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of UHC product SKUs
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {*} [options] Override http request option.
      * @deprecated
      * @throws {RequiredError}
      */
     async apiAccountsMgmtV1SkusGet(
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SkuList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkusGet(
         search,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkusGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10790,23 +12468,34 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SkusIdGet(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SKU>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SkusIdGet(
         id,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SkusIdGet']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
      * @summary Returns a list of subscriptions
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {boolean} [fetchAccounts] If true, includes the account reference information in the output. Could slow request response time.
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
      * @param {boolean} [fetchCapabilities] If true, includes the capabilities on a subscription in the output. Could slow request response time.
+     * @param {boolean} [fetchOrganization] If true, includes the organization object on a subscription in the output. Could slow request response time.
      * @param {string} [fields] Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {string} [labels] Specifies the criteria to filter the subscription resource based on their labels. A label is represented as a &#x60;key&#x3D;value&#x60; pair,  &#x60;&#x60;&#x60; labels &#x3D; \&quot;foo&#x3D;bar\&quot; &#x60;&#x60;&#x60;  and multiple labels are separated by comma,  &#x60;&#x60;&#x60; labels &#x3D; \&quot;foo&#x3D;bar,fooz&#x3D;barz\&quot; &#x60;&#x60;&#x60;
@@ -10820,10 +12509,11 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       fetchAccounts?: boolean,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
+      fetchOrganization?: boolean,
       fields?: string,
       orderBy?: string,
       labels?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubscriptionList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsGet(
         page,
@@ -10832,12 +12522,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         fetchAccounts,
         fetchLabels,
         fetchCapabilities,
+        fetchOrganization,
         fields,
         orderBy,
         labels,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10848,11 +12550,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SubscriptionsIdDelete(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10861,6 +12574,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {boolean} [fetchAccounts] If true, includes the account reference information in the output. Could slow request response time.
      * @param {boolean} [fetchLabels] If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
      * @param {boolean} [fetchCapabilities] If true, includes the capabilities on a subscription in the output. Could slow request response time.
+     * @param {boolean} [fetchClusterTransfers] If true, returns either an empty result set or a valid ClusterTransfer list on a subscription in the output. Could slow request response time.
      * @param {boolean} [fetchCpuAndSocket] If true, fetches, from the clusters service, the total numbers of CPU\&#39;s and sockets under an obligation, and includes in the output. Could slow request response time.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10870,18 +12584,31 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       fetchAccounts?: boolean,
       fetchLabels?: boolean,
       fetchCapabilities?: boolean,
+      fetchClusterTransfers?: boolean,
       fetchCpuAndSocket?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Subscription>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdGet(
         id,
         fetchAccounts,
         fetchLabels,
         fetchCapabilities,
+        fetchClusterTransfers,
         fetchCpuAndSocket,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10889,7 +12616,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10900,7 +12627,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LabelList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdLabelsGet(
@@ -10911,7 +12638,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdLabelsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10924,7 +12662,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete(
       id: string,
       key: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete(
@@ -10932,7 +12670,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           key,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10945,7 +12694,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet(
       id: string,
       key: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet(
@@ -10953,7 +12702,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           key,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10968,7 +12728,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       id: string,
       key: string,
       label: Label,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch(
@@ -10977,7 +12737,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           label,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -10990,7 +12761,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsIdLabelsPost(
       id: string,
       label: Label,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Label>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdLabelsPost(
@@ -10998,7 +12769,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           label,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdLabelsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11015,7 +12797,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       metricName: string,
       search?: string,
       fields?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubscriptionMetricList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet(
@@ -11025,28 +12807,47 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           fields,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
-     * @summary Notify the owner of a subscription
+     * @summary Get an ondemand metrics of a subscription by id
      * @param {string} id The id of record
-     * @param {NotificationRequest} notificationRequest The contents of the notification to send to the owner of a subscription in addition to the set of template parameters which are sent automatically ACCOUNT_USERNAME, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME, ORGANIZATION_EXTERNAL_ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async apiAccountsMgmtV1SubscriptionsIdNotifyPost(
+    async apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet(
       id: string,
-      notificationRequest: NotificationRequest,
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OndemandMetrics>> {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdNotifyPost(
+        await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet(
           id,
-          notificationRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11059,7 +12860,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsIdPatch(
       id: string,
       subscriptionPatchRequest: SubscriptionPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Subscription>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdPatch(
@@ -11067,7 +12868,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           subscriptionPatchRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdPatch']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11075,7 +12887,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} id The id of record
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -11086,7 +12898,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       size?: number,
       search?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservedResourceList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet(
@@ -11097,7 +12909,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11112,7 +12935,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       id: string,
       page?: number,
       size?: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsIdSupportCasesGet(
@@ -11121,7 +12944,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           size,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsIdSupportCasesGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11132,13 +12966,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SubscriptionsPost(
       subscriptionCreateRequest: SubscriptionCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Subscription>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsPost(
         subscriptionCreateRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11151,7 +12996,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete(
       subId: string,
       accountId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete(
@@ -11159,7 +13004,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           accountId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11167,7 +13023,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} subId The id of subscription
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [fields] Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {*} [options] Override http request option.
@@ -11180,7 +13036,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       search?: string,
       fields?: string,
       orderBy?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountList>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet(
@@ -11192,7 +13048,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           orderBy,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11205,7 +13072,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost(
       subId: string,
       notificationContactCreateRequest: NotificationContactCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost(
@@ -11213,7 +13080,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           notificationContactCreateRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11226,7 +13104,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete(
       subId: string,
       reservedResourceId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete(
@@ -11234,7 +13112,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           reservedResourceId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11247,7 +13136,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet(
       subId: string,
       reservedResourceId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservedResource>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet(
@@ -11255,7 +13144,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           reservedResourceId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11270,7 +13170,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       subId: string,
       reservedResourceId: string,
       reservedResourcePatchRequest: ReservedResourcePatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservedResource>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch(
@@ -11279,7 +13179,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           reservedResourcePatchRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11287,7 +13198,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} subId The id of subscription
      * @param {number} [page] Page number of record list when record list exceeds specified page size
      * @param {number} [size] Maximum number of records to return
-     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
+     * @param {string} [search] Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
      * @param {string} [orderBy] Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
      * @param {boolean} [fetchAccounts] If true, includes the account reference information in the output. Could slow request response time.
      * @param {*} [options] Override http request option.
@@ -11300,7 +13211,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       search?: string,
       orderBy?: string,
       fetchAccounts?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubscriptionRoleBindingList>
     > {
@@ -11314,7 +13225,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           fetchAccounts,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11327,7 +13249,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete(
       id: string,
       subId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete(
@@ -11335,7 +13257,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           subId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11348,7 +13281,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet(
       id: string,
       subId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubscriptionRoleBinding>
     > {
@@ -11358,7 +13291,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           subId,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11371,7 +13315,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost(
       subId: string,
       subscriptionRoleBindingCreateRequest: SubscriptionRoleBindingCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubscriptionRoleBinding>
     > {
@@ -11381,7 +13325,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           subscriptionRoleBindingCreateRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11392,11 +13347,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SupportCasesCaseIdDelete(
       caseId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAccountsMgmtV1SupportCasesCaseIdDelete(caseId, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SupportCasesCaseIdDelete']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11407,7 +13373,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1SupportCasesPost(
       supportCasesRequest: SupportCasesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SupportCasesCreatedResponse>
     > {
@@ -11415,7 +13381,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         supportCasesRequest,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1SupportCasesPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11426,7 +13403,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAccountsMgmtV1TokenAuthorizationPost(
       tokenAuthorizationRequest: TokenAuthorizationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenAuthorizationResponse>
     > {
@@ -11435,7 +13412,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           tokenAuthorizationRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAccountsMgmtV1TokenAuthorizationPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11446,13 +13434,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1AccessReviewPost(
       accessReview: AccessReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessReviewResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthorizationsV1AccessReviewPost(
         accessReview,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1AccessReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11463,14 +13462,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1CapabilityReviewPost(
       capabilityReviewRequest: CapabilityReviewRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CapabilityReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1CapabilityReviewPost(
           capabilityReviewRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1CapabilityReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11481,14 +13491,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1ExportControlReviewPost(
       exportControlReviewRequest: ExportControlReviewRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExportControlReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1ExportControlReviewPost(
           exportControlReviewRequest,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1ExportControlReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11499,14 +13520,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1FeatureReviewPost(
       featureReview: FeatureReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeatureReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1FeatureReviewPost(
           featureReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1FeatureReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11524,7 +13556,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResourceReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1ResourceReviewPost(
@@ -11534,7 +13566,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           includeSubscriptionStatuses,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1ResourceReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11545,14 +13588,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1SelfAccessReviewPost(
       selfAccessReview: SelfAccessReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfAccessReviewPost(
           selfAccessReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfAccessReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11563,14 +13617,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1SelfFeatureReviewPost(
       selfFeatureReview: SelfFeatureReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeatureReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfFeatureReviewPost(
           selfFeatureReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfFeatureReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11587,7 +13652,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       reduceClusterList?: boolean,
       excludeSubscriptionStatuses?: string,
       includeSubscriptionStatuses?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SelfResourceReview>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfResourceReviewPost(
@@ -11597,7 +13662,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           includeSubscriptionStatuses,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfResourceReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11608,14 +13684,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1SelfTermsReviewPost(
       selfTermsReview: SelfTermsReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TermsReviewResponse>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.apiAuthorizationsV1SelfTermsReviewPost(
           selfTermsReview,
           options,
         );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1SelfTermsReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -11626,20 +13713,30 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async apiAuthorizationsV1TermsReviewPost(
       termsReview: TermsReview,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TermsReviewResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthorizationsV1TermsReviewPost(
         termsReview,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.apiAuthorizationsV1TermsReviewPost']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * DefaultApi - factory interface
- * @export
  */
 export const DefaultApiFactory = function (
   configuration?: Configuration,
@@ -11654,7 +13751,9 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiAccountsMgmtV1AccessTokenPost(options?: AxiosRequestConfig): AxiosPromise<AccessTokenCfg> {
+    apiAccountsMgmtV1AccessTokenPost(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<AccessTokenCfg> {
       return localVarFp
         .apiAccountsMgmtV1AccessTokenPost(options)
         .then((request) => request(axios, basePath));
@@ -11668,7 +13767,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountList> {
       return localVarFp
         .apiAccountsMgmtV1AccountsGet(
@@ -11692,7 +13791,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdDelete(
@@ -11711,7 +13810,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Account> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdGet(
@@ -11732,7 +13831,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdLabelsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<LabelList> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdLabelsGet(
@@ -11754,7 +13853,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdLabelsKeyDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdLabelsKeyDelete(
@@ -11773,7 +13872,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdLabelsKeyGet(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdLabelsKeyGet(
@@ -11792,7 +13891,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdLabelsKeyPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdLabelsKeyPatch(
@@ -11812,7 +13911,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdLabelsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdLabelsPost(
@@ -11831,7 +13930,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Account> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdPatch(
@@ -11850,7 +13949,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdPullSecretRotationGet(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PullSecretRotationList> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdPullSecretRotationGet(
@@ -11872,7 +13971,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdPullSecretRotationPost(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PullSecretRotation> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdPullSecretRotationPost(
@@ -11891,7 +13990,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete(
@@ -11910,7 +14009,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PullSecretRotation> {
       return localVarFp
         .apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet(
@@ -11929,7 +14028,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1AccountsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1AccountsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Account> {
       return localVarFp
         .apiAccountsMgmtV1AccountsPost(requestParameters.account, requestParameters.dryRun, options)
@@ -11944,7 +14043,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1BillingModelsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1BillingModelsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<BillingModelList> {
       return localVarFp
         .apiAccountsMgmtV1BillingModelsGet(requestParameters.page, requestParameters.size, options)
@@ -11959,7 +14058,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1BillingModelsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1BillingModelsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<BillingModel> {
       return localVarFp
         .apiAccountsMgmtV1BillingModelsIdGet(requestParameters.id, options)
@@ -11974,7 +14073,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CapabilitiesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1CapabilitiesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CapabilityList> {
       return localVarFp
         .apiAccountsMgmtV1CapabilitiesGet(
@@ -11994,7 +14093,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CertificatesPost(
       requestParameters: DefaultApiApiAccountsMgmtV1CertificatesPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Certificate> {
       return localVarFp
         .apiAccountsMgmtV1CertificatesPost(requestParameters.certificatesRequest, options)
@@ -12009,7 +14108,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CloudResourcesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CloudResourceList> {
       return localVarFp
         .apiAccountsMgmtV1CloudResourcesGet(
@@ -12029,7 +14128,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CloudResourcesIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1CloudResourcesIdDelete(requestParameters.id, options)
@@ -12044,7 +14143,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CloudResourcesIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CloudResource> {
       return localVarFp
         .apiAccountsMgmtV1CloudResourcesIdGet(requestParameters.id, options)
@@ -12059,7 +14158,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CloudResourcesIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CloudResource> {
       return localVarFp
         .apiAccountsMgmtV1CloudResourcesIdPatch(
@@ -12078,7 +14177,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CloudResourcesPost(
       requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CloudResource> {
       return localVarFp
         .apiAccountsMgmtV1CloudResourcesPost(requestParameters.cloudResource, options)
@@ -12093,7 +14192,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ClusterAuthorizationsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1ClusterAuthorizationsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClusterAuthorizationResponse> {
       return localVarFp
         .apiAccountsMgmtV1ClusterAuthorizationsPost(
@@ -12111,7 +14210,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ClusterRegistrationsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1ClusterRegistrationsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClusterRegistrationResponse> {
       return localVarFp
         .apiAccountsMgmtV1ClusterRegistrationsPost(
@@ -12129,7 +14228,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ClusterTransfersGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ClusterTransfersGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClusterTransferList> {
       return localVarFp
         .apiAccountsMgmtV1ClusterTransfersGet(
@@ -12150,7 +14249,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ClusterTransfersIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClusterTransfer> {
       return localVarFp
         .apiAccountsMgmtV1ClusterTransfersIdPatch(
@@ -12169,7 +14268,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ClusterTransfersPost(
       requestParameters: DefaultApiApiAccountsMgmtV1ClusterTransfersPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClusterTransfer> {
       return localVarFp
         .apiAccountsMgmtV1ClusterTransfersPost(requestParameters.clusterTransferRequest, options)
@@ -12184,7 +14283,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ConfigSkusGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SkuList> {
       return localVarFp
         .apiAccountsMgmtV1ConfigSkusGet(
@@ -12204,7 +14303,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ConfigSkusIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1ConfigSkusIdDelete(requestParameters.id, options)
@@ -12219,7 +14318,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ConfigSkusIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SKU> {
       return localVarFp
         .apiAccountsMgmtV1ConfigSkusIdGet(requestParameters.id, options)
@@ -12234,7 +14333,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ConfigSkusIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SKU> {
       return localVarFp
         .apiAccountsMgmtV1ConfigSkusIdPatch(requestParameters.id, requestParameters.sKU, options)
@@ -12249,7 +14348,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ConfigSkusPost(
       requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SKU> {
       return localVarFp
         .apiAccountsMgmtV1ConfigSkusPost(requestParameters.sKU, options)
@@ -12264,7 +14363,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1CurrentAccountGet(
       requestParameters: DefaultApiApiAccountsMgmtV1CurrentAccountGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Account> {
       return localVarFp
         .apiAccountsMgmtV1CurrentAccountGet(requestParameters.fetchLabels, options)
@@ -12277,7 +14376,7 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1DefaultCapabilitiesGet(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DefaultCapabilityList> {
       return localVarFp
         .apiAccountsMgmtV1DefaultCapabilitiesGet(options)
@@ -12292,7 +14391,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1DefaultCapabilitiesNameDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1DefaultCapabilitiesNameDelete(requestParameters.name, options)
@@ -12307,7 +14406,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1DefaultCapabilitiesNameGet(
       requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DefaultCapability> {
       return localVarFp
         .apiAccountsMgmtV1DefaultCapabilitiesNameGet(requestParameters.name, options)
@@ -12322,7 +14421,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1DefaultCapabilitiesNamePatch(
       requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DefaultCapability> {
       return localVarFp
         .apiAccountsMgmtV1DefaultCapabilitiesNamePatch(
@@ -12341,7 +14440,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1DefaultCapabilitiesPost(
       requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DefaultCapability> {
       return localVarFp
         .apiAccountsMgmtV1DefaultCapabilitiesPost(requestParameters.defaultCapability, options)
@@ -12356,7 +14455,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1DeletedSubscriptionsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DeletedSubscriptionList> {
       return localVarFp
         .apiAccountsMgmtV1DeletedSubscriptionsGet(
@@ -12377,10 +14476,28 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1DeletedSubscriptionsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1DeletedSubscriptionsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DeletedSubscription> {
       return localVarFp
         .apiAccountsMgmtV1DeletedSubscriptionsIdGet(requestParameters.id, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Fetch all certificates of a sca type based on the architectures
+     * @param {DefaultApiApiAccountsMgmtV1EntitlementCertificatesPostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiAccountsMgmtV1EntitlementCertificatesPost(
+      requestParameters: DefaultApiApiAccountsMgmtV1EntitlementCertificatesPostRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<EntitlementCertificatesList> {
+      return localVarFp
+        .apiAccountsMgmtV1EntitlementCertificatesPost(
+          requestParameters.entitlementCertificatesRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -12392,7 +14509,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ErrorsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ErrorsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ErrorList> {
       return localVarFp
         .apiAccountsMgmtV1ErrorsGet(
@@ -12412,7 +14529,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ErrorsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ErrorsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Error> {
       return localVarFp
         .apiAccountsMgmtV1ErrorsIdGet(requestParameters.id, options)
@@ -12428,7 +14545,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1FeatureTogglesIdQueryPost(
       requestParameters: DefaultApiApiAccountsMgmtV1FeatureTogglesIdQueryPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<FeatureToggle> {
       return localVarFp
         .apiAccountsMgmtV1FeatureTogglesIdQueryPost(
@@ -12447,7 +14564,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1LabelsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1LabelsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<LabelList> {
       return localVarFp
         .apiAccountsMgmtV1LabelsGet(
@@ -12466,7 +14583,7 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     apiAccountsMgmtV1LandingPageSelfServiceGet(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SelfServiceLandingPageSchema> {
       return localVarFp
         .apiAccountsMgmtV1LandingPageSelfServiceGet(options)
@@ -12481,7 +14598,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1MetricsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1MetricsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<MetricsList> {
       return localVarFp
         .apiAccountsMgmtV1MetricsGet(requestParameters.search, options)
@@ -12489,17 +14606,17 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @summary Notify the owner of cluster/subscription
-     * @param {DefaultApiApiAccountsMgmtV1NotifyPostRequest} requestParameters Request parameters.
+     * @summary Get and validate notification details
+     * @param {DefaultApiApiAccountsMgmtV1NotifyDetailsPostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiAccountsMgmtV1NotifyPost(
-      requestParameters: DefaultApiApiAccountsMgmtV1NotifyPostRequest,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    apiAccountsMgmtV1NotifyDetailsPost(
+      requestParameters: DefaultApiApiAccountsMgmtV1NotifyDetailsPostRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<NotifyDetailsResponseList> {
       return localVarFp
-        .apiAccountsMgmtV1NotifyPost(requestParameters.notificationRequest, options)
+        .apiAccountsMgmtV1NotifyDetailsPost(requestParameters.notifyDetailsRequest, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -12511,7 +14628,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<OrganizationList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsGet(
@@ -12535,7 +14652,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Organization> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdGet(
@@ -12555,7 +14672,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdLabelsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<LabelList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdLabelsGet(
@@ -12577,7 +14694,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete(
@@ -12596,7 +14713,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdLabelsKeyGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdLabelsKeyGet(
@@ -12615,7 +14732,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch(
@@ -12635,7 +14752,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdLabelsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdLabelsPost(
@@ -12654,7 +14771,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Organization> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdPatch(
@@ -12673,7 +14790,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdSummaryDashboardGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Summary> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet(requestParameters.id, options)
@@ -12688,7 +14805,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete(
@@ -12707,7 +14824,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroupAssignment> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet(
@@ -12726,7 +14843,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroupAssignmentList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet(
@@ -12748,7 +14865,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroupAssignment> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost(
@@ -12767,7 +14884,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete(
@@ -12786,7 +14903,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroup> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet(
@@ -12805,7 +14922,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroup> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch(
@@ -12825,7 +14942,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroupList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet(
@@ -12847,7 +14964,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountGroup> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost(
@@ -12866,7 +14983,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ConsumedQuotaList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet(
@@ -12885,7 +15002,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<QuotaCostList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet(
@@ -12909,7 +15026,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceQuotaList> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet(
@@ -12931,7 +15048,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceQuota> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost(
@@ -12950,7 +15067,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete(
@@ -12969,7 +15086,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceQuota> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet(
@@ -12988,7 +15105,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceQuota> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch(
@@ -13008,7 +15125,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1OrganizationsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Organization> {
       return localVarFp
         .apiAccountsMgmtV1OrganizationsPost(requestParameters.organization, options)
@@ -13023,7 +15140,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1PlansGet(
       requestParameters: DefaultApiApiAccountsMgmtV1PlansGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PlanList> {
       return localVarFp
         .apiAccountsMgmtV1PlansGet(
@@ -13043,7 +15160,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1PlansIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1PlansIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Plan> {
       return localVarFp
         .apiAccountsMgmtV1PlansIdGet(requestParameters.id, options)
@@ -13058,7 +15175,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1PullSecretsExternalResourceIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1PullSecretsExternalResourceIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1PullSecretsExternalResourceIdDelete(
@@ -13076,7 +15193,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1PullSecretsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1PullSecretsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccessTokenCfg> {
       return localVarFp
         .apiAccountsMgmtV1PullSecretsPost(requestParameters.pullSecretRequest, options)
@@ -13091,7 +15208,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotaAuthorizationsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotaAuthorizationsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<QuotaAuthorizationResponse> {
       return localVarFp
         .apiAccountsMgmtV1QuotaAuthorizationsPost(
@@ -13109,7 +15226,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotaCostGet(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotaCostGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<QuotaCostList> {
       return localVarFp
         .apiAccountsMgmtV1QuotaCostGet(
@@ -13131,7 +15248,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotaRulesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotaRulesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<QuotaRulesList> {
       return localVarFp
         .apiAccountsMgmtV1QuotaRulesGet(
@@ -13151,7 +15268,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotasGet(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotasGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<QuotaList> {
       return localVarFp
         .apiAccountsMgmtV1QuotasGet(
@@ -13171,7 +15288,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotasIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotasIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1QuotasIdDelete(requestParameters.id, options)
@@ -13186,7 +15303,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotasIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotasIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Quota> {
       return localVarFp
         .apiAccountsMgmtV1QuotasIdGet(requestParameters.id, options)
@@ -13201,7 +15318,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotasIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotasIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Quota> {
       return localVarFp
         .apiAccountsMgmtV1QuotasIdPatch(requestParameters.id, requestParameters.quota, options)
@@ -13216,10 +15333,34 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1QuotasPost(
       requestParameters: DefaultApiApiAccountsMgmtV1QuotasPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Quota> {
       return localVarFp
         .apiAccountsMgmtV1QuotasPost(requestParameters.quota, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns a list of regions to which a user has access
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiAccountsMgmtV1RegionsGet(options?: RawAxiosRequestConfig): AxiosPromise<RegionList> {
+      return localVarFp
+        .apiAccountsMgmtV1RegionsGet(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns a summary of clusters by region
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiAccountsMgmtV1RegionsSummaryGet(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<RegionSummaryList> {
+      return localVarFp
+        .apiAccountsMgmtV1RegionsSummaryGet(options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -13231,7 +15372,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistriesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistriesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RegistryList> {
       return localVarFp
         .apiAccountsMgmtV1RegistriesGet(
@@ -13252,7 +15393,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistriesIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistriesIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Registry> {
       return localVarFp
         .apiAccountsMgmtV1RegistriesIdGet(requestParameters.id, options)
@@ -13266,7 +15407,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistryCredentialsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RegistryCredentialList> {
       return localVarFp
         .apiAccountsMgmtV1RegistryCredentialsGet(
@@ -13287,7 +15428,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistryCredentialsIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1RegistryCredentialsIdDelete(requestParameters.id, options)
@@ -13302,7 +15443,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistryCredentialsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RegistryCredential> {
       return localVarFp
         .apiAccountsMgmtV1RegistryCredentialsIdGet(requestParameters.id, options)
@@ -13317,7 +15458,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistryCredentialsIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RegistryCredential> {
       return localVarFp
         .apiAccountsMgmtV1RegistryCredentialsIdPatch(
@@ -13336,7 +15477,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RegistryCredentialsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RegistryCredential> {
       return localVarFp
         .apiAccountsMgmtV1RegistryCredentialsPost(requestParameters.registryCredential, options)
@@ -13351,7 +15492,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ReservedResourcesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ReservedResourcesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ReservedResourceList> {
       return localVarFp
         .apiAccountsMgmtV1ReservedResourcesGet(
@@ -13372,7 +15513,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1ResourceQuotaGet(
       requestParameters: DefaultApiApiAccountsMgmtV1ResourceQuotaGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceQuotaList> {
       return localVarFp
         .apiAccountsMgmtV1ResourceQuotaGet(
@@ -13393,7 +15534,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RoleBindingsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RoleBindingList> {
       return localVarFp
         .apiAccountsMgmtV1RoleBindingsGet(
@@ -13414,7 +15555,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RoleBindingsIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1RoleBindingsIdDelete(requestParameters.id, options)
@@ -13429,7 +15570,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RoleBindingsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RoleBinding> {
       return localVarFp
         .apiAccountsMgmtV1RoleBindingsIdGet(requestParameters.id, options)
@@ -13444,7 +15585,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RoleBindingsIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RoleBinding> {
       return localVarFp
         .apiAccountsMgmtV1RoleBindingsIdPatch(
@@ -13463,7 +15604,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RoleBindingsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RoleBinding> {
       return localVarFp
         .apiAccountsMgmtV1RoleBindingsPost(requestParameters.roleBindingCreateRequest, options)
@@ -13478,7 +15619,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RolesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RolesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RoleList> {
       return localVarFp
         .apiAccountsMgmtV1RolesGet(
@@ -13498,7 +15639,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1RolesIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1RolesIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Role> {
       return localVarFp
         .apiAccountsMgmtV1RolesIdGet(requestParameters.id, options)
@@ -13513,7 +15654,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SelfEntitlementProductPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SelfEntitlementProductPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SelfEntitlementStatus> {
       return localVarFp
         .apiAccountsMgmtV1SelfEntitlementProductPost(requestParameters.product, options)
@@ -13528,7 +15669,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkuRulesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SkuRulesList> {
       return localVarFp
         .apiAccountsMgmtV1SkuRulesGet(
@@ -13548,7 +15689,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkuRulesIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SkuRulesIdDelete(requestParameters.id, options)
@@ -13563,7 +15704,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkuRulesIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SkuRules> {
       return localVarFp
         .apiAccountsMgmtV1SkuRulesIdGet(requestParameters.id, options)
@@ -13578,7 +15719,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkuRulesIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SkuRules> {
       return localVarFp
         .apiAccountsMgmtV1SkuRulesIdPatch(requestParameters.id, requestParameters.skuRules, options)
@@ -13593,7 +15734,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkuRulesPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SkuRules> {
       return localVarFp
         .apiAccountsMgmtV1SkuRulesPost(requestParameters.skuRules, options)
@@ -13609,7 +15750,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkusGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SkusGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SkuList> {
       return localVarFp
         .apiAccountsMgmtV1SkusGet(requestParameters.search, options)
@@ -13625,7 +15766,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SkusIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SkusIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SKU> {
       return localVarFp
         .apiAccountsMgmtV1SkusIdGet(requestParameters.id, options)
@@ -13640,7 +15781,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsGetRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SubscriptionList> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsGet(
@@ -13650,6 +15791,7 @@ export const DefaultApiFactory = function (
           requestParameters.fetchAccounts,
           requestParameters.fetchLabels,
           requestParameters.fetchCapabilities,
+          requestParameters.fetchOrganization,
           requestParameters.fields,
           requestParameters.orderBy,
           requestParameters.labels,
@@ -13666,7 +15808,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdDelete(requestParameters.id, options)
@@ -13681,7 +15823,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Subscription> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdGet(
@@ -13689,6 +15831,7 @@ export const DefaultApiFactory = function (
           requestParameters.fetchAccounts,
           requestParameters.fetchLabels,
           requestParameters.fetchCapabilities,
+          requestParameters.fetchClusterTransfers,
           requestParameters.fetchCpuAndSocket,
           options,
         )
@@ -13703,7 +15846,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdLabelsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<LabelList> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdLabelsGet(
@@ -13725,7 +15868,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete(
@@ -13744,7 +15887,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet(
@@ -13763,7 +15906,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch(
@@ -13783,7 +15926,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdLabelsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Label> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdLabelsPost(
@@ -13802,7 +15945,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SubscriptionMetricList> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet(
@@ -13816,21 +15959,17 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @summary Notify the owner of a subscription
-     * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPostRequest} requestParameters Request parameters.
+     * @summary Get an ondemand metrics of a subscription by id
+     * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdOndemandMetricsGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiAccountsMgmtV1SubscriptionsIdNotifyPost(
-      requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPostRequest,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet(
+      requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdOndemandMetricsGetRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<OndemandMetrics> {
       return localVarFp
-        .apiAccountsMgmtV1SubscriptionsIdNotifyPost(
-          requestParameters.id,
-          requestParameters.notificationRequest,
-          options,
-        )
+        .apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -13842,7 +15981,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Subscription> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdPatch(
@@ -13861,7 +16000,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ReservedResourceList> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet(
@@ -13883,7 +16022,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsIdSupportCasesGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsIdSupportCasesGet(
@@ -13903,7 +16042,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Subscription> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsPost(requestParameters.subscriptionCreateRequest, options)
@@ -13918,7 +16057,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete(
@@ -13937,7 +16076,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccountList> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet(
@@ -13960,7 +16099,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Account> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost(
@@ -13979,7 +16118,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete(
@@ -13998,7 +16137,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ReservedResource> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet(
@@ -14017,7 +16156,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatchRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ReservedResource> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch(
@@ -14037,7 +16176,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SubscriptionRoleBindingList> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet(
@@ -14060,7 +16199,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete(
@@ -14079,7 +16218,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGetRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SubscriptionRoleBinding> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet(
@@ -14098,7 +16237,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SubscriptionRoleBinding> {
       return localVarFp
         .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost(
@@ -14117,7 +16256,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SupportCasesCaseIdDelete(
       requestParameters: DefaultApiApiAccountsMgmtV1SupportCasesCaseIdDeleteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .apiAccountsMgmtV1SupportCasesCaseIdDelete(requestParameters.caseId, options)
@@ -14132,7 +16271,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1SupportCasesPost(
       requestParameters: DefaultApiApiAccountsMgmtV1SupportCasesPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SupportCasesCreatedResponse> {
       return localVarFp
         .apiAccountsMgmtV1SupportCasesPost(requestParameters.supportCasesRequest, options)
@@ -14147,7 +16286,7 @@ export const DefaultApiFactory = function (
      */
     apiAccountsMgmtV1TokenAuthorizationPost(
       requestParameters: DefaultApiApiAccountsMgmtV1TokenAuthorizationPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TokenAuthorizationResponse> {
       return localVarFp
         .apiAccountsMgmtV1TokenAuthorizationPost(
@@ -14165,7 +16304,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1AccessReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1AccessReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccessReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1AccessReviewPost(requestParameters.accessReview, options)
@@ -14180,7 +16319,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1CapabilityReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CapabilityReview> {
       return localVarFp
         .apiAuthorizationsV1CapabilityReviewPost(requestParameters.capabilityReviewRequest, options)
@@ -14195,7 +16334,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1ExportControlReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ExportControlReview> {
       return localVarFp
         .apiAuthorizationsV1ExportControlReviewPost(
@@ -14213,7 +16352,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1FeatureReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1FeatureReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<FeatureReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1FeatureReviewPost(requestParameters.featureReview, options)
@@ -14229,7 +16368,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1ResourceReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1ResourceReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResourceReview> {
       return localVarFp
         .apiAuthorizationsV1ResourceReviewPost(
@@ -14250,7 +16389,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfAccessReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<AccessReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1SelfAccessReviewPost(requestParameters.selfAccessReview, options)
@@ -14265,7 +16404,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfFeatureReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<FeatureReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1SelfFeatureReviewPost(requestParameters.selfFeatureReview, options)
@@ -14280,7 +16419,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfResourceReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SelfResourceReview> {
       return localVarFp
         .apiAuthorizationsV1SelfResourceReviewPost(
@@ -14301,7 +16440,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1SelfTermsReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TermsReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1SelfTermsReviewPost(requestParameters.selfTermsReview, options)
@@ -14316,7 +16455,7 @@ export const DefaultApiFactory = function (
      */
     apiAuthorizationsV1TermsReviewPost(
       requestParameters: DefaultApiApiAuthorizationsV1TermsReviewPostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TermsReviewResponse> {
       return localVarFp
         .apiAuthorizationsV1TermsReviewPost(requestParameters.termsReview, options)
@@ -14327,3376 +16466,2426 @@ export const DefaultApiFactory = function (
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
    */
   readonly orderBy?: string;
 
   /**
    * Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
    */
   readonly fields?: string;
 
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
    */
   readonly fetchLabels?: boolean;
 
   /**
    * If true, includes the capabilities on a subscription in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsGet
    */
   readonly fetchCapabilities?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdDelete
    */
   readonly id: string;
 
   /**
    * If true, deletes the associated resources (e.g. role bindings) for an account along with the account itself
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdDelete
    */
   readonly deleteAssociatedResources?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdGet
    */
   readonly id: string;
 
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdGet
    */
   readonly fetchLabels?: boolean;
 
   /**
    * If true, includes the capabilities on a subscription in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdGet
    */
   readonly fetchCapabilities?: boolean;
 
   /**
    * If true, includes the RHIT account_id in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdGet
    */
   readonly fetchRhit?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdLabelsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsGet
    */
   readonly id: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdLabelsKeyDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDelete
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDelete
    */
   readonly key: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdLabelsKeyGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGet
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGet
    */
   readonly key: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdLabelsKeyPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatch
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatch
    */
   readonly key: string;
 
   /**
    * Label data
-   * @type {Label}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatch
    */
   readonly label: Label;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdLabelsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdLabelsPostRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsPost
    */
   readonly id: string;
 
   /**
    * Label data
-   * @type {Label}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdLabelsPost
    */
   readonly label: Label;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPatch
    */
   readonly id: string;
 
   /**
    * Updated account data
-   * @type {AccountPatchRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPatch
    */
   readonly accountPatchRequest: AccountPatchRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdPullSecretRotationGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGet
    */
   readonly id: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdPullSecretRotationPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPostRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPost
    */
   readonly id: string;
 
   /**
    * The contents of the pull secret rotation creation request
-   * @type {PullSecretRotationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPost
    */
   readonly pullSecretRotationRequest?: PullSecretRotationRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete
    */
   readonly id: string;
 
   /**
    * The id of the pull secret rotation
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete
    */
   readonly rotationId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet
    */
   readonly id: string;
 
   /**
    * The id of the pull secret rotation
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet
    */
   readonly rotationId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1AccountsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1AccountsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1AccountsPostRequest {
   /**
    * Account data
-   * @type {Account}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsPost
    */
   readonly account: Account;
 
   /**
    * If true, instructs API to avoid making any changes, but rather run through validations only.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1AccountsPost
    */
   readonly dryRun?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1BillingModelsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1BillingModelsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1BillingModelsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1BillingModelsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1BillingModelsGet
    */
   readonly size?: number;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1BillingModelsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1BillingModelsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1BillingModelsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1BillingModelsIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CapabilitiesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CapabilitiesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CapabilitiesGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1CapabilitiesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1CapabilitiesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1CapabilitiesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CertificatesPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CertificatesPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CertificatesPostRequest {
   /**
-   * # The payload depends on the type of the requested certificate The examples for supported types: * {\&quot;type\&quot;: \&quot;sca\&quot;, \&quot;arch\&quot;: \&quot;x86_64\&quot;}
-   * @type {CertificatesRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1CertificatesPost
+   * # The payload depends on sca as the requested certificates.   The &#x60;type&#x60; field is now deprecated and will now be defaulted to &#x60;sca&#x60; type. * {\&quot;arch\&quot;: \&quot;x86_64\&quot;}
    */
   readonly certificatesRequest: CertificatesRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CloudResourcesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CloudResourcesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CloudResourcesGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CloudResourcesIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CloudResourcesIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CloudResourcesIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CloudResourcesIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CloudResourcesIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CloudResourcesIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CloudResourcesIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CloudResourcesIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CloudResourcesIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesIdPatch
    */
   readonly id: string;
 
   /**
    * Updated cloud resource data
-   * @type {CloudResource}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesIdPatch
    */
   readonly cloudResource: CloudResource;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CloudResourcesPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CloudResourcesPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CloudResourcesPostRequest {
   /**
    * Cloud resource data
-   * @type {CloudResource}
-   * @memberof DefaultApiApiAccountsMgmtV1CloudResourcesPost
    */
   readonly cloudResource: CloudResource;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ClusterAuthorizationsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ClusterAuthorizationsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ClusterAuthorizationsPostRequest {
   /**
    * Cluster and authorization data
-   * @type {ClusterAuthorizationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterAuthorizationsPost
    */
   readonly clusterAuthorizationRequest: ClusterAuthorizationRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ClusterRegistrationsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ClusterRegistrationsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ClusterRegistrationsPostRequest {
   /**
    * Cluster and authorization data
-   * @type {ClusterRegistrationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterRegistrationsPost
    */
   readonly clusterRegistrationRequest: ClusterRegistrationRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ClusterTransfersGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ClusterTransfersGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ClusterTransfersGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ClusterTransfersIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatch
    */
   readonly id: string;
 
   /**
    * Updated cluster transfer
-   * @type {ClusterTransferPatchRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatch
    */
   readonly clusterTransferPatchRequest: ClusterTransferPatchRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ClusterTransfersPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ClusterTransfersPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ClusterTransfersPostRequest {
   /**
    * The contents of the cluster transfer creation request
-   * @type {ClusterTransferRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1ClusterTransfersPost
    */
   readonly clusterTransferRequest: ClusterTransferRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ConfigSkusGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ConfigSkusGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ConfigSkusGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ConfigSkusIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ConfigSkusIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ConfigSkusIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ConfigSkusIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ConfigSkusIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ConfigSkusIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ConfigSkusIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ConfigSkusIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ConfigSkusIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusIdPatch
    */
   readonly id: string;
 
   /**
    * Updated sku data
-   * @type {SKU}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusIdPatch
    */
   readonly sKU: SKU;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ConfigSkusPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ConfigSkusPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ConfigSkusPostRequest {
   /**
    * Sku data
-   * @type {SKU}
-   * @memberof DefaultApiApiAccountsMgmtV1ConfigSkusPost
    */
   readonly sKU: SKU;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1CurrentAccountGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1CurrentAccountGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1CurrentAccountGetRequest {
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1CurrentAccountGet
    */
   readonly fetchLabels?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1DefaultCapabilitiesNameDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameDeleteRequest {
   /**
    * The name of the default capability
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameDelete
    */
   readonly name: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1DefaultCapabilitiesNameGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameGetRequest {
   /**
    * The name of the default capability
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameGet
    */
   readonly name: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1DefaultCapabilitiesNamePatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatchRequest {
   /**
    * The name of the default capability
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatch
    */
   readonly name: string;
 
   /**
    * Default capability data
-   * @type {DefaultCapability}
-   * @memberof DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatch
    */
   readonly defaultCapability: DefaultCapability;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1DefaultCapabilitiesPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1DefaultCapabilitiesPostRequest {
   /**
    * Label data
-   * @type {DefaultCapability}
-   * @memberof DefaultApiApiAccountsMgmtV1DefaultCapabilitiesPost
    */
   readonly defaultCapability: DefaultCapability;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1DeletedSubscriptionsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1DeletedSubscriptionsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1DeletedSubscriptionsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1DeletedSubscriptionsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1DeletedSubscriptionsIdGet
    */
   readonly id: string;
 }
 
 /**
+ * Request parameters for apiAccountsMgmtV1EntitlementCertificatesPost operation in DefaultApi.
+ */
+export interface DefaultApiApiAccountsMgmtV1EntitlementCertificatesPostRequest {
+  /**
+   * # The payload depends on sca as the requested certificates.   The &#x60;type&#x60; field is now deprecated and will now be defaulted to &#x60;sca&#x60; type. * {\&quot;arch\&quot;: [\&quot;x86\&quot;,\&quot;x86_64\&quot;,\&quot;ppc\&quot;]}
+   */
+  readonly entitlementCertificatesRequest: EntitlementCertificatesRequest;
+}
+
+/**
  * Request parameters for apiAccountsMgmtV1ErrorsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ErrorsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ErrorsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ErrorsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ErrorsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ErrorsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ErrorsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ErrorsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ErrorsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ErrorsIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1FeatureTogglesIdQueryPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1FeatureTogglesIdQueryPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1FeatureTogglesIdQueryPostRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1FeatureTogglesIdQueryPost
    */
   readonly id: string;
 
   /**
    * The context of the query
-   * @type {FeatureToggleQueryRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1FeatureTogglesIdQueryPost
    */
   readonly featureToggleQueryRequest: FeatureToggleQueryRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1LabelsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1LabelsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1LabelsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1LabelsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1LabelsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1LabelsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1LabelsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1MetricsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1MetricsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1MetricsGetRequest {
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1MetricsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
- * Request parameters for apiAccountsMgmtV1NotifyPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1NotifyPostRequest
+ * Request parameters for apiAccountsMgmtV1NotifyDetailsPost operation in DefaultApi.
  */
-export interface DefaultApiApiAccountsMgmtV1NotifyPostRequest {
+export interface DefaultApiApiAccountsMgmtV1NotifyDetailsPostRequest {
   /**
-   * The contents of the notification to send to the owner of a cluster/subscription in addition to the set of template parameters which are sent automatically ACCOUNT_USERNAME, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME, ORGANIZATION_EXTERNAL_ID
-   * @type {NotificationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1NotifyPost
+   * The notification parameters such as bcc_address,cluster_id etc
    */
-  readonly notificationRequest: NotificationRequest;
+  readonly notifyDetailsRequest: NotifyDetailsRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
    */
   readonly orderBy?: string;
 
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
    */
   readonly fetchLabels?: boolean;
 
   /**
    * If true, includes the capabilities on a subscription in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
    */
   readonly fetchCapabilities?: boolean;
 
   /**
    * Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsGet
    */
   readonly fields?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdGet
    */
   readonly id: string;
 
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdGet
    */
   readonly fetchLabels?: boolean;
 
   /**
    * If true, includes the capabilities on a subscription in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdGet
    */
   readonly fetchCapabilities?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdLabelsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGet
    */
   readonly id: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDelete
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDelete
    */
   readonly key: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdLabelsKeyGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGet
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGet
    */
   readonly key: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatch
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatch
    */
   readonly key: string;
 
   /**
    * Label data
-   * @type {Label}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatch
    */
   readonly label: Label;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdLabelsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPostRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPost
    */
   readonly id: string;
 
   /**
    * Label data
-   * @type {Label}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPost
    */
   readonly label: Label;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdPatch
    */
   readonly id: string;
 
   /**
    * Updated organization data
-   * @type {OrganizationPatchRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdPatch
    */
   readonly organizationPatchRequest: OrganizationPatchRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsIdSummaryDashboardGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsIdSummaryDashboardGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsIdSummaryDashboardGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDeleteRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete
    */
   readonly orgId: string;
 
   /**
    * The id of account group assignment
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete
    */
   readonly acctGrpAsgnId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet
    */
   readonly orgId: string;
 
   /**
    * The id of account group assignment
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet
    */
   readonly acctGrpAsgnId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet
    */
   readonly orgId: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPostRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost
    */
   readonly orgId: string;
 
   /**
    * New AccountGroup data
-   * @type {AccountGroupAssignment}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost
    */
   readonly accountGroupAssignment: AccountGroupAssignment;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDeleteRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete
    */
   readonly orgId: string;
 
   /**
    * The id of account group
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete
    */
   readonly acctGrpId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet
    */
   readonly orgId: string;
 
   /**
    * The id of account group
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet
    */
   readonly acctGrpId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatchRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch
    */
   readonly orgId: string;
 
   /**
    * The id of account group
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch
    */
   readonly acctGrpId: string;
 
   /**
    * Updated account group data
-   * @type {AccountGroupRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch
    */
   readonly accountGroupRequest: AccountGroupRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet
    */
   readonly orgId: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPostRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost
    */
   readonly orgId: string;
 
   /**
    * New AccountGroup data
-   * @type {AccountGroupRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost
    */
   readonly accountGroupRequest: AccountGroupRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet
    */
   readonly orgId: string;
 
   /**
    * If true, includes that ConsumedQuota should be recalculated.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet
    */
   readonly forceRecalc?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
    */
   readonly orgId: string;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
    */
   readonly size?: number;
 
   /**
    * If true, includes the related resources in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
    */
   readonly fetchRelatedResources?: boolean;
 
   /**
    * If true, includes that ConsumedQuota should be recalculated.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
    */
   readonly forceRecalc?: boolean;
 
   /**
    * If true, includes the marketplace cloud accounts in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet
    */
   readonly fetchCloudAccounts?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet
    */
   readonly orgId: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPostRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost
    */
   readonly orgId: string;
 
   /**
    * Resource quota data
-   * @type {ResourceQuotaRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost
    */
   readonly resourceQuotaRequest: ResourceQuotaRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDeleteRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete
    */
   readonly orgId: string;
 
   /**
    * The id of quota
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete
    */
   readonly quotaId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGetRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet
    */
   readonly orgId: string;
 
   /**
    * The id of quota
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet
    */
   readonly quotaId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatchRequest {
   /**
    * The id of organization
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch
    */
   readonly orgId: string;
 
   /**
    * The id of quota
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch
    */
   readonly quotaId: string;
 
   /**
    * Updated resource quota data
-   * @type {ResourceQuotaRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch
    */
   readonly resourceQuotaRequest: ResourceQuotaRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1OrganizationsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1OrganizationsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1OrganizationsPostRequest {
   /**
    * Organization data
-   * @type {Organization}
-   * @memberof DefaultApiApiAccountsMgmtV1OrganizationsPost
    */
   readonly organization: Organization;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1PlansGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1PlansGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1PlansGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1PlansGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1PlansGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1PlansGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1PlansIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1PlansIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1PlansIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1PlansIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1PullSecretsExternalResourceIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1PullSecretsExternalResourceIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1PullSecretsExternalResourceIdDeleteRequest {
   /**
    * The external resource id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1PullSecretsExternalResourceIdDelete
    */
   readonly externalResourceId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1PullSecretsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1PullSecretsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1PullSecretsPostRequest {
   /**
    * Identifier of the resource in the external service that this pull secret relates to
-   * @type {PullSecretRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1PullSecretsPost
    */
   readonly pullSecretRequest: PullSecretRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotaAuthorizationsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotaAuthorizationsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotaAuthorizationsPostRequest {
   /**
    * User data and intention
-   * @type {QuotaAuthorizationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaAuthorizationsPost
    */
   readonly quotaAuthorizationRequest: QuotaAuthorizationRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotaCostGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotaCostGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotaCostGetRequest {
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaCostGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaCostGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaCostGet
    */
   readonly size?: number;
 
   /**
    * If true, includes the related resources in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaCostGet
    */
   readonly fetchRelatedResources?: boolean;
 
   /**
    * If true, includes the marketplace cloud accounts in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaCostGet
    */
   readonly fetchCloudAccounts?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotaRulesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotaRulesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotaRulesGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaRulesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaRulesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotaRulesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotasGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotasGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotasGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotasIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotasIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotasIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotasIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotasIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotasIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotasIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotasIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotasIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasIdPatch
    */
   readonly id: string;
 
   /**
    * Updated quota data
-   * @type {Quota}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasIdPatch
    */
   readonly quota: Quota;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1QuotasPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1QuotasPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1QuotasPostRequest {
   /**
    * Quota data
-   * @type {Quota}
-   * @memberof DefaultApiApiAccountsMgmtV1QuotasPost
    */
   readonly quota: Quota;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistriesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistriesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistriesGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistriesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistriesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistriesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistriesGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistriesIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistriesIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistriesIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistriesIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistryCredentialsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistryCredentialsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistryCredentialsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistryCredentialsIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistryCredentialsIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistryCredentialsIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistryCredentialsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistryCredentialsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistryCredentialsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistryCredentialsIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatch
    */
   readonly id: string;
 
   /**
    * Updated registry credential data
-   * @type {RegistryCredentialPatchRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatch
    */
   readonly registryCredentialPatchRequest: RegistryCredentialPatchRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RegistryCredentialsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RegistryCredentialsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RegistryCredentialsPostRequest {
   /**
    * Registry credential data
-   * @type {RegistryCredential}
-   * @memberof DefaultApiApiAccountsMgmtV1RegistryCredentialsPost
    */
   readonly registryCredential: RegistryCredential;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ReservedResourcesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ReservedResourcesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ReservedResourcesGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ReservedResourcesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ReservedResourcesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ReservedResourcesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ReservedResourcesGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1ResourceQuotaGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1ResourceQuotaGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1ResourceQuotaGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ResourceQuotaGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1ResourceQuotaGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ResourceQuotaGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1ResourceQuotaGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RoleBindingsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RoleBindingsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RoleBindingsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RoleBindingsIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RoleBindingsIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RoleBindingsIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RoleBindingsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RoleBindingsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RoleBindingsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RoleBindingsIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RoleBindingsIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RoleBindingsIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsIdPatch
    */
   readonly id: string;
 
   /**
    * Updated role binding data
-   * @type {RoleBindingRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsIdPatch
    */
   readonly roleBindingRequest: RoleBindingRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RoleBindingsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RoleBindingsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RoleBindingsPostRequest {
   /**
    * Role binding data
-   * @type {RoleBindingCreateRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1RoleBindingsPost
    */
   readonly roleBindingCreateRequest: RoleBindingCreateRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RolesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RolesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RolesGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RolesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1RolesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RolesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1RolesIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1RolesIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1RolesIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1RolesIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SelfEntitlementProductPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SelfEntitlementProductPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SelfEntitlementProductPostRequest {
   /**
    * The product for self_entitlement. The supported products are [rosa].
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SelfEntitlementProductPost
    */
   readonly product: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkuRulesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkuRulesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkuRulesGetRequest {
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesGet
    */
   readonly size?: number;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkuRulesIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkuRulesIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkuRulesIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkuRulesIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkuRulesIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkuRulesIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkuRulesIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkuRulesIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkuRulesIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesIdPatch
    */
   readonly id: string;
 
   /**
    * Updated sku rule data
-   * @type {SkuRules}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesIdPatch
    */
   readonly skuRules: SkuRules;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkuRulesPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkuRulesPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkuRulesPostRequest {
   /**
    * Sku rule data
-   * @type {SkuRules}
-   * @memberof DefaultApiApiAccountsMgmtV1SkuRulesPost
    */
   readonly skuRules: SkuRules;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkusGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkusGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkusGetRequest {
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SkusGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SkusIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SkusIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SkusIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SkusIdGet
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsGetRequest {
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * If true, includes the account reference information in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly fetchAccounts?: boolean;
 
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly fetchLabels?: boolean;
 
   /**
    * If true, includes the capabilities on a subscription in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly fetchCapabilities?: boolean;
 
   /**
+   * If true, includes the organization object on a subscription in the output. Could slow request response time.
+   */
+  readonly fetchOrganization?: boolean;
+
+  /**
    * Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly fields?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly orderBy?: string;
 
   /**
    * Specifies the criteria to filter the subscription resource based on their labels. A label is represented as a &#x60;key&#x3D;value&#x60; pair,  &#x60;&#x60;&#x60; labels &#x3D; \&quot;foo&#x3D;bar\&quot; &#x60;&#x60;&#x60;  and multiple labels are separated by comma,  &#x60;&#x60;&#x60; labels &#x3D; \&quot;foo&#x3D;bar,fooz&#x3D;barz\&quot; &#x60;&#x60;&#x60;
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsGet
    */
   readonly labels?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdDelete
    */
   readonly id: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdGet
    */
   readonly id: string;
 
   /**
    * If true, includes the account reference information in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdGet
    */
   readonly fetchAccounts?: boolean;
 
   /**
    * If true, includes the labels on a subscription/organization/account in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdGet
    */
   readonly fetchLabels?: boolean;
 
   /**
    * If true, includes the capabilities on a subscription in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdGet
    */
   readonly fetchCapabilities?: boolean;
 
   /**
+   * If true, returns either an empty result set or a valid ClusterTransfer list on a subscription in the output. Could slow request response time.
+   */
+  readonly fetchClusterTransfers?: boolean;
+
+  /**
    * If true, fetches, from the clusters service, the total numbers of CPU\&#39;s and sockets under an obligation, and includes in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdGet
    */
   readonly fetchCpuAndSocket?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdLabelsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGet
    */
   readonly id: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete
    */
   readonly key: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGet
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGet
    */
   readonly key: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch
    */
   readonly id: string;
 
   /**
    * The key of the label
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch
    */
   readonly key: string;
 
   /**
    * Label data
-   * @type {Label}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch
    */
   readonly label: Label;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdLabelsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPostRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPost
    */
   readonly id: string;
 
   /**
    * Label data
-   * @type {Label}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPost
    */
   readonly label: Label;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet
    */
   readonly id: string;
 
   /**
    * The name of the metric
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet
    */
   readonly metricName: string;
 
   /**
    * The &#x60;search&#x60; paramter specifies the PromQL selector. The syntax is defined by Prometheus at https://prometheus.io/docs/prometheus/latest/querying/basics/#time-series-selectors. It only supports simple selections as shown in https://prometheus.io/docs/prometheus/latest/querying/examples/#simple-time-series-selection. For example, in order to retrieve subscription_sync_total with names starting with &#x60;managed&#x60; and with a channel &#x3D; &#x60;production&#x60;:  &#x60;&#x60;&#x60; name&#x3D;~\&#39;managed.*\&#39;,channel&#x3D;\&#39;production\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the records will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet
    */
   readonly search?: string;
 
   /**
    * Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet
    */
   readonly fields?: string;
 }
 
 /**
- * Request parameters for apiAccountsMgmtV1SubscriptionsIdNotifyPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPostRequest
+ * Request parameters for apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet operation in DefaultApi.
  */
-export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPostRequest {
+export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdOndemandMetricsGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPost
    */
   readonly id: string;
-
-  /**
-   * The contents of the notification to send to the owner of a subscription in addition to the set of template parameters which are sent automatically ACCOUNT_USERNAME, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME, ORGANIZATION_EXTERNAL_ID
-   * @type {NotificationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPost
-   */
-  readonly notificationRequest: NotificationRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdPatchRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdPatch
    */
   readonly id: string;
 
   /**
    * Updated subscription data
-   * @type {SubscriptionPatchRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdPatch
    */
   readonly subscriptionPatchRequest: SubscriptionPatchRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGet
    */
   readonly id: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsIdSupportCasesGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGet
    */
   readonly id: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGet
    */
   readonly size?: number;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsPostRequest {
   /**
    * Subscription Creation data
-   * @type {SubscriptionCreateRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsPost
    */
   readonly subscriptionCreateRequest: SubscriptionCreateRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDeleteRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete
    */
   readonly subId: string;
 
   /**
    * The id of account
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete
    */
   readonly accountId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGetRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet
    */
   readonly subId: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Supplies a comma-separated list of fields to be returned. Fields of sub-structures and of arrays use &lt;structure&gt;.&lt;field&gt; notation. &lt;stucture&gt;.* means all field of a structure Example: For each Subscription to get id, href, plan(id and kind) and labels (all fields)  &#x60;&#x60;&#x60; ocm get subscriptions --parameter fields&#x3D;id,href,plan.id,plan.kind,labels.* --parameter fetchLabels&#x3D;true &#x60;&#x60;&#x60;
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet
    */
   readonly fields?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet
    */
   readonly orderBy?: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPostRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost
    */
   readonly subId: string;
 
   /**
    * Add a notification contact by an account\&#39;s username
-   * @type {NotificationContactCreateRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost
    */
   readonly notificationContactCreateRequest: NotificationContactCreateRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDeleteRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete
    */
   readonly subId: string;
 
   /**
    * The id of reserved resource
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete
    */
   readonly reservedResourceId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGetRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet
    */
   readonly subId: string;
 
   /**
    * The id of reserved resource
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet
    */
   readonly reservedResourceId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatchRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatchRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch
    */
   readonly subId: string;
 
   /**
    * The id of reserved resource
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch
    */
   readonly reservedResourceId: string;
 
   /**
    * Updated reserved resource data
-   * @type {ReservedResourcePatchRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch
    */
   readonly reservedResourcePatchRequest: ReservedResourcePatchRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGetRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet
    */
   readonly subId: string;
 
   /**
    * Page number of record list when record list exceeds specified page size
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet
    */
   readonly page?: number;
 
   /**
    * Maximum number of records to return
-   * @type {number}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet
    */
   readonly size?: number;
 
   /**
-   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet
+   * Specifies the search criteria. The syntax of this parameter is similar to the syntax of the _where_ clause of an SQL statement, using the names of the json attributes / column names of the account. For example, in order to retrieve all the accounts with a username starting with &#x60;my&#x60;:  &#x60;&#x60;&#x60;sql username like \&#39;my%\&#39; &#x60;&#x60;&#x60;  &gt; **Important Note**: Account Management Service uses **KSUID** as an **ID** field. KSUID contains a timestamp component that allows them to be sorted by generation time. As this field uses an index, please use it to sort by instead of &#x60;created_at&#x60; field.  The search criteria can also be applied on related resource. For example, in order to retrieve all the subscriptions labeled by &#x60;foo&#x3D;bar&#x60;,  &#x60;&#x60;&#x60;sql labels.key &#x3D; \&#39;foo\&#39; and labels.value &#x3D; \&#39;bar\&#39; &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then all the accounts that the user has permission to see will be returned.
    */
   readonly search?: string;
 
   /**
    * Specifies the order by criteria. The syntax of this parameter is similar to the syntax of the _order by_ clause of an SQL statement, but using the names of the json attributes / column of the account. For example, in order to retrieve all accounts ordered by username:  &#x60;&#x60;&#x60;sql username asc &#x60;&#x60;&#x60;  Or in order to retrieve all accounts ordered by username _and_ first name:  &#x60;&#x60;&#x60;sql username asc, firstName asc &#x60;&#x60;&#x60;  If the parameter isn\&#39;t provided, or if the value is empty, then no explicit ordering will be applied.
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet
    */
   readonly orderBy?: string;
 
   /**
    * If true, includes the account reference information in the output. Could slow request response time.
-   * @type {boolean}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet
    */
   readonly fetchAccounts?: boolean;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDeleteRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete
    */
   readonly id: string;
 
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete
    */
   readonly subId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGetRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGetRequest {
   /**
    * The id of record
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet
    */
   readonly id: string;
 
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet
    */
   readonly subId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPostRequest {
   /**
    * The id of subscription
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost
    */
   readonly subId: string;
 
   /**
    * Subscription role binding data
-   * @type {SubscriptionRoleBindingCreateRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost
    */
   readonly subscriptionRoleBindingCreateRequest: SubscriptionRoleBindingCreateRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SupportCasesCaseIdDelete operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SupportCasesCaseIdDeleteRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SupportCasesCaseIdDeleteRequest {
   /**
    * The id of a support case
-   * @type {string}
-   * @memberof DefaultApiApiAccountsMgmtV1SupportCasesCaseIdDelete
    */
   readonly caseId: string;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1SupportCasesPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1SupportCasesPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1SupportCasesPostRequest {
   /**
    * The contents of the support case to be created
-   * @type {SupportCasesRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1SupportCasesPost
    */
   readonly supportCasesRequest: SupportCasesRequest;
 }
 
 /**
  * Request parameters for apiAccountsMgmtV1TokenAuthorizationPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAccountsMgmtV1TokenAuthorizationPostRequest
  */
 export interface DefaultApiApiAccountsMgmtV1TokenAuthorizationPostRequest {
   /**
    * Token authorization data
-   * @type {TokenAuthorizationRequest}
-   * @memberof DefaultApiApiAccountsMgmtV1TokenAuthorizationPost
    */
   readonly tokenAuthorizationRequest: TokenAuthorizationRequest;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1AccessReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1AccessReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1AccessReviewPostRequest {
   /**
    * Access review data
-   * @type {AccessReview}
-   * @memberof DefaultApiApiAuthorizationsV1AccessReviewPost
    */
   readonly accessReview: AccessReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1CapabilityReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest {
   /**
    * Capability review data
-   * @type {CapabilityReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1CapabilityReviewPost
    */
   readonly capabilityReviewRequest: CapabilityReviewRequest;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1ExportControlReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest {
   /**
    * Export control review data
-   * @type {ExportControlReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1ExportControlReviewPost
    */
   readonly exportControlReviewRequest: ExportControlReviewRequest;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1FeatureReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1FeatureReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1FeatureReviewPostRequest {
   /**
    * Feature review data
-   * @type {FeatureReview}
-   * @memberof DefaultApiApiAuthorizationsV1FeatureReviewPost
    */
   readonly featureReview: FeatureReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1ResourceReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1ResourceReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1ResourceReviewPostRequest {
   /**
    * Resource review data
-   * @type {ResourceReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly resourceReviewRequest: ResourceReviewRequest;
 
   /**
    * If true, When returning a list of cluster_ids/cluster_uuids/subscription_ids, if those are already included in one of the organizations provided in organization_ids, do not include it in the list.
-   * @type {boolean}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly reduceClusterList?: boolean;
 
   /**
    * A comma-separated list of subscription statuses. Subscriptions with these statuses will be excluded from results. This options is mutually exclusive with includeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly excludeSubscriptionStatuses?: string;
 
   /**
    * A comma-separated list of subscription statuses. Only subscriptions with these statuses will be included into results. This options is mutually exclusive with excludeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1ResourceReviewPost
    */
   readonly includeSubscriptionStatuses?: string;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfAccessReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest {
   /**
    * Self access review data
-   * @type {SelfAccessReview}
-   * @memberof DefaultApiApiAuthorizationsV1SelfAccessReviewPost
    */
   readonly selfAccessReview: SelfAccessReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfFeatureReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest {
   /**
    * Self feature review data
-   * @type {SelfFeatureReview}
-   * @memberof DefaultApiApiAuthorizationsV1SelfFeatureReviewPost
    */
   readonly selfFeatureReview: SelfFeatureReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfResourceReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest {
   /**
    * Self resource review data
-   * @type {SelfResourceReviewRequest}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly selfResourceReviewRequest: SelfResourceReviewRequest;
 
   /**
    * If true, When returning a list of cluster_ids/cluster_uuids/subscription_ids, if those are already included in one of the organizations provided in organization_ids, do not include it in the list.
-   * @type {boolean}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly reduceClusterList?: boolean;
 
   /**
    * A comma-separated list of subscription statuses. Subscriptions with these statuses will be excluded from results. This options is mutually exclusive with includeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly excludeSubscriptionStatuses?: string;
 
   /**
    * A comma-separated list of subscription statuses. Only subscriptions with these statuses will be included into results. This options is mutually exclusive with excludeSubscriptionStatuses.
-   * @type {string}
-   * @memberof DefaultApiApiAuthorizationsV1SelfResourceReviewPost
    */
   readonly includeSubscriptionStatuses?: string;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1SelfTermsReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest {
   /**
    * Data to check self terms for
-   * @type {SelfTermsReview}
-   * @memberof DefaultApiApiAuthorizationsV1SelfTermsReviewPost
    */
   readonly selfTermsReview: SelfTermsReview;
 }
 
 /**
  * Request parameters for apiAuthorizationsV1TermsReviewPost operation in DefaultApi.
- * @export
- * @interface DefaultApiApiAuthorizationsV1TermsReviewPostRequest
  */
 export interface DefaultApiApiAuthorizationsV1TermsReviewPostRequest {
   /**
    * Data to check terms for
-   * @type {TermsReview}
-   * @memberof DefaultApiApiAuthorizationsV1TermsReviewPost
    */
   readonly termsReview: TermsReview;
 }
 
 /**
  * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
   /**
@@ -17704,9 +18893,8 @@ export class DefaultApi extends BaseAPI {
    * @summary Return access token generated from registries in docker format
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
-  public apiAccountsMgmtV1AccessTokenPost(options?: AxiosRequestConfig) {
+  public apiAccountsMgmtV1AccessTokenPost(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccessTokenPost(options)
       .then((request) => request(this.axios, this.basePath));
@@ -17718,11 +18906,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsGet(
@@ -17744,11 +18931,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdDelete(
@@ -17765,11 +18951,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdGet(
@@ -17788,11 +18973,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdLabelsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdLabelsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdLabelsGet(
@@ -17812,11 +18996,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdLabelsKeyDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdLabelsKeyDelete(
@@ -17833,11 +19016,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdLabelsKeyGet(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdLabelsKeyGet(requestParameters.id, requestParameters.key, options)
@@ -17850,11 +19032,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdLabelsKeyPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsKeyPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdLabelsKeyPatch(
@@ -17872,11 +19053,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdLabelsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdLabelsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdLabelsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdLabelsPost(requestParameters.id, requestParameters.label, options)
@@ -17889,11 +19069,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdPatch(
@@ -17910,11 +19089,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdPullSecretRotationGet(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdPullSecretRotationGet(
@@ -17934,11 +19112,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdPullSecretRotationPost(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdPullSecretRotationPost(
@@ -17955,11 +19132,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdDelete(
@@ -17976,11 +19152,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsIdPullSecretRotationRotationIdGet(
@@ -17997,11 +19172,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1AccountsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1AccountsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1AccountsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1AccountsPost(requestParameters.account, requestParameters.dryRun, options)
@@ -18014,11 +19188,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1BillingModelsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1BillingModelsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1BillingModelsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1BillingModelsGet(requestParameters.page, requestParameters.size, options)
@@ -18031,11 +19204,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1BillingModelsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1BillingModelsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1BillingModelsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1BillingModelsIdGet(requestParameters.id, options)
@@ -18048,11 +19220,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CapabilitiesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CapabilitiesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1CapabilitiesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CapabilitiesGet(
@@ -18070,11 +19241,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CertificatesPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CertificatesPost(
     requestParameters: DefaultApiApiAccountsMgmtV1CertificatesPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CertificatesPost(requestParameters.certificatesRequest, options)
@@ -18087,11 +19257,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CloudResourcesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CloudResourcesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CloudResourcesGet(
@@ -18109,11 +19278,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CloudResourcesIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CloudResourcesIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CloudResourcesIdDelete(requestParameters.id, options)
@@ -18126,11 +19294,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CloudResourcesIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CloudResourcesIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CloudResourcesIdGet(requestParameters.id, options)
@@ -18143,11 +19310,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CloudResourcesIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CloudResourcesIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CloudResourcesIdPatch(
@@ -18164,11 +19330,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CloudResourcesPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CloudResourcesPost(
     requestParameters: DefaultApiApiAccountsMgmtV1CloudResourcesPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CloudResourcesPost(requestParameters.cloudResource, options)
@@ -18181,11 +19346,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ClusterAuthorizationsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ClusterAuthorizationsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1ClusterAuthorizationsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ClusterAuthorizationsPost(
@@ -18201,11 +19365,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ClusterRegistrationsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ClusterRegistrationsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1ClusterRegistrationsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ClusterRegistrationsPost(
@@ -18221,11 +19384,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ClusterTransfersGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ClusterTransfersGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ClusterTransfersGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ClusterTransfersGet(
@@ -18244,11 +19406,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ClusterTransfersIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1ClusterTransfersIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ClusterTransfersIdPatch(
@@ -18265,11 +19426,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ClusterTransfersPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ClusterTransfersPost(
     requestParameters: DefaultApiApiAccountsMgmtV1ClusterTransfersPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ClusterTransfersPost(requestParameters.clusterTransferRequest, options)
@@ -18282,11 +19442,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ConfigSkusGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ConfigSkusGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ConfigSkusGet(
@@ -18304,11 +19463,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ConfigSkusIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ConfigSkusIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ConfigSkusIdDelete(requestParameters.id, options)
@@ -18321,11 +19479,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ConfigSkusIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ConfigSkusIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ConfigSkusIdGet(requestParameters.id, options)
@@ -18338,11 +19495,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ConfigSkusIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ConfigSkusIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ConfigSkusIdPatch(requestParameters.id, requestParameters.sKU, options)
@@ -18355,11 +19511,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ConfigSkusPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ConfigSkusPost(
     requestParameters: DefaultApiApiAccountsMgmtV1ConfigSkusPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ConfigSkusPost(requestParameters.sKU, options)
@@ -18372,11 +19527,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1CurrentAccountGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1CurrentAccountGet(
     requestParameters: DefaultApiApiAccountsMgmtV1CurrentAccountGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1CurrentAccountGet(requestParameters.fetchLabels, options)
@@ -18388,9 +19542,8 @@ export class DefaultApi extends BaseAPI {
    * @summary Returns a list of default capabilities
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
-  public apiAccountsMgmtV1DefaultCapabilitiesGet(options?: AxiosRequestConfig) {
+  public apiAccountsMgmtV1DefaultCapabilitiesGet(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DefaultCapabilitiesGet(options)
       .then((request) => request(this.axios, this.basePath));
@@ -18402,11 +19555,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1DefaultCapabilitiesNameDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DefaultCapabilitiesNameDelete(requestParameters.name, options)
@@ -18419,11 +19571,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1DefaultCapabilitiesNameGet(
     requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNameGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DefaultCapabilitiesNameGet(requestParameters.name, options)
@@ -18436,11 +19587,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1DefaultCapabilitiesNamePatch(
     requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesNamePatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DefaultCapabilitiesNamePatch(
@@ -18457,11 +19607,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1DefaultCapabilitiesPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1DefaultCapabilitiesPost(
     requestParameters: DefaultApiApiAccountsMgmtV1DefaultCapabilitiesPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DefaultCapabilitiesPost(requestParameters.defaultCapability, options)
@@ -18474,11 +19623,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1DeletedSubscriptionsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1DeletedSubscriptionsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DeletedSubscriptionsGet(
@@ -18497,14 +19645,32 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1DeletedSubscriptionsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1DeletedSubscriptionsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1DeletedSubscriptionsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1DeletedSubscriptionsIdGet(requestParameters.id, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Fetch all certificates of a sca type based on the architectures
+   * @param {DefaultApiApiAccountsMgmtV1EntitlementCertificatesPostRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public apiAccountsMgmtV1EntitlementCertificatesPost(
+    requestParameters: DefaultApiApiAccountsMgmtV1EntitlementCertificatesPostRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .apiAccountsMgmtV1EntitlementCertificatesPost(
+        requestParameters.entitlementCertificatesRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -18514,11 +19680,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ErrorsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ErrorsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ErrorsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ErrorsGet(
@@ -18536,11 +19701,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ErrorsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ErrorsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ErrorsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ErrorsIdGet(requestParameters.id, options)
@@ -18554,11 +19718,10 @@ export class DefaultApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1FeatureTogglesIdQueryPost(
     requestParameters: DefaultApiApiAccountsMgmtV1FeatureTogglesIdQueryPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1FeatureTogglesIdQueryPost(
@@ -18575,11 +19738,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1LabelsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1LabelsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1LabelsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1LabelsGet(
@@ -18597,9 +19759,8 @@ export class DefaultApi extends BaseAPI {
    * @summary Get a console.redhat.com landing page content JSON schema
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
-  public apiAccountsMgmtV1LandingPageSelfServiceGet(options?: AxiosRequestConfig) {
+  public apiAccountsMgmtV1LandingPageSelfServiceGet(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1LandingPageSelfServiceGet(options)
       .then((request) => request(this.axios, this.basePath));
@@ -18611,11 +19772,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1MetricsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1MetricsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1MetricsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1MetricsGet(requestParameters.search, options)
@@ -18624,18 +19784,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @summary Notify the owner of cluster/subscription
-   * @param {DefaultApiApiAccountsMgmtV1NotifyPostRequest} requestParameters Request parameters.
+   * @summary Get and validate notification details
+   * @param {DefaultApiApiAccountsMgmtV1NotifyDetailsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
-  public apiAccountsMgmtV1NotifyPost(
-    requestParameters: DefaultApiApiAccountsMgmtV1NotifyPostRequest,
-    options?: AxiosRequestConfig,
+  public apiAccountsMgmtV1NotifyDetailsPost(
+    requestParameters: DefaultApiApiAccountsMgmtV1NotifyDetailsPostRequest,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
-      .apiAccountsMgmtV1NotifyPost(requestParameters.notificationRequest, options)
+      .apiAccountsMgmtV1NotifyDetailsPost(requestParameters.notifyDetailsRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -18645,11 +19804,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsGet(
@@ -18671,11 +19829,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdGet(
@@ -18693,11 +19850,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdLabelsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdLabelsGet(
@@ -18717,11 +19873,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdLabelsKeyDelete(
@@ -18738,11 +19893,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdLabelsKeyGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdLabelsKeyGet(
@@ -18759,11 +19913,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsKeyPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdLabelsKeyPatch(
@@ -18781,11 +19934,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdLabelsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdLabelsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdLabelsPost(
@@ -18802,11 +19954,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdPatch(
@@ -18823,11 +19974,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsIdSummaryDashboardGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsIdSummaryDashboardGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsIdSummaryDashboardGet(requestParameters.id, options)
@@ -18840,11 +19990,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdDelete(
@@ -18861,11 +20010,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsAcctGrpAsgnIdGet(
@@ -18882,11 +20030,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsGet(
@@ -18906,11 +20053,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupAssignmentsPost(
@@ -18927,11 +20073,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdDelete(
@@ -18948,11 +20093,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdGet(
@@ -18969,11 +20113,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsAcctGrpIdPatch(
@@ -18991,11 +20134,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsGet(
@@ -19015,11 +20157,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdAccountGroupsPost(
@@ -19036,11 +20177,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdConsumedQuotaGet(
@@ -19057,11 +20197,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdQuotaCostGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdQuotaCostGet(
@@ -19083,11 +20222,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaGet(
@@ -19107,11 +20245,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaPost(
@@ -19128,11 +20265,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdDelete(
@@ -19149,11 +20285,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdGet(
@@ -19170,11 +20305,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsOrgIdResourceQuotaQuotaIdPatch(
@@ -19192,11 +20326,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1OrganizationsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1OrganizationsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1OrganizationsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1OrganizationsPost(requestParameters.organization, options)
@@ -19209,11 +20342,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1PlansGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1PlansGet(
     requestParameters: DefaultApiApiAccountsMgmtV1PlansGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1PlansGet(
@@ -19231,11 +20363,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1PlansIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1PlansIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1PlansIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1PlansIdGet(requestParameters.id, options)
@@ -19248,11 +20379,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1PullSecretsExternalResourceIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1PullSecretsExternalResourceIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1PullSecretsExternalResourceIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1PullSecretsExternalResourceIdDelete(
@@ -19268,11 +20398,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1PullSecretsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1PullSecretsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1PullSecretsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1PullSecretsPost(requestParameters.pullSecretRequest, options)
@@ -19285,11 +20414,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotaAuthorizationsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotaAuthorizationsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotaAuthorizationsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotaAuthorizationsPost(
@@ -19305,11 +20433,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotaCostGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotaCostGet(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotaCostGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotaCostGet(
@@ -19329,11 +20456,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotaRulesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotaRulesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotaRulesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotaRulesGet(
@@ -19351,11 +20477,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotasGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotasGet(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotasGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotasGet(
@@ -19373,11 +20498,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotasIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotasIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotasIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotasIdDelete(requestParameters.id, options)
@@ -19390,11 +20514,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotasIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotasIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotasIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotasIdGet(requestParameters.id, options)
@@ -19407,11 +20530,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotasIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotasIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotasIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotasIdPatch(requestParameters.id, requestParameters.quota, options)
@@ -19424,14 +20546,37 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1QuotasPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1QuotasPost(
     requestParameters: DefaultApiApiAccountsMgmtV1QuotasPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1QuotasPost(requestParameters.quota, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns a list of regions to which a user has access
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public apiAccountsMgmtV1RegionsGet(options?: RawAxiosRequestConfig) {
+    return DefaultApiFp(this.configuration)
+      .apiAccountsMgmtV1RegionsGet(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns a summary of clusters by region
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public apiAccountsMgmtV1RegionsSummaryGet(options?: RawAxiosRequestConfig) {
+    return DefaultApiFp(this.configuration)
+      .apiAccountsMgmtV1RegionsSummaryGet(options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -19441,11 +20586,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistriesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistriesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistriesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistriesGet(
@@ -19464,11 +20608,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistriesIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistriesIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistriesIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistriesIdGet(requestParameters.id, options)
@@ -19480,11 +20623,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistryCredentialsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistryCredentialsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistryCredentialsGet(
@@ -19503,11 +20645,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistryCredentialsIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistryCredentialsIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistryCredentialsIdDelete(requestParameters.id, options)
@@ -19520,11 +20661,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistryCredentialsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistryCredentialsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistryCredentialsIdGet(requestParameters.id, options)
@@ -19537,11 +20677,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistryCredentialsIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistryCredentialsIdPatch(
@@ -19558,11 +20697,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RegistryCredentialsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RegistryCredentialsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1RegistryCredentialsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RegistryCredentialsPost(requestParameters.registryCredential, options)
@@ -19575,11 +20713,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ReservedResourcesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ReservedResourcesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ReservedResourcesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ReservedResourcesGet(
@@ -19598,11 +20735,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1ResourceQuotaGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1ResourceQuotaGet(
     requestParameters: DefaultApiApiAccountsMgmtV1ResourceQuotaGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1ResourceQuotaGet(
@@ -19621,11 +20757,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RoleBindingsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RoleBindingsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RoleBindingsGet(
@@ -19644,11 +20779,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RoleBindingsIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RoleBindingsIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RoleBindingsIdDelete(requestParameters.id, options)
@@ -19661,11 +20795,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RoleBindingsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RoleBindingsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RoleBindingsIdGet(requestParameters.id, options)
@@ -19678,11 +20811,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RoleBindingsIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RoleBindingsIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RoleBindingsIdPatch(
@@ -19699,11 +20831,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RoleBindingsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RoleBindingsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1RoleBindingsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RoleBindingsPost(requestParameters.roleBindingCreateRequest, options)
@@ -19716,11 +20847,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RolesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RolesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RolesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RolesGet(
@@ -19738,11 +20868,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1RolesIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1RolesIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1RolesIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1RolesIdGet(requestParameters.id, options)
@@ -19755,11 +20884,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SelfEntitlementProductPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SelfEntitlementProductPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SelfEntitlementProductPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SelfEntitlementProductPost(requestParameters.product, options)
@@ -19772,11 +20900,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SkuRulesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkuRulesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkuRulesGet(
@@ -19794,11 +20921,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SkuRulesIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkuRulesIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkuRulesIdDelete(requestParameters.id, options)
@@ -19811,11 +20937,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SkuRulesIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkuRulesIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkuRulesIdGet(requestParameters.id, options)
@@ -19828,11 +20953,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SkuRulesIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkuRulesIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkuRulesIdPatch(requestParameters.id, requestParameters.skuRules, options)
@@ -19845,11 +20969,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SkuRulesPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkuRulesPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SkuRulesPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkuRulesPost(requestParameters.skuRules, options)
@@ -19863,11 +20986,10 @@ export class DefaultApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkusGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SkusGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkusGet(requestParameters.search, options)
@@ -19881,11 +21003,10 @@ export class DefaultApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SkusIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SkusIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SkusIdGet(requestParameters.id, options)
@@ -19898,11 +21019,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsGetRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsGet(
@@ -19912,6 +21032,7 @@ export class DefaultApi extends BaseAPI {
         requestParameters.fetchAccounts,
         requestParameters.fetchLabels,
         requestParameters.fetchCapabilities,
+        requestParameters.fetchOrganization,
         requestParameters.fields,
         requestParameters.orderBy,
         requestParameters.labels,
@@ -19926,11 +21047,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdDelete(requestParameters.id, options)
@@ -19943,11 +21063,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdGet(
@@ -19955,6 +21074,7 @@ export class DefaultApi extends BaseAPI {
         requestParameters.fetchAccounts,
         requestParameters.fetchLabels,
         requestParameters.fetchCapabilities,
+        requestParameters.fetchClusterTransfers,
         requestParameters.fetchCpuAndSocket,
         options,
       )
@@ -19967,11 +21087,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdLabelsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdLabelsGet(
@@ -19991,11 +21110,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdLabelsKeyDelete(
@@ -20012,11 +21130,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdLabelsKeyGet(
@@ -20033,11 +21150,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsKeyPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdLabelsKeyPatch(
@@ -20055,11 +21171,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdLabelsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdLabelsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdLabelsPost(
@@ -20076,11 +21191,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdMetricsMetricNameGet(
@@ -20095,22 +21209,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @summary Notify the owner of a subscription
-   * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPostRequest} requestParameters Request parameters.
+   * @summary Get an ondemand metrics of a subscription by id
+   * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdOndemandMetricsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
-  public apiAccountsMgmtV1SubscriptionsIdNotifyPost(
-    requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdNotifyPostRequest,
-    options?: AxiosRequestConfig,
+  public apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet(
+    requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdOndemandMetricsGetRequest,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
-      .apiAccountsMgmtV1SubscriptionsIdNotifyPost(
-        requestParameters.id,
-        requestParameters.notificationRequest,
-        options,
-      )
+      .apiAccountsMgmtV1SubscriptionsIdOndemandMetricsGet(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -20120,11 +21229,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdPatch(
@@ -20141,11 +21249,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdReservedResourcesGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdReservedResourcesGet(
@@ -20165,11 +21272,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsIdSupportCasesGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsIdSupportCasesGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsIdSupportCasesGet(
@@ -20187,11 +21293,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsPost(requestParameters.subscriptionCreateRequest, options)
@@ -20204,11 +21309,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsAccountIdDelete(
@@ -20225,11 +21329,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsGet(
@@ -20250,11 +21353,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdNotificationContactsPost(
@@ -20271,11 +21373,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdDelete(
@@ -20292,11 +21393,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdGet(
@@ -20313,11 +21413,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatchRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatchRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdReservedResourcesReservedResourceIdPatch(
@@ -20335,11 +21434,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsGet(
@@ -20360,11 +21458,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdDelete(
@@ -20381,11 +21478,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGetRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGetRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsIdGet(
@@ -20402,11 +21498,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SubscriptionsSubIdRoleBindingsPost(
@@ -20423,11 +21518,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SupportCasesCaseIdDeleteRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SupportCasesCaseIdDelete(
     requestParameters: DefaultApiApiAccountsMgmtV1SupportCasesCaseIdDeleteRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SupportCasesCaseIdDelete(requestParameters.caseId, options)
@@ -20440,11 +21534,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1SupportCasesPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1SupportCasesPost(
     requestParameters: DefaultApiApiAccountsMgmtV1SupportCasesPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1SupportCasesPost(requestParameters.supportCasesRequest, options)
@@ -20457,11 +21550,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAccountsMgmtV1TokenAuthorizationPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAccountsMgmtV1TokenAuthorizationPost(
     requestParameters: DefaultApiApiAccountsMgmtV1TokenAuthorizationPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAccountsMgmtV1TokenAuthorizationPost(requestParameters.tokenAuthorizationRequest, options)
@@ -20474,11 +21566,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1AccessReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1AccessReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1AccessReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1AccessReviewPost(requestParameters.accessReview, options)
@@ -20491,11 +21582,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1CapabilityReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1CapabilityReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1CapabilityReviewPost(requestParameters.capabilityReviewRequest, options)
@@ -20508,11 +21598,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1ExportControlReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1ExportControlReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1ExportControlReviewPost(
@@ -20528,11 +21617,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1FeatureReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1FeatureReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1FeatureReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1FeatureReviewPost(requestParameters.featureReview, options)
@@ -20546,11 +21634,10 @@ export class DefaultApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1ResourceReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1ResourceReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1ResourceReviewPost(
@@ -20569,11 +21656,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfAccessReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfAccessReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfAccessReviewPost(requestParameters.selfAccessReview, options)
@@ -20586,11 +21672,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfFeatureReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfFeatureReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfFeatureReviewPost(requestParameters.selfFeatureReview, options)
@@ -20603,11 +21688,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfResourceReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfResourceReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfResourceReviewPost(
@@ -20626,11 +21710,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1SelfTermsReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1SelfTermsReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1SelfTermsReviewPost(requestParameters.selfTermsReview, options)
@@ -20643,11 +21726,10 @@ export class DefaultApi extends BaseAPI {
    * @param {DefaultApiApiAuthorizationsV1TermsReviewPostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
    */
   public apiAuthorizationsV1TermsReviewPost(
     requestParameters: DefaultApiApiAuthorizationsV1TermsReviewPostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return DefaultApiFp(this.configuration)
       .apiAuthorizationsV1TermsReviewPost(requestParameters.termsReview, options)

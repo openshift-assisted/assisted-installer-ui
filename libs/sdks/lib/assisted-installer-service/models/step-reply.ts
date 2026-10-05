@@ -14,42 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { StepType } from './step-type';
+import type { StepType } from './step-type';
 
-/**
- *
- * @export
- * @interface StepReply
- */
 export interface StepReply {
-  /**
-   *
-   * @type {string}
-   * @memberof StepReply
-   */
   error?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof StepReply
-   */
   exit_code?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof StepReply
-   */
   output?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof StepReply
-   */
   step_id?: string;
-  /**
-   *
-   * @type {StepType}
-   * @memberof StepReply
-   */
   step_type?: StepType;
 }

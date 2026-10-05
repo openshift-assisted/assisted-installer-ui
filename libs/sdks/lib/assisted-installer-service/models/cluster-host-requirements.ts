@@ -14,39 +14,20 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
+import type { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
 // May contain unused imports in some cases
 // @ts-ignore
-import { OperatorHostRequirements } from './operator-host-requirements';
+import type { OperatorHostRequirements } from './operator-host-requirements';
 
-/**
- *
- * @export
- * @interface ClusterHostRequirements
- */
 export interface ClusterHostRequirements {
   /**
    * Unique identifier of the host the requirements relate to.
-   * @type {string}
-   * @memberof ClusterHostRequirements
    */
   host_id?: string;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof ClusterHostRequirements
-   */
   ocp?: ClusterHostRequirementsDetails;
   /**
    * Host requirements related to requested operators
-   * @type {Array<OperatorHostRequirements>}
-   * @memberof ClusterHostRequirements
    */
   operators?: Array<OperatorHostRequirements>;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof ClusterHostRequirements
-   */
   total?: ClusterHostRequirementsDetails;
 }

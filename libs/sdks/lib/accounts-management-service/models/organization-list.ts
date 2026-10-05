@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Organization } from './organization';
+import type { Organization } from './organization';
 
 /**
  * @type OrganizationList
- * @export
  */
 export type OrganizationList = List;

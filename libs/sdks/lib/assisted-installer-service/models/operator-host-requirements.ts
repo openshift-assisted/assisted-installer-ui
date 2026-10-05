@@ -14,24 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
+import type { ClusterHostRequirementsDetails } from './cluster-host-requirements-details';
 
-/**
- *
- * @export
- * @interface OperatorHostRequirements
- */
 export interface OperatorHostRequirements {
   /**
    * Name of the operator
-   * @type {string}
-   * @memberof OperatorHostRequirements
    */
   operator_name?: string;
-  /**
-   *
-   * @type {ClusterHostRequirementsDetails}
-   * @memberof OperatorHostRequirements
-   */
   requirements?: ClusterHostRequirementsDetails;
 }

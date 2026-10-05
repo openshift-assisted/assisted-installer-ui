@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ClusterMetricsNodes
- */
 export interface ClusterMetricsNodes {
-  /**
-   *
-   * @type {string}
-   * @memberof ClusterMetricsNodes
-   */
   arch?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterMetricsNodes
-   */
   compute?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterMetricsNodes
-   */
   infra?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterMetricsNodes
-   */
   master?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof ClusterMetricsNodes
-   */
   total?: number;
 }

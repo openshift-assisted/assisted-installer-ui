@@ -12,54 +12,33 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface OperatorProperty
- */
 export interface OperatorProperty {
   /**
    * Type of the property
-   * @type {string}
-   * @memberof OperatorProperty
    */
   data_type?: OperatorPropertyDataTypeEnum;
   /**
    * Default value for the property
-   * @type {string}
-   * @memberof OperatorProperty
    */
   default_value?: string;
   /**
    * Description of a property
-   * @type {string}
-   * @memberof OperatorProperty
    */
   description?: string;
   /**
    * Indicates whether the property is reqired
-   * @type {boolean}
-   * @memberof OperatorProperty
    */
   mandatory?: boolean;
   /**
    * Name of the property
-   * @type {string}
-   * @memberof OperatorProperty
    */
   name?: string;
   /**
    * Values to select from
-   * @type {Array<string>}
-   * @memberof OperatorProperty
    */
   options?: Array<string>;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum OperatorPropertyDataTypeEnum {
   Boolean = 'boolean',
   String = 'string',

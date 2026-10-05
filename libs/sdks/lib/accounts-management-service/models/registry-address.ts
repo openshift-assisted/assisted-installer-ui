@@ -14,13 +14,8 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RegistryAddressValue } from './registry-address-value';
+import type { RegistryAddressValue } from './registry-address-value';
 
-/**
- *
- * @export
- * @interface RegistryAddress
- */
 export interface RegistryAddress {
   [key: string]: RegistryAddressValue;
 }

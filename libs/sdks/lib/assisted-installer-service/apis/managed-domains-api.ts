@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,16 +28,23 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { ListManagedDomains } from '../models';
+import type { ApiError } from '../models';
 // @ts-ignore
-import { ModelError } from '../models';
+import type { ListManagedDomains } from '../models';
 /**
  * ManagedDomainsApi - axios parameter creator
- * @export
  */
 export const ManagedDomainsApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -46,7 +53,7 @@ export const ManagedDomainsApiAxiosParamCreator = function (configuration?: Conf
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2ListManagedDomains: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    v2ListManagedDomains: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/v2/domains`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -61,6 +68,8 @@ export const ManagedDomainsApiAxiosParamCreator = function (configuration?: Conf
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -80,7 +89,6 @@ export const ManagedDomainsApiAxiosParamCreator = function (configuration?: Conf
 
 /**
  * ManagedDomainsApi - functional programming interface
- * @export
  */
 export const ManagedDomainsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ManagedDomainsApiAxiosParamCreator(configuration);
@@ -91,17 +99,26 @@ export const ManagedDomainsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async v2ListManagedDomains(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListManagedDomains>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListManagedDomains(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ManagedDomainsApi.v2ListManagedDomains']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * ManagedDomainsApi - factory interface
- * @export
  */
 export const ManagedDomainsApiFactory = function (
   configuration?: Configuration,
@@ -115,7 +132,7 @@ export const ManagedDomainsApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2ListManagedDomains(options?: AxiosRequestConfig): AxiosPromise<ListManagedDomains> {
+    v2ListManagedDomains(options?: RawAxiosRequestConfig): AxiosPromise<ListManagedDomains> {
       return localVarFp.v2ListManagedDomains(options).then((request) => request(axios, basePath));
     },
   };
@@ -123,18 +140,14 @@ export const ManagedDomainsApiFactory = function (
 
 /**
  * ManagedDomainsApi - object-oriented interface
- * @export
- * @class ManagedDomainsApi
- * @extends {BaseAPI}
  */
 export class ManagedDomainsApi extends BaseAPI {
   /**
    * List of managed DNS domains.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ManagedDomainsApi
    */
-  public v2ListManagedDomains(options?: AxiosRequestConfig) {
+  public v2ListManagedDomains(options?: RawAxiosRequestConfig) {
     return ManagedDomainsApiFp(this.configuration)
       .v2ListManagedDomains(options)
       .then((request) => request(this.axios, this.basePath));

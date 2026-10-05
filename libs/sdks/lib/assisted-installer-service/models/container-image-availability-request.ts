@@ -12,22 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ContainerImageAvailabilityRequest
- */
 export interface ContainerImageAvailabilityRequest {
   /**
    * List of image names to be checked.
-   * @type {Array<string>}
-   * @memberof ContainerImageAvailabilityRequest
    */
   images: Array<string>;
   /**
    * Positive number represents a timeout in seconds for a pull operation.
-   * @type {number}
-   * @memberof ContainerImageAvailabilityRequest
    */
   timeout?: number;
 }

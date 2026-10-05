@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { LandingPageLinkShape } from './landing-page-link-shape';
+import type { LandingPageLinkShape } from './landing-page-link-shape';
 
-/**
- *
- * @export
- * @interface LandingPageEstateItem
- */
 export interface LandingPageEstateItem {
-  /**
-   *
-   * @type {number}
-   * @memberof LandingPageEstateItem
-   */
   count?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof LandingPageEstateItem
-   */
   id?: string;
-  /**
-   *
-   * @type {LandingPageLinkShape}
-   * @memberof LandingPageEstateItem
-   */
   shape?: LandingPageLinkShape;
 }

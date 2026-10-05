@@ -14,24 +14,15 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { PlatformType } from './platform-type';
+import type { PlatformExternal } from './platform-external';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PlatformType } from './platform-type';
 
 /**
  * The configuration for the specific platform upon which to perform the installation.
- * @export
- * @interface Platform
  */
 export interface Platform {
-  /**
-   *
-   * @type {PlatformType}
-   * @memberof Platform
-   */
   type: PlatformType;
-  /**
-   * Used by the service to indicate that the platform-specific components are not included in OpenShift and must be provided as manifests separately.
-   * @type {boolean}
-   * @memberof Platform
-   */
-  is_external?: boolean;
+  external?: PlatformExternal;
 }

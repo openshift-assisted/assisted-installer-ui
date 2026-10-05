@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RegistryCredentialPatchRequest
- */
 export interface RegistryCredentialPatchRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryCredentialPatchRequest
-   */
   account_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryCredentialPatchRequest
-   */
   external_resource_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryCredentialPatchRequest
-   */
   registry_id?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryCredentialPatchRequest
-   */
   token?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegistryCredentialPatchRequest
-   */
   username?: string;
 }

@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ObjectReference } from './object-reference';
+import type { ObjectReference } from './object-reference';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Permission } from './permission';
+import type { Permission } from './permission';
 
 /**
  * @type Role
- * @export
  */
 export type Role = ObjectReference;

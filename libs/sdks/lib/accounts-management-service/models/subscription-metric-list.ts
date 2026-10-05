@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { SubscriptionMetric } from './subscription-metric';
+import type { SubscriptionMetric } from './subscription-metric';
 
 /**
  * @type SubscriptionMetricList
- * @export
  */
 export type SubscriptionMetricList = List;

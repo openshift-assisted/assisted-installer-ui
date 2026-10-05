@@ -14,30 +14,16 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HostTypeHardwareRequirementsWrapper } from './host-type-hardware-requirements-wrapper';
+import type { HostTypeHardwareRequirementsWrapper } from './host-type-hardware-requirements-wrapper';
 
-/**
- *
- * @export
- * @interface OperatorHardwareRequirements
- */
 export interface OperatorHardwareRequirements {
   /**
    * List of other operator unique names that are required to be installed. Corresponds to name property of the monitored-operator, i.e. \"lso\", \"cnv\", etc.
-   * @type {Array<string>}
-   * @memberof OperatorHardwareRequirements
    */
   dependencies?: Array<string>;
   /**
    * Unique name of the operator. Corresponds to name property of the monitored-operator, i.e. \"lso\", \"cnv\", etc.
-   * @type {string}
-   * @memberof OperatorHardwareRequirements
    */
   operator_name?: string;
-  /**
-   *
-   * @type {HostTypeHardwareRequirementsWrapper}
-   * @memberof OperatorHardwareRequirements
-   */
   requirements?: HostTypeHardwareRequirementsWrapper;
 }

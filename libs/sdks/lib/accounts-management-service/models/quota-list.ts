@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Quota } from './quota';
+import type { Quota } from './quota';
 
 /**
  * @type QuotaList
- * @export
  */
 export type QuotaList = List;

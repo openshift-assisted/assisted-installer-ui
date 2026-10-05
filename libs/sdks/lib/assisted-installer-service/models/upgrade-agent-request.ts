@@ -12,16 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface UpgradeAgentRequest
- */
 export interface UpgradeAgentRequest {
   /**
    * Full image reference of the image that the agent should upgrade to, for example `quay.io/registry-proxy.engineering.redhat.com/rh-osbs/openshift4-assisted-installer-agent-rhel8:v1.0.0-142`.
-   * @type {string}
-   * @memberof UpgradeAgentRequest
    */
   agent_image?: string;
 }

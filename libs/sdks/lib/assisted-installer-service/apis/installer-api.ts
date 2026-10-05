@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,82 +28,93 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  type RequestArgs,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from '../base';
 // @ts-ignore
-import { BindHostParams } from '../models';
+import type { ApiError } from '../models';
 // @ts-ignore
-import { Cluster } from '../models';
+import type { BindHostParams } from '../models';
 // @ts-ignore
-import { ClusterCreateParams } from '../models';
+import type { Cluster } from '../models';
 // @ts-ignore
-import { ClusterDefaultConfig } from '../models';
+import type { ClusterCreateParams } from '../models';
 // @ts-ignore
-import { ClusterList } from '../models';
+import type { ClusterDefaultConfig } from '../models';
 // @ts-ignore
-import { CompletionParams } from '../models';
+import type { ClusterFinalizingProgress } from '../models';
 // @ts-ignore
-import { Credentials } from '../models';
+import type { ClusterList } from '../models';
 // @ts-ignore
-import { FeatureSupportLevels } from '../models';
+import type { CompletionParams } from '../models';
 // @ts-ignore
-import { GetSupportedArchitectures200Response } from '../models';
+import type { Credentials } from '../models';
 // @ts-ignore
-import { GetSupportedFeatures200Response } from '../models';
+import type { DisconnectedClusterCreateParams } from '../models';
 // @ts-ignore
-import { Host } from '../models';
+import type { GetDetailedSupportedFeatures200Response } from '../models';
 // @ts-ignore
-import { HostCreateParams } from '../models';
+import type { GetSupportedArchitectures200Response } from '../models';
 // @ts-ignore
-import { HostIgnitionParams } from '../models';
+import type { GetSupportedFeatures200Response } from '../models';
 // @ts-ignore
-import { HostList } from '../models';
+import type { Host } from '../models';
 // @ts-ignore
-import { HostProgress } from '../models';
+import type { HostCreateParams } from '../models';
 // @ts-ignore
-import { HostRegistrationResponse } from '../models';
+import type { HostIgnitionParams } from '../models';
 // @ts-ignore
-import { HostUpdateParams } from '../models';
+import type { HostList } from '../models';
 // @ts-ignore
-import { IgnoredValidations } from '../models';
+import type { HostProgress } from '../models';
 // @ts-ignore
-import { ImportClusterParams } from '../models';
+import type { HostRegistrationResponse } from '../models';
 // @ts-ignore
-import { InfraEnv } from '../models';
+import type { HostUpdateParams } from '../models';
 // @ts-ignore
-import { InfraEnvCreateParams } from '../models';
+import type { IgnoredValidations } from '../models';
 // @ts-ignore
-import { InfraEnvList } from '../models';
+import type { ImportClusterParams } from '../models';
 // @ts-ignore
-import { InfraEnvUpdateParams } from '../models';
+import type { InfraEnv } from '../models';
 // @ts-ignore
-import { InfraError } from '../models';
+import type { InfraEnvCreateParams } from '../models';
 // @ts-ignore
-import { InstallerArgsParams } from '../models';
+import type { InfraEnvList } from '../models';
 // @ts-ignore
-import { LogsProgressParams } from '../models';
+import type { InfraEnvUpdateParams } from '../models';
 // @ts-ignore
-import { ModelError } from '../models';
+import type { InfraError } from '../models';
 // @ts-ignore
-import { MonitoredOperatorsList } from '../models';
+import type { InstallerArgsParams } from '../models';
 // @ts-ignore
-import { OperatorMonitorReport } from '../models';
+import type { LogsProgressParams } from '../models';
 // @ts-ignore
-import { PlatformType } from '../models';
+import type { MonitoredOperatorsList } from '../models';
 // @ts-ignore
-import { PreflightHardwareRequirements } from '../models';
+import type { OperatorMonitorReport } from '../models';
 // @ts-ignore
-import { PresignedUrl } from '../models';
+import type { PlatformType } from '../models';
 // @ts-ignore
-import { StepReply } from '../models';
+import type { PreflightHardwareRequirements } from '../models';
 // @ts-ignore
-import { Steps } from '../models';
+import type { PresignedUrl } from '../models';
 // @ts-ignore
-import { V2ClusterUpdateParams } from '../models';
+import type { StepReply } from '../models';
+// @ts-ignore
+import type { Steps } from '../models';
+// @ts-ignore
+import type { V2ClusterUpdateParams } from '../models';
 /**
  * InstallerApi - axios parameter creator
- * @export
  */
 export const InstallerApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -119,7 +130,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       hostId: string,
       bindHostParams: BindHostParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('bindHost', 'infraEnvId', infraEnvId);
@@ -128,8 +139,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // verify required parameter 'bindHostParams' is not null or undefined
       assertParamExists('bindHost', 'bindHostParams', bindHostParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/bind`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -145,6 +156,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -172,12 +184,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     deregisterInfraEnv: async (
       infraEnvId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('deregisterInfraEnv', 'infraEnvId', infraEnvId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -193,6 +205,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -215,12 +229,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     downloadMinimalInitrd: async (
       infraEnvId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('downloadMinimalInitrd', 'infraEnvId', infraEnvId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/downloads/minimal-initrd`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -243,6 +257,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication imageAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Image-Token', configuration);
 
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -257,19 +273,20 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       };
     },
     /**
-     * A list of platforms that this cluster can support in its current configuration.
+     * Deprecated. Returns a list of platforms that this cluster can support in its current configuration. Prefer deriving platform eligibility from cluster hosts and inventory together with GET /v2/support-levels/features (or GET /v2/support-levels/features/detailed) for the cluster OpenShift version and CPU architecture.
      * @param {string} clusterId The cluster whose platform types should be retrieved.
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     getClusterSupportedPlatforms: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('getClusterSupportedPlatforms', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/supported-platforms`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -285,6 +302,72 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * Retrieves detailed features information including support level, incompatibilities, and operator dependencies.
+     * @param {string} openshiftVersion Version of the OpenShift cluster.
+     * @param {GetDetailedSupportedFeaturesCpuArchitectureEnum} [cpuArchitecture] The CPU architecture of the image (x86_64/arm64/etc).
+     * @param {GetDetailedSupportedFeaturesPlatformTypeEnum} [platformType] The provider platform type.
+     * @param {string} [externalPlatformName] External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getDetailedSupportedFeatures: async (
+      openshiftVersion: string,
+      cpuArchitecture?: GetDetailedSupportedFeaturesCpuArchitectureEnum,
+      platformType?: GetDetailedSupportedFeaturesPlatformTypeEnum,
+      externalPlatformName?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'openshiftVersion' is not null or undefined
+      assertParamExists('getDetailedSupportedFeatures', 'openshiftVersion', openshiftVersion);
+      const localVarPath = `/v2/support-levels/features/detailed`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication userAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      if (openshiftVersion !== undefined) {
+        localVarQueryParameter['openshift_version'] = openshiftVersion;
+      }
+
+      if (cpuArchitecture !== undefined) {
+        localVarQueryParameter['cpu_architecture'] = cpuArchitecture;
+      }
+
+      if (platformType !== undefined) {
+        localVarQueryParameter['platform_type'] = platformType;
+      }
+
+      if (externalPlatformName !== undefined) {
+        localVarQueryParameter['external_platform_name'] = externalPlatformName;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -307,12 +390,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     getInfraEnv: async (
       infraEnvId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('getInfraEnv', 'infraEnvId', infraEnvId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -341,6 +424,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -362,12 +447,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     getInfraEnvDownloadURL: async (
       infraEnvId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('getInfraEnvDownloadURL', 'infraEnvId', infraEnvId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/downloads/image-url`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -383,6 +468,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -409,14 +496,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       fileName: GetInfraEnvPresignedFileURLFileNameEnum,
       ipxeScriptType?: GetInfraEnvPresignedFileURLIpxeScriptTypeEnum,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('getInfraEnvPresignedFileURL', 'infraEnvId', infraEnvId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('getInfraEnvPresignedFileURL', 'fileName', fileName);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/downloads/files-presigned`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -441,6 +528,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['ipxe_script_type'] = ipxeScriptType;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -462,7 +551,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     getSupportedArchitectures: async (
       openshiftVersion: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'openshiftVersion' is not null or undefined
       assertParamExists('getSupportedArchitectures', 'openshiftVersion', openshiftVersion);
@@ -485,6 +574,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['openshift_version'] = openshiftVersion;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -502,13 +593,17 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      * Retrieves the features support levels for each OpenShift version.
      * @param {string} openshiftVersion Version of the OpenShift cluster.
      * @param {GetSupportedFeaturesCpuArchitectureEnum} [cpuArchitecture] The CPU architecture of the image (x86_64/arm64/etc).
+     * @param {GetSupportedFeaturesPlatformTypeEnum} [platformType] The provider platform type.
+     * @param {string} [externalPlatformName] External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getSupportedFeatures: async (
       openshiftVersion: string,
       cpuArchitecture?: GetSupportedFeaturesCpuArchitectureEnum,
-      options: AxiosRequestConfig = {},
+      platformType?: GetSupportedFeaturesPlatformTypeEnum,
+      externalPlatformName?: string,
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'openshiftVersion' is not null or undefined
       assertParamExists('getSupportedFeatures', 'openshiftVersion', openshiftVersion);
@@ -534,6 +629,16 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       if (cpuArchitecture !== undefined) {
         localVarQueryParameter['cpu_architecture'] = cpuArchitecture;
       }
+
+      if (platformType !== undefined) {
+        localVarQueryParameter['platform_type'] = platformType;
+      }
+
+      if (externalPlatformName !== undefined) {
+        localVarQueryParameter['external_platform_name'] = externalPlatformName;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -564,12 +669,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       status?: string,
       withInventory?: boolean,
       withConnectivity?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('listClusterHosts', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/hosts`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -605,6 +710,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['with-connectivity'] = withConnectivity;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -628,7 +735,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     listInfraEnvs: async (
       clusterId?: string,
       owner?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/v2/infra-envs`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -642,6 +749,9 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication watcherAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Watcher-Authorization', configuration);
+
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
@@ -652,6 +762,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       if (owner !== undefined) {
         localVarQueryParameter['owner'] = owner;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -674,12 +786,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     regenerateInfraEnvSigningKey: async (
       infraEnvId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('regenerateInfraEnvSigningKey', 'infraEnvId', infraEnvId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/regenerate-signing-key`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -695,6 +807,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -717,7 +831,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     registerInfraEnv: async (
       infraenvCreateParams: InfraEnvCreateParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraenvCreateParams' is not null or undefined
       assertParamExists('registerInfraEnv', 'infraenvCreateParams', infraenvCreateParams);
@@ -737,6 +851,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -764,12 +879,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     transformClusterToAddingHosts: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('transformClusterToAddingHosts', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/actions/allow-add-hosts`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -785,6 +900,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -808,12 +925,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     transformClusterToDay2: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('transformClusterToDay2', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/actions/allow-add-workers`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -829,6 +946,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -853,15 +972,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     unbindHost: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('unbindHost', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('unbindHost', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/unbind`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -875,6 +994,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -899,14 +1020,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     updateInfraEnv: async (
       infraEnvId: string,
       infraEnvUpdateParams: InfraEnvUpdateParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('updateInfraEnv', 'infraEnvId', infraEnvId);
       // verify required parameter 'infraEnvUpdateParams' is not null or undefined
       assertParamExists('updateInfraEnv', 'infraEnvUpdateParams', infraEnvUpdateParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -924,6 +1045,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -951,12 +1073,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2CancelInstallation: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2CancelInstallation', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/actions/cancel`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -972,6 +1094,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -998,14 +1122,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       clusterId: string,
       completionParams: CompletionParams,
       discoveryAgentVersion?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2CompleteInstallation', 'clusterId', clusterId);
       // verify required parameter 'completionParams' is not null or undefined
       assertParamExists('v2CompleteInstallation', 'completionParams', completionParams);
       const localVarPath = `/v2/clusters/{cluster_id}/actions/complete-installation`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1022,12 +1146,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1054,12 +1178,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2DeregisterCluster: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2DeregisterCluster', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1075,6 +1199,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1099,15 +1225,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2DeregisterHost: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2DeregisterHost', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2DeregisterHost', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1121,6 +1247,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1145,14 +1273,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2DownloadClusterCredentials: async (
       clusterId: string,
       fileName: V2DownloadClusterCredentialsFileNameEnum,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2DownloadClusterCredentials', 'clusterId', clusterId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2DownloadClusterCredentials', 'fileName', fileName);
       const localVarPath = `/v2/clusters/{cluster_id}/downloads/credentials`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1166,9 +1294,6 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication urlAuth required
-      await setApiKeyToObject(localVarQueryParameter, 'api_key', configuration);
-
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
@@ -1178,6 +1303,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       if (fileName !== undefined) {
         localVarQueryParameter['file_name'] = fileName;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1204,14 +1331,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       clusterId: string,
       fileName: V2DownloadClusterFilesFileNameEnum,
       discoveryAgentVersion?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2DownloadClusterFiles', 'clusterId', clusterId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2DownloadClusterFiles', 'fileName', fileName);
       const localVarPath = `/v2/clusters/{cluster_id}/downloads/files`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1238,10 +1365,11 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['file_name'] = fileName;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1267,12 +1395,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       clusterId: string,
       logsType?: V2DownloadClusterLogsLogsTypeEnum,
       hostId?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2DownloadClusterLogs', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/logs`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1300,6 +1428,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['host_id'] = hostId;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1323,15 +1453,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2DownloadHostIgnition: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2DownloadHostIgnition', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2DownloadHostIgnition', 'hostId', hostId);
       const localVarPath = `/v2/infra-env/{infra_env_id}/hosts/{host_id}/downloads/ignition`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1348,6 +1478,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1368,7 +1500,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      * @param {V2DownloadInfraEnvFilesFileNameEnum} fileName The file to be downloaded.
      * @param {string} [mac] Mac address of the host running ipxe script.
      * @param {V2DownloadInfraEnvFilesIpxeScriptTypeEnum} [ipxeScriptType] Specify the script type to be served for iPXE.
-     * @param {V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum} [discoveryIsoType] Overrides the ISO type for the disovery ignition, either \&#39;full-iso\&#39; or \&#39;minimal-iso\&#39;.
+     * @param {V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum} [discoveryIsoType] Overrides the ISO type for the discovery ignition.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1378,14 +1510,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       mac?: string,
       ipxeScriptType?: V2DownloadInfraEnvFilesIpxeScriptTypeEnum,
       discoveryIsoType?: V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2DownloadInfraEnvFiles', 'infraEnvId', infraEnvId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2DownloadInfraEnvFiles', 'fileName', fileName);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/downloads/files`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1430,6 +1562,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['discovery_iso_type'] = discoveryIsoType;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/octet-stream';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1457,12 +1591,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       discoveryAgentVersion?: string,
       getUnregisteredClusters?: boolean,
       excludeHosts?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetCluster', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1476,6 +1610,9 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication watcherAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Watcher-Authorization', configuration);
+
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
@@ -1486,17 +1623,17 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['exclude-hosts'] = excludeHosts;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
       if (getUnregisteredClusters != null) {
         localVarHeaderParameter['get_unregistered_clusters'] =
           typeof getUnregisteredClusters === 'string'
             ? getUnregisteredClusters
-            : JSON.stringify(getUnregisteredClusters);
+            : JSON.stringify(getUnregisteredClusters, replaceWithSerializableTypeIfNeeded);
       }
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1515,7 +1652,9 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2GetClusterDefaultConfig: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    v2GetClusterDefaultConfig: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
       const localVarPath = `/v2/clusters/default-config`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1530,6 +1669,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1552,12 +1693,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2GetClusterInstallConfig: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetClusterInstallConfig', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/install-config`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1573,6 +1714,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1595,12 +1738,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2GetClusterUISettings: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetClusterUISettings', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/ui-settings`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1616,6 +1759,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1638,12 +1783,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2GetCredentials: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetCredentials', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/credentials`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1659,6 +1804,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1683,15 +1830,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2GetHost: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2GetHost', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2GetHost', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1705,6 +1852,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1729,15 +1878,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2GetHostIgnition: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2GetHostIgnition', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2GetHostIgnition', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/ignition`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1751,6 +1900,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1773,12 +1924,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2GetIgnoredValidations: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetIgnoredValidations', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/ignored-validations`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1794,6 +1945,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1822,15 +1975,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       hostId: string,
       timestamp?: number,
       discoveryAgentVersion?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2GetNextSteps', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2GetNextSteps', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/instructions`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1849,10 +2002,11 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['timestamp'] = timestamp;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -1874,12 +2028,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2GetPreflightRequirements: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetPreflightRequirements', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/preflight-requirements`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1895,6 +2049,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1919,14 +2075,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2GetPresignedForClusterCredentials: async (
       clusterId: string,
       fileName: V2GetPresignedForClusterCredentialsFileNameEnum,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetPresignedForClusterCredentials', 'clusterId', clusterId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2GetPresignedForClusterCredentials', 'fileName', fileName);
       const localVarPath = `/v2/clusters/{cluster_id}/downloads/credentials-presigned`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1946,6 +2102,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       if (fileName !== undefined) {
         localVarQueryParameter['file_name'] = fileName;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1976,14 +2134,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       logsType?: V2GetPresignedForClusterFilesLogsTypeEnum,
       hostId?: string,
       additionalName?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2GetPresignedForClusterFiles', 'clusterId', clusterId);
       // verify required parameter 'fileName' is not null or undefined
       assertParamExists('v2GetPresignedForClusterFiles', 'fileName', fileName);
       const localVarPath = `/v2/clusters/{cluster_id}/downloads/files-presigned`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2016,6 +2174,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['additional_name'] = additionalName;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2037,7 +2197,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2ImportCluster: async (
       newImportClusterParams: ImportClusterParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'newImportClusterParams' is not null or undefined
       assertParamExists('v2ImportCluster', 'newImportClusterParams', newImportClusterParams);
@@ -2057,6 +2217,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2084,12 +2245,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2InstallCluster: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2InstallCluster', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/actions/install`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2105,6 +2266,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2129,15 +2292,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2InstallHost: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2InstallHost', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2InstallHost', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/install`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2151,6 +2314,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2181,7 +2346,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       amsSubscriptionIds?: Array<string>,
       withHosts?: boolean,
       owner?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/v2/clusters`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2194,6 +2359,9 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication watcherAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Watcher-Authorization', configuration);
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
@@ -2216,48 +2384,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
         localVarQueryParameter['owner'] = owner;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (getUnregisteredClusters != null) {
         localVarHeaderParameter['get_unregistered_clusters'] =
           typeof getUnregisteredClusters === 'string'
             ? getUnregisteredClusters
-            : JSON.stringify(getUnregisteredClusters);
+            : JSON.stringify(getUnregisteredClusters, replaceWithSerializableTypeIfNeeded);
       }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     * (DEPRECATED) Retrieves the support levels for features for each OpenShift version.
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    v2ListFeatureSupportLevels: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/v2/feature-support-levels`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      // authentication userAuth required
-      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2279,12 +2413,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2ListHosts: async (
       infraEnvId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2ListHosts', 'infraEnvId', infraEnvId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2303,6 +2437,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2327,12 +2463,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2ListOfClusterOperators: async (
       clusterId: string,
       operatorName?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2ListOfClusterOperators', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/monitored-operators`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2352,6 +2488,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       if (operatorName !== undefined) {
         localVarQueryParameter['operator_name'] = operatorName;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2380,15 +2518,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       hostId: string,
       discoveryAgentVersion?: string,
       reply?: StepReply,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2PostStepReply', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2PostStepReply', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/instructions`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2403,12 +2541,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2435,7 +2573,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2RegisterCluster: async (
       newClusterParams: ClusterCreateParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'newClusterParams' is not null or undefined
       assertParamExists('v2RegisterCluster', 'newClusterParams', newClusterParams);
@@ -2455,6 +2593,55 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        newClusterParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * Create a disconnected OpenShift cluster for offline installation with embedded ignition
+     * @param {DisconnectedClusterCreateParams} newClusterParams Parameters for creating a disconnected cluster.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2RegisterDisconnectedCluster: async (
+      newClusterParams: DisconnectedClusterCreateParams,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'newClusterParams' is not null or undefined
+      assertParamExists('v2RegisterDisconnectedCluster', 'newClusterParams', newClusterParams);
+      const localVarPath = `/v2/clusters/disconnected`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication userAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2486,14 +2673,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       newHostParams: HostCreateParams,
       discoveryAgentVersion?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2RegisterHost', 'infraEnvId', infraEnvId);
       // verify required parameter 'newHostParams' is not null or undefined
       assertParamExists('v2RegisterHost', 'newHostParams', newHostParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts`.replace(
-        `{${'infra_env_id'}}`,
+        '{infra_env_id}',
         encodeURIComponent(String(infraEnvId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2510,12 +2697,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -2544,14 +2731,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2ReportMonitoredOperatorStatus: async (
       clusterId: string,
       reportParams: OperatorMonitorReport,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2ReportMonitoredOperatorStatus', 'clusterId', clusterId);
       // verify required parameter 'reportParams' is not null or undefined
       assertParamExists('v2ReportMonitoredOperatorStatus', 'reportParams', reportParams);
       const localVarPath = `/v2/clusters/{cluster_id}/monitored-operators`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2569,6 +2756,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2596,12 +2784,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
      */
     v2ResetCluster: async (
       clusterId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2ResetCluster', 'clusterId', clusterId);
       const localVarPath = `/v2/clusters/{cluster_id}/actions/reset`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2617,6 +2805,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2641,15 +2831,15 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2ResetHost: async (
       infraEnvId: string,
       hostId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2ResetHost', 'infraEnvId', infraEnvId);
       // verify required parameter 'hostId' is not null or undefined
       assertParamExists('v2ResetHost', 'hostId', hostId);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/reset`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2663,6 +2853,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2690,7 +2882,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       hostId: string,
       validationId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2ResetHostValidation', 'infraEnvId', infraEnvId);
@@ -2700,9 +2892,9 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       assertParamExists('v2ResetHostValidation', 'validationId', validationId);
       const localVarPath =
         `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/reset-validation/{validation_id}`
-          .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-          .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)))
-          .replace(`{${'validation_id'}}`, encodeURIComponent(String(validationId)));
+          .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+          .replace('{host_id}', encodeURIComponent(String(hostId)))
+          .replace('{validation_id}', encodeURIComponent(String(validationId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2716,6 +2908,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
       // authentication userAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2740,14 +2934,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2SetIgnoredValidations: async (
       clusterId: string,
       ignoredValidations: IgnoredValidations,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2SetIgnoredValidations', 'clusterId', clusterId);
       // verify required parameter 'ignoredValidations' is not null or undefined
       assertParamExists('v2SetIgnoredValidations', 'ignoredValidations', ignoredValidations);
       const localVarPath = `/v2/clusters/{cluster_id}/ignored-validations`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2765,6 +2959,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2794,14 +2989,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2UpdateCluster: async (
       clusterId: string,
       clusterUpdateParams: V2ClusterUpdateParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UpdateCluster', 'clusterId', clusterId);
       // verify required parameter 'clusterUpdateParams' is not null or undefined
       assertParamExists('v2UpdateCluster', 'clusterUpdateParams', clusterUpdateParams);
       const localVarPath = `/v2/clusters/{cluster_id}`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2819,6 +3014,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2839,6 +3035,65 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       };
     },
     /**
+     * Update installation finalizing progress.
+     * @param {string} clusterId The cluster being updated.
+     * @param {ClusterFinalizingProgress} finalizingProgress New progress value.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2UpdateClusterFinalizingProgress: async (
+      clusterId: string,
+      finalizingProgress: ClusterFinalizingProgress,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'clusterId' is not null or undefined
+      assertParamExists('v2UpdateClusterFinalizingProgress', 'clusterId', clusterId);
+      // verify required parameter 'finalizingProgress' is not null or undefined
+      assertParamExists(
+        'v2UpdateClusterFinalizingProgress',
+        'finalizingProgress',
+        finalizingProgress,
+      );
+      const localVarPath = `/v2/clusters/{cluster_id}/progress`.replace(
+        '{cluster_id}',
+        encodeURIComponent(String(clusterId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication agentAuth required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        finalizingProgress,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * Override values in the install config.
      * @param {string} clusterId The cluster whose install config is being updated.
      * @param {string} installConfigParams Install config overrides.
@@ -2848,14 +3103,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2UpdateClusterInstallConfig: async (
       clusterId: string,
       installConfigParams: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UpdateClusterInstallConfig', 'clusterId', clusterId);
       // verify required parameter 'installConfigParams' is not null or undefined
       assertParamExists('v2UpdateClusterInstallConfig', 'installConfigParams', installConfigParams);
       const localVarPath = `/v2/clusters/{cluster_id}/install-config`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2873,6 +3128,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2902,14 +3158,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2UpdateClusterLogsProgress: async (
       clusterId: string,
       logsProgressParams: LogsProgressParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UpdateClusterLogsProgress', 'clusterId', clusterId);
       // verify required parameter 'logsProgressParams' is not null or undefined
       assertParamExists('v2UpdateClusterLogsProgress', 'logsProgressParams', logsProgressParams);
       const localVarPath = `/v2/clusters/{cluster_id}/logs-progress`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2927,6 +3183,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2956,14 +3213,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
     v2UpdateClusterUISettings: async (
       clusterId: string,
       uiSettings: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UpdateClusterUISettings', 'clusterId', clusterId);
       // verify required parameter 'uiSettings' is not null or undefined
       assertParamExists('v2UpdateClusterUISettings', 'uiSettings', uiSettings);
       const localVarPath = `/v2/clusters/{cluster_id}/ui-settings`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2981,6 +3238,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3012,7 +3270,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       hostId: string,
       hostUpdateParams: HostUpdateParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2UpdateHost', 'infraEnvId', infraEnvId);
@@ -3021,8 +3279,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // verify required parameter 'hostUpdateParams' is not null or undefined
       assertParamExists('v2UpdateHost', 'hostUpdateParams', hostUpdateParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3038,6 +3296,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3069,7 +3328,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       hostId: string,
       hostIgnitionParams: HostIgnitionParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2UpdateHostIgnition', 'infraEnvId', infraEnvId);
@@ -3078,8 +3337,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // verify required parameter 'hostIgnitionParams' is not null or undefined
       assertParamExists('v2UpdateHostIgnition', 'hostIgnitionParams', hostIgnitionParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/ignition`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3095,6 +3354,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3128,7 +3388,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       hostId: string,
       hostProgress: HostProgress,
       discoveryAgentVersion?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2UpdateHostInstallProgress', 'infraEnvId', infraEnvId);
@@ -3137,8 +3397,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // verify required parameter 'hostProgress' is not null or undefined
       assertParamExists('v2UpdateHostInstallProgress', 'hostProgress', hostProgress);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/progress`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3153,12 +3413,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -3189,7 +3449,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       hostId: string,
       installerArgsParams: InstallerArgsParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2UpdateHostInstallerArgs', 'infraEnvId', infraEnvId);
@@ -3198,8 +3458,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // verify required parameter 'installerArgsParams' is not null or undefined
       assertParamExists('v2UpdateHostInstallerArgs', 'installerArgsParams', installerArgsParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/installer-args`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3215,6 +3475,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'Authorization', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3246,7 +3507,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId: string,
       hostId: string,
       logsProgressParams: LogsProgressParams,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'infraEnvId' is not null or undefined
       assertParamExists('v2UpdateHostLogsProgress', 'infraEnvId', infraEnvId);
@@ -3255,8 +3516,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // verify required parameter 'logsProgressParams' is not null or undefined
       assertParamExists('v2UpdateHostLogsProgress', 'logsProgressParams', logsProgressParams);
       const localVarPath = `/v2/infra-envs/{infra_env_id}/hosts/{host_id}/logs-progress`
-        .replace(`{${'infra_env_id'}}`, encodeURIComponent(String(infraEnvId)))
-        .replace(`{${'host_id'}}`, encodeURIComponent(String(hostId)));
+        .replace('{infra_env_id}', encodeURIComponent(String(infraEnvId)))
+        .replace('{host_id}', encodeURIComponent(String(hostId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3272,6 +3533,7 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3303,14 +3565,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       clusterId: string,
       ingressCertParams: string,
       discoveryAgentVersion?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UploadClusterIngressCert', 'clusterId', clusterId);
       // verify required parameter 'ingressCertParams' is not null or undefined
       assertParamExists('v2UploadClusterIngressCert', 'ingressCertParams', ingressCertParams);
       const localVarPath = `/v2/clusters/{cluster_id}/uploads/ingress-cert`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3327,12 +3589,12 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       // authentication agentAuth required
       await setApiKeyToObject(localVarHeaderParameter, 'X-Secret-Key', configuration);
 
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       if (discoveryAgentVersion != null) {
         localVarHeaderParameter['discovery_agent_version'] = String(discoveryAgentVersion);
       }
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {
@@ -3367,14 +3629,14 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       infraEnvId?: string,
       hostId?: string,
       upfile?: File,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'clusterId' is not null or undefined
       assertParamExists('v2UploadLogs', 'clusterId', clusterId);
       // verify required parameter 'logsType' is not null or undefined
       assertParamExists('v2UploadLogs', 'logsType', logsType);
       const localVarPath = `/v2/clusters/{cluster_id}/logs`.replace(
-        `{${'cluster_id'}}`,
+        '{cluster_id}',
         encodeURIComponent(String(clusterId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3407,8 +3669,8 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
       if (upfile !== undefined) {
         localVarFormParams.append('upfile', upfile as any);
       }
-
       localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3429,7 +3691,6 @@ export const InstallerApiAxiosParamCreator = function (configuration?: Configura
 
 /**
  * InstallerApi - functional programming interface
- * @export
  */
 export const InstallerApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = InstallerApiAxiosParamCreator(configuration);
@@ -3446,7 +3707,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       hostId: string,
       bindHostParams: BindHostParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.bindHost(
         infraEnvId,
@@ -3454,7 +3715,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         bindHostParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.bindHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Deletes an infra-env.
@@ -3464,13 +3734,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async deregisterInfraEnv(
       infraEnvId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deregisterInfraEnv(
         infraEnvId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.deregisterInfraEnv']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get the initial ramdisk for minimal ISO based installations.
@@ -3480,29 +3759,92 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async downloadMinimalInitrd(
       infraEnvId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.downloadMinimalInitrd(
         infraEnvId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.downloadMinimalInitrd']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
-     * A list of platforms that this cluster can support in its current configuration.
+     * Deprecated. Returns a list of platforms that this cluster can support in its current configuration. Prefer deriving platform eligibility from cluster hosts and inventory together with GET /v2/support-levels/features (or GET /v2/support-levels/features/detailed) for the cluster OpenShift version and CPU architecture.
      * @param {string} clusterId The cluster whose platform types should be retrieved.
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async getClusterSupportedPlatforms(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PlatformType>>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getClusterSupportedPlatforms(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getClusterSupportedPlatforms']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     * Retrieves detailed features information including support level, incompatibilities, and operator dependencies.
+     * @param {string} openshiftVersion Version of the OpenShift cluster.
+     * @param {GetDetailedSupportedFeaturesCpuArchitectureEnum} [cpuArchitecture] The CPU architecture of the image (x86_64/arm64/etc).
+     * @param {GetDetailedSupportedFeaturesPlatformTypeEnum} [platformType] The provider platform type.
+     * @param {string} [externalPlatformName] External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getDetailedSupportedFeatures(
+      openshiftVersion: string,
+      cpuArchitecture?: GetDetailedSupportedFeaturesCpuArchitectureEnum,
+      platformType?: GetDetailedSupportedFeaturesPlatformTypeEnum,
+      externalPlatformName?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetDetailedSupportedFeatures200Response>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getDetailedSupportedFeatures(
+        openshiftVersion,
+        cpuArchitecture,
+        platformType,
+        externalPlatformName,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getDetailedSupportedFeatures']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the details of the infra-env.
@@ -3512,10 +3854,19 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async getInfraEnv(
       infraEnvId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InfraEnv>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getInfraEnv(infraEnvId, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getInfraEnv']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Creates a new pre-signed image download URL for the infra-env.
@@ -3525,13 +3876,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async getInfraEnvDownloadURL(
       infraEnvId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PresignedUrl>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getInfraEnvDownloadURL(
         infraEnvId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getInfraEnvDownloadURL']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Creates a new pre-signed download URL for the infra-env.
@@ -3545,7 +3906,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       fileName: GetInfraEnvPresignedFileURLFileNameEnum,
       ipxeScriptType?: GetInfraEnvPresignedFileURLIpxeScriptTypeEnum,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PresignedUrl>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getInfraEnvPresignedFileURL(
         infraEnvId,
@@ -3553,7 +3914,18 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         ipxeScriptType,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getInfraEnvPresignedFileURL']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the architecture support-levels for each OpenShift version.
@@ -3563,7 +3935,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async getSupportedArchitectures(
       openshiftVersion: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -3574,28 +3946,54 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         openshiftVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getSupportedArchitectures']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the features support levels for each OpenShift version.
      * @param {string} openshiftVersion Version of the OpenShift cluster.
      * @param {GetSupportedFeaturesCpuArchitectureEnum} [cpuArchitecture] The CPU architecture of the image (x86_64/arm64/etc).
+     * @param {GetSupportedFeaturesPlatformTypeEnum} [platformType] The provider platform type.
+     * @param {string} [externalPlatformName] External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getSupportedFeatures(
       openshiftVersion: string,
       cpuArchitecture?: GetSupportedFeaturesCpuArchitectureEnum,
-      options?: AxiosRequestConfig,
+      platformType?: GetSupportedFeaturesPlatformTypeEnum,
+      externalPlatformName?: string,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSupportedFeatures200Response>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getSupportedFeatures(
         openshiftVersion,
         cpuArchitecture,
+        platformType,
+        externalPlatformName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.getSupportedFeatures']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get a list of cluster hosts according to supplied filters.
@@ -3613,7 +4011,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       status?: string,
       withInventory?: boolean,
       withConnectivity?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HostList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.listClusterHosts(
         clusterId,
@@ -3623,7 +4021,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         withConnectivity,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.listClusterHosts']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the list of infra-envs.
@@ -3635,14 +4042,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async listInfraEnvs(
       clusterId?: string,
       owner?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InfraEnvList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.listInfraEnvs(
         clusterId,
         owner,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.listInfraEnvs']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Regenerate InfraEnv token signing key.
@@ -3652,13 +4068,24 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async regenerateInfraEnvSigningKey(
       infraEnvId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.regenerateInfraEnvSigningKey(
         infraEnvId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.regenerateInfraEnvSigningKey']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Creates a new OpenShift Discovery ISO.
@@ -3668,13 +4095,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async registerInfraEnv(
       infraenvCreateParams: InfraEnvCreateParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InfraEnv>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.registerInfraEnv(
         infraenvCreateParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.registerInfraEnv']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Transforms installed cluster to a state which allows adding hosts.
@@ -3684,13 +4120,24 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async transformClusterToAddingHosts(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.transformClusterToAddingHosts(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.transformClusterToAddingHosts']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Deprecated, maintained for legacy purposes. Does the same thing as allow-add-hosts. Use allow-add-hosts instead.
@@ -3701,13 +4148,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async transformClusterToDay2(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.transformClusterToDay2(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.transformClusterToDay2']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Unbind host to a cluster
@@ -3719,14 +4176,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async unbindHost(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.unbindHost(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.unbindHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Updates an infra-env.
@@ -3738,14 +4204,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async updateInfraEnv(
       infraEnvId: string,
       infraEnvUpdateParams: InfraEnvUpdateParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InfraEnv>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateInfraEnv(
         infraEnvId,
         infraEnvUpdateParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.updateInfraEnv']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Cancels an ongoing installation.
@@ -3755,13 +4230,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2CancelInstallation(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2CancelInstallation(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2CancelInstallation']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Agent API to mark a finalizing installation as complete and progress to 100%.
@@ -3775,7 +4260,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       clusterId: string,
       completionParams: CompletionParams,
       discoveryAgentVersion?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2CompleteInstallation(
         clusterId,
@@ -3783,7 +4268,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryAgentVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2CompleteInstallation']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Deletes an OpenShift cluster definition.
@@ -3793,13 +4288,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2DeregisterCluster(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DeregisterCluster(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DeregisterCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Deregisters an OpenShift host.
@@ -3811,14 +4315,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2DeregisterHost(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DeregisterHost(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DeregisterHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Downloads credentials relating to the installed/installing cluster.
@@ -3830,14 +4343,25 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2DownloadClusterCredentials(
       clusterId: string,
       fileName: V2DownloadClusterCredentialsFileNameEnum,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DownloadClusterCredentials(
         clusterId,
         fileName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DownloadClusterCredentials']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Downloads files relating to the installed/installing cluster.
@@ -3851,7 +4375,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       clusterId: string,
       fileName: V2DownloadClusterFilesFileNameEnum,
       discoveryAgentVersion?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DownloadClusterFiles(
         clusterId,
@@ -3859,7 +4383,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryAgentVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DownloadClusterFiles']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Download cluster logs.
@@ -3873,7 +4407,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       clusterId: string,
       logsType?: V2DownloadClusterLogsLogsTypeEnum,
       hostId?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DownloadClusterLogs(
         clusterId,
@@ -3881,7 +4415,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DownloadClusterLogs']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Downloads the customized ignition file for this bound host, produces octet stream. For unbound host - error is returned
@@ -3893,14 +4437,24 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2DownloadHostIgnition(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DownloadHostIgnition(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DownloadHostIgnition']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Downloads the customized ignition file for this host
@@ -3908,7 +4462,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      * @param {V2DownloadInfraEnvFilesFileNameEnum} fileName The file to be downloaded.
      * @param {string} [mac] Mac address of the host running ipxe script.
      * @param {V2DownloadInfraEnvFilesIpxeScriptTypeEnum} [ipxeScriptType] Specify the script type to be served for iPXE.
-     * @param {V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum} [discoveryIsoType] Overrides the ISO type for the disovery ignition, either \&#39;full-iso\&#39; or \&#39;minimal-iso\&#39;.
+     * @param {V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum} [discoveryIsoType] Overrides the ISO type for the discovery ignition.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3918,7 +4472,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       mac?: string,
       ipxeScriptType?: V2DownloadInfraEnvFilesIpxeScriptTypeEnum,
       discoveryIsoType?: V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2DownloadInfraEnvFiles(
         infraEnvId,
@@ -3928,7 +4482,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryIsoType,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2DownloadInfraEnvFiles']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the details of the OpenShift cluster.
@@ -3944,7 +4508,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       discoveryAgentVersion?: string,
       getUnregisteredClusters?: boolean,
       excludeHosts?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetCluster(
         clusterId,
@@ -3953,7 +4517,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         excludeHosts,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get the default values for various cluster properties.
@@ -3961,10 +4534,20 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async v2GetClusterDefaultConfig(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterDefaultConfig>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetClusterDefaultConfig(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetClusterDefaultConfig']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get the cluster\'s install config YAML.
@@ -3974,13 +4557,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2GetClusterInstallConfig(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetClusterInstallConfig(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetClusterInstallConfig']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Fetch cluster specific UI settings.
@@ -3990,13 +4583,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2GetClusterUISettings(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetClusterUISettings(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetClusterUISettings']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get the cluster admin credentials.
@@ -4006,13 +4609,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2GetCredentials(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Credentials>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetCredentials(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetCredentials']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the details of the OpenShift host.
@@ -4024,14 +4636,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2GetHost(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetHost(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Fetch the ignition file for this host as a string. In case of unbound host produces an error
@@ -4043,14 +4664,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2GetHostIgnition(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HostIgnitionParams>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetHostIgnition(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetHostIgnition']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Fetch the validations which are to be ignored for this cluster.
@@ -4060,13 +4690,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2GetIgnoredValidations(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<IgnoredValidations>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetIgnoredValidations(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetIgnoredValidations']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the next operations that the host agent needs to perform.
@@ -4082,7 +4722,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       hostId: string,
       timestamp?: number,
       discoveryAgentVersion?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Steps>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetNextSteps(
         infraEnvId,
@@ -4091,7 +4731,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryAgentVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetNextSteps']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get preflight requirements for a cluster.
@@ -4101,7 +4750,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2GetPreflightRequirements(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<PreflightHardwareRequirements>
     > {
@@ -4109,7 +4758,18 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetPreflightRequirements']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Get the cluster admin credentials.
@@ -4121,14 +4781,25 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2GetPresignedForClusterCredentials(
       clusterId: string,
       fileName: V2GetPresignedForClusterCredentialsFileNameEnum,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PresignedUrl>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetPresignedForClusterCredentials(
         clusterId,
         fileName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetPresignedForClusterCredentials']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves a pre-signed S3 URL for downloading cluster files.
@@ -4146,7 +4817,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       logsType?: V2GetPresignedForClusterFilesLogsTypeEnum,
       hostId?: string,
       additionalName?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PresignedUrl>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2GetPresignedForClusterFiles(
         clusterId,
@@ -4156,7 +4827,18 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         additionalName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2GetPresignedForClusterFiles']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Import an AI cluster using minimal data associated with existing OCP cluster, in order to allow adding day2 hosts to that cluster
@@ -4166,13 +4848,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2ImportCluster(
       newImportClusterParams: ImportClusterParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ImportCluster(
         newImportClusterParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ImportCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Installs the OpenShift cluster.
@@ -4182,13 +4873,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2InstallCluster(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2InstallCluster(
         clusterId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2InstallCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * install specific host for day2 cluster.
@@ -4200,14 +4900,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2InstallHost(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2InstallHost(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2InstallHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the list of OpenShift clusters.
@@ -4225,7 +4934,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       amsSubscriptionIds?: Array<string>,
       withHosts?: boolean,
       owner?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClusterList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListClusters(
         getUnregisteredClusters,
@@ -4235,19 +4944,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         owner,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     * (DEPRECATED) Retrieves the support levels for features for each OpenShift version.
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async v2ListFeatureSupportLevels(
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeatureSupportLevels>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListFeatureSupportLevels(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ListClusters']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Retrieves the list of OpenShift hosts that belong the infra-env.
@@ -4257,10 +4963,19 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2ListHosts(
       infraEnvId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HostList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListHosts(infraEnvId, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ListHosts']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Lists operators to be monitored for a cluster.
@@ -4272,14 +4987,24 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2ListOfClusterOperators(
       clusterId: string,
       operatorName?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MonitoredOperatorsList>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ListOfClusterOperators(
         clusterId,
         operatorName,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ListOfClusterOperators']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Posts the result of the operations from the host agent.
@@ -4295,7 +5020,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       hostId: string,
       discoveryAgentVersion?: string,
       reply?: StepReply,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2PostStepReply(
         infraEnvId,
@@ -4304,7 +5029,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         reply,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2PostStepReply']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Creates a new OpenShift cluster definition.
@@ -4314,13 +5048,49 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2RegisterCluster(
       newClusterParams: ClusterCreateParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2RegisterCluster(
         newClusterParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2RegisterCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     * Create a disconnected OpenShift cluster for offline installation with embedded ignition
+     * @param {DisconnectedClusterCreateParams} newClusterParams Parameters for creating a disconnected cluster.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v2RegisterDisconnectedCluster(
+      newClusterParams: DisconnectedClusterCreateParams,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v2RegisterDisconnectedCluster(
+        newClusterParams,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2RegisterDisconnectedCluster']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Registers a new OpenShift agent.
@@ -4334,7 +5104,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       newHostParams: HostCreateParams,
       discoveryAgentVersion?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<HostRegistrationResponse>
     > {
@@ -4344,7 +5114,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryAgentVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2RegisterHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Controller API to report of monitored operators.
@@ -4356,14 +5135,25 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2ReportMonitoredOperatorStatus(
       clusterId: string,
       reportParams: OperatorMonitorReport,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ReportMonitoredOperatorStatus(
         clusterId,
         reportParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ReportMonitoredOperatorStatus']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Resets a failed installation.
@@ -4373,10 +5163,19 @@ export const InstallerApiFp = function (configuration?: Configuration) {
      */
     async v2ResetCluster(
       clusterId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ResetCluster(clusterId, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ResetCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * reset a failed host for day2 cluster.
@@ -4388,14 +5187,23 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2ResetHost(
       infraEnvId: string,
       hostId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ResetHost(
         infraEnvId,
         hostId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ResetHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Reset failed host validation. It may be performed on any host validation with persistent validation result.
@@ -4410,7 +5218,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       hostId: string,
       validationId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2ResetHostValidation(
         infraEnvId,
@@ -4418,7 +5226,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         validationId,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2ResetHostValidation']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Register the validations which are to be ignored for this cluster.
@@ -4430,14 +5248,24 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2SetIgnoredValidations(
       clusterId: string,
       ignoredValidations: IgnoredValidations,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<IgnoredValidations>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2SetIgnoredValidations(
         clusterId,
         ignoredValidations,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2SetIgnoredValidations']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Updates an OpenShift cluster definition.
@@ -4449,14 +5277,53 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2UpdateCluster(
       clusterId: string,
       clusterUpdateParams: V2ClusterUpdateParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Cluster>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateCluster(
         clusterId,
         clusterUpdateParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateCluster']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     * Update installation finalizing progress.
+     * @param {string} clusterId The cluster being updated.
+     * @param {ClusterFinalizingProgress} finalizingProgress New progress value.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v2UpdateClusterFinalizingProgress(
+      clusterId: string,
+      finalizingProgress: ClusterFinalizingProgress,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateClusterFinalizingProgress(
+        clusterId,
+        finalizingProgress,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateClusterFinalizingProgress']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Override values in the install config.
@@ -4468,14 +5335,25 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2UpdateClusterInstallConfig(
       clusterId: string,
       installConfigParams: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateClusterInstallConfig(
         clusterId,
         installConfigParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateClusterInstallConfig']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Update log collection state and progress.
@@ -4487,14 +5365,25 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2UpdateClusterLogsProgress(
       clusterId: string,
       logsProgressParams: LogsProgressParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateClusterLogsProgress(
         clusterId,
         logsProgressParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateClusterLogsProgress']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Update cluster specific UI settings.
@@ -4506,14 +5395,24 @@ export const InstallerApiFp = function (configuration?: Configuration) {
     async v2UpdateClusterUISettings(
       clusterId: string,
       uiSettings: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateClusterUISettings(
         clusterId,
         uiSettings,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateClusterUISettings']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Update an Openshift host
@@ -4527,7 +5426,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       hostId: string,
       hostUpdateParams: HostUpdateParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateHost(
         infraEnvId,
@@ -4535,7 +5434,16 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         hostUpdateParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateHost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Patch the ignition file for this host
@@ -4549,7 +5457,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       hostId: string,
       hostIgnitionParams: HostIgnitionParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateHostIgnition(
         infraEnvId,
@@ -4557,7 +5465,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         hostIgnitionParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateHostIgnition']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Update installation progress.
@@ -4573,7 +5491,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       hostId: string,
       hostProgress: HostProgress,
       discoveryAgentVersion?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateHostInstallProgress(
         infraEnvId,
@@ -4582,7 +5500,18 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryAgentVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateHostInstallProgress']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Updates a host\'s installer arguments.
@@ -4596,7 +5525,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       hostId: string,
       installerArgsParams: InstallerArgsParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Host>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateHostInstallerArgs(
         infraEnvId,
@@ -4604,7 +5533,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         installerArgsParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateHostInstallerArgs']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Update log collection state and progress.
@@ -4618,7 +5557,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId: string,
       hostId: string,
       logsProgressParams: LogsProgressParams,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UpdateHostLogsProgress(
         infraEnvId,
@@ -4626,7 +5565,17 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         logsProgressParams,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UpdateHostLogsProgress']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Transfer the ingress certificate for the cluster.
@@ -4640,7 +5589,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       clusterId: string,
       ingressCertParams: string,
       discoveryAgentVersion?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UploadClusterIngressCert(
         clusterId,
@@ -4648,7 +5597,18 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         discoveryAgentVersion,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UploadClusterIngressCert']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      * Agent API to upload logs.
@@ -4666,7 +5626,7 @@ export const InstallerApiFp = function (configuration?: Configuration) {
       infraEnvId?: string,
       hostId?: string,
       upfile?: File,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v2UploadLogs(
         clusterId,
@@ -4676,14 +5636,22 @@ export const InstallerApiFp = function (configuration?: Configuration) {
         upfile,
         options,
       );
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['InstallerApi.v2UploadLogs']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * InstallerApi - factory interface
- * @export
  */
 export const InstallerApiFactory = function (
   configuration?: Configuration,
@@ -4700,7 +5668,7 @@ export const InstallerApiFactory = function (
      */
     bindHost(
       requestParameters: InstallerApiBindHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .bindHost(
@@ -4719,7 +5687,7 @@ export const InstallerApiFactory = function (
      */
     deregisterInfraEnv(
       requestParameters: InstallerApiDeregisterInfraEnvRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .deregisterInfraEnv(requestParameters.infraEnvId, options)
@@ -4733,24 +5701,45 @@ export const InstallerApiFactory = function (
      */
     downloadMinimalInitrd(
       requestParameters: InstallerApiDownloadMinimalInitrdRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .downloadMinimalInitrd(requestParameters.infraEnvId, options)
         .then((request) => request(axios, basePath));
     },
     /**
-     * A list of platforms that this cluster can support in its current configuration.
+     * Deprecated. Returns a list of platforms that this cluster can support in its current configuration. Prefer deriving platform eligibility from cluster hosts and inventory together with GET /v2/support-levels/features (or GET /v2/support-levels/features/detailed) for the cluster OpenShift version and CPU architecture.
      * @param {InstallerApiGetClusterSupportedPlatformsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     getClusterSupportedPlatforms(
       requestParameters: InstallerApiGetClusterSupportedPlatformsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<PlatformType>> {
       return localVarFp
         .getClusterSupportedPlatforms(requestParameters.clusterId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     * Retrieves detailed features information including support level, incompatibilities, and operator dependencies.
+     * @param {InstallerApiGetDetailedSupportedFeaturesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getDetailedSupportedFeatures(
+      requestParameters: InstallerApiGetDetailedSupportedFeaturesRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetDetailedSupportedFeatures200Response> {
+      return localVarFp
+        .getDetailedSupportedFeatures(
+          requestParameters.openshiftVersion,
+          requestParameters.cpuArchitecture,
+          requestParameters.platformType,
+          requestParameters.externalPlatformName,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4761,7 +5750,7 @@ export const InstallerApiFactory = function (
      */
     getInfraEnv(
       requestParameters: InstallerApiGetInfraEnvRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<InfraEnv> {
       return localVarFp
         .getInfraEnv(requestParameters.infraEnvId, options)
@@ -4775,7 +5764,7 @@ export const InstallerApiFactory = function (
      */
     getInfraEnvDownloadURL(
       requestParameters: InstallerApiGetInfraEnvDownloadURLRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PresignedUrl> {
       return localVarFp
         .getInfraEnvDownloadURL(requestParameters.infraEnvId, options)
@@ -4789,7 +5778,7 @@ export const InstallerApiFactory = function (
      */
     getInfraEnvPresignedFileURL(
       requestParameters: InstallerApiGetInfraEnvPresignedFileURLRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PresignedUrl> {
       return localVarFp
         .getInfraEnvPresignedFileURL(
@@ -4808,7 +5797,7 @@ export const InstallerApiFactory = function (
      */
     getSupportedArchitectures(
       requestParameters: InstallerApiGetSupportedArchitecturesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetSupportedArchitectures200Response> {
       return localVarFp
         .getSupportedArchitectures(requestParameters.openshiftVersion, options)
@@ -4822,12 +5811,14 @@ export const InstallerApiFactory = function (
      */
     getSupportedFeatures(
       requestParameters: InstallerApiGetSupportedFeaturesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetSupportedFeatures200Response> {
       return localVarFp
         .getSupportedFeatures(
           requestParameters.openshiftVersion,
           requestParameters.cpuArchitecture,
+          requestParameters.platformType,
+          requestParameters.externalPlatformName,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -4840,7 +5831,7 @@ export const InstallerApiFactory = function (
      */
     listClusterHosts(
       requestParameters: InstallerApiListClusterHostsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<HostList> {
       return localVarFp
         .listClusterHosts(
@@ -4861,7 +5852,7 @@ export const InstallerApiFactory = function (
      */
     listInfraEnvs(
       requestParameters: InstallerApiListInfraEnvsRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<InfraEnvList> {
       return localVarFp
         .listInfraEnvs(requestParameters.clusterId, requestParameters.owner, options)
@@ -4875,7 +5866,7 @@ export const InstallerApiFactory = function (
      */
     regenerateInfraEnvSigningKey(
       requestParameters: InstallerApiRegenerateInfraEnvSigningKeyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .regenerateInfraEnvSigningKey(requestParameters.infraEnvId, options)
@@ -4889,7 +5880,7 @@ export const InstallerApiFactory = function (
      */
     registerInfraEnv(
       requestParameters: InstallerApiRegisterInfraEnvRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<InfraEnv> {
       return localVarFp
         .registerInfraEnv(requestParameters.infraenvCreateParams, options)
@@ -4903,7 +5894,7 @@ export const InstallerApiFactory = function (
      */
     transformClusterToAddingHosts(
       requestParameters: InstallerApiTransformClusterToAddingHostsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .transformClusterToAddingHosts(requestParameters.clusterId, options)
@@ -4918,7 +5909,7 @@ export const InstallerApiFactory = function (
      */
     transformClusterToDay2(
       requestParameters: InstallerApiTransformClusterToDay2Request,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .transformClusterToDay2(requestParameters.clusterId, options)
@@ -4932,7 +5923,7 @@ export const InstallerApiFactory = function (
      */
     unbindHost(
       requestParameters: InstallerApiUnbindHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .unbindHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -4946,7 +5937,7 @@ export const InstallerApiFactory = function (
      */
     updateInfraEnv(
       requestParameters: InstallerApiUpdateInfraEnvRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<InfraEnv> {
       return localVarFp
         .updateInfraEnv(
@@ -4964,7 +5955,7 @@ export const InstallerApiFactory = function (
      */
     v2CancelInstallation(
       requestParameters: InstallerApiV2CancelInstallationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2CancelInstallation(requestParameters.clusterId, options)
@@ -4978,7 +5969,7 @@ export const InstallerApiFactory = function (
      */
     v2CompleteInstallation(
       requestParameters: InstallerApiV2CompleteInstallationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2CompleteInstallation(
@@ -4997,7 +5988,7 @@ export const InstallerApiFactory = function (
      */
     v2DeregisterCluster(
       requestParameters: InstallerApiV2DeregisterClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2DeregisterCluster(requestParameters.clusterId, options)
@@ -5011,7 +6002,7 @@ export const InstallerApiFactory = function (
      */
     v2DeregisterHost(
       requestParameters: InstallerApiV2DeregisterHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2DeregisterHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -5025,7 +6016,7 @@ export const InstallerApiFactory = function (
      */
     v2DownloadClusterCredentials(
       requestParameters: InstallerApiV2DownloadClusterCredentialsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .v2DownloadClusterCredentials(
@@ -5043,7 +6034,7 @@ export const InstallerApiFactory = function (
      */
     v2DownloadClusterFiles(
       requestParameters: InstallerApiV2DownloadClusterFilesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .v2DownloadClusterFiles(
@@ -5062,7 +6053,7 @@ export const InstallerApiFactory = function (
      */
     v2DownloadClusterLogs(
       requestParameters: InstallerApiV2DownloadClusterLogsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .v2DownloadClusterLogs(
@@ -5081,7 +6072,7 @@ export const InstallerApiFactory = function (
      */
     v2DownloadHostIgnition(
       requestParameters: InstallerApiV2DownloadHostIgnitionRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .v2DownloadHostIgnition(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -5095,7 +6086,7 @@ export const InstallerApiFactory = function (
      */
     v2DownloadInfraEnvFiles(
       requestParameters: InstallerApiV2DownloadInfraEnvFilesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<File> {
       return localVarFp
         .v2DownloadInfraEnvFiles(
@@ -5116,7 +6107,7 @@ export const InstallerApiFactory = function (
      */
     v2GetCluster(
       requestParameters: InstallerApiV2GetClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2GetCluster(
@@ -5133,7 +6124,7 @@ export const InstallerApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v2GetClusterDefaultConfig(options?: AxiosRequestConfig): AxiosPromise<ClusterDefaultConfig> {
+    v2GetClusterDefaultConfig(options?: RawAxiosRequestConfig): AxiosPromise<ClusterDefaultConfig> {
       return localVarFp
         .v2GetClusterDefaultConfig(options)
         .then((request) => request(axios, basePath));
@@ -5146,7 +6137,7 @@ export const InstallerApiFactory = function (
      */
     v2GetClusterInstallConfig(
       requestParameters: InstallerApiV2GetClusterInstallConfigRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
         .v2GetClusterInstallConfig(requestParameters.clusterId, options)
@@ -5160,7 +6151,7 @@ export const InstallerApiFactory = function (
      */
     v2GetClusterUISettings(
       requestParameters: InstallerApiV2GetClusterUISettingsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
         .v2GetClusterUISettings(requestParameters.clusterId, options)
@@ -5174,7 +6165,7 @@ export const InstallerApiFactory = function (
      */
     v2GetCredentials(
       requestParameters: InstallerApiV2GetCredentialsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Credentials> {
       return localVarFp
         .v2GetCredentials(requestParameters.clusterId, options)
@@ -5188,7 +6179,7 @@ export const InstallerApiFactory = function (
      */
     v2GetHost(
       requestParameters: InstallerApiV2GetHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .v2GetHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -5202,7 +6193,7 @@ export const InstallerApiFactory = function (
      */
     v2GetHostIgnition(
       requestParameters: InstallerApiV2GetHostIgnitionRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<HostIgnitionParams> {
       return localVarFp
         .v2GetHostIgnition(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -5216,7 +6207,7 @@ export const InstallerApiFactory = function (
      */
     v2GetIgnoredValidations(
       requestParameters: InstallerApiV2GetIgnoredValidationsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<IgnoredValidations> {
       return localVarFp
         .v2GetIgnoredValidations(requestParameters.clusterId, options)
@@ -5230,7 +6221,7 @@ export const InstallerApiFactory = function (
      */
     v2GetNextSteps(
       requestParameters: InstallerApiV2GetNextStepsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Steps> {
       return localVarFp
         .v2GetNextSteps(
@@ -5250,7 +6241,7 @@ export const InstallerApiFactory = function (
      */
     v2GetPreflightRequirements(
       requestParameters: InstallerApiV2GetPreflightRequirementsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PreflightHardwareRequirements> {
       return localVarFp
         .v2GetPreflightRequirements(requestParameters.clusterId, options)
@@ -5264,7 +6255,7 @@ export const InstallerApiFactory = function (
      */
     v2GetPresignedForClusterCredentials(
       requestParameters: InstallerApiV2GetPresignedForClusterCredentialsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PresignedUrl> {
       return localVarFp
         .v2GetPresignedForClusterCredentials(
@@ -5282,7 +6273,7 @@ export const InstallerApiFactory = function (
      */
     v2GetPresignedForClusterFiles(
       requestParameters: InstallerApiV2GetPresignedForClusterFilesRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PresignedUrl> {
       return localVarFp
         .v2GetPresignedForClusterFiles(
@@ -5303,7 +6294,7 @@ export const InstallerApiFactory = function (
      */
     v2ImportCluster(
       requestParameters: InstallerApiV2ImportClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2ImportCluster(requestParameters.newImportClusterParams, options)
@@ -5317,7 +6308,7 @@ export const InstallerApiFactory = function (
      */
     v2InstallCluster(
       requestParameters: InstallerApiV2InstallClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2InstallCluster(requestParameters.clusterId, options)
@@ -5331,7 +6322,7 @@ export const InstallerApiFactory = function (
      */
     v2InstallHost(
       requestParameters: InstallerApiV2InstallHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .v2InstallHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -5345,7 +6336,7 @@ export const InstallerApiFactory = function (
      */
     v2ListClusters(
       requestParameters: InstallerApiV2ListClustersRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClusterList> {
       return localVarFp
         .v2ListClusters(
@@ -5359,17 +6350,6 @@ export const InstallerApiFactory = function (
         .then((request) => request(axios, basePath));
     },
     /**
-     * (DEPRECATED) Retrieves the support levels for features for each OpenShift version.
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    v2ListFeatureSupportLevels(options?: AxiosRequestConfig): AxiosPromise<FeatureSupportLevels> {
-      return localVarFp
-        .v2ListFeatureSupportLevels(options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
      * Retrieves the list of OpenShift hosts that belong the infra-env.
      * @param {InstallerApiV2ListHostsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -5377,7 +6357,7 @@ export const InstallerApiFactory = function (
      */
     v2ListHosts(
       requestParameters: InstallerApiV2ListHostsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<HostList> {
       return localVarFp
         .v2ListHosts(requestParameters.infraEnvId, options)
@@ -5391,7 +6371,7 @@ export const InstallerApiFactory = function (
      */
     v2ListOfClusterOperators(
       requestParameters: InstallerApiV2ListOfClusterOperatorsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<MonitoredOperatorsList> {
       return localVarFp
         .v2ListOfClusterOperators(
@@ -5409,7 +6389,7 @@ export const InstallerApiFactory = function (
      */
     v2PostStepReply(
       requestParameters: InstallerApiV2PostStepReplyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2PostStepReply(
@@ -5429,10 +6409,24 @@ export const InstallerApiFactory = function (
      */
     v2RegisterCluster(
       requestParameters: InstallerApiV2RegisterClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2RegisterCluster(requestParameters.newClusterParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     * Create a disconnected OpenShift cluster for offline installation with embedded ignition
+     * @param {InstallerApiV2RegisterDisconnectedClusterRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2RegisterDisconnectedCluster(
+      requestParameters: InstallerApiV2RegisterDisconnectedClusterRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Cluster> {
+      return localVarFp
+        .v2RegisterDisconnectedCluster(requestParameters.newClusterParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5443,7 +6437,7 @@ export const InstallerApiFactory = function (
      */
     v2RegisterHost(
       requestParameters: InstallerApiV2RegisterHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<HostRegistrationResponse> {
       return localVarFp
         .v2RegisterHost(
@@ -5462,7 +6456,7 @@ export const InstallerApiFactory = function (
      */
     v2ReportMonitoredOperatorStatus(
       requestParameters: InstallerApiV2ReportMonitoredOperatorStatusRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2ReportMonitoredOperatorStatus(
@@ -5480,7 +6474,7 @@ export const InstallerApiFactory = function (
      */
     v2ResetCluster(
       requestParameters: InstallerApiV2ResetClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2ResetCluster(requestParameters.clusterId, options)
@@ -5494,7 +6488,7 @@ export const InstallerApiFactory = function (
      */
     v2ResetHost(
       requestParameters: InstallerApiV2ResetHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .v2ResetHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -5509,7 +6503,7 @@ export const InstallerApiFactory = function (
      */
     v2ResetHostValidation(
       requestParameters: InstallerApiV2ResetHostValidationRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .v2ResetHostValidation(
@@ -5528,7 +6522,7 @@ export const InstallerApiFactory = function (
      */
     v2SetIgnoredValidations(
       requestParameters: InstallerApiV2SetIgnoredValidationsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<IgnoredValidations> {
       return localVarFp
         .v2SetIgnoredValidations(
@@ -5546,12 +6540,30 @@ export const InstallerApiFactory = function (
      */
     v2UpdateCluster(
       requestParameters: InstallerApiV2UpdateClusterRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Cluster> {
       return localVarFp
         .v2UpdateCluster(
           requestParameters.clusterId,
           requestParameters.clusterUpdateParams,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     * Update installation finalizing progress.
+     * @param {InstallerApiV2UpdateClusterFinalizingProgressRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v2UpdateClusterFinalizingProgress(
+      requestParameters: InstallerApiV2UpdateClusterFinalizingProgressRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .v2UpdateClusterFinalizingProgress(
+          requestParameters.clusterId,
+          requestParameters.finalizingProgress,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -5564,7 +6576,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateClusterInstallConfig(
       requestParameters: InstallerApiV2UpdateClusterInstallConfigRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UpdateClusterInstallConfig(
@@ -5582,7 +6594,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateClusterLogsProgress(
       requestParameters: InstallerApiV2UpdateClusterLogsProgressRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UpdateClusterLogsProgress(
@@ -5600,7 +6612,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateClusterUISettings(
       requestParameters: InstallerApiV2UpdateClusterUISettingsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
         .v2UpdateClusterUISettings(
@@ -5618,7 +6630,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateHost(
       requestParameters: InstallerApiV2UpdateHostRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .v2UpdateHost(
@@ -5637,7 +6649,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateHostIgnition(
       requestParameters: InstallerApiV2UpdateHostIgnitionRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UpdateHostIgnition(
@@ -5656,7 +6668,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateHostInstallProgress(
       requestParameters: InstallerApiV2UpdateHostInstallProgressRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UpdateHostInstallProgress(
@@ -5676,7 +6688,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateHostInstallerArgs(
       requestParameters: InstallerApiV2UpdateHostInstallerArgsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Host> {
       return localVarFp
         .v2UpdateHostInstallerArgs(
@@ -5695,7 +6707,7 @@ export const InstallerApiFactory = function (
      */
     v2UpdateHostLogsProgress(
       requestParameters: InstallerApiV2UpdateHostLogsProgressRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UpdateHostLogsProgress(
@@ -5714,7 +6726,7 @@ export const InstallerApiFactory = function (
      */
     v2UploadClusterIngressCert(
       requestParameters: InstallerApiV2UploadClusterIngressCertRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UploadClusterIngressCert(
@@ -5733,7 +6745,7 @@ export const InstallerApiFactory = function (
      */
     v2UploadLogs(
       requestParameters: InstallerApiV2UploadLogsRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .v2UploadLogs(
@@ -5751,1402 +6763,1061 @@ export const InstallerApiFactory = function (
 
 /**
  * Request parameters for bindHost operation in InstallerApi.
- * @export
- * @interface InstallerApiBindHostRequest
  */
 export interface InstallerApiBindHostRequest {
   /**
    * The infra-env of the host that is being bound.
-   * @type {string}
-   * @memberof InstallerApiBindHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that is being bound.
-   * @type {string}
-   * @memberof InstallerApiBindHost
    */
   readonly hostId: string;
 
   /**
    * The parameters for the host binding.
-   * @type {BindHostParams}
-   * @memberof InstallerApiBindHost
    */
   readonly bindHostParams: BindHostParams;
 }
 
 /**
  * Request parameters for deregisterInfraEnv operation in InstallerApi.
- * @export
- * @interface InstallerApiDeregisterInfraEnvRequest
  */
 export interface InstallerApiDeregisterInfraEnvRequest {
   /**
    * The infra-env to be deleted.
-   * @type {string}
-   * @memberof InstallerApiDeregisterInfraEnv
    */
   readonly infraEnvId: string;
 }
 
 /**
  * Request parameters for downloadMinimalInitrd operation in InstallerApi.
- * @export
- * @interface InstallerApiDownloadMinimalInitrdRequest
  */
 export interface InstallerApiDownloadMinimalInitrdRequest {
   /**
    * The infra-env of the host that should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiDownloadMinimalInitrd
    */
   readonly infraEnvId: string;
 }
 
 /**
  * Request parameters for getClusterSupportedPlatforms operation in InstallerApi.
- * @export
- * @interface InstallerApiGetClusterSupportedPlatformsRequest
  */
 export interface InstallerApiGetClusterSupportedPlatformsRequest {
   /**
    * The cluster whose platform types should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiGetClusterSupportedPlatforms
    */
   readonly clusterId: string;
 }
 
 /**
+ * Request parameters for getDetailedSupportedFeatures operation in InstallerApi.
+ */
+export interface InstallerApiGetDetailedSupportedFeaturesRequest {
+  /**
+   * Version of the OpenShift cluster.
+   */
+  readonly openshiftVersion: string;
+
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  readonly cpuArchitecture?: GetDetailedSupportedFeaturesCpuArchitectureEnum;
+
+  /**
+   * The provider platform type.
+   */
+  readonly platformType?: GetDetailedSupportedFeaturesPlatformTypeEnum;
+
+  /**
+   * External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external.
+   */
+  readonly externalPlatformName?: string;
+}
+
+/**
  * Request parameters for getInfraEnv operation in InstallerApi.
- * @export
- * @interface InstallerApiGetInfraEnvRequest
  */
 export interface InstallerApiGetInfraEnvRequest {
   /**
    * The infra-env to be retrieved.
-   * @type {string}
-   * @memberof InstallerApiGetInfraEnv
    */
   readonly infraEnvId: string;
 }
 
 /**
  * Request parameters for getInfraEnvDownloadURL operation in InstallerApi.
- * @export
- * @interface InstallerApiGetInfraEnvDownloadURLRequest
  */
 export interface InstallerApiGetInfraEnvDownloadURLRequest {
   /**
    * The infra-env to be retrieved.
-   * @type {string}
-   * @memberof InstallerApiGetInfraEnvDownloadURL
    */
   readonly infraEnvId: string;
 }
 
 /**
  * Request parameters for getInfraEnvPresignedFileURL operation in InstallerApi.
- * @export
- * @interface InstallerApiGetInfraEnvPresignedFileURLRequest
  */
 export interface InstallerApiGetInfraEnvPresignedFileURLRequest {
   /**
    * The file\&#39;s infra-env.
-   * @type {string}
-   * @memberof InstallerApiGetInfraEnvPresignedFileURL
    */
   readonly infraEnvId: string;
 
   /**
    * The file to be downloaded.
-   * @type {'discovery.ign' | 'ipxe-script'}
-   * @memberof InstallerApiGetInfraEnvPresignedFileURL
    */
   readonly fileName: GetInfraEnvPresignedFileURLFileNameEnum;
 
   /**
    * Specify the script type to be served for iPXE.
-   * @type {'discovery-image-always' | 'boot-order-control'}
-   * @memberof InstallerApiGetInfraEnvPresignedFileURL
    */
   readonly ipxeScriptType?: GetInfraEnvPresignedFileURLIpxeScriptTypeEnum;
 }
 
 /**
  * Request parameters for getSupportedArchitectures operation in InstallerApi.
- * @export
- * @interface InstallerApiGetSupportedArchitecturesRequest
  */
 export interface InstallerApiGetSupportedArchitecturesRequest {
   /**
    * Version of the OpenShift cluster.
-   * @type {string}
-   * @memberof InstallerApiGetSupportedArchitectures
    */
   readonly openshiftVersion: string;
 }
 
 /**
  * Request parameters for getSupportedFeatures operation in InstallerApi.
- * @export
- * @interface InstallerApiGetSupportedFeaturesRequest
  */
 export interface InstallerApiGetSupportedFeaturesRequest {
   /**
    * Version of the OpenShift cluster.
-   * @type {string}
-   * @memberof InstallerApiGetSupportedFeatures
    */
   readonly openshiftVersion: string;
 
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
-   * @type {'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi'}
-   * @memberof InstallerApiGetSupportedFeatures
    */
   readonly cpuArchitecture?: GetSupportedFeaturesCpuArchitectureEnum;
+
+  /**
+   * The provider platform type.
+   */
+  readonly platformType?: GetSupportedFeaturesPlatformTypeEnum;
+
+  /**
+   * External platform name when platform type is set to external. The value of this parameter will be ignored if platform_type is not external.
+   */
+  readonly externalPlatformName?: string;
 }
 
 /**
  * Request parameters for listClusterHosts operation in InstallerApi.
- * @export
- * @interface InstallerApiListClusterHostsRequest
  */
 export interface InstallerApiListClusterHostsRequest {
   /**
    * The cluster whose hosts should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiListClusterHosts
    */
   readonly clusterId: string;
 
   /**
    * Role to request.
-   * @type {'master' | 'worker' | 'auto-assign'}
-   * @memberof InstallerApiListClusterHosts
    */
   readonly role?: ListClusterHostsRoleEnum;
 
   /**
    * Hosts status to request.
-   * @type {string}
-   * @memberof InstallerApiListClusterHosts
    */
   readonly status?: string;
 
   /**
    * If true return the host\&#39;s inventory.
-   * @type {boolean}
-   * @memberof InstallerApiListClusterHosts
    */
   readonly withInventory?: boolean;
 
   /**
    * If true return the host\&#39;s connectivity.
-   * @type {boolean}
-   * @memberof InstallerApiListClusterHosts
    */
   readonly withConnectivity?: boolean;
 }
 
 /**
  * Request parameters for listInfraEnvs operation in InstallerApi.
- * @export
- * @interface InstallerApiListInfraEnvsRequest
  */
 export interface InstallerApiListInfraEnvsRequest {
   /**
    * If provided, returns only infra-envs which directly reference this cluster.
-   * @type {string}
-   * @memberof InstallerApiListInfraEnvs
    */
   readonly clusterId?: string;
 
   /**
    * If provided, returns only infra-envs that are owned by the specified user.
-   * @type {string}
-   * @memberof InstallerApiListInfraEnvs
    */
   readonly owner?: string;
 }
 
 /**
  * Request parameters for regenerateInfraEnvSigningKey operation in InstallerApi.
- * @export
- * @interface InstallerApiRegenerateInfraEnvSigningKeyRequest
  */
 export interface InstallerApiRegenerateInfraEnvSigningKeyRequest {
   /**
    * The target InfraEnv.
-   * @type {string}
-   * @memberof InstallerApiRegenerateInfraEnvSigningKey
    */
   readonly infraEnvId: string;
 }
 
 /**
  * Request parameters for registerInfraEnv operation in InstallerApi.
- * @export
- * @interface InstallerApiRegisterInfraEnvRequest
  */
 export interface InstallerApiRegisterInfraEnvRequest {
   /**
    * The parameters for the generated ISO.
-   * @type {InfraEnvCreateParams}
-   * @memberof InstallerApiRegisterInfraEnv
    */
   readonly infraenvCreateParams: InfraEnvCreateParams;
 }
 
 /**
  * Request parameters for transformClusterToAddingHosts operation in InstallerApi.
- * @export
- * @interface InstallerApiTransformClusterToAddingHostsRequest
  */
 export interface InstallerApiTransformClusterToAddingHostsRequest {
   /**
    * The cluster to transform.
-   * @type {string}
-   * @memberof InstallerApiTransformClusterToAddingHosts
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for transformClusterToDay2 operation in InstallerApi.
- * @export
- * @interface InstallerApiTransformClusterToDay2Request
  */
 export interface InstallerApiTransformClusterToDay2Request {
   /**
    * The cluster to transform.
-   * @type {string}
-   * @memberof InstallerApiTransformClusterToDay2
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for unbindHost operation in InstallerApi.
- * @export
- * @interface InstallerApiUnbindHostRequest
  */
 export interface InstallerApiUnbindHostRequest {
   /**
    * The infra-env of the host that is being bound.
-   * @type {string}
-   * @memberof InstallerApiUnbindHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that is being bound.
-   * @type {string}
-   * @memberof InstallerApiUnbindHost
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for updateInfraEnv operation in InstallerApi.
- * @export
- * @interface InstallerApiUpdateInfraEnvRequest
  */
 export interface InstallerApiUpdateInfraEnvRequest {
   /**
    * The infra-env to be updated.
-   * @type {string}
-   * @memberof InstallerApiUpdateInfraEnv
    */
   readonly infraEnvId: string;
 
   /**
    * The properties to update.
-   * @type {InfraEnvUpdateParams}
-   * @memberof InstallerApiUpdateInfraEnv
    */
   readonly infraEnvUpdateParams: InfraEnvUpdateParams;
 }
 
 /**
  * Request parameters for v2CancelInstallation operation in InstallerApi.
- * @export
- * @interface InstallerApiV2CancelInstallationRequest
  */
 export interface InstallerApiV2CancelInstallationRequest {
   /**
    * The cluster whose installation is to be canceled.
-   * @type {string}
-   * @memberof InstallerApiV2CancelInstallation
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2CompleteInstallation operation in InstallerApi.
- * @export
- * @interface InstallerApiV2CompleteInstallationRequest
  */
 export interface InstallerApiV2CompleteInstallationRequest {
   /**
    * The cluster whose installation is being completing.
-   * @type {string}
-   * @memberof InstallerApiV2CompleteInstallation
    */
   readonly clusterId: string;
 
   /**
    * The final status of the cluster installation.
-   * @type {CompletionParams}
-   * @memberof InstallerApiV2CompleteInstallation
    */
   readonly completionParams: CompletionParams;
 
   /**
    * The software version of the discovery agent that is completing the installation.
-   * @type {string}
-   * @memberof InstallerApiV2CompleteInstallation
    */
   readonly discoveryAgentVersion?: string;
 }
 
 /**
  * Request parameters for v2DeregisterCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DeregisterClusterRequest
  */
 export interface InstallerApiV2DeregisterClusterRequest {
   /**
    * The cluster to be deregistered.
-   * @type {string}
-   * @memberof InstallerApiV2DeregisterCluster
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2DeregisterHost operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DeregisterHostRequest
  */
 export interface InstallerApiV2DeregisterHostRequest {
   /**
    * The infra-env of the host that should be deregistered.
-   * @type {string}
-   * @memberof InstallerApiV2DeregisterHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that should be deregistered.
-   * @type {string}
-   * @memberof InstallerApiV2DeregisterHost
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for v2DownloadClusterCredentials operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DownloadClusterCredentialsRequest
  */
 export interface InstallerApiV2DownloadClusterCredentialsRequest {
   /**
    * The cluster that owns the credential file that should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadClusterCredentials
    */
   readonly clusterId: string;
 
   /**
    * The credential file to be downloaded.
-   * @type {'kubeadmin-password' | 'kubeconfig' | 'kubeconfig-noingress'}
-   * @memberof InstallerApiV2DownloadClusterCredentials
    */
   readonly fileName: V2DownloadClusterCredentialsFileNameEnum;
 }
 
 /**
  * Request parameters for v2DownloadClusterFiles operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DownloadClusterFilesRequest
  */
 export interface InstallerApiV2DownloadClusterFilesRequest {
   /**
    * The cluster that owns the file that should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadClusterFiles
    */
   readonly clusterId: string;
 
   /**
    * The file to be downloaded.
-   * @type {'bootstrap.ign' | 'master.ign' | 'metadata.json' | 'worker.ign' | 'install-config.yaml' | 'custom_manifests.json' | 'custom_manifests.yaml'}
-   * @memberof InstallerApiV2DownloadClusterFiles
    */
   readonly fileName: V2DownloadClusterFilesFileNameEnum;
 
   /**
    * The software version of the discovery agent that is downloading the file.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadClusterFiles
    */
   readonly discoveryAgentVersion?: string;
 }
 
 /**
  * Request parameters for v2DownloadClusterLogs operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DownloadClusterLogsRequest
  */
 export interface InstallerApiV2DownloadClusterLogsRequest {
   /**
    * The cluster whose logs should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadClusterLogs
    */
   readonly clusterId: string;
 
   /**
    * The type of logs to be downloaded.
-   * @type {'host' | 'controller' | 'all'}
-   * @memberof InstallerApiV2DownloadClusterLogs
    */
   readonly logsType?: V2DownloadClusterLogsLogsTypeEnum;
 
   /**
    * A specific host in the cluster whose logs should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadClusterLogs
    */
   readonly hostId?: string;
 }
 
 /**
  * Request parameters for v2DownloadHostIgnition operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DownloadHostIgnitionRequest
  */
 export interface InstallerApiV2DownloadHostIgnitionRequest {
   /**
    * The infra-env of the host whose ignition file should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadHostIgnition
    */
   readonly infraEnvId: string;
 
   /**
    * The host whose ignition file should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadHostIgnition
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for v2DownloadInfraEnvFiles operation in InstallerApi.
- * @export
- * @interface InstallerApiV2DownloadInfraEnvFilesRequest
  */
 export interface InstallerApiV2DownloadInfraEnvFilesRequest {
   /**
    * The infra-env whose file should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadInfraEnvFiles
    */
   readonly infraEnvId: string;
 
   /**
    * The file to be downloaded.
-   * @type {'discovery.ign' | 'ipxe-script' | 'static-network-config'}
-   * @memberof InstallerApiV2DownloadInfraEnvFiles
    */
   readonly fileName: V2DownloadInfraEnvFilesFileNameEnum;
 
   /**
    * Mac address of the host running ipxe script.
-   * @type {string}
-   * @memberof InstallerApiV2DownloadInfraEnvFiles
    */
   readonly mac?: string;
 
   /**
    * Specify the script type to be served for iPXE.
-   * @type {'discovery-image-always' | 'boot-order-control'}
-   * @memberof InstallerApiV2DownloadInfraEnvFiles
    */
   readonly ipxeScriptType?: V2DownloadInfraEnvFilesIpxeScriptTypeEnum;
 
   /**
-   * Overrides the ISO type for the disovery ignition, either \&#39;full-iso\&#39; or \&#39;minimal-iso\&#39;.
-   * @type {'full-iso' | 'minimal-iso'}
-   * @memberof InstallerApiV2DownloadInfraEnvFiles
+   * Overrides the ISO type for the discovery ignition.
    */
   readonly discoveryIsoType?: V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum;
 }
 
 /**
  * Request parameters for v2GetCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetClusterRequest
  */
 export interface InstallerApiV2GetClusterRequest {
   /**
    * The cluster to be retrieved.
-   * @type {string}
-   * @memberof InstallerApiV2GetCluster
    */
   readonly clusterId: string;
 
   /**
    * The software version of the discovery agent that is retrieving the cluster details.
-   * @type {string}
-   * @memberof InstallerApiV2GetCluster
    */
   readonly discoveryAgentVersion?: string;
 
   /**
    * Whether to return clusters that have been unregistered.
-   * @type {boolean}
-   * @memberof InstallerApiV2GetCluster
    */
   readonly getUnregisteredClusters?: boolean;
 
   /**
    * If true, do not include hosts.
-   * @type {boolean}
-   * @memberof InstallerApiV2GetCluster
    */
   readonly excludeHosts?: boolean;
 }
 
 /**
  * Request parameters for v2GetClusterInstallConfig operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetClusterInstallConfigRequest
  */
 export interface InstallerApiV2GetClusterInstallConfigRequest {
   /**
    * The cluster whose install config is being retrieved.
-   * @type {string}
-   * @memberof InstallerApiV2GetClusterInstallConfig
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2GetClusterUISettings operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetClusterUISettingsRequest
  */
 export interface InstallerApiV2GetClusterUISettingsRequest {
   /**
    * The cluster for which UI settings should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiV2GetClusterUISettings
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2GetCredentials operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetCredentialsRequest
  */
 export interface InstallerApiV2GetCredentialsRequest {
   /**
    * The cluster whose admin credentials should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiV2GetCredentials
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2GetHost operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetHostRequest
  */
 export interface InstallerApiV2GetHostRequest {
   /**
    * The infra-env of the host that should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiV2GetHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that should be retrieved.
-   * @type {string}
-   * @memberof InstallerApiV2GetHost
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for v2GetHostIgnition operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetHostIgnitionRequest
  */
 export interface InstallerApiV2GetHostIgnitionRequest {
   /**
    * The infra-env of the host whose ignition file should be obtained.
-   * @type {string}
-   * @memberof InstallerApiV2GetHostIgnition
    */
   readonly infraEnvId: string;
 
   /**
    * The host whose ignition file should be obtained.
-   * @type {string}
-   * @memberof InstallerApiV2GetHostIgnition
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for v2GetIgnoredValidations operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetIgnoredValidationsRequest
  */
 export interface InstallerApiV2GetIgnoredValidationsRequest {
   /**
    * The cluster whose failing validations should be ignored according to this list.
-   * @type {string}
-   * @memberof InstallerApiV2GetIgnoredValidations
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2GetNextSteps operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetNextStepsRequest
  */
 export interface InstallerApiV2GetNextStepsRequest {
   /**
    * The infra-env of the host that is retrieving instructions.
-   * @type {string}
-   * @memberof InstallerApiV2GetNextSteps
    */
   readonly infraEnvId: string;
 
   /**
    * The host that is retrieving instructions.
-   * @type {string}
-   * @memberof InstallerApiV2GetNextSteps
    */
   readonly hostId: string;
 
   /**
    * The time on the host as seconds since the Unix epoch.
-   * @type {number}
-   * @memberof InstallerApiV2GetNextSteps
    */
   readonly timestamp?: number;
 
   /**
    * The software version of the discovery agent that is retrieving instructions.
-   * @type {string}
-   * @memberof InstallerApiV2GetNextSteps
    */
   readonly discoveryAgentVersion?: string;
 }
 
 /**
  * Request parameters for v2GetPreflightRequirements operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetPreflightRequirementsRequest
  */
 export interface InstallerApiV2GetPreflightRequirementsRequest {
   /**
    * The cluster to return preflight requirements for.
-   * @type {string}
-   * @memberof InstallerApiV2GetPreflightRequirements
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2GetPresignedForClusterCredentials operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetPresignedForClusterCredentialsRequest
  */
 export interface InstallerApiV2GetPresignedForClusterCredentialsRequest {
   /**
    * The cluster that owns the file that should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2GetPresignedForClusterCredentials
    */
   readonly clusterId: string;
 
   /**
    * The file to be downloaded.
-   * @type {'kubeadmin-password' | 'kubeconfig' | 'kubeconfig-noingress'}
-   * @memberof InstallerApiV2GetPresignedForClusterCredentials
    */
   readonly fileName: V2GetPresignedForClusterCredentialsFileNameEnum;
 }
 
 /**
  * Request parameters for v2GetPresignedForClusterFiles operation in InstallerApi.
- * @export
- * @interface InstallerApiV2GetPresignedForClusterFilesRequest
  */
 export interface InstallerApiV2GetPresignedForClusterFilesRequest {
   /**
    * The cluster that owns the file that should be downloaded.
-   * @type {string}
-   * @memberof InstallerApiV2GetPresignedForClusterFiles
    */
   readonly clusterId: string;
 
   /**
    * The file to be downloaded.
-   * @type {'bootstrap.ign' | 'master.ign' | 'metadata.json' | 'worker.ign' | 'install-config.yaml' | 'logs' | 'manifests'}
-   * @memberof InstallerApiV2GetPresignedForClusterFiles
    */
   readonly fileName: V2GetPresignedForClusterFilesFileNameEnum;
 
   /**
    * If downloading logs, the type of logs to download.
-   * @type {'host' | 'controller' | 'all'}
-   * @memberof InstallerApiV2GetPresignedForClusterFiles
    */
   readonly logsType?: V2GetPresignedForClusterFilesLogsTypeEnum;
 
   /**
    * If downloading a file related to a host, the relevant host.
-   * @type {string}
-   * @memberof InstallerApiV2GetPresignedForClusterFiles
    */
   readonly hostId?: string;
 
   /**
    * If downloading a manifest, the file name, prefaced with folder name, for example, openshift/99-openshift-xyz.yaml.
-   * @type {string}
-   * @memberof InstallerApiV2GetPresignedForClusterFiles
    */
   readonly additionalName?: string;
 }
 
 /**
  * Request parameters for v2ImportCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ImportClusterRequest
  */
 export interface InstallerApiV2ImportClusterRequest {
   /**
    * Parameters for importing a OCP cluster for adding nodes.
-   * @type {ImportClusterParams}
-   * @memberof InstallerApiV2ImportCluster
    */
   readonly newImportClusterParams: ImportClusterParams;
 }
 
 /**
  * Request parameters for v2InstallCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2InstallClusterRequest
  */
 export interface InstallerApiV2InstallClusterRequest {
   /**
    * The cluster to be installed.
-   * @type {string}
-   * @memberof InstallerApiV2InstallCluster
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2InstallHost operation in InstallerApi.
- * @export
- * @interface InstallerApiV2InstallHostRequest
  */
 export interface InstallerApiV2InstallHostRequest {
   /**
    * The infra-env of the host that is being installed.
-   * @type {string}
-   * @memberof InstallerApiV2InstallHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that is being installed.
-   * @type {string}
-   * @memberof InstallerApiV2InstallHost
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for v2ListClusters operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ListClustersRequest
  */
 export interface InstallerApiV2ListClustersRequest {
   /**
    * Whether to return clusters that have been unregistered.
-   * @type {boolean}
-   * @memberof InstallerApiV2ListClusters
    */
   readonly getUnregisteredClusters?: boolean;
 
   /**
    * A specific cluster to retrieve.
-   * @type {string}
-   * @memberof InstallerApiV2ListClusters
    */
   readonly openshiftClusterId?: string;
 
   /**
    * If non-empty, returned Clusters are filtered to those with matching subscription IDs.
-   * @type {Array<string>}
-   * @memberof InstallerApiV2ListClusters
    */
   readonly amsSubscriptionIds?: Array<string>;
 
   /**
    * Include hosts in the returned list.
-   * @type {boolean}
-   * @memberof InstallerApiV2ListClusters
    */
   readonly withHosts?: boolean;
 
   /**
    * If provided, returns only clusters that are owned by the specified user.
-   * @type {string}
-   * @memberof InstallerApiV2ListClusters
    */
   readonly owner?: string;
 }
 
 /**
  * Request parameters for v2ListHosts operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ListHostsRequest
  */
 export interface InstallerApiV2ListHostsRequest {
   /**
    * The infra-env that the hosts are asociated with.
-   * @type {string}
-   * @memberof InstallerApiV2ListHosts
    */
   readonly infraEnvId: string;
 }
 
 /**
  * Request parameters for v2ListOfClusterOperators operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ListOfClusterOperatorsRequest
  */
 export interface InstallerApiV2ListOfClusterOperatorsRequest {
   /**
    * The cluster to return operators for.
-   * @type {string}
-   * @memberof InstallerApiV2ListOfClusterOperators
    */
   readonly clusterId: string;
 
   /**
    * An operator in the specified cluster to return its data.
-   * @type {string}
-   * @memberof InstallerApiV2ListOfClusterOperators
    */
   readonly operatorName?: string;
 }
 
 /**
  * Request parameters for v2PostStepReply operation in InstallerApi.
- * @export
- * @interface InstallerApiV2PostStepReplyRequest
  */
 export interface InstallerApiV2PostStepReplyRequest {
   /**
    * The infra-env of the host that is posting results.
-   * @type {string}
-   * @memberof InstallerApiV2PostStepReply
    */
   readonly infraEnvId: string;
 
   /**
    * The host that is posting results.
-   * @type {string}
-   * @memberof InstallerApiV2PostStepReply
    */
   readonly hostId: string;
 
   /**
    * The software version of the discovery agent that is posting results.
-   * @type {string}
-   * @memberof InstallerApiV2PostStepReply
    */
   readonly discoveryAgentVersion?: string;
 
   /**
    * The results to be posted.
-   * @type {StepReply}
-   * @memberof InstallerApiV2PostStepReply
    */
   readonly reply?: StepReply;
 }
 
 /**
  * Request parameters for v2RegisterCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2RegisterClusterRequest
  */
 export interface InstallerApiV2RegisterClusterRequest {
   /**
    * The properties describing the new cluster.
-   * @type {ClusterCreateParams}
-   * @memberof InstallerApiV2RegisterCluster
    */
   readonly newClusterParams: ClusterCreateParams;
 }
 
 /**
+ * Request parameters for v2RegisterDisconnectedCluster operation in InstallerApi.
+ */
+export interface InstallerApiV2RegisterDisconnectedClusterRequest {
+  /**
+   * Parameters for creating a disconnected cluster.
+   */
+  readonly newClusterParams: DisconnectedClusterCreateParams;
+}
+
+/**
  * Request parameters for v2RegisterHost operation in InstallerApi.
- * @export
- * @interface InstallerApiV2RegisterHostRequest
  */
 export interface InstallerApiV2RegisterHostRequest {
   /**
    * The infra-env that the agent is associated with.
-   * @type {string}
-   * @memberof InstallerApiV2RegisterHost
    */
   readonly infraEnvId: string;
 
   /**
    * The description of the agent being registered.
-   * @type {HostCreateParams}
-   * @memberof InstallerApiV2RegisterHost
    */
   readonly newHostParams: HostCreateParams;
 
   /**
    * The software version of the discovery agent that is registering the agent.
-   * @type {string}
-   * @memberof InstallerApiV2RegisterHost
    */
   readonly discoveryAgentVersion?: string;
 }
 
 /**
  * Request parameters for v2ReportMonitoredOperatorStatus operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ReportMonitoredOperatorStatusRequest
  */
 export interface InstallerApiV2ReportMonitoredOperatorStatusRequest {
   /**
    * The cluster whose operators are being monitored.
-   * @type {string}
-   * @memberof InstallerApiV2ReportMonitoredOperatorStatus
    */
   readonly clusterId: string;
 
   /**
    * The operators monitor report.
-   * @type {OperatorMonitorReport}
-   * @memberof InstallerApiV2ReportMonitoredOperatorStatus
    */
   readonly reportParams: OperatorMonitorReport;
 }
 
 /**
  * Request parameters for v2ResetCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ResetClusterRequest
  */
 export interface InstallerApiV2ResetClusterRequest {
   /**
    * The cluster whose installation is to be reset.
-   * @type {string}
-   * @memberof InstallerApiV2ResetCluster
    */
   readonly clusterId: string;
 }
 
 /**
  * Request parameters for v2ResetHost operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ResetHostRequest
  */
 export interface InstallerApiV2ResetHostRequest {
   /**
    * The infra-env of the host that is being reset.
-   * @type {string}
-   * @memberof InstallerApiV2ResetHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that is being reset.
-   * @type {string}
-   * @memberof InstallerApiV2ResetHost
    */
   readonly hostId: string;
 }
 
 /**
  * Request parameters for v2ResetHostValidation operation in InstallerApi.
- * @export
- * @interface InstallerApiV2ResetHostValidationRequest
  */
 export interface InstallerApiV2ResetHostValidationRequest {
   /**
    * The infra-env of the host that its validation is being reset.
-   * @type {string}
-   * @memberof InstallerApiV2ResetHostValidation
    */
   readonly infraEnvId: string;
 
   /**
    * The host that its validation is being reset.
-   * @type {string}
-   * @memberof InstallerApiV2ResetHostValidation
    */
   readonly hostId: string;
 
   /**
    * The id of the validation being reset.
-   * @type {string}
-   * @memberof InstallerApiV2ResetHostValidation
    */
   readonly validationId: string;
 }
 
 /**
  * Request parameters for v2SetIgnoredValidations operation in InstallerApi.
- * @export
- * @interface InstallerApiV2SetIgnoredValidationsRequest
  */
 export interface InstallerApiV2SetIgnoredValidationsRequest {
   /**
    * The cluster whose failing validations should be ignored according to this list.
-   * @type {string}
-   * @memberof InstallerApiV2SetIgnoredValidations
    */
   readonly clusterId: string;
 
   /**
    * The validations to be ignored.
-   * @type {IgnoredValidations}
-   * @memberof InstallerApiV2SetIgnoredValidations
    */
   readonly ignoredValidations: IgnoredValidations;
 }
 
 /**
  * Request parameters for v2UpdateCluster operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateClusterRequest
  */
 export interface InstallerApiV2UpdateClusterRequest {
   /**
    * The cluster to be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateCluster
    */
   readonly clusterId: string;
 
   /**
    * The properties to update.
-   * @type {V2ClusterUpdateParams}
-   * @memberof InstallerApiV2UpdateCluster
    */
   readonly clusterUpdateParams: V2ClusterUpdateParams;
 }
 
 /**
+ * Request parameters for v2UpdateClusterFinalizingProgress operation in InstallerApi.
+ */
+export interface InstallerApiV2UpdateClusterFinalizingProgressRequest {
+  /**
+   * The cluster being updated.
+   */
+  readonly clusterId: string;
+
+  /**
+   * New progress value.
+   */
+  readonly finalizingProgress: ClusterFinalizingProgress;
+}
+
+/**
  * Request parameters for v2UpdateClusterInstallConfig operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateClusterInstallConfigRequest
  */
 export interface InstallerApiV2UpdateClusterInstallConfigRequest {
   /**
    * The cluster whose install config is being updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateClusterInstallConfig
    */
   readonly clusterId: string;
 
   /**
    * Install config overrides.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateClusterInstallConfig
    */
   readonly installConfigParams: string;
 }
 
 /**
  * Request parameters for v2UpdateClusterLogsProgress operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateClusterLogsProgressRequest
  */
 export interface InstallerApiV2UpdateClusterLogsProgressRequest {
   /**
    * The cluster whose log progress is being updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateClusterLogsProgress
    */
   readonly clusterId: string;
 
   /**
    * Parameters for updating log progress.
-   * @type {LogsProgressParams}
-   * @memberof InstallerApiV2UpdateClusterLogsProgress
    */
   readonly logsProgressParams: LogsProgressParams;
 }
 
 /**
  * Request parameters for v2UpdateClusterUISettings operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateClusterUISettingsRequest
  */
 export interface InstallerApiV2UpdateClusterUISettingsRequest {
   /**
    * The cluster for which UI settings should be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateClusterUISettings
    */
   readonly clusterId: string;
 
   /**
    * Settings for the installer UI.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateClusterUISettings
    */
   readonly uiSettings: string;
 }
 
 /**
  * Request parameters for v2UpdateHost operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateHostRequest
  */
 export interface InstallerApiV2UpdateHostRequest {
   /**
    * The infra-env ID of the host to be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHost
    */
   readonly infraEnvId: string;
 
   /**
    * The host that should be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHost
    */
   readonly hostId: string;
 
   /**
    * The properties to update.
-   * @type {HostUpdateParams}
-   * @memberof InstallerApiV2UpdateHost
    */
   readonly hostUpdateParams: HostUpdateParams;
 }
 
 /**
  * Request parameters for v2UpdateHostIgnition operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateHostIgnitionRequest
  */
 export interface InstallerApiV2UpdateHostIgnitionRequest {
   /**
    * The infra-env of the host whose ignition file should be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostIgnition
    */
   readonly infraEnvId: string;
 
   /**
    * The host whose ignition file should be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostIgnition
    */
   readonly hostId: string;
 
   /**
    * Ignition config overrides.
-   * @type {HostIgnitionParams}
-   * @memberof InstallerApiV2UpdateHostIgnition
    */
   readonly hostIgnitionParams: HostIgnitionParams;
 }
 
 /**
  * Request parameters for v2UpdateHostInstallProgress operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateHostInstallProgressRequest
  */
 export interface InstallerApiV2UpdateHostInstallProgressRequest {
   /**
    * The infra-env of the host being updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostInstallProgress
    */
   readonly infraEnvId: string;
 
   /**
    * The ID of the host to update.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostInstallProgress
    */
   readonly hostId: string;
 
   /**
    * New progress value.
-   * @type {HostProgress}
-   * @memberof InstallerApiV2UpdateHostInstallProgress
    */
   readonly hostProgress: HostProgress;
 
   /**
    * The software version of the discovery agent that is updating progress.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostInstallProgress
    */
   readonly discoveryAgentVersion?: string;
 }
 
 /**
  * Request parameters for v2UpdateHostInstallerArgs operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateHostInstallerArgsRequest
  */
 export interface InstallerApiV2UpdateHostInstallerArgsRequest {
   /**
    * The infra-env of the host whose installer arguments should be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostInstallerArgs
    */
   readonly infraEnvId: string;
 
   /**
    * The host whose installer arguments should be updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostInstallerArgs
    */
   readonly hostId: string;
 
   /**
    * The updated installer arguments.
-   * @type {InstallerArgsParams}
-   * @memberof InstallerApiV2UpdateHostInstallerArgs
    */
   readonly installerArgsParams: InstallerArgsParams;
 }
 
 /**
  * Request parameters for v2UpdateHostLogsProgress operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UpdateHostLogsProgressRequest
  */
 export interface InstallerApiV2UpdateHostLogsProgressRequest {
   /**
    * The infra-env whose log progress is being updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostLogsProgress
    */
   readonly infraEnvId: string;
 
   /**
    * The host whose log progress is being updated.
-   * @type {string}
-   * @memberof InstallerApiV2UpdateHostLogsProgress
    */
   readonly hostId: string;
 
   /**
    * Parameters for updating log progress.
-   * @type {LogsProgressParams}
-   * @memberof InstallerApiV2UpdateHostLogsProgress
    */
   readonly logsProgressParams: LogsProgressParams;
 }
 
 /**
  * Request parameters for v2UploadClusterIngressCert operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UploadClusterIngressCertRequest
  */
 export interface InstallerApiV2UploadClusterIngressCertRequest {
   /**
    * The cluster to associate with the ingress certificate.
-   * @type {string}
-   * @memberof InstallerApiV2UploadClusterIngressCert
    */
   readonly clusterId: string;
 
   /**
    * The ingress certificate.
-   * @type {string}
-   * @memberof InstallerApiV2UploadClusterIngressCert
    */
   readonly ingressCertParams: string;
 
   /**
    * The software version of the discovery agent that is uploading the ingress certificate.
-   * @type {string}
-   * @memberof InstallerApiV2UploadClusterIngressCert
    */
   readonly discoveryAgentVersion?: string;
 }
 
 /**
  * Request parameters for v2UploadLogs operation in InstallerApi.
- * @export
- * @interface InstallerApiV2UploadLogsRequest
  */
 export interface InstallerApiV2UploadLogsRequest {
   /**
    * The cluster whose logs should be uploaded.
-   * @type {string}
-   * @memberof InstallerApiV2UploadLogs
    */
   readonly clusterId: string;
 
   /**
    * The type of log file to be uploaded.
-   * @type {'host' | 'controller'}
-   * @memberof InstallerApiV2UploadLogs
    */
   readonly logsType: V2UploadLogsLogsTypeEnum;
 
   /**
    * The infra-env ID of the host.
-   * @type {string}
-   * @memberof InstallerApiV2UploadLogs
    */
   readonly infraEnvId?: string;
 
   /**
    * The host whose logs should be uploaded.
-   * @type {string}
-   * @memberof InstallerApiV2UploadLogs
    */
   readonly hostId?: string;
 
   /**
    * The log file to be uploaded.
-   * @type {File}
-   * @memberof InstallerApiV2UploadLogs
    */
   readonly upfile?: File;
 }
 
 /**
  * InstallerApi - object-oriented interface
- * @export
- * @class InstallerApi
- * @extends {BaseAPI}
  */
 export class InstallerApi extends BaseAPI {
   /**
@@ -7154,9 +7825,8 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiBindHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
-  public bindHost(requestParameters: InstallerApiBindHostRequest, options?: AxiosRequestConfig) {
+  public bindHost(requestParameters: InstallerApiBindHostRequest, options?: RawAxiosRequestConfig) {
     return InstallerApiFp(this.configuration)
       .bindHost(
         requestParameters.infraEnvId,
@@ -7172,11 +7842,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiDeregisterInfraEnvRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public deregisterInfraEnv(
     requestParameters: InstallerApiDeregisterInfraEnvRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .deregisterInfraEnv(requestParameters.infraEnvId, options)
@@ -7188,11 +7857,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiDownloadMinimalInitrdRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public downloadMinimalInitrd(
     requestParameters: InstallerApiDownloadMinimalInitrdRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .downloadMinimalInitrd(requestParameters.infraEnvId, options)
@@ -7200,18 +7868,39 @@ export class InstallerApi extends BaseAPI {
   }
 
   /**
-   * A list of platforms that this cluster can support in its current configuration.
+   * Deprecated. Returns a list of platforms that this cluster can support in its current configuration. Prefer deriving platform eligibility from cluster hosts and inventory together with GET /v2/support-levels/features (or GET /v2/support-levels/features/detailed) for the cluster OpenShift version and CPU architecture.
    * @param {InstallerApiGetClusterSupportedPlatformsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public getClusterSupportedPlatforms(
     requestParameters: InstallerApiGetClusterSupportedPlatformsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .getClusterSupportedPlatforms(requestParameters.clusterId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Retrieves detailed features information including support level, incompatibilities, and operator dependencies.
+   * @param {InstallerApiGetDetailedSupportedFeaturesRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public getDetailedSupportedFeatures(
+    requestParameters: InstallerApiGetDetailedSupportedFeaturesRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return InstallerApiFp(this.configuration)
+      .getDetailedSupportedFeatures(
+        requestParameters.openshiftVersion,
+        requestParameters.cpuArchitecture,
+        requestParameters.platformType,
+        requestParameters.externalPlatformName,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -7220,11 +7909,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiGetInfraEnvRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public getInfraEnv(
     requestParameters: InstallerApiGetInfraEnvRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .getInfraEnv(requestParameters.infraEnvId, options)
@@ -7236,11 +7924,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiGetInfraEnvDownloadURLRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public getInfraEnvDownloadURL(
     requestParameters: InstallerApiGetInfraEnvDownloadURLRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .getInfraEnvDownloadURL(requestParameters.infraEnvId, options)
@@ -7252,11 +7939,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiGetInfraEnvPresignedFileURLRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public getInfraEnvPresignedFileURL(
     requestParameters: InstallerApiGetInfraEnvPresignedFileURLRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .getInfraEnvPresignedFileURL(
@@ -7273,11 +7959,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiGetSupportedArchitecturesRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public getSupportedArchitectures(
     requestParameters: InstallerApiGetSupportedArchitecturesRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .getSupportedArchitectures(requestParameters.openshiftVersion, options)
@@ -7289,16 +7974,17 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiGetSupportedFeaturesRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public getSupportedFeatures(
     requestParameters: InstallerApiGetSupportedFeaturesRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .getSupportedFeatures(
         requestParameters.openshiftVersion,
         requestParameters.cpuArchitecture,
+        requestParameters.platformType,
+        requestParameters.externalPlatformName,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7309,11 +7995,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiListClusterHostsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public listClusterHosts(
     requestParameters: InstallerApiListClusterHostsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .listClusterHosts(
@@ -7332,11 +8017,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiListInfraEnvsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public listInfraEnvs(
     requestParameters: InstallerApiListInfraEnvsRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .listInfraEnvs(requestParameters.clusterId, requestParameters.owner, options)
@@ -7348,11 +8032,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiRegenerateInfraEnvSigningKeyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public regenerateInfraEnvSigningKey(
     requestParameters: InstallerApiRegenerateInfraEnvSigningKeyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .regenerateInfraEnvSigningKey(requestParameters.infraEnvId, options)
@@ -7364,11 +8047,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiRegisterInfraEnvRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public registerInfraEnv(
     requestParameters: InstallerApiRegisterInfraEnvRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .registerInfraEnv(requestParameters.infraenvCreateParams, options)
@@ -7380,11 +8062,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiTransformClusterToAddingHostsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public transformClusterToAddingHosts(
     requestParameters: InstallerApiTransformClusterToAddingHostsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .transformClusterToAddingHosts(requestParameters.clusterId, options)
@@ -7397,11 +8078,10 @@ export class InstallerApi extends BaseAPI {
    * @param {*} [options] Override http request option.
    * @deprecated
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public transformClusterToDay2(
     requestParameters: InstallerApiTransformClusterToDay2Request,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .transformClusterToDay2(requestParameters.clusterId, options)
@@ -7413,11 +8093,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiUnbindHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public unbindHost(
     requestParameters: InstallerApiUnbindHostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .unbindHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -7429,11 +8108,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiUpdateInfraEnvRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public updateInfraEnv(
     requestParameters: InstallerApiUpdateInfraEnvRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .updateInfraEnv(requestParameters.infraEnvId, requestParameters.infraEnvUpdateParams, options)
@@ -7445,11 +8123,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2CancelInstallationRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2CancelInstallation(
     requestParameters: InstallerApiV2CancelInstallationRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2CancelInstallation(requestParameters.clusterId, options)
@@ -7461,11 +8138,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2CompleteInstallationRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2CompleteInstallation(
     requestParameters: InstallerApiV2CompleteInstallationRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2CompleteInstallation(
@@ -7482,11 +8158,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DeregisterClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DeregisterCluster(
     requestParameters: InstallerApiV2DeregisterClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DeregisterCluster(requestParameters.clusterId, options)
@@ -7498,11 +8173,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DeregisterHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DeregisterHost(
     requestParameters: InstallerApiV2DeregisterHostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DeregisterHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -7514,11 +8188,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DownloadClusterCredentialsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DownloadClusterCredentials(
     requestParameters: InstallerApiV2DownloadClusterCredentialsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DownloadClusterCredentials(
@@ -7534,11 +8207,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DownloadClusterFilesRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DownloadClusterFiles(
     requestParameters: InstallerApiV2DownloadClusterFilesRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DownloadClusterFiles(
@@ -7555,11 +8227,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DownloadClusterLogsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DownloadClusterLogs(
     requestParameters: InstallerApiV2DownloadClusterLogsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DownloadClusterLogs(
@@ -7576,11 +8247,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DownloadHostIgnitionRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DownloadHostIgnition(
     requestParameters: InstallerApiV2DownloadHostIgnitionRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DownloadHostIgnition(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -7592,11 +8262,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2DownloadInfraEnvFilesRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2DownloadInfraEnvFiles(
     requestParameters: InstallerApiV2DownloadInfraEnvFilesRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2DownloadInfraEnvFiles(
@@ -7615,11 +8284,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetCluster(
     requestParameters: InstallerApiV2GetClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetCluster(
@@ -7636,9 +8304,8 @@ export class InstallerApi extends BaseAPI {
    * Get the default values for various cluster properties.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
-  public v2GetClusterDefaultConfig(options?: AxiosRequestConfig) {
+  public v2GetClusterDefaultConfig(options?: RawAxiosRequestConfig) {
     return InstallerApiFp(this.configuration)
       .v2GetClusterDefaultConfig(options)
       .then((request) => request(this.axios, this.basePath));
@@ -7649,11 +8316,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetClusterInstallConfigRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetClusterInstallConfig(
     requestParameters: InstallerApiV2GetClusterInstallConfigRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetClusterInstallConfig(requestParameters.clusterId, options)
@@ -7665,11 +8331,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetClusterUISettingsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetClusterUISettings(
     requestParameters: InstallerApiV2GetClusterUISettingsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetClusterUISettings(requestParameters.clusterId, options)
@@ -7681,11 +8346,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetCredentialsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetCredentials(
     requestParameters: InstallerApiV2GetCredentialsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetCredentials(requestParameters.clusterId, options)
@@ -7697,9 +8361,11 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
-  public v2GetHost(requestParameters: InstallerApiV2GetHostRequest, options?: AxiosRequestConfig) {
+  public v2GetHost(
+    requestParameters: InstallerApiV2GetHostRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
     return InstallerApiFp(this.configuration)
       .v2GetHost(requestParameters.infraEnvId, requestParameters.hostId, options)
       .then((request) => request(this.axios, this.basePath));
@@ -7710,11 +8376,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetHostIgnitionRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetHostIgnition(
     requestParameters: InstallerApiV2GetHostIgnitionRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetHostIgnition(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -7726,11 +8391,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetIgnoredValidationsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetIgnoredValidations(
     requestParameters: InstallerApiV2GetIgnoredValidationsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetIgnoredValidations(requestParameters.clusterId, options)
@@ -7742,11 +8406,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetNextStepsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetNextSteps(
     requestParameters: InstallerApiV2GetNextStepsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetNextSteps(
@@ -7764,11 +8427,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetPreflightRequirementsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetPreflightRequirements(
     requestParameters: InstallerApiV2GetPreflightRequirementsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetPreflightRequirements(requestParameters.clusterId, options)
@@ -7780,11 +8442,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetPresignedForClusterCredentialsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetPresignedForClusterCredentials(
     requestParameters: InstallerApiV2GetPresignedForClusterCredentialsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetPresignedForClusterCredentials(
@@ -7800,11 +8461,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2GetPresignedForClusterFilesRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2GetPresignedForClusterFiles(
     requestParameters: InstallerApiV2GetPresignedForClusterFilesRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2GetPresignedForClusterFiles(
@@ -7823,11 +8483,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ImportClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ImportCluster(
     requestParameters: InstallerApiV2ImportClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ImportCluster(requestParameters.newImportClusterParams, options)
@@ -7839,11 +8498,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2InstallClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2InstallCluster(
     requestParameters: InstallerApiV2InstallClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2InstallCluster(requestParameters.clusterId, options)
@@ -7855,11 +8513,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2InstallHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2InstallHost(
     requestParameters: InstallerApiV2InstallHostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2InstallHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -7871,11 +8528,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ListClustersRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ListClusters(
     requestParameters: InstallerApiV2ListClustersRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ListClusters(
@@ -7890,28 +8546,14 @@ export class InstallerApi extends BaseAPI {
   }
 
   /**
-   * (DEPRECATED) Retrieves the support levels for features for each OpenShift version.
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof InstallerApi
-   */
-  public v2ListFeatureSupportLevels(options?: AxiosRequestConfig) {
-    return InstallerApiFp(this.configuration)
-      .v2ListFeatureSupportLevels(options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
    * Retrieves the list of OpenShift hosts that belong the infra-env.
    * @param {InstallerApiV2ListHostsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ListHosts(
     requestParameters: InstallerApiV2ListHostsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ListHosts(requestParameters.infraEnvId, options)
@@ -7923,11 +8565,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ListOfClusterOperatorsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ListOfClusterOperators(
     requestParameters: InstallerApiV2ListOfClusterOperatorsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ListOfClusterOperators(
@@ -7943,11 +8584,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2PostStepReplyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2PostStepReply(
     requestParameters: InstallerApiV2PostStepReplyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2PostStepReply(
@@ -7965,14 +8605,28 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2RegisterClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2RegisterCluster(
     requestParameters: InstallerApiV2RegisterClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2RegisterCluster(requestParameters.newClusterParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Create a disconnected OpenShift cluster for offline installation with embedded ignition
+   * @param {InstallerApiV2RegisterDisconnectedClusterRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public v2RegisterDisconnectedCluster(
+    requestParameters: InstallerApiV2RegisterDisconnectedClusterRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return InstallerApiFp(this.configuration)
+      .v2RegisterDisconnectedCluster(requestParameters.newClusterParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -7981,11 +8635,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2RegisterHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2RegisterHost(
     requestParameters: InstallerApiV2RegisterHostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2RegisterHost(
@@ -8002,11 +8655,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ReportMonitoredOperatorStatusRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ReportMonitoredOperatorStatus(
     requestParameters: InstallerApiV2ReportMonitoredOperatorStatusRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ReportMonitoredOperatorStatus(
@@ -8022,11 +8674,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ResetClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ResetCluster(
     requestParameters: InstallerApiV2ResetClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ResetCluster(requestParameters.clusterId, options)
@@ -8038,11 +8689,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ResetHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ResetHost(
     requestParameters: InstallerApiV2ResetHostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ResetHost(requestParameters.infraEnvId, requestParameters.hostId, options)
@@ -8055,11 +8705,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2ResetHostValidationRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2ResetHostValidation(
     requestParameters: InstallerApiV2ResetHostValidationRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2ResetHostValidation(
@@ -8076,11 +8725,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2SetIgnoredValidationsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2SetIgnoredValidations(
     requestParameters: InstallerApiV2SetIgnoredValidationsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2SetIgnoredValidations(
@@ -8096,14 +8744,32 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateClusterRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateCluster(
     requestParameters: InstallerApiV2UpdateClusterRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateCluster(requestParameters.clusterId, requestParameters.clusterUpdateParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Update installation finalizing progress.
+   * @param {InstallerApiV2UpdateClusterFinalizingProgressRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public v2UpdateClusterFinalizingProgress(
+    requestParameters: InstallerApiV2UpdateClusterFinalizingProgressRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return InstallerApiFp(this.configuration)
+      .v2UpdateClusterFinalizingProgress(
+        requestParameters.clusterId,
+        requestParameters.finalizingProgress,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -8112,11 +8778,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateClusterInstallConfigRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateClusterInstallConfig(
     requestParameters: InstallerApiV2UpdateClusterInstallConfigRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateClusterInstallConfig(
@@ -8132,11 +8797,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateClusterLogsProgressRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateClusterLogsProgress(
     requestParameters: InstallerApiV2UpdateClusterLogsProgressRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateClusterLogsProgress(
@@ -8152,11 +8816,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateClusterUISettingsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateClusterUISettings(
     requestParameters: InstallerApiV2UpdateClusterUISettingsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateClusterUISettings(requestParameters.clusterId, requestParameters.uiSettings, options)
@@ -8168,11 +8831,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateHostRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateHost(
     requestParameters: InstallerApiV2UpdateHostRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateHost(
@@ -8189,11 +8851,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateHostIgnitionRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateHostIgnition(
     requestParameters: InstallerApiV2UpdateHostIgnitionRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateHostIgnition(
@@ -8210,11 +8871,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateHostInstallProgressRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateHostInstallProgress(
     requestParameters: InstallerApiV2UpdateHostInstallProgressRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateHostInstallProgress(
@@ -8232,11 +8892,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateHostInstallerArgsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateHostInstallerArgs(
     requestParameters: InstallerApiV2UpdateHostInstallerArgsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateHostInstallerArgs(
@@ -8253,11 +8912,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UpdateHostLogsProgressRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UpdateHostLogsProgress(
     requestParameters: InstallerApiV2UpdateHostLogsProgressRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UpdateHostLogsProgress(
@@ -8274,11 +8932,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UploadClusterIngressCertRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UploadClusterIngressCert(
     requestParameters: InstallerApiV2UploadClusterIngressCertRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UploadClusterIngressCert(
@@ -8295,11 +8952,10 @@ export class InstallerApi extends BaseAPI {
    * @param {InstallerApiV2UploadLogsRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof InstallerApi
    */
   public v2UploadLogs(
     requestParameters: InstallerApiV2UploadLogsRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return InstallerApiFp(this.configuration)
       .v2UploadLogs(
@@ -8314,26 +8970,28 @@ export class InstallerApi extends BaseAPI {
   }
 }
 
-/**
- * @export
- * @enum {string}
- */
+export enum GetDetailedSupportedFeaturesCpuArchitectureEnum {
+  X8664 = 'x86_64',
+  Arm64 = 'arm64',
+  Ppc64le = 'ppc64le',
+  S390x = 's390x',
+  Multi = 'multi',
+}
+export enum GetDetailedSupportedFeaturesPlatformTypeEnum {
+  Baremetal = 'baremetal',
+  None = 'none',
+  Nutanix = 'nutanix',
+  Vsphere = 'vsphere',
+  External = 'external',
+}
 export enum GetInfraEnvPresignedFileURLFileNameEnum {
   DiscoveryIgn = 'discovery.ign',
   IpxeScript = 'ipxe-script',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum GetInfraEnvPresignedFileURLIpxeScriptTypeEnum {
   DiscoveryImageAlways = 'discovery-image-always',
   BootOrderControl = 'boot-order-control',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum GetSupportedFeaturesCpuArchitectureEnum {
   X8664 = 'x86_64',
   Aarch64 = 'aarch64',
@@ -8342,28 +9000,24 @@ export enum GetSupportedFeaturesCpuArchitectureEnum {
   S390x = 's390x',
   Multi = 'multi',
 }
-/**
- * @export
- * @enum {string}
- */
+export enum GetSupportedFeaturesPlatformTypeEnum {
+  Baremetal = 'baremetal',
+  None = 'none',
+  Nutanix = 'nutanix',
+  Vsphere = 'vsphere',
+  External = 'external',
+}
 export enum ListClusterHostsRoleEnum {
   Master = 'master',
+  Arbiter = 'arbiter',
   Worker = 'worker',
   AutoAssign = 'auto-assign',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadClusterCredentialsFileNameEnum {
   KubeadminPassword = 'kubeadmin-password',
   Kubeconfig = 'kubeconfig',
   KubeconfigNoingress = 'kubeconfig-noingress',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadClusterFilesFileNameEnum {
   BootstrapIgn = 'bootstrap.ign',
   MasterIgn = 'master.ign',
@@ -8372,54 +9026,32 @@ export enum V2DownloadClusterFilesFileNameEnum {
   InstallConfigYaml = 'install-config.yaml',
   CustomManifestsJson = 'custom_manifests.json',
   CustomManifestsYaml = 'custom_manifests.yaml',
+  ArbiterIgn = 'arbiter.ign',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadClusterLogsLogsTypeEnum {
   Host = 'host',
   Controller = 'controller',
   All = 'all',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadInfraEnvFilesFileNameEnum {
   DiscoveryIgn = 'discovery.ign',
   IpxeScript = 'ipxe-script',
   StaticNetworkConfig = 'static-network-config',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadInfraEnvFilesIpxeScriptTypeEnum {
   DiscoveryImageAlways = 'discovery-image-always',
   BootOrderControl = 'boot-order-control',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2DownloadInfraEnvFilesDiscoveryIsoTypeEnum {
   FullIso = 'full-iso',
   MinimalIso = 'minimal-iso',
+  DisconnectedIso = 'disconnected-iso',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2GetPresignedForClusterCredentialsFileNameEnum {
   KubeadminPassword = 'kubeadmin-password',
   Kubeconfig = 'kubeconfig',
   KubeconfigNoingress = 'kubeconfig-noingress',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2GetPresignedForClusterFilesFileNameEnum {
   BootstrapIgn = 'bootstrap.ign',
   MasterIgn = 'master.ign',
@@ -8429,19 +9061,11 @@ export enum V2GetPresignedForClusterFilesFileNameEnum {
   Logs = 'logs',
   Manifests = 'manifests',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2GetPresignedForClusterFilesLogsTypeEnum {
   Host = 'host',
   Controller = 'controller',
   All = 'all',
 }
-/**
- * @export
- * @enum {string}
- */
 export enum V2UploadLogsLogsTypeEnum {
   Host = 'host',
   Controller = 'controller',

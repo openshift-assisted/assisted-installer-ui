@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { SummaryVector } from './summary-vector';
+import type { SummaryVector } from './summary-vector';
 
-/**
- *
- * @export
- * @interface SummaryMetrics
- */
 export interface SummaryMetrics {
-  /**
-   *
-   * @type {string}
-   * @memberof SummaryMetrics
-   */
   name?: string;
-  /**
-   *
-   * @type {Array<SummaryVector>}
-   * @memberof SummaryMetrics
-   */
   vector?: Array<SummaryVector>;
 }

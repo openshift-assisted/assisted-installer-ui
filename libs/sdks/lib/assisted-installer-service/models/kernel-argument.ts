@@ -14,28 +14,18 @@
 
 /**
  * pair of [operation, argument] specifying the argument and what operation should be applied on it.
- * @export
- * @interface KernelArgument
  */
 export interface KernelArgument {
   /**
    * The operation to apply on the kernel argument.
-   * @type {string}
-   * @memberof KernelArgument
    */
   operation?: KernelArgumentOperationEnum;
   /**
    * Kernel argument can have the form <parameter> or <parameter>=<value>. The following examples should be supported: rd.net.timeout.carrier=60 isolcpus=1,2,10-20,100-2000:2/25 quiet The parsing by the command line parser in linux kernel is much looser and this pattern follows it.
-   * @type {string}
-   * @memberof KernelArgument
    */
   value?: string;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum KernelArgumentOperationEnum {
   Append = 'append',
   Replace = 'replace',

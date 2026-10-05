@@ -14,8 +14,6 @@
 
 /**
  * Agent upgrade result.
- * @export
- * @enum {string}
  */
 
 export enum UpgradeAgentResult {

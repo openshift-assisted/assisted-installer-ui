@@ -14,13 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ConsumedQuota } from './consumed-quota';
+import type { ConsumedQuota } from './consumed-quota';
 // May contain unused imports in some cases
 // @ts-ignore
-import { List } from './list';
+import type { List } from './list';
 
 /**
  * @type ConsumedQuotaList
- * @export
  */
 export type ConsumedQuotaList = List;

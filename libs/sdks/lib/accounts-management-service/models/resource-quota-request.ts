@@ -12,36 +12,12 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ResourceQuotaRequest
- */
 export interface ResourceQuotaRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ResourceQuotaRequest
-   */
   sku: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ResourceQuotaRequest
-   */
   sku_count: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ResourceQuotaRequest
-   */
   type?: ResourceQuotaRequestTypeEnum;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum ResourceQuotaRequestTypeEnum {
   Config = 'Config',
   Manual = 'Manual',

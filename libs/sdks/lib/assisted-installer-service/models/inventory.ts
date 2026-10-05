@@ -14,113 +14,48 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Boot } from './boot';
+import type { Boot } from './boot';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Cpu } from './cpu';
+import type { Cpu } from './cpu';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Disk } from './disk';
+import type { Disk } from './disk';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Gpu } from './gpu';
+import type { Gpu } from './gpu';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Interface } from './interface';
+import type { Interface } from './interface';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Memory } from './memory';
+import type { InventoryTruncation } from './inventory-truncation';
 // May contain unused imports in some cases
 // @ts-ignore
-import { Route } from './route';
+import type { Memory } from './memory';
 // May contain unused imports in some cases
 // @ts-ignore
-import { SystemVendor } from './system-vendor';
+import type { Route } from './route';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { SystemVendor } from './system-vendor';
 
-/**
- *
- * @export
- * @interface Inventory
- */
 export interface Inventory {
-  /**
-   *
-   * @type {string}
-   * @memberof Inventory
-   */
   bmc_address?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Inventory
-   */
   bmc_v6address?: string;
-  /**
-   *
-   * @type {Boot}
-   * @memberof Inventory
-   */
   boot?: Boot;
-  /**
-   *
-   * @type {Cpu}
-   * @memberof Inventory
-   */
   cpu?: Cpu;
-  /**
-   *
-   * @type {Array<Disk>}
-   * @memberof Inventory
-   */
   disks?: Array<Disk>;
-  /**
-   *
-   * @type {Array<Gpu>}
-   * @memberof Inventory
-   */
   gpus?: Array<Gpu>;
-  /**
-   *
-   * @type {string}
-   * @memberof Inventory
-   */
   hostname?: string;
-  /**
-   *
-   * @type {Array<Interface>}
-   * @memberof Inventory
-   */
   interfaces?: Array<Interface>;
-  /**
-   *
-   * @type {Memory}
-   * @memberof Inventory
-   */
   memory?: Memory;
-  /**
-   *
-   * @type {Array<Route>}
-   * @memberof Inventory
-   */
   routes?: Array<Route>;
-  /**
-   *
-   * @type {SystemVendor}
-   * @memberof Inventory
-   */
   system_vendor?: SystemVendor;
-  /**
-   *
-   * @type {string}
-   * @memberof Inventory
-   */
   tpm_version?: InventoryTpmVersionEnum;
+  truncation?: InventoryTruncation;
 }
 
-/**
- * @export
- * @enum {string}
- */
 export enum InventoryTpmVersionEnum {
   None = 'none',
   _12 = '1.2',
