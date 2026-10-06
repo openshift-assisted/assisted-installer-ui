@@ -4486,15 +4486,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"argparse@npm:^1.0.7":
-  version: 1.0.10
-  resolution: "argparse@npm:1.0.10"
-  dependencies:
-    sprintf-js: ~1.0.2
-  checksum: 7ca6e45583a28de7258e39e13d81e925cfa25d7d4aacbf806a382d3c02fcb13403a07fb8aeef949f10a7cfe4a62da0e2e807b348a5980554cc28ee573ef95945
-  languageName: node
-  linkType: hard
-
 "argparse@npm:^2.0.1":
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
@@ -7379,7 +7370,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esprima@npm:^4.0.0, esprima@npm:^4.0.1":
+"esprima@npm:^4.0.1":
   version: 4.0.1
   resolution: "esprima@npm:4.0.1"
   bin:
@@ -7701,10 +7692,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-uri@npm:^3.0.1":
-  version: 3.1.7
-  resolution: "fast-uri@npm:3.1.7"
-  checksum: 2095554c1e48b5a772529175dfa8d3c2ca33a1db6c84abe1584f9c4c3337b62d8e4807ed60a806f85bb7635cb7acca6c66c0c642b867efc3ea4e20a0d6c40cbe
+"fast-uri@npm:^3.1.8":
+  version: 3.1.8
+  resolution: "fast-uri@npm:3.1.8"
+  checksum: 3319c50163d6d1265d1fd06f677e0d24a4cc4312c48c7222a0dc6641b90463c4476cb83f3c7444e0d1d0cd123d330d300ea46c48386f6924f35c34f6dd865416
   languageName: node
   linkType: hard
 
@@ -9139,17 +9130,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immutable@npm:^3.8.3":
-  version: 3.8.4
-  resolution: "immutable@npm:3.8.4"
-  checksum: 28e645aac74e6c0f2e9767cdb729c3958410946099a65d4a2329ad1b7b2f73b9847990a08bbbe891a267e40e9621ff4831a3e834bbd39d97a9c4098dd25f0a7b
-  languageName: node
-  linkType: hard
-
-"immutable@npm:^5.0.2":
-  version: 5.1.4
-  resolution: "immutable@npm:5.1.4"
-  checksum: 2bddb02594b27e2f37d35c32acf409b77a815e19e2ae7bbffae4b05535965ed3aaf8808255106cb229b7cf0791001bd88efde9cc38e5b32f935992e9b631adf3
+"immutable@npm:^5.1.5":
+  version: 5.1.9
+  resolution: "immutable@npm:5.1.9"
+  checksum: e24d57cfb1258b7d1ea8af1dd7b015494e8c488c6d94a3b63b4443804abe3abb43bbf5c39bd41d918043a83833d35407c3e905db8ba5381a15212217920f2edc
   languageName: node
   linkType: hard
 
@@ -9911,29 +9895,6 @@ __metadata:
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
   checksum: 8a95213a5a77deb6cbe94d86340e8d9ace2b93bc367790b260101d2f36a2eaf4e4e22d9fa9cf459b38af3a32fb4190e638024cf82ec95ef708680e405ea7cc78
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^3.12.0, js-yaml@npm:^3.13.1":
-  version: 3.14.1
-  resolution: "js-yaml@npm:3.14.1"
-  dependencies:
-    argparse: ^1.0.7
-    esprima: ^4.0.0
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: bef146085f472d44dee30ec34e5cf36bf89164f5d585435a3d3da89e52622dff0b188a580e4ad091c3341889e14cb88cac6e4deb16dc5b1e9623bb0601fc255c
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.1.0":
-  version: 4.3.1
-  resolution: "js-yaml@npm:4.3.1"
-  dependencies:
-    argparse: ^2.0.1
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 482740e69a1769b355d7182234c0fa197237f02e6a5c8c0b70a763af6a712c9741de350d784a5659e00cf03cedd6ebfa506d59ca45967e3ee50dd4f4df18f2e7
   languageName: node
   linkType: hard
 
@@ -14513,13 +14474,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sprintf-js@npm:~1.0.2":
-  version: 1.0.3
-  resolution: "sprintf-js@npm:1.0.3"
-  checksum: 19d79aec211f09b99ec3099b5b2ae2f6e9cdefe50bc91ac4c69144b6d3928a640bb6ae5b3def70c2e85a2c3d9f5ec2719921e3a59d3ca3ef4b2fd1a4656a0df3
-  languageName: node
-  linkType: hard
-
 "sshpk@npm:^1.18.0":
   version: 1.18.0
   resolution: "sshpk@npm:1.18.0"
@@ -16339,9 +16293,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-middleware@npm:^7.4.2":
-  version: 7.4.5
-  resolution: "webpack-dev-middleware@npm:7.4.5"
+"webpack-dev-middleware@npm:^7.4.6":
+  version: 7.4.6
+  resolution: "webpack-dev-middleware@npm:7.4.6"
   dependencies:
     colorette: ^2.0.10
     memfs: ^4.43.1
@@ -16354,7 +16308,7 @@ __metadata:
   peerDependenciesMeta:
     webpack:
       optional: true
-  checksum: 54c31f757fec48822c37129ba166f21985ad61a5971655e3c3b7358d997975587687d40dc6c1194f4e54615bd0916df15e4ebc3e3b5203300a52038eaeed5c0b
+  checksum: 48374d6282c93d159b881fb69c79deb6840c39e681b8c79e99aa26d8d1721b1a640761d93ccea4a06ff3ef40066b66680bfed8fba071f8b33caef530f9b0d4d6
   languageName: node
   linkType: hard
 
