@@ -373,7 +373,7 @@ const addDay2InfraEnvIntercepts = () => {
 const addDay1HostIntercepts = () => {
   const infraEnvApiPath = getDay1InfraEnvApiPath();
   cy.intercept('PATCH', `${infraEnvApiPath}/hosts/**`, (req) => {
-    const patchedHostId = req.url.match(/\/hosts\/(.+)$/)[1];
+    const patchedHostId = req.url.match(/\/hosts\/(.+)$/)?.[1];
     const { hostIds, getUpdatedHosts } = fixtures;
     const index = hostIds.findIndex((hostId) => hostId === patchedHostId);
     if (req.body.host_name) {
@@ -382,6 +382,23 @@ const addDay1HostIntercepts = () => {
 
     const hostsFixture = getUpdatedHosts();
     req.reply(hostsFixture[index]);
+  });
+
+  cy.intercept('GET', `${infraEnvApiPath}/hosts`, (req) => {
+    if (Cypress.env('AI_SCENARIO') === 'AI_OVE_CREATE_MULTINODE') {
+      req.reply(
+        hasWizardSignal('HOST_DISCOVERED_3') ? fixtures.oveBoundHosts : fixtures.oveUnboundHosts,
+      );
+    } else {
+      req.reply([]);
+    }
+  }).as('get-hosts');
+
+  cy.intercept('POST', `${infraEnvApiPath}/hosts/*/actions/bind`, (req) => {
+    const boundHostId = req.url.match(/\/hosts\/(.+?)\/actions\/bind/)?.[1];
+    const index = fixtures.hostIds.findIndex((hostId) => hostId === boundHostId);
+    req.alias = `bind-host-${index + 1}`;
+    req.reply(fixtures.oveBoundHosts[index]);
   });
 };
 
