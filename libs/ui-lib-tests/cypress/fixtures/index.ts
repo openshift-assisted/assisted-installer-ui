@@ -19,3 +19,4 @@ export * from './day2-flow/day1-responses';
 export * from './day2-flow/day2-responses';
 export * from './constants';
 export * from './ove';
+export * from './data';
