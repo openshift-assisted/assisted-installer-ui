@@ -1,5 +1,6 @@
 import { hostDiscover } from '../hosts/host-discover';
 import { hostRename } from '../hosts/host-rename';
+import { hostReady } from '../hosts/host-ready';
 
 const oveBoundHosts = [0, 1, 2].map((index) => ({
   ...hostDiscover(index),
@@ -12,4 +13,6 @@ const oveRenamedHosts = oveBoundHosts.map((host, index) =>
   hostRename(host, `${Cypress.env('HOST_RENAME')}-${index + 1}`),
 );
 
-export { oveBoundHosts, oveUnboundHosts, oveRenamedHosts };
+const oveReadyHosts = oveRenamedHosts.map(hostReady);
+
+export { oveBoundHosts, oveUnboundHosts, oveRenamedHosts, oveReadyHosts };
