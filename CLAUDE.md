@@ -13,13 +13,11 @@ Web UI for OpenShift Assisted Installer — helps users deploy OpenShift cluster
 apps/
   assisted-ui/               # Stand-alone UI (dev mode)
   assisted-disconnected-ui/  # Disconnected environment variant
-  assisted-chatbot/          # AI chatbot integration
 libs/
   ui-lib/                    # Main reusable components (consumed by OCM, ACM)
   types/                     # Generated TypeScript types from assisted-service API
   sdks/                      # Generated OpenAPI clients
   locales/                   # i18n catalogs (English + translations)
-  chatbot/                   # Chatbot library
   ui-lib-tests/              # Cypress integration tests
 ```
 

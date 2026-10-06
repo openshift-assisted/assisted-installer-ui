@@ -8,7 +8,6 @@ on:
       - 'v*'
       - '!v*-cim'
       - '!v*-virt'
-      - '!v*-chatbot'
 
 env:
   QUAY_ORG: quay.io/edge-infrastructure
@@ -58,7 +57,7 @@ jobs:
           tags=( latest-${GITHUB_SHA} latest )
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             tags+=( ${GITHUB_REF_NAME} )
-            if [[ ! "${GITHUB_REF_NAME}" =~ -(cim|chatbot)$ ]]; then
+            if [[ ! "${GITHUB_REF_NAME}" =~ -cim$ ]]; then
               tags+=( staging-released )            
             fi
           fi
