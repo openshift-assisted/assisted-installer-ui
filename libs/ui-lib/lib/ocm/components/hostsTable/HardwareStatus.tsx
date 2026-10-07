@@ -14,7 +14,7 @@ import {
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { wizardStepsValidationsMap } from '../wizard/utils';
 import { AdditionalNTPSourcesDialogToggle } from './components/AdditionaNTPSourceDialogToggle';
-import { NtpSyncFailureMessage } from './components/NtpSyncFailureMessage';
+import { OcmNtpSyncFailureMessage } from './components/OcmNtpSyncFailureMessage';
 
 type HardwareStatusProps = {
   host: Host;
@@ -54,7 +54,7 @@ export const HardwareStatus = (props: HardwareStatusProps) => {
       status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      NtpSyncFailureMessageComponent={NtpSyncFailureMessage}
+      NtpSyncFailureMessageComponent={OcmNtpSyncFailureMessage}
       openshiftVersion={props.openshiftVersion}
     />
   );

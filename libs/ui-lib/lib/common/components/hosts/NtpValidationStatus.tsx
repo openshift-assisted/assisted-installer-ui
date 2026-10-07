@@ -18,7 +18,7 @@ const getLabel = (t: TFunction, validationStatus?: Validation['status']) => {
 
 type NtpValidationsStatusProps = {
   validationsInfo: ValidationsInfo;
-  AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
+  AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   NtpSyncFailureMessageComponent?: ValidationInfoActionProps['NtpSyncFailureMessageComponent'];
 };
 

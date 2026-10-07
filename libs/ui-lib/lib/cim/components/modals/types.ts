@@ -60,8 +60,10 @@ export type EditPullSecretFormikValues = {
 };
 
 export type EditNtpSourcesFormikValues = {
-  enableNtpSources: string;
-  additionalNtpSources: string;
+  useAdditionalNTPSources: boolean;
+  additionalNTPSources: string;
+  useNTPSources: boolean;
+  ntpSources: string;
 };
 
 export type UploadActionModalProps = {
