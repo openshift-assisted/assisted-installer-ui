@@ -180,9 +180,6 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                 <GridItem>
                   <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
                     <InstallDisconnectedSwitch isDisabled={!!cluster} />
-                    <span>
-                      {t("ai:I'm installing on a disconnected/air-gapped/secured environment")}
-                    </span>
                   </Flex>
                 </GridItem>
               )}

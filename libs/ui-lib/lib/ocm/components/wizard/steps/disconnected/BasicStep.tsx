@@ -64,7 +64,6 @@ const BasicStepForm: React.FC<{
           <GridItem>
             <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
               <InstallDisconnectedSwitch />
-              <span>I'm installing on a disconnected/air-gapped/secured environment</span>
             </Flex>
           </GridItem>
           <GridItem>
