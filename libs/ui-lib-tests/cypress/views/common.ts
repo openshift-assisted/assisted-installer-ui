@@ -4,6 +4,7 @@ const wizardSteps = [
   'Host discovery',
   'Storage',
   'Networking',
+  'Custom manifests',
   'Review and create',
 ];
 
@@ -15,6 +16,7 @@ const wizardStepsWithStaticIp = [
   'Host discovery',
   'Storage',
   'Networking',
+  'Custom manifests',
   'Review and create',
 ];
 
