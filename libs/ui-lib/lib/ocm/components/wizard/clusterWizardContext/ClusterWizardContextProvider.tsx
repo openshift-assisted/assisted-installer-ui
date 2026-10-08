@@ -39,6 +39,7 @@ export const ClusterWizardContextProvider = ({
   const [installDisconnected, setInstallDisconnected] = React.useState(false);
   const [disconnectedCluster, setDisconnectedCluster] = React.useState<Cluster | undefined>();
   const [disconnectedInfraEnv, setDisconnectedInfraEnv] = React.useState<InfraEnv | undefined>();
+  const [disconnectedOpenshiftVersion, setDisconnectedOpenshiftVersion] = React.useState('');
   const [disconnectedWizardStepIds, setDisconnectedWizardStepIds] =
     React.useState<ClusterWizardStepsType[]>(disconnectedSteps);
   const location = useLocation();
@@ -211,6 +212,8 @@ export const ClusterWizardContextProvider = ({
       setDisconnectedCluster,
       disconnectedInfraEnv,
       setDisconnectedInfraEnv,
+      disconnectedOpenshiftVersion,
+      setDisconnectedOpenshiftVersion,
     };
   }, [
     wizardStepIds,
@@ -226,6 +229,7 @@ export const ClusterWizardContextProvider = ({
     disconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
+    disconnectedOpenshiftVersion,
   ]);
 
   if (!contextValue) {
