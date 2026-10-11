@@ -14,12 +14,12 @@ import { useNavigate } from 'react-router';
 import ResetSingleClusterModal from './ResetSingleClusterModal';
 
 const DisconnectedWizardContent = () => {
-  const { disconnectedOpenshiftVersion } = useClusterWizardContext();
+  const { disconnectedInfraEnv } = useClusterWizardContext();
 
   return (
     <NewFeatureSupportLevelProvider
       loadingUi={<ClusterLoading />}
-      openshiftVersion={disconnectedOpenshiftVersion}
+      openshiftVersion={disconnectedInfraEnv?.openshiftVersion}
     >
       <NewClusterWizard />
       <ResetSingleClusterModal />

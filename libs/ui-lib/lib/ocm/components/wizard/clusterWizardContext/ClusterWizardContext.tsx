@@ -23,8 +23,6 @@ export type ClusterWizardContextType = {
   setDisconnectedCluster: (cluster: Cluster | undefined) => void;
   disconnectedInfraEnv?: InfraEnv;
   setDisconnectedInfraEnv: (infraEnv: InfraEnv | undefined) => void;
-  disconnectedOpenshiftVersion: string;
-  setDisconnectedOpenshiftVersion: (version: string) => void;
 };
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);
