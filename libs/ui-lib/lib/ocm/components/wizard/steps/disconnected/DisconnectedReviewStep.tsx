@@ -30,9 +30,8 @@ import { useClusterWizardContext } from '../../clusterWizardContext';
 const opSpecs = getOperatorSpecs(() => undefined, true);
 
 export const DisconnectedReviewStep = () => {
-  const { moveBack, disconnectedInfraEnv, disconnectedOpenshiftVersion } =
-    useClusterWizardContext();
-  const openshiftVersion = disconnectedInfraEnv?.openshiftVersion ?? disconnectedOpenshiftVersion;
+  const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
+  const openshiftVersion = disconnectedInfraEnv?.openshiftVersion;
   const navigate = useNavigate();
 
   return (

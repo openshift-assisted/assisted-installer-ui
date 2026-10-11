@@ -20,7 +20,6 @@ import {
   getFormikErrorFields,
   LoadingState,
   OpenShiftVersionDropdown,
-  getKeys,
   OpenshiftVersionOptionType,
   CpuArchitecture,
 } from '../../../../../common';
@@ -44,8 +43,7 @@ const sortVersions = (versions: OpenshiftVersionOptionType[]) =>
 const mapOfflineVersions = (
   data: Record<string, OpenshiftVersion>,
 ): OpenshiftVersionOptionType[] => {
-  const versions = getKeys(data).map((key) => {
-    const versionItem = data[key];
+  const versions = Object.entries(data).map(([key, versionItem]) => {
     const version = versionItem.displayName;
 
     return {
@@ -55,7 +53,7 @@ const mapOfflineVersions = (
       default: Boolean(versionItem.default),
       supportLevel: versionItem.supportLevel,
       cpuArchitectures: versionItem.cpuArchitectures as CpuArchitecture[],
-    } satisfies OpenshiftVersionOptionType;
+    };
   });
 
   return sortVersions(versions);
@@ -82,15 +80,8 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
   loading,
   error,
 }) => {
-  const { setDisconnectedOpenshiftVersion } = useClusterWizardContext();
   const { submitForm, isValid, errors, touched, values } = useFormikContext<BasicStepValues>();
   const errorFields = getFormikErrorFields(errors, touched);
-
-  React.useEffect(() => {
-    if (values.openshiftVersion) {
-      setDisconnectedOpenshiftVersion(values.openshiftVersion);
-    }
-  }, [values.openshiftVersion, setDisconnectedOpenshiftVersion]);
 
   const selectedVersionItem = versions.find((version) => version.value === values.openshiftVersion);
   const cpuArchitecture = selectedVersionItem?.cpuArchitectures?.[0] ?? 'x86_64';
@@ -102,9 +93,7 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
         <ClusterWizardFooter
           onNext={() => void submitForm()}
           isSubmitting={isSubmitting}
-          isNextDisabled={
-            loading || !!error || !isValid || isSubmitting || !values.openshiftVersion
-          }
+          isNextDisabled={loading || !!error || !isValid || isSubmitting}
           errorFields={errorFields}
         />
       }
@@ -136,9 +125,6 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
                   name="openshiftVersion"
                   versions={versions}
                   showReleasesLink={false}
-                  showOpenshiftVersionModal={() => {
-                    /* no-op — all offline versions are already shown */
-                  }}
                 />
                 <StaticTextField name="cpuArchitecture" label="CPU architecture">
                   {cpuArchitecture}
@@ -162,7 +148,6 @@ export const BasicStep = () => {
     setDisconnectedCluster,
     disconnectedInfraEnv,
     setDisconnectedInfraEnv,
-    disconnectedOpenshiftVersion,
   } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -204,7 +189,7 @@ export const BasicStep = () => {
   );
 
   const initialValues: BasicStepValues = {
-    openshiftVersion: disconnectedOpenshiftVersion,
+    openshiftVersion: '',
     hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
@@ -277,7 +262,6 @@ export const BasicStep = () => {
     <Formik<BasicStepValues>
       initialValues={initialValues}
       validationSchema={validationSchema}
-      validateOnMount
       onSubmit={(values) => void handleNext(values)}
     >
       <BasicStepForm
