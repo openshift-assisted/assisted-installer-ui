@@ -76,11 +76,11 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
 
       commonActions.getDangerAlert().should('not.exist');
 
-      cy.get('@update-infra-env').then((interception) => {
-        const { request } = interception as unknown as { request: { body: unknown } };
+      cy.wait('@update-infra-env').then(({ request }) => {
         validateStaticIpRequest(request.body, 'ipv4');
-        commonActions.verifyNextIsEnabled();
       });
+
+      commonActions.verifyNextIsEnabled();
     });
 
     it('Can configure dual stack Static IP', () => {
