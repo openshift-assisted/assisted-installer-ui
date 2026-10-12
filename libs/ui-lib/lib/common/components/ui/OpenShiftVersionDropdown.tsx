@@ -30,6 +30,7 @@ type OpenShiftVersionDropdownProps = {
   showReleasesLink: boolean;
   showOpenshiftVersionModal?: () => void;
   customVersion?: OpenshiftVersionOptionType;
+  isDisabled?: boolean;
 };
 
 const getParsedVersions = (items: OpenshiftVersionOptionType[]) => {
@@ -48,6 +49,7 @@ export const OpenShiftVersionDropdown = ({
   showReleasesLink,
   showOpenshiftVersionModal,
   customVersion,
+  isDisabled,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -116,7 +118,8 @@ export const OpenShiftVersionDropdown = ({
       style={{ minWidth: '420px' }}
       ref={toggleRef}
       isFullWidth
-      onClick={() => setOpen(!isOpen)}
+      isDisabled={isDisabled}
+      onClick={() => !isDisabled && setOpen(!isOpen)}
       isExpanded={isOpen}
       data-testid="openshift-version-dropdown-toggle"
     >
