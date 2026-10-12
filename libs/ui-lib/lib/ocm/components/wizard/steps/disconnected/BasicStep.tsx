@@ -189,7 +189,7 @@ export const BasicStep = () => {
   );
 
   const initialValues: BasicStepValues = {
-    openshiftVersion: disconnectedInfraEnv?.openshiftVersion ?? '',
+    openshiftVersion: '',
     hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
@@ -205,7 +205,7 @@ export const BasicStep = () => {
           values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC;
         let infraEnvToUse = disconnectedInfraEnv;
 
-        const createClusterAndInfraEnv = async () => {
+        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
             openshiftVersion: values.openshiftVersion,
@@ -221,29 +221,15 @@ export const BasicStep = () => {
             openshiftVersion: values.openshiftVersion,
             staticNetworkConfig: isStatic ? getDummyInfraEnvField() : undefined,
           });
-          return createdInfraEnv;
-        };
-
-        if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
-          infraEnvToUse = await createClusterAndInfraEnv();
+          infraEnvToUse = createdInfraEnv;
         } else {
-          const versionChanged =
-            disconnectedCluster.openshiftVersion !== values.openshiftVersion;
-
-          if (versionChanged) {
-            await InfraEnvsAPI.deregister(infraEnvToUse.id);
-            await ClustersAPI.deregister(disconnectedCluster.id);
-            infraEnvToUse = await createClusterAndInfraEnv();
-          } else {
-            const staticNetworkConfig = isStatic
-              ? getStaticNetworkConfig(infraEnvToUse) ?? getDummyInfraEnvField()
-              : [];
-            const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvToUse.id, {
-              staticNetworkConfig,
-              openshiftVersion: values.openshiftVersion,
-            });
-            infraEnvToUse = updatedInfraEnv;
-          }
+          const staticNetworkConfig = isStatic
+            ? getStaticNetworkConfig(infraEnvToUse) ?? getDummyInfraEnvField()
+            : [];
+          const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvToUse.id, {
+            staticNetworkConfig,
+          });
+          infraEnvToUse = updatedInfraEnv;
         }
 
         setDisconnectedInfraEnv(infraEnvToUse);
