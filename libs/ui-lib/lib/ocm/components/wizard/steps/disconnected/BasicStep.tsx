@@ -71,6 +71,7 @@ type BasicStepFormProps = {
   versions: OpenshiftVersionOptionType[];
   loading: boolean;
   error?: string;
+  clusterExists: boolean;
 };
 
 const BasicStepForm: React.FC<BasicStepFormProps> = ({
@@ -79,6 +80,7 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
   versions,
   loading,
   error,
+  clusterExists,
 }) => {
   const { submitForm, isValid, errors, touched, values } = useFormikContext<BasicStepValues>();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -125,6 +127,7 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
                   name="openshiftVersion"
                   versions={versions}
                   showReleasesLink={false}
+                  isDisabled={clusterExists}
                 />
                 <StaticTextField name="cpuArchitecture" label="CPU architecture">
                   {cpuArchitecture}
@@ -188,8 +191,10 @@ export const BasicStep = () => {
     [t],
   );
 
+  const clusterExists = Boolean(disconnectedCluster?.id && disconnectedInfraEnv?.id);
+
   const initialValues: BasicStepValues = {
-    openshiftVersion: '',
+    openshiftVersion: disconnectedInfraEnv?.openshiftVersion ?? '',
     hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
@@ -270,6 +275,7 @@ export const BasicStep = () => {
         versions={versions}
         loading={loading}
         error={error}
+        clusterExists={clusterExists}
       />
     </Formik>
   );
