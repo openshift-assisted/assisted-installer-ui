@@ -26,12 +26,12 @@ import {
 } from '../../../../../common';
 import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
 import { useClusterWizardContext } from '../../clusterWizardContext';
-import { DISCONNECTED_OPENSHIFT_VERSION } from './BasicStep';
 
 const opSpecs = getOperatorSpecs(() => undefined, true);
 
 export const DisconnectedReviewStep = () => {
   const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
+  const openshiftVersion = disconnectedInfraEnv?.openshiftVersion;
   const navigate = useNavigate();
 
   return (
@@ -57,9 +57,7 @@ export const DisconnectedReviewStep = () => {
               <ListItem>
                 Boot your cluster's machines from this ISO and{' '}
                 <ExternalLink
-                  href={getDisconnectedDocsLink(
-                    getMajorMinorVersion(DISCONNECTED_OPENSHIFT_VERSION),
-                  )}
+                  href={getDisconnectedDocsLink(getMajorMinorVersion(openshiftVersion))}
                 >
                   follow instructions
                 </ExternalLink>
@@ -84,9 +82,7 @@ export const DisconnectedReviewStep = () => {
           <DescriptionList isHorizontal>
             <DescriptionListGroup>
               <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-              <DescriptionListDescription>
-                {disconnectedInfraEnv?.openshiftVersion ?? DISCONNECTED_OPENSHIFT_VERSION}
-              </DescriptionListDescription>
+              <DescriptionListDescription>{openshiftVersion}</DescriptionListDescription>
             </DescriptionListGroup>
             {disconnectedInfraEnv?.rendezvousIp && (
               <DescriptionListGroup>
