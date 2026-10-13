@@ -28,8 +28,9 @@ type OpenShiftVersionDropdownProps = {
   versions: OpenshiftVersionOptionType[];
   getHelperText?: HelperTextType;
   showReleasesLink: boolean;
-  showOpenshiftVersionModal: () => void;
+  showOpenshiftVersionModal?: () => void;
   customVersion?: OpenshiftVersionOptionType;
+  isDisabled?: boolean;
 };
 
 const getParsedVersions = (items: OpenshiftVersionOptionType[]) => {
@@ -48,6 +49,7 @@ export const OpenShiftVersionDropdown = ({
   showReleasesLink,
   showOpenshiftVersionModal,
   customVersion,
+  isDisabled,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField<string>(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -100,11 +102,13 @@ export const OpenShiftVersionDropdown = ({
         </DropdownItem>
       </DropdownGroup>
     ),
-    <DropdownGroup key="all-available-versions">
-      <DropdownItem key="all-versions" id="all-versions" value="all-versions">
-        <div className="pf-v6-u-text-color-link">{t('ai:Show all available versions')}</div>
-      </DropdownItem>
-    </DropdownGroup>,
+    showOpenshiftVersionModal && (
+      <DropdownGroup key="all-available-versions">
+        <DropdownItem key="all-versions" id="all-versions" value="all-versions">
+          <div className="pf-v6-u-text-color-link">{t('ai:Show all available versions')}</div>
+        </DropdownItem>
+      </DropdownGroup>
+    ),
   ].filter(Boolean);
 
   const dropdownToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
@@ -114,7 +118,8 @@ export const OpenShiftVersionDropdown = ({
       style={{ minWidth: '420px' }}
       ref={toggleRef}
       isFullWidth
-      onClick={() => setOpen(!isOpen)}
+      isDisabled={isDisabled}
+      onClick={() => !isDisabled && setOpen(!isOpen)}
       isExpanded={isOpen}
       data-testid="openshift-version-dropdown-toggle"
     >
@@ -126,7 +131,7 @@ export const OpenShiftVersionDropdown = ({
 
   const onSelect: DropdownProps['onSelect'] = (_, val) => {
     if (val === 'all-versions') {
-      showOpenshiftVersionModal();
+      showOpenshiftVersionModal?.();
     } else if (val) {
       setValue(val as string);
     }

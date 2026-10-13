@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
-import { AlertVariant, Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
-import { ImageType } from '@openshift-assisted/types/assisted-installer-service';
+import { Alert, AlertVariant, Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
+import { ImageType, OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
+import OfflineOpenshiftVersionsAPI from '../../../../../common/api/assisted-service/OfflineOpenshiftVersionsAPI';
 import {
   ClusterWizardStep,
   StaticTextField,
@@ -17,6 +18,10 @@ import {
   pullSecretValidationSchema,
   useTranslation,
   getFormikErrorFields,
+  LoadingState,
+  OpenShiftVersionDropdown,
+  OpenshiftVersionOptionType,
+  CpuArchitecture,
 } from '../../../../../common';
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
@@ -27,22 +32,61 @@ import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
 import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
 
-export const DISCONNECTED_OPENSHIFT_VERSION = '4.22.16';
-
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
 
+const sortVersions = (versions: OpenshiftVersionOptionType[]) =>
+  [...versions].sort((version1, version2) =>
+    version1.value.localeCompare(version2.value, undefined, { numeric: true }),
+  );
+
+const mapOfflineVersions = (
+  data: Record<string, OpenshiftVersion>,
+): OpenshiftVersionOptionType[] => {
+  const versions = Object.entries(data).map(([key, versionItem]) => {
+    const version = versionItem.displayName;
+
+    return {
+      label: `OpenShift ${version}`,
+      value: String(key),
+      version,
+      default: Boolean(versionItem.default),
+      supportLevel: versionItem.supportLevel,
+      cpuArchitectures: versionItem.cpuArchitectures as CpuArchitecture[],
+    };
+  });
+
+  return sortVersions(versions);
+};
+
 type BasicStepValues = {
+  openshiftVersion: string;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
   pullSecret: string;
 };
 
-const BasicStepForm: React.FC<{
+type BasicStepFormProps = {
   isSubmitting: boolean;
   defaultPullSecret?: string;
-}> = ({ isSubmitting, defaultPullSecret }) => {
-  const { submitForm, isValid, errors, touched } = useFormikContext<BasicStepValues>();
+  versions: OpenshiftVersionOptionType[];
+  loading: boolean;
+  error?: string;
+  clusterExists: boolean;
+};
+
+const BasicStepForm: React.FC<BasicStepFormProps> = ({
+  isSubmitting,
+  defaultPullSecret,
+  versions,
+  loading,
+  error,
+  clusterExists,
+}) => {
+  const { submitForm, isValid, errors, touched, values } = useFormikContext<BasicStepValues>();
   const errorFields = getFormikErrorFields(errors, touched);
+
+  const selectedVersionItem = versions.find((version) => version.value === values.openshiftVersion);
+  const cpuArchitecture = selectedVersionItem?.cpuArchitectures?.[0] ?? 'x86_64';
 
   return (
     <ClusterWizardStep
@@ -51,7 +95,7 @@ const BasicStepForm: React.FC<{
         <ClusterWizardFooter
           onNext={() => void submitForm()}
           isSubmitting={isSubmitting}
-          isNextDisabled={!isValid || isSubmitting}
+          isNextDisabled={loading || !!error || !isValid || isSubmitting}
           errorFields={errorFields}
         />
       }
@@ -67,16 +111,31 @@ const BasicStepForm: React.FC<{
             </Flex>
           </GridItem>
           <GridItem>
-            <Form id="wizard-cluster-basic-info__form">
-              <StaticTextField name="openshiftVersion" label="OpenShift version">
-                {DISCONNECTED_OPENSHIFT_VERSION}
-              </StaticTextField>
-              <StaticTextField name="cpuArchitecture" label="CPU architecture">
-                x86_64
-              </StaticTextField>
-              <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
-              {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
-            </Form>
+            {loading && <LoadingState />}
+            {error && (
+              <Alert
+                isInline
+                variant={AlertVariant.danger}
+                title="Failed to retrieve list of supported OpenShift versions."
+              >
+                {error}
+              </Alert>
+            )}
+            {!loading && !error && (
+              <Form id="wizard-cluster-basic-info__form">
+                <OpenShiftVersionDropdown
+                  name="openshiftVersion"
+                  versions={versions}
+                  showReleasesLink={false}
+                  isDisabled={clusterExists}
+                />
+                <StaticTextField name="cpuArchitecture" label="CPU architecture">
+                  {cpuArchitecture}
+                </StaticTextField>
+                <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
+                {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
+              </Form>
+            )}
           </GridItem>
         </Grid>
       </WithErrorBoundary>
@@ -95,17 +154,47 @@ export const BasicStep = () => {
   } = useClusterWizardContext();
   const { addAlert, clearAlerts } = useAlerts();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string>();
   const defaultPullSecret = usePullSecret();
+
+  React.useEffect(() => {
+    const fetchVersions = async () => {
+      setLoading(true);
+      setError(undefined);
+      try {
+        const { data } = await OfflineOpenshiftVersionsAPI.list();
+        const mappedVersions = mapOfflineVersions(data);
+        setVersions(mappedVersions);
+        if (mappedVersions.length === 0) {
+          setError('No OpenShift versions available.');
+        }
+      } catch (e) {
+        handleApiError(e, (err) => {
+          setError(getApiErrorMessage(err));
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchVersions();
+  }, []);
 
   const validationSchema = React.useMemo(
     () =>
       Yup.object({
+        openshiftVersion: Yup.string().required('OpenShift version is required'),
         pullSecret: isInOcm ? Yup.string() : pullSecretValidationSchema(t),
       }),
     [t],
   );
 
+  const clusterExists = Boolean(disconnectedCluster?.id && disconnectedInfraEnv?.id);
+
   const initialValues: BasicStepValues = {
+    openshiftVersion: disconnectedInfraEnv?.openshiftVersion ?? '',
     hostsNetworkConfigurationType: disconnectedInfraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP,
@@ -124,7 +213,7 @@ export const BasicStep = () => {
         if (!disconnectedCluster?.id || !infraEnvToUse?.id) {
           const { data: cluster } = await ClustersAPI.registerDisconnected({
             name: DISCONNECTED_CLUSTER_NAME,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            openshiftVersion: values.openshiftVersion,
           });
           setDisconnectedCluster(cluster);
 
@@ -134,7 +223,7 @@ export const BasicStep = () => {
             pullSecret,
             clusterId: cluster.id,
             imageType: DISCONNECTED_IMAGE_TYPE,
-            openshiftVersion: DISCONNECTED_OPENSHIFT_VERSION,
+            openshiftVersion: values.openshiftVersion,
             staticNetworkConfig: isStatic ? getDummyInfraEnvField() : undefined,
           });
           infraEnvToUse = createdInfraEnv;
@@ -180,7 +269,14 @@ export const BasicStep = () => {
       validationSchema={validationSchema}
       onSubmit={(values) => void handleNext(values)}
     >
-      <BasicStepForm isSubmitting={isSubmitting} defaultPullSecret={defaultPullSecret} />
+      <BasicStepForm
+        isSubmitting={isSubmitting}
+        defaultPullSecret={defaultPullSecret}
+        versions={versions}
+        loading={loading}
+        error={error}
+        clusterExists={clusterExists}
+      />
     </Formik>
   );
 };

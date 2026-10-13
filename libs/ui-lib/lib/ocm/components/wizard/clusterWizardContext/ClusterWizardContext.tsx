@@ -27,7 +27,7 @@ export type ClusterWizardContextType = {
 
 export const ClusterWizardContext = React.createContext<ClusterWizardContextType | null>(null);
 
-export const useClusterWizardContext = () => {
+export const useClusterWizardContext = (): ClusterWizardContextType => {
   const context = React.useContext(ClusterWizardContext);
   if (!context) {
     throw new Error('useClusterWizardContext must be used within ClusterWizardContextProvider');
