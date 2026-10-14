@@ -75,12 +75,13 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       fillStaticIpForm('ipv4', ipv4Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-
-      cy.wait('@update-infra-env').then(({ request }) => {
-        validateStaticIpRequest(request.body, 'ipv4');
-      });
-
+      // Wait until autosave finishes (Next enabled) so we assert the final request,
+      // not an intermediate save from a partial-but-valid IP while typing.
       commonActions.verifyNextIsEnabled();
+
+      cy.get('@update-infra-env').then((interception) => {
+        validateStaticIpRequest(interception.request.body, 'ipv4');
+      });
     });
 
     it('Can configure dual stack Static IP', () => {
@@ -92,12 +93,11 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       fillStaticIpForm('dual-stack', ipv6Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-
-      cy.wait('@update-infra-env').then(({ request }) => {
-        validateStaticIpRequest(request.body, 'dual-stack');
-      });
-
       commonActions.verifyNextIsEnabled();
+
+      cy.get('@update-infra-env').then((interception) => {
+        validateStaticIpRequest(interception.request.body, 'dual-stack');
+      });
       commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
       commonActions

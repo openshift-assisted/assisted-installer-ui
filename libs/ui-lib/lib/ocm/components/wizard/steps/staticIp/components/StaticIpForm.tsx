@@ -2,15 +2,12 @@ import React, { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 import { Form } from '@patternfly/react-core';
 import { Formik, useFormikContext, yupToFormErrors } from 'formik';
-import debouncer from 'lodash-es/debounce.js';
 import isEqual from 'lodash-es/isEqual.js';
 import { getApiErrorMessage, useAlerts, useErrorMonitor } from '../../../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../../../store';
 import { useFeature } from '../../../../../hooks';
 import { getStaticNetworkConfig } from '../data/fromInfraEnv';
-import { StaticIpFormProps, StaticIpFormState } from './propTypes';
-
-const AUTOSAVE_DEBOUNCE_MS = 400;
+import { StaticIpFormProps } from './propTypes';
 
 type ValidateFn<StaticIpFormValues extends object> = (
   values: StaticIpFormValues,
@@ -18,8 +15,9 @@ type ValidateFn<StaticIpFormValues extends object> = (
 
 /**
  * Reports form state to the parent and persists on value changes.
- * Avoids Formik submitForm() for autosave: its async validation races with
- * onChange validation and can leave stale "A value is required" errors on filled fields.
+ * Saves via onSave directly (not submitForm) so Formik's validateOnChange
+ * remains the sole validation pipeline — avoiding the race that left stale
+ * "A value is required" errors on filled fields.
  */
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
@@ -35,31 +33,18 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   isViewerMode: boolean;
 }) => {
   const emptyValues = React.useMemo(() => getEmptyValues(), [getEmptyValues]);
-  const {
-    isSubmitting,
-    isValid,
-    touched,
-    errors,
-    values,
-    initialValues,
-    setErrors,
-    setSubmitting,
-  } = useFormikContext<StaticIpFormValues>();
+  const { isSubmitting, isValid, touched, errors, values, initialValues, setSubmitting } =
+    useFormikContext<StaticIpFormValues>();
 
   const isEmpty = React.useMemo(() => isEqual(values, emptyValues), [values, emptyValues]);
-  const prevFormStateRef = React.useRef<StaticIpFormState>();
+  const [autoSaveIDs, setAutoSaveIDs] = React.useState<number[]>([]);
+  const isAutoSaveRunning = !!autoSaveIDs.length;
   const valuesRef = React.useRef(values);
   valuesRef.current = values;
   const saveGenerationRef = React.useRef(0);
-  const [autoSaveIDs, setAutoSaveIDs] = React.useState<number[]>([]);
-  const isAutoSaveRunning = !!autoSaveIDs.length;
 
-  const persistRef = React.useRef<(valuesToSave: StaticIpFormValues, autoSaveID: number) => void>(
-    () => undefined,
-  );
-
-  persistRef.current = (valuesToSave: StaticIpFormValues, autoSaveID: number) => {
-    void (async () => {
+  const persist = React.useCallback(
+    async (valuesToSave: StaticIpFormValues, autoSaveID: number) => {
       if (isViewerMode) {
         setAutoSaveIDs((ids) => ids.filter((id) => id > autoSaveID));
         return;
@@ -68,14 +53,12 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
       const generation = ++saveGenerationRef.current;
       const validationErrors = validate(valuesToSave);
 
-      // Drop superseded validations so they cannot overwrite newer results with
-      // stale "A value is required" errors after the user has filled the fields.
+      // Drop superseded saves so an older validation cannot persist stale data.
       if (generation !== saveGenerationRef.current || !isEqual(valuesToSave, valuesRef.current)) {
         setAutoSaveIDs((ids) => ids.filter((id) => id > autoSaveID));
         return;
       }
 
-      setErrors(validationErrors as typeof errors);
       if (Object.keys(validationErrors).length > 0) {
         setAutoSaveIDs((ids) => ids.filter((id) => id > autoSaveID));
         return;
@@ -90,26 +73,16 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
         }
         setAutoSaveIDs((ids) => ids.filter((id) => id > autoSaveID));
       }
-    })();
-  };
-
-  const debouncedPersistRef = React.useRef(
-    debouncer((valuesToSave: StaticIpFormValues, autoSaveID: number) => {
-      persistRef.current(valuesToSave, autoSaveID);
-    }, AUTOSAVE_DEBOUNCE_MS),
+    },
+    [isViewerMode, onSave, validate, setSubmitting],
   );
-
-  React.useEffect(() => {
-    const commit = debouncedPersistRef.current;
-    return () => commit.cancel();
-  }, []);
 
   // Persist once on mount when form was opened with existing data.
   React.useEffect(() => {
     if (!isEqual(emptyValues, initialValues)) {
       const autoSaveID = Date.now();
       setAutoSaveIDs((ids) => [...ids, autoSaveID]);
-      persistRef.current(initialValues, autoSaveID);
+      void persist(initialValues, autoSaveID);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: run only on mount.
   }, []);
@@ -117,20 +90,17 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   const prevValuesRef = React.useRef(values);
   React.useEffect(() => {
     if (!isEqual(prevValuesRef.current, values) && !isSubmitting) {
-      // Sync validation keeps error state aligned with current values without the
-      // async Formik onChange race that left stale required errors on filled fields.
-      setErrors(validate(values) as typeof errors);
       const autoSaveID = Date.now();
       setAutoSaveIDs((ids) => [...ids, autoSaveID]);
-      debouncedPersistRef.current(values, autoSaveID);
+      void persist(values, autoSaveID);
     }
     if (!isSubmitting) {
       prevValuesRef.current = values;
     }
-  }, [values, isSubmitting, setErrors, validate]);
+  }, [values, isSubmitting, persist]);
 
   React.useEffect(() => {
-    const newFormState: StaticIpFormState = {
+    onFormStateChange({
       isSubmitting,
       isAutoSaveRunning,
       isValid,
@@ -138,19 +108,7 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
       errors,
       isEmpty,
       values: values as Record<string, unknown>,
-    };
-    const prev = prevFormStateRef.current;
-    if (
-      prev?.isSubmitting !== isSubmitting ||
-      prev?.isAutoSaveRunning !== isAutoSaveRunning ||
-      prev?.isValid !== isValid ||
-      prev?.isEmpty !== isEmpty ||
-      !isEqual(prev?.errors, errors) ||
-      !isEqual(prev?.touched, touched)
-    ) {
-      prevFormStateRef.current = newFormState;
-      onFormStateChange(newFormState);
-    }
+    });
   }, [
     isSubmitting,
     isValid,
@@ -226,15 +184,11 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
 
   const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
   return (
-    // validateOnChange is disabled: Formik's async onChange validation races with
-    // itself and with autosave, leaving stale required errors on filled fields.
-    // Autosave validates synchronously with a generation guard instead.
     <Formik
       initialValues={initialValues}
       onSubmit={onSubmit}
       validate={validate}
-      validateOnMount
-      validateOnChange={false}
+      validateOnMount={!showEmptyValues}
     >
       <Form>
         {children}
