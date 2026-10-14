@@ -44,6 +44,8 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
   switch (stepId) {
     case 'cluster-details':
       return !cluster.validationsInfo || canNextClusterDetails({ cluster });
+    case 'optional-configurations':
+      return true;
     case 'static-ip-yaml-view':
     case 'static-ip-host-configurations':
     case 'static-ip-network-wide-configurations':

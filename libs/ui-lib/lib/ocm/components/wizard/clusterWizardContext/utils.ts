@@ -35,6 +35,13 @@ export const getWizardStepIds = (
   isSingleClusterFeatureEnabled?: boolean,
 ): ClusterWizardStepsType[] => {
   let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
+
+  // Insert before static-IP handling so static-IP steps land between
+  // cluster-details and optional-configurations (matching above-the-sea order).
+  if (isSingleClusterFeatureEnabled) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['optional-configurations']);
+  }
+
   if (staticIpView === StaticIpView.YAML) {
     stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
     stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['static-ip-yaml-view']);

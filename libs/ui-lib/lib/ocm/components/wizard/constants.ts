@@ -2,6 +2,7 @@ import { ClusterWizardStepsType } from './utils/wizardTransition';
 
 export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   'cluster-details': 'Cluster details',
+  'optional-configurations': 'Optional configurations',
   operators: 'Operators',
   'host-discovery': 'Host discovery',
   'static-ip-yaml-view': 'Static network configurations',

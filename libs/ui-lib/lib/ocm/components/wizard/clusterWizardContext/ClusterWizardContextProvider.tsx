@@ -73,6 +73,7 @@ export const ClusterWizardContextProvider = ({
         staticIpInfo,
         cluster?.status,
         cluster,
+        isSingleClusterFeatureEnabled,
       );
       const firstStepIds = getWizardStepIds(
         wizardStepIds,
