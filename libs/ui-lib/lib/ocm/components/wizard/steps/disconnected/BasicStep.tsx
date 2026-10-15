@@ -2,7 +2,11 @@ import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
 import { Alert, AlertVariant, Grid, GridItem, Content, Flex, Form } from '@patternfly/react-core';
-import { ImageType, OpenshiftVersion } from '@openshift-assisted/types/assisted-installer-service';
+import {
+  ImageType,
+  InfraEnv,
+  OpenshiftVersion,
+} from '@openshift-assisted/types/assisted-installer-service';
 import OfflineOpenshiftVersionsAPI from '../../../../../common/api/assisted-service/OfflineOpenshiftVersionsAPI';
 import {
   ClusterWizardStep,
@@ -37,7 +41,7 @@ const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
 
 const sortVersions = (versions: OpenshiftVersionOptionType[]) =>
   [...versions].sort((version1, version2) =>
-    version1.value.localeCompare(version2.value, undefined, { numeric: true }),
+    version2.value.localeCompare(version1.value, undefined, { numeric: true }),
   );
 
 const mapOfflineVersions = (
@@ -71,7 +75,7 @@ type BasicStepFormProps = {
   versions: OpenshiftVersionOptionType[];
   loading: boolean;
   error?: string;
-  clusterExists: boolean;
+  openShiftVersion: InfraEnv['openshiftVersion'];
 };
 
 const BasicStepForm: React.FC<BasicStepFormProps> = ({
@@ -80,7 +84,7 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
   versions,
   loading,
   error,
-  clusterExists,
+  openShiftVersion,
 }) => {
   const { submitForm, isValid, errors, touched, values } = useFormikContext<BasicStepValues>();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -123,12 +127,17 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
             )}
             {!loading && !error && (
               <Form id="wizard-cluster-basic-info__form">
-                <OpenShiftVersionDropdown
-                  name="openshiftVersion"
-                  versions={versions}
-                  showReleasesLink={false}
-                  isDisabled={clusterExists}
-                />
+                {openShiftVersion ? (
+                  <StaticTextField name="openshiftVersion" label="OpenShift version">
+                    {openShiftVersion}
+                  </StaticTextField>
+                ) : (
+                  <OpenShiftVersionDropdown
+                    name="openshiftVersion"
+                    versions={versions}
+                    showReleasesLink={false}
+                  />
+                )}
                 <StaticTextField name="cpuArchitecture" label="CPU architecture">
                   {cpuArchitecture}
                 </StaticTextField>
@@ -190,8 +199,6 @@ export const BasicStep = () => {
       }),
     [t],
   );
-
-  const clusterExists = Boolean(disconnectedCluster?.id && disconnectedInfraEnv?.id);
 
   const initialValues: BasicStepValues = {
     openshiftVersion: disconnectedInfraEnv?.openshiftVersion ?? '',
@@ -275,7 +282,7 @@ export const BasicStep = () => {
         versions={versions}
         loading={loading}
         error={error}
-        clusterExists={clusterExists}
+        openShiftVersion={disconnectedInfraEnv?.openshiftVersion}
       />
     </Formik>
   );
