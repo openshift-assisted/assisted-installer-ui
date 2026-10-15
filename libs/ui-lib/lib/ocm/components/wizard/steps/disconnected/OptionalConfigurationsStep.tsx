@@ -2,10 +2,7 @@ import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik, useFormikContext } from 'formik';
 import { Alert, AlertVariant, Form, Grid, GridItem, Content } from '@patternfly/react-core';
-import {
-  InfraEnv,
-  InfraEnvUpdateParams,
-} from '@openshift-assisted/types/assisted-installer-service';
+import { InfraEnv } from '@openshift-assisted/types/assisted-installer-service';
 import {
   ClusterWizardStep,
   WithErrorBoundary,
@@ -19,29 +16,16 @@ import {
   InputField,
   ipValidationSchema,
   getFormikErrorFields,
-  httpProxyValidationSchema,
-  httpsProxyValidationSchema,
-  noProxyValidationSchema,
   ntpSourceValidationSchema,
-  ProxyFields,
   NtpSourcesFields,
 } from '../../../../../common';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
-import {
-  canonicalizeIp,
-  getHostIpsFromInfraEnv,
-  getStaticNetworkConfig,
-} from '../staticIp/data/fromInfraEnv';
+import { canonicalizeIp, getHostIpsFromInfraEnv } from '../staticIp/data/fromInfraEnv';
 
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
   rendezvousIp: string;
-  enableProxy: boolean;
-  httpProxy: string;
-  httpsProxy: string;
-  noProxy: string;
   enableNtpSources: boolean;
   ntpSourcesList: string;
 };
@@ -115,7 +99,6 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 </Alert>
               )}
               <UploadSSH />
-              <ProxyFields />
               <NtpSourcesFields />
             </Form>
           </GridItem>
@@ -124,28 +107,6 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
     </ClusterWizardStep>
   );
 };
-
-const getStaticNetworkConfigUpdate = (infraEnv: InfraEnv) => {
-  if (!infraEnv.staticNetworkConfig) {
-    return [];
-  }
-  return getStaticNetworkConfig(infraEnv) ?? getDummyInfraEnvField();
-};
-
-const buildInfraEnvUpdateParams = (
-  values: OptionalConfigurationsValues,
-  disconnectedInfraEnv: InfraEnv,
-): InfraEnvUpdateParams => ({
-  sshAuthorizedKey: values.sshPublicKey,
-  rendezvousIp: values.rendezvousIp,
-  staticNetworkConfig: getStaticNetworkConfigUpdate(disconnectedInfraEnv),
-  proxy: {
-    httpProxy: values.httpProxy,
-    httpsProxy: values.httpsProxy,
-    noProxy: values.noProxy,
-  },
-  ntpSources: values.enableNtpSources ? values.ntpSourcesList : '',
-});
 
 export const OptionalConfigurationsStep = () => {
   const { t } = useTranslation();
@@ -161,19 +122,6 @@ export const OptionalConfigurationsStep = () => {
           rendezvousIp: Yup.string()
             .max(45, 'IP address must be at most 45 characters')
             .concat(ipValidationSchema(t)),
-          httpProxy: httpProxyValidationSchema({
-            values,
-            pairValueName: 'httpsProxy',
-            allowEmpty: true,
-            t,
-          }),
-          httpsProxy: httpsProxyValidationSchema({
-            values,
-            pairValueName: 'httpProxy',
-            allowEmpty: true,
-            t,
-          }),
-          noProxy: noProxyValidationSchema(t),
           ntpSourcesList: values.enableNtpSources
             ? ntpSourceValidationSchema(t, false)
             : ntpSourceValidationSchema(t),
@@ -185,14 +133,6 @@ export const OptionalConfigurationsStep = () => {
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
-    enableProxy: !!(
-      disconnectedInfraEnv?.proxy?.httpProxy ||
-      disconnectedInfraEnv?.proxy?.httpsProxy ||
-      disconnectedInfraEnv?.proxy?.noProxy
-    ),
-    httpProxy: disconnectedInfraEnv?.proxy?.httpProxy ?? '',
-    httpsProxy: disconnectedInfraEnv?.proxy?.httpsProxy ?? '',
-    noProxy: disconnectedInfraEnv?.proxy?.noProxy ?? '',
     enableNtpSources: !!disconnectedInfraEnv?.ntpSources?.trim(),
     ntpSourcesList: disconnectedInfraEnv?.ntpSources ?? '',
   };
@@ -206,10 +146,12 @@ export const OptionalConfigurationsStep = () => {
           throw new Error('No disconnected infraEnv available');
         }
 
-        const { data: updatedInfraEnv } = await InfraEnvsAPI.update(
-          disconnectedInfraEnv.id,
-          buildInfraEnvUpdateParams(values, disconnectedInfraEnv),
-        );
+        const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, {
+          sshAuthorizedKey: values.sshPublicKey,
+          rendezvousIp: values.rendezvousIp,
+          ntpSources: values.enableNtpSources ? values.ntpSourcesList : '',
+        });
+
         setDisconnectedInfraEnv(updatedInfraEnv);
         moveNext();
       } catch (error) {
