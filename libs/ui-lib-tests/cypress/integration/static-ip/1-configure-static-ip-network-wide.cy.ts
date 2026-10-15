@@ -84,6 +84,20 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       });
     });
 
+    it('Clears form data when switching to YAML view', () => {
+      staticIpPage.networkWideDns().type(dnsText);
+      fillStaticIpForm('ipv4', ipv4Fields);
+      commonActions.verifyNextIsEnabled();
+
+      staticIpPage.getYamlViewSelect().click();
+      cy.get('[data-testid="confirm-modal-submit"]').click();
+
+      staticIpPage.yamlView.getStartFromScratch().should('be.visible');
+      cy.contains(dnsText).should('not.exist');
+      cy.contains(ipv4Fields.gateway).should('not.exist');
+      cy.contains(ipv4Fields.machineNetwork).should('not.exist');
+    });
+
     it('Can configure dual stack Static IP', () => {
       staticIpPage.dualStackNetworking().click();
 

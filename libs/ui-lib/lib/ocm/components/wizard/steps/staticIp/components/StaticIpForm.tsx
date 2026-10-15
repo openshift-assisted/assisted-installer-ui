@@ -1,12 +1,10 @@
 import React, { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 import { Form } from '@patternfly/react-core';
-import { Formik, useFormikContext, yupToFormErrors } from 'formik';
+import { Formik, FormikErrors, useFormikContext, yupToFormErrors } from 'formik';
 import isEqual from 'lodash-es/isEqual.js';
 import { getApiErrorMessage, useAlerts, useErrorMonitor } from '../../../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../../../store';
-import { useFeature } from '../../../../../hooks';
-import { getStaticNetworkConfig } from '../data/fromInfraEnv';
 import { StaticIpFormProps } from './propTypes';
 
 type ValidateFn<StaticIpFormValues extends object> = (
@@ -15,9 +13,10 @@ type ValidateFn<StaticIpFormValues extends object> = (
 
 /**
  * Reports form state to the parent and persists on value changes.
- * Saves via onSave directly (not submitForm) so Formik's validateOnChange
- * remains the sole validation pipeline — avoiding the race that left stale
- * "A value is required" errors on filled fields.
+ * Owns validation synchronously via setErrors — Formik's async validateOnChange/
+ * validateOnBlur/validateOnMount are disabled so concurrent Promise validations
+ * cannot leave stale "A value is required" errors on filled fields.
+ * Saves via onSave directly (not submitForm) for the same reason.
  */
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
@@ -25,16 +24,26 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onSave,
   validate,
   isViewerMode,
+  showEmptyValues,
 }: {
   onFormStateChange: StaticIpFormProps<StaticIpFormValues>['onFormStateChange'];
   getEmptyValues: StaticIpFormProps<StaticIpFormValues>['getEmptyValues'];
   onSave: (values: StaticIpFormValues) => Promise<void>;
   validate: ValidateFn<StaticIpFormValues>;
   isViewerMode: boolean;
+  showEmptyValues: boolean;
 }) => {
   const emptyValues = React.useMemo(() => getEmptyValues(), [getEmptyValues]);
-  const { isSubmitting, isValid, touched, errors, values, initialValues, setSubmitting } =
-    useFormikContext<StaticIpFormValues>();
+  const {
+    isSubmitting,
+    isValid,
+    touched,
+    errors,
+    values,
+    initialValues,
+    setErrors,
+    setSubmitting,
+  } = useFormikContext<StaticIpFormValues>();
 
   const isEmpty = React.useMemo(() => isEqual(values, emptyValues), [values, emptyValues]);
   const [autoSaveIDs, setAutoSaveIDs] = React.useState<number[]>([]);
@@ -42,6 +51,15 @@ const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   const valuesRef = React.useRef(values);
   valuesRef.current = values;
   const saveGenerationRef = React.useRef(0);
+
+  // Keep Formik errors aligned with current values without Formik's async pipeline.
+  React.useEffect(() => {
+    if (showEmptyValues && isEqual(values, emptyValues)) {
+      setErrors({});
+      return;
+    }
+    setErrors(validate(values) as FormikErrors<StaticIpFormValues>);
+  }, [values, emptyValues, showEmptyValues, setErrors, validate]);
 
   const persist = React.useCallback(
     async (valuesToSave: StaticIpFormValues, autoSaveID: number) => {
@@ -136,14 +154,12 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
   const { clearAlerts, addAlert } = useAlerts();
   const { captureException } = useErrorMonitor();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const prefillFromInfraEnv = isSingleClusterFeatureEnabled && !!getStaticNetworkConfig(infraEnv);
   const initialValues = React.useMemo(() => {
-    if (showEmptyValues && !prefillFromInfraEnv) {
+    if (showEmptyValues) {
       return getEmptyValues();
     }
     return getInitialValues(infraEnv);
-  }, [showEmptyValues, prefillFromInfraEnv, infraEnv, getInitialValues, getEmptyValues]);
+  }, [showEmptyValues, infraEnv, getInitialValues, getEmptyValues]);
 
   const handleSubmit = React.useCallback(
     async (values: StaticIpFormValues) => {
@@ -188,7 +204,9 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
       initialValues={initialValues}
       onSubmit={onSubmit}
       validate={validate}
-      validateOnMount={!showEmptyValues}
+      validateOnMount={false}
+      validateOnChange={false}
+      validateOnBlur={false}
     >
       <Form>
         {children}
@@ -198,6 +216,7 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
           onSave={handleSubmit}
           validate={validate}
           isViewerMode={isViewerMode}
+          showEmptyValues={showEmptyValues}
         />
       </Form>
     </Formik>
