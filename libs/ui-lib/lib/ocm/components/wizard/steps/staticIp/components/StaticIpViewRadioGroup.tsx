@@ -7,7 +7,7 @@ import { StaticIpView } from '../data';
 export type StaticIpViewRadioGroupProps = {
   initialView: StaticIpView;
   confirmOnChangeView: boolean;
-  onChangeView(view: StaticIpView): void;
+  onChangeView(view: StaticIpView): void | Promise<void>;
 };
 
 export const StaticIpViewRadioGroup = ({
@@ -24,16 +24,29 @@ export const StaticIpViewRadioGroup = ({
     if (confirmOnChangeView) {
       setConfirmView(selectedView);
     } else {
-      setView(selectedView);
-      onChangeView(selectedView);
+      void (async () => {
+        try {
+          await onChangeView(selectedView);
+          setView(selectedView);
+        } catch {
+          // Keep the current view when reset fails.
+        }
+      })();
     }
   };
 
   const onConfirm = (selectedView: StaticIpView) => {
-    clearAlerts();
-    setView(selectedView);
-    setConfirmView(undefined);
-    onChangeView(selectedView);
+    void (async () => {
+      clearAlerts();
+      try {
+        await onChangeView(selectedView);
+        setView(selectedView);
+      } catch {
+        // Keep the current view when reset fails.
+      } finally {
+        setConfirmView(undefined);
+      }
+    })();
   };
 
   const onCancel = () => {

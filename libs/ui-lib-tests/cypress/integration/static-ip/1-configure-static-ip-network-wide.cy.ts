@@ -75,12 +75,27 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       fillStaticIpForm('ipv4', ipv4Fields);
 
       commonActions.getDangerAlert().should('not.exist');
+      // Wait until autosave finishes (Next enabled) so we assert the final request,
+      // not an intermediate save from a partial-but-valid IP while typing.
+      commonActions.verifyNextIsEnabled();
 
       cy.get('@update-infra-env').then((interception) => {
-        const { request } = interception as unknown as { request: { body: unknown } };
-        validateStaticIpRequest(request.body, 'ipv4');
-        commonActions.verifyNextIsEnabled();
+        validateStaticIpRequest(interception.request.body, 'ipv4');
       });
+    });
+
+    it('Clears form data when switching to YAML view', () => {
+      staticIpPage.networkWideDns().type(dnsText);
+      fillStaticIpForm('ipv4', ipv4Fields);
+      commonActions.verifyNextIsEnabled();
+
+      staticIpPage.getYamlViewSelect().click();
+      cy.get('[data-testid="confirm-modal-submit"]').click();
+
+      staticIpPage.yamlView.getStartFromScratch().should('be.visible');
+      cy.contains(dnsText).should('not.exist');
+      cy.contains(ipv4Fields.gateway).should('not.exist');
+      cy.contains(ipv4Fields.machineNetwork).should('not.exist');
     });
 
     it('Can configure dual stack Static IP', () => {
@@ -92,12 +107,11 @@ describe(`Assisted Installer Static IP Network wide Configuration`, () => {
       fillStaticIpForm('dual-stack', ipv6Fields);
 
       commonActions.getDangerAlert().should('not.exist');
-
-      cy.wait('@update-infra-env').then(({ request }) => {
-        validateStaticIpRequest(request.body, 'dual-stack');
-      });
-
       commonActions.verifyNextIsEnabled();
+
+      cy.get('@update-infra-env').then((interception) => {
+        validateStaticIpRequest(interception.request.body, 'dual-stack');
+      });
       commonActions.toNextStaticIpStepAfter('Network-wide configurations');
 
       commonActions

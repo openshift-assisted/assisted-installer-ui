@@ -7,10 +7,9 @@ import {
   Grid,
   GridItem,
 } from '@patternfly/react-core';
-import { useFeature } from '../../../../../hooks';
-import { ClusterWizardStepHeader } from '../../../../../../common';
+import { ClusterWizardStepHeader, getApiErrorMessage, useAlerts } from '../../../../../../common';
 import { useClusterWizardContext } from '../../../clusterWizardContext';
-import { StaticIpInfo, StaticIpView, getStaticIpInfo, getStaticNetworkConfig } from '../data';
+import { StaticIpInfo, StaticIpView, getStaticIpInfo, getDummyInfraEnvField } from '../data';
 import { YamlView } from './YamlView';
 import { FormViewHosts } from './FormViewHosts';
 import { FormViewNetworkWide } from './FormViewNetworkWide';
@@ -35,17 +34,26 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   onFormStateChange: onFormStateChangeParent,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
-  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
-  const prefillFromInfraEnv = isSingleClusterFeatureEnabled && !!getStaticNetworkConfig(infraEnv);
+  const { clearAlerts, addAlert } = useAlerts();
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
 
   const onChangeView = React.useCallback(
-    (view: StaticIpView) => {
-      clusterWizardContext.onUpdateStaticIpView(view);
-      setViewChanged(true);
+    async (view: StaticIpView) => {
+      try {
+        clearAlerts();
+        await updateInfraEnv({ staticNetworkConfig: getDummyInfraEnvField() });
+        clusterWizardContext.onUpdateStaticIpView(view);
+        setViewChanged(true);
+      } catch (error) {
+        addAlert({
+          title: 'Failed to reset the static network config',
+          message: getApiErrorMessage(error),
+        });
+        throw error;
+      }
     },
-    [clusterWizardContext],
+    [addAlert, clearAlerts, clusterWizardContext, updateInfraEnv],
   );
 
   const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(
@@ -68,7 +76,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
     onFormStateChange,
     infraEnv,
     updateInfraEnv,
-    showEmptyValues: viewChanged && !prefillFromInfraEnv,
+    showEmptyValues: viewChanged,
   };
 
   const content = (() => {

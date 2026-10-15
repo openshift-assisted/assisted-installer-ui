@@ -116,14 +116,23 @@ export const getFamilyAgnosticIpValidationSchema = () => {
 
 export const getDnsMatchingSubnetFamilyValidationSchema = (subnetIp: string) => {
   const family = detectProtocolVersionFromIp(subnetIp);
-  if (!family) {
-    return getFamilyAgnosticIpValidationSchema()
-      .required('A value is required')
-      .concat(isNotReservedHostDNSAddress());
-  }
-  return getMultipleIpAddressValidationSchema(family)
+  const familyLabel = family === ProtocolVersion.ipv6 ? 'IPv6' : 'IPv4';
+
+  // Accept either family as a valid address, then enforce a match with the subnet when known.
+  // This avoids a misleading "not a valid IPv4" error while the user is switching to IPv6.
+  return getMultipleIpAddressValidationSchema()
     .required('A value is required')
-    .concat(isNotReservedHostDNSAddress(family));
+    .concat(isNotReservedHostDNSAddress())
+    .test(
+      'dns-matches-subnet-family',
+      `DNS address family must match the subnet (${familyLabel})`,
+      (value?: string) => {
+        if (!value || !family) {
+          return true;
+        }
+        return value.split(',').every((address) => isValidAddress(address.trim(), family));
+      },
+    );
 };
 
 export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) => {

@@ -15,13 +15,16 @@ import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
   ErrorState,
+  getApiErrorMessage,
   LoadingState,
+  useAlerts,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hostsTable/modals/ModalDialogsContext';
 import {
   StaticIpInfo,
   getDummyStaticIpInfo,
+  getDummyInfraEnvField,
   YamlView,
   StaticIpViewRadioGroup,
   FormViewNetworkWide,
@@ -39,6 +42,7 @@ import { Day2WizardFooter } from './Day2WizardFooter';
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const wizardContext = useDay2WizardContext();
+  const { clearAlerts, addAlert } = useAlerts();
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv | undefined>(undefined);
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
@@ -90,11 +94,31 @@ const Day2StaticIP = () => {
     void setCurrentStaticConfig();
   }, [cluster.id, selectedArchitecture]);
 
-  const onChangeView = React.useCallback((view: StaticIpView) => {
-    wizardContext.onUpdateStaticIpView(view);
-    setViewChanged(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onChangeView = React.useCallback(
+    async (view: StaticIpView) => {
+      if (!infraEnv) {
+        return;
+      }
+      try {
+        clearAlerts();
+        const updatedInfraEnv = await InfraEnvsService.syncStaticIpConfigs(
+          cluster.id,
+          infraEnv.id,
+          getDummyInfraEnvField(),
+        );
+        setInfraEnv(updatedInfraEnv);
+        wizardContext.onUpdateStaticIpView(view);
+        setViewChanged(true);
+      } catch (error) {
+        addAlert({
+          title: 'Failed to reset the static network config',
+          message: getApiErrorMessage(error),
+        });
+        throw error;
+      }
+    },
+    [addAlert, clearAlerts, cluster.id, infraEnv, wizardContext],
+  );
 
   if (hasLoadError) {
     return (

@@ -37,11 +37,14 @@ export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
     getInitialFormStateProps(),
   );
 
-  const onFormStateChange = (formState: StaticIpFormState) => {
-    if (!isViewerMode) {
-      setFormStateProps(formState);
-    }
-  };
+  const onFormStateChange = React.useCallback(
+    (formState: StaticIpFormState) => {
+      if (!isViewerMode) {
+        setFormStateProps(formState);
+      }
+    },
+    [isViewerMode],
+  );
 
   const isNextDisabled =
     formState.isAutoSaveRunning || !formState.isValid || !!alerts.length || formState.isSubmitting;
