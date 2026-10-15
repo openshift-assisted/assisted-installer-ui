@@ -1,5 +1,6 @@
 export * from './disconnected';
 export * from './clusterDetails';
+export * from './optionalConfigurations';
 export * from './staticIp';
 export * from './operators';
 export * from './hostDiscovery';

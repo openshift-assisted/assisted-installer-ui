@@ -9,6 +9,7 @@ import { LoadingState, WithErrorBoundary } from '../../../common';
 import { useClusterWizardContext } from './clusterWizardContext';
 import {
   ClusterDetails,
+  OptionalConfigurations,
   StaticIp,
   Operators,
   HostDiscovery,
@@ -30,6 +31,14 @@ export const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWiza
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
+      case 'optional-configurations':
+        return (
+          <OptionalConfigurations
+            cluster={cluster}
+            infraEnv={infraEnv}
+            updateInfraEnv={updateInfraEnv}
+          />
+        );
       case 'static-ip-host-configurations':
       case 'static-ip-network-wide-configurations':
       case 'static-ip-yaml-view':

@@ -23,6 +23,7 @@ type ValidationId = ClusterValidationId | HostValidationId;
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
+  | 'optional-configurations'
   | 'static-ip-yaml-view'
   | 'static-ip-network-wide-configurations'
   | 'static-ip-host-configurations'
@@ -39,6 +40,7 @@ export type ClusterWizardStepsType =
 
 const wizardStepsOrder: ClusterWizardStepsType[] = [
   'cluster-details',
+  'optional-configurations',
   'static-ip-yaml-view',
   'static-ip-network-wide-configurations',
   'static-ip-host-configurations',
@@ -75,10 +77,11 @@ export const getClusterWizardFirstStep = (
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
   cluster?: Cluster,
+  isSingleClusterFeatureEnabled?: boolean,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
-    return 'operators';
+    return isSingleClusterFeatureEnabled ? 'optional-configurations' : 'operators';
   }
 
   if (staticIpInfo && !staticIpInfo.isDataComplete) {
@@ -323,12 +326,14 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
 
 const credentialsValidationMap = buildEmptyValidationsMap();
 
+const optionalConfigurationsValidationsMap = buildEmptyValidationsMap();
 const disconnectedReviewValidationsMap = buildEmptyValidationsMap();
 const disconnectedBasicValidationsMap = buildEmptyValidationsMap();
 const disconnectedOptionalConfigurationsValidationsMap = buildEmptyValidationsMap();
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
+  'optional-configurations': optionalConfigurationsValidationsMap,
   'static-ip-yaml-view': staticIpValidationsMap,
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
