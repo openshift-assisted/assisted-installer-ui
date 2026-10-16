@@ -87,14 +87,19 @@ const ClusterDetailsService = {
       params.additionalNtpSource = ntp;
     }
 
+    if (values.enableProxy) {
+      params.httpProxy = values.httpProxy;
+      params.httpsProxy = values.httpsProxy;
+      params.noProxy = values.noProxy;
+    }
+
     return params;
   },
 
   getClusterUpdateParams(
     values: OcmClusterDetailsValues,
     platform: PlatformType,
-    cluster?: Cluster,
-    infraEnv?: InfraEnv,
+    isSingleClusterFeatureEnabled?: boolean,
   ): ClusterDetailsUpdateParams {
     const params: ClusterDetailsUpdateParams = {
       name: values.name,
@@ -115,9 +120,10 @@ const ClusterDetailsService = {
           : { type: platform };
     }
 
-    const ntp = ntpSourceForCluster(cluster, infraEnv);
-    if (ntp) {
-      params.additionalNtpSource = ntp;
+    if (isSingleClusterFeatureEnabled) {
+      params.httpProxy = values.httpProxy;
+      params.httpsProxy = values.httpsProxy;
+      params.noProxy = values.noProxy;
     }
 
     return params;
