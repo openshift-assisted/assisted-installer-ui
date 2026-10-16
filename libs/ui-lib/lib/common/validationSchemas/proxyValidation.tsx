@@ -89,3 +89,17 @@ export const noProxyValidationSchema = (t: TFunction) =>
       return noProxyList.every((p) => isIPorDN(p, PROXY_DNS_REGEX));
     },
   );
+
+export const getProxyFieldsValidationSchema = (values: { enableProxy: boolean }, t: TFunction) => ({
+  httpProxy: httpProxyValidationSchema({
+    values,
+    pairValueName: 'httpsProxy',
+    t,
+  }),
+  httpsProxy: httpsProxyValidationSchema({
+    values,
+    pairValueName: 'httpProxy',
+    t,
+  }),
+  noProxy: noProxyValidationSchema(t),
+});
