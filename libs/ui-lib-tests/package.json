@@ -19,6 +19,10 @@
     "serve:assisted-ui": "yarn workspace @openshift-assisted/assisted-ui run serve",
     "cy:run": "yarn run start-test 'yarn preview:assisted-ui' http://localhost:4173 'cypress run --headless --browser chrome'",
     "cy:open": "yarn build:all && yarn run start-test 'yarn preview:assisted-ui' http://localhost:4173 'cypress open'",
-    "cy:open:dev": "yarn run start-test 'yarn serve:assisted-ui --port 4173' http://localhost:4173 'cypress open -c defaultCommandTimeout=15000'"
+    "cy:open:dev": "yarn run start-test 'yarn serve:assisted-ui --port 4173' http://localhost:4173 'cypress open -c defaultCommandTimeout=15000'",
+    "build:disconnected-ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui run build",
+    "preview:disconnected-ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui run preview --port 4273",
+    "cy:run:disconnected": "TEST_APP=disconnected yarn run start-test 'yarn preview:disconnected-ui' http://localhost:4273 'cypress run --headless --browser chrome'",
+    "cy:open:disconnected": "yarn build:disconnected-ui && TEST_APP=disconnected yarn run start-test 'yarn preview:disconnected-ui' http://localhost:4273 'cypress open'"
   }
 }
