@@ -42,6 +42,23 @@ const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
   };
 };
 
+export const getInfraEnvExclusiveNtpSources = (infraEnvs: InfraEnvK8sResource[]) => {
+  const infraEnvWithExclusiveNtp = infraEnvs.find((ie) => ie.spec?.ntpSources?.length);
+  const referenceNtpSources = infraEnvWithExclusiveNtp?.spec?.ntpSources ?? [];
+  const sameExclusiveNtpSources = infraEnvs.every((ie) => {
+    const ntpSources = ie.spec?.ntpSources ?? [];
+    return (
+      ntpSources.length === referenceNtpSources.length &&
+      ntpSources.every((source, index) => source === referenceNtpSources[index])
+    );
+  });
+  return {
+    exclusiveNtpSources:
+      infraEnvWithExclusiveNtp && sameExclusiveNtpSources ? referenceNtpSources : undefined,
+    sameExclusiveNtpSources: infraEnvWithExclusiveNtp ? sameExclusiveNtpSources : true,
+  };
+};
+
 const getNetworkConfigurationValidationSchema = (
   initialValues: ClusterDeploymentNetworkingValues,
   hostSubnets: HostSubnets,
@@ -128,6 +145,9 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
   const [infraEnvs, setInfraEnvs] = React.useState<InfraEnvK8sResource[]>();
   const [infraEnvsError, setInfraEnvsError] = React.useState<string>();
   const { infraEnvWithProxy, sameProxies } = getInfraEnvProxy(infraEnvs || []);
+  const { exclusiveNtpSources, sameExclusiveNtpSources } = getInfraEnvExclusiveNtpSources(
+    infraEnvs || [],
+  );
 
   const infraEnvsMetadata = agents
     .map((a) => ({
@@ -159,6 +179,8 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
   return {
     infraEnvWithProxy,
     sameProxies,
+    exclusiveNtpSources,
+    sameExclusiveNtpSources,
     infraEnvsError,
     infraEnvsLoading: !infraEnvs,
   };
