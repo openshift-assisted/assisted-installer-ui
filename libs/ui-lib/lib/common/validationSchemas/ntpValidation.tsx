@@ -34,3 +34,9 @@ export const ntpSourceValidationSchema = (t: TFunction, allowEmpty = true) => {
       },
     );
 };
+
+export const conditionalNtpSourceValidationSchema = (t: TFunction) =>
+  Yup.string().when('enableNtpSources', {
+    is: true,
+    then: (schema) => schema.concat(ntpSourceValidationSchema(t, false)),
+  });

@@ -32,7 +32,7 @@ import {
   httpProxyValidationSchema,
   httpsProxyValidationSchema,
   noProxyValidationSchema,
-  ntpSourceValidationSchema,
+  conditionalNtpSourceValidationSchema,
   sshPublicKeyValidationSchema,
   ProxyFields,
   UploadSSH,
@@ -65,9 +65,7 @@ const validationSchema = (t: TFunction) =>
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
       httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
       noProxy: noProxyValidationSchema(t),
-      ntpSourcesList: values.enableNtpSources
-        ? ntpSourceValidationSchema(t, false)
-        : ntpSourceValidationSchema(t),
+      ntpSourcesList: conditionalNtpSourceValidationSchema(t),
     }),
   );
 
