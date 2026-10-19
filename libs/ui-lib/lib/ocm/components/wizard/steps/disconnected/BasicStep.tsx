@@ -30,7 +30,6 @@ import {
 import { usePullSecret } from '../../../../hooks';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
-import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields/HostsNetworkConfigurationControlGroup';
 import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
 import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
@@ -141,7 +140,10 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
                 <StaticTextField name="cpuArchitecture" label="CPU architecture">
                   {cpuArchitecture}
                 </StaticTextField>
-                <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
+
+                {/* Temporarily hidden until the feature is properly supported */}
+                {/* <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} /> */}
+
                 {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
               </Form>
             )}
