@@ -16,37 +16,21 @@ export const addStepToClusterWizard = (
   return stepsIds;
 };
 
-export const removeStepFromClusterWizard = (
-  wizardStepIds: ClusterWizardStepsType[],
-  itemToRemove: ClusterWizardStepsType,
-  numberItemsToRemove: number,
-): ClusterWizardStepsType[] => {
-  const stepsIds = [...wizardStepIds];
-  const position = stepsIds.findIndex((step) => step === itemToRemove);
-  if (position !== -1) {
-    stepsIds.splice(position, numberItemsToRemove);
-  }
-  return stepsIds;
-};
-
 export const getWizardStepIds = (
-  wizardStepIds: ClusterWizardStepsType[] | undefined,
   staticIpView?: StaticIpView | 'dhcp-selected',
   isSingleClusterFeatureEnabled?: boolean,
 ): ClusterWizardStepsType[] => {
-  let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
-  if (staticIpView === StaticIpView.YAML) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['static-ip-yaml-view']);
-  } else if (staticIpView === StaticIpView.FORM) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-yaml-view', 1);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', staticIpFormViewSubSteps);
-  } else if (staticIpView === 'dhcp-selected') {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
+  let stepsCopy = [...defaultWizardSteps];
+
+  if (isSingleClusterFeatureEnabled) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'custom-manifests', ['credentials-download']);
+    return stepsCopy;
   }
 
-  if (isSingleClusterFeatureEnabled && !stepsCopy.includes('credentials-download')) {
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'custom-manifests', ['credentials-download']);
+  if (staticIpView === StaticIpView.YAML) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['static-ip-yaml-view']);
+  } else if (staticIpView === StaticIpView.FORM) {
+    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', staticIpFormViewSubSteps);
   }
 
   return stepsCopy;
