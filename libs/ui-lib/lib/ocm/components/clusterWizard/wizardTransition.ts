@@ -73,13 +73,14 @@ export const getClusterWizardFirstStep = (
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
   cluster?: Cluster,
+  isSingleClusterFeatureEnabled?: boolean,
 ): ClusterWizardStepsType => {
   // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
     return 'operators';
   }
 
-  if (staticIpInfo && !staticIpInfo.isDataComplete) {
+  if (!isSingleClusterFeatureEnabled && staticIpInfo && !staticIpInfo.isDataComplete) {
     if (staticIpInfo.view === StaticIpView.YAML) {
       return 'static-ip-yaml-view';
     }
