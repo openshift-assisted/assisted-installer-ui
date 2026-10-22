@@ -2,6 +2,7 @@ import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
 
 import { hasWizardSignal, setLastWizardSignal } from './utils';
 import * as fixtures from '../fixtures';
+import { dummyStaticNetworkConfig } from '../fixtures/static-ip/static-network-config';
 
 const { day2FlowIds } = fixtures;
 
@@ -263,14 +264,28 @@ const addDay1InfraEnvIntercepts = () => {
   cy.intercept('POST', allInfraEnvsApiPath, mockInfraEnvResponse).as('create-infra-env');
 };
 
+const getDay2InfraEnvForRequest = (req) =>
+  req.url === getDay2InfraEnvApiPath(arm) ? getDay2InfraEnv(arm) : getDay2InfraEnv(x86);
+
 const getDay2InfraEnvByCpuArch = (req) => {
-  let infraEnv;
-  if (req.url === getDay2InfraEnvApiPath(arm)) {
-    infraEnv = getDay2InfraEnv(arm);
+  const infraEnv = getDay2InfraEnvForRequest(req);
+
+  if (hasWizardSignal('DAY2_STATIC_IP_CONFIGURED')) {
+    req.reply({ ...infraEnv, static_network_config: JSON.stringify(dummyStaticNetworkConfig) });
   } else {
-    infraEnv = getDay2InfraEnv(x86);
+    req.reply(infraEnv);
   }
-  req.reply(infraEnv);
+};
+
+const updateDay2InfraEnvByCpuArch = (req) => {
+  const infraEnv = getDay2InfraEnvForRequest(req);
+  const hasStaticIP = !!req.body?.static_network_config?.length;
+
+  req.reply(
+    hasStaticIP
+      ? { ...infraEnv, static_network_config: JSON.stringify(req.body.static_network_config) }
+      : infraEnv,
+  );
 };
 
 const addDay2ClusterIntercepts = () => {
@@ -312,7 +327,7 @@ const addDay2InfraEnvIntercepts = () => {
   cy.intercept('GET', day2InfraEnvDetailsUrl, getDay2InfraEnvByCpuArch).as(
     'day2-infra-env-details',
   );
-  cy.intercept('PATCH', day2InfraEnvDetailsUrl, getDay2InfraEnvByCpuArch).as(
+  cy.intercept('PATCH', day2InfraEnvDetailsUrl, updateDay2InfraEnvByCpuArch).as(
     'update-day2-infra-env',
   );
 
