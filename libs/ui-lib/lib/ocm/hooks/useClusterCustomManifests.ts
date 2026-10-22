@@ -59,6 +59,7 @@ const iriManifestPatterns = [
   /^cs-redhat-operator-index-.*\.yaml$/,
   /^internalreleaseimage\.yaml$/,
   /^operatorhub-cluster\.yaml$/,
+  /^signature-configmap-.*\.yaml$/,
 ];
 
 const isIriManifest = (fileName: string): boolean =>
