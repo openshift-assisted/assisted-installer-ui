@@ -23,7 +23,9 @@ export const DisconnectedStaticIp: React.FC = () => {
     return null;
   }
 
-  return <StaticIp infraEnv={disconnectedInfraEnv} updateInfraEnv={updateInfraEnv} />;
+  return (
+    <StaticIp infraEnv={disconnectedInfraEnv} updateInfraEnv={updateInfraEnv} installDisconnected />
+  );
 };
 
 export default DisconnectedStaticIp;
