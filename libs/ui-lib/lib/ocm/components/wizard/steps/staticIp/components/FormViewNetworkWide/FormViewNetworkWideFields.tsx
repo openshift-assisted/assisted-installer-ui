@@ -50,7 +50,6 @@ import {
   MAX_VLAN_ID,
   MIN_VLAN_ID,
 } from './formViewNetworkWideValidationSchema';
-import { useClusterWizardContext } from '../../../../clusterWizardContext';
 
 import '../staticIp.css';
 
@@ -433,13 +432,13 @@ const DisconnectedProtocolTypeSelect = () => {
   );
 };
 
-export const ProtocolTypeSelect = () => {
-  const { installDisconnected } = useClusterWizardContext();
+export const ProtocolTypeSelect = ({ installDisconnected }: { installDisconnected: boolean }) => {
   if (installDisconnected) {
     return <DisconnectedProtocolTypeSelect />;
   }
   return <ConnectedProtocolTypeSelect />;
 };
+
 const getIpConfigSectionLabel = (
   protocolVersion: ProtocolVersion,
   protocolType: StaticProtocolType,
@@ -451,8 +450,13 @@ const getIpConfigSectionLabel = (
   return getProtocolVersionLabel(protocolVersion);
 };
 
-export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
-  const { installDisconnected } = useClusterWizardContext();
+export const FormViewNetworkWideFields = ({
+  hosts,
+  installDisconnected = false,
+}: {
+  hosts: FormViewHost[];
+  installDisconnected?: boolean;
+}) => {
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
   const isDisconnectedSingleStack = installDisconnected && values.protocolType !== 'dualStack';
 
@@ -467,7 +471,7 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
 
       {hosts.length > 0 && hostsConfiguredAlert}
 
-      <ProtocolTypeSelect />
+      <ProtocolTypeSelect installDisconnected={installDisconnected} />
 
       <OcmCheckboxField
         label={
