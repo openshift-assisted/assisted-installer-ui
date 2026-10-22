@@ -34,14 +34,3 @@ export const useClusterWizardContext = (): ClusterWizardContextType => {
   }
   return context;
 };
-
-// Non-throwing variant for components (e.g. the static-IP form) that can render
-// both inside the Day 1 wizard (provider present) and the Day 2 "Add Hosts" flow
-// (no ClusterWizardContextProvider).
-export const useClusterWizardContextOptional = (): ClusterWizardContextType | null =>
-  React.useContext(ClusterWizardContext);
-
-// `installDisconnected` is a Day 1-only concept; when the context is absent
-// (Day 2 flow) it must default to false.
-export const getInstallDisconnected = (context: ClusterWizardContextType | null): boolean =>
-  context?.installDisconnected ?? false;

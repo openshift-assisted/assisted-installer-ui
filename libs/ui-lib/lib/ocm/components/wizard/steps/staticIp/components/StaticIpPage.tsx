@@ -76,7 +76,12 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
       case 'static-ip-yaml-view':
         return <YamlView {...viewProps} />;
       case 'static-ip-network-wide-configurations':
-        return <FormViewNetworkWide {...viewProps} />;
+        return (
+          <FormViewNetworkWide
+            {...viewProps}
+            installDisconnected={clusterWizardContext.installDisconnected}
+          />
+        );
       case 'static-ip-host-configurations':
         return <FormViewHosts {...viewProps} />;
       default:
