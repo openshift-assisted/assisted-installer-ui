@@ -50,7 +50,10 @@ import {
   MAX_VLAN_ID,
   MIN_VLAN_ID,
 } from './formViewNetworkWideValidationSchema';
-import { useClusterWizardContext } from '../../../../clusterWizardContext';
+import {
+  getInstallDisconnected,
+  useClusterWizardContextOptional,
+} from '../../../../clusterWizardContext';
 
 import '../staticIp.css';
 
@@ -434,7 +437,7 @@ const DisconnectedProtocolTypeSelect = () => {
 };
 
 export const ProtocolTypeSelect = () => {
-  const { installDisconnected } = useClusterWizardContext();
+  const installDisconnected = getInstallDisconnected(useClusterWizardContextOptional());
   if (installDisconnected) {
     return <DisconnectedProtocolTypeSelect />;
   }
@@ -452,7 +455,7 @@ const getIpConfigSectionLabel = (
 };
 
 export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
-  const { installDisconnected } = useClusterWizardContext();
+  const installDisconnected = getInstallDisconnected(useClusterWizardContextOptional());
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
   const isDisconnectedSingleStack = installDisconnected && values.protocolType !== 'dualStack';
 
