@@ -24,7 +24,7 @@ jobs:
     outputs:
       skip: ${{ steps.check.outputs.skip }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Check if PR is draft
@@ -42,8 +42,8 @@ jobs:
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
@@ -55,8 +55,8 @@ jobs:
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
@@ -68,8 +68,8 @@ jobs:
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
@@ -81,8 +81,8 @@ jobs:
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
@@ -94,8 +94,8 @@ jobs:
     if: needs.preflight-check.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
@@ -108,15 +108,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ vars.NODEJS_VERSION }}
           cache: yarn
       - name: Create env file for assisted-ui
         run: echo "AIUI_APP_API_URL=http://127.0.0.1:4173" >> apps/assisted-ui/.env.local
       - name: Run integration tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           install-command: yarn install --immutable
           config-file: cypress.config.ts
@@ -126,13 +126,13 @@ jobs:
           working-directory: libs/ui-lib-tests
           wait-on: 'http://127.0.0.1:4173'
       - name: Store test execution screenshots on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots
           path: libs/ui-lib-tests/cypress/screenshots
       - name: Store test execution video
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: cypress-videos
