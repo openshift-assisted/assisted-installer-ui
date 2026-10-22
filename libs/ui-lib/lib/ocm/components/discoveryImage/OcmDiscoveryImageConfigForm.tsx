@@ -29,15 +29,13 @@ import {
   TrustedCertificateFieldsType,
   AlertFormikError,
   useTranslation,
-  httpProxyValidationSchema,
-  httpsProxyValidationSchema,
-  noProxyValidationSchema,
   ntpSourceValidationSchema,
   sshPublicKeyValidationSchema,
   ProxyFields,
   UploadSSH,
   CertificateFields,
   NtpSourcesFields,
+  getProxyFieldsValidationSchema,
 } from '../../../common';
 import { DiscoveryImageTypeDropdown, discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 
@@ -62,9 +60,7 @@ const validationSchema = (t: TFunction) =>
   Yup.lazy((values: OcmDiscoveryImageFormValues) =>
     Yup.object<OcmDiscoveryImageFormValues>().shape({
       sshPublicKey: sshPublicKeyValidationSchema(t),
-      httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
-      httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
-      noProxy: noProxyValidationSchema(t),
+      ...getProxyFieldsValidationSchema(values, t),
       ntpSourcesList: values.enableNtpSources
         ? ntpSourceValidationSchema(t, false)
         : ntpSourceValidationSchema(t),
