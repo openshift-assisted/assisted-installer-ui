@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router';
 import {
   Alert,
   Grid,
@@ -32,19 +30,23 @@ const opSpecs = getOperatorSpecs(() => undefined, true);
 export const DisconnectedReviewStep = () => {
   const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const openshiftVersion = disconnectedInfraEnv?.openshiftVersion;
-  const navigate = useNavigate();
 
   return (
     <ClusterWizardStep
       navigation={<ClusterWizardNavigation />}
       footer={
         <ClusterWizardFooter
-          onNext={() => {
-            saveAs(disconnectedInfraEnv?.downloadUrl ?? '');
-            void navigate('/cluster-list');
-          }}
           onBack={moveBack}
           nextButtonText="Download ISO"
+          nextButtonProps={{
+            isAriaDisabled: !disconnectedInfraEnv?.downloadUrl,
+            isDisabled: !disconnectedInfraEnv?.downloadUrl,
+            component: 'a',
+            target: '_blank',
+            href: disconnectedInfraEnv?.downloadUrl ?? '',
+            download: true,
+            rel: 'noopener noreferrer',
+          }}
         />
       }
     >
