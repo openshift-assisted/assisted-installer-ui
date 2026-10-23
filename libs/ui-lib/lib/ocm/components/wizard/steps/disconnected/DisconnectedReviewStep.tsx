@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router';
 import {
   Alert,
   Grid,
@@ -13,6 +11,9 @@ import {
   ListComponent,
   OrderType,
   Content,
+  ClipboardCopy,
+  clipboardCopyFunc,
+  AlertVariant,
 } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
@@ -23,6 +24,8 @@ import {
   ExternalLink,
   getDisconnectedDocsLink,
   getMajorMinorVersion,
+  DetailList,
+  DetailItem,
 } from '../../../../../common';
 import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
 import { useClusterWizardContext } from '../../clusterWizardContext';
@@ -32,19 +35,25 @@ const opSpecs = getOperatorSpecs(() => undefined, true);
 export const DisconnectedReviewStep = () => {
   const { moveBack, disconnectedInfraEnv } = useClusterWizardContext();
   const openshiftVersion = disconnectedInfraEnv?.openshiftVersion;
-  const navigate = useNavigate();
+
+  const wgetCommand = `wget -O agent-ove.x86_64.iso '${disconnectedInfraEnv?.downloadUrl || ''}'`;
 
   return (
     <ClusterWizardStep
       navigation={<ClusterWizardNavigation />}
       footer={
         <ClusterWizardFooter
-          onNext={() => {
-            saveAs(disconnectedInfraEnv?.downloadUrl ?? '');
-            void navigate('/cluster-list');
-          }}
           onBack={moveBack}
           nextButtonText="Download ISO"
+          nextButtonProps={{
+            isAriaDisabled: !disconnectedInfraEnv?.downloadUrl,
+            isDisabled: !disconnectedInfraEnv?.downloadUrl,
+            component: 'a',
+            target: '_blank',
+            href: disconnectedInfraEnv?.downloadUrl ?? '',
+            download: true,
+            rel: 'noopener noreferrer',
+          }}
         />
       }
     >
@@ -111,6 +120,38 @@ export const DisconnectedReviewStep = () => {
               <DescriptionListDescription>approx. 60+GB</DescriptionListDescription>
             </DescriptionListGroup>
           </DescriptionList>
+
+          {disconnectedInfraEnv?.downloadUrl ? (
+            <DetailList>
+              <DetailItem
+                title={'ISO URL'}
+                value={
+                  <ClipboardCopy
+                    isReadOnly
+                    onCopy={(event) => clipboardCopyFunc(event, disconnectedInfraEnv?.downloadUrl)}
+                  >
+                    {disconnectedInfraEnv?.downloadUrl || ''}
+                  </ClipboardCopy>
+                }
+              />
+              <DetailItem
+                title={'Command to download the ISO:'}
+                value={
+                  <ClipboardCopy
+                    isReadOnly
+                    onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}
+                  >
+                    {wgetCommand}
+                  </ClipboardCopy>
+                }
+              />
+            </DetailList>
+          ) : (
+            <Alert
+              variant={AlertVariant.danger}
+              title={'Something went wrong while retrieving the ISO URL'}
+            />
+          )}
         </Grid>
       </WithErrorBoundary>
     </ClusterWizardStep>

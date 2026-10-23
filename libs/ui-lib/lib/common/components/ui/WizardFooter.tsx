@@ -10,6 +10,7 @@ import {
   StackItem,
   Content,
   ContentVariants,
+  ButtonProps,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Cluster } from '@openshift-assisted/types/assisted-installer-service';
@@ -27,6 +28,7 @@ export type WizardFooterGenericProps = {
   submittingText?: string;
   nextButtonText?: string;
   isNextButtonLoading?: boolean;
+  nextButtonProps?: ButtonProps;
 };
 
 type WizardFooterProps = WizardFooterGenericProps & {
@@ -53,6 +55,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   cluster,
   onFetchEvents,
   isNextButtonLoading,
+  nextButtonProps,
 }) => {
   const { t } = useTranslation();
   submittingText = submittingText || t('ai:Saving changes...');
@@ -63,7 +66,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
       <StackItem>
         <ActionList data-testid="wizard-step-actions">
           {leftExtraActions}
-          {onNext && (
+          {(onNext || nextButtonProps) && (
             <ActionListItem>
               <Button
                 variant={ButtonVariant.primary}
@@ -71,6 +74,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 onClick={onNext}
                 isDisabled={isNextDisabled}
                 isLoading={isNextButtonLoading}
+                {...nextButtonProps}
               >
                 {nextButtonText || t('ai:Next')}
               </Button>
