@@ -9,6 +9,7 @@ export * from './UploadSSH';
 export * from './ProxyFields';
 export * from './CertificateFields';
 export * from './NtpSourcesFields';
+export * from './InfraEnvNtpSourcesFields';
 export * from './DiscoveryTroubleshootingModal';
 export * from './ExternalPlatformsDropdown';
 export * from './DiskEncryptionFields';
