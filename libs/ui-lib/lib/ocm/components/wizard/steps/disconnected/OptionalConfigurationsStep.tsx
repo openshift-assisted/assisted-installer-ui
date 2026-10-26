@@ -27,7 +27,7 @@ import { canonicalizeIp, getHostIpsFromInfraEnv } from '../staticIp/data/fromInf
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
   rendezvousIp: string;
-  enableNtpSources: boolean;
+  enableAdditionalNtpSources: boolean;
   additionalNtpSources: string;
 };
 
@@ -103,13 +103,13 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
 
               <CheckboxField
                 label={'Provide additional NTP sources'}
-                name="enableNtpSources"
+                name="enableAdditionalNtpSources"
                 className="ai-ntp-sources-fields"
                 helperText={
                   'Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server.'
                 }
                 body={
-                  values.enableNtpSources && (
+                  values.enableAdditionalNtpSources && (
                     <Grid hasGutter>
                       <AdditionalNTPSourcesField
                         name="additionalNtpSources"
@@ -144,7 +144,7 @@ export const OptionalConfigurationsStep = () => {
         rendezvousIp: Yup.string()
           .max(45, 'IP address must be at most 45 characters')
           .concat(ipValidationSchema(t)),
-        additionalNtpSources: conditionalNtpSourceValidationSchema(t),
+        additionalNtpSources: conditionalNtpSourceValidationSchema('enableAdditionalNtpSources', t),
       }),
     [t],
   );
@@ -152,7 +152,7 @@ export const OptionalConfigurationsStep = () => {
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
-    enableNtpSources: !!disconnectedInfraEnv?.additionalNtpSources?.trim(),
+    enableAdditionalNtpSources: !!disconnectedInfraEnv?.additionalNtpSources?.trim(),
     additionalNtpSources: disconnectedInfraEnv?.additionalNtpSources ?? '',
   };
 
@@ -168,7 +168,9 @@ export const OptionalConfigurationsStep = () => {
         const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, {
           sshAuthorizedKey: values.sshPublicKey,
           rendezvousIp: values.rendezvousIp,
-          additionalNtpSources: values.enableNtpSources ? values.additionalNtpSources : '',
+          additionalNtpSources: values.enableAdditionalNtpSources
+            ? values.additionalNtpSources
+            : '',
         });
 
         setDisconnectedInfraEnv(updatedInfraEnv);
