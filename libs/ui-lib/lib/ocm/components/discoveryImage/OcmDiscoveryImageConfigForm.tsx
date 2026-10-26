@@ -64,7 +64,7 @@ const validationSchema = (t: TFunction) =>
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
       httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
       noProxy: noProxyValidationSchema(t),
-      ntpSourcesList: conditionalNtpSourceValidationSchema(t),
+      ntpSourcesList: conditionalNtpSourceValidationSchema('enableNtpSources', t),
     }),
   );
 
