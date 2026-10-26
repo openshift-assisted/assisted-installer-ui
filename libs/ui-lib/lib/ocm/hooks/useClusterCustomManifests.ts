@@ -59,13 +59,11 @@ const iriManifestPatterns = [
   /^cs-redhat-operator-index-.*\.yaml$/,
   /^internalreleaseimage\.yaml$/,
   /^operatorhub-cluster\.yaml$/,
+  /^signature-configmap-.*\.yaml$/,
 ];
 
-const isIriManifest = (fileName: string): boolean =>
-  iriManifestPatterns.some((pattern) => pattern.test(fileName));
-
 const filterIriManifests = (manifests: ListManifests): ListManifests =>
-  manifests.filter((m) => !isIriManifest(m.fileName || ''));
+  manifests.filter((m) => !iriManifestPatterns.some((pattern) => pattern.test(m.fileName || '')));
 
 export const useClusterCustomManifests = (clusterId: Cluster['id'], extendedVersion: boolean) => {
   const [customManifests, setCustomManifests] = React.useState<ListManifestsExtended>();
