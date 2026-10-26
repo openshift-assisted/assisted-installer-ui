@@ -68,15 +68,13 @@ export const ClusterWizardContextProvider = ({
       const customManifestsStepNeedsToBeFilled =
         customManifestsRequired && !uiSettings?.customManifestsAdded;
 
+      const firstStepIds = getWizardStepIds(staticIpInfo?.view, isSingleClusterFeatureEnabled);
+
       const requiredStepId = getClusterWizardFirstStep(
         locationState,
         staticIpInfo,
         cluster?.status,
         cluster,
-      );
-      const firstStepIds = getWizardStepIds(
-        wizardStepIds,
-        staticIpInfo?.view,
         isSingleClusterFeatureEnabled,
       );
 
@@ -126,11 +124,7 @@ export const ClusterWizardContextProvider = ({
         if (!staticIpInfo) {
           throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
         }
-        const newStepIds = getWizardStepIds(
-          wizardStepIds,
-          staticIpInfo.view,
-          isSingleClusterFeatureEnabled,
-        );
+        const newStepIds = getWizardStepIds(staticIpInfo.view, isSingleClusterFeatureEnabled);
         setWizardStepIds(newStepIds);
       }
     };
@@ -167,7 +161,7 @@ export const ClusterWizardContextProvider = ({
         if (installDisconnected) {
           setDisconnectedWizardStepIds(getDisconnectedWizardStepIds(view));
         } else {
-          setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
+          setWizardStepIds(getWizardStepIds(view, isSingleClusterFeatureEnabled));
         }
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
@@ -185,11 +179,9 @@ export const ClusterWizardContextProvider = ({
           if (type === HostsNetworkConfigurationType.STATIC) {
             const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
             const view = staticIpInfo?.view ?? StaticIpView.FORM;
-            setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
+            setWizardStepIds(getWizardStepIds(view, isSingleClusterFeatureEnabled));
           } else {
-            setWizardStepIds(
-              getWizardStepIds(wizardStepIds, 'dhcp-selected', isSingleClusterFeatureEnabled),
-            );
+            setWizardStepIds(getWizardStepIds('dhcp-selected', isSingleClusterFeatureEnabled));
           }
         }
       },
