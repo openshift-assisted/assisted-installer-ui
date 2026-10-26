@@ -22,7 +22,6 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   DiscoveryImageType,
-  NtpSourcesFieldsType,
   ProxyFieldsType,
   StatusErrorType,
   SupportedCpuArchitecture,
@@ -37,9 +36,9 @@ import {
   ProxyFields,
   UploadSSH,
   CertificateFields,
-  NtpSourcesFields,
 } from '../../../common';
 import { DiscoveryImageTypeDropdown, discoveryImageTypes } from './DiscoveryImageTypeDropdown';
+import { NtpSourcesFieldsType, NtpSourcesFields } from './NtpSourcesFields';
 
 export interface OcmImageCreateParams {
   /**
