@@ -1,10 +1,12 @@
 import React from 'react';
 import { Grid } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { CheckboxField } from '../ui';
-import { AdditionalNTPSourcesField } from '../ui/formik';
-import { NtpSourcesFieldsType } from '../../types';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { AdditionalNTPSourcesField, CheckboxField, useTranslation } from '../../../common';
+
+export type NtpSourcesFieldsType = {
+  enableNtpSources: boolean;
+  ntpSourcesList: string;
+};
 
 export const NtpSourcesFields: React.FC = () => {
   const { values } = useFormikContext<NtpSourcesFieldsType>();
