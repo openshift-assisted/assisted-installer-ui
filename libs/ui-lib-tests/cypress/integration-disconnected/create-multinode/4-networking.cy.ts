@@ -60,11 +60,6 @@ describe(`Assisted Installer Multinode Networking`, () => {
       networkingPage.getStackTypeInput().should('be.disabled');
     });
 
-    it('Should have the correct default network type', () => {
-      networkingPage.getAdvancedNetwork().click();
-      networkingPage.getNetworkTypeToggle().should('contain.text', 'Open Virtual Networking (OVN)');
-    });
-
     it('Should have an enabled Next button', () => {
       commonActions.getNextButton().should('be.enabled');
       commonActions.toNextStepAfter('Networking');

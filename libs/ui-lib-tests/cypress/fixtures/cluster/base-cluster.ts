@@ -3,11 +3,11 @@
 const fakeClusterId = 'fa39cf35-0b18-4e6a-b2c5-ef48784ff85e';
 const fakeClusterInfraEnvId = 'ac722438-a01b-472c-b1f6-50cf3db4cc81';
 
-const baseCluster = (name = Cypress.env('CLUSTER_NAME')) => ({
+const baseCluster = (name = Cypress.expose('CLUSTER_NAME')) => ({
   id: fakeClusterId,
   href: `/api/assisted-install/v2/clusters/${fakeClusterId}`,
   name,
-  openshift_version: Cypress.env('OPENSHIFT_VERSION'),
+  openshift_version: Cypress.expose('OPENSHIFT_VERSION'),
   api_vips: [],
   ingress_vips: [],
   base_dns_domain: 'redhat.com',

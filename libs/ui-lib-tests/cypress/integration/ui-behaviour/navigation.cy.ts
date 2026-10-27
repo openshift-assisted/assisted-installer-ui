@@ -29,8 +29,8 @@ describe('Navigation Tests', () => {
     });
 
     it('Should navigate to cluster details route', () => {
-      cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`);
-      cy.url().should('include', `/assisted-installer/clusters/${Cypress.env('clusterId')}`);
+      cy.visit(`/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
+      cy.url().should('include', `/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
       commonActions.verifyIsAtStep('Host discovery');
     });
   });
@@ -44,7 +44,7 @@ describe('Navigation Tests', () => {
     });
 
     it('Should navigate to clusters list when clicking masthead logo from cluster details page', () => {
-      cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`);
+      cy.visit(`/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
       cy.get('.pf-v6-c-masthead__brand a').click();
       cy.url().should('include', '/clusters');
       clusterListPage.getCreateNewClusterButton().should('be.visible');
@@ -64,7 +64,7 @@ describe('Navigation Tests', () => {
 
     it('Should navigate to cluster details when clicking cluster name link', () => {
       cy.getClusterLink().click();
-      cy.url().should('include', `/assisted-installer/clusters/${Cypress.env('clusterId')}`);
+      cy.url().should('include', `/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
       commonActions.verifyIsAtStep('Host discovery');
     });
   });
@@ -84,13 +84,13 @@ describe('Navigation Tests', () => {
 
   describe('Cluster Details Navigation', () => {
     beforeEach(() => {
-      cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`);
+      cy.visit(`/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
     });
 
     it('Should navigate to clusters list when clicking breadcrumb link', () => {
       cy.get('.pf-v6-c-breadcrumb__item').contains('Assisted Clusters').click();
       cy.url().should('include', '/assisted-installer/clusters');
-      cy.url().should('not.include', Cypress.env('clusterId'));
+      cy.url().should('not.include', Cypress.expose('clusterId'));
       clusterListPage.getCreateNewClusterButton().should('be.visible');
     });
   });
@@ -108,14 +108,14 @@ describe('Navigation Tests', () => {
         body: { code: 500, message: 'Internal server error' },
       }).as('get-default-config-error');
 
-      cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`);
+      cy.visit(`/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
       cy.wait('@get-default-config-error');
 
       cy.contains('Failed to retrieve the default configuration').should('be.visible');
       cy.get('.pf-v6-c-button').contains('Back').should('be.visible').click();
 
       cy.url().should('include', '/assisted-installer/clusters');
-      cy.url().should('not.include', Cypress.env('clusterId'));
+      cy.url().should('not.include', Cypress.expose('clusterId'));
       clusterListPage.getCreateNewClusterButton().should('be.visible');
     });
   });

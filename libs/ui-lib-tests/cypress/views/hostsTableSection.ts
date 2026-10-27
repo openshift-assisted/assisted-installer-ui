@@ -1,10 +1,10 @@
 export type ValidateDiskHoldersParams = { name: string; indented?: boolean; warning?: boolean }[];
 
-const numMasters = (): number => Cypress.env('NUM_MASTERS');
-const numWorkers = (): number => Cypress.env('NUM_WORKERS');
+const numMasters = (): number => Cypress.expose('NUM_MASTERS');
+const numWorkers = (): number => Cypress.expose('NUM_WORKERS');
 
 export const hostsTableSection = {
-  validateHostNames: (hostNames = Cypress.env('requestedHostnames')) => {
+  validateHostNames: (hostNames = Cypress.expose('requestedHostnames')) => {
     cy.get('[data-testid=host-name]')
       .should('have.length', numMasters() + numWorkers())
       .each((hostName, idx) => {
@@ -29,9 +29,9 @@ export const hostsTableSection = {
       .each((hostCpuCores, idx) => {
         const isMaster = idx <= numMasters() - 1;
         if (isMaster) {
-          expect(hostCpuCores).to.contain(Cypress.env('masterCPU'));
+          expect(hostCpuCores).to.contain(Cypress.expose('masterCPU'));
         } else {
-          expect(hostCpuCores).to.contain(Cypress.env('workerCPU'));
+          expect(hostCpuCores).to.contain(Cypress.expose('workerCPU'));
         }
       });
   },
@@ -41,9 +41,9 @@ export const hostsTableSection = {
       .each((hostMemory, idx) => {
         const isMaster = idx <= numMasters() - 1;
         if (isMaster) {
-          expect(hostMemory).to.contain(Cypress.env('masterMemory'));
+          expect(hostMemory).to.contain(Cypress.expose('masterMemory'));
         } else {
-          expect(hostMemory).to.contain(Cypress.env('workerMemory'));
+          expect(hostMemory).to.contain(Cypress.expose('workerMemory'));
         }
       });
   },
@@ -63,7 +63,7 @@ export const hostsTableSection = {
     cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
       cy
         .wrap(row)
-        .find('td[data-testid="host-hw-status"]', { timeout: Cypress.env('HOST_READY_TIMEOUT') })
+        .find('td[data-testid="host-hw-status"]', { timeout: Cypress.expose('HOST_READY_TIMEOUT') })
         .should('contain.text', status),
     );
   },

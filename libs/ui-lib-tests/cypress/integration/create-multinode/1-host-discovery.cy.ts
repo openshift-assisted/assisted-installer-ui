@@ -7,8 +7,8 @@ import { navbar } from '../../views/navbar';
 import * as utils from '../../support/utils';
 
 const validateHostTableDetails = () => {
-  Cypress.env('masterCPU', '8');
-  Cypress.env('masterMemory', '33.20 GiB');
+  Cypress.expose('masterCPU', '8');
+  Cypress.expose('masterMemory', '33.20 GiB');
 
   hostsTableSection.validateHostCpuCores();
   hostsTableSection.validateHostDiskSize(12.88, 0);
@@ -68,7 +68,7 @@ describe(`Assisted Installer Multinode Host discovery`, () => {
     });
 
     it('Should mass-rename the hosts and be able to continue', () => {
-      const hostPrefix = Cypress.env('HOST_RENAME');
+      const hostPrefix = Cypress.expose('HOST_RENAME');
       bareMetalDiscoveryPage.waitForHostTablePopulation(3, 0);
       bareMetalDiscoveryPage.massRenameHosts(hostPrefix);
       cy.wait(['@rename-host-1', '@rename-host-2', '@rename-host-3']).then(() => {

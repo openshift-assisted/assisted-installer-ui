@@ -2,7 +2,7 @@
 
 import { fakeClusterId, fakeClusterInfraEnvId } from '../cluster/base-cluster';
 
-const isoDownloadLink = `${Cypress.env(
+const isoDownloadLink = `${Cypress.expose(
   'API_BASE_URL',
 )}/images/${fakeClusterInfraEnvId}?arch=x86_64&type=full-iso&version=4.9`;
 

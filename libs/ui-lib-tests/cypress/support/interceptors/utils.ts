@@ -10,8 +10,8 @@ export const arm = 'arm64';
 
 export type Archs = typeof x86 | typeof arm;
 
-export const getDay1ClusterApiPath = () => `${allClustersApiPath}${Cypress.env('clusterId')}`;
-export const getDay1InfraEnvApiPath = () => `${allInfraEnvsApiPath}${Cypress.env('infraEnvId')}`;
+export const getDay1ClusterApiPath = () => `${allClustersApiPath}${Cypress.expose('clusterId')}`;
+export const getDay1InfraEnvApiPath = () => `${allInfraEnvsApiPath}${Cypress.expose('infraEnvId')}`;
 export const getDay2InfraEnvApiPath = (cpuArch?: Archs) =>
   `${allInfraEnvsApiPath}${day2FlowIds.day2.infraEnvIds[cpuArch || x86]}`;
 export const getDay2ClusterApiPath = () => `${allClustersApiPath}${day2FlowIds.day2.aiClusterId}`;
@@ -19,7 +19,7 @@ export const day2InfraEnvDetailsUrl = new RegExp(
   `${getDay2InfraEnvApiPath(x86)}|${getDay2InfraEnvApiPath(arm)}`,
 );
 export const getDay1ClusterPreflightRequirementsApiPath = () =>
-  `${allClustersApiPath}${Cypress.env('clusterId')}/preflight-requirements`;
+  `${allClustersApiPath}${Cypress.expose('clusterId')}/preflight-requirements`;
 
 export const getDay2InfraEnv = (cpuArch: Archs) => fixtures.day2InfraEnvs[cpuArch];
 export const getCpuArchitectureParam = (cpuArch: string): Archs | undefined => {
@@ -35,22 +35,22 @@ export const getCpuArchitectureParam = (cpuArch: string): Archs | undefined => {
 export const transformClusterFixture = (fixtureMapping) => {
   const { clusters: clusterFixtures, hosts: hostsFixtures } = fixtureMapping;
   const baseCluster =
-    clusterFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.clusters['default'];
-  baseCluster.platform.type = Cypress.env('AI_INTEGRATED_PLATFORM') || 'baremetal';
+    clusterFixtures[Cypress.expose('AI_LAST_SIGNAL')] || fixtureMapping.clusters['default'];
+  baseCluster.platform.type = Cypress.expose('AI_INTEGRATED_PLATFORM') || 'baremetal';
 
   const hosts = hostsFixtures
-    ? hostsFixtures[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping.hosts['default']
+    ? hostsFixtures[Cypress.expose('AI_LAST_SIGNAL')] || fixtureMapping.hosts['default']
     : fixtures.getUpdatedHosts();
   return { ...baseCluster, hosts };
 };
 
 export const transformInfraEnvFixture = (fixtureMapping) => {
-  return fixtureMapping[Cypress.env('AI_LAST_SIGNAL')] || fixtureMapping['default'];
+  return fixtureMapping[Cypress.expose('AI_LAST_SIGNAL')] || fixtureMapping['default'];
 };
 
 export const getScenarioFixtureMapping = () => {
   let fixtureMapping = null;
-  switch (Cypress.env('AI_SCENARIO')) {
+  switch (Cypress.expose('AI_SCENARIO')) {
     case 'AI_CREATE_SNO':
       fixtureMapping = fixtures.createSnoFixtureMapping;
       break;

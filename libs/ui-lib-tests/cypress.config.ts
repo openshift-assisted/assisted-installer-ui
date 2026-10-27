@@ -15,7 +15,7 @@ export default defineConfig({
   modifyObstructiveCode: false,
   viewportWidth: 1360, // 16*85
   viewportHeight: 765, // 9*85
-  env: {
+  expose: {
     OPENSHIFT_VERSION: '4.14.16',
     DNS_DOMAIN_NAME: 'redhat.com',
     CLUSTER_NAME: 'ai-e2e-sno',
@@ -34,7 +34,6 @@ export default defineConfig({
     supportFile: 'cypress/support/index.ts',
     baseUrl: GLOBAL_BASE_URL,
     experimentalRunAllSpecs: true,
-    experimentalMemoryManagement: true,
     numTestsKeptInMemory: 5,
   },
 });

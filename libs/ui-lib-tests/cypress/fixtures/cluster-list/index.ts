@@ -12,7 +12,7 @@ const fakeCluster = {
 
 const addedCluster = () => ({
   ...clusterTemplate,
-  name: Cypress.env('CLUSTER_NAME'),
+  name: Cypress.expose('CLUSTER_NAME'),
 });
 
 const initialClusterList = [fakeCluster];

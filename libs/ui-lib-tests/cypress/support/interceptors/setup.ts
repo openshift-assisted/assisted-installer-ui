@@ -18,44 +18,44 @@ import { addPlatformFeatureIntercepts } from './platform';
 const { day2FlowIds } = fixtures;
 
 const setScenarioEnvVars = (activeScenario) => {
-  Cypress.env('AI_SCENARIO', activeScenario);
-  Cypress.env('ASSISTED_SNO_DEPLOYMENT', false);
-  Cypress.env('NUM_MASTERS', 3);
-  Cypress.env('NUM_WORKERS', 0);
+  Cypress.expose('AI_SCENARIO', activeScenario);
+  Cypress.expose('ASSISTED_SNO_DEPLOYMENT', false);
+  Cypress.expose('NUM_MASTERS', 3);
+  Cypress.expose('NUM_WORKERS', 0);
 
   switch (activeScenario) {
     case 'AI_CREATE_SNO':
-      Cypress.env('ASSISTED_SNO_DEPLOYMENT', true);
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-sno');
-      Cypress.env('NUM_MASTERS', 1);
+      Cypress.expose('ASSISTED_SNO_DEPLOYMENT', true);
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-sno');
+      Cypress.expose('NUM_MASTERS', 1);
       break;
     case 'AI_CREATE_MULTINODE':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-multinode');
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-multinode');
       break;
     case 'AI_CREATE_DUALSTACK':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-dualstack');
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-dualstack');
       break;
     case 'AI_READONLY_CLUSTER':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-readonly');
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-readonly');
       break;
     case 'AI_STORAGE_CLUSTER':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-storage');
-      Cypress.env('NUM_MASTERS', 3);
-      Cypress.env('NUM_WORKERS', 2);
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-storage');
+      Cypress.expose('NUM_MASTERS', 3);
+      Cypress.expose('NUM_WORKERS', 2);
       break;
     case 'AI_DISK_HOLDERS_CLUSTER':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-disk-holders');
-      Cypress.env('NUM_MASTERS', 3);
-      Cypress.env('NUM_WORKERS', 2);
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-disk-holders');
+      Cypress.expose('NUM_MASTERS', 3);
+      Cypress.expose('NUM_WORKERS', 2);
       break;
     case 'AI_CREATE_STATIC_IP':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-static-ip');
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-static-ip');
       break;
     case 'AI_CREATE_CUSTOM_MANIFESTS':
-      Cypress.env('CLUSTER_NAME', 'ai-e2e-custom-manifests');
+      Cypress.expose('CLUSTER_NAME', 'ai-e2e-custom-manifests');
       break;
     case 'AI_OVE_CREATE_MULTINODE':
-      Cypress.env('CLUSTER_NAME', 'ai-ove-mno');
+      Cypress.expose('CLUSTER_NAME', 'ai-ove-mno');
       break;
     default:
       break;
@@ -73,8 +73,8 @@ const setEntityIds = (activeScenario: string) => {
     infraEnvId = fixtures.fakeClusterInfraEnvId;
   }
 
-  Cypress.env('clusterId', clusterId);
-  Cypress.env('infraEnvId', infraEnvId);
+  Cypress.expose('clusterId', clusterId);
+  Cypress.expose('infraEnvId', infraEnvId);
 };
 
 const loadCommonIntercepts = () => {
@@ -101,7 +101,7 @@ const loadDay2Intercepts = () => {
 
 const loadAiAPIIntercepts = () => {
   loadCommonIntercepts();
-  if (Cypress.env('AI_SCENARIO') === 'DAY2_FLOW') {
+  if (Cypress.expose('AI_SCENARIO') === 'DAY2_FLOW') {
     loadDay2Intercepts();
   } else {
     loadDay1Intercepts();
@@ -109,7 +109,7 @@ const loadAiAPIIntercepts = () => {
 };
 
 const setTestEnvironment = ({ activeSignal, activeScenario, singleCluster = false }) => {
-  Cypress.env('AI_SINGLE_CLUSTER', singleCluster);
+  Cypress.expose('AI_SINGLE_CLUSTER', singleCluster);
   setLastWizardSignal(activeSignal);
   setScenarioEnvVars(activeScenario);
   setEntityIds(activeScenario);

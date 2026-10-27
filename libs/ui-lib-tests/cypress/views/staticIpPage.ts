@@ -51,7 +51,7 @@ export const staticIpPage = {
   yamlView: {
     getStartFromScratch: () => {
       return cy.get(
-        `.pf-v6-c-empty-state__actions:last > .pf-v6-c-button:contains(${Cypress.env(
+        `.pf-v6-c-empty-state__actions:last > .pf-v6-c-button:contains(${Cypress.expose(
           'yamlStartFromScratchText',
         )})`,
       );

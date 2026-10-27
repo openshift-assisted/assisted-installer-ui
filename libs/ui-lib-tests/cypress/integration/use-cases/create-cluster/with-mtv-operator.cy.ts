@@ -29,7 +29,7 @@ describe(`Create cluster with MTV operator enabled`, () => {
     setTestStartSignal('CLUSTER_CREATED');
     cy.intercept(
       'GET',
-      `/api/assisted-install/v2/clusters/${Cypress.env('clusterId')}/preflight-requirements`,
+      `/api/assisted-install/v2/clusters/${Cypress.expose('clusterId')}/preflight-requirements`,
       mtvOperatorPreflightRequirements,
     ).as('cluster-req');
     commonActions.visitClusterDetailsPage();
