@@ -10,7 +10,6 @@ import {
   isStepAfter,
 } from './wizardTransition';
 import { HostsNetworkConfigurationType } from '../../services';
-import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
 import { AssistedInstallerOCMPermissionTypesListType, useAlerts } from '../../../common';
@@ -21,57 +20,7 @@ import { AlertVariant } from '@patternfly/react-core';
 import { useFeature } from '../../hooks/use-feature';
 import { isThirdPartyCNI } from '../../../common/types/networkType';
 import { isOciPlatformType } from '../utils';
-
-const addStepToClusterWizard = (
-  wizardStepIds: ClusterWizardStepsType[],
-  addAfterStep: ClusterWizardStepsType,
-  itemsToAdd: ClusterWizardStepsType[],
-) => {
-  const stepsIds = [...wizardStepIds];
-  const referencePosition = stepsIds.findIndex((step) => step === addAfterStep);
-  const found = wizardStepIds.filter((step) => step === itemsToAdd[0]);
-  if (referencePosition !== -1 && found.length === 0) {
-    stepsIds.splice(referencePosition + 1, 0, ...itemsToAdd);
-  }
-  return stepsIds;
-};
-
-const removeStepFromClusterWizard = (
-  wizardStepIds: ClusterWizardStepsType[],
-  itemToRemove: ClusterWizardStepsType,
-  numberItemsToRemove: number,
-) => {
-  const stepsIds = [...wizardStepIds];
-  const position = stepsIds.findIndex((step) => step === itemToRemove);
-  if (position !== -1) {
-    stepsIds.splice(position, numberItemsToRemove);
-  }
-  return stepsIds;
-};
-
-const getWizardStepIds = (
-  wizardStepIds: ClusterWizardStepsType[] | undefined,
-  staticIpView?: StaticIpView | 'dhcp-selected',
-
-  isSingleClusterFeatureEnabled?: boolean,
-): ClusterWizardStepsType[] => {
-  let stepsCopy = wizardStepIds ? [...wizardStepIds] : [...defaultWizardSteps];
-  if (staticIpView === StaticIpView.YAML) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', ['static-ip-yaml-view']);
-  } else if (staticIpView === StaticIpView.FORM) {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-yaml-view', 1);
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'cluster-details', staticIpFormViewSubSteps);
-  } else if (staticIpView === 'dhcp-selected') {
-    stepsCopy = removeStepFromClusterWizard(stepsCopy, 'static-ip-network-wide-configurations', 2);
-  }
-
-  if (isSingleClusterFeatureEnabled && !stepsCopy.includes('credentials-download')) {
-    stepsCopy = addStepToClusterWizard(stepsCopy, 'custom-manifests', ['credentials-download']);
-  }
-
-  return stepsCopy;
-};
+import { getWizardStepIds } from './utils';
 
 const ClusterWizardContextProvider = ({
   children,
@@ -114,15 +63,13 @@ const ClusterWizardContextProvider = ({
       const customManifestsStepNeedsToBeFilled =
         customManifestsRequired && !uiSettings?.customManifestsAdded;
 
+      const firstStepIds = getWizardStepIds(staticIpInfo?.view, isSingleClusterFeatureEnabled);
+
       const requiredStepId = getClusterWizardFirstStep(
         locationState,
         staticIpInfo,
         cluster?.status,
         cluster,
-      );
-      const firstStepIds = getWizardStepIds(
-        wizardStepIds,
-        staticIpInfo?.view,
         isSingleClusterFeatureEnabled,
       );
 
@@ -164,11 +111,7 @@ const ClusterWizardContextProvider = ({
         throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
       }
 
-      const newStepIds = getWizardStepIds(
-        wizardStepIds,
-        staticIpInfo.view,
-        isSingleClusterFeatureEnabled,
-      );
+      const newStepIds = getWizardStepIds(staticIpInfo.view, isSingleClusterFeatureEnabled);
       setWizardStepIds(newStepIds);
     };
 
@@ -201,17 +144,13 @@ const ClusterWizardContextProvider = ({
         } else {
           setCurrentStepId('static-ip-network-wide-configurations');
         }
-        setWizardStepIds(getWizardStepIds(wizardStepIds, view, isSingleClusterFeatureEnabled));
+        setWizardStepIds(getWizardStepIds(view, isSingleClusterFeatureEnabled));
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (type === HostsNetworkConfigurationType.STATIC) {
-          setWizardStepIds(
-            getWizardStepIds(wizardStepIds, StaticIpView.FORM, isSingleClusterFeatureEnabled),
-          );
+          setWizardStepIds(getWizardStepIds(StaticIpView.FORM, isSingleClusterFeatureEnabled));
         } else {
-          setWizardStepIds(
-            getWizardStepIds(wizardStepIds, 'dhcp-selected', isSingleClusterFeatureEnabled),
-          );
+          setWizardStepIds(getWizardStepIds('dhcp-selected', isSingleClusterFeatureEnabled));
         }
       },
       wizardStepIds: wizardStepIds,
