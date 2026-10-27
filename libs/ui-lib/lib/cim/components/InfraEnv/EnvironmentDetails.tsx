@@ -270,6 +270,8 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         onClose={() => setEditNtpSources(false)}
         infraEnv={infraEnv}
         onSubmit={onEditNtpSources}
+        hasAgents={hasAgents}
+        hasBMHs={hasBMHs}
       />
       {editProxy && (
         <EditProxyModal

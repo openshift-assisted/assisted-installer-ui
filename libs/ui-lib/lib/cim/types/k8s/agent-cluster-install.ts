@@ -59,6 +59,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
       networkType?: 'OpenShiftSDN' | 'OVNKubernetes' | 'CiscoACI' | 'Cilium' | 'Calico' | 'None';
     };
     holdInstallation?: boolean;
+    ntpSources?: string[];
     platformType: string;
     manifestsConfigMapRefs?: { name: string }[];
   };
